@@ -1,0 +1,6 @@
+@use "sass:math";
+@import "./variables.scss";
+
+@function pxToRem($target, $context: $size-base) {
+  @return #{math.div($target, $context) * 1rem};
+}

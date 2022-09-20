@@ -1,0 +1,58 @@
+@import "../../../styles/variables.scss";
+
+.masterDetail {
+  display: grid;
+  grid-template-areas:
+    "title"
+    "detail"
+    "buttons";
+  grid-template-rows: 50px auto 60px;
+  height: calc(100vh - 50px);
+  width: 100vw;
+  padding: 0 20px;
+
+  .title {
+    grid-area: title;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid $gray-color;
+
+    .left {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      width: 500px;
+    }
+
+    .center {
+      font-size: 25px;
+      font-weight: 700;
+      color: $dark-gray-color;
+    }
+
+    .right {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      width: 500px;
+    }
+  }
+
+  .detail {
+    grid-area: detail;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid $gray-color;
+    padding: 10px 0;
+  }
+
+  .buttons {
+    grid-area: buttons;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+}

@@ -1,0 +1,56 @@
+@import "../../../styles/variables.scss";
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  border: none;
+  background-color: $blue-color;
+  border-radius: 20px;
+  border: none;
+  color: white;
+  font-weight: 500;
+  transition: transform 0.3s;
+  gap: 10px;
+  padding: 0 20px;
+
+  &:disabled {
+    background-color: $light-gray-color;
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+
+  &.sub {
+    background-color: $gray-color;
+
+    &:hover {
+      background-color: $dark-gray-color;
+    }
+  }
+
+  .icon {
+    svg {
+      color: $white-color;
+      font-size: 20px;
+    }
+  }
+}
+
+.spin {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

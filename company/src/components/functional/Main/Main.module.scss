@@ -1,0 +1,46 @@
+@import "../../../styles/variables.scss";
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+
+  .left {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 20px;
+
+    .logo {
+      height: 25px;
+      width: 500px;
+      background-repeat: no-repeat;
+      background-position: center left;
+      background-size: contain;
+    }
+  }
+
+  .icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: $border-radius-text;
+
+    &:hover {
+      background-color: $light-gray-color;
+
+      svg {
+        color: $black-color;
+      }
+    }
+
+    svg {
+      color: $dark-gray-color;
+      font-size: 20px;
+    }
+  }
+}

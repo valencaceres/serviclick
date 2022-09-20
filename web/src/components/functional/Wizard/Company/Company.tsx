@@ -1,0 +1,148 @@
+import { useState, useEffect, Fragment } from "react";
+import { useRouter } from "next/router";
+
+import Wizard, { Title, Content, Buttons } from "../../../layout/Wizard";
+
+import Button from "../../../ui/Button";
+import Navigate, { Back } from "../../../ui/Navigate";
+import Tooltip from "../../../ui/Tooltip";
+
+import ProductBadge from "../../ProductBadge";
+import CompanyForm from "./CompanyForm";
+
+import { formatRut } from "../../../../utils/format";
+import texts from "../../../../utils/texts";
+
+import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
+import {
+  setLeadCompany,
+  setLeadInsured,
+} from "../../../../redux/slices/leadSlice";
+
+const Company = ({ register }: any) => {
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+
+  const { lead } = useAppSelector((state) => state.leadSlice);
+  const { product } = useAppSelector((state) => state.productSlice);
+
+  const initialDataCompanyForm = {
+    rut: { value: lead.company.rut, isValid: true },
+    companyName: { value: lead.company.companyName, isValid: true },
+    legalRepresentative: {
+      value: lead.company.legalRepresentative,
+      isValid: true,
+    },
+    line: { value: lead.company.line, isValid: true },
+    address: { value: lead.company.address, isValid: true },
+    district: { value: lead.company.district, isValid: true },
+    email: { value: lead.company.email, isValid: true },
+    phone: { value: lead.company.phone, isValid: true },
+  };
+
+  const [companyForm, setCompanyForm] = useState(initialDataCompanyForm);
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(true);
+
+  const { company: companyText, frequency } = texts;
+
+  const handleCloseTooltip = () => {
+    setShowTooltip(false);
+  };
+
+  const handleClickBack = () => {
+    router.back();
+  };
+
+  const handleClickRegister = () => {
+    const companyData = {
+      rut: formatRut(companyForm.rut.value),
+      companyName: companyForm.companyName.value,
+      legalRepresentative: companyForm.legalRepresentative.value,
+      line: companyForm.line.value,
+      address: companyForm.address.value,
+      district: companyForm.district.value,
+      email: companyForm.email.value,
+      phone: companyForm.phone.value,
+    };
+
+    dispatch(setLeadCompany(companyData));
+    register();
+  };
+
+  useEffect(() => {
+    let enableButton = true;
+    if (
+      !companyForm.rut.isValid ||
+      companyForm.rut.value === "" ||
+      !companyForm.companyName.isValid ||
+      companyForm.companyName.value === "" ||
+      !companyForm.legalRepresentative.isValid ||
+      companyForm.legalRepresentative.value === "" ||
+      !companyForm.line.isValid ||
+      companyForm.line.value === "" ||
+      !companyForm.address.isValid ||
+      companyForm.address.value === "" ||
+      !companyForm.district.isValid ||
+      companyForm.district.value === "" ||
+      !companyForm.email.isValid ||
+      companyForm.email.value === "" ||
+      !companyForm.phone.isValid ||
+      companyForm.phone.value === ""
+    )
+      enableButton = false;
+    setIsEnabled(enableButton);
+  }, [companyForm]);
+
+  return (
+    <Fragment>
+      <Wizard>
+        <Title>
+          <Navigate>
+            <Back onClick={handleClickBack} />
+          </Navigate>
+          {companyText.title}
+          <ProductBadge />
+        </Title>
+        <Content>
+          <CompanyForm
+            companyForm={companyForm}
+            setCompanyForm={setCompanyForm}
+            enabled={true}
+          />
+        </Content>
+        <Buttons>
+          <Button
+            onClick={handleClickRegister}
+            text="Registrar"
+            width="150px"
+            enabled={isEnabled}
+          />
+        </Buttons>
+      </Wizard>
+      <Tooltip isShow={showTooltip} onClose={handleCloseTooltip}>
+        <div>
+          Estás contratando el servicio <b>{product.name}</b>, el cual tiene un
+          valor de{" "}
+          <b>
+            ${product.price.company.toLocaleString("en-US").replace(",", ".")}{" "}
+            {frequency[product.frequency]}
+          </b>{" "}
+          por cada asegurado y te brinda las siguientes coberturas:
+          <br />
+          <br />
+          {product.coverages.map((coverage, idx) => (
+            <div key={idx}>* {coverage.name}</div>
+          ))}
+          <br />
+          <div>
+            Ingresa los datos de tu empresa como contratante y al terminar
+            presiona el botón <b>Registrar</b>
+          </div>
+        </div>
+      </Tooltip>
+    </Fragment>
+  );
+};
+
+export default Company;

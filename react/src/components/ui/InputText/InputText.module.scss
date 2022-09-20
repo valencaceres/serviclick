@@ -1,0 +1,87 @@
+@import "../../../styles/variables.scss";
+@import "../../../styles/functions.scss";
+
+.inputText {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .input {
+    width: 303px;
+    height: 50px;
+    border: 1px solid $gray-color;
+    background-color: $white-color;
+    border-radius: $border-radius-text;
+    //padding: 25px 20px 20px 15px;
+    padding-left: 15px;
+    padding-top: 15px;
+    text-align: left;
+    font-size: pxToRem(16);
+    width: 100%;
+
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+    }
+
+    &:focus {
+      background-color: $text-focus-color;
+    }
+
+    &:focus + label {
+      color: $link-color;
+      transform: translateY(-13px) translateX(0px);
+      font-size: 12px;
+    }
+
+    &:not(:placeholder-shown) + label {
+      transform: translateY(-13px) translateX(0px);
+      font-size: 12px;
+    }
+
+    &.withIcon {
+      width: calc(100% - 40px);
+      border-radius: $border-radius-text 0 0 $border-radius-text;
+      border-right: none;
+    }
+
+    &.noLabel {
+      padding: 0 20px;
+      height: 40px;
+    }
+  }
+
+  label {
+    left: 15px;
+    position: absolute;
+    font-weight: 500;
+    color: $dark-gray-color;
+    transition: transform 0.3s;
+    background-color: transparent;
+    font-weight: 600;
+  }
+
+  .icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid $gray-color;
+    height: 50px;
+    width: 40px;
+    background-color: $light-gray-color;
+    border-radius: 0 $border-radius-text $border-radius-text 0;
+    cursor: pointer;
+
+    &:hover {
+      svg {
+        font-size: 20px;
+        color: $black-color;
+      }
+    }
+
+    svg {
+      font-size: 20px;
+      color: $dark-gray-color;
+    }
+  }
+}

@@ -1,0 +1,58 @@
+@import "../../../styles/variables.scss";
+
+.button {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  right: 20px;
+  bottom: 80px;
+  height: 40px;
+  width: 40px;
+  border: none;
+  background-color: $blue-color;
+  border-radius: 100%;
+  border: none;
+  color: white;
+  font-weight: 500;
+  transition: transform 0.3s;
+  gap: 10px;
+
+  &.spin {
+    animation: spin 1s linear infinite;
+  }
+
+  &:disabled {
+    background-color: $light-gray-color;
+    color: $gray-color;
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/*
+  absolute
+  right-[20px]
+  bottom-[80px]
+  flex items-center justify-center gap-[10px]
+  h-[40px] w-[40px]
+  rounded-full 
+  font-semibold 
+  transition duration-300
+  active:scale-90
+  disabled:bg-general-lightGray
+  disabled:text-general-gray 
+  [&>*]:disabled:text-general-gray
+  bg-general-blue text-general-white
+*/

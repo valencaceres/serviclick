@@ -1,0 +1,80 @@
+@import "../../../styles/variables.scss";
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+
+  .welcome {
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .description {
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    @media screen and (min-width: 1200px) {
+      flex-direction: row;
+    }
+
+    .option {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 10px;
+      background-color: $green-color;
+      border-radius: 10px;
+      filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.1));
+      cursor: pointer;
+      transition: all 0.3s;
+      height: 50px;
+      width: 250px;
+      padding-left: 30px;
+
+      @media screen and (min-width: 1200px) {
+        flex-direction: column;
+        justify-content: center;
+        padding-left: 0;
+        height: 100px;
+        width: 120px;
+      }
+
+      &:hover {
+        background-color: darken($green-color, 10);
+      }
+
+      &:active {
+        transform: scale(0.9);
+      }
+
+      span {
+        color: white;
+        font-size: 30px;
+
+        @media screen and (min-width: 1200px) {
+          font-size: 40px;
+        }
+      }
+
+      .label {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        color: white;
+      }
+    }
+  }
+}
