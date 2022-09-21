@@ -260,6 +260,21 @@ const createController = async (req: any, res: any) => {
         : contractor.companyname;
     const address = contractor.address + ", " + contractor.district;
 
+    createLogger.info({
+      model: config.reveniu.URL.subscription,
+      body: {
+        plan_id: product.productPlan_id,
+        field_values: {
+          email: contractor.email,
+          name,
+          amount: product.price * insured.length,
+          address,
+          rut: contractor.rut,
+          phone: contractor.phone,
+        },
+      },
+    });
+
     const subscriptionResponse = await axios.post(
       config.reveniu.URL.subscription,
       {
