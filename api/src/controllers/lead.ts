@@ -257,7 +257,7 @@ const createController = async (req: any, res: any) => {
           contractor.paternallastname +
           " " +
           contractor.maternallastname
-        : contractor.companyname;
+        : contractor.companyName;
     const address = contractor.address + ", " + contractor.district;
 
     createLogger.info({
