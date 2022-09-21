@@ -134,7 +134,7 @@ const getByRutModel: any = async (rut: string) => {
               district,
               email,
               phone
-      FROM    app.insured
+      FROM    app.company
       WHERE   rut = $1`,
       [rut]
     );
