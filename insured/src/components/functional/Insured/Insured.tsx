@@ -68,6 +68,7 @@ const Insured = ({ setIsEnabled }: any) => {
       },
     });
   };
+
   const handleChangeAddress = (event: any) => {
     setInsuredForm({
       ...insuredForm,
@@ -77,6 +78,7 @@ const Insured = ({ setIsEnabled }: any) => {
       },
     });
   };
+
   const handleChangeDistrict = (event: any) => {
     setInsuredForm({
       ...insuredForm,

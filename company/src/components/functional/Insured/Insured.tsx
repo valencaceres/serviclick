@@ -1,225 +1,217 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
+import { useRouter } from "next/router";
 
-import { Component, Row, Cell } from "../../layout/Component";
+import {
+  Table,
+  TableHeader,
+  TableDetail,
+  TableRow,
+  TableCell,
+  TableIcons,
+} from "../../ui/Table";
+import ButtonIcon from "../../ui/ButtonIcon";
+import { Modal, Window } from "../../ui/Modal";
+import Icon from "../../ui/Icon";
 
-import InputText from "../../ui/InputText";
+import InsuredDetail from "./InsuredDetail";
 
-import { setInsured } from "../../../redux/slices/insuredSlice";
+import { setSession } from "../../../redux/slices/userCompanySlice";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 
-import { numberRegEx } from "../../../utils/regEx";
+import styles from "./Insured.module.scss";
 
-const Insured = ({ setIsEnabled }: any) => {
+const Insured = ({ setShowTooltip }: any) => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
 
   const { isDesktop } = useAppSelector((state) => state.uiSlice);
-  const { userInsured } = useAppSelector((state) => state.userInsuredSlice);
+  const { session } = useAppSelector((state) => state.userCompanySlice);
 
   const initialDataInsuredForm = {
-    rut: { value: userInsured.rut, isValid: userInsured.rut !== "" },
-    name: { value: userInsured.name, isValid: userInsured.name !== "" },
-    paternalLastName: {
-      value: userInsured.paternalLastName,
-      isValid: userInsured.paternalLastName !== "",
-    },
-    maternalLastName: {
-      value: userInsured.maternalLastName,
-      isValid: userInsured.maternalLastName !== "",
-    },
-    address: {
-      value: userInsured.address,
-      isValid: userInsured.address !== "",
-    },
-    district: {
-      value: userInsured.district,
-      isValid: userInsured.district !== "",
-    },
-    email: { value: userInsured.email, isValid: userInsured.email !== "" },
-    phone: { value: userInsured.phone, isValid: userInsured.phone !== "" },
+    rut: { value: "", isValid: true },
+    name: { value: "", isValid: true },
+    paternalLastName: { value: "", isValid: true },
+    maternalLastName: { value: "", isValid: true },
+    address: { value: "", isValid: true },
+    district: { value: "", isValid: true },
+    email: { value: "", isValid: true },
+    phone: { value: "", isValid: true },
   };
 
   const [insuredForm, setInsuredForm] = useState(initialDataInsuredForm);
 
-  const handleChangeName = (event: any) => {
-    setInsuredForm({
-      ...insuredForm,
-      name: {
-        value: event.target.value,
-        isValid: event.target.value !== "",
-      },
-    });
+  const [showModalInsured, setShowModalInsured] = useState(false);
+  const [isEnabled, setIsEnabled] = useState(true);
+
+  const registerInsured = () => {
+    dispatch(
+      setSession({
+        ...session,
+        insured: [
+          ...session.insured.filter(
+            (insured) => insured.rut !== insuredForm.rut.value
+          ),
+          {
+            id: "",
+            rut: insuredForm.rut.value,
+            name: insuredForm.name.value,
+            paternalLastName: insuredForm.paternalLastName.value,
+            maternalLastName: insuredForm.maternalLastName.value,
+            email: insuredForm.email.value,
+            phone: insuredForm.phone.value,
+          },
+        ],
+      })
+    );
+    handleCloseInsured();
   };
 
-  const handleChangePaternalLastName = (event: any) => {
-    setInsuredForm({
-      ...insuredForm,
-      paternalLastName: {
-        value: event.target.value,
-        isValid: event.target.value !== "",
-      },
-    });
-  };
-  const handleChangeMaternalLastName = (event: any) => {
-    setInsuredForm({
-      ...insuredForm,
-      maternalLastName: {
-        value: event.target.value,
-        isValid: event.target.value !== "",
-      },
-    });
-  };
-  const handleChangeAddress = (event: any) => {
-    setInsuredForm({
-      ...insuredForm,
-      address: {
-        value: event.target.value,
-        isValid: event.target.value !== "",
-      },
-    });
-  };
-  const handleChangeDistrict = (event: any) => {
-    setInsuredForm({
-      ...insuredForm,
-      district: {
-        value: event.target.value,
-        isValid: event.target.value !== "",
-      },
-    });
+  const handleCloseTooltip = () => {
+    setShowTooltip(false);
   };
 
-  const handleChangePhone = (event: any) => {
-    if (numberRegEx.test(event.target.value) || event.target.value === "") {
-      setInsuredForm({
-        ...insuredForm,
-        phone: {
-          value: event.target.value,
-          isValid: event.target.value.length === 9,
-        },
-      });
-    } else {
-      return;
-    }
+  const handleClickAdd = () => {
+    handleCloseTooltip();
+    setInsuredForm(initialDataInsuredForm);
+    setShowModalInsured(true);
   };
 
-  useEffect(() => {
-    setIsEnabled(false);
-    if (
-      insuredForm.rut.isValid &&
-      insuredForm.name.isValid &&
-      insuredForm.paternalLastName.isValid &&
-      insuredForm.maternalLastName.isValid &&
-      insuredForm.address.isValid &&
-      insuredForm.district.isValid &&
-      insuredForm.email.isValid &&
-      insuredForm.phone.isValid
-    ) {
-      dispatch(
-        setInsured({
-          ...userInsured,
-          rut: insuredForm.rut.value,
-          name: insuredForm.name.value,
-          paternalLastName: insuredForm.paternalLastName.value,
-          maternalLastName: insuredForm.maternalLastName.value,
-          address: insuredForm.address.value,
-          district: insuredForm.district.value,
-          email: insuredForm.email.value,
-          phone: insuredForm.phone.value,
-        })
-      );
-      setIsEnabled(true);
-    }
-  }, [insuredForm, dispatch]);
+  const handleCloseInsured = () => {
+    setShowModalInsured(false);
+  };
+
+  const handleClickEdit = (insured: any) => {
+    setInsuredForm({
+      rut: { value: insured.rut, isValid: true },
+      name: { value: insured.name, isValid: true },
+      paternalLastName: { value: insured.paternalLastName, isValid: true },
+      maternalLastName: { value: insured.maternalLastName, isValid: true },
+      address: { value: insured.address, isValid: true },
+      district: { value: insured.district, isValid: true },
+      email: { value: insured.email, isValid: true },
+      phone: { value: insured.phone, isValid: true },
+    });
+    setShowModalInsured(true);
+  };
+
+  const handleClickDelete = (insured: any) => {
+    // dispatch(
+    //   setSession({
+    //     ...session,
+    //     insured: [
+    //       ...session.insured.filter((item) => item.rut !== insured.rut),
+    //     ],
+    //   })
+    // );
+  };
 
   return (
-    <Component width={isDesktop ? "560px" : "100%"}>
-      <Row>
-        <Cell>
-          <InputText
-            label="Rut"
-            width={isDesktop ? "140px" : "100%"}
-            maxLength={9}
-            value={insuredForm.rut.value}
-            onChange={() => {}}
-            disabled={true}
+    <Fragment>
+      {session.insured.length > 0 ? (
+        isDesktop ? (
+          <Table width="1034px">
+            <TableHeader>
+              <TableCell width="140px">Rut</TableCell>
+              <TableCell width="364px">Nombre completo</TableCell>
+              <TableCell width="300px">Correo Electrónico</TableCell>
+              <TableCell width="218px">Teléfono</TableCell>
+            </TableHeader>
+            <TableDetail>
+              {session.insured.map((insured: any, idx: number) => (
+                <TableRow key={idx}>
+                  <TableCell width="140px" align="flex-end">
+                    {insured.rut}
+                  </TableCell>
+                  <TableCell width="364px">
+                    {insured.name} {insured.paternalLastName}{" "}
+                    {insured.maternalLastName}
+                  </TableCell>
+                  <TableCell width="300px" align="center">
+                    {insured.email}
+                  </TableCell>
+                  <TableCell width="210px">
+                    {insured.phone}
+                    <TableIcons>
+                      <Icon
+                        iconName="edit"
+                        onClick={() => handleClickEdit(insured)}
+                        className={styles.tableIcon}
+                      />
+                      <Icon
+                        iconName="delete"
+                        onClick={() => handleClickDelete(insured)}
+                        className={styles.tableIcon}
+                      />
+                    </TableIcons>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableDetail>
+          </Table>
+        ) : (
+          <Table width="90%" height={`calc(100vh - 350px)`}>
+            <TableHeader>
+              <TableCell width="100%">Asegurado</TableCell>
+            </TableHeader>
+            <TableDetail>
+              {session.insured.map((insured: any, idx: number) => (
+                <TableRow key={idx}>
+                  <TableCell width="100%" align="flex-start">
+                    <div style={{ width: "100%" }}>
+                      {insured.rut}
+                      <br />
+                      {`${insured.name} ${insured.paternalLastName} ${insured.maternalLastName}`}
+                      <br />
+                      {insured.email}
+                      <br />
+                      {insured.phone}
+                    </div>
+                    <TableIcons>
+                      <Icon
+                        iconName="edit"
+                        onClick={() => handleClickEdit(insured)}
+                        className={styles.tableIcon}
+                      />
+                      <Icon
+                        iconName="delete"
+                        onClick={() => handleClickDelete(insured)}
+                        className={styles.tableIcon}
+                      />
+                    </TableIcons>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableDetail>
+          </Table>
+        )
+      ) : (
+        <div className={styles.messageContent}>
+          <div className={styles.messageWindow}>
+            <div className={styles.text1}>
+              Presione el botón (+) para ingresar asegurados
+            </div>
+            <div className={styles.text2}>
+              (si lo prefiere, puede presionar el botón <b>Omitir</b> para
+              realizarlo en otra ocasión)
+            </div>
+          </div>
+        </div>
+      )}
+      <ButtonIcon
+        iconName="add"
+        onClick={handleClickAdd}
+        disabled={!isEnabled}
+      />
+      <Modal showModal={showModalInsured}>
+        <Window title="Asegurado" setClosed={handleCloseInsured}>
+          <InsuredDetail
+            insuredForm={insuredForm}
+            setInsuredForm={setInsuredForm}
+            register={registerInsured}
           />
-        </Cell>
-      </Row>
-      <Row>
-        <Cell>
-          <InputText
-            label="Nombres"
-            width="100%"
-            maxLength={50}
-            value={insuredForm.name.value}
-            onChange={handleChangeName}
-          />
-        </Cell>
-      </Row>
-      <Row>
-        <Cell>
-          <InputText
-            label="Apellido Paterno"
-            width="100%"
-            maxLength={50}
-            value={insuredForm.paternalLastName.value}
-            onChange={handleChangePaternalLastName}
-          />
-        </Cell>
-        <Cell>
-          <InputText
-            label="Apellido Materno"
-            width="100%"
-            maxLength={50}
-            value={insuredForm.maternalLastName.value}
-            onChange={handleChangeMaternalLastName}
-          />
-        </Cell>
-      </Row>
-      <Row>
-        <Cell>
-          <InputText
-            label="Dirección"
-            width="100%"
-            maxLength={250}
-            value={insuredForm.address.value}
-            onChange={handleChangeAddress}
-          />
-        </Cell>
-      </Row>
-      <Row>
-        <Cell>
-          <InputText
-            label="Comuna"
-            width="100%"
-            maxLength={250}
-            value={insuredForm.district.value}
-            onChange={handleChangeDistrict}
-          />
-        </Cell>
-      </Row>
-      <Row>
-        <Cell>
-          <InputText
-            label="Correo"
-            width="100%"
-            maxLength={250}
-            value={insuredForm.email.value}
-            onChange={() => {}}
-            disabled={true}
-          />
-        </Cell>
-        <Cell>
-          <InputText
-            label="Teléfono"
-            width="100%"
-            maxLength={9}
-            value={insuredForm.phone.value}
-            onChange={handleChangePhone}
-            isValid={insuredForm.phone.isValid}
-          />
-        </Cell>
-      </Row>
-    </Component>
+        </Window>
+      </Modal>
+    </Fragment>
   );
 };
 

@@ -4,8 +4,7 @@ const Table = ({ height, width, children }: any) => {
   return (
     <div
       className={styles.table}
-      style={{ height: height ? height : "calc(100vh - 253px)", width }}
-    >
+      style={{ height: height ? height : "calc(100vh - 230px)", width }}>
       {children}
     </div>
   );

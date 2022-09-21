@@ -11,13 +11,9 @@ import { rutValidate } from "../../../utils/validations";
 
 import { useAppSelector } from "../../../redux/hooks";
 
-import styles from "./Beneficiary.module.scss";
+import styles from "./Insured.module.scss";
 
-const BeneficiaryDetail = ({
-  beneficiaryForm,
-  setBeneficiaryForm,
-  register,
-}: any) => {
+const InsuredDetail = ({ insuredForm, setInsuredForm, register }: any) => {
   const { isDesktop } = useAppSelector((state) => state.uiSlice);
 
   const [isEnabled, setIsEnabled] = useState(false);
@@ -33,8 +29,8 @@ const BeneficiaryDetail = ({
 
     event.target.value = formatRut(event.target.value);
 
-    setBeneficiaryForm({
-      ...beneficiaryForm,
+    setInsuredForm({
+      ...insuredForm,
       rut: {
         value: event.target.value,
         isValid,
@@ -47,8 +43,8 @@ const BeneficiaryDetail = ({
   };
 
   const handleChangeRut = (event: any) => {
-    setBeneficiaryForm({
-      ...beneficiaryForm,
+    setInsuredForm({
+      ...insuredForm,
       rut: {
         value: event.target.value,
         isValid: isValidRut(event.target.value),
@@ -57,8 +53,8 @@ const BeneficiaryDetail = ({
   };
 
   const handleChangeName = (event: any) => {
-    setBeneficiaryForm({
-      ...beneficiaryForm,
+    setInsuredForm({
+      ...insuredForm,
       name: {
         value: event.target.value,
         isValid: true,
@@ -67,8 +63,8 @@ const BeneficiaryDetail = ({
   };
 
   const handleChangePaternalLastName = (event: any) => {
-    setBeneficiaryForm({
-      ...beneficiaryForm,
+    setInsuredForm({
+      ...insuredForm,
       paternalLastName: {
         value: event.target.value,
         isValid: true,
@@ -76,8 +72,8 @@ const BeneficiaryDetail = ({
     });
   };
   const handleChangeMaternalLastName = (event: any) => {
-    setBeneficiaryForm({
-      ...beneficiaryForm,
+    setInsuredForm({
+      ...insuredForm,
       maternalLastName: {
         value: event.target.value,
         isValid: true,
@@ -85,9 +81,29 @@ const BeneficiaryDetail = ({
     });
   };
 
+  const handleChangeAddress = (event: any) => {
+    setInsuredForm({
+      ...insuredForm,
+      address: {
+        value: event.target.value,
+        isValid: event.target.value !== "",
+      },
+    });
+  };
+
+  const handleChangeDistrict = (event: any) => {
+    setInsuredForm({
+      ...insuredForm,
+      district: {
+        value: event.target.value,
+        isValid: event.target.value !== "",
+      },
+    });
+  };
+
   const handleChangeEmail = (event: any) => {
-    setBeneficiaryForm({
-      ...beneficiaryForm,
+    setInsuredForm({
+      ...insuredForm,
       email: {
         value: event.target.value,
         isValid:
@@ -98,8 +114,8 @@ const BeneficiaryDetail = ({
 
   const handleChangePhone = (event: any) => {
     if (numberRegEx.test(event.target.value) || event.target.value === "") {
-      setBeneficiaryForm({
-        ...beneficiaryForm,
+      setInsuredForm({
+        ...insuredForm,
         phone: {
           value: event.target.value,
           isValid: event.target.value.length === 9,
@@ -113,22 +129,22 @@ const BeneficiaryDetail = ({
   useEffect(() => {
     let enableButton = true;
     if (
-      !beneficiaryForm.rut.isValid ||
-      beneficiaryForm.rut.value === "" ||
-      !beneficiaryForm.name.isValid ||
-      beneficiaryForm.name.value === "" ||
-      !beneficiaryForm.paternalLastName.isValid ||
-      beneficiaryForm.paternalLastName.value === "" ||
-      !beneficiaryForm.maternalLastName.isValid ||
-      beneficiaryForm.maternalLastName.value === "" ||
-      !beneficiaryForm.email.isValid ||
-      beneficiaryForm.email.value === "" ||
-      !beneficiaryForm.phone.isValid ||
-      beneficiaryForm.phone.value === ""
+      !insuredForm.rut.isValid ||
+      insuredForm.rut.value === "" ||
+      !insuredForm.name.isValid ||
+      insuredForm.name.value === "" ||
+      !insuredForm.paternalLastName.isValid ||
+      insuredForm.paternalLastName.value === "" ||
+      !insuredForm.maternalLastName.isValid ||
+      insuredForm.maternalLastName.value === "" ||
+      !insuredForm.email.isValid ||
+      insuredForm.email.value === "" ||
+      !insuredForm.phone.isValid ||
+      insuredForm.phone.value === ""
     )
       enableButton = false;
     setIsEnabled(enableButton);
-  }, [beneficiaryForm]);
+  }, [insuredForm]);
 
   return (
     <Component>
@@ -140,9 +156,9 @@ const BeneficiaryDetail = ({
             onFocus={handleFocusRut}
             onBlur={handleBlurRut}
             maxLength={9}
-            value={beneficiaryForm?.rut.value}
+            value={insuredForm?.rut.value}
             onChange={handleChangeRut}
-            isValid={beneficiaryForm?.rut.isValid}
+            isValid={insuredForm?.rut.isValid}
           />
         </Cell>
       </Row>
@@ -152,7 +168,7 @@ const BeneficiaryDetail = ({
             label="Nombres"
             width="100%"
             maxLength={50}
-            value={beneficiaryForm?.name.value}
+            value={insuredForm?.name.value}
             onChange={handleChangeName}
           />
         </Cell>
@@ -163,7 +179,7 @@ const BeneficiaryDetail = ({
             label="Apellido Paterno"
             width="100%"
             maxLength={50}
-            value={beneficiaryForm?.paternalLastName.value}
+            value={insuredForm?.paternalLastName.value}
             onChange={handleChangePaternalLastName}
           />
         </Cell>
@@ -172,8 +188,30 @@ const BeneficiaryDetail = ({
             label="Apellido Materno"
             width="100%"
             maxLength={50}
-            value={beneficiaryForm?.maternalLastName.value}
+            value={insuredForm?.maternalLastName.value}
             onChange={handleChangeMaternalLastName}
+          />
+        </Cell>
+      </Row>
+      <Row>
+        <Cell>
+          <InputText
+            label="Dirección"
+            width="100%"
+            maxLength={250}
+            value={insuredForm.address.value}
+            onChange={handleChangeAddress}
+          />
+        </Cell>
+      </Row>
+      <Row>
+        <Cell>
+          <InputText
+            label="Comuna"
+            width="100%"
+            maxLength={250}
+            value={insuredForm.district.value}
+            onChange={handleChangeDistrict}
           />
         </Cell>
       </Row>
@@ -184,9 +222,9 @@ const BeneficiaryDetail = ({
             type="email"
             width="100%"
             maxLength={250}
-            value={beneficiaryForm?.email.value}
+            value={insuredForm?.email.value}
             onChange={handleChangeEmail}
-            isValid={beneficiaryForm?.email.isValid}
+            isValid={insuredForm?.email.isValid}
           />
         </Cell>
         <Cell>
@@ -195,9 +233,9 @@ const BeneficiaryDetail = ({
             type="tel"
             width="100%"
             maxLength={9}
-            value={beneficiaryForm?.phone.value}
+            value={insuredForm?.phone.value}
             onChange={handleChangePhone}
-            isValid={beneficiaryForm?.phone.isValid}
+            isValid={insuredForm?.phone.isValid}
           />
         </Cell>
       </Row>
@@ -216,4 +254,4 @@ const BeneficiaryDetail = ({
   );
 };
 
-export default BeneficiaryDetail;
+export default InsuredDetail;

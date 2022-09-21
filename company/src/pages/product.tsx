@@ -1,4 +1,4 @@
-import { useState, Fragment } from "react";
+import { useState, Fragment, useEffect, useLayoutEffect } from "react";
 import { useRouter } from "next/router";
 
 import Wizard, { Title, Content, Buttons } from "../components/layout/Wizard";
@@ -10,12 +10,15 @@ import Navigate, { Back } from "../components/ui/Navigate";
 // 2464277
 import { ProductList, ProductDetail } from "../components/functional/Product";
 
-import { useAppSelector } from "../redux/hooks";
+import { getProductsAndInsuredById } from "../redux/slices/companySlice";
+import { useAppSelector, useAppDispatch } from "../redux/hooks";
 
 const ProductPage = () => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const { product } = useAppSelector((state) => state.productSlice);
+  const { userCompany } = useAppSelector((state) => state.userCompanySlice);
 
   const [showTooltip, setShowTooltip] = useState(true);
 
@@ -27,13 +30,19 @@ const ProductPage = () => {
     router.push("/");
   };
 
-  const handleBneficiariesClick = () => {
-    router.push("/beneficiary");
+  const handleInsuredClick = () => {
+    router.push("/insured");
   };
 
   const handleCloseTooltip = () => {
     setShowTooltip(false);
   };
+
+  useEffect(() => {
+    if (userCompany.id) {
+      dispatch(getProductsAndInsuredById(userCompany.id));
+    }
+  }, [dispatch, userCompany.id]);
 
   return (
     <Fragment>
@@ -53,10 +62,10 @@ const ProductPage = () => {
           )}
         </Content>
         <Buttons>
-          {router.isReady && router.query.id && product.beneficiaries > 0 ? (
+          {router.isReady && router.query.id ? (
             <Button
-              onClick={handleBneficiariesClick}
-              text="Beneficiarios"
+              onClick={handleInsuredClick}
+              text="Asegurados"
               width="150px"
             />
           ) : (
@@ -65,14 +74,12 @@ const ProductPage = () => {
         </Buttons>
       </Wizard>
       {router.isReady && router.query.id ? (
-        product.beneficiaries > 0 && (
-          <Tooltip isShow={showTooltip} onClose={handleCloseTooltip}>
-            <div>
-              Adicionalmente haciendo click sobre el botón <b>Beneficiarios</b>,
-              podrás completar esta información para los productos contratados.
-            </div>
-          </Tooltip>
-        )
+        <Tooltip isShow={showTooltip} onClose={handleCloseTooltip}>
+          <div>
+            Adicionalmente haciendo click sobre el botón <b>Asegurados</b>,
+            podrás revisar el detalle de estos.
+          </div>
+        </Tooltip>
       ) : (
         <Tooltip isShow={showTooltip} onClose={handleCloseTooltip}>
           <div>

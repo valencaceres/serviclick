@@ -76,11 +76,11 @@ const InsuredPage = () => {
           <Navigate>
             <Back onClick={handleClickBack} />
           </Navigate>
-          Mis datos
+          Asegurados
           <div></div>
         </Title>
         <Content>
-          <Insured setIsEnabled={setIsEnabled} />
+          <Insured setShowTooltip={setShowTooltip} />
         </Content>
         <Buttons>
           <Button
@@ -94,12 +94,8 @@ const InsuredPage = () => {
       </Wizard>
       <Tooltip isShow={showTooltip} onClose={handleCloseTooltip}>
         <div>
-          Mediante esta opción podrás modificar tus datos en caso que lo
-          requieras.
-          <br />
-          <br />
-          <b>Nota:</b>&nbsp;No podrás modificar tu rut ni tu correo ya que con
-          ellos podemos identificarte.
+          Mediante esta opción podrás revisar la información de tus asegurados,
+          darlos de baja o agregar uno nuevo.
         </div>
       </Tooltip>
     </Fragment>

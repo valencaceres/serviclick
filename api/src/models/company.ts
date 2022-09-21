@@ -212,8 +212,8 @@ const getProductsAndInsuredByIdModel: any = async (id: string) => {
       id: string;
       rut: string;
       name: string;
-      paternallastname: string;
-      maternallastname: string;
+      paternalLastName: string;
+      maternalLastName: string;
       address: string;
       district: string;
       email: string;
@@ -285,8 +285,8 @@ const getProductsAndInsuredByIdModel: any = async (id: string) => {
         id: insured_id,
         rut: insured_rut,
         name: insured_name,
-        paternallastname: insured_paternallastname,
-        maternallastname: insured_maternallastname,
+        paternalLastName: insured_paternallastname,
+        maternalLastName: insured_maternallastname,
         address: insured_address,
         district: insured_district,
         email: insured_email,

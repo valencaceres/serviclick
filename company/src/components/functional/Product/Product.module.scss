@@ -67,3 +67,14 @@
   justify-content: center;
   gap: 10px;
 }
+
+.values {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+
+  @media screen and (min-width: 1200px) {
+    flex-direction: row;
+  }
+}

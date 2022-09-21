@@ -50,9 +50,8 @@ type UserCompanyT = {
 type StateT = {
   userCompany: UserCompanyT;
   session: {
-    lead_id: string;
     product_id: string;
-    numberBeneficiaries: number;
+    beneficiaries: number;
     insured: InsuredT[];
   };
 };
@@ -71,9 +70,8 @@ const initialState: StateT = {
     leads: [],
   },
   session: {
-    lead_id: "",
     product_id: "",
-    numberBeneficiaries: 0,
+    beneficiaries: 0,
     insured: [],
   },
 };

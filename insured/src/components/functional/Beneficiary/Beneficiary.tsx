@@ -1,8 +1,6 @@
 import { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
 
-import Wizard, { Title, Content, Buttons } from "../../layout/Wizard";
-
 import {
   Table,
   TableHeader,
@@ -11,10 +9,7 @@ import {
   TableCell,
   TableIcons,
 } from "../../ui/Table";
-import Button from "../../ui/Button";
 import ButtonIcon from "../../ui/ButtonIcon";
-import Navigate, { Back } from "../../ui/Navigate";
-import Tooltip from "../../ui/Tooltip";
 import { Modal, Window } from "../../ui/Modal";
 import Icon from "../../ui/Icon";
 
@@ -47,10 +42,6 @@ const Beneficiary = ({ setShowTooltip }: any) => {
 
   const [showModalBeneficiary, setShowModalBeneficiary] = useState(false);
   const [isEnabled, setIsEnabled] = useState(true);
-
-  const skip = () => {
-    router.push(router.asPath.replace("beneficiary", "payment"));
-  };
 
   const registerBeneficiary = () => {
     dispatch(
@@ -125,8 +116,7 @@ const Beneficiary = ({ setShowTooltip }: any) => {
         isDesktop ? (
           <Table
             width="1034px"
-            height={`${session.numberBeneficiaries * 42 + 46}px`}
-          >
+            height={`${session.numberBeneficiaries * 42 + 46}px`}>
             <TableHeader>
               <TableCell width="140px">Rut</TableCell>
               <TableCell width="364px">Nombre completo</TableCell>

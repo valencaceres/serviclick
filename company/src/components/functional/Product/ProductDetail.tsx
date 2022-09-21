@@ -20,6 +20,13 @@ const ProductDetail = ({ id }: any) => {
 
   const { isDesktop } = useAppSelector((state) => state.uiSlice);
   const { product } = useAppSelector((state) => state.productSlice);
+  const { products } = useAppSelector((state) => state.companySlice);
+
+  const frequency = {
+    M: "Mensual",
+    A: "Anual",
+    S: "Semanal",
+  };
 
   useEffect(() => {
     dispatch(resetProduct());
@@ -39,6 +46,45 @@ const ProductDetail = ({ id }: any) => {
         onChange={() => {}}
         disabled={true}
       />
+      <div className={styles.values}>
+        <InputText
+          id="txtProductCompanyPriceUnitary"
+          label="Valor unitario ($)"
+          width="100%"
+          value={product.price["company"]
+            .toLocaleString("en-US")
+            .replace(",", ".")}
+          disabled={true}
+        />
+        <InputText
+          id="txtProductCompanyInsured"
+          label="Cantidad asegurados"
+          width="100%"
+          value={products
+            .filter((item) => item.id === product.id)[0]
+            .insured.length.toString()}
+          disabled={true}
+        />
+        <InputText
+          id="txtProductCompanyPriceTotal"
+          label="Valor Total ($)"
+          width="100%"
+          value={(
+            product.price["company"] *
+            products.filter((item) => item.id === product.id)[0].insured.length
+          )
+            .toLocaleString("en-US")
+            .replace(",", ".")}
+          disabled={true}
+        />
+        <InputText
+          id="txtProductCompanyFrequency"
+          label="Frecuencia"
+          width="100%"
+          value={frequency[product.frequency]}
+          disabled={true}
+        />
+      </div>
       {isDesktop ? (
         <Table width="940px" height="auto">
           <TableHeader>
@@ -81,8 +127,7 @@ const ProductDetail = ({ id }: any) => {
                     style={{
                       width: "calc(100% - 120px)",
                       paddingRight: "10px",
-                    }}
-                  >
+                    }}>
                     <b>{coverageItem.name}</b>
                   </div>
                   <div style={{ width: "120px" }}>
