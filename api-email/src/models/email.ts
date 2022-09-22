@@ -2,7 +2,12 @@ import nodemailer from "nodemailer";
 
 import config from "../utils/config";
 
-const sendModel: any = async (to: string, subject: string, message: string) => {
+const sendModel: any = async (
+  from: string,
+  to: string,
+  subject: string,
+  message: string
+) => {
   try {
     return new Promise((resolve, reject) => {
       const transporter = nodemailer.createTransport({
@@ -14,7 +19,7 @@ const sendModel: any = async (to: string, subject: string, message: string) => {
       });
 
       const mailOptions = {
-        from: config.emailLogin,
+        from: from ? `${from} <${config.emailLogin}>` : config.emailLogin,
         to,
         subject,
         html: message,
