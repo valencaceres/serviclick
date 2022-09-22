@@ -106,8 +106,9 @@ const subscriptionActivated = async (data: any) => {
     const emailResponse: any = await axios.post(
       config.email.URL.send,
       {
+        from: "Bienvenido a ServiClick",
         to: companyResponse.data.email,
-        subject: "Bienvenido a ServiClick",
+        subject: "Tus credenciales de acceso a nuestra plataforma",
         message: `<b>Hola&nbsp;${companyResponse.data.companyName}</b><br/><br/>Bienvenido a ServiClick, a continuación te detallamos los datos de acceso a nuestra plataforma para que puedas completar o modificar la información que requieras:<br/><br/><b>https://empresa.serviclick.cl</b><br/><br/><b>Login:</b>&nbsp;${companyResponse.data.email}<br/><b>Password</b>:&nbsp;${generatedPassword}<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
       },
       {
@@ -170,8 +171,9 @@ const subscriptionActivated = async (data: any) => {
     const emailResponse: any = await axios.post(
       config.email.URL.send,
       {
+        from: "Bienvenido a ServiClick",
         to: insured.email,
-        subject: "Bienvenido a ServiClick",
+        subject: "Tus credenciales de acceso a nuestra plataforma",
         message: `<b>Hola&nbsp;${insured.name}</b><br/><br/>Bienvenido a ServiClick, a continuación te detallamos los datos de acceso a nuestra plataforma para que puedas completar o modificar la información que requieras:<br/><br/><b>https://asegurado.serviclick.cl</b><br/><br/><b>Login:</b>&nbsp;${insured.email}<br/><b>Password</b>:&nbsp;${generatedPassword}<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
       },
       {

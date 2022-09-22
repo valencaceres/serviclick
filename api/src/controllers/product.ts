@@ -324,6 +324,7 @@ const createProductPlans = async (req: any, res: any) => {
       config.reveniu.URL.plan,
       {
         ...productData,
+        is_custom_amount: true,
         price: companyprice,
       },
       {
@@ -361,6 +362,10 @@ const createProductPlans = async (req: any, res: any) => {
     createLogger.info({
       controller: "products/createProductPlans",
       message: "OK",
+      // data: {
+      //   company: productPlanCompanyResponse,
+      //   customer: productPlanCustomerResponse,
+      // },
     });
 
     res
