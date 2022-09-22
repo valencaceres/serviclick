@@ -2,7 +2,13 @@ import { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
 
 import Wizard, { Title, Content, Buttons } from "../../../layout/Wizard";
-import { Component, Row, Cell, CellCenter } from "../../../layout/Component";
+import {
+  Component,
+  Row,
+  Cell,
+  CellCenter,
+  CellSeparator,
+} from "../../../layout/Component";
 
 import Button from "../../../ui/Button";
 import InputText from "../../../ui/InputText";
@@ -66,6 +72,17 @@ const Payment = ({ register }: any) => {
     phone: { value: lead.company.phone, isValid: true },
   };
 
+  const initialDataSectionSelected = {
+    contractor: false,
+    product: false,
+    insured: false,
+    beneficiaries: false,
+    price: false,
+  };
+
+  const [sectionSelected, setSectionSelected] = useState(
+    initialDataSectionSelected
+  );
   const [startValidity, setStartValidity] = useState(
     calculateValidity(product.coverages)
   );
@@ -168,6 +185,10 @@ const Payment = ({ register }: any) => {
   };
 
   const handleClickCheck = (e: any, check: string) => {
+    setSectionSelected({
+      ...sectionSelected,
+      [e.target.name]: e.target.checked,
+    });
     setChecks({ ...checks, [check]: e.target.checked });
   };
 
@@ -177,28 +198,24 @@ const Payment = ({ register }: any) => {
 
   useEffect(() => {
     if (stage.type === "customer") {
-      if (
+      setCompleteChecks(
         checks.customer &&
-        ((product.beneficiaries > 0 && checks.beneficiaries) ||
-          product.beneficiaries === 0) &&
-        checks.product &&
-        checks.values &&
-        checks.termsAndConditions
-      ) {
-        setCompleteChecks(true);
-      }
+          ((product.beneficiaries > 0 && checks.beneficiaries) ||
+            product.beneficiaries === 0) &&
+          checks.product &&
+          checks.values &&
+          checks.termsAndConditions
+      );
     } else {
-      if (
+      setCompleteChecks(
         checks.company &&
-        checks.insured &&
-        checks.product &&
-        checks.values &&
-        checks.termsAndConditions
-      ) {
-        setCompleteChecks(true);
-      }
+          checks.insured &&
+          checks.product &&
+          checks.values &&
+          checks.termsAndConditions
+      );
     }
-  }, [checks]);
+  }, [checks, product.beneficiaries, stage.type]);
 
   useEffect(() => {
     setIsEnabled(
@@ -233,13 +250,20 @@ const Payment = ({ register }: any) => {
           <Component width={isDesktop ? "1200px" : "100%"}>
             <Row>
               <Cell>
-                <div className={styles.section + " " + styles.contractor}>
+                <div
+                  className={
+                    styles.section +
+                    " " +
+                    (sectionSelected.contractor ? styles.selected + " " : "") +
+                    styles.contractor
+                  }>
                   <div className={styles.sectionTitle}>
                     <input
+                      name="contractor"
                       type="checkbox"
                       onChange={(e) => handleClickCheck(e, stage.type)}
                     />
-                    &nbsp;Datos del contratante
+                    &nbsp;&nbsp;Datos del contratante
                   </div>
                   <div className={styles.sectionContent}>
                     {stage.type === "customer" ? (
@@ -261,13 +285,20 @@ const Payment = ({ register }: any) => {
             </Row>
             <Row>
               <Cell>
-                <div className={styles.section + " " + styles.product}>
+                <div
+                  className={
+                    styles.section +
+                    " " +
+                    (sectionSelected.product ? styles.selected + " " : "") +
+                    styles.product
+                  }>
                   <div className={styles.sectionTitle}>
                     <input
+                      name="product"
                       type="checkbox"
                       onChange={(e) => handleClickCheck(e, "product")}
                     />
-                    &nbsp;Producto a contratar
+                    &nbsp;&nbsp;Producto a contratar
                   </div>
                   <div className={styles.sectionContent}>
                     <InputText
@@ -286,8 +317,7 @@ const Payment = ({ register }: any) => {
                           <TableCell width="250px">Límite</TableCell>
                           <TableCell
                             width="70px"
-                            alt="Inicio de vigencia en díasx"
-                          >
+                            alt="Inicio de vigencia en díasx">
                             Inicio
                           </TableCell>
                           <TableCell width="176px">Eventos</TableCell>
@@ -330,8 +360,7 @@ const Payment = ({ register }: any) => {
                                     style={{
                                       width: "calc(100% - 120px)",
                                       paddingRight: "10px",
-                                    }}
-                                  >
+                                    }}>
                                     <b>{coverageItem.name}</b>
                                   </div>
                                   <div style={{ width: "120px" }}>
@@ -357,13 +386,20 @@ const Payment = ({ register }: any) => {
             {stage.type === "company" && (
               <Row>
                 <Cell>
-                  <div className={styles.section + " " + styles.product}>
+                  <div
+                    className={
+                      styles.section +
+                      " " +
+                      (sectionSelected.insured ? styles.selected + " " : "") +
+                      styles.insured
+                    }>
                     <div className={styles.sectionTitle}>
                       <input
+                        name="insured"
                         type="checkbox"
                         onChange={(e) => handleClickCheck(e, "insured")}
                       />
-                      &nbsp;Asegurados ({lead.insured.length})
+                      &nbsp;&nbsp;Asegurados ({lead.insured.length})
                     </div>
                     <div className={styles.sectionContent}>
                       {lead.insured && lead.insured.length > 0 ? (
@@ -442,13 +478,22 @@ const Payment = ({ register }: any) => {
             {product.beneficiaries > 0 && stage.type === "customer" && (
               <Row>
                 <Cell>
-                  <div className={styles.section + " " + styles.product}>
+                  <div
+                    className={
+                      styles.section +
+                      " " +
+                      (sectionSelected.beneficiaries
+                        ? styles.selected + " "
+                        : "") +
+                      styles.beneficiaries
+                    }>
                     <div className={styles.sectionTitle}>
                       <input
+                        name="beneficiaries"
                         type="checkbox"
                         onChange={(e) => handleClickCheck(e, "beneficiaries")}
                       />
-                      &nbsp;Beneficiarios{" "}
+                      &nbsp;&nbsp;Beneficiarios{" "}
                       {lead.insured &&
                       lead.insured.length > 0 &&
                       lead.insured[0].beneficiaries.length > 0
@@ -462,8 +507,7 @@ const Payment = ({ register }: any) => {
                         isDesktop ? (
                           <Table
                             width="940px"
-                            height={`${product.beneficiaries * 42 + 46}px`}
-                          >
+                            height={`${product.beneficiaries * 42 + 46}px`}>
                             <TableHeader>
                               <TableCell width="130px">Rut</TableCell>
                               <TableCell width="374px">
@@ -543,13 +587,20 @@ const Payment = ({ register }: any) => {
             )}
             <Row>
               <Cell>
-                <div className={styles.section + " " + styles.price}>
+                <div
+                  className={
+                    styles.section +
+                    " " +
+                    (sectionSelected.price ? styles.selected + " " : "") +
+                    styles.price
+                  }>
                   <div className={styles.sectionTitle}>
                     <input
+                      name="price"
                       type="checkbox"
                       onChange={(e) => handleClickCheck(e, "values")}
                     />
-                    &nbsp;Valores y plazos
+                    &nbsp;&nbsp;Valores y plazos
                   </div>
                   <div className={styles.sectionContent}>
                     <Component width={isDesktop ? "500px" : "auto"}>
@@ -608,20 +659,22 @@ const Payment = ({ register }: any) => {
                       <Row>
                         <Cell align="center">
                           <CellCenter>
-                            <div>
+                            <div style={{ marginTop: "15px" }}>
                               <input
+                                name="termsAndConditions"
                                 type="checkbox"
                                 onChange={(e) =>
                                   handleClickCheck(e, "termsAndConditions")
                                 }
                               />
                             </div>
-                            <div>
+                            <div
+                              className={styles.termsAndConditionsLink}
+                              style={{ marginTop: "15px" }}>
                               Acepta nuestros{" "}
                               <a
                                 href="#"
-                                onClick={handleClickTermsAndConditions}
-                              >
+                                onClick={handleClickTermsAndConditions}>
                                 Términos y Condiciones
                               </a>
                             </div>
@@ -659,8 +712,7 @@ const Payment = ({ register }: any) => {
       <Modal showModal={showModalTermsAndConditions}>
         <Window
           title="Términos y Condiciones"
-          setClosed={handleCloseTermsAndConditions}
-        >
+          setClosed={handleCloseTermsAndConditions}>
           <div className={styles.termsAndConditions}>
             {termsAndCondicions.data}
           </div>

@@ -15,8 +15,7 @@ const Button = ({
       className={styles.button}
       onClick={onClick}
       disabled={!enabled || loading}
-      style={{ width }}
-    >
+      style={{ width }}>
       <Fragment>
         {iconName && <span className="material-icons md-36">{iconName}</span>}
         {loading ? (
@@ -24,8 +23,7 @@ const Button = ({
             <div className={styles.spin}>
               <span
                 className={`material-symbols-outlined`}
-                style={{ color: "white" }}
-              >
+                style={{ color: "white" }}>
                 refresh
               </span>
             </div>

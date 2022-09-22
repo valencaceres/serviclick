@@ -139,11 +139,7 @@ const createController = async (req: any, res: any) => {
       company_id = contractor.id;
     }
 
-    const leadResponse = await createLeadModel(
-      new Date().toISOString(),
-      customer_id,
-      company_id
-    );
+    const leadResponse = await createLeadModel(customer_id, company_id);
 
     if (!leadResponse.success) {
       createLogger.error({

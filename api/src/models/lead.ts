@@ -1,11 +1,10 @@
+import { format } from "date-fns";
+
 import pool from "../util/database";
 
-const createModel: any = async (
-  createDate: string,
-  customer_id: string,
-  company_id: string
-) => {
+const createModel: any = async (customer_id: string, company_id: string) => {
   try {
+    const createDate = format(new Date(), "yyyy-MM-dd HH:mm:ss");
     const result = await pool.query(
       `
         INSERT  INTO app.lead(
