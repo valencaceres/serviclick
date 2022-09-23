@@ -1,3 +1,3 @@
-import { Screen, Header, Body, PageHeader } from "./Generic";
+import { LayoutScreen, LayoutHeader, LayoutBody, PageHeader } from "./Generic";
 
-export { Screen, Header, Body, PageHeader };
+export { LayoutScreen, LayoutHeader, LayoutBody, PageHeader };

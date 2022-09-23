@@ -1,31 +1,30 @@
-import { Fragment } from "react";
-import Image from "next/image";
+import {
+  PageHeader,
+  LayoutScreen,
+  LayoutHeader,
+  LayoutBody,
+} from "../../layout/Generic";
 
-import { PageHeader, Screen, Header } from "../../layout/Generic";
+import Header from "../Header";
 
-// import Main from "../Main";
-// import Login from "../Login";
+import Main from "../Main";
+import Login from "../Login";
 
-// import { useAppSelector } from "../../../redux/hooks";
-
-import styles from "../Main/Main.module.scss";
+import useUI from "../../../hooks/useUI";
 
 const Switch = ({ children }: any) => {
-  // const { userInsured } = useAppSelector((state) => state.userInsuredSlice);
+  const { user } = useUI();
 
   return (
-    <Fragment>
+    <LayoutScreen>
       <PageHeader />
-      <Screen>
-        <Header>
-          <div className={styles.left}>
-            <Image alt="Next.js logo" src="/logo.jpg" width={243} height={51} />
-          </div>
-          <div className={styles.right}></div>
-        </Header>
-        {/* {userInsured.name ? <Main>{children}</Main> : <Login />} */}
-      </Screen>
-    </Fragment>
+      <LayoutHeader>
+        <Header />
+      </LayoutHeader>
+      <LayoutBody>
+        {user.rut !== "" ? <Main>{children}</Main> : <Login />}
+      </LayoutBody>
+    </LayoutScreen>
   );
 };
 

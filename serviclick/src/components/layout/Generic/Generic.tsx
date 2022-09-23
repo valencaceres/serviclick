@@ -18,16 +18,16 @@ const PageHeader = () => {
   );
 };
 
-const Screen = ({ children }: any) => {
+const LayoutScreen = ({ children }: any) => {
   return <div className={styles.screen}>{children}</div>;
 };
 
-const Header = ({ children }: any) => {
+const LayoutHeader = ({ children }: any) => {
   return <div className={styles.header}>{children}</div>;
 };
 
-const Body = ({ children }: any) => {
+const LayoutBody = ({ children }: any) => {
   return <div className={styles.body}>{children}</div>;
 };
 
-export { Screen, Header, Body, PageHeader };
+export { LayoutScreen, LayoutHeader, LayoutBody, PageHeader };

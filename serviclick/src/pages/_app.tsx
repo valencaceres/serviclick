@@ -1,14 +1,16 @@
-import { Fragment } from "react";
 import Head from "next/head";
+import { Provider } from "react-redux";
+
+import store from "../redux/store";
 
 import Switch from "../components/functional/Switch";
 
-import "../styles/globals.css";
+import "../styles/app.scss";
 import type { AppProps } from "next/app";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <Fragment>
+    <Provider store={store}>
       <Head>
         <title>
           Serviclick.cl - Todas las soluciones para tu hogar, en la palma de tu
@@ -23,7 +25,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Switch>
         <Component {...pageProps} />
       </Switch>
-    </Fragment>
+    </Provider>
   );
 }
 
