@@ -33,12 +33,12 @@ export const userSlice = createSlice({
     setTitle: (state: any, action: PayloadAction<any>) => {
       state.title = action.payload;
     },
-    resetUser: (state: any) => {
-      state.user = initialState.user;
+    resetAll: (state: any) => {
+      state = initialState;
     },
   },
 });
 
-export const { setUser, setShowMenu, setTitle, resetUser } = userSlice.actions;
+export const { setUser, setShowMenu, setTitle, resetAll } = userSlice.actions;
 
 export default userSlice.reducer;

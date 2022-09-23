@@ -3,7 +3,24 @@ import axios from "axios";
 
 import { config } from "../../utils/config";
 
-const initialState = {
+export type ValueT = {
+  id: string;
+  name: string;
+};
+
+export type FamilyT = {
+  id: string;
+  name: string;
+  values: ValueT[];
+  isActive: boolean;
+};
+
+type StateT = {
+  list: FamilyT[];
+  family: FamilyT;
+};
+
+const initialState: StateT = {
   list: [],
   family: { id: "", name: "", values: [], isActive: false },
 };
@@ -35,32 +52,6 @@ export const { setFamilyList, setFamily, addFamilyValue, resetFamily } =
   familySlice.actions;
 
 export default familySlice.reducer;
-
-export const getFamily = (id: string) => (dispatch: any) => {
-  axios
-    .get(`${config.server}/api/family/get/${id}`, {
-      headers: {
-        id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-      },
-    })
-    .then((response) => {
-      dispatch(setFamily(response.data));
-    })
-    .catch((error) => console.log(error));
-};
-
-export const listFamilies = () => (dispatch: any) => {
-  axios
-    .get(`${config.server}/api/family/list`, {
-      headers: {
-        id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-      },
-    })
-    .then((response) => {
-      dispatch(setFamilyList(response.data));
-    })
-    .catch((error) => console.log(error));
-};
 
 export const createFamily = (name: string, values: any) => (dispatch: any) => {
   axios
@@ -109,6 +100,32 @@ export const deleteFamily = (id: string) => (dispatch: any) => {
     .then(() => {
       dispatch(listFamilies());
       dispatch(resetFamily());
+    })
+    .catch((error) => console.log(error));
+};
+
+export const getFamily = (id: string) => (dispatch: any) => {
+  axios
+    .get(`${config.server}/api/family/get/${id}`, {
+      headers: {
+        id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
+      },
+    })
+    .then((response) => {
+      dispatch(setFamily(response.data));
+    })
+    .catch((error) => console.log(error));
+};
+
+export const listFamilies = () => (dispatch: any) => {
+  axios
+    .get(`${config.server}/api/family/list`, {
+      headers: {
+        id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
+      },
+    })
+    .then((response) => {
+      dispatch(setFamilyList(response.data));
     })
     .catch((error) => console.log(error));
 };

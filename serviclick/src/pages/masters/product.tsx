@@ -7,19 +7,17 @@ import {
 } from "../../components/functional/_masters/Product";
 
 import useUI from "../../hooks/useUI";
-
-import { listProducts } from "../../redux/slices/productSlice";
-import { useAppDispatch } from "../../redux/hooks";
+import useProduct from "../../hooks/useProduct";
 
 const Product = () => {
   const router = useRouter();
-  const dispatch = useAppDispatch();
 
   const { setTitleUI } = useUI();
+  const { listAll } = useProduct();
 
   useEffect(() => {
     setTitleUI("Producto");
-    dispatch(listProducts());
+    listAll();
   }, []);
 
   return router.isReady && router.query.id ? (

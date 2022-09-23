@@ -5,7 +5,7 @@ import { Content, ContentCell } from "../../layout/Content";
 import InputText from "../../ui/InputText";
 import Button from "../../ui/Button";
 
-import useUser from "../../../hooks/useUser";
+import { useUI, useUser } from "../../../hooks";
 
 const Login = () => {
   const initialLoginData = {
@@ -13,6 +13,7 @@ const Login = () => {
     password: { value: "", isValid: false },
   };
 
+  const { setTitleUI } = useUI();
   const { validate } = useUser();
 
   const [enabledButton, setEnabledButton] = useState(false);
@@ -35,6 +36,10 @@ const Login = () => {
   const handleClickEnter = () => {
     validate(loginForm.email.value, loginForm.password.value);
   };
+
+  useEffect(() => {
+    setTitleUI("Login");
+  }, []);
 
   useEffect(() => {
     setEnabledButton(loginForm.email.isValid && loginForm.password.isValid);

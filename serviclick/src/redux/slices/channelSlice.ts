@@ -3,9 +3,21 @@ import axios from "axios";
 
 import { config } from "../../utils/config";
 
-const initialState = {
+export type ChannelT = {
+  id: string;
+  name: string;
+  isBroker: boolean;
+  isActive: boolean;
+};
+
+type StateT = {
+  list: ChannelT[];
+  channel: ChannelT;
+};
+
+const initialState: StateT = {
   list: [],
-  channel: { id: "", name: "", isBroker: "", isActive: false },
+  channel: { id: "", name: "", isBroker: false, isActive: false },
 };
 
 export const channelSlice = createSlice({
@@ -28,19 +40,6 @@ export const { setChannelList, setChannel, resetChannel } =
   channelSlice.actions;
 
 export default channelSlice.reducer;
-
-export const listChannels = () => (dispatch: any) => {
-  axios
-    .get(`${config.server}/api/channel/list`, {
-      headers: {
-        id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-      },
-    })
-    .then((response) => {
-      dispatch(setChannelList(response.data));
-    })
-    .catch((error) => console.log(error));
-};
 
 export const createChannel =
   (name: string, isBroker: boolean) => (dispatch: any) => {
@@ -90,6 +89,19 @@ export const deleteChannel = (id: string) => (dispatch: any) => {
     .then(() => {
       dispatch(listChannels());
       dispatch(resetChannel());
+    })
+    .catch((error) => console.log(error));
+};
+
+export const listChannels = () => (dispatch: any) => {
+  axios
+    .get(`${config.server}/api/channel/list`, {
+      headers: {
+        id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
+      },
+    })
+    .then((response) => {
+      dispatch(setChannelList(response.data));
     })
     .catch((error) => console.log(error));
 };

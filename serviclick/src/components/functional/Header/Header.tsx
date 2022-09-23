@@ -7,7 +7,7 @@ import useUI from "../../../hooks/useUI";
 import styles from "./Header.module.scss";
 
 const Header = () => {
-  const { setShowMenuUI, showMenu, title } = useUI();
+  const { setShowMenuUI, showMenu, title, user } = useUI();
 
   const handleToggleMenu = () => {
     setShowMenuUI(!showMenu);
@@ -16,7 +16,9 @@ const Header = () => {
   return (
     <div className={styles.header}>
       <div className={styles.left}>
-        <ButtonIcon iconName="menu" onClick={handleToggleMenu} />
+        {user.rut !== "" && (
+          <ButtonIcon iconName="menu" onClick={handleToggleMenu} />
+        )}
         <Image alt="ServiClick" src="/logo.jpg" width={243} height={51} />
       </div>
       <div className={styles.right}>{title}</div>

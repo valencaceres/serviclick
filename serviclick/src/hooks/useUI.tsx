@@ -1,4 +1,9 @@
-import { setShowMenu, setUser, setTitle } from "../redux/slices/uiSlice";
+import {
+  setUser,
+  setShowMenu,
+  setTitle,
+  resetAll,
+} from "../redux/slices/uiSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 
 const useUI = () => {
@@ -18,7 +23,19 @@ const useUI = () => {
     dispatch(setTitle(value));
   };
 
-  return { setShowMenuUI, showMenu, setUserUI, user, setTitleUI, title };
+  const resetUI = (value: any) => {
+    dispatch(resetAll());
+  };
+
+  return {
+    setUserUI,
+    user,
+    setShowMenuUI,
+    showMenu,
+    setTitleUI,
+    title,
+    resetUI,
+  };
 };
 
 export default useUI;

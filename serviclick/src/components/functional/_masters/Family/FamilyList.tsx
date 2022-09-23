@@ -14,10 +14,10 @@ import {
 } from "../../../ui/Table";
 import Icon from "../../../ui/Icon";
 
-import useProduct from "../../../../hooks/useProduct";
+import useFamily from "../../../../hooks/useFamily";
 
-const ProductList = ({ addProduct, editProduct, deleteProduct }: any) => {
-  const { list } = useProduct();
+const FamilyList = ({ addFamily, editFamily, deleteFamily }: any) => {
+  const { list } = useFamily();
 
   const [search, setSearch] = useState("");
 
@@ -26,43 +26,32 @@ const ProductList = ({ addProduct, editProduct, deleteProduct }: any) => {
       <ContentRow gap="10px" align="center">
         <InputText
           label="Texto a buscar"
-          width="700px"
+          width="375px"
           value={search}
           onChange={setSearch}
         />
         <ButtonIcon iconName="search" />
       </ContentRow>
-      <Table width="1000px">
+      <Table width="428px">
         <TableHeader>
           <TableCell width="70px" align="center">
             #
           </TableCell>
-          <TableCell width="260px">Familia</TableCell>
           <TableCell width="350px">Nombre</TableCell>
-          <TableCell width="120px">Público</TableCell>
-          <TableCell width="186px">Empresa</TableCell>
         </TableHeader>
         <TableDetail>
-          {list.map((product: any, idx: number) => (
+          {list.map((family: any, idx: number) => (
             <TableRow key={idx} className={"deleted"}>
               <TableCell width="70px" align="center">
                 {idx + 1}
               </TableCell>
-              <TableCell width="260px">{product.family_name}</TableCell>
-              <TableCell width="350px">{product.name}</TableCell>
-              <TableCell width="120px" align="flex-end">
-                {product.customerprice}
-              </TableCell>
-              <TableCell width="180px" align="flex-end">
-                {product.companyprice}
+              <TableCell width="350px">
+                {family.name}
                 <TableIcons>
-                  <Icon
-                    iconName="edit"
-                    onClick={() => editProduct(product.id)}
-                  />
+                  <Icon iconName="edit" onClick={() => editFamily(family.id)} />
                   <Icon
                     iconName="delete"
-                    onClick={() => deleteProduct(product.id)}
+                    onClick={() => deleteFamily(family.id)}
                   />
                 </TableIcons>
               </TableCell>
@@ -71,9 +60,9 @@ const ProductList = ({ addProduct, editProduct, deleteProduct }: any) => {
         </TableDetail>
       </Table>
       <div>{`${list.length} registros`}</div>
-      <ButtonIcon iconName="add" onClick={addProduct} />
+      <ButtonIcon iconName="add" onClick={addFamily} />
     </ContentCell>
   );
 };
 
-export default ProductList;
+export default FamilyList;
