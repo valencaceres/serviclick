@@ -5,7 +5,7 @@ import store from "../redux/store";
 
 import Switch from "../components/functional/Switch";
 
-import "../styles/app.scss";
+import "../styles/app.css";
 import type { AppProps } from "next/app";
 
 function MyApp({ Component, pageProps }: AppProps) {
