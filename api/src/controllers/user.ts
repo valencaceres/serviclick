@@ -65,8 +65,8 @@ const create = async (req: any, res: any) => {
     return;
   }
 
-  const { id } = personResponse.data;
-  const userResponse = await User.create(id, email);
+  const { id: person_id } = personResponse.data;
+  const userResponse = await User.create(person_id, email);
 
   if (!userResponse.success) {
     createLogger.error({

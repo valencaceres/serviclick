@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 
 import pool from "../util/database";
 
-const create: any = async (id: string, email: string) => {
+const create: any = async (person_id: string, email: string) => {
   try {
     const resultUserExists = await pool.query(
       "SELECT id, person_id, login FROM app.user WHERE login = $1",
@@ -12,11 +12,30 @@ const create: any = async (id: string, email: string) => {
     if (resultUserExists.rows.length === 0) {
       const result = await pool.query(
         "INSERT INTO app.user(person_id, login) VALUES ($1, $2) RETURNING *",
-        [id, email]
+        [person_id, email]
       );
-      return { success: true, data: result.rows[0], error: null };
+
+      const { id, login, isactive, type } = result.rows[0];
+
+      const data = {
+        id,
+        login,
+        isActive: isactive,
+        type,
+      };
+
+      return { success: true, data, error: null };
     } else {
-      return { success: true, data: resultUserExists.rows[0], error: null };
+      const { id, login, isactive, type } = resultUserExists.rows[0];
+
+      const data = {
+        id,
+        login,
+        isActive: isactive,
+        type,
+      };
+
+      return { success: true, data, error: null };
     }
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
@@ -56,8 +75,8 @@ const validate: any = async (values: any) => {
       id,
       rut,
       name,
-      paternalLastName,
-      maternalLastName,
+      paternallastname,
+      maternallastname,
       email,
       phone,
       hash,
@@ -70,8 +89,8 @@ const validate: any = async (values: any) => {
         id,
         rut,
         name,
-        paternalLastName,
-        maternalLastName,
+        paternalLastName: paternallastname,
+        maternalLastName: maternallastname,
         email,
         phone,
         isValid,

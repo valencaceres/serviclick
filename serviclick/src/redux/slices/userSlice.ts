@@ -3,9 +3,32 @@ import axios from "axios";
 
 import { config } from "../../utils/config";
 
-const initialState = {
+type UserT = {
+  rut: string;
+  name: string;
+  paternalLastName: string;
+  maternalLastName: string;
+  email: string;
+  phone: string;
+  isValid: boolean;
+};
+
+type StateT = {
+  list: UserT[];
+  user: UserT;
+};
+
+const initialState: StateT = {
   list: [],
-  user: { rut: "", name: "", email: "", phone: "", isValid: false },
+  user: {
+    rut: "",
+    name: "",
+    paternalLastName: "",
+    maternalLastName: "",
+    email: "",
+    phone: "",
+    isValid: false,
+  },
 };
 
 export const userSlice = createSlice({
