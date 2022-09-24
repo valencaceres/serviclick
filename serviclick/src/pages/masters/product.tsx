@@ -15,6 +15,14 @@ const Product = () => {
   const { setTitleUI } = useUI();
   const { listAll } = useProduct();
 
+  const addProduct = () => {
+    router.push("/masters/product?id=new");
+  };
+
+  const editProduct = () => {};
+
+  const deleteProduct = () => {};
+
   useEffect(() => {
     setTitleUI("Producto");
     listAll();
@@ -23,7 +31,11 @@ const Product = () => {
   return router.isReady && router.query.id ? (
     <ProductDetail />
   ) : (
-    <ProductList />
+    <ProductList
+      addProduct={addProduct}
+      editProduct={editProduct}
+      deleteProduct={deleteProduct}
+    />
   );
 };
 

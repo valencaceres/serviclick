@@ -15,13 +15,11 @@ const useChannel = () => {
 
   const { channel, list } = useAppSelector((state) => state.channelSlice);
 
-  const create = (value: ChannelT) => {
-    const { name, isBroker } = value;
+  const create = (name: string, isBroker: boolean) => {
     dispatch(createChannel(name, isBroker));
   };
 
-  const update = (value: ChannelT) => {
-    const { id, name, isBroker } = value;
+  const update = (id: string, name: string, isBroker: boolean) => {
     dispatch(updateChannel(id, name, isBroker));
   };
 

@@ -17,7 +17,11 @@ const Header = () => {
     <div className={styles.header}>
       <div className={styles.left}>
         {user.rut !== "" && (
-          <ButtonIcon iconName="menu" onClick={handleToggleMenu} />
+          <ButtonIcon
+            iconName="menu"
+            onClick={handleToggleMenu}
+            color="transparent"
+          />
         )}
         <Image alt="ServiClick" src="/logo.jpg" width={243} height={51} />
       </div>

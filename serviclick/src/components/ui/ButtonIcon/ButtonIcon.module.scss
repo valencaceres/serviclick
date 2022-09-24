@@ -9,7 +9,6 @@
   height: 40px;
   width: 40px;
   border: none;
-  background-color: $blue-color;
   border-radius: 100%;
   border: none;
   font-weight: 500;
@@ -29,8 +28,48 @@
     transform: scale(0.9);
   }
 
-  span {
-    color: white;
+  &.green {
+    background-color: lighten($blue-color, 10);
+
+    &:hover {
+      background-color: $blue-color;
+
+      span {
+        color: white;
+      }
+    }
+
+    span {
+      color: $light-gray-color;
+    }
+  }
+
+  &.gray {
+    background-color: $light-gray-color;
+
+    &:hover {
+      background-color: $gray-color;
+    }
+
+    span {
+      color: white;
+    }
+  }
+
+  &.transparent {
+    background-color: transparent;
+
+    &:hover {
+      background-color: $gray-color;
+
+      span {
+        color: white;
+      }
+    }
+
+    span {
+      color: $gray-color;
+    }
   }
 }
 

@@ -1,6 +1,10 @@
 import { useState } from "react";
 
-import { ContentCell, ContentRow } from "../../../layout/Content";
+import {
+  ContentCell,
+  ContentRow,
+  ContentCellSummary,
+} from "../../../layout/Content";
 
 import InputText from "../../../ui/InputText";
 import ButtonIcon from "../../../ui/ButtonIcon";
@@ -30,7 +34,7 @@ const ProductList = ({ addProduct, editProduct, deleteProduct }: any) => {
           value={search}
           onChange={setSearch}
         />
-        <ButtonIcon iconName="search" />
+        <ButtonIcon iconName="search" color="gray" />
       </ContentRow>
       <Table width="1000px">
         <TableHeader>
@@ -70,8 +74,10 @@ const ProductList = ({ addProduct, editProduct, deleteProduct }: any) => {
           ))}
         </TableDetail>
       </Table>
-      <div>{`${list.length} registros`}</div>
-      <ButtonIcon iconName="add" onClick={addProduct} />
+      <ContentRow align="space-between">
+        <ContentCellSummary>{`${list.length} registros`}</ContentCellSummary>
+        <ButtonIcon iconName="add" onClick={addProduct} />
+      </ContentRow>
     </ContentCell>
   );
 };

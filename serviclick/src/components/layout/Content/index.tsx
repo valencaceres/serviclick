@@ -1,3 +1,8 @@
-import { Content, ContentRow, ContentCell } from "./Content";
+import {
+  Content,
+  ContentRow,
+  ContentCell,
+  ContentCellSummary,
+} from "./Content";
 
-export { Content, ContentRow, ContentCell };
+export { Content, ContentRow, ContentCell, ContentCellSummary };

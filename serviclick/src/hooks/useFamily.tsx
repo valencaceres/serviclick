@@ -18,13 +18,11 @@ const useFamily = () => {
 
   const { family, list } = useAppSelector((state) => state.familySlice);
 
-  const create = (value: FamilyT) => {
-    const { name, values } = value;
+  const create = (name: string, values: ValueT) => {
     dispatch(createFamily(name, values));
   };
 
-  const update = (value: FamilyT) => {
-    const { id, name, values } = value;
+  const update = (id: string, name: string, values: ValueT) => {
     dispatch(updateFamily(id, name, values));
   };
 

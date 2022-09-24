@@ -1,13 +1,26 @@
 import { Content, ContentCell, ContentRow } from "../../layout/Content";
 
 import useUI from "../../../hooks/useUI";
+import Icon from "../../ui/Icon";
+
+import styles from "./Welcome.module.scss";
 
 const Welcome = () => {
   const { user } = useUI();
 
   return (
     <Content align="center">
-      Bienvenido {user.name} {user.paternalLastName} {user.maternalLastName}
+      <ContentCell align="center" gap="20px">
+        <div className={styles.photo}>
+          <Icon iconName="face" size="120px" />
+        </div>
+        <div className={styles.name}>
+          Bienvenido {user.name} {user.paternalLastName} {user.maternalLastName}
+        </div>
+        <div className={styles.link}>
+          <a href="#">Cerrar sesión</a>
+        </div>
+      </ContentCell>
     </Content>
   );
 };

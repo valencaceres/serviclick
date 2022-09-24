@@ -19,7 +19,12 @@ const ContentRow = ({ children, align, gap }: any) => {
   return (
     <div
       className={styles.contentRow}
-      style={{ alignItems: "center", justifyContent: align, gap }}>
+      style={{
+        width: "100%",
+        alignItems: "center",
+        justifyContent: align,
+        gap,
+      }}>
       {children}
     </div>
   );
@@ -29,10 +34,18 @@ const ContentCell = ({ children, align, gap }: any) => {
   return (
     <div
       className={styles.contentCell}
-      style={{ alignItems: align, justifyContent: "center", gap }}>
+      style={{
+        alignItems: align,
+        justifyContent: "center",
+        gap,
+      }}>
       {children}
     </div>
   );
 };
 
-export { Content, ContentRow, ContentCell };
+const ContentCellSummary = ({ children }: any) => {
+  return <div className={styles.contentCellSummary}>{children}</div>;
+};
+
+export { Content, ContentRow, ContentCell, ContentCellSummary };

@@ -6,13 +6,17 @@
   height: 100%;
   overflow-y: auto;
   padding: 20px;
+}
 
-  .contentCell {
-    display: flex;
-    flex-direction: column;
-  }
+.contentCell {
+  display: flex;
+  flex-direction: column;
+}
 
-  .contentRow {
-    display: flex;
-  }
+.contentRow {
+  display: flex;
+}
+
+.contentCellSummary {
+  font-weight: 700;
 }

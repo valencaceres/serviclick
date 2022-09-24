@@ -2,15 +2,28 @@ import styles from "./ButtonIcon.module.scss";
 
 import Icon from "../Icon";
 
+type ButtonIconT = {
+  onClick?: any;
+  iconName: string;
+  disabled?: boolean;
+  loading?: boolean;
+  color?: string;
+};
+
 const ButtonIcon = ({
   onClick,
   iconName,
   disabled = false,
   loading = false,
-}: any) => {
+  color = "green",
+}: ButtonIconT) => {
   return (
     <button
-      className={loading ? styles.button + " " + styles.spin : styles.button}
+      className={
+        loading
+          ? styles.button + " " + styles.spin
+          : styles.button + " " + styles[color]
+      }
       onClick={onClick}
       disabled={disabled || loading}>
       {loading ? (

@@ -1,10 +1,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 
-import {
-  ChannelDetail,
-  ChannelList,
-} from "../../components/functional/_masters/Channel";
+import { ChannelList } from "../../components/functional/_masters/Channel";
 
 import useUI from "../../hooks/useUI";
 import useChannel from "../../hooks/useChannel";
@@ -20,11 +17,7 @@ const Channel = () => {
     listAll();
   }, []);
 
-  return router.isReady && router.query.id ? (
-    <ChannelDetail />
-  ) : (
-    <ChannelList />
-  );
+  return <ChannelList />;
 };
 
 export default Channel;

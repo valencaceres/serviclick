@@ -16,6 +16,17 @@
 
 a {
   color: blue;
+  font-weight: 600;
+  transition: transform 0.3s;
+}
+
+
+a:active {
+  transform: scale(0.9);
+}
+
+a:hover {
+  text-decoration: none;
 }
 
 ::-webkit-scrollbar {
