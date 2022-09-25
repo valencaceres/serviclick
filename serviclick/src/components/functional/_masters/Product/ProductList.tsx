@@ -19,9 +19,10 @@ import {
 } from "../../../ui/Table";
 import Icon from "../../../ui/Icon";
 
-import { useFamily, useProduct } from "../../../../hooks";
+import { useUI, useFamily, useProduct } from "../../../../hooks";
 
 const ProductList = ({ addProduct, editProduct, deleteProduct }: any) => {
+  const { setOptionsUI } = useUI();
   const { listAll, list, getByFamilyId } = useProduct();
   const { list: listFamilies } = useFamily();
 

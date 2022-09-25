@@ -10,10 +10,17 @@ type UserT = {
   isValid: boolean;
 };
 
+export type OptionT = {
+  icon: string;
+  function: any;
+  enabled: boolean;
+};
+
 type StateT = {
   user: UserT;
   showMenu: boolean;
   title: string;
+  options: OptionT[];
 };
 
 const initialState: StateT = {
@@ -28,6 +35,7 @@ const initialState: StateT = {
   },
   showMenu: false,
   title: "",
+  options: [],
 };
 
 export const userSlice = createSlice({
@@ -43,12 +51,16 @@ export const userSlice = createSlice({
     setTitle: (state: any, action: PayloadAction<any>) => {
       state.title = action.payload;
     },
+    setOptions: (state: any, action: PayloadAction<any>) => {
+      state.options = action.payload;
+    },
     resetAll: (state: any) => {
       state = initialState;
     },
   },
 });
 
-export const { setUser, setShowMenu, setTitle, resetAll } = userSlice.actions;
+export const { setUser, setShowMenu, setTitle, setOptions, resetAll } =
+  userSlice.actions;
 
 export default userSlice.reducer;

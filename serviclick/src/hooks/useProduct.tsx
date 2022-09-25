@@ -17,19 +17,18 @@ const useProduct = () => {
 
   const { product, list } = useAppSelector((state) => state.productSlice);
 
-  const create = (value: ProductT) => {
-    const {
-      family_id,
-      name,
-      cost,
-      price,
-      isSubject,
-      frequency,
-      term,
-      beneficiaries,
-      coverages,
-      familyValues,
-    } = value;
+  const create = (
+    family_id: string,
+    name: string,
+    cost: number,
+    price: any,
+    isSubject: boolean,
+    frequency: string,
+    term: string,
+    beneficiaries: number,
+    coverages: any,
+    familyValues: any
+  ) => {
     dispatch(
       createProduct(
         family_id,
@@ -46,20 +45,19 @@ const useProduct = () => {
     );
   };
 
-  const update = (value: ProductT) => {
-    const {
-      id,
-      family_id,
-      name,
-      cost,
-      price,
-      isSubject,
-      frequency,
-      term,
-      beneficiaries,
-      coverages,
-      familyValues,
-    } = value;
+  const update = (
+    id: string,
+    family_id: string,
+    name: string,
+    cost: number,
+    price: any,
+    isSubject: boolean,
+    frequency: string,
+    term: string,
+    beneficiaries: number,
+    coverages: any,
+    familyValues: any
+  ) => {
     dispatch(
       updateProduct(
         id,

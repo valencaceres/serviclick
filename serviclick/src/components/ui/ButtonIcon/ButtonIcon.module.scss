@@ -19,11 +19,6 @@
     animation: spin 1s linear infinite;
   }
 
-  &:disabled {
-    background-color: $light-gray-color;
-    color: $gray-color;
-  }
-
   &:active {
     transform: scale(0.9);
   }
@@ -69,6 +64,26 @@
 
     span {
       color: $gray-color;
+    }
+  }
+
+  &:disabled {
+    background-color: $light-gray-color;
+
+    &:hover {
+      background-color: $light-gray-color;
+
+      span {
+        color: gray;
+      }
+    }
+
+    span {
+      color: gray;
+    }
+
+    &:active {
+      transform: scale(1);
     }
   }
 }

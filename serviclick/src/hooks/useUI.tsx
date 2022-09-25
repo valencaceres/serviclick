@@ -1,7 +1,9 @@
 import {
+  OptionT,
   setUser,
   setShowMenu,
   setTitle,
+  setOptions,
   resetAll,
 } from "../redux/slices/uiSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
@@ -9,7 +11,9 @@ import { useAppDispatch, useAppSelector } from "../redux/hooks";
 const useUI = () => {
   const dispatch = useAppDispatch();
 
-  const { showMenu, user, title } = useAppSelector((state) => state.uiSlice);
+  const { showMenu, user, title, options } = useAppSelector(
+    (state) => state.uiSlice
+  );
 
   const setShowMenuUI = (value: boolean) => {
     dispatch(setShowMenu(value));
@@ -23,6 +27,10 @@ const useUI = () => {
     dispatch(setTitle(value));
   };
 
+  const setOptionsUI = (value: OptionT[]) => {
+    dispatch(setOptions(value));
+  };
+
   const resetUI = (value: any) => {
     dispatch(resetAll());
   };
@@ -34,6 +42,8 @@ const useUI = () => {
     showMenu,
     setTitleUI,
     title,
+    setOptionsUI,
+    options,
     resetUI,
   };
 };

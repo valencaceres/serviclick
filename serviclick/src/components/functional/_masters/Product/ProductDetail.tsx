@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, Fragment } from "react";
 
 import {
   ContentCell,
@@ -6,6 +6,7 @@ import {
   ContentCellSummary,
 } from "../../../layout/Content";
 
+import Button from "../../../ui/Button";
 import InputText from "../../../ui/InputText";
 import ComboBox from "../../../ui/ComboBox";
 import CheckBox from "../../../ui/CheckBox";
@@ -18,26 +19,129 @@ import {
   TableCell,
   TableIcons,
 } from "../../../ui/Table";
+import ButtonIcon from "../../../ui/ButtonIcon";
+import { Modal, Window } from "../../../ui/Modal";
 
 import { useFamily, useProduct } from "../../../../hooks";
-import ButtonIcon from "../../../ui/ButtonIcon";
 
 import { frequencyList, termList } from "../../../../data/masters";
 
-const ProductDetail = () => {
-  const { product } = useProduct();
-  const { list: listFamilies } = useFamily();
+import { CoverageT } from "../../../../redux/slices/productSlice";
+
+import { genetateUUID } from "../../../../utils/functions";
+
+type FamilyValuesDetailT = {
+  id: string;
+  name: string;
+  isChecked: boolean;
+};
+
+const ProductDetail = ({ setEnableSave }: any) => {
+  const { product, set } = useProduct();
+  const { list: listFamilies, getById, reset, family } = useFamily();
+
+  const coverageInitialState = {
+    id: "",
+    name: "",
+    amount: "",
+    maximum: "",
+    lack: "",
+    events: "",
+  };
+
+  const [coverage, setCoverage] = useState<CoverageT>(coverageInitialState);
+  const [familyValues, setFamilyValues] = useState<FamilyValuesDetailT[]>([]);
+
+  const [isCompleteCoverageItem, setIsCompleteCoverageItem] = useState(false);
 
   const [showModalCoverage, setShowModalCoverage] = useState(false);
+  const [showModalFamilyValues, setShowModalFamilyValues] = useState(false);
+
+  const setClosedModalCoverage = () => {
+    setShowModalCoverage(false);
+  };
+
+  const saveCoverage = () => {
+    let coverages: CoverageT[];
+
+    if (
+      product.coverages.some(
+        (item) =>
+          item.id === coverage.id ||
+          item.name.toLowerCase() === coverage.name.toLowerCase()
+      )
+    ) {
+      coverages = product.coverages.map((item) => {
+        if (
+          item.id === coverage.id ||
+          item.name.toLowerCase() === coverage.name.toLowerCase()
+        ) {
+          return {
+            id: item.id,
+            name: coverage.name,
+            amount: coverage.amount,
+            maximum: coverage.maximum,
+            lack: coverage.lack,
+            events: coverage.events,
+          };
+        } else {
+          return item;
+        }
+      });
+    } else {
+      coverages = [
+        ...product.coverages,
+        {
+          id: genetateUUID(),
+          name: coverage.name,
+          amount: coverage.amount,
+          maximum: coverage.maximum,
+          lack: coverage.lack,
+          events: coverage.events,
+        },
+      ];
+    }
+
+    handleValue("coverages", coverages);
+    setShowModalCoverage(false);
+  };
+
+  const checkCoverageItemComplete = () => {
+    return (
+      coverage.name !== "" &&
+      coverage.amount !== "" &&
+      coverage.maximum !== "" &&
+      coverage.lack !== "" &&
+      coverage.events !== ""
+    );
+  };
+
+  const setClosedModalFamilyValues = () => {
+    setShowModalFamilyValues(false);
+  };
+
+  const saveFamilyValues = () => {
+    handleValue(
+      "familyValues",
+      familyValues
+        .filter((value) => value.isChecked)
+        .map((value) => ({ familyvalue_id: value.id, name: value.name }))
+    );
+    setShowModalFamilyValues(false);
+  };
 
   const handleValue = (field: string, value: any) => {
     const state = { ...product, [field]: value };
-    //dispatch(setProduct(state));
+    set(state);
   };
 
   const handleChangeFamily = (e: any) => {
     handleValue("family_id", e.target.value);
-    //dispatch(e.target.value === "" ? resetFamily() : getFamily(e.target.value));
+    if (e.target.value === "") {
+      reset();
+    } else {
+      getById(e.target.value);
+    }
   };
 
   const handleChangeName = (e: any) => {
@@ -79,7 +183,7 @@ const ProductDetail = () => {
   };
 
   const handleEditCoverage = (coverageToEdit: any) => {
-    //setCoverage(coverageToEdit);
+    setCoverage(coverageToEdit);
     setShowModalCoverage(true);
   };
 
@@ -93,164 +197,347 @@ const ProductDetail = () => {
     );
   };
 
+  const handleAddCoverage = () => {
+    setIsCompleteCoverageItem(false);
+    setCoverage(coverageInitialState);
+    setShowModalCoverage(true);
+  };
+
+  const handleCheckFamilyValue = (id: string) => {
+    setFamilyValues(
+      familyValues.map((value: FamilyValuesDetailT) => {
+        if (id === value.id) {
+          return { id, name: value.name, isChecked: !value.isChecked };
+        } else {
+          return value;
+        }
+      })
+    );
+  };
+
+  const handleAddFamilyValues = () => {
+    setShowModalFamilyValues(true);
+  };
+
+  useEffect(() => {
+    setIsCompleteCoverageItem(checkCoverageItemComplete());
+  }, [coverage]);
+
+  useEffect(() => {
+    setFamilyValues(
+      family.values.map((item) => ({
+        id: item.id,
+        name: item.name,
+        isChecked: false,
+      }))
+    );
+    set({ ...product, familyValues: [] });
+  }, [family]);
+
+  useEffect(() => {
+    setEnableSave(
+      product.family_id !== "" &&
+        product.name !== "" &&
+        product.beneficiaries.toString() !== "" &&
+        product.cost > 0 &&
+        product.price.company > 0 &&
+        product.price.customer > 0 &&
+        product.frequency !== "" &&
+        product.term !== "" &&
+        product.coverages.length > 0
+    );
+  }, [product]);
+
   return (
-    <ContentCell gap="20px">
-      <ContentRow gap="20px">
-        <ContentCell gap="5px">
+    <Fragment>
+      <ContentCell gap="20px">
+        <ContentRow gap="20px">
+          <ContentCell gap="5px">
+            <ContentRow gap="5px">
+              <ComboBox
+                id="txtProductFamily"
+                label="Familia"
+                width="310px"
+                value={product.family_id}
+                onChange={handleChangeFamily}
+                placeHolder=":: Seleccione familia ::"
+                data={listFamilies}
+                dataValue="id"
+                dataText="name"
+              />
+              <InputText
+                id="txtProductBeneficiaries"
+                label="Cargas"
+                width="100px"
+                value={product.beneficiaries.toString()}
+                onChange={handleChangebeneficiaries}
+                onBlur={handleChangebeneficiaries}
+              />
+            </ContentRow>
+            <InputText
+              id="txtProductName"
+              label="Nombre"
+              width="415px"
+              value={product.name}
+              onChange={handleChangeName}
+              onBlur={handleChangeName}
+            />
+          </ContentCell>
           <ContentRow gap="5px">
+            <ContentCell gap="5px">
+              <InputText
+                id="txtProductCost"
+                type="number"
+                label="Costo técnico ($)"
+                width="200px"
+                value={product.cost.toString()}
+                onChange={handleChangeCost}
+                onBlur={handleChangeCost}
+              />
+              <CheckBox
+                label="Afecto"
+                width="200px"
+                value={product.isSubject}
+                onChange={handleCheckSubject}
+              />
+            </ContentCell>
+            <ContentCell gap="5px">
+              <InputText
+                id="txtProductPublicPrice"
+                type="number"
+                label="Valor al público ($)"
+                width="200px"
+                value={product.price.customer.toString()}
+                onChange={handleChangePricePublic}
+                onBlur={handleChangePricePublic}
+              />
+              <InputText
+                id="txtProductCompanyPrice"
+                type="number"
+                label="Valor empresa ($)"
+                width="200px"
+                value={product.price.company.toString()}
+                onChange={handleChangePriceCompany}
+                onBlur={handleChangePriceCompany}
+              />
+            </ContentCell>
+          </ContentRow>
+          <ContentCell gap="5px">
             <ComboBox
-              id="txtProductFamily"
-              label="Familia"
-              width="310px"
-              value={product.family_id}
-              onChange={handleChangeFamily}
-              placeHolder=":: Seleccione familia ::"
-              data={listFamilies}
+              id="txtProductFrecuency"
+              label="Frecuencia"
+              width="270px"
+              value={product.frequency}
+              onChange={handleChangeFrequency}
+              placeHolder=":: Seleccione frecuencia ::"
+              data={frequencyList}
               dataValue="id"
               dataText="name"
             />
-            <InputText
-              id="txtProductBeneficiaries"
-              label="Cargas"
-              width="100px"
-              value={product.beneficiaries.toString()}
-              onChange={handleChangebeneficiaries}
-              onBlur={handleChangebeneficiaries}
-            />
-          </ContentRow>
-          <InputText
-            id="txtProductName"
-            label="Nombre"
-            width="415px"
-            value={product.name}
-            onChange={handleChangeName}
-            onBlur={handleChangeName}
-          />
-        </ContentCell>
-        <ContentRow gap="5px">
-          <ContentCell gap="5px">
-            <InputText
-              id="txtProductCost"
-              type="number"
-              label="Costo técnico ($)"
-              width="200px"
-              value={product.cost.toString()}
-              onChange={handleChangeCost}
-              onBlur={handleChangeCost}
-            />
-            <CheckBox
-              label="Afecto"
-              width="200px"
-              value={product.isSubject}
-              onChange={handleCheckSubject}
-            />
-          </ContentCell>
-          <ContentCell gap="5px">
-            <InputText
-              id="txtProductPublicPrice"
-              type="number"
-              label="Valor al público ($)"
-              width="200px"
-              value={product.price.customer.toString()}
-              onChange={handleChangePricePublic}
-              onBlur={handleChangePricePublic}
-            />
-            <InputText
-              id="txtProductCompanyPrice"
-              type="number"
-              label="Valor empresa ($)"
-              width="200px"
-              value={product.price.company.toString()}
-              onChange={handleChangePriceCompany}
-              onBlur={handleChangePriceCompany}
+            <ComboBox
+              id="txtProductTerm"
+              label="Duración (meses)"
+              width="270px"
+              value={product.term}
+              onChange={handleChangeTerm}
+              placeHolder=":: Seleccione duración ::"
+              data={termList}
+              dataValue="id"
+              dataText="name"
             />
           </ContentCell>
         </ContentRow>
-        <ContentCell gap="5px">
-          <ComboBox
-            id="txtProductFrecuency"
-            label="Frecuencia"
-            width="270px"
-            value={product.frequency}
-            onChange={handleChangeFrequency}
-            placeHolder=":: Seleccione frecuencia ::"
-            data={frequencyList}
-            dataValue="id"
-            dataText="name"
-          />
-          <ComboBox
-            id="txtProductTerm"
-            label="Duración (meses)"
-            width="270px"
-            value={product.term}
-            onChange={handleChangeTerm}
-            placeHolder=":: Seleccione duración ::"
-            data={termList}
-            dataValue="id"
-            dataText="name"
-          />
-        </ContentCell>
-      </ContentRow>
-      <ContentRow gap="10px">
-        <ContentCell gap="10px" align="flex-end">
-          <Table width="910px" height="347px">
-            <TableHeader>
-              <TableCell width="270px">Servicio</TableCell>
-              <TableCell width="150px">Monto</TableCell>
-              <TableCell width="240px">Límite</TableCell>
-              <TableCell width="70px" alt="Inicio de vigencia en días">
-                Inicio
-              </TableCell>
-              <TableCell width="166px">Eventos</TableCell>
-            </TableHeader>
-            <TableDetail>
-              {product.coverages.map((coverageItem: any, idx: number) => (
-                <TableRow key={idx}>
-                  <TableCell width="270px">{coverageItem.name}</TableCell>
-                  <TableCell width="150px">{coverageItem.amount}</TableCell>
-                  <TableCell width="240px">{coverageItem.maximum}</TableCell>
-                  <TableCell width="70px">{coverageItem.lack}</TableCell>
-                  <TableCell width="160px">
-                    {coverageItem.events}
-                    <TableIcons>
-                      <Icon
-                        iconName="edit"
-                        onClick={() => handleEditCoverage(coverageItem)}
-                      />
-                      <Icon
-                        iconName="delete"
-                        onClick={() => {
-                          handleDeleteCoverage(coverageItem);
-                        }}
-                      />
-                    </TableIcons>
-                  </TableCell>
-                </TableRow>
+        <ContentRow gap="10px">
+          <ContentCell gap="10px" align="flex-end">
+            <Table width="910px" height="347px">
+              <TableHeader>
+                <TableCell width="270px">Servicio</TableCell>
+                <TableCell width="150px">Monto</TableCell>
+                <TableCell width="240px">Límite</TableCell>
+                <TableCell width="70px" alt="Inicio de vigencia en días">
+                  Inicio
+                </TableCell>
+                <TableCell width="166px">Eventos</TableCell>
+              </TableHeader>
+              <TableDetail>
+                {product.coverages.map((coverageItem: any, idx: number) => (
+                  <TableRow key={idx}>
+                    <TableCell width="270px">{coverageItem.name}</TableCell>
+                    <TableCell width="150px">{coverageItem.amount}</TableCell>
+                    <TableCell width="240px">{coverageItem.maximum}</TableCell>
+                    <TableCell width="70px">{coverageItem.lack}</TableCell>
+                    <TableCell width="160px">
+                      {coverageItem.events}
+                      <TableIcons>
+                        <Icon
+                          iconName="edit"
+                          onClick={() => handleEditCoverage(coverageItem)}
+                        />
+                        <Icon
+                          iconName="delete"
+                          onClick={() => {
+                            handleDeleteCoverage(coverageItem);
+                          }}
+                        />
+                      </TableIcons>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableDetail>
+            </Table>
+            <ContentRow gap="10px">
+              <ContentCellSummary>{`${product.coverages.length} registros`}</ContentCellSummary>
+              <ButtonIcon
+                iconName="add"
+                color="gray"
+                onClick={handleAddCoverage}
+              />
+            </ContentRow>
+          </ContentCell>
+          <ContentCell gap="10px" align="flex-end">
+            <Table width="210px" height="347px">
+              <TableHeader>
+                <TableCell width="avaliable">Campos</TableCell>
+              </TableHeader>
+              <TableDetail>
+                {product.familyValues.map((value: any, idx: number) => (
+                  <TableRow key={idx} className={"deleted"}>
+                    <TableCell width="avaliable">{value.name}</TableCell>
+                  </TableRow>
+                ))}
+              </TableDetail>
+            </Table>
+            <ButtonIcon
+              iconName="edit"
+              color="gray"
+              onClick={handleAddFamilyValues}
+            />
+          </ContentCell>
+        </ContentRow>
+      </ContentCell>
+      <Modal showModal={showModalCoverage}>
+        <Window title="Servicio" setClosed={setClosedModalCoverage}>
+          <ContentCell gap="30px" align="center">
+            <ContentCell gap="10px" align="center">
+              <InputText
+                id="txtProductCoverageName"
+                label="Servicio"
+                width="480px"
+                value={coverage.name}
+                onChange={(e: any) =>
+                  setCoverage({ ...coverage, name: e.target.value })
+                }
+              />
+              <ContentRow gap="10px">
+                <ContentRow gap="5px">
+                  <InputText
+                    id="txtProductCoverageAmount"
+                    label="Monto"
+                    width="190px"
+                    value={coverage.amount}
+                    onChange={(e: any) =>
+                      setCoverage({ ...coverage, amount: e.target.value })
+                    }
+                  />
+                  <ButtonIcon
+                    iconName="all_inclusive"
+                    onClick={() =>
+                      setCoverage({ ...coverage, amount: "Ilimitado" })
+                    }
+                    color="gray"
+                  />
+                </ContentRow>
+                <ContentRow gap="5px">
+                  <InputText
+                    id="txtProductCoverageMaximum"
+                    label="Límite"
+                    width="190px"
+                    value={coverage.maximum}
+                    onChange={(e: any) =>
+                      setCoverage({ ...coverage, maximum: e.target.value })
+                    }
+                  />
+                  <ButtonIcon
+                    iconName="all_inclusive"
+                    onClick={() =>
+                      setCoverage({ ...coverage, maximum: "Ilimitado" })
+                    }
+                    color="gray"
+                  />
+                </ContentRow>
+              </ContentRow>
+              <ContentRow gap="10px">
+                <ContentRow gap="5px">
+                  <InputText
+                    id="txtProductCoverageLack"
+                    label="Inicio vigencia (días)"
+                    width="190px"
+                    value={coverage.lack}
+                    onChange={(e: any) =>
+                      setCoverage({ ...coverage, lack: e.target.value })
+                    }
+                  />
+                  <ButtonIcon
+                    iconName="all_inclusive"
+                    onClick={() =>
+                      setCoverage({ ...coverage, lack: "Ilimitado" })
+                    }
+                    color="gray"
+                  />
+                </ContentRow>
+                <ContentRow gap="5px">
+                  <InputText
+                    id="txtProductCoverageEvents"
+                    label="Eventos (cantidad)"
+                    width="190px"
+                    value={coverage.events}
+                    onChange={(e: any) =>
+                      setCoverage({ ...coverage, events: e.target.value })
+                    }
+                  />
+                  <ButtonIcon
+                    iconName="all_inclusive"
+                    onClick={() =>
+                      setCoverage({ ...coverage, events: "Ilimitado" })
+                    }
+                    color="gray"
+                  />
+                </ContentRow>
+              </ContentRow>
+            </ContentCell>
+            <Button
+              text="Registrar"
+              width="200px"
+              onClick={saveCoverage}
+              enabled={isCompleteCoverageItem}
+            />
+          </ContentCell>
+        </Window>
+      </Modal>
+      <Modal showModal={showModalFamilyValues}>
+        <Window title="Campos" setClosed={setClosedModalFamilyValues}>
+          <ContentCell gap="30px">
+            <div
+              style={{
+                padding: "20px",
+                border: "1px solid silver",
+                borderRadius: "3px",
+              }}>
+              {familyValues.map((value, idx: number) => (
+                <CheckBox
+                  key={idx}
+                  label={value.name}
+                  width="auto"
+                  value={value.isChecked}
+                  onChange={() => handleCheckFamilyValue(value.id)}
+                />
               ))}
-            </TableDetail>
-          </Table>
-          <ContentRow gap="10px">
-            <ContentCellSummary>{`${product.coverages.length} registros`}</ContentCellSummary>
-            <ButtonIcon iconName="add" color="gray" />
-          </ContentRow>
-        </ContentCell>
-        <ContentCell gap="10px" align="flex-end">
-          <Table width="210px" height="347px">
-            <TableHeader>
-              <TableCell width="avaliable">Campos</TableCell>
-            </TableHeader>
-            <TableDetail>
-              {product.familyValues.map((value: any, idx: number) => (
-                <TableRow key={idx} className={"deleted"}>
-                  <TableCell width="avaliable">{value.name}</TableCell>
-                </TableRow>
-              ))}
-            </TableDetail>
-          </Table>
-          <ButtonIcon iconName="edit" color="gray" />
-        </ContentCell>
-      </ContentRow>
-    </ContentCell>
+            </div>
+            <Button text="Registrar" width="200px" onClick={saveFamilyValues} />
+          </ContentCell>
+        </Window>
+      </Modal>
+    </Fragment>
   );
 };
 

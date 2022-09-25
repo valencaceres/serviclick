@@ -105,7 +105,7 @@ const updateProduct = async (req: any, res: any) => {
     currency
   );
 
-  if (productResponse.success) {
+  if (!productResponse.success) {
     createLogger.error({
       model: "product/updateProduct",
       error: productResponse.error,
@@ -117,38 +117,54 @@ const updateProduct = async (req: any, res: any) => {
   const deletedProductFamilyValues =
     await ProductFamilyValue.deleteProductFamilyValues(id);
 
+  if (!deletedProductFamilyValues.success) {
+    createLogger.error({
+      model: "productFamily/deleteProductFamilyValues",
+      error: deletedProductFamilyValues.error,
+    });
+    res.status(500).json({ error: deletedProductFamilyValues.error });
+    return;
+  }
+
   const deletedProductCoverages = await ProductCoverage.deleteProductCoverages(
     id
   );
 
-  if (deletedProductFamilyValues.success && deletedProductCoverages.success) {
-    const createdProductCoverages = await createProductCoverages(id, coverages);
-
-    const createdProductFamilyValues = await createProductFamilyValues(
-      id,
-      familyValues
-    );
-
-    createLogger.info({
-      controller: "products/updateProduct",
-      message: "OK",
+  if (!deletedProductCoverages.success) {
+    createLogger.error({
+      model: "productFamily/deleteProductCoverages",
+      error: deletedProductCoverages.error,
     });
-
-    res.status(200).json({
-      id,
-      family_id,
-      name,
-      cost,
-      price: { customer: customerprice, company: companyprice },
-      isSubject,
-      frequency,
-      term,
-      beneficiaries,
-      coverages: [...createdProductCoverages],
-      familyValues: [...createdProductFamilyValues],
-      currency,
-    });
+    res.status(500).json({ error: deletedProductCoverages.error });
+    return;
   }
+
+  const createdProductCoverages = await createProductCoverages(id, coverages);
+
+  const createdProductFamilyValues = await createProductFamilyValues(
+    id,
+    familyValues
+  );
+
+  createLogger.info({
+    controller: "products/updateProduct",
+    message: "OK",
+  });
+
+  res.status(200).json({
+    id,
+    family_id,
+    name,
+    cost,
+    price: { customer: customerprice, company: companyprice },
+    isSubject,
+    frequency,
+    term,
+    beneficiaries,
+    coverages: [...createdProductCoverages],
+    familyValues: [...createdProductFamilyValues],
+    currency,
+  });
 };
 
 const deleteProduct = async (req: any, res: any) => {
