@@ -49,7 +49,7 @@ export const initialState: StateT = {
     family_id: "",
     name: "",
     cost: 0,
-    isSubject: true,
+    isSubject: false,
     price: { customer: 0, company: 0 },
     frequency: "",
     term: "",
@@ -198,6 +198,19 @@ export const getProduct = (id: string) => (dispatch: any) => {
 export const listProducts = () => (dispatch: any) => {
   axios
     .get(`${config.server}/api/product/list`, {
+      headers: {
+        id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
+      },
+    })
+    .then((response) => {
+      dispatch(setProductList(response.data));
+    })
+    .catch((error) => console.log(error));
+};
+
+export const getProductsByFamilyId = (family_id: string) => (dispatch: any) => {
+  axios
+    .get(`${config.server}/api/product/getByFamilyId/${family_id}`, {
       headers: {
         id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
       },

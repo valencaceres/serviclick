@@ -98,7 +98,7 @@ const FamilyList = () => {
             ))}
           </TableDetail>
         </Table>
-        <ContentRow align="space-between">
+        <ContentRow gap="10px" align="flex-end">
           <ContentCellSummary>{`${list.length} registros`}</ContentCellSummary>
           <ButtonIcon iconName="add" onClick={addFamily} />
         </ContentRow>

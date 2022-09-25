@@ -172,6 +172,35 @@ const listProducts: any = async (values: any) => {
   }
 };
 
+const getProductByFamilyId: any = async (family_id: string) => {
+  try {
+    const result = await pool.query(
+      `
+        SELECT  pro.id,
+                pro.family_id, 
+                fam.name as family_name,
+                pro.name, 
+                pro.cost, 
+                pro.customerprice, 
+                pro.companyprice, 
+                pro.issubject, 
+                pro.frequency, 
+                pro.term,
+                pro.beneficiaries,
+                pro.currency
+        FROM    app.product pro inner join app.family fam on pro.family_id = fam.id
+        WHERE   pro.isActive IS true AND
+                pro.family_id = $1
+        ORDER   BY 
+                pro.name`,
+      [family_id]
+    );
+    return { success: true, data: result.rows, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 export {
   createProduct,
   updateProduct,
@@ -179,4 +208,5 @@ export {
   deletePlans,
   getProduct,
   listProducts,
+  getProductByFamilyId,
 };

@@ -20,7 +20,6 @@ const ContentRow = ({ children, align, gap }: any) => {
     <div
       className={styles.contentRow}
       style={{
-        width: "100%",
         alignItems: "center",
         justifyContent: align,
         gap,

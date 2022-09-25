@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import {
   ContentCell,
@@ -7,6 +7,7 @@ import {
 } from "../../../layout/Content";
 
 import InputText from "../../../ui/InputText";
+import ComboBox from "../../../ui/ComboBox";
 import ButtonIcon from "../../../ui/ButtonIcon";
 import {
   Table,
@@ -18,23 +19,61 @@ import {
 } from "../../../ui/Table";
 import Icon from "../../../ui/Icon";
 
-import useProduct from "../../../../hooks/useProduct";
+import { useFamily, useProduct } from "../../../../hooks";
 
 const ProductList = ({ addProduct, editProduct, deleteProduct }: any) => {
-  const { list } = useProduct();
+  const { listAll, list, getByFamilyId } = useProduct();
+  const { list: listFamilies } = useFamily();
 
-  const [search, setSearch] = useState("");
+  const initialSearchForm = {
+    family: { value: "", isValid: true },
+    searchText: { value: "", isValid: true },
+  };
+
+  const [search, setSearch] = useState(initialSearchForm);
+
+  const handleChangeFamily = (e: any) => {
+    setSearch({
+      ...search,
+      family: { value: e.target.value, isValid: true },
+    });
+  };
+
+  const handleChangeSearchText = (e: any) => {
+    setSearch({
+      ...search,
+      searchText: { value: e.target.value, isValid: true },
+    });
+  };
+
+  const handleClickSearch = () => {
+    search.family.value !== "" ? getByFamilyId(search.family.value) : listAll();
+  };
 
   return (
     <ContentCell gap="10px">
       <ContentRow gap="10px" align="center">
+        <ComboBox
+          label="Familia"
+          width="300px"
+          value={search.family.value}
+          onChange={handleChangeFamily}
+          placeHolder=":: Seleccione familia ::"
+          data={listFamilies}
+          dataValue="id"
+          dataText="name"
+        />
         <InputText
           label="Texto a buscar"
-          width="700px"
-          value={search}
-          onChange={setSearch}
+          width="640px"
+          value={search.searchText.value}
+          onChange={handleChangeSearchText}
         />
-        <ButtonIcon iconName="search" color="gray" />
+        <ButtonIcon
+          iconName="search"
+          color="gray"
+          onClick={handleClickSearch}
+        />
       </ContentRow>
       <Table width="1000px">
         <TableHeader>
@@ -74,9 +113,8 @@ const ProductList = ({ addProduct, editProduct, deleteProduct }: any) => {
           ))}
         </TableDetail>
       </Table>
-      <ContentRow align="space-between">
+      <ContentRow align="flex-end">
         <ContentCellSummary>{`${list.length} registros`}</ContentCellSummary>
-        <ButtonIcon iconName="add" onClick={addProduct} />
       </ContentRow>
     </ContentCell>
   );

@@ -190,6 +190,26 @@ const listProducts = async (req: any, res: any) => {
   res.status(200).json(productResponse.data);
 };
 
+const getProductByFamilyId = async (req: any, res: any) => {
+  const { family_id } = req.params;
+  const productResponse = await Product.getProductByFamilyId(family_id);
+
+  if (!productResponse.success) {
+    createLogger.error({
+      model: "product/getProductByFamilyId",
+      error: productResponse.error,
+    });
+    res.status(500).json({ error: productResponse.error });
+    return;
+  }
+
+  createLogger.info({
+    controller: "products/getProductByFamilyId",
+    message: "OK",
+  });
+  res.status(200).json(productResponse.data);
+};
+
 const getProduct = async (req: any, res: any) => {
   const { id } = req.params;
   const productResponse = await Product.getProduct(id);
@@ -448,5 +468,6 @@ export {
   deleteProduct,
   getProduct,
   listProducts,
+  getProductByFamilyId,
   createProductPlans,
 };

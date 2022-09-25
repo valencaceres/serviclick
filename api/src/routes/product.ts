@@ -7,6 +7,7 @@ import {
   deleteProduct,
   getProduct,
   listProducts,
+  getProductByFamilyId,
   createProductPlans,
 } from "../controllers/product";
 
@@ -17,6 +18,7 @@ ProductRouter.put("/update/:id", auth, updateProduct);
 ProductRouter.delete("/delete/:id", auth, deleteProduct);
 ProductRouter.get("/get/:id", auth, getProduct);
 ProductRouter.get("/list", auth, listProducts);
+ProductRouter.get("/getByFamilyId/:family_id", auth, getProductByFamilyId);
 ProductRouter.post("/createPlans/:id", auth, createProductPlans);
 
 export default ProductRouter;
