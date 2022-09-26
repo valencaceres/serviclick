@@ -14,9 +14,10 @@ import { useUI, useFamily, useProduct } from "../../hooks";
 const Product = () => {
   const router = useRouter();
 
-  const { setTitleUI, setOptionsUI } = useUI();
+  const { setTitleUI } = useUI();
   const { listAll: listAllFamilies } = useFamily();
-  const { create, update, reset, listAll, getById, product } = useProduct();
+  const { create, update, deleteById, reset, listAll, getById, product } =
+    useProduct();
 
   const [enableSave, setEnableSave] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -48,7 +49,9 @@ const Product = () => {
     router.push(`/masters/product?id=${id}`);
   };
 
-  const deleteProduct = () => {};
+  const deleteProduct = (id: string) => {
+    deleteById(id);
+  };
 
   const handleClickSave = () => {
     if (product.id === "") {

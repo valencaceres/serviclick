@@ -6,7 +6,6 @@ import {
   ContentCellSummary,
 } from "../../../layout/Content";
 
-import Button from "../../../ui/Button";
 import InputText from "../../../ui/InputText";
 import ComboBox from "../../../ui/ComboBox";
 import CheckBox from "../../../ui/CheckBox";
@@ -20,7 +19,10 @@ import {
   TableIcons,
 } from "../../../ui/Table";
 import ButtonIcon from "../../../ui/ButtonIcon";
-import { Modal, Window } from "../../../ui/Modal";
+import ModalWindow from "../../../ui/ModalWindow";
+
+import ProductCoverage from "./ProductCoverage";
+import ProductFamilyValues from "./ProductFamilyValues";
 
 import { useFamily, useProduct } from "../../../../hooks";
 
@@ -38,7 +40,12 @@ type FamilyValuesDetailT = {
 
 const ProductDetail = ({ setEnableSave }: any) => {
   const { product, set } = useProduct();
-  const { list: listFamilies, getById, reset, family } = useFamily();
+  const {
+    list: listFamilies,
+    getById: getFamilyById,
+    reset: resetFamily,
+    family,
+  } = useFamily();
 
   const coverageInitialState = {
     id: "",
@@ -53,6 +60,7 @@ const ProductDetail = ({ setEnableSave }: any) => {
   const [familyValues, setFamilyValues] = useState<FamilyValuesDetailT[]>([]);
 
   const [isCompleteCoverageItem, setIsCompleteCoverageItem] = useState(false);
+  const [familySelected, setFamilySelected] = useState(false);
 
   const [showModalCoverage, setShowModalCoverage] = useState(false);
   const [showModalFamilyValues, setShowModalFamilyValues] = useState(false);
@@ -136,11 +144,12 @@ const ProductDetail = ({ setEnableSave }: any) => {
   };
 
   const handleChangeFamily = (e: any) => {
+    //set({ ...product, familyValues: [] });
     handleValue("family_id", e.target.value);
     if (e.target.value === "") {
-      reset();
+      resetFamily();
     } else {
-      getById(e.target.value);
+      getFamilyById(e.target.value);
     }
   };
 
@@ -231,7 +240,6 @@ const ProductDetail = ({ setEnableSave }: any) => {
         isChecked: false,
       }))
     );
-    set({ ...product, familyValues: [] });
   }, [family]);
 
   useEffect(() => {
@@ -247,6 +255,13 @@ const ProductDetail = ({ setEnableSave }: any) => {
         product.coverages.length > 0
     );
   }, [product]);
+
+  useEffect(() => {
+    setFamilySelected(product.family_id !== "");
+    if (product.family_id !== "") {
+      getFamilyById(product.family_id);
+    }
+  }, [product.family_id]);
 
   return (
     <Fragment>
@@ -365,9 +380,13 @@ const ProductDetail = ({ setEnableSave }: any) => {
                     <TableCell width="270px">{coverageItem.name}</TableCell>
                     <TableCell width="150px">{coverageItem.amount}</TableCell>
                     <TableCell width="240px">{coverageItem.maximum}</TableCell>
-                    <TableCell width="70px">{coverageItem.lack}</TableCell>
-                    <TableCell width="160px">
+                    <TableCell width="70px" align="center">
+                      {coverageItem.lack}
+                    </TableCell>
+                    <TableCell width="90px" align="center">
                       {coverageItem.events}
+                    </TableCell>
+                    <TableCell width="68px" align="center">
                       <TableIcons>
                         <Icon
                           iconName="edit"
@@ -411,132 +430,32 @@ const ProductDetail = ({ setEnableSave }: any) => {
               iconName="edit"
               color="gray"
               onClick={handleAddFamilyValues}
+              disabled={!familySelected}
             />
           </ContentCell>
         </ContentRow>
       </ContentCell>
-      <Modal showModal={showModalCoverage}>
-        <Window title="Servicio" setClosed={setClosedModalCoverage}>
-          <ContentCell gap="30px" align="center">
-            <ContentCell gap="10px" align="center">
-              <InputText
-                id="txtProductCoverageName"
-                label="Servicio"
-                width="480px"
-                value={coverage.name}
-                onChange={(e: any) =>
-                  setCoverage({ ...coverage, name: e.target.value })
-                }
-              />
-              <ContentRow gap="10px">
-                <ContentRow gap="5px">
-                  <InputText
-                    id="txtProductCoverageAmount"
-                    label="Monto"
-                    width="190px"
-                    value={coverage.amount}
-                    onChange={(e: any) =>
-                      setCoverage({ ...coverage, amount: e.target.value })
-                    }
-                  />
-                  <ButtonIcon
-                    iconName="all_inclusive"
-                    onClick={() =>
-                      setCoverage({ ...coverage, amount: "Ilimitado" })
-                    }
-                    color="gray"
-                  />
-                </ContentRow>
-                <ContentRow gap="5px">
-                  <InputText
-                    id="txtProductCoverageMaximum"
-                    label="Límite"
-                    width="190px"
-                    value={coverage.maximum}
-                    onChange={(e: any) =>
-                      setCoverage({ ...coverage, maximum: e.target.value })
-                    }
-                  />
-                  <ButtonIcon
-                    iconName="all_inclusive"
-                    onClick={() =>
-                      setCoverage({ ...coverage, maximum: "Ilimitado" })
-                    }
-                    color="gray"
-                  />
-                </ContentRow>
-              </ContentRow>
-              <ContentRow gap="10px">
-                <ContentRow gap="5px">
-                  <InputText
-                    id="txtProductCoverageLack"
-                    label="Inicio vigencia (días)"
-                    width="190px"
-                    value={coverage.lack}
-                    onChange={(e: any) =>
-                      setCoverage({ ...coverage, lack: e.target.value })
-                    }
-                  />
-                  <ButtonIcon
-                    iconName="all_inclusive"
-                    onClick={() =>
-                      setCoverage({ ...coverage, lack: "Ilimitado" })
-                    }
-                    color="gray"
-                  />
-                </ContentRow>
-                <ContentRow gap="5px">
-                  <InputText
-                    id="txtProductCoverageEvents"
-                    label="Eventos (cantidad)"
-                    width="190px"
-                    value={coverage.events}
-                    onChange={(e: any) =>
-                      setCoverage({ ...coverage, events: e.target.value })
-                    }
-                  />
-                  <ButtonIcon
-                    iconName="all_inclusive"
-                    onClick={() =>
-                      setCoverage({ ...coverage, events: "Ilimitado" })
-                    }
-                    color="gray"
-                  />
-                </ContentRow>
-              </ContentRow>
-            </ContentCell>
-            <Button
-              text="Registrar"
-              width="200px"
-              onClick={saveCoverage}
-              enabled={isCompleteCoverageItem}
-            />
-          </ContentCell>
-        </Window>
-      </Modal>
-      <Modal showModal={showModalFamilyValues}>
-        <Window title="Campos" setClosed={setClosedModalFamilyValues}>
-          <ContentCell gap="30px">
-            <div
-              style={{
-                padding: "20px",
-                border: "1px solid silver",
-                borderRadius: "3px",
-              }}>
-              {familyValues.map((value, idx: number) => (
-                <CheckBox
-                  key={idx}
-                  label={value.name}
-                  width="auto"
-                  value={value.isChecked}
-                  onChange={() => handleCheckFamilyValue(value.id)}
-                />
-              ))}
-            </div>
-            <Button text="Registrar" width="200px" onClick={saveFamilyValues} />
-          </ContentCell>
-        </Window>
-      </Modal>
+      <ModalWindow
+        showModal={showModalCoverage}
+        title="Servicio"
+        setClosed={setClosedModalCoverage}>
+        <ProductCoverage
+          setCoverage={setCoverage}
+          coverage={coverage}
+          saveCoverage={saveCoverage}
+          isCompleteCoverageItem={isCompleteCoverageItem}
+        />
+      </ModalWindow>
+      <ModalWindow
+        showModal={showModalFamilyValues}
+        title="Campos"
+        setClosed={setClosedModalFamilyValues}>
+        <ProductFamilyValues
+          familyValues={familyValues}
+          saveFamilyValues={saveFamilyValues}
+          handleCheckFamilyValue={handleCheckFamilyValue}
+        />
+      </ModalWindow>
     </Fragment>
   );
 };

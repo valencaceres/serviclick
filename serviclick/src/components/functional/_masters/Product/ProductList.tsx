@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, Fragment } from "react";
 
 import {
   ContentCell,
@@ -18,12 +18,12 @@ import {
   TableIcons,
 } from "../../../ui/Table";
 import Icon from "../../../ui/Icon";
+import ModalWarning from "../../../ui/ModalWarning";
 
-import { useUI, useFamily, useProduct } from "../../../../hooks";
+import { useFamily, useProduct } from "../../../../hooks";
 
-const ProductList = ({ addProduct, editProduct, deleteProduct }: any) => {
-  const { setOptionsUI } = useUI();
-  const { listAll, list, getByFamilyId } = useProduct();
+const ProductList = ({ editProduct, deleteProduct }: any) => {
+  const { listAll, list, getByFamilyId, set, product } = useProduct();
   const { list: listFamilies } = useFamily();
 
   const initialSearchForm = {
@@ -32,6 +32,7 @@ const ProductList = ({ addProduct, editProduct, deleteProduct }: any) => {
   };
 
   const [search, setSearch] = useState(initialSearchForm);
+  const [showWarningDelete, setShowWarningDelete] = useState(false);
 
   const handleChangeFamily = (e: any) => {
     setSearch({
@@ -51,73 +52,102 @@ const ProductList = ({ addProduct, editProduct, deleteProduct }: any) => {
     search.family.value !== "" ? getByFamilyId(search.family.value) : listAll();
   };
 
+  const handleClickDelete = (product: any) => {
+    set(product);
+    setShowWarningDelete(true);
+  };
+
+  const handleClickDeleteOK = (product_id: string) => {
+    deleteProduct(product_id);
+    setShowWarningDelete(false);
+  };
+
+  const setClosedWarningDelete = () => {
+    setShowWarningDelete(false);
+  };
+
   return (
-    <ContentCell gap="10px">
-      <ContentRow gap="10px" align="center">
-        <ComboBox
-          label="Familia"
-          width="300px"
-          value={search.family.value}
-          onChange={handleChangeFamily}
-          placeHolder=":: Seleccione familia ::"
-          data={listFamilies}
-          dataValue="id"
-          dataText="name"
-        />
-        <InputText
-          label="Texto a buscar"
-          width="640px"
-          value={search.searchText.value}
-          onChange={handleChangeSearchText}
-        />
-        <ButtonIcon
-          iconName="search"
-          color="gray"
-          onClick={handleClickSearch}
-        />
-      </ContentRow>
-      <Table width="1000px">
-        <TableHeader>
-          <TableCell width="70px" align="center">
-            #
-          </TableCell>
-          <TableCell width="260px">Familia</TableCell>
-          <TableCell width="350px">Nombre</TableCell>
-          <TableCell width="120px">Público</TableCell>
-          <TableCell width="186px">Empresa</TableCell>
-        </TableHeader>
-        <TableDetail>
-          {list.map((product: any, idx: number) => (
-            <TableRow key={idx} className={"deleted"}>
-              <TableCell width="70px" align="center">
-                {idx + 1}
-              </TableCell>
-              <TableCell width="260px">{product.family_name}</TableCell>
-              <TableCell width="350px">{product.name}</TableCell>
-              <TableCell width="120px" align="flex-end">
-                {product.customerprice}
-              </TableCell>
-              <TableCell width="180px" align="flex-end">
-                {product.companyprice}
-                <TableIcons>
-                  <Icon
-                    iconName="edit"
-                    onClick={() => editProduct(product.id)}
-                  />
-                  <Icon
-                    iconName="delete"
-                    onClick={() => deleteProduct(product.id)}
-                  />
-                </TableIcons>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableDetail>
-      </Table>
-      <ContentRow align="flex-end">
-        <ContentCellSummary>{`${list.length} registros`}</ContentCellSummary>
-      </ContentRow>
-    </ContentCell>
+    <Fragment>
+      <ContentCell gap="10px">
+        <ContentRow gap="10px" align="center">
+          <ComboBox
+            label="Familia"
+            width="300px"
+            value={search.family.value}
+            onChange={handleChangeFamily}
+            placeHolder=":: Seleccione familia ::"
+            data={listFamilies}
+            dataValue="id"
+            dataText="name"
+          />
+          <InputText
+            label="Texto a buscar"
+            width="640px"
+            value={search.searchText.value}
+            onChange={handleChangeSearchText}
+          />
+          <ButtonIcon
+            iconName="search"
+            color="gray"
+            onClick={handleClickSearch}
+          />
+        </ContentRow>
+        <Table width="1000px">
+          <TableHeader>
+            <TableCell width="70px" align="center">
+              #
+            </TableCell>
+            <TableCell width="260px">Familia</TableCell>
+            <TableCell width="350px">Nombre</TableCell>
+            <TableCell width="120px">Público</TableCell>
+            <TableCell width="186px">Empresa</TableCell>
+          </TableHeader>
+          <TableDetail>
+            {list.map((product: any, idx: number) => (
+              <TableRow key={idx} className={"deleted"}>
+                <TableCell width="70px" align="center">
+                  {idx + 1}
+                </TableCell>
+                <TableCell width="260px">{product.family_name}</TableCell>
+                <TableCell width="350px">{product.name}</TableCell>
+                <TableCell width="120px" align="flex-end">
+                  {product.customerprice}
+                </TableCell>
+                <TableCell width="110px" align="flex-end">
+                  {product.companyprice}
+                </TableCell>
+                <TableCell width="68px" align="center">
+                  <TableIcons>
+                    <Icon
+                      iconName="edit"
+                      onClick={() => editProduct(product.id)}
+                    />
+                    <Icon
+                      iconName="delete"
+                      onClick={() => handleClickDelete(product)}
+                    />
+                  </TableIcons>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableDetail>
+        </Table>
+        <ContentRow align="flex-end">
+          <ContentCellSummary>{`${list.length} registros`}</ContentCellSummary>
+        </ContentRow>
+      </ContentCell>
+      <ModalWarning
+        showModal={showWarningDelete}
+        title="Eliminación de producto"
+        message={`Está seguro de eliminar el producto ${product.name}`}
+        setClosed={setClosedWarningDelete}
+        iconName="warning"
+        buttons={[
+          { text: "No", function: setClosedWarningDelete },
+          { text: "Si", function: () => handleClickDeleteOK(product.id) },
+        ]}
+      />
+    </Fragment>
   );
 };
 

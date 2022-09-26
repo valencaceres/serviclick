@@ -73,8 +73,7 @@
             color: white;
 
             &:hover {
-              font-weight: 600;
-              //color: red;
+              color: red;
             }
           }
         }
@@ -105,16 +104,10 @@
     .icons {
       display: flex;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: center;
       cursor: pointer;
-      gap: 5px;
-      padding-left: 20px;
-
-      span {
-        &:hover {
-          color: red;
-        }
-      }
+      gap: 0px;
+      //padding-left: 20px;
     }
   }
 }
