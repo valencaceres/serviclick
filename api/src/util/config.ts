@@ -31,6 +31,11 @@ const config = {
     },
     apiKey: { id: "12345678" },
   },
+  webHook: {
+    URL: {
+      reveniu: "https://webhook.serviclick.cl/reveniu",
+    },
+  },
 };
 
 export default config;

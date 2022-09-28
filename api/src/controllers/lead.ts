@@ -271,7 +271,7 @@ const createController = async (req: any, res: any) => {
       },
     });
 
-    const subscriptionResponse = await axios.post(
+    const subscriptionReveniuResponse = await axios.post(
       config.reveniu.URL.subscription,
       {
         plan_id: product.productPlan_id,
@@ -294,27 +294,35 @@ const createController = async (req: any, res: any) => {
       completion_url,
       security_token,
       status_code,
-    } = subscriptionResponse.data;
+    } = subscriptionReveniuResponse.data;
 
-    const responseRegisterSubscription = await registerSubscriptionModel(
-      lead_id,
-      subscription_id,
-      completion_url,
-      security_token,
-      status_code
-    );
+    const webhookResponse = await axios.post(config.webHook.URL.reveniu, {
+      data: {
+        data: {
+          subscription_id,
+        },
+      },
+    });
 
-    if (!responseRegisterSubscription.success) {
-      createLogger.error({
-        model: "lead/registerSubscriptionModel",
-        error: responseRegisterSubscription.error,
-      });
-      res.status(500).json({
-        error:
-          "registerSubscriptionModel: " + responseRegisterSubscription.error,
-      });
-      return;
-    }
+    // const responseRegisterSubscription = await registerSubscriptionModel(
+    //   lead_id,
+    //   subscription_id,
+    //   completion_url,
+    //   security_token,
+    //   status_code
+    // );
+
+    // if (!responseRegisterSubscription.success) {
+    //   createLogger.error({
+    //     model: "lead/registerSubscriptionModel",
+    //     error: responseRegisterSubscription.error,
+    //   });
+    //   res.status(500).json({
+    //     error:
+    //       "registerSubscriptionModel: " + responseRegisterSubscription.error,
+    //   });
+    //   return;
+    // }
 
     const leadResponseData = {
       id: lead_id,
