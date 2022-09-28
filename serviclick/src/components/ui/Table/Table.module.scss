@@ -26,6 +26,9 @@
       text-align: center;
       justify-content: center;
       color: $dark-gray-color;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 
@@ -85,6 +88,9 @@
         color: $dark-gray-color;
         font-family: Oswald;
         height: auto;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
 
         @media screen and (min-width: 1200px) {
           height: 40px;

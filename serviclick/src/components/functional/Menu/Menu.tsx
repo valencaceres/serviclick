@@ -21,12 +21,11 @@ const menu = [
   {
     icon: <Icon iconName="directions_car" />,
     text: "Procesos",
-    subOptions: [{ text: "Clientes", route: "/masters/products" }],
   },
   {
     icon: <Icon iconName="receipt_long" />,
     text: "Reportes",
-    subOptions: [{ text: "Cobranza", route: "/masters/products" }],
+    subOptions: [{ text: "Transacciones", route: "/reports/transactions" }],
   },
 ];
 
