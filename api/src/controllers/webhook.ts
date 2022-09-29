@@ -19,6 +19,7 @@ const subscriptionActivated = async (req: any, res: any) => {
         model: "lead/getBySubscriptionId",
         error: leadResponse.error,
       });
+      res.status(500).json(leadResponse.error);
       return;
     }
 
@@ -31,6 +32,7 @@ const subscriptionActivated = async (req: any, res: any) => {
         model: "leadInsured/getInsuredById",
         error: leadInsuredResponse.error,
       });
+      res.status(500).json(leadInsuredResponse.error);
       return;
     }
 
@@ -42,6 +44,7 @@ const subscriptionActivated = async (req: any, res: any) => {
           model: "company/getByIdModel",
           error: companyResponse.error,
         });
+        res.status(500).json(companyResponse.error);
         return;
       }
 
@@ -54,6 +57,7 @@ const subscriptionActivated = async (req: any, res: any) => {
           model: "userCompany/create",
           error: userCompanyResponse.error,
         });
+        res.status(500).json(userCompanyResponse.error);
         return;
       }
 
@@ -68,6 +72,7 @@ const subscriptionActivated = async (req: any, res: any) => {
           model: "userCompany/assignPassword",
           error: userCopmpanyResponse.error,
         });
+        res.status(500).json(userCopmpanyResponse.error);
         return;
       }
 
@@ -89,6 +94,7 @@ const subscriptionActivated = async (req: any, res: any) => {
           model: "email",
           error: emailResponse.error,
         });
+        res.status(500).json(emailResponse.error);
         return;
       }
     }
@@ -115,7 +121,6 @@ const subscriptionActivated = async (req: any, res: any) => {
           insured_id: insured.id,
           error: "User error: " + userInsuredResponse.error,
         });
-        return;
       }
 
       const generatedPassword = generateGenericPassword();
@@ -133,7 +138,6 @@ const subscriptionActivated = async (req: any, res: any) => {
           insured_id: insured.id,
           error: "Password error: " + userPasswordResponse.error,
         });
-        return;
       }
 
       const emailResponse: any = await axios.post(
@@ -154,6 +158,7 @@ const subscriptionActivated = async (req: any, res: any) => {
           model: "email",
           error: emailResponse.error,
         });
+        res.status(500).json(emailResponse.error);
         return;
       }
     });
@@ -166,12 +171,13 @@ const subscriptionActivated = async (req: any, res: any) => {
       controller: "webhook/subscriptionActivated",
       message: "OK",
     });
-    return "OK";
+    res.status(200).json("OK");
   } catch (e) {
     createLogger.error({
       controller: "webhook/subscriptionActivated",
       error: (e as Error).message,
     });
+    res.status(500).json((e as Error).message);
     return;
   }
 };

@@ -28,12 +28,17 @@ const reveniuController = async (req: any, res: any) => {
 
     console.log(event);
     if (event === "subscription_activated") {
-      const webHookResponse = await axios.get(
+      const webHookResponse = await axios.post(
         config.webHook.URL.subscriptionActivated,
+        {
+          subscription_id,
+        },
         {
           headers: { id: config.apiKey },
         }
       );
+
+      console.log(webHookResponse);
     }
 
     const subscriptionReveniuResponse = await axios.get(
