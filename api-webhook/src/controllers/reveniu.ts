@@ -37,8 +37,6 @@ const reveniuController = async (req: any, res: any) => {
           headers: { id: config.apiKey },
         }
       );
-
-      console.log(webHookResponse);
     }
 
     const subscriptionReveniuResponse = await axios.get(
