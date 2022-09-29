@@ -1,9 +1,9 @@
 import { Router } from "express";
 
-import { feedbackController } from "../controllers/webhook";
+import { subscriptionActivated } from "../controllers/webhook";
 
 const WebHookRouter = Router();
 
-WebHookRouter.post("/", feedbackController);
+WebHookRouter.post("/subscriptionActivated", subscriptionActivated);
 
 export default WebHookRouter;

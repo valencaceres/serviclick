@@ -2,6 +2,7 @@ import axios from "axios";
 
 import createLogger from "../util/logger";
 import { createSubscriptionModel } from "../models/subscription";
+import { updateSubscription } from "../models/lead";
 import { createPaymentModel } from "../models/payment";
 
 import config from "../util/config";
@@ -9,7 +10,31 @@ import config from "../util/config";
 const reveniuController = async (req: any, res: any) => {
   try {
     const { data } = req.body;
-    const { subscription_id } = data.data;
+    const { event } = data;
+    const { subscription_id, lead_id } = data.data;
+
+    if (lead_id) {
+      const leadResponse = await updateSubscription(lead_id, subscription_id);
+
+      if (!leadResponse.success) {
+        createLogger.error({
+          model: "reveniu/updateSubscription",
+          error: leadResponse.error,
+        });
+        res.status(500).json({ error: leadResponse.error });
+        return;
+      }
+    }
+
+    console.log(event);
+    if (event === "subscription_activated") {
+      const webHookResponse = await axios.get(
+        config.webHook.URL.subscriptionActivated,
+        {
+          headers: { id: config.apiKey },
+        }
+      );
+    }
 
     const subscriptionReveniuResponse = await axios.get(
       `${config.reveniu.URL.subscription}${subscription_id}`,

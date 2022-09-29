@@ -72,8 +72,7 @@ const getById: any = async (id: string) => {
                 LEA.subscription_id,
                 LEA.completion_url,
                 LEA.security_token,
-                LEA.status_code,
-                LEA.policy_id
+                LEA.status_code
         FROM    app.lead LEA LEFT OUTER JOIN app.customer CUS ON LEA.customer_id = CUS.id
                             LEFT OUTER JOIN app.company COM ON LEA.company_id = COM.id
         WHERE   LEA.id = $1`,
@@ -113,8 +112,7 @@ const getBySubscriptionId: any = async (subscription_id: string) => {
               LEA.subscription_id,
               LEA.completion_url,
               LEA.security_token,
-              LEA.status_code,
-              LEA.policy_id
+              LEA.status_code
         FROM    app.lead LEA LEFT OUTER JOIN app.customer CUS ON LEA.customer_id = CUS.id
                              LEFT OUTER JOIN app.company COM ON LEA.company_id = COM.id
         WHERE   LEA.subscription_id = $1`,

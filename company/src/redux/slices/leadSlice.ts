@@ -73,7 +73,6 @@ type LeadT = {
   product: ProductT;
   insured: InsuredT[];
   subscription: SubscriptionT;
-  policy_id: string;
   isActive: boolean;
 };
 
@@ -126,7 +125,6 @@ const initialState: StateT = {
       security_token: "",
       status_code: 0,
     },
-    policy_id: "",
     isActive: false,
   },
   isLoading: false,

@@ -25,6 +25,12 @@ const config = {
       error: process.env.ERROR || "http://localhost:3000/resume/error",
     },
   },
+  webHook: {
+    URL: {
+      subscriptionActivated:
+        "https://api.serviclick.cl/api/webHook/subscriptionActivated",
+    },
+  },
   email: {
     URL: {
       send: "https://api-email.serviclick.cl/api/email/send",

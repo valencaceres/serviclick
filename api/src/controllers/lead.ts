@@ -300,6 +300,7 @@ const createController = async (req: any, res: any) => {
       data: {
         data: {
           subscription_id,
+          lead_id,
         },
       },
     });
@@ -389,7 +390,6 @@ const createController = async (req: any, res: any) => {
         security_token,
         status_code,
       },
-      policy_id: "",
       isActive: true,
     };
 
@@ -485,7 +485,6 @@ const getData = async (leadResponse: any, res: any) => {
       completion_url,
       security_token,
       status_code,
-      policy_id,
     } = leadResponse.data;
 
     const leadProductResponse = await getProductByLeadId(id);
@@ -621,7 +620,6 @@ const getData = async (leadResponse: any, res: any) => {
         security_token,
         status_code,
       },
-      policy_id,
       isActive: true,
     };
 

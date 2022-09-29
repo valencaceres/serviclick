@@ -1,7 +1,6 @@
 import axios from "axios";
 
 import createLogger from "../util/logger";
-import * as SubscriptionModel from "../models/subscription";
 import * as UserInsuredModel from "../models/userInsured";
 import * as UserCompanyModel from "../models/userCompany";
 import * as LeadModel from "../models/lead";
@@ -10,42 +9,10 @@ import * as CompanyModel from "../models/company";
 import { generateGenericPassword } from "../util/user";
 import config from "../util/config";
 
-const feedbackController = async (req: any, res: any) => {
-  const { data } = req.body;
-  switch (data.event) {
-    case "subscription_activated":
-      await subscriptionActivated(req.body.data);
-      break;
-    case "subscription_renewal_cancelled":
-      break;
-    case "subscription_payment_succeeded":
-      await subscriptionPaymentSucceeded(req.body.data);
-      break;
-    case "subscription_payment_in_recovery":
-      break;
-  }
-  res.status(200).json("OK");
-};
-
-const subscriptionActivated = async (data: any) => {
-  const subscription_id = data.data.subscription_id;
-  const event = data.event;
+const subscriptionActivated = async (req: any, res: any) => {
+  const { subscription_id } = req.body;
 
   try {
-    const subscriptionResponse = await SubscriptionModel.createModel(
-      subscription_id,
-      event,
-      ""
-    );
-
-    if (!subscriptionResponse.success) {
-      createLogger.error({
-        model: "subscription/createModel",
-        error: subscriptionResponse.error,
-      });
-      return;
-    }
-
     const leadResponse = await LeadModel.getBySubscriptionId(subscription_id);
     if (!leadResponse.success) {
       createLogger.error({
@@ -196,7 +163,7 @@ const subscriptionActivated = async (data: any) => {
     }
 
     createLogger.info({
-      controller: "webhook",
+      controller: "webhook/subscriptionActivated",
       message: "OK",
     });
     return "OK";
@@ -209,37 +176,4 @@ const subscriptionActivated = async (data: any) => {
   }
 };
 
-const subscriptionPaymentSucceeded = async (data: any) => {
-  const { subscription_id, buy_order } = data.data;
-  const event = data.event;
-
-  try {
-    const subscriptionResponse = await SubscriptionModel.createModel(
-      subscription_id,
-      event,
-      buy_order
-    );
-
-    if (!subscriptionResponse.success) {
-      createLogger.error({
-        model: "subscription/createModel",
-        error: subscriptionResponse.error,
-      });
-      return;
-    }
-
-    createLogger.info({
-      controller: "webhook",
-      message: "OK",
-    });
-    return "OK";
-  } catch (e) {
-    createLogger.error({
-      controller: "webhook/subscriptionPaymentSucceeded",
-      error: (e as Error).message,
-    });
-    return;
-  }
-};
-
-export { feedbackController };
+export { subscriptionActivated };
