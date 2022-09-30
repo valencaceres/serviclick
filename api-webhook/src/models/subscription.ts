@@ -1,3 +1,4 @@
+import moment from "moment";
 import { format } from "date-fns";
 
 import pool from "../util/database";
@@ -60,7 +61,7 @@ const createSubscriptionModel: any = async (
           interval_id,
           plan_id,
           plan_amount,
-          last_payment_date,
+          moment(last_payment_date).local().format(),
           subscription_id,
         ]
       );
@@ -84,7 +85,7 @@ const createSubscriptionModel: any = async (
           interval_id,
           plan_id,
           plan_amount,
-          last_payment_date,
+          moment(last_payment_date).local().format(),
         ]
       );
     }

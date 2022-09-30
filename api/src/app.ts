@@ -28,6 +28,7 @@ class App {
   }
 
   routes() {
+    this.server.use("/api/status", reqLogger, routes.StatusRouter);
     this.server.use("/api/user", reqLogger, routes.UserRouter);
     this.server.use("/api/userInsured", reqLogger, routes.UserInsuredRouter);
     this.server.use("/api/userCompany", reqLogger, routes.UserCompanyRouter);
@@ -38,6 +39,7 @@ class App {
     this.server.use("/api/product", reqLogger, routes.ProductRouter);
     this.server.use("/api/lead", reqLogger, routes.LeadRouter);
     this.server.use("/api/webhook", reqLogger, routes.WebHookRouter);
+    this.server.use("/api/transaction", reqLogger, routes.TransactionRouter);
   }
 }
 

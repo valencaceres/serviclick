@@ -1,13 +1,23 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 import uiSlice from "../slices/uiSlice";
+import statusSlice from "../slices/statusSlice";
 import userSlice from "../slices/userSlice";
 import channelSlice from "../slices/channelSlice";
 import familySlice from "../slices/familySlice";
 import productSlice from "../slices/productSlice";
+import transactionSlice from "../slices/transactionSlice";
 
 const store = configureStore({
-  reducer: { uiSlice, userSlice, channelSlice, familySlice, productSlice },
+  reducer: {
+    uiSlice,
+    statusSlice,
+    userSlice,
+    channelSlice,
+    familySlice,
+    productSlice,
+    transactionSlice,
+  },
 });
 
 export default store;

@@ -19,74 +19,174 @@ import {
   TableIcons,
 } from "../../../ui/Table";
 
-/*
-select	DATE(sub.date) as date,
-        sub.date :: timestamp :: time as time,
-        case when cus.name is null then com.companyname else cus.name end as client_name,
-        pro.name,
-        1 as num_insured,
-        sub.event,
-        case when cus.name is null then pro.companyprice  else pro.customerprice  end as client_name
-from	  app.lead lea
-        inner join app.subscription sub on lea.subscription_id = sub.subscription_id
-        inner join app.leadproduct lpr on lea.id = lpr.lead_id
-        inner join app.product pro on lpr.product_id = pro.id
-        inner join app.leadinsured lin on lea.id = lin.lead_id
-        left outer join app.customer cus on lea.customer_id = cus.id
-        left outer join app.company com on lea.company_id = com.id
-order 	by
-        sub.subscription_id,
-        sub.date
-*/
+import {
+  unFormatRut,
+  formatRut,
+  currencyFormat,
+} from "../../../../utils/format";
+import { isValidRut } from "../../../../utils/validations";
 
-const TransactionsList = () => {
+import { useChannel, useStatus, useTransaction } from "../../../../hooks";
+
+const TransactionsList = ({ search }: any) => {
+  const { list: channelList } = useChannel();
+  const { statusList } = useStatus();
+  const { getByFilters, resetTransactionList, transactionList } =
+    useTransaction();
+
+  type SearchFormT = {
+    channelId: string;
+    clientType: string;
+    rut: string;
+    period: string;
+    statusId: string;
+  };
+
+  type ResumeT = {
+    records: number;
+    insured: number;
+    total: number;
+  };
+
+  const clientTypes = [
+    { id: "p", name: "Persona Natural" },
+    { id: "c", name: "Empresa" },
+  ];
+
+  const periods = [
+    { id: "d", name: "Hoy" },
+    { id: "w", name: "Esta semana" },
+    { id: "m", name: "Septiembre 2022" },
+    { id: "y", name: "Año 2022" },
+  ];
+
+  const initialDataSearchForm = {
+    channelId: "",
+    clientType: "",
+    rut: "",
+    period: "d",
+    statusId: "",
+  };
+
+  const initialDataResume = {
+    records: 0,
+    insured: 0,
+    total: 0,
+  };
+
+  const [searchForm, setSearchForm] = useState<SearchFormT>(
+    initialDataSearchForm
+  );
+  const [resume, setResume] = useState<ResumeT>(initialDataResume);
+
+  const changeSearchformValue = (field: string, value: string) => {
+    setSearchForm({ ...searchForm, [field]: value });
+  };
+
+  const handleFocusRut = (event: any) => {
+    event.target.value = unFormatRut(event.target.value);
+  };
+
+  const handleBlurRut = (event: any) => {
+    const isValid = isValidRut(event.target.value);
+
+    event.target.value = formatRut(event.target.value);
+
+    changeSearchformValue("rut", event.target.value);
+  };
+
+  const handleClickSearch = () => {
+    resetTransactionList();
+
+    getByFilters(
+      searchForm.channelId,
+      searchForm.clientType,
+      searchForm.rut,
+      searchForm.period,
+      searchForm.statusId
+    );
+  };
+
+  useEffect(() => {
+    resetTransactionList();
+    handleClickSearch();
+    if (transactionList.length > 0) {
+      setResume({
+        records: transactionList.length,
+        insured: transactionList
+          .map((transaction) => transaction.num_insured)
+          .reduce((acc, num_insured) => acc + num_insured),
+        total: transactionList
+          .map((transaction) => transaction.amount)
+          .reduce((acc, amount) => acc + amount),
+      });
+    }
+  }, []);
+
   return (
     <ContentCell gap="5px">
       <ContentRow gap="5px" align="center">
         <ComboBox
           label="Canal"
           width="230px"
-          value=""
-          onChange={() => {}}
+          value={searchForm.channelId}
+          onChange={(e: any) =>
+            changeSearchformValue("channelId", e.target.value)
+          }
           placeHolder=":: Seleccione canal ::"
-          data={[]}
+          data={channelList}
           dataValue="id"
           dataText="name"
         />
         <ComboBox
           label="Tipo cliente"
           width="230px"
-          value=""
-          onChange={() => {}}
+          value={searchForm.clientType}
+          onChange={(e: any) =>
+            changeSearchformValue("clientType", e.target.value)
+          }
           placeHolder=":: Seleccione tipo cliente ::"
-          data={[]}
+          data={clientTypes}
           dataValue="id"
           dataText="name"
         />
-        <InputText width="170px" label="Rut" value="" />
+        <InputText
+          width="170px"
+          label="Rut"
+          maxLength={9}
+          value={searchForm.rut}
+          onFocus={handleFocusRut}
+          onBlur={handleBlurRut}
+          onChange={(e: any) => changeSearchformValue("rut", e.target.value)}
+        />
         <ComboBox
           label="Período"
           width="230px"
-          value=""
-          onChange={() => {}}
-          placeHolder=":: Seleccione período ::"
-          data={[]}
+          value={searchForm.period}
+          onChange={(e: any) => changeSearchformValue("period", e.target.value)}
+          data={periods}
           dataValue="id"
           dataText="name"
         />
         <ComboBox
           label="Estado transacción"
-          width="170px"
-          value=""
-          onChange={() => {}}
-          placeHolder=":: Seleccione estado transacción ::"
-          data={[]}
+          width="225px"
+          value={searchForm.statusId?.toString() || ""}
+          onChange={(e: any) =>
+            changeSearchformValue("statusId", e.target.value)
+          }
+          placeHolder=":: Seleccione ::"
+          data={statusList}
           dataValue="id"
           dataText="name"
         />
-        <ButtonIcon iconName="search" color="gray" />
+        <ButtonIcon
+          iconName="search"
+          color="gray"
+          onClick={handleClickSearch}
+        />
       </ContentRow>
-      <Table width="1149px" height="422px">
+      <Table width="1149px" height="calc(100vh - 210px)">
         <TableHeader>
           <TableCell width="69px" align="center">
             #
@@ -97,15 +197,45 @@ const TransactionsList = () => {
           <TableCell width="197px">Producto</TableCell>
           <TableCell width="83px">N° Aseg.</TableCell>
           <TableCell width="72px">Estado</TableCell>
-          <TableCell width="85px">Monto</TableCell>
-          <TableCell width="49px"></TableCell>
+          <TableCell width="137px">Monto</TableCell>
+          {/* <TableCell width="49px"></TableCell> */}
         </TableHeader>
-        <TableDetail></TableDetail>
+        <TableDetail>
+          {transactionList.map((transaction: any, idx: number) => (
+            <TableRow key={idx}>
+              <TableCell width="69px" align="center">
+                {idx + 1}
+              </TableCell>
+              <TableCell width="95px" align="center">
+                {transaction.date}
+              </TableCell>
+              <TableCell width="55px" align="center">
+                {transaction.time}
+              </TableCell>
+              <TableCell width="421px">{transaction.client_name}</TableCell>
+              <TableCell width="197px">{transaction.product_name}</TableCell>
+              <TableCell width="83px" align="flex-end">
+                {transaction.num_insured}
+              </TableCell>
+              <TableCell width="72px">{transaction.status_name}</TableCell>
+              <TableCell width="130px" align="flex-end">
+                {currencyFormat(transaction.amount)}
+              </TableCell>
+              {/* <TableCell width="45px" align="center">
+                <TableIcons>
+                  <Icon iconName="search" onClick={() => {}} />
+                </TableIcons>
+              </TableCell> */}
+            </TableRow>
+          ))}
+        </TableDetail>
       </Table>
       <ContentRow gap="5px">
-        <ContentCellSummary>registros</ContentCellSummary>
-        <ContentCellSummary>asegurados</ContentCellSummary>
-        <ContentCellSummary>Total</ContentCellSummary>
+        <ContentCellSummary>{resume.records} registros</ContentCellSummary>
+        <ContentCellSummary>{resume.insured} asegurados</ContentCellSummary>
+        <ContentCellSummary>
+          {currencyFormat(resume.total)} Total
+        </ContentCellSummary>
       </ContentRow>
     </ContentCell>
   );

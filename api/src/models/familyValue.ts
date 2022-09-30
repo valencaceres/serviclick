@@ -7,13 +7,11 @@ const createFamilyValue: any = async (family_id: string, value: any) => {
     let resultQuery: any;
 
     if (id !== "") {
-      console.log({ type: 1, family_id, id, name });
       resultQuery = await pool.query(
         "INSERT INTO app.familyValue(id, family_id, name) VALUES ($1, $2, $3) RETURNING *",
         [id, family_id, name]
       );
     } else {
-      console.log({ type: 2, family_id, name });
       resultQuery = await pool.query(
         "INSERT INTO app.familyValue(family_id, name) VALUES ($1, $2) RETURNING *",
         [family_id, name]

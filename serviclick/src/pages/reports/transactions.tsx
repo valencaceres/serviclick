@@ -9,15 +9,19 @@ import {
   TransactionsList,
 } from "../../components/functional/_reports/Transactions";
 
-import { useUI, useFamily, useProduct } from "../../hooks";
+import { useUI, useChannel, useStatus } from "../../hooks";
 
 const Transactions = () => {
   const router = useRouter();
 
   const { setTitleUI } = useUI();
+  const { listAll: getAllChannels } = useChannel();
+  const { getAllStatus } = useStatus();
 
   useEffect(() => {
     setTitleUI("Transacciones");
+    getAllChannels();
+    getAllStatus();
   }, []);
 
   return router.isReady && router.query.id ? (
@@ -35,7 +39,6 @@ const Transactions = () => {
       <TransactionsList />
       <FloatMenu>
         <ButtonIcon iconName="home" />
-        <ButtonIcon iconName="refresh" />
         <ButtonIcon iconName="cloud_download" />
       </FloatMenu>
     </Fragment>

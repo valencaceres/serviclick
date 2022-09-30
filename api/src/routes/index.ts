@@ -1,3 +1,4 @@
+import StatusRouter from "./status";
 import UserRouter from "./user";
 import UserInsuredRouter from "./userInsured";
 import UserCompanyRouter from "./userCompany";
@@ -8,8 +9,10 @@ import InsuredRouter from "./insured";
 import ProductRouter from "./product";
 import LeadRouter from "./lead";
 import WebHookRouter from "./webhook";
+import TransactionRouter from "./transaction";
 
 export {
+  StatusRouter,
   UserRouter,
   UserInsuredRouter,
   UserCompanyRouter,
@@ -20,4 +23,5 @@ export {
   ProductRouter,
   LeadRouter,
   WebHookRouter,
+  TransactionRouter,
 };

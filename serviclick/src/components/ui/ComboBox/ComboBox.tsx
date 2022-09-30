@@ -6,7 +6,7 @@ type ComboBoxT = {
   width: string;
   value: string;
   onChange: any;
-  placeHolder: string;
+  placeHolder?: string;
   display?: boolean;
   data: any;
   dataValue: string;
@@ -34,7 +34,7 @@ const ComboBox = ({
         placeholder=" "
         className={styles.combo + (label ? "" : " " + styles.noLabel)}
         style={{ display: display ? "block" : "none" }}>
-        <option value="">{placeHolder}</option>
+        {placeHolder && <option value="">{placeHolder}</option>}
         {data.map((item: any, idx: number) => (
           <option key={idx} value={item[dataValue]}>
             {item[dataText]}

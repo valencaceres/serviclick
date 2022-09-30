@@ -1,3 +1,5 @@
+import moment from "moment";
+
 import pool from "../util/database";
 
 const createPaymentModel: any = async (
@@ -33,7 +35,7 @@ const createPaymentModel: any = async (
         RETURNING *`,
         [
           payment_id,
-          date,
+          moment(date).local().format(),
           subscription_id,
           amount,
           buy_order,

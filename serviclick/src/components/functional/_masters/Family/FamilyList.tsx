@@ -50,10 +50,8 @@ const FamilyList = () => {
 
   const saveFamily = (id: string, name: string, values: any) => {
     if (id === "") {
-      console.log(name, values);
       create(name, values);
     } else {
-      console.log(id, name, values);
       update(id, name, values);
     }
     setShowModal(false);

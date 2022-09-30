@@ -26,7 +26,6 @@ const reveniuController = async (req: any, res: any) => {
       }
     }
 
-    console.log(event);
     if (event === "subscription_activated") {
       const webHookResponse = await axios.post(
         config.webHook.URL.subscriptionActivated,

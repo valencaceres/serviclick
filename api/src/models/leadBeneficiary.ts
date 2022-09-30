@@ -9,7 +9,6 @@ const deleteByLeadId: any = async (lead_id: string, insured_id: string) => {
 
     return { success: true, data: "Beneficiaries deleted", error: null };
   } catch (e) {
-    console.log(e);
     return { success: false, data: null, error: (e as Error).message };
   }
 };
