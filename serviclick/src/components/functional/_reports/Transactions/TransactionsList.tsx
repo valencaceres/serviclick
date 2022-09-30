@@ -110,18 +110,25 @@ const TransactionsList = ({ search }: any) => {
   useEffect(() => {
     resetTransactionList();
     handleClickSearch();
-    if (transactionList.length > 0) {
-      setResume({
-        records: transactionList.length,
-        insured: transactionList
-          .map((transaction) => transaction.num_insured)
-          .reduce((acc, num_insured) => acc + num_insured),
-        total: transactionList
-          .map((transaction) => transaction.amount)
-          .reduce((acc, amount) => acc + amount),
-      });
-    }
   }, []);
+
+  useEffect(() => {
+    setResume({
+      records: transactionList.length,
+      insured:
+        transactionList.length > 0
+          ? transactionList
+              .map((transaction) => transaction.num_insured)
+              .reduce((acc, num_insured) => acc + num_insured)
+          : 0,
+      total:
+        transactionList.length > 0
+          ? transactionList
+              .map((transaction) => transaction.amount)
+              .reduce((acc, amount) => acc + amount)
+          : 0,
+    });
+  }, [transactionList.length]);
 
   return (
     <ContentCell gap="5px">
