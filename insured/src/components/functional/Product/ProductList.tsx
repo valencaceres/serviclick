@@ -59,15 +59,19 @@ const ProductList = () => {
   }, [userInsured]);
 
   const handleClickOption = (product: ProductT) => {
+    console.log(
+      userInsured.leads
+        .filter((lead) => lead.lead_id === product.lead_id)[0]
+        .products.filter((item) => item.id === product.id)[0].beneficiaries
+    );
+
     dispatch(
       setSession({
         ...session,
         lead_id: product.lead_id,
         product_id: product.id,
         numberBeneficiaries: product.numberBeneficiaries,
-        beneficiaries: userInsured.leads
-          .filter((lead) => lead.lead_id === product.lead_id)[0]
-          .products.filter((item) => item.id === product.id)[0].beneficiaries,
+        beneficiaries: session.beneficiaries,
       })
     );
     router.push(`/product?id=${product.id}`);
@@ -81,8 +85,7 @@ const ProductList = () => {
           <button
             className={styles.option}
             key={idx}
-            onClick={() => handleClickOption(product)}
-          >
+            onClick={() => handleClickOption(product)}>
             <Icon iconName={product.family_icon} />
             {product.name}
           </button>

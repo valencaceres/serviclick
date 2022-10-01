@@ -104,6 +104,7 @@ export default userInsuredSlice.reducer;
 
 export const validateUserInsured =
   (login: string, password: string) => (dispatch: any) => {
+    alert(1);
     axios
       .post(
         `${config.server}/api/userInsured/validate`,
@@ -121,6 +122,7 @@ export const validateUserInsured =
   };
 
 export const getByEmail = (email: string) => (dispatch: any) => {
+  alert(2);
   axios
     .get(`${config.server}/api/userInsured/getByEmail/${email}`, {
       headers: {
