@@ -114,7 +114,7 @@ const Beneficiary = ({ register }: any) => {
       name: { value: beneficiary.name, isValid: true },
       paternalLastName: { value: beneficiary.paternalLastName, isValid: true },
       maternalLastName: { value: beneficiary.maternalLastName, isValid: true },
-      birthDate: { value: "", isValid: true },
+      birthDate: { value: beneficiary.birthDate, isValid: true },
       address: { value: lead.customer.address, isValid: true },
       district: { value: lead.customer.district, isValid: true },
       email: { value: beneficiary.email, isValid: true },

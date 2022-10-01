@@ -9,8 +9,6 @@ import { unFormatRut, formatRut } from "../../../../utils/format";
 import { numberRegEx, rutRegEx, emailRegEx } from "../../../../utils/regEx";
 import { rutValidate } from "../../../../utils/validations";
 
-import { useAppSelector } from "../../../../redux/hooks";
-
 import styles from "./Beneficiary.module.scss";
 
 const BeneficiaryDetail = ({
@@ -18,8 +16,6 @@ const BeneficiaryDetail = ({
   setBeneficiaryForm,
   register,
 }: any) => {
-  const { isDesktop } = useAppSelector((state) => state.uiSlice);
-
   const [isEnabled, setIsEnabled] = useState(false);
 
   const isValidRut = (rut: string) => {
