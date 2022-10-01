@@ -53,7 +53,7 @@ const ProductPage = () => {
           )}
         </Content>
         <Buttons>
-          {router.isReady && router.query.id && product.beneficiaries > 0 ? (
+          {router.isReady && router.query.id ? (
             <Button
               onClick={handleBneficiariesClick}
               text="Beneficiarios"

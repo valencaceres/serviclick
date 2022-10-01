@@ -87,7 +87,8 @@ const getByEmail: any = async (email: string) => {
         inner join app.leadInsured LIN on LEA.id = LIN.lead_id
         inner join app.insured INS on LIN.insured_id = INS.id
       where 
-        USR.login = $1
+        USR.login = $1 AND
+        SUS.status_id <> 10
       order by
         LEA.id,
         PRO.id,
