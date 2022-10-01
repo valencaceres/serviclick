@@ -26,7 +26,7 @@ const getByLeadId: any = async (lead_id: string) => {
                 INS.name,
                 INS.paternallastname,
                 INS.maternallastname,
-                INS.birthdate,
+                to_char(INS.birthdate, 'YYYY-MM-DD') AS birthdate,
                 INS.address,
                 INS.district,
                 INS.email,
