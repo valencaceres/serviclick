@@ -102,7 +102,7 @@ const getBySubscriptionId: any = async (subscription_id: string) => {
               CASE WHEN CUS.name IS NULL THEN '' ELSE CUS.name END AS customer_name,
               CASE WHEN CUS.paternallastname IS NULL THEN '' ELSE CUS.paternallastname END AS customer_paternallastname,
               CASE WHEN CUS.maternallastname IS NULL THEN '' ELSE CUS.maternallastname END AS customer_maternallastname,
-              CUS.birthdate AS customer_birthdate,
+              to_char(CUS.birthdate, 'YYYY-MM-DD') AS customer_birthdate,
               CASE WHEN CUS.address IS NULL THEN '' ELSE CUS.address END AS customer_address,
               CASE WHEN CUS.district IS NULL THEN '' ELSE CUS.district END AS customer_district,
               CASE WHEN CUS.email IS NULL THEN '' ELSE CUS.email END AS customer_email,
