@@ -92,7 +92,6 @@ const getByEmail: any = async (email: string) => {
         left outer join app.beneficiary BEN on LBE.beneficiary_id = BEN.id
       where 
         USR.login = $1
-        and SUS.event = 'subscription_activated'
       order by
         PRO.id,
         LEA.id`,
