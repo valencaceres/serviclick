@@ -74,7 +74,7 @@ const getByEmail: any = async (email: string) => {
         BEN.name as beneficiary_name,
         BEN.paternallastname as beneficiary_paternallastname,
         BEN.maternallastname as beneficiary_maternallastname,
-        BEN.birthdate as beneficiary_birthdate,
+        to_char(BEN.birthdate, 'YYYY-MM-DD') as beneficiary_birthdate,
         BEN.address as beneficiary_address,
         BEN.district as beneficiary_district,
         BEN.email as beneficiary_email,

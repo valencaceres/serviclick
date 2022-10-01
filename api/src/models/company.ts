@@ -185,7 +185,7 @@ const getProductsAndInsuredByIdModel: any = async (id: string) => {
         INS.name as insured_name,
         INS.paternallastname as insured_paternallastname,
         INS.maternallastname as insured_maternallastname,
-        INS.birthdate as insured_birthdate,
+        to_char(INS.birthdate, 'YYYY-MM-DD') as insured_birthdate,
         INS.address as insured_address,
         INS.district as insured_district,
         INS.email as insured_email,

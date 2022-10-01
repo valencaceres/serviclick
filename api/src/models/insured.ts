@@ -87,7 +87,7 @@ const getByRutModel: any = async (rut: string) => {
               name,
               paternallastname,
               maternallastname,
-              to_char(birthdate, 'YYYY-MM-DD') AS birthdate,,
+              to_char(birthdate, 'YYYY-MM-DD') AS birthdate,
               address,
               district,
               email,

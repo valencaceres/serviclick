@@ -140,7 +140,7 @@ const getInsuredById: any = async (id: string) => {
                 INR.name,
                 INR.paternallastname,
                 INR.maternallastname,
-                INS.birthdate,
+                to_char(INR.birthdate, 'YYYY-MM-DD') as birthdate,
                 INR.address,
                 INR.district,
                 INR.email,
