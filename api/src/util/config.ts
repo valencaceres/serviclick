@@ -13,6 +13,7 @@ const config = {
   connectionLimit: 100,
   queueLimit: 0,
   reveniu: {
+    // production.reveniu.com
     URL: {
       plan: "https://integration.reveniu.com/api/v1/plans/",
       subscription: "https://integration.reveniu.com/api/v1/subscriptions/",

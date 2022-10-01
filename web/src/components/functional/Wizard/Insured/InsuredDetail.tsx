@@ -71,10 +71,21 @@ const InsuredDetail = ({ insuredForm, setInsuredForm, register }: any) => {
       },
     });
   };
+
   const handleChangeMaternalLastName = (event: any) => {
     setInsuredForm({
       ...insuredForm,
       maternalLastName: {
+        value: event.target.value,
+        isValid: true,
+      },
+    });
+  };
+
+  const handleChangeBirthDate = (event: any) => {
+    setInsuredForm({
+      ...insuredForm,
+      birthDate: {
         value: event.target.value,
         isValid: true,
       },
@@ -137,6 +148,8 @@ const InsuredDetail = ({ insuredForm, setInsuredForm, register }: any) => {
       insuredForm.paternalLastName.value === "" ||
       !insuredForm.maternalLastName.isValid ||
       insuredForm.maternalLastName.value === "" ||
+      !insuredForm.birthDate.isValid ||
+      insuredForm.birthDate.value === "" ||
       !insuredForm.address.isValid ||
       insuredForm.address.value === "" ||
       !insuredForm.district.isValid ||
@@ -156,13 +169,24 @@ const InsuredDetail = ({ insuredForm, setInsuredForm, register }: any) => {
         <Cell>
           <InputText
             label="Rut"
-            width={isDesktop ? "140px" : "100%"}
+            width={"100%"}
             onFocus={handleFocusRut}
             onBlur={handleBlurRut}
             maxLength={9}
             value={insuredForm?.rut.value}
             onChange={handleChangeRut}
             isValid={insuredForm?.rut.isValid}
+          />
+        </Cell>
+        <Cell>
+          <InputText
+            type="date"
+            label="Fecha de nacimiento"
+            width={"100%"}
+            maxLength={10}
+            value={insuredForm?.birthDate.value}
+            onChange={handleChangeBirthDate}
+            isValid={insuredForm?.birthDate.isValid}
           />
         </Cell>
       </Row>

@@ -63,10 +63,21 @@ const CustomerForm = ({ customerForm, setCustomerForm, disabled }: any) => {
       },
     });
   };
+
   const handleChangeMaternalLastName = (event: any) => {
     setCustomerForm({
       ...customerForm,
       maternalLastName: {
+        value: event.target.value,
+        isValid: true,
+      },
+    });
+  };
+
+  const handleChangeBirthDate = (event: any) => {
+    setCustomerForm({
+      ...customerForm,
+      birthDate: {
         value: event.target.value,
         isValid: true,
       },
@@ -138,6 +149,10 @@ const CustomerForm = ({ customerForm, setCustomerForm, disabled }: any) => {
           value: lead.customer.maternalLastName,
           isValid: true,
         },
+        birthDate: {
+          value: lead.customer.birthDate,
+          isValid: true,
+        },
         address: { value: lead.customer.address, isValid: true },
         district: { value: lead.customer.district, isValid: true },
         email: { value: lead.customer.email, isValid: true },
@@ -154,13 +169,25 @@ const CustomerForm = ({ customerForm, setCustomerForm, disabled }: any) => {
         <Cell align="left">
           <InputText
             label="Rut"
-            width={isDesktop ? "140px" : "100%"}
+            width={"100%"}
             onFocus={handleFocusRut}
             onBlur={handleBlurRut}
             maxLength={9}
             value={customerForm?.rut.value}
             onChange={handleChangeRut}
             isValid={customerForm?.rut.isValid}
+            disabled={disabled}
+          />
+        </Cell>
+        <Cell align="left">
+          <InputText
+            type="date"
+            label="Fecha de nacimiento"
+            width={"100%"}
+            maxLength={10}
+            value={customerForm?.birthDate.value}
+            onChange={handleChangeBirthDate}
+            isValid={customerForm?.birthDate.isValid}
             disabled={disabled}
           />
         </Cell>

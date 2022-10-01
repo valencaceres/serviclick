@@ -3,7 +3,24 @@ import axios from "axios";
 
 import { config } from "../../utils/config";
 
-const initialState = {
+export type ValueT = {
+  id: string;
+  name: string;
+};
+
+export type FamilyT = {
+  id: string;
+  name: string;
+  values: ValueT[];
+  isActive: boolean;
+};
+
+type StateT = {
+  list: FamilyT[];
+  family: FamilyT;
+};
+
+const initialState: StateT = {
   list: [],
   family: { id: "", name: "", values: [], isActive: false },
 };

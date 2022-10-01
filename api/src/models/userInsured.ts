@@ -52,6 +52,7 @@ const getByEmail: any = async (email: string) => {
         INS.name,
         INS.paternallastname,
         INS.maternallastname,
+        INS.birthdate,
         INS.address,
         INS.district,
         INS.email,
@@ -73,6 +74,9 @@ const getByEmail: any = async (email: string) => {
         BEN.name as beneficiary_name,
         BEN.paternallastname as beneficiary_paternallastname,
         BEN.maternallastname as beneficiary_maternallastname,
+        BEN.birthdate as beneficiary_birthdate,
+        BEN.address as beneficiary_address,
+        BEN.district as beneficiary_district,
         BEN.email as beneficiary_email,
         BEN.phone as beneficiary_phone
       from
@@ -112,6 +116,7 @@ const formatDataInsured = async (data: any) => {
     name,
     paternallastname,
     maternallastname,
+    birthdate,
     address,
     district,
     email,
@@ -125,6 +130,9 @@ const formatDataInsured = async (data: any) => {
     name: string;
     paternalLastName: string;
     maternalLastName: string;
+    birthDate: string;
+    address: string;
+    district: string;
     email: string;
     phone: string;
   };
@@ -154,6 +162,7 @@ const formatDataInsured = async (data: any) => {
     name: string;
     paternalLastName: string;
     maternalLastName: string;
+    birthDate: string;
     address: string;
     district: string;
     email: string;
@@ -168,6 +177,7 @@ const formatDataInsured = async (data: any) => {
     name,
     paternalLastName: paternallastname,
     maternalLastName: maternallastname,
+    birthDate: birthdate,
     address,
     district,
     email,
@@ -216,6 +226,9 @@ const formatDataInsured = async (data: any) => {
       beneficiary_name,
       beneficiary_paternallastname,
       beneficiary_maternallastname,
+      beneficiary_birthdate,
+      beneficiary_address,
+      beneficiary_district,
       beneficiary_email,
       beneficiary_phone,
     } = row;
@@ -256,6 +269,9 @@ const formatDataInsured = async (data: any) => {
         name: beneficiary_name,
         paternalLastName: beneficiary_paternallastname,
         maternalLastName: beneficiary_maternallastname,
+        birthDate: beneficiary_birthdate,
+        address: beneficiary_address,
+        district: beneficiary_district,
         email: beneficiary_email,
         phone: beneficiary_phone,
       });

@@ -71,6 +71,7 @@ const getByEmail: any = async (email: string) => {
         INS.name as insured_name,
         INS.paternallastname as insured_paternallastname,
         INS.maternallastname as insured_maternallastname,
+        INS.birthdate as insured_birthdate,
         INS.address as insured_address,
         INS.district as insured_district,
         INS.email as insured_email,
@@ -87,7 +88,6 @@ const getByEmail: any = async (email: string) => {
         inner join app.insured INS on LIN.insured_id = INS.id
       where 
         USR.login = $1
-        and SUS.event = 'subscription_activated'
       order by
         LEA.id,
         PRO.id,
@@ -127,6 +127,7 @@ const formatDataCompany = async (data: any) => {
     name: string;
     paternalLastName: string;
     maternalLastName: string;
+    birthDate: string;
     address: string;
     district: string;
     email: string;
@@ -214,6 +215,7 @@ const formatDataCompany = async (data: any) => {
       insured_name,
       insured_paternallastname,
       insured_maternallastname,
+      insured_birthdate,
       insured_address,
       insured_district,
       insured_email,
@@ -256,6 +258,7 @@ const formatDataCompany = async (data: any) => {
         name: insured_name,
         paternalLastName: insured_paternallastname,
         maternalLastName: insured_maternallastname,
+        birthDate: insured_birthdate,
         address: insured_address,
         district: insured_district,
         email: insured_email,

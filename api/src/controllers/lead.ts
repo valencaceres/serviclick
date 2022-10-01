@@ -5,7 +5,6 @@ import createLogger from "../util/logger";
 
 import {
   createModel as createLeadModel,
-  registerSubscriptionModel,
   getById as getLeadById,
   getBySubscriptionId,
 } from "../models/lead";
@@ -35,6 +34,7 @@ export type CustomerT = {
   name: string;
   paternalLastName: string;
   maternalLastName: string;
+  birthDate: string;
   address: string;
   district: string;
   email: string;
@@ -59,6 +59,9 @@ type BeneficiaryT = {
   name: string;
   paternalLastName: string;
   maternalLastName: string;
+  birthDate: string;
+  address: string;
+  district: string;
   email: string;
   phone: string;
 };
@@ -69,6 +72,7 @@ type InsuredT = {
   name: string;
   paternalLastName: string;
   maternalLastName: string;
+  birthDate: string;
   address: string;
   district: string;
   email: string;
@@ -77,7 +81,7 @@ type InsuredT = {
 };
 
 const createController = async (req: any, res: any) => {
-  const { customer, company, product, insured } = req.body;
+  const { customer, company, product, insured, channel_id } = req.body;
   try {
     const insuredData: InsuredT[] = [];
 
@@ -91,6 +95,7 @@ const createController = async (req: any, res: any) => {
         customer.name,
         customer.paternalLastName,
         customer.maternalLastName,
+        customer.birthDate,
         customer.address,
         customer.district,
         customer.email,
@@ -139,7 +144,11 @@ const createController = async (req: any, res: any) => {
       company_id = contractor.id;
     }
 
-    const leadResponse = await createLeadModel(customer_id, company_id);
+    const leadResponse = await createLeadModel(
+      customer_id,
+      company_id,
+      channel_id
+    );
 
     if (!leadResponse.success) {
       createLogger.error({
@@ -178,6 +187,7 @@ const createController = async (req: any, res: any) => {
         item.name,
         item.paternalLastName,
         item.maternalLastName,
+        item.birthDate,
         item.address,
         item.district,
         item.email,
@@ -236,6 +246,7 @@ const createController = async (req: any, res: any) => {
         name: insuredResponse.data.name,
         paternalLastName: insuredResponse.data.paternallastname,
         maternalLastName: insuredResponse.data.maternallastname,
+        birthDate: insuredResponse.data.birthdate,
         address: insuredResponse.data.address,
         district: insuredResponse.data.district,
         email: insuredResponse.data.email,
@@ -336,6 +347,7 @@ const createController = async (req: any, res: any) => {
               name: contractor.name,
               paternalLastName: contractor.paternallastname,
               maternalLastName: contractor.maternallastname,
+              birthDate: contractor.birthdate,
               address: contractor.address,
               district: contractor.district,
               email: contractor.email,
@@ -347,6 +359,7 @@ const createController = async (req: any, res: any) => {
               name: "",
               paternalLastName: "",
               maternalLastName: "",
+              birthDate: "",
               address: "",
               district: "",
               email: "",
@@ -468,6 +481,7 @@ const getData = async (leadResponse: any, res: any) => {
       customer_name,
       customer_paternallastname,
       customer_maternallastname,
+      customer_birthdate,
       customer_address,
       customer_district,
       customer_email,
@@ -540,6 +554,9 @@ const getData = async (leadResponse: any, res: any) => {
             name,
             paternallastname,
             maternallastname,
+            birthdate,
+            address,
+            district,
             email,
             phone,
           } = beneficiary;
@@ -550,6 +567,9 @@ const getData = async (leadResponse: any, res: any) => {
             name,
             paternalLastName: paternallastname,
             maternalLastName: maternallastname,
+            birthDate: birthdate,
+            address,
+            district,
             email,
             phone,
           });
@@ -561,6 +581,7 @@ const getData = async (leadResponse: any, res: any) => {
         name,
         paternallastname,
         maternallastname,
+        birthdate,
         address,
         district,
         email,
@@ -573,6 +594,7 @@ const getData = async (leadResponse: any, res: any) => {
         name,
         paternalLastName: paternallastname,
         maternalLastName: maternallastname,
+        birthDate: birthdate,
         address,
         district,
         email,
@@ -590,6 +612,7 @@ const getData = async (leadResponse: any, res: any) => {
         name: customer_name,
         paternalLastName: customer_paternallastname,
         maternalLastName: customer_maternallastname,
+        birthDate: customer_birthdate,
         address: customer_address,
         district: customer_district,
         email: customer_email,
@@ -718,6 +741,9 @@ const addBeneficiariesData = async (
       beneficiary.name,
       beneficiary.paternalLastName,
       beneficiary.maternalLastName,
+      beneficiary.birthDate,
+      beneficiary.address,
+      beneficiary.district,
       beneficiary.email,
       beneficiary.phone
     );
@@ -752,6 +778,9 @@ const addBeneficiariesData = async (
       name: beneficiaryResponse.data.name,
       paternalLastName: beneficiaryResponse.data.paternallastname,
       maternalLastName: beneficiaryResponse.data.maternallastname,
+      birthDate: beneficiaryResponse.data.birthdate,
+      address: beneficiaryResponse.data.address,
+      district: beneficiaryResponse.data.district,
       email: beneficiaryResponse.data.email,
       phone: beneficiaryResponse.data.phone,
     });

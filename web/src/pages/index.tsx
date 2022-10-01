@@ -1,17 +1,27 @@
 import type { NextPage } from "next";
-import Head from "next/head";
+import { useEffect } from "react";
+import Icon from "../components/ui/Icon";
 
-import texts from "../utils/texts";
+import { useFamily } from "../redux/hooks";
+
+import { MenuButtons, MenuItem } from "../components/ui/MenuButtons";
 
 const Home: NextPage = () => {
-  const { general } = texts;
+  const { listAll, list } = useFamily();
+
+  useEffect(() => {
+    listAll();
+  }, []);
 
   return (
-    <Head>
-      <title>{general.title}</title>
-      <meta name="description" content={general.description} />
-      <link rel="icon" href="/favicon.png" />
-    </Head>
+    <MenuButtons>
+      {list.map((family: any, idx: number) => (
+        <MenuItem key={idx}>
+          <Icon iconName={family.icon} />
+          {family.name}
+        </MenuItem>
+      ))}
+    </MenuButtons>
   );
 };
 

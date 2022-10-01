@@ -41,6 +41,9 @@ const Beneficiary = ({ register }: any) => {
     name: { value: "", isValid: true },
     paternalLastName: { value: "", isValid: true },
     maternalLastName: { value: "", isValid: true },
+    birthDate: { value: "", isValid: true },
+    address: { value: lead.customer.address, isValid: true },
+    district: { value: lead.customer.district, isValid: true },
     email: { value: "", isValid: true },
     phone: { value: "", isValid: true },
   };
@@ -73,6 +76,9 @@ const Beneficiary = ({ register }: any) => {
               name: beneficiaryForm.name.value,
               paternalLastName: beneficiaryForm.paternalLastName.value,
               maternalLastName: beneficiaryForm.maternalLastName.value,
+              birthDate: beneficiaryForm.birthDate.value,
+              address: beneficiaryForm.address.value,
+              district: beneficiaryForm.district.value,
               email: beneficiaryForm.email.value,
               phone: beneficiaryForm.phone.value,
             },
@@ -108,6 +114,9 @@ const Beneficiary = ({ register }: any) => {
       name: { value: beneficiary.name, isValid: true },
       paternalLastName: { value: beneficiary.paternalLastName, isValid: true },
       maternalLastName: { value: beneficiary.maternalLastName, isValid: true },
+      birthDate: { value: "", isValid: true },
+      address: { value: lead.customer.address, isValid: true },
+      district: { value: lead.customer.district, isValid: true },
       email: { value: beneficiary.email, isValid: true },
       phone: { value: beneficiary.phone, isValid: true },
     });
@@ -154,8 +163,7 @@ const Beneficiary = ({ register }: any) => {
             isDesktop ? (
               <Table
                 width="1034px"
-                height={`${product.beneficiaries * 42 + 46}px`}
-              >
+                height={`${product.beneficiaries * 42 + 46}px`}>
                 <TableHeader>
                   <TableCell width="140px">Rut</TableCell>
                   <TableCell width="364px">Nombre completo</TableCell>

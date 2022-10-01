@@ -1,0 +1,41 @@
+.menuButtons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  gap: 10px;
+  max-width: 500px;
+
+  .menuItem {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #b4cd25;
+    height: 100px;
+    width: 150px;
+    gap: 5px;
+    border-radius: 25px;
+    border: none;
+    color: #ededed;
+    transition: all 0.5s;
+
+    span {
+      color: #ededed;
+    }
+
+    &:hover {
+      background-color: darken(#b4cd25, 10);
+      color: white;
+
+      span {
+        color: white;
+      }
+    }
+
+    &:active {
+      transform: scale(0.9);
+    }
+  }
+}

@@ -45,7 +45,7 @@ const InputText = ({
         onChange={onChange}
         onFocus={onFocus}
         onBlur={onBlur}
-        placeholder=" "
+        placeholder=""
         className={
           styles.input +
           (icon ? " " + styles.withIcon : "") +

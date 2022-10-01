@@ -185,6 +185,7 @@ const getProductsAndInsuredByIdModel: any = async (id: string) => {
         INS.name as insured_name,
         INS.paternallastname as insured_paternallastname,
         INS.maternallastname as insured_maternallastname,
+        INS.birthdate as insured_birthdate,
         INS.address as insured_address,
         INS.district as insured_district,
         INS.email as insured_email,
@@ -200,7 +201,6 @@ const getProductsAndInsuredByIdModel: any = async (id: string) => {
         inner join app.insured INS on LIN.insured_id = INS.id
       where 
         COM.id = '${id}'
-        and SUS.event = 'subscription_activated'
       order by
         FAM.name,
         PRO.name,
@@ -214,6 +214,7 @@ const getProductsAndInsuredByIdModel: any = async (id: string) => {
       name: string;
       paternalLastName: string;
       maternalLastName: string;
+      birthDate: string;
       address: string;
       district: string;
       email: string;
@@ -259,6 +260,7 @@ const getProductsAndInsuredByIdModel: any = async (id: string) => {
         insured_name,
         insured_paternallastname,
         insured_maternallastname,
+        insured_birthdate,
         insured_address,
         insured_district,
         insured_email,
@@ -287,6 +289,7 @@ const getProductsAndInsuredByIdModel: any = async (id: string) => {
         name: insured_name,
         paternalLastName: insured_paternallastname,
         maternalLastName: insured_maternallastname,
+        birthDate: insured_birthdate,
         address: insured_address,
         district: insured_district,
         email: insured_email,

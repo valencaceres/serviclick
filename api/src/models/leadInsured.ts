@@ -26,6 +26,7 @@ const getByLeadId: any = async (lead_id: string) => {
                 INS.name,
                 INS.paternallastname,
                 INS.maternallastname,
+                INS.birthdate,
                 INS.address,
                 INS.district,
                 INS.email,

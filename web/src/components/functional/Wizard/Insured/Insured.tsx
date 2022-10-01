@@ -41,6 +41,7 @@ const Insured = ({ register }: any) => {
     name: { value: "", isValid: true },
     paternalLastName: { value: "", isValid: true },
     maternalLastName: { value: "", isValid: true },
+    birthDate: { value: "", isValid: true },
     address: { value: "", isValid: true },
     district: { value: "", isValid: true },
     email: { value: "", isValid: true },
@@ -63,6 +64,7 @@ const Insured = ({ register }: any) => {
           name: insuredForm.name.value,
           paternalLastName: insuredForm.paternalLastName.value,
           maternalLastName: insuredForm.maternalLastName.value,
+          birthDate: insuredForm.birthDate.value,
           address: insuredForm.address.value,
           district: insuredForm.district.value,
           email: insuredForm.email.value,
@@ -99,6 +101,7 @@ const Insured = ({ register }: any) => {
       name: { value: insured.name, isValid: true },
       paternalLastName: { value: insured.paternalLastName, isValid: true },
       maternalLastName: { value: insured.maternalLastName, isValid: true },
+      birthDate: { value: insured.birthDate, isValid: true },
       address: { value: insured.address, isValid: true },
       district: { value: insured.district, isValid: true },
       email: { value: insured.email, isValid: true },
@@ -234,7 +237,7 @@ const Insured = ({ register }: any) => {
         </div>
       </Tooltip>
       <Modal showModal={showModalInsured}>
-        <Window title="Beneficiario" setClosed={handleCloseInsured}>
+        <Window title="Asegurado" setClosed={handleCloseInsured}>
           <InsuredDetail
             insuredForm={insuredForm}
             setInsuredForm={setInsuredForm}

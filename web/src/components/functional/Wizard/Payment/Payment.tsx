@@ -2,13 +2,7 @@ import { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
 
 import Wizard, { Title, Content, Buttons } from "../../../layout/Wizard";
-import {
-  Component,
-  Row,
-  Cell,
-  CellCenter,
-  CellSeparator,
-} from "../../../layout/Component";
+import { Component, Row, Cell, CellCenter } from "../../../layout/Component";
 
 import Button from "../../../ui/Button";
 import InputText from "../../../ui/InputText";
@@ -32,9 +26,11 @@ import { calculateValidity } from "../../../../utils/functions";
 import ProductBadge from "../../ProductBadge";
 
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { CompanyT, createLead } from "../../../../redux/slices/leadSlice";
+import { createLead } from "../../../../redux/slices/leadSlice";
 
 import { termsAndCondicions } from "../../../../data/termsAndConditions";
+
+import { config } from "../../../../utils/config";
 
 import styles from "./Payment.module.scss";
 
@@ -52,6 +48,7 @@ const Payment = ({ register }: any) => {
     name: { value: lead.customer.name, isValid: true },
     paternalLastName: { value: lead.customer.paternalLastName, isValid: true },
     maternalLastName: { value: lead.customer.maternalLastName, isValid: true },
+    birthDate: { value: lead.customer.birthDate, isValid: true },
     address: { value: lead.customer.address, isValid: true },
     district: { value: lead.customer.district, isValid: true },
     email: { value: lead.customer.email, isValid: true },
@@ -114,6 +111,7 @@ const Payment = ({ register }: any) => {
       lead.customer.name !== "" &&
       lead.customer.paternalLastName !== "" &&
       lead.customer.maternalLastName !== "" &&
+      lead.customer.birthDate !== "" &&
       lead.customer.address !== "" &&
       lead.customer.district !== "" &&
       lead.customer.email !== "" &&
@@ -151,6 +149,7 @@ const Payment = ({ register }: any) => {
       lead.insured[0].name !== "" &&
       lead.insured[0].paternalLastName !== "" &&
       lead.insured[0].maternalLastName !== "" &&
+      lead.insured[0].birthDate !== "" &&
       lead.insured[0].address !== "" &&
       lead.insured[0].district !== "" &&
       lead.insured[0].email !== "" &&
@@ -177,7 +176,7 @@ const Payment = ({ register }: any) => {
 
   const handleClickRegister = () => {
     setIsLoading(true);
-    dispatch(createLead(lead));
+    dispatch(createLead({ ...lead, channel_id: config.channelId }));
   };
 
   const handleClickTermsAndConditions = () => {

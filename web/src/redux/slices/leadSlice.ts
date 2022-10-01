@@ -9,6 +9,7 @@ export type CustomerT = {
   name: string;
   paternalLastName: string;
   maternalLastName: string;
+  birthDate: string;
   address: string;
   district: string;
   email: string;
@@ -41,6 +42,9 @@ type BeneficiaryT = {
   name: string;
   paternalLastName: string;
   maternalLastName: string;
+  birthDate: string;
+  address: string;
+  district: string;
   email: string;
   phone: string;
 };
@@ -51,6 +55,7 @@ type InsuredT = {
   name: string;
   paternalLastName: string;
   maternalLastName: string;
+  birthDate: string;
   address: string;
   district: string;
   email: string;
@@ -73,6 +78,7 @@ type LeadT = {
   product: ProductT;
   insured: InsuredT[];
   subscription: SubscriptionT;
+  channel_id: string;
   isActive: boolean;
 };
 
@@ -92,6 +98,7 @@ const initialState: StateT = {
       name: "",
       paternalLastName: "",
       maternalLastName: "",
+      birthDate: "",
       address: "",
       district: "",
       email: "",
@@ -122,6 +129,7 @@ const initialState: StateT = {
       security_token: "",
       status_code: 0,
     },
+    channel_id: "",
     isActive: false,
   },
 };

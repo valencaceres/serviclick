@@ -21,6 +21,7 @@ type InsuredT = {
   name: string;
   paternalLastName: string;
   maternalLastName: string;
+  birthDate: string;
   address: string;
   district: string;
   email: string;

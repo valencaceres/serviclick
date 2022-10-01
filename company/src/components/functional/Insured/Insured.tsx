@@ -32,6 +32,7 @@ const Insured = ({ setShowTooltip }: any) => {
     name: { value: "", isValid: true },
     paternalLastName: { value: "", isValid: true },
     maternalLastName: { value: "", isValid: true },
+    birthDate: { value: "", isValid: true },
     address: { value: "", isValid: true },
     district: { value: "", isValid: true },
     email: { value: "", isValid: true },
@@ -44,6 +45,16 @@ const Insured = ({ setShowTooltip }: any) => {
   const [isEnabled, setIsEnabled] = useState(true);
 
   const registerInsured = () => {
+    console.log({
+      id: "",
+      rut: insuredForm.rut.value,
+      name: insuredForm.name.value,
+      paternalLastName: insuredForm.paternalLastName.value,
+      maternalLastName: insuredForm.maternalLastName.value,
+      birthDate: insuredForm.birthDate.value,
+      email: insuredForm.email.value,
+      phone: insuredForm.phone.value,
+    });
     dispatch(
       setSession({
         ...session,
@@ -57,6 +68,7 @@ const Insured = ({ setShowTooltip }: any) => {
             name: insuredForm.name.value,
             paternalLastName: insuredForm.paternalLastName.value,
             maternalLastName: insuredForm.maternalLastName.value,
+            birthDate: insuredForm.birthDate.value,
             email: insuredForm.email.value,
             phone: insuredForm.phone.value,
           },
@@ -86,6 +98,7 @@ const Insured = ({ setShowTooltip }: any) => {
       name: { value: insured.name, isValid: true },
       paternalLastName: { value: insured.paternalLastName, isValid: true },
       maternalLastName: { value: insured.maternalLastName, isValid: true },
+      birthDate: { value: insured.birthDate || "", isValid: true },
       address: { value: insured.address, isValid: true },
       district: { value: insured.district, isValid: true },
       email: { value: insured.email, isValid: true },

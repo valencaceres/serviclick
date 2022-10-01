@@ -2,7 +2,11 @@ import { format } from "date-fns";
 
 import pool from "../util/database";
 
-const createModel: any = async (customer_id: string, company_id: string) => {
+const createModel: any = async (
+  customer_id: string,
+  company_id: string,
+  channel_id: string
+) => {
   try {
     const createDate = format(new Date(), "yyyy-MM-dd HH:mm:ss");
     const result = await pool.query(
@@ -10,9 +14,10 @@ const createModel: any = async (customer_id: string, company_id: string) => {
         INSERT  INTO app.lead(
                 createdate,
                 customer_id,
-                company_id) 
-        VALUES( $1, $2, $3) RETURNING *`,
-      [createDate, customer_id, company_id]
+                company_id,
+                channel_id) 
+        VALUES( $1, $2, $3, $4) RETURNING *`,
+      [createDate, customer_id, company_id, channel_id]
     );
     return { success: true, data: result.rows[0], error: null };
   } catch (e) {

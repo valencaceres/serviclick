@@ -45,6 +45,9 @@ const getByLeadId: any = async (lead_id: string) => {
                 BEN.name,
                 BEN.paternallastname,
                 BEN.maternallastname,
+                BEN.birthdate,
+                BEN.address,
+                BEN.district,
                 BEN.email,
                 BEN.phone
         FROM    app.leadbeneficiary LEA INNER JOIN app.beneficiary BEN ON LEA.beneficiary_id = BEN.id

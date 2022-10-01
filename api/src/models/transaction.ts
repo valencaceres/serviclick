@@ -12,9 +12,9 @@ const getByFiltersModel: any = async (
   try {
     let sqlWhere = "";
 
-    // if (channel_id !== "") {
-    //   sqlWhere += " and lead.channel_id = ''";
-    // }
+    if (channel_id !== "") {
+      sqlWhere += ` and channel_id = '${channel_id}'`;
+    }
 
     if (client_type !== "") {
       sqlWhere += ` and client_type = '${client_type}'`;
@@ -54,9 +54,11 @@ const getByFiltersModel: any = async (
     if (status_id !== "") {
       sqlWhere += ` and status_id = '${status_id}'`;
     }
+    // pro_rated_sub = True
 
     const result = await pool.query(`
-    select	date,
+    select	channel_id,
+            date,
             time,
             client_type,
             client_rut,
@@ -66,7 +68,8 @@ const getByFiltersModel: any = async (
             status_id,
             status_name,
             amount
-    from (	select	MAX(pay.date) as datetime,
+    from (	select	MAX(lea.channel_id :: text) as channel_id,
+                    MAX(pay.date) as datetime,
                     MAX(to_char(pay.date, 'DD/MM/YYYY')) as date,
                     MAX(to_char(pay.date, 'HH:MI')) as time,
                     MAX (case when cus.rut is null then 'c' else 'p' end) as client_type,
@@ -93,7 +96,8 @@ const getByFiltersModel: any = async (
                     
             union 	all
                     
-            select	MAX(sub.date) as datetime,
+            select	MAX(lea.channel_id :: text) as channel_id,
+                    MAX(sub.date) as datetime,
                     MAX(to_char(sub.date, 'DD/MM/YYYY')) as date,
                     MAX(to_char(sub.date, 'HH:MI')) as time,
                     MAX (case when cus.rut is null then 'c' else 'p' end) as client_type,

@@ -31,6 +31,7 @@ const Customer = ({ register }: any) => {
     name: { value: lead.customer.name, isValid: true },
     paternalLastName: { value: lead.customer.paternalLastName, isValid: true },
     maternalLastName: { value: lead.customer.maternalLastName, isValid: true },
+    birthDate: { value: lead.customer.birthDate, isValid: true },
     address: { value: lead.customer.address, isValid: true },
     district: { value: lead.customer.district, isValid: true },
     email: { value: lead.customer.email, isValid: true },
@@ -57,6 +58,7 @@ const Customer = ({ register }: any) => {
       name: customerForm.name.value,
       paternalLastName: customerForm.paternalLastName.value,
       maternalLastName: customerForm.maternalLastName.value,
+      birthDate: customerForm.birthDate.value,
       address: customerForm.address.value,
       district: customerForm.district.value,
       email: customerForm.email.value,
@@ -90,6 +92,8 @@ const Customer = ({ register }: any) => {
       customerForm.paternalLastName.value === "" ||
       !customerForm.maternalLastName.isValid ||
       customerForm.maternalLastName.value === "" ||
+      !customerForm.birthDate.isValid ||
+      customerForm.birthDate.value === "" ||
       !customerForm.address.isValid ||
       customerForm.address.value === "" ||
       !customerForm.district.isValid ||
