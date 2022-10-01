@@ -9,6 +9,9 @@ type BeneficiaryT = {
   name: string;
   paternallastname: string;
   maternallastname: string;
+  birthDate: string;
+  address: string;
+  district: string;
   email: string;
   phone: string;
 };
@@ -37,6 +40,7 @@ type UserInsuredT = {
   name: string;
   paternallastname: string;
   maternallastname: string;
+  birthDate: string;
   address: string;
   district: string;
   email: string;
