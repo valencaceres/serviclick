@@ -85,6 +85,36 @@ const BeneficiaryDetail = ({
     });
   };
 
+  const handleChangeBirthDate = (event: any) => {
+    setBeneficiaryForm({
+      ...beneficiaryForm,
+      birthDate: {
+        value: event.target.value,
+        isValid: true,
+      },
+    });
+  };
+
+  const handleChangeAddress = (event: any) => {
+    setBeneficiaryForm({
+      ...beneficiaryForm,
+      address: {
+        value: event.target.value,
+        isValid: true,
+      },
+    });
+  };
+
+  const handleChangeDistrict = (event: any) => {
+    setBeneficiaryForm({
+      ...beneficiaryForm,
+      district: {
+        value: event.target.value,
+        isValid: true,
+      },
+    });
+  };
+
   const handleChangeEmail = (event: any) => {
     setBeneficiaryForm({
       ...beneficiaryForm,
@@ -121,6 +151,12 @@ const BeneficiaryDetail = ({
       beneficiaryForm.paternalLastName.value === "" ||
       !beneficiaryForm.maternalLastName.isValid ||
       beneficiaryForm.maternalLastName.value === "" ||
+      !beneficiaryForm.birthDate.isValid ||
+      beneficiaryForm.birthDate.value === "" ||
+      !beneficiaryForm.address.isValid ||
+      beneficiaryForm.address.value === "" ||
+      !beneficiaryForm.district.isValid ||
+      beneficiaryForm.district.value === "" ||
       !beneficiaryForm.email.isValid ||
       beneficiaryForm.email.value === "" ||
       !beneficiaryForm.phone.isValid ||
@@ -136,13 +172,24 @@ const BeneficiaryDetail = ({
         <Cell>
           <InputText
             label="Rut"
-            width={isDesktop ? "140px" : "100%"}
+            width={"100%"}
             onFocus={handleFocusRut}
             onBlur={handleBlurRut}
             maxLength={9}
             value={beneficiaryForm?.rut.value}
             onChange={handleChangeRut}
             isValid={beneficiaryForm?.rut.isValid}
+          />
+        </Cell>
+        <Cell>
+          <InputText
+            type="date"
+            label="Fecha de nacimiento"
+            width={"100%"}
+            maxLength={10}
+            value={beneficiaryForm?.birthDate.value}
+            onChange={handleChangeBirthDate}
+            isValid={beneficiaryForm?.birthDate.isValid}
           />
         </Cell>
       </Row>
@@ -174,6 +221,28 @@ const BeneficiaryDetail = ({
             maxLength={50}
             value={beneficiaryForm?.maternalLastName.value}
             onChange={handleChangeMaternalLastName}
+          />
+        </Cell>
+      </Row>
+      <Row>
+        <Cell>
+          <InputText
+            label="Dirección"
+            width="100%"
+            maxLength={250}
+            value={beneficiaryForm?.address.value}
+            onChange={handleChangeAddress}
+          />
+        </Cell>
+      </Row>
+      <Row>
+        <Cell>
+          <InputText
+            label="Comuna"
+            width="100%"
+            maxLength={250}
+            value={beneficiaryForm?.district.value}
+            onChange={handleChangeDistrict}
           />
         </Cell>
       </Row>

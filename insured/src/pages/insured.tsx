@@ -12,14 +12,13 @@ import Insured from "../components/functional/Insured";
 
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { updateInsured } from "../redux/slices/insuredSlice";
-import { setUserInsured, getByEmail } from "../redux/slices/userInsuredSlice";
+import { getByEmail } from "../redux/slices/userInsuredSlice";
 
 const InsuredPage = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
   const { insured } = useAppSelector((state) => state.insuredSlice);
-  const { userInsured } = useAppSelector((state) => state.userInsuredSlice);
 
   const [showTooltip, setShowTooltip] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -40,6 +39,7 @@ const InsuredPage = () => {
       name,
       paternalLastName,
       maternalLastName,
+      birthDate,
       address,
       district,
       email,
@@ -55,6 +55,7 @@ const InsuredPage = () => {
         name,
         paternalLastName,
         maternalLastName,
+        birthDate,
         address,
         district,
         email,

@@ -9,6 +9,9 @@ type BeneficiaryT = {
   name: string;
   paternalLastName: string;
   maternalLastName: string;
+  birthDate: string;
+  address: string;
+  district: string;
   email: string;
   phone: string;
 };
@@ -38,6 +41,7 @@ type UserInsuredT = {
   name: string;
   paternalLastName: string;
   maternalLastName: string;
+  birthDate: string;
   address: string;
   district: string;
   email: string;
@@ -62,6 +66,7 @@ const initialState: StateT = {
     name: "",
     paternalLastName: "",
     maternalLastName: "",
+    birthDate: "",
     address: "",
     district: "",
     email: "",

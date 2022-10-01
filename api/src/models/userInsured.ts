@@ -52,7 +52,7 @@ const getByEmail: any = async (email: string) => {
         INS.name,
         INS.paternallastname,
         INS.maternallastname,
-        INS.birthdate,
+        to_char(INS.birthdate, 'YYYY-MM-DD') as birthdate,
         INS.address,
         INS.district,
         INS.email,

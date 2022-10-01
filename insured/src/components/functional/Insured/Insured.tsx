@@ -26,6 +26,10 @@ const Insured = ({ setIsEnabled }: any) => {
       value: userInsured.maternalLastName,
       isValid: userInsured.maternalLastName !== "",
     },
+    birthDate: {
+      value: userInsured.birthDate,
+      isValid: userInsured.birthDate !== "",
+    },
     address: {
       value: userInsured.address,
       isValid: userInsured.address !== "",
@@ -59,12 +63,23 @@ const Insured = ({ setIsEnabled }: any) => {
       },
     });
   };
+
   const handleChangeMaternalLastName = (event: any) => {
     setInsuredForm({
       ...insuredForm,
       maternalLastName: {
         value: event.target.value,
         isValid: event.target.value !== "",
+      },
+    });
+  };
+
+  const handleChangeBirthDate = (event: any) => {
+    setInsuredForm({
+      ...insuredForm,
+      birthDate: {
+        value: event.target.value,
+        isValid: true,
       },
     });
   };
@@ -110,6 +125,7 @@ const Insured = ({ setIsEnabled }: any) => {
       insuredForm.name.isValid &&
       insuredForm.paternalLastName.isValid &&
       insuredForm.maternalLastName.isValid &&
+      insuredForm.birthDate.isValid &&
       insuredForm.address.isValid &&
       insuredForm.district.isValid &&
       insuredForm.email.isValid &&
@@ -122,6 +138,7 @@ const Insured = ({ setIsEnabled }: any) => {
           name: insuredForm.name.value,
           paternalLastName: insuredForm.paternalLastName.value,
           maternalLastName: insuredForm.maternalLastName.value,
+          birthDate: insuredForm.birthDate.value,
           address: insuredForm.address.value,
           district: insuredForm.district.value,
           email: insuredForm.email.value,
@@ -138,11 +155,21 @@ const Insured = ({ setIsEnabled }: any) => {
         <Cell>
           <InputText
             label="Rut"
-            width={isDesktop ? "140px" : "100%"}
+            width={"100%"}
             maxLength={9}
             value={insuredForm.rut.value}
             onChange={() => {}}
             disabled={true}
+          />
+        </Cell>
+        <Cell>
+          <InputText
+            label="Fecha de nacimiento"
+            type="date"
+            width={"100%"}
+            maxLength={10}
+            value={insuredForm.birthDate.value}
+            onChange={handleChangeBirthDate}
           />
         </Cell>
       </Row>
