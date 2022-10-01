@@ -127,7 +127,6 @@ const getByFiltersModel: any = async (
             time desc,
             product_name`);
 
-    console.log(result.rows);
     return { success: true, data: result.rows, error: null };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };

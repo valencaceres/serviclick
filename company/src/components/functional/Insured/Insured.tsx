@@ -45,16 +45,6 @@ const Insured = ({ setShowTooltip }: any) => {
   const [isEnabled, setIsEnabled] = useState(true);
 
   const registerInsured = () => {
-    console.log({
-      id: "",
-      rut: insuredForm.rut.value,
-      name: insuredForm.name.value,
-      paternalLastName: insuredForm.paternalLastName.value,
-      maternalLastName: insuredForm.maternalLastName.value,
-      birthDate: insuredForm.birthDate.value,
-      email: insuredForm.email.value,
-      phone: insuredForm.phone.value,
-    });
     dispatch(
       setSession({
         ...session,

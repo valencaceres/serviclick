@@ -4,8 +4,7 @@ const Table = ({ height, width, children }: any) => {
   return (
     <div
       className={styles.table}
-      style={{ height: height ? height : "calc(100vh - 253px)", width }}
-    >
+      style={{ height: height ? height : "calc(100vh - 253px)", width }}>
       {children}
     </div>
   );
@@ -34,8 +33,7 @@ const TableCell = ({ width, align, alt, children }: any) => {
     <div
       className={styles.cell}
       style={{ width, justifyContent: align }}
-      onMouseOver={handleMouseOver}
-    >
+      onMouseOver={handleMouseOver}>
       {children}
     </div>
   );

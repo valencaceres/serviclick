@@ -47,29 +47,28 @@ const Beneficiary = ({ setShowTooltip }: any) => {
   const [isEnabled, setIsEnabled] = useState(true);
 
   const registerBeneficiary = () => {
-    console.log(session.beneficiaries);
-    // dispatch(
-    //   setSession({
-    //     ...session,
-    //     beneficiaries: [
-    //       ...session.beneficiaries.filter(
-    //         (beneficiary) => beneficiary.rut !== beneficiaryForm.rut.value
-    //       ),
-    //       {
-    //         id: "",
-    //         rut: beneficiaryForm.rut.value,
-    //         name: beneficiaryForm.name.value,
-    //         paternalLastName: beneficiaryForm.paternalLastName.value,
-    //         maternalLastName: beneficiaryForm.maternalLastName.value,
-    //         birthDate: beneficiaryForm.birthDate.value,
-    //         address: beneficiaryForm.address.value,
-    //         district: beneficiaryForm.district.value,
-    //         email: beneficiaryForm.email.value,
-    //         phone: beneficiaryForm.phone.value,
-    //       },
-    //     ],
-    //   })
-    // );
+    dispatch(
+      setSession({
+        ...session,
+        beneficiaries: [
+          ...session.beneficiaries.filter(
+            (beneficiary) => beneficiary.rut !== beneficiaryForm.rut.value
+          ),
+          {
+            id: "",
+            rut: beneficiaryForm.rut.value,
+            name: beneficiaryForm.name.value,
+            paternalLastName: beneficiaryForm.paternalLastName.value,
+            maternalLastName: beneficiaryForm.maternalLastName.value,
+            birthDate: beneficiaryForm.birthDate.value,
+            address: beneficiaryForm.address.value,
+            district: beneficiaryForm.district.value,
+            email: beneficiaryForm.email.value,
+            phone: beneficiaryForm.phone.value,
+          },
+        ],
+      })
+    );
 
     handleCloseBeneficiary();
   };

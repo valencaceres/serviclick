@@ -59,19 +59,15 @@ const ProductList = () => {
   }, [userInsured]);
 
   const handleClickOption = (product: ProductT) => {
-    console.log(
-      userInsured.leads
-        .filter((lead) => lead.lead_id === product.lead_id)[0]
-        .products.filter((item) => item.id === product.id)[0].beneficiaries
-    );
-
     dispatch(
       setSession({
         ...session,
         lead_id: product.lead_id,
         product_id: product.id,
         numberBeneficiaries: product.numberBeneficiaries,
-        beneficiaries: session.beneficiaries,
+        beneficiaries: userInsured.leads
+          .filter((lead) => lead.lead_id === product.lead_id)[0]
+          .products.filter((item) => item.id === product.id)[0].beneficiaries,
       })
     );
     router.push(`/product?id=${product.id}`);

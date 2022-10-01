@@ -83,7 +83,6 @@ const InsuredDetail = ({ insuredForm, setInsuredForm, register }: any) => {
   };
 
   const handleChangeBirthDate = (event: any) => {
-    alert(event.target.value);
     setInsuredForm({
       ...insuredForm,
       birthDate: {
