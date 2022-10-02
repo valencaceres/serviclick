@@ -18,12 +18,11 @@ const InsuredPage = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
+  const { session } = useAppSelector((state) => state.userCompanySlice);
   const { insured } = useAppSelector((state) => state.insuredSlice);
-  const { userInsured } = useAppSelector((state) => state.userInsuredSlice);
 
   const [showTooltip, setShowTooltip] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [isEnabled, setIsEnabled] = useState(false);
 
   const handleClickBack = () => {
     router.push("/");
@@ -34,37 +33,37 @@ const InsuredPage = () => {
   };
 
   const handleClickRegister = () => {
-    const {
-      id,
-      rut,
-      name,
-      paternalLastName,
-      maternalLastName,
-      birthDate,
-      address,
-      district,
-      email,
-      phone,
-    } = insured;
+    // const {
+    //   id,
+    //   rut,
+    //   name,
+    //   paternalLastName,
+    //   maternalLastName,
+    //   birthDate,
+    //   address,
+    //   district,
+    //   email,
+    //   phone,
+    // } = insured;
 
-    setIsLoading(true);
+    // setIsLoading(true);
 
-    dispatch(
-      updateInsured(
-        id,
-        rut,
-        name,
-        paternalLastName,
-        maternalLastName,
-        birthDate,
-        address,
-        district,
-        email,
-        phone
-      )
-    );
+    // dispatch(
+    //   updateInsured(
+    //     id,
+    //     rut,
+    //     name,
+    //     paternalLastName,
+    //     maternalLastName,
+    //     birthDate,
+    //     address,
+    //     district,
+    //     email,
+    //     phone
+    //   )
+    // );
 
-    dispatch(getByEmail(email));
+    // dispatch(getByEmail(email));
 
     setTimeout(() => {
       setIsLoading(false);
@@ -90,7 +89,7 @@ const InsuredPage = () => {
             text="Registrar"
             width="150px"
             loading={isLoading}
-            enabled={isEnabled}
+            enabled={session.insured.length > 0}
           />
         </Buttons>
       </Wizard>
