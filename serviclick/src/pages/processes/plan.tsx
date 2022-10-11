@@ -37,34 +37,34 @@ const Plan = () => {
   };
 
   const handleClickSave = () => {
-    if (product.id === "") {
-      create(
-        product.family_id,
-        product.name,
-        product.cost,
-        product.price,
-        product.isSubject,
-        product.frequency,
-        product.term,
-        product.beneficiaries,
-        product.coverages,
-        product.familyValues
-      );
-    } else {
-      update(
-        product.id,
-        product.family_id,
-        product.name,
-        product.cost,
-        product.price,
-        product.isSubject,
-        product.frequency,
-        product.term,
-        product.beneficiaries,
-        product.coverages,
-        product.familyValues
-      );
-    }
+    // if (product.id === "") {
+    //   create(
+    //     product.family_id,
+    //     product.name,
+    //     product.cost,
+    //     product.price,
+    //     product.isSubject,
+    //     product.frequency,
+    //     product.term,
+    //     product.beneficiaries,
+    //     product.coverages,
+    //     product.familyValues
+    //   );
+    // } else {
+    //   update(
+    //     product.id,
+    //     product.family_id,
+    //     product.name,
+    //     product.cost,
+    //     product.price,
+    //     product.isSubject,
+    //     product.frequency,
+    //     product.term,
+    //     product.beneficiaries,
+    //     product.coverages,
+    //     product.familyValues
+    //   );
+    // }
     setTimeout(() => {
       setIsLoading(false);
     }, 1000);
