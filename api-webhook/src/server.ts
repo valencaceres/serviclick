@@ -5,4 +5,4 @@ import app from "./app";
 const { apiPort } = config;
 
 app.listen(apiPort);
-createLogger.info(`API listening port ${apiPort}`);
+createLogger.info(`API WebHook listening port ${apiPort}`);

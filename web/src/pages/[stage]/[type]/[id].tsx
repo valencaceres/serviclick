@@ -14,11 +14,9 @@ import Loading from "../../../components/ui/Loading";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { getProduct } from "../../../redux/slices/productSlice";
 import { setStage } from "../../../redux/slices/stageSlice";
-import {
-  setLeadProduct,
-  getLeadBySubscriptionId,
-  resetLead,
-} from "../../../redux/slices/leadSlice";
+import { setLeadProduct, resetLead } from "../../../redux/slices/leadSlice";
+
+import { useSubscription } from "../../../redux/hooks";
 
 const Value: NextPage = () => {
   const router = useRouter();
@@ -27,6 +25,8 @@ const Value: NextPage = () => {
   const { product } = useAppSelector((state) => state.productSlice);
   const { stage } = useAppSelector((state) => state.stageSlice);
   const { lead } = useAppSelector((state) => state.leadSlice);
+
+  const { getActiveSubscriptions, active } = useSubscription();
 
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -84,9 +84,7 @@ const Value: NextPage = () => {
           price: product.price[stage.type],
           currency_code: product.currency,
           frequency_code: product.frequency,
-          productPlan_id: product.plans.filter(
-            (plan) => plan.type === stage.type
-          )[0].plan_id,
+          productPlan_id: product.plan[stage.type].id,
         })
       );
     }

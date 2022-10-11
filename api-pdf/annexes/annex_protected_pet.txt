@@ -1,0 +1,64 @@
+<c><b>ANEXO DE CONTRATO. SERVICIOS MASCOTAS.
+El presente documento privado es considerado por los firmantes parte integral del contrato marco de prestación de servicios.
+<b>Uno. Plan contratado.
+El servicio del plan contratado es: “<<PLAN_NAME>>”
+<b>Dos. Tabla, tope y límite de evento.
+El servicio de asistencia antes indicado contempla la siguiente tabla:
+<<COVERAGES>>
+<b>Descripción de los Servicios:
+<b>1- Urgencia Veterinaria.
+Cuando a consecuencia de una urgencia debida a un accidente o Agravamiento de enfermedad, el contratante tendrá el derecho a solicitar el servicio contratado, por la atención de urgencia otorgada al beneficiario bajo un llamado previo o posterior no superior a 72 Horas continuas desde la salida del centro médico. El contratante deberá presentar a Serviclick una boleta con el detalle de la prestación obtenida y que aparezca los datos del beneficiario (Mascota), En el caso que la boleta sea el comprobante de su tarjeta de crédito o débito, deberá solicitar un informe firmado y timbrado por el médico veterinario o clínica, en donde se detalle las prestaciones que recibió, y el valor correspondiente. (el monto a reclamar dependerá del plan contratado)
+<b>2- Telemedicina veterinaria.
+El contratante tendrá el derecho a solicitar una atención medica veterinaria que lo ayudará y orientará para obtener información de cualquier dolencia, malestar o comportamiento irregular relacionado con el área médica que tenga el beneficiario. La telemedicina es una herramienta para el diagnóstico y tratamiento, sin embargo, existe la posibilidad de que el médico veterinario solicite realizar una consulta presencial. En caso de vómitos y diarreas profusas, anorexia por más de 12 horas, sangrados profusos, inflamación por reacciones alérgicas, dificultad para respirar, convulsiones o pérdida de consciencia, debe asistir a un centro veterinario a la brevedad.
+<b>3- Asistencia Legal Telefónica.
+La asistencia legal telefónica otorgara procedimientos legales sobre la responsabilidad civil de los dueños de la mascota por daños causados a terceros, tenencia responsable de mascotas, Ordenanzas comunales sobre la tenencia de mascotas, facultades de autoridades municipales en relación con la mascota y responsabilidades de veterinarios por daños sufridos.  La Atención legal contempla solo una orientación, no contempla acompañamiento o representación en juicios legales que presente el contratante.
+<b>4- Consulta médica.
+El contratante podrá solicitar el servicio contratado por la atención otorgada al beneficiario por cualquier atención preventiva como gastos por consultas, y procedimientos ambulatorios que se realicen al beneficiario. El contratante deberá presentar a Serviclick una boleta con el detalle de la prestación obtenida y que aparezca los datos del beneficiario (Mascota), En el caso que la boleta sea el comprobante de su tarjeta de crédito o débito, deberá solicitar un informe firmado y timbrado por el médico veterinario o clínica, en donde se detalle las prestaciones que recibió, y el valor correspondiente. (el monto a reclamar dependerá del plan contratado).
+<b>5- Vacuna antirrábica.
+El contratante podrá solicitar el servicio contratado para la vacuna antirrábica anual, presentando opia del carné del beneficiario, con la fecha de dicha vacuna, más la boleta y descripción por la atención en el centro veterinario. Si la fecha en donde el beneficiario fue vacunado es superior a 60 días posterior a la fecha establecida en el carnet de la mascota esta estará fuera del alcance del servicio contratado.
+<b>6- Servicio de medicamentos.
+La asistencia de gastos por medicamentos para afiliados de Asistencia Veterinaria, aplica para todos los afiliados vigentes al momento de la compra y en todas las farmacias de chile ya sea radicionales o alternativas.
+<b>DESCRIPCION DEL SERVICIO
+No existe restricción de establecimiento para la compra de medicamento, es para todas las farmacias del país incluyendo los territorios insulares.
+a) Los descuentos aplican exclusivamente para compras de medicamento con receta médica.
+b) Tope mensual de indemnización es de $ 15.000 no acumulables
+<b>DOCUMENTACION A PRESENTAR
+Original de la receta emitida a nombre del pensionado y factura o boleta de compra.
+<b>CONDICIONES DEL SERVICIO
+a) Debe ser perro o gato
+b) Debe tener al menos 6 meses de edad y menos de 10 años
+c) Debe vivir en el mismo domicilio que el contratante.
+d) El beneficio deberá comunicarse con la central de asistencia antes de concurrir al centro asistencia veterinario.
+e) La declaración de gastos se deberá comunicar al correo electrónico <<EMAIL>>, en un plazo no superior a 72 horas de emitida la boleta o factura por atención veterinaria
+<b>Proceso de solicitud de servicio
+Cuando se solicite cualquiera de los servicios anteriormente mencionados, se debe proceder de la siguiente forma:
+a) El contratante debe notificar los datos del cliente tales como:
+a. Nombre
+b. Raza
+c. Fecha de nacimiento
+b) El contratante deberá notificar la atención a la central de asistencia antes de acudir al centro de urgencia o posterior a la salida de la mima notificando hasta 72 horas después como máximo.
+<b>Proceso de pago.
+El titular antes de utilizar el servicio debe notificar a Serviclick el ejecutivo entregará las instrucciones para cada atención que son:
+a) Una vez realizado el servicio debe cancelar con el método que desee y solicitar boleta o factura al prestador.
+b) Enviar la boleta o factura al email <<EMAIL>> con los siguientes datos del cliente donde será depositada la devolución:
+- Rut del titular
+- Número de teléfono
+- Banco
+- Tipo de cuenta
+- Número de cuenta
+El pago se realizará con un plazo máximo de 72 horas luego de ser decepcionada la documentación.
+<b>IMPORTANTE:
+1) La cuenta bancaria que indique el cliente debe coincidir con el titular del servicio.
+2) Solo se realizará la devolución del monto pagado en función del plan contratado.
+<b>Exclusiones:
+No se prestará el servicio pago para atenciones de hospitalización sólo se asumirá los servicios estipulado en la cobertura.
+1) Cuando la persona no se identifique como beneficiario del mismo.
+2) Cuando el beneficiario no proporcione información veraz y oportuna, que por su naturaleza no permita atender a la mascota debidamente.
+3) Cuando el beneficiario incumpla cualquiera de las obligaciones indicadas en este documento.
+<b>DEFINICIONES LEGALES.
+COBERTURA: Esta la garantía del servicio con la cual se afianza una operación en materia civil, comercial o mercantil, estableciendo los pártemelos de la operación.
+CARENCIA: Este es el tiempo en que un determinado servicio, civil, comercial o mercantil detenta un determinado derecho de uso.
+ENFERMEDAD: Alteración o desviación del estado fisiológico en una o varias partes del cuerpo, por causas en general conocidas por el paciente, el cual manifiesta síntomas y signos característicos, y cuya evolución es más o menos predecible.
+ACCIDENTE: Acontecimiento, independiente de la voluntad humana, causado por una fuerza extraña, de acción rápida, que se manifiesta por la aparición de lesiones orgánicas.
+ATENCIÓN DE URGENCIA: Se entiende por este concepto, cualquier servicio de emergencia los cubren la atención, traslado, y comunicaciones realizados con el fin de proveer servicios de salud en caso de urgencia o emergencias médicas.
+VETERINARIA: Disciplina que se ocupa principalmente de prevenir curar enfermedades de los animales, así como contralar los alimentos de origen animal

@@ -1,0 +1,53 @@
+import createLogger from "../utils/logger";
+import * as Document from "../models/document";
+
+const createContract = async (req: any, res: any) => {
+  try {
+    const { correlative, date, contact, customer, plan } = req.body;
+
+    const pdf = await Document.createContract(
+      correlative,
+      date,
+      contact,
+      customer,
+      plan,
+      res
+    );
+
+    createLogger.info({
+      controller: "document/createContract",
+      message: "OK",
+    });
+  } catch (e) {
+    createLogger.error({
+      model: "document/createContract",
+      error: (e as Error).message,
+    });
+    res.status(500).json({
+      error: "document/createContract: " + (e as Error).message,
+    });
+  }
+};
+
+const createAnnex = async (req: any, res: any) => {
+  try {
+    const { contact, plan } = req.body;
+
+    const pdf = await Document.createAnnex(contact, plan, res);
+
+    createLogger.info({
+      controller: "document/createAnnex",
+      message: "OK",
+    });
+  } catch (e) {
+    createLogger.error({
+      model: "document/createAnnex",
+      error: (e as Error).message,
+    });
+    res.status(500).json({
+      error: "document/createAnnex: " + (e as Error).message,
+    });
+  }
+};
+
+export { createContract, createAnnex };

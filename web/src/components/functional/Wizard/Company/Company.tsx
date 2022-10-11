@@ -6,6 +6,7 @@ import Wizard, { Title, Content, Buttons } from "../../../layout/Wizard";
 import Button from "../../../ui/Button";
 import Navigate, { Back } from "../../../ui/Navigate";
 import Tooltip from "../../../ui/Tooltip";
+import ModalWarning from "../../../ui/ModalWarning";
 
 import ProductBadge from "../../ProductBadge";
 import CompanyForm from "./CompanyForm";
@@ -13,7 +14,11 @@ import CompanyForm from "./CompanyForm";
 import { formatRut } from "../../../../utils/format";
 import texts from "../../../../utils/texts";
 
-import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
+import {
+  useAppDispatch,
+  useAppSelector,
+  useSubscription,
+} from "../../../../redux/hooks";
 import {
   setLeadCompany,
   setLeadInsured,
@@ -22,6 +27,8 @@ import {
 const Company = ({ register }: any) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+
+  const { active } = useSubscription();
 
   const { lead } = useAppSelector((state) => state.leadSlice);
   const { product } = useAppSelector((state) => state.productSlice);
@@ -43,6 +50,7 @@ const Company = ({ register }: any) => {
   const [companyForm, setCompanyForm] = useState(initialDataCompanyForm);
   const [isEnabled, setIsEnabled] = useState(false);
   const [showTooltip, setShowTooltip] = useState(true);
+  const [showWarning, setShowWarning] = useState(false);
 
   const { company: companyText, frequency } = texts;
 
@@ -67,6 +75,11 @@ const Company = ({ register }: any) => {
     };
 
     dispatch(setLeadCompany(companyData));
+
+    if (active.length !== 0) {
+      setShowWarning(true);
+      return;
+    }
     register();
   };
 
@@ -141,6 +154,14 @@ const Company = ({ register }: any) => {
           </div>
         </div>
       </Tooltip>
+      <ModalWarning
+        showModal={showWarning}
+        title="Aviso"
+        message={`Existe una suscripción activa para el producto ${product.name} asociada a este rut, si requiere alguna modificación a su plan, puede ingresar a su perfil.`}
+        setClosed={() => setShowWarning(false)}
+        iconName="warning"
+        buttons={[{ text: "Aceptar", function: () => setShowWarning(false) }]}
+      />
     </Fragment>
   );
 };

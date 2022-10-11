@@ -7,8 +7,8 @@ type BeneficiaryT = {
   id: string;
   rut: string;
   name: string;
-  paternallastname: string;
-  maternallastname: string;
+  paternalLastName: string;
+  maternalLastName: string;
   birthDate: string;
   address: string;
   district: string;
@@ -38,8 +38,8 @@ type UserInsuredT = {
   id: string;
   rut: string;
   name: string;
-  paternallastname: string;
-  maternallastname: string;
+  paternalLastName: string;
+  maternalLastName: string;
   birthDate: string;
   address: string;
   district: string;

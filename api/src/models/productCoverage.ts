@@ -7,7 +7,8 @@ const createProductCoverage: any = async (
   amount: string,
   maximum: string,
   lack: string,
-  events: string
+  events: string,
+  isCombined: boolean
 ) => {
   try {
     const result = await pool.query(
@@ -19,16 +20,18 @@ const createProductCoverage: any = async (
                   amount,
                   maximum,
                   lack,
-                  events) 
+                  events,
+                  iscombined) 
         VALUES (  $1,
                   $2,
                   $3,
                   $4,
                   $5,
                   $6,
-                  $7) 
+                  $7,
+                  $8) 
         RETURNING *`,
-      [product_id, id, name, amount, maximum, lack, events]
+      [product_id, id, name, amount, maximum, lack, events, isCombined]
     );
     return { success: true, data: result.rows[0], error: null };
   } catch (e) {
@@ -57,14 +60,27 @@ const listProductCoverages: any = async (product_id: string) => {
                 amount,
                 maximum,
                 lack,
-                events
+                events,
+                iscombined
         FROM    app.productCoverage
         WHERE   product_id = $1 
         ORDER   BY 
                 name`,
       [product_id]
     );
-    return { success: true, data: result.rows, error: null };
+
+    const data = result.rows.map((row) => {
+      return {
+        id: row.id,
+        name: row.name,
+        amount: row.amount,
+        maximum: row.maximum,
+        lack: row.lack,
+        events: row.events,
+        isCombined: row.iscombined,
+      };
+    });
+    return { success: true, data, error: null };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
   }

@@ -45,11 +45,19 @@ export const familySlice = createSlice({
     resetFamily: (state: any) => {
       state.family = initialState.family;
     },
+    resetFamilyList: (state: any) => {
+      state.list = initialState.list;
+    },
   },
 });
 
-export const { setFamilyList, setFamily, addFamilyValue, resetFamily } =
-  familySlice.actions;
+export const {
+  setFamilyList,
+  setFamily,
+  addFamilyValue,
+  resetFamily,
+  resetFamilyList,
+} = familySlice.actions;
 
 export default familySlice.reducer;
 

@@ -22,17 +22,14 @@ import { Modal, Window } from "../../../ui/Modal";
 import { FamilyDetail } from ".";
 
 import useFamily from "../../../../hooks/useFamily";
+import ModalWarning from "../../../ui/ModalWarning";
 
-const FamilyList = () => {
-  const { list, create, update, deleteById, getById, reset } = useFamily();
+const FamilyList = ({ setShowModal, showModal }: any) => {
+  const { list, create, update, deleteById, getById, set, reset, family } =
+    useFamily();
 
   const [search, setSearch] = useState("");
-  const [showModal, setShowModal] = useState(false);
-
-  const addFamily = () => {
-    reset();
-    setShowModal(true);
-  };
+  const [showWarningDelete, setShowWarningDelete] = useState(false);
 
   const editFamily = (family: any) => {
     getById(family.id);
@@ -55,6 +52,20 @@ const FamilyList = () => {
       update(id, name, values);
     }
     setShowModal(false);
+  };
+
+  const setClosedWarningDelete = () => {
+    setShowWarningDelete(false);
+  };
+
+  const handleClickDelete = (family_id: string) => {
+    getById(family_id);
+    setShowWarningDelete(true);
+  };
+
+  const handleClickDeleteOK = (family_id: string) => {
+    deleteFamily(family_id);
+    setShowWarningDelete(false);
   };
 
   return (
@@ -88,7 +99,7 @@ const FamilyList = () => {
                     <Icon iconName="edit" onClick={() => editFamily(family)} />
                     <Icon
                       iconName="delete"
-                      onClick={() => deleteFamily(family.id)}
+                      onClick={() => handleClickDelete(family.id)}
                     />
                   </TableIcons>
                 </TableCell>
@@ -98,7 +109,6 @@ const FamilyList = () => {
         </Table>
         <ContentRow gap="10px" align="flex-end">
           <ContentCellSummary>{`${list.length} registros`}</ContentCellSummary>
-          <ButtonIcon iconName="add" onClick={addFamily} />
         </ContentRow>
       </ContentCell>
       <Modal showModal={showModal}>
@@ -106,6 +116,17 @@ const FamilyList = () => {
           <FamilyDetail saveFamily={saveFamily} />
         </Window>
       </Modal>
+      <ModalWarning
+        showModal={showWarningDelete}
+        title="Eliminación de producto"
+        message={`Está seguro de eliminar la familia ${family.name}`}
+        setClosed={setClosedWarningDelete}
+        iconName="warning"
+        buttons={[
+          { text: "No", function: setClosedWarningDelete },
+          { text: "Si", function: () => handleClickDeleteOK(family.id) },
+        ]}
+      />
     </Fragment>
   );
 };

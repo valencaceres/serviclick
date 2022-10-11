@@ -54,6 +54,7 @@ const ProductDetail = ({ setEnableSave }: any) => {
     maximum: "",
     lack: "",
     events: "",
+    isCombined: false,
   };
 
   const [coverage, setCoverage] = useState<CoverageT>(coverageInitialState);
@@ -91,14 +92,25 @@ const ProductDetail = ({ setEnableSave }: any) => {
             maximum: coverage.maximum,
             lack: coverage.lack,
             events: coverage.events,
+            isCombined: coverage.isCombined,
           };
         } else {
-          return item;
+          return {
+            ...item,
+            amount: coverage.isCombined ? coverage.amount : item.amount,
+            isCombined: coverage.isCombined,
+          };
         }
       });
     } else {
       coverages = [
-        ...product.coverages,
+        ...product.coverages.map((item: CoverageT) => {
+          return {
+            ...item,
+            amount: coverage.isCombined ? coverage.amount : item.amount,
+            isCombined: coverage.isCombined,
+          };
+        }),
         {
           id: genetateUUID(),
           name: coverage.name,
@@ -106,6 +118,7 @@ const ProductDetail = ({ setEnableSave }: any) => {
           maximum: coverage.maximum,
           lack: coverage.lack,
           events: coverage.events,
+          isCombined: coverage.isCombined,
         },
       ];
     }
@@ -157,8 +170,16 @@ const ProductDetail = ({ setEnableSave }: any) => {
     handleValue("name", e.target.value);
   };
 
-  const handleChangebeneficiaries = (e: any) => {
+  const handleChangeBeneficiaries = (e: any) => {
     handleValue("beneficiaries", e.target.value);
+  };
+
+  const handleChangeDueDay = (e: any) => {
+    handleValue("dueDay", e.target.value);
+  };
+
+  const handleChangeMinInsuredCompanyPrice = (e: any) => {
+    handleValue("minInsuredCompanyPrice", e.target.value);
   };
 
   const handleCheckSubject = () => {
@@ -285,18 +306,28 @@ const ProductDetail = ({ setEnableSave }: any) => {
                 label="Cargas"
                 width="100px"
                 value={product.beneficiaries.toString()}
-                onChange={handleChangebeneficiaries}
-                onBlur={handleChangebeneficiaries}
+                onChange={handleChangeBeneficiaries}
+                onBlur={handleChangeBeneficiaries}
               />
             </ContentRow>
-            <InputText
-              id="txtProductName"
-              label="Nombre"
-              width="415px"
-              value={product.name}
-              onChange={handleChangeName}
-              onBlur={handleChangeName}
-            />
+            <ContentRow gap="5px">
+              <InputText
+                id="txtProductName"
+                label="Nombre"
+                width="310px"
+                value={product.name}
+                onChange={handleChangeName}
+                onBlur={handleChangeName}
+              />
+              <InputText
+                id="txtProductBeneficiaries"
+                label="Min. aseg."
+                width="100px"
+                value={product.minInsuredCompanyPrice.toString()}
+                onChange={handleChangeMinInsuredCompanyPrice}
+                onBlur={handleChangeMinInsuredCompanyPrice}
+              />
+            </ContentRow>
           </ContentCell>
           <ContentRow gap="5px">
             <ContentCell gap="5px">
@@ -320,7 +351,9 @@ const ProductDetail = ({ setEnableSave }: any) => {
               <InputText
                 id="txtProductPublicPrice"
                 type="number"
-                label="Valor al público ($)"
+                label={`Valor al público ${
+                  product.isSubject ? "IVA incluido " : ""
+                }($)`}
                 width="200px"
                 value={product.price.customer.toString()}
                 onChange={handleChangePricePublic}
@@ -329,7 +362,9 @@ const ProductDetail = ({ setEnableSave }: any) => {
               <InputText
                 id="txtProductCompanyPrice"
                 type="number"
-                label="Valor empresa ($)"
+                label={`Valor empresa ${
+                  product.isSubject ? "IVA incluido " : ""
+                }($)`}
                 width="200px"
                 value={product.price.company.toString()}
                 onChange={handleChangePriceCompany}
@@ -338,17 +373,27 @@ const ProductDetail = ({ setEnableSave }: any) => {
             </ContentCell>
           </ContentRow>
           <ContentCell gap="5px">
-            <ComboBox
-              id="txtProductFrecuency"
-              label="Frecuencia"
-              width="270px"
-              value={product.frequency}
-              onChange={handleChangeFrequency}
-              placeHolder=":: Seleccione frecuencia ::"
-              data={frequencyList}
-              dataValue="id"
-              dataText="name"
-            />
+            <ContentRow gap="5px">
+              <ComboBox
+                id="txtProductFrecuency"
+                label="Frecuencia"
+                width="165px"
+                value={product.frequency}
+                onChange={handleChangeFrequency}
+                placeHolder=":: Seleccione frecuencia ::"
+                data={frequencyList}
+                dataValue="id"
+                dataText="name"
+              />
+              <InputText
+                id="txtProductBeneficiaries"
+                label="Día de pago"
+                width="100px"
+                value={product.dueDay.toString()}
+                onChange={handleChangeDueDay}
+                onBlur={handleChangeDueDay}
+              />
+            </ContentRow>
             <ComboBox
               id="txtProductTerm"
               label="Duración (meses)"

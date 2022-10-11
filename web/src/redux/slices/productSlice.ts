@@ -12,23 +12,25 @@ export type CoverageT = {
   events: string;
 };
 
-type PriceT = {
+export type PriceT = {
   customer: number;
   company: number;
 };
 
-type FamilyValueT = {
-  id: string;
-  name: string;
+type PlanT = {
+  customer: {
+    id: number;
+    price: number;
+  };
+  company: {
+    id: number;
+    price: number;
+  };
 };
 
-type PlanT = {
+export type FamilyValueT = {
   id: string;
-  createdate: string;
-  plan_id: number;
-  type: "customer" | "company";
-  price: string;
-  frequency: "M" | "A" | "S";
+  name: string;
 };
 
 export type ProductT = {
@@ -44,7 +46,7 @@ export type ProductT = {
   coverages: CoverageT[];
   familyValues: FamilyValueT[];
   currency: string;
-  plans: PlanT[];
+  plan: PlanT;
   isActive: boolean;
 };
 
@@ -68,7 +70,7 @@ export const initialState: StateT = {
     coverages: [],
     familyValues: [],
     currency: "",
-    plans: [],
+    plan: { customer: { id: 0, price: 0 }, company: { id: 0, price: 0 } },
     isActive: true,
   },
 };
@@ -86,10 +88,13 @@ export const productSlice = createSlice({
     resetProduct: (state: StateT) => {
       state.product = initialState.product;
     },
+    resetProductList: (state: StateT) => {
+      state.list = initialState.list;
+    },
   },
 });
 
-export const { setProductList, setProduct, resetProduct } =
+export const { setProductList, setProduct, resetProduct, resetProductList } =
   productSlice.actions;
 
 export default productSlice.reducer;
@@ -215,6 +220,19 @@ export const getProduct = (id: string) => (dispatch: any) => {
 export const listProducts = () => (dispatch: any) => {
   axios
     .get(`${config.server}/api/product/list`, {
+      headers: {
+        id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
+      },
+    })
+    .then((response) => {
+      dispatch(setProductList(response.data));
+    })
+    .catch((error) => console.log(error));
+};
+
+export const getProductsByFamilyId = (family_id: string) => (dispatch: any) => {
+  axios
+    .get(`${config.server}/api/product/getByFamilyId/${family_id}`, {
       headers: {
         id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
       },

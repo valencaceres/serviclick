@@ -64,6 +64,8 @@ const Product = () => {
         product.frequency,
         product.term,
         product.beneficiaries,
+        product.minInsuredCompanyPrice,
+        product.dueDay,
         product.coverages,
         product.familyValues
       );
@@ -78,6 +80,8 @@ const Product = () => {
         product.frequency,
         product.term,
         product.beneficiaries,
+        product.minInsuredCompanyPrice,
+        product.dueDay,
         product.coverages,
         product.familyValues
       );

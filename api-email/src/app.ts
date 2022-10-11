@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 
+import { reqLogger } from "./middlewares/logger";
 import * as routes from "./routes";
 
 class App {
@@ -27,7 +28,7 @@ class App {
   }
 
   routes() {
-    this.server.use("/api/email", routes.EmailRouter);
+    this.server.use("/api/email", reqLogger, routes.EmailRouter);
   }
 }
 

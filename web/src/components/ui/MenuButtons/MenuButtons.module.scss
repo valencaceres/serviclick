@@ -1,41 +1,50 @@
 .menuButtons {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   color: white;
-  gap: 10px;
   max-width: 500px;
+  height: 100%;
+  width: 100%;
 
-  .menuItem {
+  .content {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    background-color: #b4cd25;
-    height: 100px;
-    width: 150px;
-    gap: 5px;
-    border-radius: 25px;
-    border: none;
-    color: #ededed;
-    transition: all 0.5s;
+    gap: 10px;
 
-    span {
+    .menuItem {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #b4cd25;
+      height: 100px;
+      width: 150px;
+      gap: 5px;
+      border-radius: 25px;
+      border: none;
       color: #ededed;
-    }
-
-    &:hover {
-      background-color: darken(#b4cd25, 10);
-      color: white;
+      padding: 0px 20px;
+      transition: all 0.5s;
 
       span {
-        color: white;
+        color: #ededed;
       }
-    }
 
-    &:active {
-      transform: scale(0.9);
+      &:hover {
+        background-color: darken(#b4cd25, 10);
+        color: white;
+
+        span {
+          color: white;
+        }
+      }
+
+      &:active {
+        transform: scale(0.9);
+      }
     }
   }
 }

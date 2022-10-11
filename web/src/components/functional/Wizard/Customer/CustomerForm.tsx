@@ -8,7 +8,11 @@ import { unFormatRut, formatRut } from "../../../../utils/format";
 import { numberRegEx, rutRegEx, emailRegEx } from "../../../../utils/regEx";
 import { rutValidate } from "../../../../utils/validations";
 
-import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
+import {
+  useAppDispatch,
+  useAppSelector,
+  useSubscription,
+} from "../../../../redux/hooks";
 import { resetSubscription } from "../../../../redux/slices/subscriptionSlice";
 import {
   getLeadBySubscriptionId,
@@ -18,11 +22,20 @@ import {
 const CustomerForm = ({ customerForm, setCustomerForm, disabled }: any) => {
   const dispatch = useAppDispatch();
 
+  const { getActiveSubscriptions } = useSubscription();
+
   const { isDesktop } = useAppSelector((state) => state.uiSlice);
+  const { stage } = useAppSelector((state) => state.stageSlice);
   const { subscription } = useAppSelector((state) => state.subscriptionSlice);
+  const { product } = useAppSelector((state) => state.productSlice);
   const { lead } = useAppSelector((state) => state.leadSlice);
 
   const handleBlurRut = (event: any) => {
+    getActiveSubscriptions(
+      stage.type,
+      formatRut(event.target.value),
+      product.id
+    );
     event.target.value = formatRut(event.target.value);
   };
 

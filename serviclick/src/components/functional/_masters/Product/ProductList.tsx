@@ -111,10 +111,10 @@ const ProductList = ({ editProduct, deleteProduct }: any) => {
                 <TableCell width="260px">{product.family_name}</TableCell>
                 <TableCell width="350px">{product.name}</TableCell>
                 <TableCell width="120px" align="flex-end">
-                  {product.customerprice}
+                  {product.price.customer}
                 </TableCell>
                 <TableCell width="110px" align="flex-end">
-                  {product.companyprice}
+                  {product.price.company}
                 </TableCell>
                 <TableCell width="68px" align="center">
                   <TableIcons>

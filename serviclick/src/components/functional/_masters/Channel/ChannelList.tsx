@@ -22,17 +22,14 @@ import { Modal, Window } from "../../../ui/Modal";
 import { ChannelDetail } from ".";
 
 import useChannel from "../../../../hooks/useChannel";
+import ModalWarning from "../../../ui/ModalWarning";
 
-const ChannelList = () => {
-  const { list, create, update, deleteById, set, reset } = useChannel();
+const ChannelList = ({ setShowModal, showModal }: any) => {
+  const { list, create, update, deleteById, set, reset, channel } =
+    useChannel();
 
   const [search, setSearch] = useState("");
-  const [showModal, setShowModal] = useState(false);
-
-  const addChannel = () => {
-    reset();
-    setShowModal(true);
-  };
+  const [showWarningDelete, setShowWarningDelete] = useState(false);
 
   const editChannel = (channel: any) => {
     set(channel);
@@ -55,6 +52,20 @@ const ChannelList = () => {
       update(id, name, isBroker);
     }
     setShowModal(false);
+  };
+
+  const setClosedWarningDelete = () => {
+    setShowWarningDelete(false);
+  };
+
+  const handleClickDelete = (channel: any) => {
+    set(channel);
+    setShowWarningDelete(true);
+  };
+
+  const handleClickDeleteOK = (channel_id: string) => {
+    deleteChannel(channel_id);
+    setShowWarningDelete(false);
   };
 
   return (
@@ -91,7 +102,7 @@ const ChannelList = () => {
                     />
                     <Icon
                       iconName="delete"
-                      onClick={() => deleteChannel(channel.id)}
+                      onClick={() => handleClickDelete(channel)}
                     />
                   </TableIcons>
                 </TableCell>
@@ -101,7 +112,6 @@ const ChannelList = () => {
         </Table>
         <ContentRow gap="10px" align="flex-end">
           <ContentCellSummary>{`${list.length} registros`}</ContentCellSummary>
-          <ButtonIcon iconName="add" onClick={addChannel} />
         </ContentRow>
       </ContentCell>
       <Modal showModal={showModal}>
@@ -109,6 +119,17 @@ const ChannelList = () => {
           <ChannelDetail saveChannel={saveChannel} />
         </Window>
       </Modal>
+      <ModalWarning
+        showModal={showWarningDelete}
+        title="Eliminación de producto"
+        message={`Está seguro de eliminar el canal ${channel.name}`}
+        setClosed={setClosedWarningDelete}
+        iconName="warning"
+        buttons={[
+          { text: "No", function: setClosedWarningDelete },
+          { text: "Si", function: () => handleClickDeleteOK(channel.id) },
+        ]}
+      />
     </Fragment>
   );
 };

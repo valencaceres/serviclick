@@ -1,0 +1,55 @@
+<c><b>ANEXO DE CONTRATO. SERVICIOS VIAL.
+El presente documento privado es considerado por los firmantes parte integral del contrato marco de prestación de servicios.
+<b>Uno. Plan contratado.
+El servicio del plan contratado es: “<<PLAN_NAME>>”
+<b>Dos. Tabla, tope y límite de evento.
+El servicio de asistencia antes indicado contempla la siguiente tabla:
+<<COVERAGES>>
+<b>VIDRIERÍA VEHICULAR.
+Cuando a consecuencia de un accidente, automovilístico, robo o hurto, se produzca la rotura de alguno de los vidrios laterales del automóvil, este será reemplazado. El valor anterior incluye el costo del vidrio y la mano de obra. El vidrio que se instalará será un vidrio normal, transparente.
+Para hacer efectivo el servicio se debe presentar constancia en carabineros de Chile.
+El servicio no considera:
+a) El Servicio de Vidriería no considerará la reposición de vidrios ante eventos preexistentes y que no correspondan a una solicitud inmediata e inminente para la atención. 
+b) Cualquier clase de espejos, y cualquier tipo de vidrios que, a pesar de ser parte del automóvil, no formen parte de las puertas laterales.
+c) Roturas de vidrios por fenómenos naturales.
+d) Reparación de puertas por deformidad.
+e) Vidrio delantero y/o trasero
+<b>CERRADURAS O CHAPAS VEHICULARES.
+Cuando a consecuencia de un robo o hurto, impida la apertura de este o el correcto cierre de la puerta, Serviclick coordinara la asistencia y así restablecer el acceso o correcto cierre de la puerta. Serviclick realizará el cambio o reparación de la cerradura o chapa de puerta del piloto o copiloto. El valor anterior incluye el costo de la mano de obra, herramientas y materiales que se aplicará a la cobertura del plan contratado.
+El servicio no considera:
+a) La reparación y/o reposición de chapas y de puertas que de acceso a maleteros.
+b) La reparación de chapas en puertas en malas condiciones.
+c) La reparación y/o reposición de chapas de puertas de pasajeros.
+<b>NEUMÁTICOS.
+En caso de deterioro del neumático de manera irreparable Serviclick realizara cambio de esta, previa evaluación. Este servicio se prestará con un límite de $60.000 por evento y máximo de 1 eventos al año. El valor anterior incluye el costo material y la mano de obra. El cliente deberá aportar al momento de la contratación set fotográfico de sus neumáticos.
+El Servicio no considerará la reposición en los siguientes casos:
+a) Cuando el neumático ha rodado mientras estaba pinchado
+b) Cuando el daño se ha producido en la banda de rodadura del neumático
+c) Cuando la perforación no sea mayor a 6 mm
+d) Cuando la profundidad o espesor del neumático sea menor a 1,6 mm
+<b>AMORTIGUADORES.
+En caso de deterioro del amortiguador de manera irreparable Serviclick realizara el cambio de esta. Previa evaluación. El cliente deberá aportar set fotográfico del automóvil detenido en un lugar plano., placa patente del vehículo.
+El Servicio de reemplazo no considerará la reposición en los siguientes casos:
+a) Cuando exista un impacto que deteriore el amortiguador ya sea por caída a un hoyo vial o simplemente un choque que genere dicho deterioro.
+b) Cuando el vehículo este con mayor a 60 mil km de recorrido.
+c) Cuando exista manipulación de terceros.
+d) Cuando este esté perdiendo aceite
+<b>INSIGNIA O EMBLEMAS.
+Si Producto de un robo pierde el emblema ubicado en la parte frontal vehículo y requiera el servicio de cambio de este material, Serviclick gestionara y coordinara con los talleres en convenio (Exclusividad de Taller) la reposición de dicho material. Cada cambio de Emblema se considerará un servicio.
+El servicio no considera:
+a) Cualquier Emblemas oficial que no se encuentre en el tren delantero
+b) Perdida por un motivo distinto al robo
+c) Vehículos distintos a los inscritos como beneficiarios
+<b>PROCEDIMIENTO A SEGUIR PARA LA OBTENCIÓN DE LOS SERVICIOS - CONDICIONES
+1) Los servicios descritos, para ser entregados por SERVICLICK, deben solicitarse vía telefónica, previo a dirigirse al servicio de asistencia. Un ejecutivo de asistencia lo atenderá́ y derivará al centro de la red de prestadores más cercano al lugar donde se encuentre y adecuado para su correcta atención.
+2) La asistencia será́ coordinada por los ejecutivos de asistencia de SERVICLICK, debiendo el cliente entregar la información mínima para poder hacer un correcto análisis de la situación, y gestionar el servicio, como:
+a. RUT del cliente Titular.
+b. RUT del Beneficiario.
+c. Ubicación Geográfica.
+d. Placa patente.
+e. Marca modelo y año.
+3) Los servicios podrán ser solicitados desde el inicio de la vigencia, es decir el <<VALIDITY_INIT>>
+<b>DEFINICIONES LEGALES.
+COBERTURA: Esta la garantía del servicio con la cual se afianza una operación en materia civil, comercial o mercantil, estableciendo los pártemelos de la operación.
+CARENCIA: Este es el tiempo en que un determinado servicio, civil, comercial o mercantil detenta un determinado derecho de uso.
+ACCIDENTE: Acontecimiento, independiente de la voluntad humana, causado por una fuerza extraña, de acción rápida, que se manifiesta por la aparición de lesiones orgánicas.

@@ -21,6 +21,7 @@ const menu = [
   {
     icon: <Icon iconName="directions_car" />,
     text: "Procesos",
+    subOptions: [{ text: "Asignación de planes", route: "/processes/plan" }],
   },
   {
     icon: <Icon iconName="receipt_long" />,

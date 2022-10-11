@@ -1,0 +1,98 @@
+<c><b>ANEXO DE CONTRATO.
+El presente documento privado es considerado por los firmantes parte integral del contrato marco de prestación de servicios.
+<b>Uno. Plan contratado.
+El servicio del plan contratado es: “<<PLAN_NAME>>”
+<b>Dos. Tabla, tope y límite de evento.
+El servicio de asistencia antes indicado contempla la siguiente tabla:
+<<COVERAGES>>
+<b>Tres. SALA DE URGENCIA POR ACCIDENTE.
+Este servicio corresponde a la atención médica inicial en una sala de urgencia.
+El cliente beneficiario debe contar con sistema de salud previsional Isapre o FONASA, excluyendo FONASA tipo A, este último con un límite de servicio del 50%.
+<b>Cuatro. servicio y exclusiones.
+El servicio abarca los siguientes conceptos: (prestación)
+1. Gastos médicos de urgencia:
+a. Atención de Urgencia
+b. Atención de médico de Urgencia, incluyendo, pero no limitado, a los honorarios médicos de las siguientes especialidades:
+i. Cirujano General.
+ii. Médico de urgencia.
+iii. Médico Traumatólogo.
+iv. Médico Pediatra.
+v. Médico internista.
+c. Se incluyen los honorarios médicos de especialistas plásticos o con fines estéticos a consecuencia de accidente.
+2. Los exámenes inherentes y necesarios a la atención de salud de urgencia, en ambos casos que estén considerados dentro de la cuenta del servicio de urgencia, tales como:
+a. Hemograma Completo
+b. Glucosa
+c. Grupo Sanguíneo
+d. EMO (elemental y microscopio de orina) y
+e. Reacción de Widall.
+3. Los exámenes de imageneología propios y necesarios de la atención de urgencia, incluidos en la cuenta de sala de urgencia.
+4. Los medicamentos de urgencia aplicados durante la atención de urgencia, entre los que se incluyen, pero no limitan a: Analgésicos (dolor), Anti-inflamatorios (inflamación), y Antipiréticos (fiebre)
+5. Material de uso médico: como bota, yeso, venda, equipo y material de sutura, entre otros, debidamente bonificados por el sistema previsional.
+La asistencia sala de urgencia se entenderá por finalizada, una vez que el cliente se encuentre estabilizado, es decir cuando el paciente se encuentre en estado de equilibrio de sus funciones vitales, de modo que, aun cursando alguna patología no resuelta, está en condiciones de ser trasladado, dentro del establecimiento o a otro centro asistencial o a su domicilio, sin poner en riesgo su vida o la evolución de su enfermedad. Este servicio será ACTIVADO por SERVICLICK por parte de ejecutivos de asistencia, por lo que es condición que el cliente se contacte en forma telefónica al número <<PHONE>>, para reportar la necesidad de utilizar el servicio. El personal de atención de Serviclcick, tomará el requerimiento del cliente y gestionará la activación.
+La asistencia referida en el presente anexo, opera como descuento a través del sistema de verificación de identidad i-med. En caso de no haber disponibilidad del sistema el beneficiario, debe informar inmediatamente a SERVICLICK para dejar registro de la situación, deberá el cliente cancelar la totalidad del valor del pago de la atención a la clínica o Centro Asistencial y posteriormente gestionar el descuento del servicio según se explica en el párrafo anterior. Para solicitar el descuento del servicio por no operación de los sistemas electrónicos o ausencia de ellos en el centro de urgencias, el cliente debe presentar la siguiente documentación: boletas, registro de atención de urgencia y detalle de prestaciones cubiertas y canceladas por su Isapre o Fonasa y Seguros relacionados si los tiene, donde deberá realizar el pago del gasto. Posteriormente, debe presentar toda la documentación original a SERVICLICK, donde será validado por su contraloría médica, para su respectivo pago.
+Cliente tendrá un límite máximo de 10 días hábiles una vez dado de alta para informar su ida a urgencia, caso contrario se considerara denegada la solicitud.
+<b>EXCLUSIONES DE SALA DE URGENCIA:
+No se autorizará prestaciones o servicios médicos, como tampoco reconocerá gastos o costos de tales servicios en las siguientes situaciones:
+a) Está excluida la atención medica complementaria ordenada por médico especialista en la sala de urgencia en otras dependencias que no sea sala de urgencias, y/o cualquier lugar de atención en la Clínica u Hospital.
+b) Exámenes no inherentes o no necesarios para tratar la atención dentro de la sala de urgencia.
+c) Gastos de hospitalización Clínica, Quirúrgica y Unidad de cuidados intensivos.
+d) Honorarios de médicos especialistas que no estén incluidos dentro de la cuenta de sala de urgencia.
+e) Las atenciones por medicina preventiva.
+f) Gastos y honorarios de Pabellón de: Urgencia, Pabellón central y Ambulatorio.
+g) Toda atención en sala de urgencias que se concrete sin activación de la asistencia previamente.
+h) Cuando la persona que solicita el servicio no identifique al cliente titular que contrató el servicio que contempla este beneficio.
+i) Cuando la persona que solicite el servicio no proporcione información veraz y oportuna, que por su naturaleza no permita atenderlo debidamente.
+j) Hechos derivados de: terrorismo, guerra, guerrilla, vandalismo, asalto, motín o tumulto.
+k) La ingestión de drogas, Alcohol, sustancias tóxicas, narcóticos o medicamentos sin prescripción médica.
+<b>PROCEDIMIENTO A SEGUIR PARA LA OBTENCIÓN DE LOS SERVICIOS- CONDICIONES
+1) Los servicios descritos, para ser entregados por SERVICLICK, deben solicitarse vía telefónica, previo a dirigirse al servicio de urgencia. Un ejecutivo de asistencias lo atenderá y derivará al centro de la red de prestadores más cercano al lugar donde se encuentre y adecuado para su correcta atención.
+2) La asistencia será coordinada por los ejecutivos de asistencia de SERVICLICK, debiendo el cliente entregar la información mínima para poder hacer un correcto análisis de la situación, y gestionar el servicio, como:
+a. RUT del Cliente Titular.
+b. RUT del Beneficiario.
+c. Sistema de Previsión del Beneficiario.
+d. Detalle de la Urgencia o Emergencia Médica y su origen.
+e. Ubicación Geográfica.
+3) Los servicios podrán ser solicitados desde el inicio de la vigencia, es decir el <<VALIDITY_INIT>>
+4) Los servicios de asistencia señalados en el presente documento, en cualquier de sus modalidades se otorgarán a aquellos clientes que se encuentren afiliados a un sistema de salud como las ISAPRE, FONASA u algún otro sistema detallado a continuación:
+Sin que el listado detallado a continuación sea exclusivo y limitativo, se describen los siguientes Sistemas de Salud: Capredena, Dipreca, Fusat, Otros, Se excluye FONASA tipo A.
+Además de encontrarse al día en los pagos
+1) Ampliación de topes de cobertura: Si el sistema de salud no entrega cobertura en ningún gasto medico realizado en sala de urgencia, el servicio contratado, entregará cobertura del 50% del total de la boleta con un tope máximo del 50% del total del plan contratado en UF.
+a. En este caso, el cliente deberá cobrar el servicio mediante los canales virtuales dispuestos por Serviclick en la página web <<WEB>>, presentando la documentación solicitada en referido sitio web. El referido pago de los servicios será efectuado en la cuenta de abono de el Cliente en el plazo de 5 días hábiles contados desde la fecha de la presentación de la solicitud de cobro, salvo casos objetados por contraloría médica, los que serán informados oportunamente a el cliente.
+<b>DESCUENTO EN FARMACIA.
+La Asistencia “Bonificación en Farmacia” está desarrollada para que sea utilizada por todos los afiliados vigentes al momento de la compra y en todas las farmacias de chile ya sea tradicionales o alternativas.
+<b>DESCRIPCION DEL SERVICIO
+1) No existe restricción de establecimiento para la compra de medicamento, es para todas las farmacias del país incluyendo los territorios insulares.
+2) Los descuentos aplican exclusivamente para compras de medicamento con receta médica.
+3) Límite mensual de indemnización es de $ 15.000 no acumulables
+<b>DOCUMENTACION A PRESENTAR
+a) Original de la receta emitida a nombre del pensionado y factura o boleta de compra.
+b) En el caso de receta retenida, se aceptará fotocopia con firma de acreditación de la farmacia.
+c) Cedula de Identidad del beneficiario y de la persona que cobra el beneficio en caso que sea un representante de éste.
+d) El cliente deberá cobrar el servicio únicamente mediante los canales virtuales dispuestos por Serviclick en la página web <<WEB>>, presentando la documentación solicitada en referido sitio web. El referido pago de los servicios será efectuado en la cuenta de abono del Cliente en el plazo de 5 días hábiles contados desde la fecha de la presentación de la solicitud de cobro, salvo casos objetados por contraloría médica, los que serán informados oportunamente al cliente.
+<b>TELEMEDICINA.
+El titular y/o sus cargas según plan contratado podrá solicitar la coordinación de consulta médica online, con un profesional de la salud en el área de medicina General para consultas de cualquier patología médica, el medico orientará tratamientos, realizará lectura e interpretación de exámenes, recetará medicamentos si es necesario y/o emitirá ordenes médicas para la toma de exámenes si lo amerita. La consulta con el especialista podrá ser solicitada solamente por el titular para uso de él o alguna de sus cargas dependiendo del plan contratado, cada consulta es considerada un evento.
+<b>Descripción del Servicio:
+1) Cliente se comunica con la central de asistencia por medio de una línea exclusiva y solicita el servicio de Telemedicina.
+2) Un ejecutivo gestionará la atención de telemedicina y para ello requerirá de los siguientes datos:
+a. Rut
+b. Nombre completo
+c. Nº de Documento
+d. Teléfono celular
+e. Cuenta de correo electrónico
+3) Cliente valida sus datos personales espera la atención del médico o agenda su cita para otro horario.
+4) El tiempo de espera máximo comprometido en caso de requerir atención inmediata es de 30 minutos.
+5) El servicio se dará por finalizado, al enviar un resumen de atención con las indicaciones, receta médica y/o orden médica para algún examen al correo registrado por cliente
+<b>ORIENTACION MÉDICA TELEFONICA.
+Este servicio pone a disposición del cliente en forma telefónica, personal sanitario que permita aclarar o asesorar cualquier duda respecto a cuadros clínicos, tratamientos y patologías.
+Corresponde a la conexión telefónica a cualquier hora del día para que oriente al cliente ante cualquier consulta médica.
+El servicio es proporcionado por el departamento médico de SERVICLICK, el que es de carácter informativo, por lo que no reemplaza la consulta de un médico.
+1) Consiste en:
+a.  Responder inquietudes de consultas sobre urgencias médicas y procedimiento de primeros auxilios, como ingesta de productos tóxicos, reacciones alérgicas, manipulación accidental de productos químicos, entre otros.
+b. Consultas respecto al uso de medicamentos, reacciones adversas, efectos secundarios y contraindicaciones- Consulta sobre evolución de tratamientos médicos en curso.
+Esta prestación es de carácter referencial y en ningún caso reemplaza la consulta con el médico tratante.
+<b>DEFINICIONES LEGALES.
+COBERTURA: Esta la garantía del servicio con la cual se afianza una operación en materia civil, comercial o mercantil, estableciendo los pártemelos de la operación.
+CARENCIA: Este es el tiempo en que un determinado servicio, civil, comercial o mercantil detenta un determinado derecho de uso.
+ENFERMEDAD: Alteración o desviación del estado fisiológico en una o varias partes del cuerpo, por causas en general conocidas por el paciente, el cual manifiesta síntomas y signos característicos, y cuya evolución es más o menos predecible.
+ACCIDENTE: Acontecimiento, independiente de la voluntad humana, causado por una fuerza extraña, de acción rápida, que se manifiesta por la aparición de lesiones orgánicas.
+ATENCIÓN DE URGENCIA: Se entiende por este concepto, cualquier servicio de emergencia los cubren la atención, traslado, y comunicaciones realizados con el fin de proveer servicios de salud en caso de urgencia o emergencias médicas.

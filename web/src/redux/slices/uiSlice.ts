@@ -1,4 +1,4 @@
-import { createSlice, CaseReducer, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState = {
   isDesktop: true,

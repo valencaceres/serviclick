@@ -2,6 +2,32 @@ import moment from "moment";
 
 import pool from "../util/database";
 
+const getActivesByRutAndProductIdModel: any = async (
+  customer_type: string,
+  rut: string,
+  product_id: string
+) => {
+  try {
+    const result = await pool.query(`
+      select	lea.id,
+            pro.product_id,
+            sub.subscription_id,
+            sub.status_id
+      from	app.lead lea
+            inner join app.channel cha on lea.channel_id = cha.id
+            inner join app.leadproduct pro on lea.id = pro.lead_id
+            inner join app.subscription sub on lea.subscription_id = sub.subscription_id
+            inner join app.${customer_type} com on lea.${customer_type}_id = com.id
+      where 	com.rut = '${rut}' and
+              pro.product_id = '${product_id}' and
+              sub.status_id < 8`);
+
+    return { success: true, data: result.rows, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 const getByFiltersModel: any = async (
   channel_id: string,
   client_type: string,
@@ -68,7 +94,48 @@ const getByFiltersModel: any = async (
             status_id,
             status_name,
             amount
-    from (	select	MAX(lea.channel_id :: text) as channel_id,
+    from (	
+      select	MAX(lea.channel_id :: text) as channel_id,
+              MAX(sub.date) as datetime,
+              MAX(to_char(sub.date, 'DD/MM/YYYY')) as date,
+              MAX(to_char(sub.date, 'HH24:MI')) as time,
+              MAX (case when cus.rut is null then 'c' else 'p' end) as client_type,
+              MAX (case when cus.rut is null then com.rut else cus.rut end) as client_rut,
+              MAX (case when cus.name is null then com.companyname else concat(cus.name, ' ', cus.paternallastname) end) as client_name,
+              MAX(pro.name) as product_name,
+              COUNT(1) :: int as num_insured,
+              MAX(sta.id :: text) as status_id,
+              MAX(sta.name) as status_name,
+              MAX(pay.amount) as amount
+      from    app.lead lea
+                inner join app.leadproduct lpr on lea.id = lpr.lead_id
+                inner join app.product pro on lpr.product_id = pro.id
+                inner join app.leadinsured lin on lea.id = lin.lead_id
+                inner join app.subscription sub on lea.subscription_id = sub.subscription_id
+                inner join app.status sta on sub.status_id = sta.status_id
+                inner join app.channel cha on lea.channel_id = cha.id
+                left outer join app.payment pay on sub.subscription_id = pay.subscription_id
+                left outer join app.customer cus on lea.customer_id = cus.id
+                left outer join app.company com on lea.company_id = com.id
+      group   by
+              lea.id,
+              pro.id) as transactions
+    where   amount >= 0 ${sqlWhere}
+    order 	by
+            date desc,
+            time desc,
+            product_name`);
+
+    return { success: true, data: result.rows, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+export { getActivesByRutAndProductIdModel, getByFiltersModel };
+
+/* 
+      select	MAX(lea.channel_id :: text) as channel_id,
                     MAX(pay.date) as datetime,
                     MAX(to_char(pay.date, 'DD/MM/YYYY')) as date,
                     MAX(to_char(pay.date, 'HH:MI')) as time,
@@ -120,17 +187,5 @@ const getByFiltersModel: any = async (
             where 	pay.id is null
             group   by
                     lea.id,
-                    pro.id) as transactions
-    where   amount >= 0 ${sqlWhere}
-    order 	by
-            date desc,
-            time desc,
-            product_name`);
-
-    return { success: true, data: result.rows, error: null };
-  } catch (e) {
-    return { success: false, data: null, error: (e as Error).message };
-  }
-};
-
-export { getByFiltersModel };
+                    pro.id
+*/

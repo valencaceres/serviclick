@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
 
-import {
-  ContentCell,
-  ContentRow,
-  ContentCellSummary,
-} from "../../../layout/Content";
+import { ContentCell, ContentRow } from "../../../layout/Content";
 
 import InputText from "../../../ui/InputText";
 import Button from "../../../ui/Button";

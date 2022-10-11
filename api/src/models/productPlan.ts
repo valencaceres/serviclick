@@ -1,4 +1,5 @@
 import pool from "../util/database";
+import createLogger from "../util/logger";
 
 const createModel: any = async (
   id: string,
@@ -7,6 +8,16 @@ const createModel: any = async (
   price: number,
   frequency: string
 ) => {
+  createLogger.error({
+    model: "product/createModel",
+    input: {
+      id,
+      plan_id,
+      type,
+      price,
+      frequency,
+    },
+  });
   try {
     const result = await pool.query(
       "INSERT INTO app.productPlan(createdate, product_id, plan_id, type, price, frequency) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",

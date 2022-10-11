@@ -1,8 +1,11 @@
+import { useEffect } from "react";
+
 import { ContentCell, ContentRow } from "../../../layout/Content";
 
 import Button from "../../../ui/Button";
 import InputText from "../../../ui/InputText";
 import ButtonIcon from "../../../ui/ButtonIcon";
+import CheckBox from "../../../ui/CheckBox";
 
 const ProductCoverage = ({
   setCoverage,
@@ -89,6 +92,16 @@ const ProductCoverage = ({
               color="gray"
             />
           </ContentRow>
+        </ContentRow>
+        <ContentRow>
+          <CheckBox
+            label="Montos combinados"
+            width="200px"
+            value={coverage.isCombined}
+            onChange={(e: any) =>
+              setCoverage({ ...coverage, isCombined: !coverage.isCombined })
+            }
+          />
         </ContentRow>
       </ContentCell>
       <Button

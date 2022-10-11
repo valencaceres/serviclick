@@ -1,0 +1,241 @@
+<b><c>ANEXO DE CONTRATO
+El presente documento privado es considerado por los firmantes parte integral del contrato marco de prestación de servicios.
+<b>Uno. Plan contratado.
+El servicio del plan contratado es: “<<PLAN_NAME>>”
+<b>Dos. Tabla, tope y límite de evento.
+El servicio de asistencia antes indicado contempla la siguiente tabla:
+<<COVERAGES>>
+<b>Tres. SALA DE URGENCIA POR ENFERMEDAD.
+Este servicio corresponde a la atención médica inicial en una sala de urgencia. El cliente beneficiario debe contar con sistema de salud previsional Isapre o FONASA, excluyendo FONASA tipo A, este último con un límite de servicio del 50%.
+<b>Cuatro. servicio y exclusiones.
+El servicio abarca los siguientes conceptos: (prestación)
+1. Gastos médicos de urgencia:
+a. Atención de Urgencia
+b. Atención de médico de Urgencia, incluyendo, pero no limitado, a los honorarios médicos de las siguientes especialidades:
+    i. Cirujano General.
+    ii. Médico de urgencia.
+    iii. Médico Traumatólogo.
+    iv. Médico Pediatra.
+    v. Médico internista.
+c. Se incluyen los honorarios médicos de especialistas plásticos o con fines estéticos a consecuencia de accidente.
+2. Los exámenes inherentes y necesarios a la atención de salud de urgencia, en ambos casos que estén considerados dentro de la cuenta del servicio de urgencia, tales como:
+    a. Hemograma Completo
+    b. Glucosa
+    c. Grupo Sanguíneo
+    d. EMO (elemental y microscopio de orina) y
+    e. Reacción de Widall.
+3. Los exámenes de imageneología propios y necesarios de la atención de urgencia, incluidos en la cuenta de sala de urgencia.
+4. Los medicamentos de urgencia aplicados durante la atención de urgencia, entre los que se incluyen, pero no limitan a: Analgésicos (dolor), Anti-inflamatorios (inflamación), y Antipiréticos (fiebre)
+5. Material de uso médico: como bota, yeso, venda, equipo y material de sutura, entre otros, debidamente bonificados por el sistema previsional.
+La asistencia sala de urgencia se entenderá por finalizada, una vez que el cliente se encuentre estabilizado, es decir cuando el paciente se encuentre en estado de equilibrio de sus funciones vitales, de modo que, aun cursando alguna patología no resuelta, está en condiciones de ser trasladado, dentro del establecimiento o a otro centro asistencial o a su domicilio, sin poner en riesgo su vida o la evolución de su enfermedad. Este servicio será ACTIVADO por SERVICLICK por parte de ejecutivos de asistencia, por lo que es condición que el cliente se contacte en forma telefónica al número <<PHONE>>, para reportar la necesidad de utilizar el servicio. El personal de atención de Serviclcick, tomará el requerimiento del cliente y gestionará la activación.
+La asistencia referida en el presente anexo, opera como descuento a través del sistema de verificación de identidad i-med. En caso de no haber disponibilidad del sistema el beneficiario, debe informar inmediatamente a SERVICLICK para dejar registro de la situación, deberá el cliente cancelar la totalidad del valor del pago de la atención a la clínica o Centro Asistencial y posteriormente gestionar el descuento del servicio según se explica en el párrafo anterior. Para solicitar el descuento del servicio por no operación de los sistemas electrónicos o ausencia de ellos en el centro de urgencias, el cliente debe presentar la siguiente documentación: boletas, registro de atención de urgencia y detalle de prestaciones cubiertas y canceladas por su Isapre o Fonasa y Seguros relacionados si los tiene, donde deberá realizar el pago del gasto. Posteriormente, debe presentar toda la documentación original a SERVICLICK, donde será validado por su contraloría médica, para su respectivo pago.
+Cliente tendrá un límite máximo de 10 días hábiles una vez dado de alta para informar su ida a urgencia, caso contrario se considerara denegada la solicitud.
+<b>EXCLUSIONES DE SALA DE URGENCIA:
+No se autorizará prestaciones o servicios médicos, como tampoco reconocerá gastos o costos de tales servicios en las siguientes situaciones:
+a) Está excluida la atención medica complementaria ordenada por médico especialista en la sala de urgencia en otras dependencias que no sea sala de urgencias, y/o cualquier lugar de atención en la Clínica u Hospital.
+b) Exámenes no inherentes o no necesarios para tratar la atención dentro de la sala de urgencia.
+c) Gastos de hospitalización Clínica, Quirúrgica y Unidad de cuidados intensivos.
+d) Honorarios de médicos especialistas que no estén incluidos dentro de la cuenta de sala de urgencia.
+e) Las atenciones por medicina preventiva.
+f) Gastos y honorarios de Pabellón de: Urgencia, Pabellón central y Ambulatorio.
+g) Toda atención en sala de urgencias que se concrete sin activación de la asistencia previamente.
+h) Cuando la persona que solicita el servicio no identifique al cliente titular que contrató el servicio que contempla este beneficio.
+i) Cuando la persona que solicite el servicio no proporcione información veraz y oportuna, que por su naturaleza no permita atenderlo debidamente.
+j) Hechos derivados de: terrorismo, guerra, guerrilla, vandalismo, asalto, motín o tumulto.
+k) La ingestión de drogas, Alcohol, sustancias tóxicas, narcóticos o medicamentos sin prescripción médica.
+<b>PROCEDIMIENTO A SEGUIR PARA LA OBTENCIÓN DE LOS SERVICIOS - CONDICIONES
+1) Los servicios descritos, para ser entregados por SERVICLICK, deben solicitarse vía telefónica, previo a dirigirse al servicio de urgencia. Un ejecutivo de asistencias lo atenderá y derivará al centro de la red de prestadores más cercano al lugar donde se encuentre y adecuado para su correcta atención.
+2) La asistencia será coordinada por los ejecutivos de asistencia de SERVICLICK, debiendo el cliente entregar la información mínima para poder hacer un correcto análisis de la situación, y gestionar el servicio, como:
+    a. RUT del Cliente Titular.
+    b. RUT del Beneficiario.
+    c. Sistema de Previsión del Beneficiario.
+    d. Detalle de la Urgencia o Emergencia Médica y su origen.
+    e. Ubicación Geográfica.
+3) Los servicios podrán ser solicitados desde el inicio de la vigencia, es decir el <<VALIDITY_INIT>>
+4) Los servicios de asistencia señalados en el presente documento, en cualquier de sus modalidades se otorgarán a aquellos clientes que se encuentren afiliados a un sistema de salud como las ISAPRE, FONASA u algún otro sistema detallado a continuación:
+Sin que el listado detallado a continuación sea exclusivo y limitativo, se describen los siguientes Sistemas de Salud: Capredena, Dipreca, Fusat, Otros, Se excluye FONASA tipo A.
+Además de encontrarse al día en los pagos
+1) Ampliación de topes de cobertura: Si el sistema de salud no entrega cobertura en ningún gasto medico realizado en sala de urgencia, el servicio contratado, entregará cobertura del 50% del total de la boleta con un tope máximo del 50% del total del plan contratado en UF.
+a. En este caso, el cliente deberá cobrar el servicio mediante los canales virtuales dispuestos por Serviclick en la página web <<WEB>>, presentando la documentación solicitada en referido sitio web. El referido pago de los servicios será efectuado en la cuenta de abono de el Cliente en el plazo de 5 días hábiles contados desde la fecha de la presentación de la solicitud de cobro, salvo casos objetados por contraloría médica, los que serán informados oportunamente a el cliente.
+<b>ATENCION MEDICA AMBULATORIA.
+Medicina General, Pediátrica o Geriátrica: Si a consecuencia de un Resfrío fuerte, Dolor de garganta, dolor de estómago o jaqueca en la que el beneficiario requiera asistir con un médico general para prevenir, detectar y/o Tratar enfermedades comunes, así como también ser derivado al especialista indicado, en caso de ser necesario. El Titular podrá contactarse con la central de asistencia de Serviclick quien activará bajo el sistema IMED para que pueda ser atendido en cualquier centro médico o clínico que tenga convenio con su previsión.
+<b>Restricciones de uso
+a) Cliente no cuente con previsión de salud o pertenezca a Fonasa Tipo A. (50%)
+b) Beneficiario (Hijo/a) no sanguíneo no este como carga del titular.
+<b>Formas de uso:
+El cliente deberá comunicarse previa a la concurrencia de algún centro médico público o privado, el cliente deberá contactarse con el departamento de coordinación de SERVICLICK, con fin de registrar y activar su asistencia. Con todo el beneficiario podrá concurrir en algún centro médico de su previsión.
+<b>DESCUENTO EN FARMACIA.
+La Asistencia “Bonificación en Farmacia” está desarrollada para que sea utilizada por todos los afiliados vigentes al momento de la compra y en todas las farmacias de chile ya sea tradicionales o alternativas.
+<b>DESCRIPCION DEL SERVICIO
+1) No existe restricción de establecimiento para la compra de medicamento, es para todas las farmacias del país incluyendo los territorios insulares.
+2) Los descuentos aplican exclusivamente para compras de medicamento con receta médica.
+3) Límite mensual de indemnización es de $ ( lo llena sistema de acuerdo al plan) no acumulables
+<b>DOCUMENTACION A PRESENTAR
+a) Original de la receta emitida a nombre del pensionado y factura o boleta de compra.
+b) En el caso de receta retenida, se aceptará fotocopia con firma de acreditación de la farmacia.
+c) Cedula de Identidad del beneficiario y de la persona que cobra el beneficio en caso que sea un representante de éste.
+d) El cliente deberá cobrar el servicio únicamente mediante los canales virtuales dispuestos por Serviclick en la página web <<WEB>>, presentando la documentación solicitada en referido sitio web. El referido pago de los servicios será efectuado en la cuenta de abono del Cliente en el plazo de 5 días hábiles contados desde la fecha de la presentación de la solicitud de cobro, salvo casos objetados por contraloría médica, los que serán informados oportunamente al cliente.
+<b>TELEMEDICINA.
+El titular y/o sus cargas según plan contratado podrá solicitar la coordinación de consulta médica online, con un profesional de la salud en el área de medicina General para consultas de cualquier patología médica, el medico orientará tratamientos, realizará lectura e interpretación de exámenes, recetará medicamentos si es necesario y/o emitirá ordenes médicas para la toma de exámenes si lo amerita. La consulta con el especialista podrá ser solicitada solamente por el titular para uso de él o alguna de sus cargas dependiendo del plan contratado, cada consulta es considerada un evento.
+<b>Descripción del Servicio:
+1) Cliente se comunica con la central de asistencia por medio de una línea exclusiva y solicita el servicio de Telemedicina.
+2) Un ejecutivo gestionará la atención de telemedicina y para ello requerirá de los siguientes datos:
+    a. Rut
+    b. Nombre completo
+    c. Nº de Documento
+    d. Teléfono celular
+    e. Cuenta de correo electrónico
+3) Cliente valida sus datos personales espera la atención del médico o agenda su cita para otro horario.
+4) El tiempo de espera máximo comprometido en caso de requerir atención inmediata es de 30 minutos.
+5) El servicio se dará por finalizado, al enviar un resumen de atención con las indicaciones, receta médica y/o orden médica para algún examen al correo registrado por cliente
+<b>SERVICIOS DE PLOMERIA.
+Definiciones
+Cuando a consecuencia de una avería imprevista en las instalaciones fijas de abastecimiento de agua y/o sanitarias propias del “inmueble beneficiario”, se presente alguna ruptura o fuga de agua o averías de agua, se enviara a la brevedad un técnico especializado que realice las labores de emergencia necesarias para restablecer el servicio, siempre y cuando el estado de red del “inmueble beneficiario” lo permitan y la avería no se deba a responsabilidad de la empresa sanitaria correspondiente al domicilio o esté dentro de las responsabilidades del mantenimiento periódico de las redes.
+Las instalaciones que corresponden a bienes comunes de inmueble o de edificios regidos de la ley de piso o de propiedad horizontal o que son propiedad de tercero, no se considera como pertenecientes al “inmueble del cliente” aun cuando puedan estar situadas su recinto.
+<b>Detalle de Servicios
+1) Reparación de matrices de agua
+2) Cambio de Grifería
+3) Destape de WC, Lavaplatos, Tinas, Lavamanos
+4) Cambio de llave de paso
+5) Cambio Fitting del estanque de WC.
+<b>EXCLUSIONES DEL SERVCIO.
+a) En caso que el beneficiario presente en el “inmueble beneficiario” una avería o filtración accidental en las matrices de agua. Serviclick, previa solicitud, gestionara el envío de un técnico especializado para la reparación de estas. El servicio no se realizará en caso que la matriz se encuentre fuera del domicilio, la fuga debe estar previamente detectada y debidamente despejada para realizar los trabajos
+b) En caso que el cliente lo solicite, Serviclick gestionara el envío de un técnico para realizar el cambio de grifería en el domicilio beneficiario. Los repuestos que estarán cubiertos por el servicio de asistencia son Flexibles, manillas, gomas de corte. Sin embargo, la llave deberá ser cubierta por el cliente. El servicio de cambio de grifería no incluye, Retiro de muebles o vanitorios que necesiten ser removidos para la instalación Trabajos de albañilería, Mejoras ni modificaciones
+c) En caso que el beneficiario tenga tapado el W.C., lavamanos, tinas, lavaplatos, el técnico especializado llevará a cabo dicho destape y normalizará el funcionamiento, siempre que las instalaciones lo permitan. En caso de las tinas, estas deben poseer registro para acceder la realización de los trabajos.
+d) En caso que el cliente requiera el cambio de una llave de paso debido a la filtración de esta, Serviclick gestionara el envío de un técnico especializado para llevar a cabo el cambio de la pieza. El servicio de cambio de llave de paso no incluye Retiro de muebles o vanitorios que necesiten ser removidos para la instalación
+e) Cuando a consecuencia de una filtración en un baño del “inmueble beneficiario” y donde se determina que esta se genera producto del desgaste o mal funcionamiento del fitting del estanque de W.C del “inmueble beneficiario”, Serviclick, gestionara el envío de un técnico especializado para realizar el cambio de dicho artefacto y normalizar el funcionamiento del W.C.
+f) Se excluyen de todos los servicios: Trabajos de albañilería, mejoras y modificaciones. Quedan excluidas del presente servicio, la reparación y/o reposición de averías propias.
+<b>SERVICIO DE ELECRICIDAD.
+Cuando a consecuencia de una avería imprevista en las instalaciones eléctricas propias en el interior del “inmueble beneficiario” se produzca un corte de energía eléctrica total o parcial Serviclick enviará a la brevedad posible un técnico especializado para restablecer el suministro de energía eléctrica, siempre y cuando el estado de las instalaciones del inmueble lo permiten y el corte se encuentre detectado. Se llevará a cabo la reparación o cambio de automático, diferenciales, soquetes, interruptores y/o enchufes dañados por corto circuitos; esto únicamente en áreas que pertenezcan a la instalación eléctrica del “inmueble beneficiario”.
+El importe de lo anterior incluye el costo de los materiales traslado del operario y mano de obra los que serán imputados a la cobertura del plan.
+<b>EXCLUSIONES DEL SERVICIO.
+a) Elementos de iluminación tales como lámparas, bombillos o fluorescentes y artefactos conectados a la red eléctrica de la casa
+b) Electrodomésticos tales como: estufas, hornos, calentadores, calefón, lavadoras, secadoras, neveras y en general cualquier aparato que funcione por suministro eléctrico.
+c) Cualquier tipo de reparación en áreas comunes o en instalaciones propiedad de la empresa de distribución de energía eléctrica de la resistencia del cleinte
+d) Cortes por sobre carga eléctrica o sobreconsumo de energía, Corte por instalaciones eléctricas no certificadas o fuera de norma (hechizas o improvisadas)
+No se realizan modificaciones ni mejoras a las instalaciones ya existente.
+<b>SERVICIO DE CERRAJERIA.
+Cuando a consecuencia de un hecho accidental como el extravío, robo de las llaves o inutilización de la cerradura por intento de hurto del “inmueble beneficiario”, se enviara a la brevedad posible un técnico especializado para restablecer el acceso o el correcto cierre de la puerta principal o acceso peatonal a la vivienda. El valor anterior incluye el costo de los materiales, traslado del operario y mano de obra el que será cargado a la cobertura del plan contratado Si se genera la necesidad de cambio de la cerradura (chapa), esta debe ser provista por el cliente asumiendo la compañía el costo de la mano de obra para su instalación según cobertura
+<b>EXCLUSIONES DEL SERVICIO CERRAJERIA
+a) La reparación y/o reposición de cerradura o chapas y puertas que impidan el acceso a partes internas del inmueble o puertas interiores
+b) Cerraduras eléctricas.
+c) Quedan excluidos con servicio de emergencia cualquier problema provocado por el mal funcionamiento de ruedas, bisagras, marcos, motores, soportes, dispositivo eléctrico, citófono, control remoto y cualquier otro elemento ajeno a la cerradura (chapa).
+d) La apertura, cambio, reposición o reparación de cerradura de guardarropa, despensas y alacenas.
+e) El cambio o reposición de cerradura o chapa de puerta de interiores y puerta exteriores secundarias.
+f) La reparación y/o reposición de cerradura o chapa dañada o inutilizada por efecto de desgaste natural u obsolescencia.
+<b>SERVICIO DE VIDRIERIA.
+Cuando a consecuencia de un hecho imprevisto se produzca la ruptura de alguno de los vidrios de ventanas de exterior y se genera la necesidad inmediata de reposición de vidrio que tomen parte del perímetro horizontal del “inmueble benefivciario”, poniendo en riesgo la seguridad de la misma, sus ocupantes o de terceros, se enviara a la brevedad un técnico para solucionar esa eventualidad, siempre y cuando las condiciones del día, hora y fecha lo permitan. El servicio no incluye modificaciones ni mejoras a las instalaciones ya existentes.
+<b>EXCLUSIONES DEL SERVICIO VIDRIERIA
+a) Cualquier clase de espejo y cualquier tipo de vidrio que a pesar de ser parte de la edificación en caso de una ruptura no formen parte del perímetro horizontal del “inmueble beneficiario”.
+b) Ruptura de vidrio por fenómenos naturales como: terremoto, inundaciones, temporales, maremotos, erupciones volcánicas, caída de árboles o ramas, etc.
+c) Vidrio que a pesar de formar parte del perímetro horizontal del “inmueble del cliente” sean vitrales, bronce, de colores, vidrios espejos, ahumados, foto cromáticos, pigmentados, polarizados o similares, en cuyo caso se repondrá un vidrio normal trasparente incoloro que sirve con el propósito de resolver la emergencia.
+d) No cubre pre existencia.
+e) No se considera como emergencia un servicio solicitado posterior a 3 días ocurrido el imprevisto. De esta manera el servicio quedara fuera de cobertura.
+f) Quedan excluida de la cobertura la reposición de vidrio termo panel, vidrio laminados, templado o de seguridad.
+g) Quedan excluida de la cobertura vidrios interiores que no pertenezcan al perímetro horizontal del “inmueble beneficiario”.
+<b>PROCEDIMIENTO A SEGUIR PARA LA OBTENCIÓN DE LOS SERVICIOS - CONDICIONES
+1) Los servicios descritos, para ser entregados por SERVICLICK, deben solicitarse vía telefónica, previo a dirigirse al servicio de asistencia. Un ejecutivo de asistencia lo atenderá y derivará al centro de la red de prestadores más cercano al lugar donde se encuentre y adecuado para su correcta atención.
+2) La asistencia será coordinada por los ejecutivos de asistencia de SERVICLICK, debiendo el cliente entregar la información mínima para poder hacer un correcto análisis de la situación, y gestionar el servicio, como:
+a. RUT del Cliente Titular.
+b. RUT del Beneficiario.
+c. Ubicación Geográfica.
+d. Dirección beneficiaria. (deberá corresponder a la dirección ingresa como beneficiario del plan)
+3) Los servicios podrán ser solicitados desde el inicio de la vigencia, es decir el <<VALIDITY_INIT>>
+<b>DESCRIPCIÓN DE LOS SERVICIOS:
+1- Urgencia Veterinaria.
+Cuando a consecuencia de una urgencia debida a un accidente o Agravamiento de enfermedad, el contratante tendrá el derecho a solicitar el servicio contratado, por la atención de urgencia otorgada al beneficiario bajo un llamado previo o posterior no superior a 72 Horas continuas desde la salida del centro médico. El contratante deberá presentar a Serviclick una boleta con el detalle de la prestación obtenida y que aparezca los datos del beneficiario (Mascota), En el caso que la boleta sea el comprobante de su tarjeta de crédito o débito, deberá solicitar un informe firmado y timbrado por el médico veterinario o clínica, en donde se detalle las prestaciones que recibió, y el valor correspondiente. (el monto a reclamar dependerá del plan contratado)
+2- Telemedicina veterinaria.
+El contratante tendrá el derecho a solicitar una atención medica veterinaria que lo ayudará y orientará para obtener información de cualquier dolencia, malestar o comportamiento irregular relacionado con el área médica que tenga el beneficiario. La telemedicina es una herramienta para el diagnóstico y tratamiento, sin embargo, existe la posibilidad de que el médico veterinario solicite realizar una consulta presencial. En caso de vómitos y diarreas profusas, anorexia por más de 12 horas, sangrados profusos, inflamación por reacciones alérgicas, dificultad para respirar, convulsiones o pérdida de consciencia, debe asistir a un centro veterinario a la brevedad.
+3.- Vacuna antirrábica.
+El contratante podrá solicitar el servicio contratado para la vacuna antirrábica anual, presentando copia del carné del beneficiario, con la fecha de dicha vacuna, más la boleta y descripción por la atención en el centro veterinario. Si la fecha en donde el beneficiario fue vacunado es superior a 60 días posterior a la fecha establecida en el carnet de la mascota esta estará fuera del alcance del servicio contratado.
+<b>PROCESO DE SOLICITUD DE SERVICIO
+Cuando se solicite cualquiera de los servicios anteriormente mencionados, se debe proceder de la siguiente forma:
+a) El contratante debe notificar los datos del cliente tales como:
+    a. Nombre
+    b. Raza
+    c. Fecha de nacimiento
+b) El contratante deberá notificar la atención a la central de asistencia antes de acudir al centro de urgencia o posterior a la salida de la mima notificando hasta 72 horas después como máximo.
+<b>Proceso de pago.
+El titular antes de utilizar el servicio debe notificar a Serviclick el ejecutivo entregará las instrucciones para cada atención que son:
+a) Una vez realizado el servicio debe cancelar con el método que desee y solicitar boleta o factura al prestador.
+b) Enviar la boleta o factura al email <<EMAIL>> con los siguientes datos del cliente donde será depositada la devolución:
+    - Rut del titular
+    - Número de teléfono
+    - Banco
+    - Tipo de cuenta
+    - Número de cuenta
+El pago se realizará con un plazo máximo de 72 horas luego de ser decepcionada la documentación.
+<b>IMPORTANTE:
+1) La cuenta bancaria que indique el cliente debe coincidir con el titular del servicio.
+2) Solo se realizará la devolución del monto pagado en función del plan contratado.
+<b>Exclusiones:
+No se prestará el servicio pago para atenciones de hospitalización sólo se asumirá los servicios estipulado en la cobertura.
+1) Cuando la persona no se identifique como beneficiario del mismo.
+2) Cuando el beneficiario no proporcione información veraz y oportuna, que por su naturaleza no permita atender a la mascota debidamente.
+3) Cuando el beneficiario incumpla cualquiera de las obligaciones indicadas en este documento.
+<b>VIDRIERÍA VEHICULAR.
+Cuando a consecuencia de un accidente, automovilístico, robo o hurto, se produzca la rotura de alguno de los vidrios laterales del automóvil, este será reemplazado. El valor anterior incluye el costo del vidrio y la mano de obra. El vidrio que se instalará será un vidrio normal, transparente. Para hacer efectivo el servicio se debe presentar constancia en carabineros de Chile.
+El servicio no considera:
+a) El Servicio de Vidriería no considerará la reposición de vidrios ante eventos preexistentes y que no correspondan a una solicitud inmediata e inminente para la atención. 
+b) Cualquier clase de espejos, y cualquier tipo de vidrios que, a pesar de ser parte del automóvil, no formen parte de las puertas laterales.
+c) Roturas de vidrios por fenómenos naturales.
+d) Reparación de puertas por deformidad.
+e) Vidrio delantero y/o trasero
+<b>CERRADURAS O CHAPAS VEHICULARES.
+Cuando a consecuencia de un robo o hurto, impida la apertura de este o el correcto cierre de la puerta, Serviclick coordinara la asistencia y así restablecer el acceso o correcto cierre de la puerta. Serviclick realizará el cambio o reparación de la cerradura o chapa de puerta del piloto o copiloto. El valor anterior incluye el costo de la mano de obra, herramientas y materiales que se aplicará a la cobertura del plan contratado.
+El servicio no considera:
+a) La reparación y/o reposición de chapas y de puertas que de acceso a maleteros.
+b) La reparación de chapas en puertas en malas condiciones.
+c) La reparación y/o reposición de chapas de puertas de pasajeros.
+<b>NEUMÁTICOS.
+En caso de deterioro del neumático de manera irreparable Serviclick realizara cambio de esta, previa evaluación. Este servicio se prestará con un límite de UF 10 Lo llena sistema por evento y máximo de Lo llena sistema eventos al año. El valor anterior incluye el costo material y la mano de obra. El cliente deberá aportar al momento de la contratación set fotográfico de sus neumáticos.
+El Servicio no considerará la reposición en los siguientes casos:
+a) Cuando el neumático ha rodado mientras estaba pinchado
+b) Cuando el daño se ha producido en la banda de rodadura del neumático
+c) Cuando la perforación no sea mayor a 6 mm
+d) Cuando la profundidad o espesor del neumático sea menor a 1,6 mm
+<b>AMORTIGUADORES.
+En caso de deterioro del amortiguador de manera irreparable Serviclick realizara el cambio de esta. Previa evaluación. El cliente deberá aportar set fotográfico del automóvil detenido en un lugar plano., placa patente del vehículo.
+El Servicio de reemplazo no considerará la reposición en los siguientes casos:
+a) Cuando exista un impacto que deteriore el amortiguador ya sea por caída a un hoyo vial o simplemente un choque que genere dicho deterioro.
+b) Cuando el vehículo este con mayor a 60 mil km de recorrido.
+c) Cuando exista manipulación de terceros.
+d) Cuando este esté perdiendo aceite
+<b>PROCEDIMIENTO A SEGUIR PARA LA OBTENCIÓN DE LOS SERVICIOS - CONDICIONES
+1) Los servicios descritos, para ser entregados por SERVICLICK, deben solicitarse vía telefónica, previo a dirigirse al servicio de asistencia. Un ejecutivo de asistencia lo atenderá y derivará al centro de la red de prestadores más cercano al lugar donde se encuentre y adecuado para su correcta atención.
+2) La asistencia será coordinada por los ejecutivos de asistencia de SERVICLICK, debiendo el cliente entregar la información mínima para poder hacer un correcto análisis de la situación, y gestionar el servicio, como:
+    a. RUT del cliente Titular.
+    b. RUT del Beneficiario.
+    c. Ubicación Geográfica.
+    d. Placa patente.
+    e. Marca modelo y año.
+3) Los servicios podrán ser solicitados desde el inicio de la vigencia, es decir el <<VALIDITY_INIT>>
+<b>SERVICIOS FUNERARIOS.
+Cuando consecuencia de un accidente que derive en la muerte del beneficiario titular del servicio, la familia podrá solicitar los servicios funerarios que consisten en:
+A. Compra de féretro.
+B. Arriendo de velatorio.
+C. Trámite para replicación del sepelio.
+D. Publicación en prensa (obituario).
+E. Servicio religioso.
+<b>PROCEDIMIENTO A SEGUIR PARA LA OBTENCIÓN DE LOS SERVICIOS - CONDICIONES
+F. Los servicios descritos, para ser entregados por SERVICLICK, deben solicitarse vía telefónica, previo a dirigirse al servicio de asistencia. Un ejecutivo de asistencia lo atenderá y derivará al centro de la red de prestadores más cercano al lugar donde se encuentre y adecuado para su correcta atención.
+Los documentos requeridos son:
+a. Certificado de defunción.
+b. Copia de cedula de identidad.
+<b>SERVICIOS LEGALES.
+Si a consecuencia de una problemática en la que se vea envuelto el beneficiario:
+A.- colisión ley 18290 (ley de tránsito)
+B.- accidente o daños en que se vea envuelta la mascota (ley tenencia responsable).
+C.- conflictos legales ley de arrendamiento.
+D.- posesión efectiva.
+<b>EXCLUSIONES.
+El servicio contempla la asistencia en consulta legal telefónica.
+El servicio no contempla la representación legal, patrocinio y poder.
+El servicio no contempla los costos asociados a trámites legales, notarial ni impuestos.
+Nota: todos los servicios antes mencionadas poseen un límite de eventos a solicitar descritos en la tabla uno, donde el límite de usabilidad es 40 UF combinado anual. Por lo que el beneficiario podrá utilizar por cualquiera de estos servicios hasta llegar al límite máximo de UF anual y/o el límite de eventos por cada prestación.
+<b>DEFINICIONES LEGALES.
+COBERTURA: Esta la garantía del servicio con la cual se afianza una operación en materia civil, comercial o mercantil, estableciendo los pártemelos de la operación.
+CARENCIA: Este es el tiempo en que un determinado servicio, civil, comercial o mercantil detenta un determinado derecho de uso.
+ENFERMEDAD: Alteración o desviación del estado fisiológico en una o varias partes del cuerpo, por causas en general conocidas por el paciente, el cual manifiesta síntomas y signos característicos, y cuya evolución es más o menos predecible.
+ACCIDENTE: Acontecimiento, independiente de la voluntad humana, causado por una fuerza extraña, de acción rápida, que se manifiesta por la aparición de lesiones orgánicas.
+ATENCIÓN DE URGENCIA: Se entiende por este concepto, cualquier servicio de emergencia los cubren la atención, traslado, y comunicaciones realizados con el fin de proveer servicios de salud en caso de urgencia o emergencias médicas.

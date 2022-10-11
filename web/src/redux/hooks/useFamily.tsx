@@ -8,6 +8,7 @@ import {
   setFamily,
   addFamilyValue,
   resetFamily,
+  resetFamilyList,
   FamilyT,
   ValueT,
 } from "../slices/familySlice";
@@ -54,6 +55,10 @@ const useFamily = () => {
     dispatch(resetFamily());
   };
 
+  const resetList = () => {
+    dispatch(resetFamilyList());
+  };
+
   return {
     create,
     update,
@@ -64,6 +69,7 @@ const useFamily = () => {
     set,
     addValue,
     reset,
+    resetList,
     family,
     list,
   };

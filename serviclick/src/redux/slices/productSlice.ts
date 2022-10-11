@@ -10,11 +10,23 @@ export type CoverageT = {
   maximum: string;
   lack: string;
   events: string;
+  isCombined: boolean;
 };
 
 type PriceT = {
   customer: number;
   company: number;
+};
+
+type PlanT = {
+  customer: {
+    id: number;
+    price: number;
+  };
+  company: {
+    id: number;
+    price: number;
+  };
 };
 
 type FamilyValueT = {
@@ -32,8 +44,11 @@ export type ProductT = {
   frequency: string;
   term: string;
   beneficiaries: number;
+  minInsuredCompanyPrice: number;
+  dueDay: number;
   coverages: CoverageT[];
   familyValues: FamilyValueT[];
+  plan: PlanT;
   isActive: boolean;
 };
 
@@ -51,9 +66,12 @@ export const initialState: StateT = {
     cost: 0,
     isSubject: false,
     price: { customer: 0, company: 0 },
+    plan: { customer: { id: 0, price: 0 }, company: { id: 0, price: 0 } },
     frequency: "",
     term: "",
     beneficiaries: 0,
+    minInsuredCompanyPrice: 0,
+    dueDay: 0,
     coverages: [],
     familyValues: [],
     isActive: true,
@@ -91,6 +109,8 @@ export const createProduct =
     frequency: string,
     term: string,
     beneficiaries: number,
+    minInsuredCompanyPrice: number,
+    dueDay: number,
     coverages: CoverageT[],
     familyValues: FamilyValueT[]
   ) =>
@@ -109,6 +129,8 @@ export const createProduct =
           term,
           beneficiaries,
           coverages,
+          minInsuredCompanyPrice,
+          dueDay,
           familyValues,
         },
         {
@@ -135,6 +157,8 @@ export const updateProduct =
     frequency: string,
     term: string,
     beneficiaries: number,
+    minInsuredCompanyPrice: number,
+    dueDay: number,
     coverages: CoverageT[],
     familyValues: FamilyValueT[]
   ) =>
@@ -153,6 +177,8 @@ export const updateProduct =
           term,
           beneficiaries,
           coverages,
+          minInsuredCompanyPrice,
+          dueDay,
           familyValues,
         },
         {
@@ -220,3 +246,22 @@ export const getProductsByFamilyId = (family_id: string) => (dispatch: any) => {
     })
     .catch((error) => console.log(error));
 };
+
+export const createProductPlans =
+  (id: string, dueDay: number, trialCicles: any, discount: any) =>
+  (dispatch: any) => {
+    axios
+      .put(
+        `${config.server}/api/product/createPlans/${id}`,
+        { dueDay, trialCicles, discount },
+        {
+          headers: {
+            id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
+          },
+        }
+      )
+      .then((response) => {
+        dispatch(setProductList(response.data));
+      })
+      .catch((error) => console.log(error));
+  };

@@ -261,9 +261,9 @@ const createController = async (req: any, res: any) => {
       customer.rut !== ""
         ? contractor.name +
           " " +
-          contractor.paternallastname +
+          contractor.paternalLastName +
           " " +
-          contractor.maternallastname
+          contractor.maternalLastName
         : contractor.companyName;
     const address = contractor.address + ", " + contractor.district;
 

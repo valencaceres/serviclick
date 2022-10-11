@@ -1,6 +1,7 @@
 import {
   createProduct,
   updateProduct,
+  createProductPlans,
   deleteProduct,
   getProduct,
   listProducts,
@@ -26,6 +27,8 @@ const useProduct = () => {
     frequency: string,
     term: string,
     beneficiaries: number,
+    minInsuredCompanyPrice: number,
+    dueDay: number,
     coverages: any,
     familyValues: any
   ) => {
@@ -39,6 +42,8 @@ const useProduct = () => {
         frequency,
         term,
         beneficiaries,
+        minInsuredCompanyPrice,
+        dueDay,
         coverages,
         familyValues
       )
@@ -55,6 +60,8 @@ const useProduct = () => {
     frequency: string,
     term: string,
     beneficiaries: number,
+    minInsuredCompanyPrice: number,
+    dueDay: number,
     coverages: any,
     familyValues: any
   ) => {
@@ -69,10 +76,21 @@ const useProduct = () => {
         frequency,
         term,
         beneficiaries,
+        minInsuredCompanyPrice,
+        dueDay,
         coverages,
         familyValues
       )
     );
+  };
+
+  const createPlans = (
+    id: string,
+    dueDay: number,
+    trialCicles: any,
+    discount: any
+  ) => {
+    dispatch(createProductPlans(id, dueDay, trialCicles, discount));
   };
 
   const deleteById = (value: string) => {
@@ -106,6 +124,7 @@ const useProduct = () => {
   return {
     create,
     update,
+    createPlans,
     deleteById,
     getById,
     listAll,
