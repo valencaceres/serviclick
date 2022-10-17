@@ -7,21 +7,26 @@ import useUI from "../../../hooks/useUI";
 import styles from "./Menu.module.scss";
 
 const menu = [
-  { icon: <Icon iconName="home" />, text: "Inicio" },
+  { icon: <Icon iconName="home" />, text: "Inicio", route: "/" },
   {
     icon: <Icon iconName="settings" />,
     text: "Maestros",
     subOptions: [
-      { text: "Canales", route: "/masters/channel" },
+      { text: "Canales de Venta", route: "/masters/channel" },
       { text: "Familias", route: "/masters/family" },
       { text: "Coberturas", route: "/masters/coverage" },
       { text: "Productos", route: "/masters/product" },
     ],
   },
   {
+    icon: <Icon iconName="shopping_cart_checkout" />,
+    text: "Canales de venta",
+    subOptions: [{ text: "Internet", route: "/channels/web" }],
+  },
+  {
     icon: <Icon iconName="directions_car" />,
     text: "Procesos",
-    subOptions: [{ text: "Asignación de planes", route: "/processes/plan" }],
+    subOptions: [{ text: "Asignación de precios", route: "/processes/price" }],
   },
   {
     icon: <Icon iconName="receipt_long" />,
@@ -43,6 +48,7 @@ const Menu = () => {
           text={item.text}
           className={styles.menuOption}
           subOptions={item.subOptions}
+          route={item.route}
         />
       ))}
     </div>
@@ -56,10 +62,19 @@ const MenuOption = ({
   className,
   setShowSubOptions,
   showSubOptions,
+  route,
 }: any) => {
+  const router = useRouter();
+
+  const handleClickOption = (route: string) => {
+    if (route) {
+      router.push(route);
+    }
+  };
+
   return (
     <div className={className}>
-      <div className={styles.option}>
+      <div className={styles.option} onClick={() => handleClickOption(route)}>
         <div className={styles.left}>
           <Icon iconName={iconName} className={styles.icon} />
           <p>{text}</p>

@@ -95,7 +95,7 @@ const ChannelList = ({ setShowModal, showModal }: any) => {
                 </TableCell>
                 <TableCell width="350px">
                   {channel.name}
-                  <TableIcons>
+                  {/* <TableIcons>
                     <Icon
                       iconName="edit"
                       onClick={() => editChannel(channel)}
@@ -104,7 +104,7 @@ const ChannelList = ({ setShowModal, showModal }: any) => {
                       iconName="delete"
                       onClick={() => handleClickDelete(channel)}
                     />
-                  </TableIcons>
+                  </TableIcons> */}
                 </TableCell>
               </TableRow>
             ))}

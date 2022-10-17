@@ -16,7 +16,7 @@ import { getProduct } from "../../../redux/slices/productSlice";
 import { setStage } from "../../../redux/slices/stageSlice";
 import { setLeadProduct, resetLead } from "../../../redux/slices/leadSlice";
 
-import { useSubscription } from "../../../redux/hooks";
+import { useUI, useSubscription } from "../../../redux/hooks";
 
 const Value: NextPage = () => {
   const router = useRouter();
@@ -26,6 +26,7 @@ const Value: NextPage = () => {
   const { stage } = useAppSelector((state) => state.stageSlice);
   const { lead } = useAppSelector((state) => state.leadSlice);
 
+  const { agentId, setAgentUI } = useUI();
   const { getActiveSubscriptions, active } = useSubscription();
 
   const [isLoaded, setIsLoaded] = useState(false);
@@ -62,6 +63,10 @@ const Value: NextPage = () => {
     document.body.appendChild(form);
     form.submit();
   };
+
+  useEffect(() => {
+    agentId === "" && setAgentUI("020579a3-8461-45ec-994b-ad22ff8e3275");
+  }, []);
 
   useEffect(() => {
     dispatch(resetLead());

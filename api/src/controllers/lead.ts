@@ -81,7 +81,7 @@ type InsuredT = {
 };
 
 const createController = async (req: any, res: any) => {
-  const { customer, company, product, insured, channel_id } = req.body;
+  const { customer, company, product, insured, agent_id } = req.body;
   try {
     const insuredData: InsuredT[] = [];
 
@@ -147,7 +147,7 @@ const createController = async (req: any, res: any) => {
     const leadResponse = await createLeadModel(
       customer_id,
       company_id,
-      channel_id
+      agent_id
     );
 
     if (!leadResponse.success) {

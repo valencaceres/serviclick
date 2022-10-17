@@ -268,9 +268,9 @@ const ProductDetail = ({ setEnableSave }: any) => {
       product.family_id !== "" &&
         product.name !== "" &&
         product.beneficiaries.toString() !== "" &&
-        product.cost > 0 &&
-        product.price.company > 0 &&
-        product.price.customer > 0 &&
+        // product.cost > 0 &&
+        // product.price.company > 0 &&
+        // product.price.customer > 0 &&
         product.frequency !== "" &&
         product.term !== "" &&
         product.coverages.length > 0

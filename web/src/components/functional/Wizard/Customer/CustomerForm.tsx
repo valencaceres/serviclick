@@ -12,6 +12,7 @@ import {
   useAppDispatch,
   useAppSelector,
   useSubscription,
+  useUI,
 } from "../../../../redux/hooks";
 import { resetSubscription } from "../../../../redux/slices/subscriptionSlice";
 import {
@@ -22,6 +23,7 @@ import {
 const CustomerForm = ({ customerForm, setCustomerForm, disabled }: any) => {
   const dispatch = useAppDispatch();
 
+  const { agentId } = useUI();
   const { getActiveSubscriptions } = useSubscription();
 
   const { isDesktop } = useAppSelector((state) => state.uiSlice);

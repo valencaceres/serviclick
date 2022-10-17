@@ -17,6 +17,8 @@
     height: 100%;
     width: 100%;
     padding-left: 11px;
+    z-index: 999;
+    //background-color: red;
 
     @media screen and (min-width: 1200px) {
       padding-left: 80px;

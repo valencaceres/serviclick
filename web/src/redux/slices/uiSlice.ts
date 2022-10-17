@@ -1,22 +1,31 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-const initialState = {
+export type UIT = {
+  isDesktop: boolean;
+  agentId: string;
+};
+
+const initialState: UIT = {
   isDesktop: true,
+  agentId: "",
 };
 
 export const uiSlice = createSlice({
   name: "ui",
   initialState,
   reducers: {
-    setDevice: (state: any, action: PayloadAction<any>) => {
+    setDevice: (state: UIT, action: PayloadAction<boolean>) => {
       state.isDesktop = action.payload;
     },
-    resetDevice: (state: any) => {
+    setAgent: (state: UIT, action: PayloadAction<string>) => {
+      state.agentId = action.payload;
+    },
+    resetDevice: (state: UIT) => {
       state.isDesktop = initialState.isDesktop;
     },
   },
 });
 
-export const { setDevice, resetDevice } = uiSlice.actions;
+export const { setDevice, setAgent, resetDevice } = uiSlice.actions;
 
 export default uiSlice.reducer;

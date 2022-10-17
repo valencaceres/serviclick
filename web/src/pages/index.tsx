@@ -11,8 +11,12 @@ import {
 import { useFamily, useProduct } from "../redux/hooks";
 import { resetProduct } from "../redux/slices/productSlice";
 
+import { useUI } from "../redux/hooks";
+
 const Home: NextPage = () => {
   const router = useRouter();
+
+  const { setAgentUI } = useUI();
 
   const { listAll: getAllFamilies, reset: resetFamily, family } = useFamily();
   const {
@@ -45,6 +49,7 @@ const Home: NextPage = () => {
   };
 
   useEffect(() => {
+    setAgentUI("020579a3-8461-45ec-994b-ad22ff8e3275");
     getAllFamilies();
   }, []);
 

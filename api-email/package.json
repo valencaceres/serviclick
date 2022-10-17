@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon src/server.ts"
+    "start": "cross-env NODE_ENV=prod nodemon src/server.ts",
+    "dev": "cross-env NODE_ENV=dev nodemon src/server.ts"
   },
   "keywords": [],
   "author": "",
@@ -24,5 +25,8 @@
     "ts-node": "^10.9.1",
     "typescript": "^4.8.2",
     "winston": "^3.8.2"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3"
   }
 }

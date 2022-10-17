@@ -5,7 +5,7 @@ import pool from "../util/database";
 const createModel: any = async (
   customer_id: string,
   company_id: string,
-  channel_id: string
+  agent_id: string
 ) => {
   try {
     const createDate = format(new Date(), "yyyy-MM-dd HH:mm:ss");
@@ -15,9 +15,9 @@ const createModel: any = async (
                 createdate,
                 customer_id,
                 company_id,
-                channel_id) 
+                agent_id) 
         VALUES( $1, $2, $3, $4) RETURNING *`,
-      [createDate, customer_id, company_id, channel_id]
+      [createDate, customer_id, company_id, agent_id]
     );
     return { success: true, data: result.rows[0], error: null };
   } catch (e) {

@@ -10,6 +10,8 @@ import ProductRouter from "./product";
 import LeadRouter from "./lead";
 import WebHookRouter from "./webhook";
 import TransactionRouter from "./transaction";
+import AgentRouter from "./agent";
+import DonorRouter from "./donor";
 
 export {
   StatusRouter,
@@ -24,4 +26,6 @@ export {
   LeadRouter,
   WebHookRouter,
   TransactionRouter,
+  AgentRouter,
+  DonorRouter,
 };

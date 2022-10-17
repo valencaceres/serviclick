@@ -35,11 +35,13 @@ class App {
     this.server.use("/api/channel", reqLogger, routes.ChannelRouter);
     this.server.use("/api/family", reqLogger, routes.FamilyRouter);
     this.server.use("/api/insured", reqLogger, routes.InsuredRouter);
+    this.server.use("/api/donor", reqLogger, routes.DonorRouter);
     this.server.use("/api/company", reqLogger, routes.CompanyRouter);
     this.server.use("/api/product", reqLogger, routes.ProductRouter);
     this.server.use("/api/lead", reqLogger, routes.LeadRouter);
     this.server.use("/api/webhook", reqLogger, routes.WebHookRouter);
     this.server.use("/api/transaction", reqLogger, routes.TransactionRouter);
+    this.server.use("/api/agent", reqLogger, routes.AgentRouter);
   }
 }
 

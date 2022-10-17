@@ -31,7 +31,7 @@ const Channel = () => {
   };
 
   useEffect(() => {
-    setTitleUI("Canal");
+    setTitleUI("Canales de Venta");
     listAll();
   }, []);
 
@@ -41,7 +41,7 @@ const Channel = () => {
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />
         <ButtonIcon iconName="refresh" onClick={handleClickRefresh} />
-        <ButtonIcon iconName="add" onClick={handleClickNew} />
+        {/* <ButtonIcon iconName="add" onClick={handleClickNew} /> */}
       </FloatMenu>
     </Fragment>
   );

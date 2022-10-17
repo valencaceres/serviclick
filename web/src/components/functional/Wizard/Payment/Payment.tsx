@@ -34,9 +34,13 @@ import { config } from "../../../../utils/config";
 
 import styles from "./Payment.module.scss";
 
+import { useUI } from "../../../../redux/hooks";
+
 const Payment = ({ register }: any) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+
+  const { agentId } = useUI();
 
   const { isDesktop } = useAppSelector((state) => state.uiSlice);
   const { product } = useAppSelector((state) => state.productSlice);
@@ -176,7 +180,7 @@ const Payment = ({ register }: any) => {
 
   const handleClickRegister = () => {
     setIsLoading(true);
-    dispatch(createLead({ ...lead, channel_id: config.channelId }));
+    dispatch(createLead({ ...lead, agent_id: agentId }));
   };
 
   const handleClickTermsAndConditions = () => {
