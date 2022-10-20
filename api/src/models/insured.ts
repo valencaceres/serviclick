@@ -128,4 +128,53 @@ const getByRutModel: any = async (rut: string) => {
   }
 };
 
-export { createModel, getByRutModel };
+const getByIdModel: any = async (id: string) => {
+  try {
+    const result = await pool.query(
+      `
+      SELECT  rut,
+              name,
+              paternallastname,
+              maternallastname,
+              to_char(birthdate, 'YYYY-MM-DD') AS birthdate,
+              address,
+              district,
+              email,
+              phone
+      FROM    app.insured
+      WHERE   id = $1`,
+      [id]
+    );
+
+    const {
+      rut,
+      name,
+      paternallastname,
+      maternallastname,
+      birthdate,
+      address,
+      district,
+      email,
+      phone,
+    } = result.rows[0];
+
+    const data = {
+      id,
+      rut,
+      name,
+      paternalLastName: paternallastname,
+      maternalLastName: maternallastname,
+      birthDate: birthdate,
+      address,
+      district,
+      email,
+      phone,
+    };
+
+    return { success: true, data, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+export { createModel, getByRutModel, getByIdModel };

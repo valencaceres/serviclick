@@ -7,6 +7,7 @@ import * as UserCompanyModel from "../models/userCompany";
 import * as LeadModel from "../models/lead";
 import * as CompanyModel from "../models/company";
 import * as ProductDescriptionModel from "../models/productDescription";
+import * as InsuredModel from "../models/insured";
 
 import { generateGenericPassword } from "../util/user";
 import { monthNames } from "../util/date";
@@ -152,6 +153,38 @@ const subscriptionActivated = async (req: any, res: any) => {
       }
     }
 
+    if (!company_id) {
+      const insuredResponse = await InsuredModel.getByIdModel(
+        leadInsuredResponse.data.id
+      );
+
+      if (!insuredResponse.success) {
+        createLogger.error({
+          model: "insured/getByIdModel",
+          error: insuredResponse.error,
+        });
+        res.status(500).json(insuredResponse.error);
+        return;
+      }
+
+      const responseDocuments = await generateDocuments(
+        res,
+        insuredResponse.data,
+        null,
+        productDescriptionResponse.data,
+        price
+      );
+
+      if (!responseDocuments.success) {
+        createLogger.error({
+          model: responseDocuments.model,
+          error: responseDocuments.error,
+        });
+        res.status(500).json(responseDocuments.error);
+        return;
+      }
+    }
+
     type DetailT = {
       insured_id: string;
       error: string;
@@ -174,25 +207,6 @@ const subscriptionActivated = async (req: any, res: any) => {
           insured_id: insured.id,
           error: "User error: " + userInsuredResponse.error,
         });
-      }
-
-      if (!company_id) {
-        const responseDocuments = await generateDocuments(
-          res,
-          userInsuredResponse.data,
-          null,
-          productDescriptionResponse.data,
-          price
-        );
-
-        if (!responseDocuments.success) {
-          createLogger.error({
-            model: responseDocuments.model,
-            error: responseDocuments.error,
-          });
-          res.status(500).json(responseDocuments.error);
-          return;
-        }
       }
 
       const generatedPassword = generateGenericPassword();
@@ -262,64 +276,72 @@ const generateDocuments = async (
   productDescription: any,
   price: number
 ) => {
-  const correlative = `${new Date().getFullYear()}-${generateGenericPassword().toLocaleLowerCase()}`;
-  const stringDate = `${moment().format("DD")} de ${
-    monthNames[parseInt(moment().format("MM"))]
-  } de ${moment().format("YYYY")}`;
+  try {
+    const correlative = `${new Date().getFullYear()}-${generateGenericPassword().toLocaleLowerCase()}`;
+    const stringDate = `${moment().format("DD")} de ${
+      monthNames[parseInt(moment().format("MM"))]
+    } de ${moment().format("YYYY")}`;
 
-  const contractResponse: any = await axios.post(
-    config.pdf.URL.contract,
-    {
-      correlative,
-      date: stringDate,
-      contact: {
-        phone: "600 0860 580",
-        email: "info@serviclick.cl",
+    const contractResponse: any = await axios.post(
+      config.pdf.URL.contract,
+      {
+        correlative,
+        date: stringDate,
+        contact: {
+          phone: "600 0860 580",
+          email: "info@serviclick.cl",
+        },
+        customer,
+        company,
+        plan: {
+          name: productDescription.name,
+          coverages: productDescription.assistances
+            .map((assistance: any) => assistance.name)
+            .join(", "),
+          price,
+        },
       },
-      customer,
-      company,
-      plan: {
-        name: productDescription.name,
-        coverages: productDescription.assistances
-          .map((assistance: any) => assistance.name)
-          .join(", "),
-        price,
-      },
-    },
-    {
-      headers: config.pdf.apiKey,
-    }
-  );
+      {
+        headers: config.pdf.apiKey,
+      }
+    );
 
-  if (contractResponse.status !== 200) {
+    // if (contractResponse.status !== 200) {
+    //   return {
+    //     success: false,
+    //     model: "api-pdf/document/annex",
+    //     error: contractResponse.error,
+    //   };
+    // }
+
+    const annexResponse: any = await axios.post(
+      config.pdf.URL.annex,
+      productDescription,
+      {
+        headers: config.pdf.apiKey,
+      }
+    );
+
+    // if (annexResponse.status !== 200) {
+    //   return {
+    //     success: false,
+    //     model: "api-pdf/document/annex",
+    //     error: contractResponse.error,
+    //   };
+    // }
+
+    return {
+      success: true,
+      model: "api-pdf",
+      error: null,
+    };
+  } catch (e) {
     return {
       success: false,
-      model: "api-pdf/document/annex",
-      error: contractResponse.error,
+      model: "api-pdf",
+      error: (e as Error).message,
     };
   }
-
-  const annexResponse: any = await axios.post(
-    config.pdf.URL.annex,
-    productDescription,
-    {
-      headers: config.pdf.apiKey,
-    }
-  );
-
-  if (annexResponse.status !== 200) {
-    return {
-      success: false,
-      model: "api-pdf/document/annex",
-      error: contractResponse.error,
-    };
-  }
-
-  return {
-    success: true,
-    model: "api-pdf",
-    error: null,
-  };
 };
 
 export { subscriptionActivated };

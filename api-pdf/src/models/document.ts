@@ -10,6 +10,7 @@ import {
 import { normalizeFileName } from "../utils/text";
 
 const createContract: any = async (
+  lead_id: string,
   correlative: string,
   date: string,
   contact: any,
@@ -140,7 +141,7 @@ const createContract: any = async (
     const pdfPath = dirPath.join(__dirname, "../../../../", "output");
 
     const pdf = pdfNewDocument(
-      dirPath.join(pdfPath, `${normalizeFileName("contract")}.pdf`)
+      dirPath.join(pdfPath, `contract_${lead_id}.pdf`)
     );
 
     const { doc, hMargin, paragraphWidth, fontNameBold } = pdf;
