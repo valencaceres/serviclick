@@ -15,21 +15,6 @@ const createSubscriptionModel: any = async (
     const date = format(new Date(), "yyyy-MM-dd HH:mm:ss");
     let result: any;
 
-    console.log({
-      status_id,
-      interval_id,
-      subscription_id,
-      plan_amount,
-      plan_id,
-      last_payment_date,
-    });
-
-    console.log(
-      moment(last_payment_date).isValid()
-        ? moment(last_payment_date).local().format()
-        : null
-    );
-
     result = await pool.query(
       `
       INSERT  INTO app.subscription_history(
@@ -49,7 +34,7 @@ const createSubscriptionModel: any = async (
         interval_id,
         plan_id,
         plan_amount,
-        moment(last_payment_date).isValid()
+        last_payment_date && moment(last_payment_date).isValid()
           ? moment(last_payment_date).local().format()
           : null,
       ]
@@ -78,7 +63,7 @@ const createSubscriptionModel: any = async (
           interval_id,
           plan_id,
           plan_amount,
-          moment(last_payment_date).isValid()
+          last_payment_date && moment(last_payment_date).isValid()
             ? moment(last_payment_date).local().format()
             : null,
           subscription_id,
@@ -104,7 +89,7 @@ const createSubscriptionModel: any = async (
           interval_id,
           plan_id,
           plan_amount,
-          moment(last_payment_date).isValid()
+          last_payment_date && moment(last_payment_date).isValid()
             ? moment(last_payment_date).local().format()
             : null,
         ]
