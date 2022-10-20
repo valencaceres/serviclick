@@ -83,7 +83,6 @@ const Payment = ({ register }: any) => {
   };
 
   const completeProduct = () => {
-    console.log(donation);
     const isValid: boolean = donation.product_id !== "" && donation.price > 0;
     return isValid;
   };

@@ -41,8 +41,6 @@ const createContract: any = async (
       company ? company.address : customer.address
     }, comuna de ${company ? company.district : customer.district}.`;
 
-    console.log(paragraph);
-
     const priceFormatted = parseFloat(price)
       .toFixed(1)
       .replace(/\d(?=(\d{3})+\.)/g, "$&,")
@@ -210,7 +208,6 @@ const createContract: any = async (
     pdfHeaderAndFooter(pdf);
     pdfEnd(pdf, res);
   } catch (e) {
-    console.log(e);
     throw new Error((e as Error).message);
   }
 };
