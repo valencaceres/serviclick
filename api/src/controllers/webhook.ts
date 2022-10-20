@@ -155,7 +155,7 @@ const subscriptionActivated = async (req: any, res: any) => {
 
     if (!company_id) {
       const insuredResponse = await InsuredModel.getByIdModel(
-        leadInsuredResponse.data.id
+        leadInsuredResponse.data.insured_id
       );
 
       if (!insuredResponse.success) {
