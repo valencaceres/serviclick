@@ -242,3 +242,20 @@ export const getProductsByFamilyId = (family_id: string) => (dispatch: any) => {
     })
     .catch((error) => console.log(error));
 };
+
+export const getProductsDescription =
+  (proeduct_id: string) => (dispatch: any) => {
+    axios
+      .get(
+        `${config.server}/api/productDescription/getByProductId/${proeduct_id}`,
+        {
+          headers: {
+            id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
+          },
+        }
+      )
+      .then((response) => {
+        dispatch(setProductList(response.data));
+      })
+      .catch((error) => console.log(error));
+  };

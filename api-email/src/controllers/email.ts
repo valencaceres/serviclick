@@ -3,10 +3,10 @@ import { sendModel } from "../models/email";
 
 const sendController = async (req: any, res: any) => {
   try {
-    const { from, to, subject, message } = req.body;
-    const result = await sendModel(from, to, subject, message);
+    const { from, to, subject, message, attachments } = req.body;
+    const result = await sendModel(from, to, subject, message, attachments);
 
-    createLogger.error({
+    createLogger.info({
       model: "email/sendModel",
       message: { status: "send", from, to, subject },
     });
@@ -14,7 +14,7 @@ const sendController = async (req: any, res: any) => {
     res.status(200).json({ success: true, data: result, error: null });
   } catch (e) {
     createLogger.error({
-      model: "insured/getByRutModel",
+      model: "insured/sendController",
       error: (e as Error).message,
     });
     res

@@ -8,6 +8,8 @@ import familySlice from "../slices/familySlice";
 import productSlice from "../slices/productSlice";
 import leadSlice from "../slices/leadSlice";
 import subscriptionSlice from "../slices/subscriptionSlice";
+import donorSlice from "../slices/donorSlice";
+import donationSlice from "../slices/donationSlice";
 
 // import { loadState } from "../../utils/reduxPersist";
 
@@ -21,6 +23,8 @@ const store = configureStore({
     productSlice,
     leadSlice,
     subscriptionSlice,
+    donorSlice,
+    donationSlice,
   },
   // preloadedState: loadState(),
 });

@@ -57,6 +57,13 @@ const config = {
     },
     apiKey: { id: "12345678" },
   },
+  pdf: {
+    URL: {
+      contract: "https://api-pdf.serviclick.cl/api/document/contract",
+      annex: "https://api-pdf.serviclick.cl/api/api/document/annex",
+    },
+    apiKey: { id: "97689458-b21c-4abf-9bb3-a05ac52b4791" },
+  },
   webHook: {
     URL: {
       reveniu: environment["dev"].feedBack.webHook,

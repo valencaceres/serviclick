@@ -20,6 +20,11 @@ const texts = {
     description: (name: string) =>
       `Estás contratando el producto <b>&nbsp;${name.trim()}</b>, ingresa tus datos como contratante y asegurado principal`,
   },
+  donor: {
+    title: "Donador",
+    description: (name: string) =>
+      `Estás realizando una donación, ingresa tus datos como donador y luego presiona <b>&nbsp;Registrar</b>`,
+  },
   insured: {
     title: "Asegurados",
     description:

@@ -5,6 +5,7 @@ import * as UserInsuredModel from "../models/userInsured";
 import * as UserCompanyModel from "../models/userCompany";
 import * as LeadModel from "../models/lead";
 import * as CompanyModel from "../models/company";
+import * as ProductDescriptionModel from "../models/productDescription";
 
 import { generateGenericPassword } from "../util/user";
 import config from "../util/config";
@@ -23,13 +24,45 @@ const subscriptionActivated = async (req: any, res: any) => {
       return;
     }
 
+    const { id: lead_id } = leadResponse.data;
+
+    const leadProductResponse = await LeadModel.getProductsById(
+      lead_id //leadResponse.data.id
+    );
+
+    if (!leadProductResponse.success) {
+      createLogger.error({
+        model: "lead/getProductsById",
+        error: leadProductResponse.error,
+      });
+      res.status(500).json(leadProductResponse.error);
+      return;
+    }
+
+    const { product_id } = leadProductResponse.data;
+
+    const productDescriptionResponse =
+      await ProductDescriptionModel.getByProductId(
+        lead_id,
+        product_id //leadResponse.data.id
+      );
+
+    if (!productDescriptionResponse.success) {
+      createLogger.error({
+        model: "productDescription/getByProductId",
+        error: productDescriptionResponse.error,
+      });
+      res.status(500).json(productDescriptionResponse.error);
+      return;
+    }
+
     const leadInsuredResponse = await LeadModel.getInsuredById(
-      leadResponse.data.id
+      lead_id //leadResponse.data.id
     );
 
     if (!leadInsuredResponse.success) {
       createLogger.error({
-        model: "leadInsured/getInsuredById",
+        model: "lead/getInsuredById",
         error: leadInsuredResponse.error,
       });
       res.status(500).json(leadInsuredResponse.error);
@@ -147,6 +180,7 @@ const subscriptionActivated = async (req: any, res: any) => {
           to: insured.email,
           subject: "Tus credenciales de acceso a nuestra plataforma",
           message: `<b>Hola&nbsp;${insured.name}</b><br/><br/>Bienvenido a ServiClick, a continuación te detallamos los datos de acceso a nuestra plataforma para que puedas completar o modificar la información que requieras:<br/><br/><b>https://asegurado.serviclick.cl</b><br/><br/><b>Login:</b>&nbsp;${insured.email}<br/><b>Password</b>:&nbsp;${generatedPassword}<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
+          attachment: [`anexo_`],
         },
         {
           headers: config.email.apiKey,

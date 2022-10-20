@@ -1,6 +1,4 @@
-import PDFDocument from "pdfkit-table";
-import fs from "fs";
-import { mdToPdf } from "md-to-pdf";
+import dirPath from "path";
 
 import {
   pdfNewDocument,
@@ -9,7 +7,7 @@ import {
   pdfHeaderAndFooter,
   pdfEnd,
 } from "../utils/pdf";
-import { linesFromTextFile } from "../utils/text";
+import { normalizeFileName } from "../utils/text";
 
 const createContract: any = async (
   correlative: string,
@@ -29,7 +27,7 @@ const createContract: any = async (
       address,
       district,
     } = customer;
-    const { name: planName, coverages } = plan;
+    const { name: planName, coverages, price } = plan;
     const { phone: contactPhone, email: contactEmail } = contact;
 
     const title1 =
@@ -38,6 +36,16 @@ const createContract: any = async (
     const title3 = `${planName}`;
 
     const paragraph = `En Santiago a ${date}, comparecen a celebrar el presente contrato de prestación de servicios, por una parte, en adelante el PRESTADOR; MHM SERVICIOS SPA, Rut 76.721.251-8, reordenada en este acto por don CARLOS MOLINA MELLA, chileno, empresario. cédula de identidad 18.810.429-1, ambos con domicilio para estos efectos en calle Enrique Mac Iver 440 piso 7 oficina 702, comuna y ciudad de Santiago; y por otra parte, en adelante el cliente don o (a) ${customerName}, chileno, fecha de nacimiento ${birthDate}, correo electrónico ${email}, teléfono  de contacto ${phone}, cédula de identidad ${rut}, con domicilio para estos efectos en ${address}, comuna de ${district}.`;
+
+    const priceFormatted = parseFloat(price)
+      .toFixed(1)
+      .replace(/\d(?=(\d{3})+\.)/g, "$&,")
+      .replace(".0", "");
+
+    const anuallyFormatted = (parseFloat(price) * 12)
+      .toFixed(1)
+      .replace(/\d(?=(\d{3})+\.)/g, "$&,")
+      .replace(".0", "");
 
     const articles = [
       {
@@ -56,10 +64,14 @@ const createContract: any = async (
       },
       {
         name: "SEGUNDO:",
-        title: "NOMBRE DEL PLAN & PRESTACIONES.",
+        title: "NOMBRE DEL PLAN, PRESTACIONES Y VALORES.",
         paragraphs: [
           `Nombre del plan: ${planName}.`,
           `Prestación: ${coverages}.`,
+          `Fecha de inicio de la prestación: ${date}.`,
+          `Valor del plan anual: $${priceFormatted}.`,
+          `Cuota mensual: $${anuallyFormatted} por doce meses.`,
+          `Reajustes: El reajuste será por periodos anuales según la variación del incide del precio al consumidor. Las partes establecen que este incremento no podrá ser objetado por parte del cliente.`,
         ],
       },
       {
@@ -91,32 +103,14 @@ const createContract: any = async (
         ],
       },
       {
-        name: "SÉPTIMO:",
-        title: "RESPONSABILIDAD EMPRESARIAL DE LAS PERSONAS JURÍDICAS.",
+        name: "SEPTIMO:",
+        title: "VIGENCIA DEL CONTRATO.",
         paragraphs: [
-          "Ripley, en cumplimiento con las leyes y regulaciones vigentes que le rigen, cuenta con políticas y procedimientos, cuyo objetivo es controlar y evitar la comisión de hechos constitutivos de delito, mitigar los riesgos asociados a su actividad y garantizar un entorno seguro para la compañía, sus colaboradores y sus clientes. En atención a ello, el proveedor entiende que, el incumplimiento de sus obligaciones contractuales puede causar un daño económico o un perjuicio reputacional al cliente. En consideración a lo anterior, el Proveedor, en el ejercicio de su actividad, y en particular en aquellas relativas al contrato que lo vincula con la Compañía se compromete a:",
-          "a) Cumplir con las disposiciones establecidas en la Ley Nº20.393 de Responsabilidad Penal de la Persona Jurídica.",
-          "b) Cumplir, de buena fe, el contrato suscrito con el cliente.",
-          "c) Regir su actuar, y el de todos sus colaboradores, según los más altos estándares éticos.",
-          "d) Respetar las cláusulas de reserva y confidencialidad establecidas en el contrato.",
-          "e) En caso de ser aplicable, actuar con apego a la normativa de Protección al Consumidor.",
-          "f) Gestionar e informar, de la forma más expedita posible, los conflictos de interés que puedan afectar la relación contractual.",
-          "g) Velar por el cumplimiento de la normativa de Protección de Datos Personales.",
-          "h) Velar por el cumplimiento de la normativa de Libre Competencia.",
-          "i) Velar por el cumplimiento de todas las leyes y regulaciones aplicables al servicio y/o producto contratado.",
-          "j) Denunciar e informar a la Compañía, tan pronto se tome conocimiento, toda conducta que sea contraria a lo establecido precedentemente.",
-          "En cumplimiento de la normativa sobre Responsabilidad Penal de la Persona Jurídica, con respecto a los delitos de Lavado de Activos, Financiamiento del Terrorismo, Cohecho, Receptación, Corrupción entre Particulares, Apropiación Indebida, Administración Desleal, Negociación Incompatible, y otros delitos que establezcan la normativa aplicable, MHM SERVICIOS cuenta con un Modelo de Prevención de Delitos, a través del cual, busca asegurar una estructura organizacional, recursos, políticas, procesos y procedimientos que permitan prevenir la comisión de los delitos de la Ley.",
+          "El presente Contrato tendrá una duración de un año a partir de la fecha de celebración del presente instrumento, el cual corresponde a la fecha efectiva de inicio de la prestación de los Servicios. La fecha de inicio de la prestación es la que figura detallada en el capítulo SEGUNDO. No obstante, lo anterior, el prestador podrá unilateralmente, sin expresión de causa y en cualquier momento ponerle término, sin necesidad de declaración judicial, mediante una comunicación escrita despachada al domicilio señalado por el cliente cuando este no cumpla con la obligación de pago suscrita en el presente instrumento, esta comunicación se podrá realizar 10 días en forma posterior al pago. Con todo el presente contrato podrá ser renovado con por periodos iguales y sucesivos salvo que ninguna de las partes manifieste por termino al mismo con a lo menos 60 días de anticipación al termino contractual. En el ejercicio de este derecho por parte de MHM SERVCIOS, no generará a favor del Proveedor pago alguno por concepto de indemnización, daños, perjuicios u otro concepto. En el legítimo derecho de retracto por parte del cliente este podrá solicitar la terminación anticipada solo si posee más del 90% de los pagos por concepto del valor del servicio, con a lo menos 30 días de anticipación por medio de carta certificada enviada al domicilio del prestador.",
         ],
       },
       {
         name: "OCTAVO:",
-        title: "VIGENCIA DEL CONTRATO.",
-        paragraphs: [
-          "El presente Contrato tendrá una duración de un año a partir de la fecha de celebración del presente instrumento, el cual corresponde a la fecha efectiva de inicio de la prestación de los Servicios. No obstante, lo anterior, el prestador podrá unilateralmente, sin expresión de causa y en cualquier momento ponerle término, sin necesidad de declaración judicial, mediante una comunicación escrita despachada al domicilio señalado por el cliente cuando este no cumpla con la obligación de pago suscrita en el presente instrumento, esta comunicación se podrá realizar 10 días en forma posterior al pago. Con todo el presente contrato podrá ser renovado con por periodos iguales y sucesivos salvo que ninguna de las partes manifieste por termino al mismo con a lo menos 60 días de anticipación al termino contractual. En el ejercicio de este derecho por parte de MHM SERVCIOS, no generará a favor del Proveedor pago alguno por concepto de indemnización, daños, perjuicios u otro concepto. En el legítimo derecho de retracto por parte del cliente este podrá solicitar la terminación anticipada solo si posee más del 90% de los pagos por concepto del valor del servicio, con alómenos 30 días de anticipación por medio de carta certificada enviada al domicilio del prestador.",
-        ],
-      },
-      {
-        name: "NOVENO:",
         title: "RESPONSABILIDAD E INDEMNIDADES.",
         paragraphs: [
           "a) El Proveedor será siempre responsable por la prestación del Servicio, bajo las condiciones y niveles que se acuerden en los respectivos Términos y Condiciones Especiales de los Servicios.",
@@ -125,78 +119,44 @@ const createContract: any = async (
         ],
       },
       {
-        name: "DECIMO:",
+        name: "NOVENO:",
         title: "DISIPACIONES VARIAS.",
         paragraphs: [
           "a) Indivisibilidad. Las Partes declaran el carácter indivisible de todas y cada una de las cláusulas y obligaciones señaladas en el presente instrumento. En este sentido, MHM podrá exigir el cumplimiento total de cada una de las obligaciones.",
           `b) Comunicaciones: Cualquier comunicación entre las Partes se hará por escrito y a través de las personas designadas para tal efecto, en consecuencia, el teléfono de contacto es ${contactPhone}, o al correo electrónico ${contactEmail}.`,
           "c) Personería: la personería de don Carlos Molina Mella, consta en la escritura pública de fecha 05 de abril del año 2017, bajo la modalidad de empresas en un día, dependiente del Ministerio de Economía, Fomento y Turismo.",
           "d) Anexo: se deja expresa constancia que las condiciones, prestaciones y exclusiones de la asistencia contratada, se encentran expresadas en el anexo número 1 de condiciones, prestaciones y exclusiones de la asistencia, el cual forma parte integral del presente instrumento privado.",
-          "e) Ejemplares: el presente instrumento en conjunto con sus anexos correspondientes se firmará en dos copias del mismo tenor.",
-          "f) Domicilio y solución de controversias: las partes de común acuerdo fijan domicilio jurisdiccional en la comuna y ciudad de Santiago. Cualquier dificultad o controversia que se produzca entre los contratantes respecto de la aplicación, interpretación, duración, validez o ejecución de este Contrato o de cualquiera de los Documentos Contractuales, o cualquier otro motivo, será sometida a la competencia de los Tribunales Ordinarios de Justicia.",
+          "e) Domicilio y solución de controversias: las partes de común acuerdo fijan domicilio jurisdiccional en la comuna y ciudad de Santiago. Cualquier dificultad o controversia que se produzca entre los contratantes respecto de la aplicación, interpretación, duración, validez o ejecución de este Contrato o de cualquiera de los Documentos Contractuales, o cualquier otro motivo, será sometida a la competencia de los Tribunales Ordinarios de Justicia.",
         ],
       },
     ];
 
-    const hMargin = 70;
-    const paragraphWidth = 612 - hMargin * 2;
+    const pdfPath = dirPath.join(__dirname, "../../../../", "output");
 
-    const doc = new PDFDocument({
-      size: "LETTER",
-      margins: {
-        top: 100,
-        bottom: 70,
-        left: hMargin,
-        right: hMargin,
-      },
-      bufferPages: true,
-    });
+    const pdf = pdfNewDocument(
+      dirPath.join(pdfPath, `${normalizeFileName("contract")}.pdf`)
+    );
 
-    doc.pipe(fs.createWriteStream("./output/contract.pdf"));
+    const { doc, hMargin, paragraphWidth, fontNameBold } = pdf;
 
-    doc.font("Times-Bold", 12);
-    doc.text(`${title1}`, hMargin, 100, {
-      width: paragraphWidth,
-      align: "center",
-    });
+    pdfTextLine(pdf, `${title1}`, "center", true, false);
+    pdfTextLine(pdf, `${title2}`, "center", true, true);
+    pdfTextLine(pdf, `${title3}`, "center", true, true);
 
-    doc.moveDown();
-    doc.font("Times-Roman", 12);
-    doc.text(`${title2}`, {
-      width: paragraphWidth,
-      align: "center",
-    });
-
-    doc.moveDown();
-    doc.text(`${title3}`, {
-      width: paragraphWidth,
-      align: "center",
-    });
-
-    doc.moveDown();
-    doc.text(`${paragraph}`, {
-      width: paragraphWidth,
-      align: "justify",
-    });
+    pdfTextLine(pdf, ` `, "justify", true, false);
+    pdfTextLine(pdf, `${paragraph}`, "justify", false, true);
 
     articles.map((article) => {
-      doc.moveDown();
-      doc
-        .font("Times-Bold", 12)
-        .text(article.name + " ", { continued: true })
-        .font("Times-Roman", 12)
-        .text(article.title, {
-          continued: false,
-          width: paragraphWidth,
-          align: "justify",
-        });
-
+      pdfTextLine(pdf, ` `, "justify", true, false);
+      pdfTextLine(
+        pdf,
+        `${article.name} ${article.title}`,
+        "justify",
+        true,
+        true
+      );
       article.paragraphs.map((item) => {
-        doc.moveDown();
-        doc.text(`${item}`, {
-          width: paragraphWidth,
-          align: "justify",
-        });
+        pdfTextLine(pdf, `${item}`, "justify", false, true);
       });
     });
 
@@ -209,7 +169,7 @@ const createContract: any = async (
       .moveTo(hMargin, 660)
       .lineTo(hMargin + signWidth, 660)
       .stroke();
-    doc.font("Times-Bold", 12);
+    doc.font(fontNameBold, 12);
 
     companySign.map((line: string, idx: number) => {
       doc.text(`${line}`, hMargin, 665 + idx * 15, {
@@ -235,77 +195,284 @@ const createContract: any = async (
       );
     });
 
-    const range = doc.bufferedPageRange();
-
-    for (let i = 0; i < range.start + range.count; i++) {
-      doc.switchToPage(i);
-
-      doc.image("./img/logo.jpg", hMargin, 40, {
-        fit: [121, 25],
-        align: "center",
-        valign: "center",
-      });
-
-      const pageNumber = `Página ${i + 1} de ${range.count}`;
-
-      var widthText = doc.widthOfString(pageNumber);
-
-      doc
-        .font("Times-Bold", 12)
-        .text(pageNumber, hMargin + (paragraphWidth - widthText) / 2, 740, {
-          lineBreak: false,
-        });
-    }
-
-    doc.flushPages();
-
-    doc.pipe(res);
-    doc.end();
+    pdfHeaderAndFooter(pdf);
+    pdfEnd(pdf, res);
   } catch (e) {
     throw new Error((e as Error).message);
   }
 };
 
-const createAnnex: any = async (contact: any, plan: any, res: any) => {
+const createAnnex: any = async (res: any, data: any) => {
   try {
-    const { coverages } = plan;
+    const {
+      lead_id,
+      id,
+      name,
+      title,
+      subTitle,
+      description,
+      territorialScope,
+      hiringConditions,
+      assistances,
+    } = data;
 
-    const pdf = pdfNewDocument("./output/medical_emergency_pro.pdf");
-    const lines = linesFromTextFile("./annexes/medical_emergency_pro.txt");
+    const pdfPath = dirPath.join(__dirname, "../../../../", "output");
+    const pdf = pdfNewDocument(dirPath.join(pdfPath, `anexo_${lead_id}.pdf`));
 
-    lines.forEach((line) => {
-      if (line === "<<COVERAGES>>") {
-        pdfTable(
-          pdf,
-          [
-            { label: "Cobertura", property: "name", width: 150 },
-            { label: "Monto", property: "amount", width: 100, align: "right" },
-            {
-              label: "Límite",
-              property: "maximum",
-              width: 115,
-              align: "center",
-            },
-            { label: "Inicio", property: "lack", width: 50, align: "center" },
-            {
-              label: "Eventos",
-              property: "events",
-              width: 55,
-              align: "center",
-            },
-          ],
-          coverages
-        );
-      } else {
+    pdfTextLine(pdf, `ANEXO DE CONTRATO`, "center", true, false);
+
+    pdfTextLine(
+      pdf,
+      `El presente documento privado es considerado por los intervinientes parte integral del contrato marco de prestación de servicios el cual se firmó con fecha 19 mes Octubre año 2022.`,
+      "justify",
+      false,
+      true
+    );
+
+    pdfTextLine(pdf, ` `, "justify", true, false);
+    pdfTextLine(pdf, `1. AMBITO TERRITORIAL`, "justify", true, true);
+    pdfTextLine(pdf, territorialScope, "justify", false, true);
+
+    pdfTextLine(pdf, ` `, "justify", true, false);
+    pdfTextLine(pdf, `2. CONDICIONES DE CONTRATACION`, "justify", true, true);
+    pdfTextLine(pdf, hiringConditions, "justify", false, true);
+
+    pdfTextLine(pdf, ` `, "justify", true, false);
+    pdfTextLine(
+      pdf,
+      `3. SERVICIOS DE ASISTENCIA COMPRENDIDOS`,
+      "justify",
+      true,
+      true
+    );
+    pdfTextLine(
+      pdf,
+      `La "${title} ${subTitle}" se compone de las siguientes prestaciones, las cuales fijan sus respectivos límites y topes, estableciendo así, el monto máximo de pago, en razón de las asistencias contratadas.`,
+      "justify",
+      false,
+      true
+    );
+
+    pdfTextLine(pdf, ` `, "justify", true, false);
+
+    pdfTable(
+      pdf,
+      [
+        {
+          label: "Cobertura",
+          property: "name",
+          width: 170,
+          headerAlign: "center",
+          valign: "center",
+          columnColor: "#cccccc",
+        },
+        {
+          label: "Límite de servicio\nanual",
+          property: "maximum",
+          width: 165,
+          align: "center",
+          headerAlign: "center",
+          valign: "center",
+        },
+        {
+          label: "Eventos anuales",
+          property: "events",
+          width: 70,
+          align: "center",
+          headerAlign: "center",
+          valign: "center",
+          columnColor: "#cccccc",
+        },
+        {
+          label: "Carencia",
+          property: "lack",
+          width: 70,
+          align: "center",
+          headerAlign: "center",
+          valign: "center",
+        },
+      ],
+      assistances.map((assistance: any) => {
+        return {
+          name: assistance.name,
+          maximum: `${assistance.maximum} ${
+            assistance.amount > 0 && assistance.maximum !== ""
+              ? ` con tope: `
+              : ""
+          }${assistance.currency === "P" && assistance.amount > 0 ? "$" : ""}${
+            assistance.amount > 0
+              ? parseFloat(assistance.amount)
+                  .toFixed(1)
+                  .replace(/\d(?=(\d{3})+\.)/g, "$&,")
+              : ""
+          }${
+            assistance.currency === "U" && assistance.amount > 0 ? "UF" : ""
+          }`.replace(".0", ""),
+          lack: assistance.lack,
+          events: assistance.events === 0 ? "Ilimitado" : assistance.events,
+        };
+      })
+    );
+
+    assistances.map((assistance: any, idx: number) => {
+      pdfTextLine(
+        pdf,
+        `${String.fromCharCode(97 + idx)}) ${assistance.name}`,
+        "justify",
+        true,
+        true
+      );
+      pdfTextLine(pdf, `${assistance.description}`, "justify", false, false);
+    });
+
+    pdfTextLine(pdf, ` `, "justify", true, false);
+    pdfTextLine(pdf, `4. CONDICIONES DE SERVICIO`, "justify", true, true);
+
+    assistances.map((assistance: any, idx: number) => {
+      pdfTextLine(
+        pdf,
+        `4.${idx + 1}. ${assistance.name}`,
+        "justify",
+        true,
+        true
+      );
+
+      pdfTextLine(pdf, `Prestaciones`, "justify", true, true);
+
+      assistance.benefits.map((benefit: string, idx: number) =>
         pdfTextLine(
           pdf,
-          processLine(line, contact, plan),
-          line.includes("<c>") ? "center" : "justify",
-          line.includes("<b>"),
+          `${String.fromCharCode(97 + idx)}) ${benefit}`,
+          "justify",
+          false,
           true
-        );
-      }
+        )
+      );
+
+      pdfTextLine(pdf, `Exclusiones`, "justify", true, true);
+      pdfTextLine(
+        pdf,
+        `No se realizarán las prestaciones o servicios como tampoco reconocerá gastos o costos de tales servicios en las siguientes situaciones:`,
+        "justify",
+        false,
+        true
+      );
+
+      assistance.exclusions.map((exclusion: string, idx: number) =>
+        pdfTextLine(
+          pdf,
+          `${String.fromCharCode(97 + idx)}) ${exclusion}`,
+          "justify",
+          false,
+          true
+        )
+      );
     });
+
+    pdfTextLine(pdf, ` `, "justify", true, false);
+    pdfTextLine(
+      pdf,
+      `5. PROCEDIMIENTO DE SOLICITUD DE PRESTACIONES`,
+      "justify",
+      true,
+      true
+    );
+
+    pdfTextLine(
+      pdf,
+      `Los servicios descritos, para ser entregados por ServiClick, deben solicitarse previamente vía telefónica la número 600 086 0580, donde un ejecutivo de asistencias lo atenderá y guiará de acuerdo con la prestación solicitada.`,
+      "justify",
+      false,
+      true
+    );
+
+    pdfTextLine(
+      pdf,
+      `El cliente estará obligado a entregar la información mínima requerida para gestionar el servicio y podría incluir y no limitarse a los siguientes datos:`,
+      "justify",
+      false,
+      true
+    );
+
+    pdfTextLine(
+      pdf,
+      `
+      a. RUT del cliente Titular.
+      b. Nombre del Beneficiario.
+      c. Fotografía de la mascota.
+      d. Detalle de la Urgencia o Emergencia veterinaria y su origen.
+      e. Ubicación Geográfica.`,
+      "justify",
+      false,
+      false
+    );
+
+    pdfTextLine(
+      pdf,
+      `Los servicios podrán ser solicitados desde el inicio de la vigencia, mientras el cliente se encuentre al día en los pagos.`,
+      "justify",
+      false,
+      true
+    );
+
+    pdfTextLine(pdf, ` `, "justify", true, false);
+    pdfTextLine(pdf, `6. DEFINICIONES`, "justify", true, true);
+
+    pdfTextLine(
+      pdf,
+      `SERVICIO: Esta la garantía del servicio con la cual se afianza una operación en materia civil, comercial o mercantil, estableciendo los pártemelos de la operación.`,
+      "justify",
+      false,
+      true
+    );
+
+    pdfTextLine(
+      pdf,
+      `CARENCIA: Este es el tiempo en que un determinado servicio, civil, comercial o mercantil detenta un determinado derecho de uso.`,
+      "justify",
+      false,
+      true
+    );
+
+    pdfTextLine(
+      pdf,
+      `ENFERMEDAD: Alteración o desviación del estado fisiológico en una o varias partes del cuerpo de la mascota, por causas en general conocidas por el titular, donde la mascota manifiesta síntomas y signos característicos, y cuya evolución es más o menos predecible.`,
+      "justify",
+      false,
+      true
+    );
+
+    pdfTextLine(
+      pdf,
+      `ACCIDENTE: Acontecimiento, independiente de la voluntad de la mascota, causado por una fuerza extraña, de acción rápida, que se manifiesta por la aparición de lesiones orgánicas.`,
+      "justify",
+      false,
+      true
+    );
+
+    pdfTextLine(
+      pdf,
+      `ATENCIÓN DE URGENCIA: Se entiende por este concepto, cualquier servicio de emergencia que cubre la atención, traslado y comunicaciones realizadas con el fin de proveer servicios de salud veterinaria en caso de urgencia o emergencias veterinarias.`,
+      "justify",
+      false,
+      true
+    );
+
+    pdfTextLine(
+      pdf,
+      `LIMITE DE PROTECCIÓN: Es el indicador que detenta el prestador de un servicio determinado, con el cual determina el máximo valor a cubrir por cada evento.`,
+      "justify",
+      false,
+      true
+    );
+
+    pdfTextLine(
+      pdf,
+      `EVENTOS: Es la ocurrencia de cada uno de los servicios contratados, el cual es fijado con anterioridad por el prestador de servicios anual.`,
+      "justify",
+      false,
+      true
+    );
 
     pdfHeaderAndFooter(pdf);
     pdfEnd(pdf, res);

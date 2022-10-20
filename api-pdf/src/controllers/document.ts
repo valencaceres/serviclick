@@ -1,5 +1,6 @@
 import createLogger from "../utils/logger";
 import * as Document from "../models/document";
+import * as Test from "../models/test";
 
 const createContract = async (req: any, res: any) => {
   try {
@@ -31,9 +32,7 @@ const createContract = async (req: any, res: any) => {
 
 const createAnnex = async (req: any, res: any) => {
   try {
-    const { contact, plan } = req.body;
-
-    const pdf = await Document.createAnnex(contact, plan, res);
+    const pdf = await Document.createAnnex(res, req.body);
 
     createLogger.info({
       controller: "document/createAnnex",
@@ -50,4 +49,9 @@ const createAnnex = async (req: any, res: any) => {
   }
 };
 
-export { createContract, createAnnex };
+const test = async (req: any, res: any) => {
+  const response = Test.test();
+  res.status(200).json(response);
+};
+
+export { createContract, createAnnex, test };

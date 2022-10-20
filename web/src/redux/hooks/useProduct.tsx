@@ -5,6 +5,7 @@ import {
   getProduct,
   listProducts,
   getProductsByFamilyId,
+  getProductsDescription,
   setProductList,
   setProduct,
   resetProduct,
@@ -99,6 +100,10 @@ const useProduct = () => {
     dispatch(getProductsByFamilyId(family_id));
   };
 
+  const getDescription = (id: string) => {
+    dispatch(getProductsDescription(id));
+  };
+
   const setList = (value: ProductT[]) => {
     dispatch(setProductList(value));
   };
@@ -122,6 +127,7 @@ const useProduct = () => {
     getById,
     getAll,
     getByFamilyId,
+    getDescription,
     setList,
     set,
     reset,

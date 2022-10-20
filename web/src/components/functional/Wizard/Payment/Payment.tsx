@@ -137,6 +137,7 @@ const Payment = ({ register }: any) => {
   };
 
   const completeProduct = () => {
+    console.log(lead);
     const isValid: boolean =
       lead.product.id !== "" &&
       lead.product.price > 0 &&
@@ -708,7 +709,7 @@ const Payment = ({ register }: any) => {
           pedimos que hagas click en el ckeck al lado de cada título.
           <br />
           <br />
-          Si estás conforme, al terminar de checkear, presiona el botón
+          Si estás conforme, al terminar de checkear, presiona el botón{" "}
           <b>Pagar</b> y te llevaremos a nuestra plataforma de pago seguro.
         </div>
       </Tooltip>

@@ -1,5 +1,6 @@
 import PDFDocument from "pdfkit-table";
 import fs from "fs";
+import dirPath from "path";
 
 const pdfNewDocument = (path: string) => {
   const hMargin = 70;
@@ -18,13 +19,21 @@ const pdfNewDocument = (path: string) => {
 
   doc.pipe(fs.createWriteStream(path));
 
+  const fontName = dirPath.join(__dirname, "../", "fonts", "Gotham-Light.ttf");
+  const fontNameBold = dirPath.join(
+    __dirname,
+    "../",
+    "fonts",
+    "Gotham-Medium.ttf"
+  );
+
   return {
     doc,
     hMargin,
     paragraphWidth,
-    fontName: "Times-Roman",
-    fontNameBold: "Times-Bold",
-    fontSize: 12,
+    fontName,
+    fontNameBold,
+    fontSize: 13,
   };
 };
 
@@ -40,6 +49,7 @@ const pdfTextLine = (
   moveDown && doc.moveDown();
 
   doc.font(bold ? fontNameBold : fontName, fontSize);
+  doc.fillColor("#000000");
   doc.text(text, {
     width: paragraphWidth,
     align: align,
@@ -47,7 +57,7 @@ const pdfTextLine = (
 };
 
 const pdfTable = (pdf: any, headers: any, data: any) => {
-  const { doc } = pdf;
+  const { doc, fontName, fontNameBold, fontSize } = pdf;
 
   doc.moveDown();
 
@@ -58,9 +68,25 @@ const pdfTable = (pdf: any, headers: any, data: any) => {
     },
     headers,
     datas: data,
+    options: {
+      minRowHeight: 30,
+      separation: true,
+      padding: 5,
+    },
   };
 
-  doc.table(table);
+  doc.table(table, {
+    prepareHeader: () => doc.font(fontNameBold).fontSize(fontSize),
+    prepareRow: (
+      row: any,
+      indexColumn: any,
+      indexRow: any,
+      rectRow: any,
+      rectCell: any
+    ) => {
+      doc.font(fontName).fontSize(fontSize);
+    },
+  });
 };
 
 const pdfHeaderAndFooter = (pdf: any) => {

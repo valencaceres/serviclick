@@ -23,7 +23,6 @@ const getByRutController = async (req: any, res: any) => {
 };
 
 const createController = async (req: any, res: any) => {
-  const { id } = req.params;
   const {
     rut,
     name,

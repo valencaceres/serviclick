@@ -155,10 +155,26 @@ const getInsuredById: any = async (id: string) => {
   }
 };
 
+const getProductsById: any = async (id: string) => {
+  try {
+    const result = await pool.query(
+      `
+        SELECT  product_id
+        FROM    app.leadProduct
+        WHERE   lead_id = $1`,
+      [id]
+    );
+    return { success: true, data: result.rows[0], error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 export {
   createModel,
   registerSubscriptionModel,
   getById,
   getBySubscriptionId,
   getInsuredById,
+  getProductsById,
 };
