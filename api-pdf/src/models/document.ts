@@ -27,9 +27,11 @@ const createContract: any = async (
       monthNames[parseInt(moment().format("MM")) - 1]
     } de ${moment().format("YYYY")}`;
 
-    const lackDate = `${moment().add(25, "days").format("DD")} de ${
-      monthNames[parseInt(moment().format("MM")) - 1]
-    } de ${moment().format("YYYY")}`;
+    const unformattedLackDate = moment().add(25, "days");
+
+    const lackDate = `${unformattedLackDate.format("DD")} de ${
+      monthNames[parseInt(unformattedLackDate.format("MM")) - 1]
+    } de ${unformattedLackDate.format("YYYY")}`;
 
     const title1 =
       "Contrato de prestación de servicios & Certificado de cobertura en asistencia";
