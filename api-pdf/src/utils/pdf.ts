@@ -119,8 +119,6 @@ const pdfHeaderAndFooter = (pdf: any) => {
 
 const pdfEnd = (pdf: any) => {
   const { doc } = pdf;
-
-  //doc.pipe(res);
   doc.end();
 };
 

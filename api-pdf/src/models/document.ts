@@ -140,7 +140,7 @@ const createContract: any = async (
     const pdfPath = dirPath.join(__dirname, "../../../../", "output");
 
     const pdf = pdfNewDocument(
-      dirPath.join(pdfPath, `contract_${lead_id}.pdf`)
+      dirPath.join(pdfPath, `contrato_${lead_id}.pdf`)
     );
 
     const { doc, hMargin, paragraphWidth, fontNameBold } = pdf;
@@ -207,6 +207,7 @@ const createContract: any = async (
 
     pdfHeaderAndFooter(pdf);
     pdfEnd(pdf);
+    return true;
   } catch (e) {
     throw new Error((e as Error).message);
   }
@@ -486,24 +487,10 @@ const createAnnex: any = async (data: any) => {
 
     pdfHeaderAndFooter(pdf);
     pdfEnd(pdf);
+    return true;
   } catch (e) {
     throw new Error((e as Error).message);
   }
-};
-
-const processLine = (line: string, contact: any, plan: any) => {
-  const { phone, email, web } = contact;
-  const { validityInit, name } = plan;
-
-  line = line.replace("<<PLAN_NAME>>", name);
-  line = line.replace("<<PHONE>>", phone);
-  line = line.replace("<<EMAIL>>", email);
-  line = line.replace("<<WEB>>", web);
-  line = line.replace("<<VALIDITY_INIT>>", validityInit);
-  line = line.replace("<b>", "");
-  line = line.replace("<c>", "");
-
-  return line;
 };
 
 export { createContract, createAnnex };
