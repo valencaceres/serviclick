@@ -13,20 +13,12 @@ const createContract: any = async (
   correlative: string,
   date: string,
   contact: any,
+  company: any,
   customer: any,
   plan: any,
   res: any
 ) => {
   try {
-    const {
-      name: customerName,
-      birthDate,
-      email,
-      phone,
-      rut,
-      address,
-      district,
-    } = customer;
     const { name: planName, coverages, price } = plan;
     const { phone: contactPhone, email: contactEmail } = contact;
 
@@ -35,7 +27,21 @@ const createContract: any = async (
     const title2 = "Plan";
     const title3 = `${planName}`;
 
-    const paragraph = `En Santiago a ${date}, comparecen a celebrar el presente contrato de prestación de servicios, por una parte, en adelante el PRESTADOR; MHM SERVICIOS SPA, Rut 76.721.251-8, reordenada en este acto por don CARLOS MOLINA MELLA, chileno, empresario. cédula de identidad 18.810.429-1, ambos con domicilio para estos efectos en calle Enrique Mac Iver 440 piso 7 oficina 702, comuna y ciudad de Santiago; y por otra parte, en adelante el cliente don o (a) ${customerName}, chileno, fecha de nacimiento ${birthDate}, correo electrónico ${email}, teléfono  de contacto ${phone}, cédula de identidad ${rut}, con domicilio para estos efectos en ${address}, comuna de ${district}.`;
+    const paragraph = `En Santiago a ${date}, comparecen a celebrar el presente contrato de prestación de servicios, por una parte, en adelante el PRESTADOR; MHM SERVICIOS SPA, Rut 76.721.251-8, reordenada en este acto por don CARLOS MOLINA MELLA, chileno, empresario. cédula de identidad 18.810.429-1, ambos con domicilio para estos efectos en calle Enrique Mac Iver 440 piso 7 oficina 702, comuna y ciudad de Santiago; y por otra parte, en adelante el cliente ${
+      company
+        ? company.companyName
+        : `don o (a) ${customer.name}, chileno, fecha de nacimiento ${customer.birthDate}`
+    }, correo electrónico ${
+      company ? company.email : customer.email
+    }, teléfono  de contacto ${
+      company ? company.phone : customer.phone
+    }, cédula de identidad ${
+      company ? company.rut : customer.rut
+    }, con domicilio para estos efectos en ${
+      company ? company.address : customer.address
+    }, comuna de ${company ? company.district : customer.district}.`;
+
+    console.log(paragraph);
 
     const priceFormatted = parseFloat(price)
       .toFixed(1)
@@ -85,7 +91,9 @@ const createContract: any = async (
         name: "CUARTO:",
         title: "CERTIFICADO DE COBERTURA EN ASISTENCIA.",
         paragraphs: [
-          `Por medio del presente instrumento, la empresa MHM SERVICIOS SPA, otorga certificado de cobertura número ${correlative}, al cliente don (a) ${customerName} antes ya identificado en la presuma del presente instrumento. El presente certificado cuenta con una vigencia de una año, esta vigencia podrá ser renovada o terminada de acuerda a la vigencia del presente contrato de prestación de servicios.`,
+          `Por medio del presente instrumento, la empresa MHM SERVICIOS SPA, otorga certificado de cobertura número ${correlative}, al cliente don (a) ${
+            company ? company.companyName : customer.name
+          } antes ya identificado en la presuma del presente instrumento. El presente certificado cuenta con una vigencia de una año, esta vigencia podrá ser renovada o terminada de acuerda a la vigencia del presente contrato de prestación de servicios.`,
         ],
       },
       {
@@ -161,7 +169,11 @@ const createContract: any = async (
     });
 
     const companySign = ["P.p.", "MHM SERVICIOS SPA", "Rut 76.721.251-8"];
-    const customerSign = ["Cliente", customerName, `Rut ${rut}`];
+    const customerSign = [
+      company ? company.legalRepresentative : "Cliente",
+      company ? company.companyName : customer.name,
+      `Rut ${company ? company.rut : customer.rut}`,
+    ];
 
     const signWidth = 210;
 
@@ -198,6 +210,7 @@ const createContract: any = async (
     pdfHeaderAndFooter(pdf);
     pdfEnd(pdf, res);
   } catch (e) {
+    console.log(e);
     throw new Error((e as Error).message);
   }
 };

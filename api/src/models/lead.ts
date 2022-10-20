@@ -159,7 +159,10 @@ const getProductsById: any = async (id: string) => {
   try {
     const result = await pool.query(
       `
-        SELECT  product_id
+        SELECT  product_id,
+                price,
+                currency_code,
+                frequency_code
         FROM    app.leadProduct
         WHERE   lead_id = $1`,
       [id]

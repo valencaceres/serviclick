@@ -4,12 +4,13 @@ import * as Test from "../models/test";
 
 const createContract = async (req: any, res: any) => {
   try {
-    const { correlative, date, contact, customer, plan } = req.body;
+    const { correlative, date, contact, company, customer, plan } = req.body;
 
     const pdf = await Document.createContract(
       correlative,
       date,
       contact,
+      company,
       customer,
       plan,
       res

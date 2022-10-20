@@ -1,4 +1,5 @@
 import axios from "axios";
+import moment from "moment";
 
 import createLogger from "../util/logger";
 import * as UserInsuredModel from "../models/userInsured";
@@ -8,6 +9,7 @@ import * as CompanyModel from "../models/company";
 import * as ProductDescriptionModel from "../models/productDescription";
 
 import { generateGenericPassword } from "../util/user";
+import { monthNames } from "../util/date";
 import config from "../util/config";
 
 const subscriptionActivated = async (req: any, res: any) => {
@@ -24,7 +26,7 @@ const subscriptionActivated = async (req: any, res: any) => {
       return;
     }
 
-    const { id: lead_id } = leadResponse.data;
+    const { id: lead_id, company_id } = leadResponse.data;
 
     const leadProductResponse = await LeadModel.getProductsById(
       lead_id //leadResponse.data.id
@@ -39,7 +41,8 @@ const subscriptionActivated = async (req: any, res: any) => {
       return;
     }
 
-    const { product_id } = leadProductResponse.data;
+    const { product_id, price, currency_code, frequency_code } =
+      leadProductResponse.data;
 
     const productDescriptionResponse =
       await ProductDescriptionModel.getByProductId(
@@ -69,15 +72,32 @@ const subscriptionActivated = async (req: any, res: any) => {
       return;
     }
 
-    const { company_id } = leadResponse.data;
     if (company_id) {
       const companyResponse = await CompanyModel.getByIdModel(company_id);
+
       if (!companyResponse.success) {
         createLogger.error({
           model: "company/getByIdModel",
           error: companyResponse.error,
         });
         res.status(500).json(companyResponse.error);
+        return;
+      }
+
+      const responseDocuments = await generateDocuments(
+        res,
+        null,
+        companyResponse.data,
+        productDescriptionResponse.data,
+        price
+      );
+
+      if (!responseDocuments.success) {
+        createLogger.error({
+          model: responseDocuments.model,
+          error: responseDocuments.error,
+        });
+        res.status(500).json(responseDocuments.error);
         return;
       }
 
@@ -156,6 +176,25 @@ const subscriptionActivated = async (req: any, res: any) => {
         });
       }
 
+      if (!company_id) {
+        const responseDocuments = await generateDocuments(
+          res,
+          userInsuredResponse.data,
+          null,
+          productDescriptionResponse.data,
+          price
+        );
+
+        if (!responseDocuments.success) {
+          createLogger.error({
+            model: responseDocuments.model,
+            error: responseDocuments.error,
+          });
+          res.status(500).json(responseDocuments.error);
+          return;
+        }
+      }
+
       const generatedPassword = generateGenericPassword();
       const userPasswordResponse = await UserInsuredModel.assignPassword(
         userInsuredResponse.data.id,
@@ -214,6 +253,73 @@ const subscriptionActivated = async (req: any, res: any) => {
     res.status(500).json((e as Error).message);
     return;
   }
+};
+
+const generateDocuments = async (
+  res: any,
+  customer: any,
+  company: any,
+  productDescription: any,
+  price: number
+) => {
+  const correlative = `${new Date().getFullYear()}-${generateGenericPassword().toLocaleLowerCase()}`;
+  const stringDate = `${moment().format("DD")} de ${
+    monthNames[parseInt(moment().format("MM"))]
+  } de ${moment().format("YYYY")}`;
+
+  const contractResponse: any = await axios.post(
+    config.pdf.URL.contract,
+    {
+      correlative,
+      date: stringDate,
+      contact: {
+        phone: "600 0860 580",
+        email: "info@serviclick.cl",
+      },
+      customer,
+      company,
+      plan: {
+        name: productDescription.name,
+        coverages: productDescription.assistances
+          .map((assistance: any) => assistance.name)
+          .join(", "),
+        price,
+      },
+    },
+    {
+      headers: config.pdf.apiKey,
+    }
+  );
+
+  if (contractResponse.status !== 200) {
+    return {
+      success: false,
+      model: "api-pdf/document/annex",
+      error: contractResponse.error,
+    };
+  }
+
+  const annexResponse: any = await axios.post(
+    config.pdf.URL.annex,
+    productDescription,
+    {
+      headers: config.pdf.apiKey,
+    }
+  );
+
+  if (annexResponse.status !== 200) {
+    return {
+      success: false,
+      model: "api-pdf/document/annex",
+      error: contractResponse.error,
+    };
+  }
+
+  return {
+    success: true,
+    model: "api-pdf",
+    error: null,
+  };
 };
 
 export { subscriptionActivated };
