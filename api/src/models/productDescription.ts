@@ -1,6 +1,74 @@
 import pool from "../util/database";
 
+import * as Assistance from "../models/assistance";
+
 const getByProductId: any = async (lead_id: string, product_id: string) => {
+  try {
+    const productResponse = await getDescription(lead_id, product_id);
+    const assistanceResponse = await Assistance.getAll();
+
+    type AssistanceT = {
+      id: string;
+      name: string;
+      description: string;
+      amount: number;
+      maximum: string;
+      events: number;
+      lack: number;
+      currency: string;
+    };
+
+    type DataT = {
+      id: string;
+      name: string;
+      title: string;
+      subTitle: string;
+      description: string;
+      territorialScope: string;
+      hiringConditions: string;
+      assistances: AssistanceT[];
+    };
+
+    const dataAssistances: AssistanceT[] = productResponse.assistances.map(
+      (item: AssistanceT) => {
+        return {
+          id: item.id,
+          name: item.name,
+          description: item.description,
+          amount: item.amount,
+          maximum: item.maximum,
+          events: item.events,
+          lack: item.lack,
+          currency: item.currency,
+          benefits: assistanceResponse.data.benefits
+            .filter((benefit: any) => benefit.assistance_id === item.id)
+            .map((ex: any) => ex.description),
+          exclusions: assistanceResponse.data.exclusions
+            .filter((exclusion: any) => exclusion.assistance_id === item.id)
+            .map((ex: any) => ex.description),
+        };
+      }
+    );
+
+    let data = {
+      lead_id,
+      id: product_id,
+      name: productResponse.name,
+      title: productResponse.title,
+      subTitle: productResponse.subTitle,
+      description: productResponse.description,
+      territorialScope: productResponse.territorialScope,
+      hiringConditions: productResponse.hiringConditions,
+      assistances: dataAssistances,
+    };
+
+    return { success: true, data, error: null };
+  } catch (e) {
+    throw new Error((e as Error).message);
+  }
+};
+
+const getDescription = async (lead_id: string, product_id: string) => {
   try {
     const result = await pool.query(
       `
@@ -77,9 +145,9 @@ const getByProductId: any = async (lead_id: string, product_id: string) => {
       });
     });
 
-    return { success: true, data, error: null };
+    return data;
   } catch (e) {
-    return { success: false, data: null, error: (e as Error).message };
+    throw new Error((e as Error).message);
   }
 };
 

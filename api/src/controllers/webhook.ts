@@ -1,7 +1,8 @@
 import axios from "axios";
 import moment from "moment";
 
-import createLogger from "../util/logger";
+import * as ProductDescriptionController from "./productDescription";
+
 import * as UserInsuredModel from "../models/userInsured";
 import * as UserCompanyModel from "../models/userCompany";
 import * as LeadModel from "../models/lead";
@@ -9,6 +10,7 @@ import * as CompanyModel from "../models/company";
 import * as ProductDescriptionModel from "../models/productDescription";
 import * as InsuredModel from "../models/insured";
 
+import createLogger from "../util/logger";
 import { generateGenericPassword } from "../util/user";
 import { monthNames } from "../util/date";
 import config from "../util/config";
@@ -59,8 +61,6 @@ const subscriptionActivated = async (req: any, res: any) => {
       res.status(500).json(productDescriptionResponse.error);
       return;
     }
-
-    console.log(productDescriptionResponse.data);
 
     const leadInsuredResponse = await LeadModel.getInsuredById(
       lead_id //leadResponse.data.id
@@ -326,8 +326,6 @@ const generateDocuments = async (
     //     error: contractResponse.error,
     //   };
     // }
-
-    console.log(productDescription);
 
     const annexResponse: any = await axios.post(
       config.pdf.URL.annex,
