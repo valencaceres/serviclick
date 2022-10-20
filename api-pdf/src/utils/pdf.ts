@@ -117,10 +117,10 @@ const pdfHeaderAndFooter = (pdf: any) => {
   doc.flushPages();
 };
 
-const pdfEnd = (pdf: any, res: any) => {
+const pdfEnd = (pdf: any) => {
   const { doc } = pdf;
 
-  doc.pipe(res);
+  //doc.pipe(res);
   doc.end();
 };
 

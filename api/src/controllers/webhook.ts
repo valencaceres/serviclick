@@ -154,32 +154,22 @@ const subscriptionActivated = async (req: any, res: any) => {
     }
 
     if (!company_id) {
-      // const insuredResponse = await InsuredModel.getByIdModel(
-      //   leadInsuredResponse.data.insured_id
-      // );
+      const insuredResponse = await InsuredModel.getByIdModel(
+        leadInsuredResponse.data[0].id
+      );
 
-      // if (!insuredResponse.success) {
-      //   createLogger.error({
-      //     model: "insured/getByIdModel",
-      //     error: insuredResponse.error,
-      //   });
-      //   res.status(500).json(insuredResponse.error);
-      //   return;
-      // }
-
-      console.log(leadInsuredResponse.data);
+      if (!insuredResponse.success) {
+        createLogger.error({
+          model: "insured/getByIdModel",
+          error: insuredResponse.error,
+        });
+        res.status(500).json(insuredResponse.error);
+        return;
+      }
 
       const responseDocuments = await generateDocuments(
         lead_id,
-        {
-          name: "Claudio Patricio Matus Alegría",
-          birthDate: "25/03/1985",
-          email: "pedro.fernandez@gmail.com",
-          phone: "+569 9876 1234",
-          rut: "12.456.789-K",
-          address: "Av. Los Libertadores 1698",
-          district: "Puente Alto",
-        },
+        insuredResponse.data,
         null,
         productDescriptionResponse.data,
         price

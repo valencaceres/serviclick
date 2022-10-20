@@ -16,8 +16,7 @@ const createContract: any = async (
   contact: any,
   company: any,
   customer: any,
-  plan: any,
-  res: any
+  plan: any
 ) => {
   try {
     const { name: planName, coverages, price } = plan;
@@ -207,13 +206,13 @@ const createContract: any = async (
     });
 
     pdfHeaderAndFooter(pdf);
-    pdfEnd(pdf, res);
+    pdfEnd(pdf);
   } catch (e) {
     throw new Error((e as Error).message);
   }
 };
 
-const createAnnex: any = async (res: any, data: any) => {
+const createAnnex: any = async (data: any) => {
   try {
     const {
       lead_id,
@@ -486,7 +485,7 @@ const createAnnex: any = async (res: any, data: any) => {
     );
 
     pdfHeaderAndFooter(pdf);
-    pdfEnd(pdf, res);
+    pdfEnd(pdf);
   } catch (e) {
     throw new Error((e as Error).message);
   }

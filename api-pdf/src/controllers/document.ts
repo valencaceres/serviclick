@@ -14,14 +14,14 @@ const createContract = async (req: any, res: any) => {
       contact,
       company,
       customer,
-      plan,
-      res
+      plan
     );
 
     createLogger.info({
       controller: "document/createContract",
       message: "OK",
     });
+    res.status(200).json("OK");
   } catch (e) {
     createLogger.error({
       model: "document/createContract",
@@ -35,12 +35,13 @@ const createContract = async (req: any, res: any) => {
 
 const createAnnex = async (req: any, res: any) => {
   try {
-    const pdf = await Document.createAnnex(res, req.body);
+    const pdf = await Document.createAnnex(req.body);
 
     createLogger.info({
       controller: "document/createAnnex",
       message: "OK",
     });
+    res.status(200).json("OK");
   } catch (e) {
     createLogger.error({
       model: "document/createAnnex",
