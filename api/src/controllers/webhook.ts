@@ -60,6 +60,8 @@ const subscriptionActivated = async (req: any, res: any) => {
       return;
     }
 
+    console.log(productDescriptionResponse.data);
+
     const leadInsuredResponse = await LeadModel.getInsuredById(
       lead_id //leadResponse.data.id
     );
@@ -324,6 +326,8 @@ const generateDocuments = async (
     //     error: contractResponse.error,
     //   };
     // }
+
+    console.log(productDescription);
 
     const annexResponse: any = await axios.post(
       config.pdf.URL.annex,
