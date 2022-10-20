@@ -27,7 +27,7 @@ const createContract: any = async (
       monthNames[parseInt(moment().format("MM")) - 1]
     } de ${moment().format("YYYY")}`;
 
-    const lackDate = `${moment().add(5, "days").format("DD")} de ${
+    const lackDate = `${moment().add(25, "days").format("DD")} de ${
       monthNames[parseInt(moment().format("MM")) - 1]
     } de ${moment().format("YYYY")}`;
 
