@@ -241,11 +241,15 @@ const createAnnex: any = async (data: any) => {
     const pdfPath = dirPath.join(__dirname, "../../../../", "output");
     const pdf = pdfNewDocument(dirPath.join(pdfPath, `anexo_${lead_id}.pdf`));
 
+    const todayDate = `${moment().format("DD")} de ${
+      monthNames[parseInt(moment().format("MM")) - 1]
+    } de ${moment().format("YYYY")}`;
+
     pdfTextLine(pdf, `ANEXO DE CONTRATO`, "center", true, false);
 
     pdfTextLine(
       pdf,
-      `El presente documento privado es considerado por los intervinientes parte integral del contrato marco de prestación de servicios el cual se firmó con fecha 19 mes Octubre año 2022.`,
+      `El presente documento privado es considerado por los intervinientes parte integral del contrato marco de prestación de servicios el cual se firmó con fecha ${todayDate}.`,
       "justify",
       false,
       true
