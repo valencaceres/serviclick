@@ -282,6 +282,24 @@ const createController = async (req: any, res: any) => {
       },
     });
 
+    createLogger.info({
+      url: config.reveniu.URL.subscription,
+      method: "POST",
+      body: {
+        plan_id: product.productPlan_id,
+        field_values: {
+          email: contractor.email,
+          name,
+          amount: product.price * insured.length,
+          address,
+          rut: contractor.rut,
+          phone: contractor.phone,
+        },
+      },
+      params: "",
+      query: "",
+    });
+
     const subscriptionReveniuResponse = await axios.post(
       config.reveniu.URL.subscription,
       {
@@ -306,6 +324,21 @@ const createController = async (req: any, res: any) => {
       security_token,
       status_code,
     } = subscriptionReveniuResponse.data;
+
+    createLogger.info({
+      url: config.webHook.URL.reveniu,
+      method: "POST",
+      body: {
+        data: {
+          data: {
+            subscription_id,
+            lead_id,
+          },
+        },
+      },
+      params: "",
+      query: "",
+    });
 
     const webhookResponse = await axios.post(config.webHook.URL.reveniu, {
       data: {

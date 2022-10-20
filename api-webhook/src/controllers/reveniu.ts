@@ -27,6 +27,16 @@ const reveniuController = async (req: any, res: any) => {
     }
 
     if (event === "subscription_activated") {
+      createLogger.info({
+        url: config.webHook.URL.subscriptionActivated,
+        method: "POST",
+        body: {
+          subscription_id,
+        },
+        params: "",
+        query: "",
+      });
+
       const webHookResponse = await axios.post(
         config.webHook.URL.subscriptionActivated,
         {
@@ -37,6 +47,14 @@ const reveniuController = async (req: any, res: any) => {
         }
       );
     }
+
+    createLogger.info({
+      url: `${config.reveniu.URL.subscription}${subscription_id}`,
+      method: "GET",
+      body: "",
+      params: "",
+      query: "",
+    });
 
     const subscriptionReveniuResponse = await axios.get(
       `${config.reveniu.URL.subscription}${subscription_id}`,
@@ -53,6 +71,18 @@ const reveniuController = async (req: any, res: any) => {
       last_payment,
     } = subscriptionReveniuResponse.data;
     const { date: last_payment_date } = last_payment;
+
+    createLogger.info({
+      model: "reveniu/createSubscriptionModel",
+      input: {
+        status_id,
+        interval_id,
+        subscription_id,
+        plan_amount,
+        plan_id,
+        last_payment_date,
+      },
+    });
 
     const subscriptionResponse = await createSubscriptionModel(
       status_id,
@@ -71,6 +101,14 @@ const reveniuController = async (req: any, res: any) => {
       res.status(500).json({ error: subscriptionResponse.error });
       return;
     }
+
+    createLogger.info({
+      url: `${config.reveniu.URL.subscription}${subscription_id}/payments`,
+      method: "GET",
+      body: "",
+      params: "",
+      query: "",
+    });
 
     const paymentReveniuResponse = await axios.get(
       `${config.reveniu.URL.subscription}${subscription_id}/payments`,
@@ -91,6 +129,20 @@ const reveniuController = async (req: any, res: any) => {
         is_recurrent,
         gateway_response,
       } = payment;
+
+      createLogger.info({
+        model: "reveniu/createPaymentModel",
+        input: {
+          payment_id,
+          date,
+          subscription_id,
+          amount,
+          buy_order,
+          credit_card_type,
+          is_recurrent,
+          gateway_response,
+        },
+      });
 
       const paymentResponse = await createPaymentModel(
         payment_id,

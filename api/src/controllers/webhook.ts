@@ -1,7 +1,4 @@
 import axios from "axios";
-import moment from "moment";
-
-import * as ProductDescriptionController from "./productDescription";
 
 import * as UserInsuredModel from "../models/userInsured";
 import * as UserCompanyModel from "../models/userCompany";
@@ -137,6 +134,20 @@ const subscriptionActivated = async (req: any, res: any) => {
         `anexo_${lead_id}.pdf`,
       ];
 
+      createLogger.info({
+        url: config.email.URL.send,
+        method: "POST",
+        body: {
+          from: { name: "Bienvenido a ServiClick" },
+          to: companyResponse.data.email,
+          subject: "Tus credenciales de acceso a nuestra plataforma",
+          message: `<b>Hola&nbsp;${companyResponse.data.companyName}</b><br/><br/>Bienvenido a ServiClick, a continuación te detallamos los datos de acceso a nuestra plataforma para que puedas completar o modificar la información que requieras:<br/><br/><b>https://empresa.serviclick.cl</b><br/><br/><b>Login:</b>&nbsp;${companyResponse.data.email}<br/><b>Password</b>:&nbsp;${generatedPassword}<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
+          attachments: attachmentCompany,
+        },
+        params: "",
+        query: "",
+      });
+
       const emailResponse: any = await axios.post(
         config.email.URL.send,
         {
@@ -238,6 +249,20 @@ const subscriptionActivated = async (req: any, res: any) => {
         });
       }
 
+      createLogger.info({
+        url: config.email.URL.send,
+        method: "POST",
+        body: {
+          from: { name: "Bienvenido a ServiClick" },
+          to: insured.email,
+          subject: "Tus credenciales de acceso a nuestra plataforma",
+          message: `<b>Hola&nbsp;${insured.name}</b><br/><br/>Bienvenido a ServiClick, a continuación te detallamos los datos de acceso a nuestra plataforma para que puedas completar o modificar la información que requieras:<br/><br/><b>https://asegurado.serviclick.cl</b><br/><br/><b>Login:</b>&nbsp;${insured.email}<br/><b>Password</b>:&nbsp;${generatedPassword}<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
+          attachments: attachmentInsured,
+        },
+        params: "",
+        query: "",
+      });
+
       const emailResponse: any = await axios.post(
         config.email.URL.send,
         {
@@ -293,6 +318,30 @@ const generateDocuments = async (
       lead_id.split("-")[lead_id.split("-").length - 1]
     }`;
 
+    createLogger.info({
+      url: config.pdf.URL.contract,
+      method: "POST",
+      body: {
+        lead_id,
+        correlative,
+        contact: {
+          phone: "600 0860 580",
+          email: "info@serviclick.cl",
+        },
+        customer,
+        company,
+        plan: {
+          name: productDescription.name,
+          coverages: productDescription.assistances
+            .map((assistance: any) => assistance.name)
+            .join(", "),
+          price,
+        },
+      },
+      params: "",
+      query: "",
+    });
+
     const contractResponse: any = await axios.post(
       config.pdf.URL.contract,
       {
@@ -324,6 +373,14 @@ const generateDocuments = async (
     //     error: contractResponse.error,
     //   };
     // }
+
+    createLogger.info({
+      url: config.pdf.URL.annex,
+      method: "POST",
+      body: { ...productDescription, lead_id },
+      params: "",
+      query: "",
+    });
 
     const annexResponse: any = await axios.post(
       config.pdf.URL.annex,
