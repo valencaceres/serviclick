@@ -84,8 +84,8 @@ const createContract: any = async (
           `Nombre del plan: ${planName}.`,
           `Prestación: ${coverages}.`,
           `Fecha de inicio de la prestación: ${lackDate}.`,
-          `Valor del plan anual: $${priceFormatted}.`,
-          `Cuota mensual: $${anuallyFormatted} por doce meses.`,
+          `Valor del plan anual: $${anuallyFormatted}.`,
+          `Cuota mensual: $${priceFormatted} por doce meses.`,
           `Reajustes: El reajuste será por periodos anuales según la variación del incide del precio al consumidor. Las partes establecen que este incremento no podrá ser objetado por parte del cliente.`,
         ],
       },
@@ -101,7 +101,9 @@ const createContract: any = async (
         title: "CERTIFICADO DE COBERTURA EN ASISTENCIA.",
         paragraphs: [
           `Por medio del presente instrumento, la empresa MHM SERVICIOS SPA, otorga certificado de cobertura número ${correlative}, al cliente don (a) ${
-            company ? company.companyName : customer.name
+            company
+              ? company.companyName
+              : `${customer.name} ${customer.paternalLastName} ${customer.maternalLastName}`
           } antes ya identificado en la presuma del presente instrumento. El presente certificado cuenta con una vigencia de una año, esta vigencia podrá ser renovada o terminada de acuerda a la vigencia del presente contrato de prestación de servicios.`,
         ],
       },
@@ -109,7 +111,7 @@ const createContract: any = async (
         name: "QUINTO:",
         title: "MANDATO.",
         paragraphs: [
-          `Por medio del presente instrumento el cliente autoriza a MHM SERVICIOS SPA para que cargue mensualmente el monto del costo del servicio de “${planName}”, al medio de pago registrado por el cliente en la suscripción n° ${correlative}. Con todo autorizo a que las comunicaciones o notificaciones que MHM SERVICIOS SPA envíe o deba enviar en razón del contrato de prestación de servicios, y que se encuentren regulados en la ley 19.496.`,
+          `Por medio del presente instrumento el cliente autoriza a MHM SERVICIOS SPA para que cargue mensualmente el monto del costo del servicio mensual de “${planName}”, al medio de pago registrado por el cliente en la suscripción n° ${correlative}. Con todo autorizo a que las comunicaciones o notificaciones que MHM SERVICIOS SPA envíe o deba enviar en razón del contrato de prestación de servicios, y que se encuentren regulados en la ley 19.496.`,
         ],
       },
       {
@@ -123,7 +125,7 @@ const createContract: any = async (
         name: "SEPTIMO:",
         title: "VIGENCIA DEL CONTRATO.",
         paragraphs: [
-          "El presente Contrato tendrá una duración de un año a partir de la fecha de celebración del presente instrumento, el cual corresponde a la fecha efectiva de inicio de la prestación de los Servicios. La fecha de inicio de la prestación es la que figura detallada en el capítulo SEGUNDO. No obstante, lo anterior, el prestador podrá unilateralmente, sin expresión de causa y en cualquier momento ponerle término, sin necesidad de declaración judicial, mediante una comunicación escrita despachada al domicilio señalado por el cliente cuando este no cumpla con la obligación de pago suscrita en el presente instrumento, esta comunicación se podrá realizar 10 días en forma posterior al pago. Con todo el presente contrato podrá ser renovado con por periodos iguales y sucesivos salvo que ninguna de las partes manifieste por termino al mismo con a lo menos 60 días de anticipación al termino contractual. En el ejercicio de este derecho por parte de MHM SERVCIOS, no generará a favor del Proveedor pago alguno por concepto de indemnización, daños, perjuicios u otro concepto. En el legítimo derecho de retracto por parte del cliente este podrá solicitar la terminación anticipada solo si posee más del 90% de los pagos por concepto del valor del servicio, con a lo menos 30 días de anticipación por medio de carta certificada enviada al domicilio del prestador.",
+          "El presente Contrato tendrá una duración de un año a partir de la fecha de celebración del presente instrumento, el cual corresponde a la fecha efectiva de inicio. La fecha de inicio de la prestación es la que figura detallada en el capítulo SEGUNDO. No obstante, lo anterior, el prestador podrá unilateralmente, sin expresión de causa y en cualquier momento ponerle término, sin necesidad de declaración judicial, mediante una comunicación escrita despachada al domicilio señalado por el cliente cuando este no cumpla con la obligación de pago suscrita en el presente instrumento, esta comunicación se podrá realizar 10 días en forma posterior al pago. Con todo el presente contrato podrá ser renovado con por periodos iguales y sucesivos salvo que ninguna de las partes manifieste por termino al mismo con a lo menos 60 días de anticipación al termino contractual. En el ejercicio de este derecho por parte de MHM SERVCIOS, no generará a favor del Proveedor pago alguno por concepto de indemnización, daños, perjuicios u otro concepto. En el legítimo derecho de retracto por parte del cliente este podrá solicitar la terminación anticipada solo si posee más del 90% de los pagos por concepto del valor del servicio, con a lo menos 30 días de anticipación por medio de carta certificada enviada al domicilio del prestador.",
         ],
       },
       {
@@ -216,6 +218,11 @@ const createContract: any = async (
           align: "center",
         }
       );
+    });
+
+    doc.text(`${lead_id}`, hMargin + paragraphWidth - signWidth, 630, {
+      width: signWidth,
+      align: "center",
     });
 
     pdfHeaderAndFooter(pdf);
