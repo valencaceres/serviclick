@@ -34,7 +34,9 @@ const createSubscriptionModel: any = async (
         interval_id,
         plan_id,
         plan_amount,
-        last_payment_date,
+        moment(last_payment_date).isValid()
+          ? moment(last_payment_date).local().format()
+          : null,
       ]
     );
 
@@ -61,7 +63,9 @@ const createSubscriptionModel: any = async (
           interval_id,
           plan_id,
           plan_amount,
-          moment(last_payment_date).local().format(),
+          moment(last_payment_date).isValid()
+            ? moment(last_payment_date).local().format()
+            : null,
           subscription_id,
         ]
       );
