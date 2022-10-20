@@ -154,22 +154,32 @@ const subscriptionActivated = async (req: any, res: any) => {
     }
 
     if (!company_id) {
-      const insuredResponse = await InsuredModel.getByIdModel(
-        leadInsuredResponse.data.insured_id
-      );
+      // const insuredResponse = await InsuredModel.getByIdModel(
+      //   leadInsuredResponse.data.insured_id
+      // );
 
-      if (!insuredResponse.success) {
-        createLogger.error({
-          model: "insured/getByIdModel",
-          error: insuredResponse.error,
-        });
-        res.status(500).json(insuredResponse.error);
-        return;
-      }
+      // if (!insuredResponse.success) {
+      //   createLogger.error({
+      //     model: "insured/getByIdModel",
+      //     error: insuredResponse.error,
+      //   });
+      //   res.status(500).json(insuredResponse.error);
+      //   return;
+      // }
+
+      console.log(leadInsuredResponse.data);
 
       const responseDocuments = await generateDocuments(
-        res,
-        insuredResponse.data,
+        lead_id,
+        {
+          name: "Claudio Patricio Matus Alegría",
+          birthDate: "25/03/1985",
+          email: "pedro.fernandez@gmail.com",
+          phone: "+569 9876 1234",
+          rut: "12.456.789-K",
+          address: "Av. Los Libertadores 1698",
+          district: "Puente Alto",
+        },
         null,
         productDescriptionResponse.data,
         price
@@ -270,7 +280,7 @@ const subscriptionActivated = async (req: any, res: any) => {
 };
 
 const generateDocuments = async (
-  res: any,
+  lead_id: string,
   customer: any,
   company: any,
   productDescription: any,
@@ -285,6 +295,7 @@ const generateDocuments = async (
     const contractResponse: any = await axios.post(
       config.pdf.URL.contract,
       {
+        lead_id,
         correlative,
         date: stringDate,
         contact: {
@@ -316,7 +327,7 @@ const generateDocuments = async (
 
     const annexResponse: any = await axios.post(
       config.pdf.URL.annex,
-      productDescription,
+      { ...productDescription, lead_id },
       {
         headers: config.pdf.apiKey,
       }
