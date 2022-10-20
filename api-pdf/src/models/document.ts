@@ -1,3 +1,4 @@
+import moment from "moment";
 import dirPath from "path";
 
 import {
@@ -7,12 +8,12 @@ import {
   pdfHeaderAndFooter,
   pdfEnd,
 } from "../utils/pdf";
-import { normalizeFileName } from "../utils/text";
+
+import { monthNames } from "../utils/date";
 
 const createContract: any = async (
   lead_id: string,
   correlative: string,
-  date: string,
   contact: any,
   company: any,
   customer: any,
@@ -22,15 +23,23 @@ const createContract: any = async (
     const { name: planName, coverages, price } = plan;
     const { phone: contactPhone, email: contactEmail } = contact;
 
+    const todayDate = `${moment().format("DD")} de ${
+      monthNames[parseInt(moment().format("MM")) - 1]
+    } de ${moment().format("YYYY")}`;
+
+    const lackDate = `${moment().add(5, "days").format("DD")} de ${
+      monthNames[parseInt(moment().format("MM")) - 1]
+    } de ${moment().format("YYYY")}`;
+
     const title1 =
       "Contrato de prestación de servicios & Certificado de cobertura en asistencia";
     const title2 = "Plan";
     const title3 = `${planName}`;
 
-    const paragraph = `En Santiago a ${date}, comparecen a celebrar el presente contrato de prestación de servicios, por una parte, en adelante el PRESTADOR; MHM SERVICIOS SPA, Rut 76.721.251-8, reordenada en este acto por don CARLOS MOLINA MELLA, chileno, empresario. cédula de identidad 18.810.429-1, ambos con domicilio para estos efectos en calle Enrique Mac Iver 440 piso 7 oficina 702, comuna y ciudad de Santiago; y por otra parte, en adelante el cliente ${
+    const paragraph = `En Santiago a ${todayDate}, comparecen a celebrar el presente contrato de prestación de servicios, por una parte, en adelante el PRESTADOR; MHM SERVICIOS SPA, Rut 76.721.251-8, reordenada en este acto por don CARLOS MOLINA MELLA, chileno, empresario. cédula de identidad 18.810.429-1, ambos con domicilio para estos efectos en calle Enrique Mac Iver 440 piso 7 oficina 702, comuna y ciudad de Santiago; y por otra parte, en adelante el cliente ${
       company
         ? company.companyName
-        : `don o (a) ${customer.name}, chileno, fecha de nacimiento ${customer.birthDate}`
+        : `don o (a) ${customer.name} ${customer.paternalLastName} ${customer.maternalLastName}, chileno(a)` //, fecha de nacimiento ${customer.birthDate}`
     }, correo electrónico ${
       company ? company.email : customer.email
     }, teléfono  de contacto ${
@@ -72,7 +81,7 @@ const createContract: any = async (
         paragraphs: [
           `Nombre del plan: ${planName}.`,
           `Prestación: ${coverages}.`,
-          `Fecha de inicio de la prestación: ${date}.`,
+          `Fecha de inicio de la prestación: ${lackDate}.`,
           `Valor del plan anual: $${priceFormatted}.`,
           `Cuota mensual: $${anuallyFormatted} por doce meses.`,
           `Reajustes: El reajuste será por periodos anuales según la variación del incide del precio al consumidor. Las partes establecen que este incremento no podrá ser objetado por parte del cliente.`,
@@ -169,7 +178,9 @@ const createContract: any = async (
     const companySign = ["P.p.", "MHM SERVICIOS SPA", "Rut 76.721.251-8"];
     const customerSign = [
       company ? company.legalRepresentative : "Cliente",
-      company ? company.companyName : customer.name,
+      company
+        ? company.companyName
+        : `${customer.name} ${customer.paternalLastName} ${customer.maternalLastName}`,
       `Rut ${company ? company.rut : customer.rut}`,
     ];
 

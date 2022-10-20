@@ -289,17 +289,15 @@ const generateDocuments = async (
   price: number
 ) => {
   try {
-    const correlative = `${new Date().getFullYear()}-${generateGenericPassword().toLocaleLowerCase()}`;
-    const stringDate = `${moment().format("DD")} de ${
-      monthNames[parseInt(moment().format("MM"))]
-    } de ${moment().format("YYYY")}`;
+    const correlative = `${new Date().getFullYear()}-${
+      lead_id.split("-")[lead_id.split("-").length - 1]
+    }`;
 
     const contractResponse: any = await axios.post(
       config.pdf.URL.contract,
       {
         lead_id,
         correlative,
-        date: stringDate,
         contact: {
           phone: "600 0860 580",
           email: "info@serviclick.cl",
