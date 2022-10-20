@@ -37,11 +37,8 @@ const registerSubscriptionModel: any = async (
       `
           UPDATE app.lead
           SET    subscription_id = $2,
-                 completion_url = $3,
-                 security_token = $4,
-                 status_code = $5
           WHERE  id = $1 RETURNING *`,
-      [id, subscription_id, completion_url, security_token, status_code]
+      [id, subscription_id]
     );
     return { success: true, data: result.rows[0], error: null };
   } catch (e) {
@@ -76,9 +73,6 @@ const getById: any = async (id: string) => {
                 CASE WHEN COM.email IS NULL THEN '' ELSE COM.email END AS company_email,
                 CASE WHEN COM.phone IS NULL THEN '' ELSE COM.phone END AS company_phone,
                 LEA.subscription_id,
-                LEA.completion_url,
-                LEA.security_token,
-                LEA.status_code
         FROM    app.lead LEA LEFT OUTER JOIN app.customer CUS ON LEA.customer_id = CUS.id
                             LEFT OUTER JOIN app.company COM ON LEA.company_id = COM.id
         WHERE   LEA.id = $1`,
@@ -117,9 +111,6 @@ const getBySubscriptionId: any = async (subscription_id: string) => {
               CASE WHEN COM.email IS NULL THEN '' ELSE COM.email END AS company_email,
               CASE WHEN COM.phone IS NULL THEN '' ELSE COM.phone END AS company_phone,
               LEA.subscription_id,
-              LEA.completion_url,
-              LEA.security_token,
-              LEA.status_code
         FROM    app.lead LEA LEFT OUTER JOIN app.customer CUS ON LEA.customer_id = CUS.id
                              LEFT OUTER JOIN app.company COM ON LEA.company_id = COM.id
         WHERE   LEA.subscription_id = $1`,
