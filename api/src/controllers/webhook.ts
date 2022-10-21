@@ -85,11 +85,11 @@ const subscriptionActivated = async (req: any, res: any) => {
       }
 
       const responseDocuments = await generateDocuments(
-        res,
+        lead_id,
         null,
         companyResponse.data,
         productDescriptionResponse.data,
-        price
+        price * leadInsuredResponse.data.length
       );
 
       if (!responseDocuments.success) {

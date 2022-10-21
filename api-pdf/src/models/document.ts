@@ -41,7 +41,7 @@ const createContract: any = async (
     const paragraph = `En Santiago a ${todayDate}, comparecen a celebrar el presente contrato de prestación de servicios, por una parte, en adelante el PRESTADOR; MHM SERVICIOS SPA, Rut 76.721.251-8, reordenada en este acto por don CARLOS MOLINA MELLA, chileno, empresario. cédula de identidad 18.810.429-1, ambos con domicilio para estos efectos en calle Enrique Mac Iver 440 piso 7 oficina 702, comuna y ciudad de Santiago; y por otra parte, en adelante el cliente ${
       company
         ? company.companyName
-        : `don o (a) ${customer.name} ${customer.paternalLastName} ${customer.maternalLastName}, chileno(a)` //, fecha de nacimiento ${customer.birthDate}`
+        : `don(a) ${customer.name} ${customer.paternalLastName} ${customer.maternalLastName}, chileno(a)` //, fecha de nacimiento ${customer.birthDate}`
     }, correo electrónico ${
       company ? company.email : customer.email
     }, teléfono  de contacto ${
@@ -100,10 +100,10 @@ const createContract: any = async (
         name: "CUARTO:",
         title: "CERTIFICADO DE COBERTURA EN ASISTENCIA.",
         paragraphs: [
-          `Por medio del presente instrumento, la empresa MHM SERVICIOS SPA, otorga certificado de cobertura número ${correlative}, al cliente don (a) ${
+          `Por medio del presente instrumento, la empresa MHM SERVICIOS SPA, otorga certificado de cobertura número ${correlative}, al cliente ${
             company
               ? company.companyName
-              : `${customer.name} ${customer.paternalLastName} ${customer.maternalLastName}`
+              : `don(a) ${customer.name} ${customer.paternalLastName} ${customer.maternalLastName}`
           } antes ya identificado en la presuma del presente instrumento. El presente certificado cuenta con una vigencia de una año, esta vigencia podrá ser renovada o terminada de acuerda a la vigencia del presente contrato de prestación de servicios.`,
         ],
       },
