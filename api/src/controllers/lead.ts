@@ -2,6 +2,7 @@ import axios from "axios";
 
 import config from "../util/config";
 import createLogger from "../util/logger";
+import { sendMail } from "../util/email";
 
 import {
   createModel as createLeadModel,
@@ -27,6 +28,7 @@ import { createModel as createCustomerModel } from "../models/customer";
 import { createModel as createCompanyModel } from "../models/company";
 import { createModel as createInsuredModel } from "../models/insured";
 import { createModel as createBeneficiaryModel } from "../models/benericiary";
+import { getProduct } from "../models/product";
 
 export type CustomerT = {
   id: string;
@@ -81,7 +83,7 @@ type InsuredT = {
 };
 
 const createController = async (req: any, res: any) => {
-  const { customer, company, product, insured, agent_id } = req.body;
+  const { customer, company, product, insured, agent_id, send } = req.body;
   try {
     const insuredData: InsuredT[] = [];
 
@@ -181,6 +183,19 @@ const createController = async (req: any, res: any) => {
       return;
     }
 
+    const productResponse = await getProduct(product.id);
+
+    if (!productResponse.success) {
+      createLogger.error({
+        model: "product/getProduct",
+        error: productResponse.error,
+      });
+      res.status(500).json({
+        error: "createLeadProductModel: " + productResponse.error,
+      });
+      return;
+    }
+
     insured.map(async (item: any) => {
       const insuredResponse = await createInsuredModel(
         item.rut,
@@ -257,117 +272,93 @@ const createController = async (req: any, res: any) => {
       });
     });
 
-    const name =
-      customer.rut !== ""
-        ? contractor.name +
-          " " +
-          contractor.paternalLastName +
-          " " +
-          contractor.maternalLastName
-        : contractor.companyName;
-    const address = contractor.address + ", " + contractor.district;
+    let subscriptionData: any | null = null;
 
-    createLogger.info({
-      model: config.reveniu.URL.subscription,
-      body: {
-        plan_id: product.productPlan_id,
-        field_values: {
-          email: contractor.email,
-          name,
-          amount: product.price * insured.length,
-          address,
-          rut: contractor.rut,
-          phone: contractor.phone,
+    if (!send) {
+      const name =
+        customer.rut !== ""
+          ? contractor.name +
+            " " +
+            contractor.paternalLastName +
+            " " +
+            contractor.maternalLastName
+          : contractor.companyName;
+      const address = contractor.address + ", " + contractor.district;
+
+      createLogger.info({
+        url: config.reveniu.URL.subscription,
+        method: "POST",
+        body: {
+          plan_id: product.productPlan_id,
+          field_values: {
+            email: contractor.email,
+            name,
+            amount: product.price * insured.length,
+            address,
+            rut: contractor.rut,
+            phone: contractor.phone,
+          },
         },
-      },
-    });
+        params: "",
+        query: "",
+      });
 
-    createLogger.info({
-      url: config.reveniu.URL.subscription,
-      method: "POST",
-      body: {
-        plan_id: product.productPlan_id,
-        field_values: {
-          email: contractor.email,
-          name,
-          amount: product.price * insured.length,
-          address,
-          rut: contractor.rut,
-          phone: contractor.phone,
+      const subscriptionReveniuResponse = await axios.post(
+        config.reveniu.URL.subscription,
+        {
+          plan_id: product.productPlan_id,
+          field_values: {
+            email: contractor.email,
+            name,
+            amount: product.price * insured.length,
+            address,
+            rut: contractor.rut,
+            phone: contractor.phone,
+          },
         },
-      },
-      params: "",
-      query: "",
-    });
+        {
+          headers: config.reveniu.apiKey,
+        }
+      );
 
-    const subscriptionReveniuResponse = await axios.post(
-      config.reveniu.URL.subscription,
-      {
-        plan_id: product.productPlan_id,
-        field_values: {
-          email: contractor.email,
-          name,
-          amount: product.price * insured.length,
-          address,
-          rut: contractor.rut,
-          phone: contractor.phone,
+      const {
+        id: subscription_id,
+        completion_url,
+        security_token,
+        status_code,
+      } = subscriptionReveniuResponse.data;
+
+      createLogger.info({
+        url: config.webHook.URL.reveniu,
+        method: "POST",
+        body: {
+          data: {
+            data: {
+              subscription_id,
+              lead_id,
+            },
+          },
         },
-      },
-      {
-        headers: config.reveniu.apiKey,
-      }
-    );
+        params: "",
+        query: "",
+      });
 
-    const {
-      id: subscription_id,
-      completion_url,
-      security_token,
-      status_code,
-    } = subscriptionReveniuResponse.data;
-
-    createLogger.info({
-      url: config.webHook.URL.reveniu,
-      method: "POST",
-      body: {
+      const webhookResponse = await axios.post(config.webHook.URL.reveniu, {
         data: {
           data: {
             subscription_id,
             lead_id,
           },
         },
-      },
-      params: "",
-      query: "",
-    });
+      });
 
-    const webhookResponse = await axios.post(config.webHook.URL.reveniu, {
-      data: {
-        data: {
-          subscription_id,
-          lead_id,
-        },
-      },
-    });
-
-    // const responseRegisterSubscription = await registerSubscriptionModel(
-    //   lead_id,
-    //   subscription_id,
-    //   completion_url,
-    //   security_token,
-    //   status_code
-    // );
-
-    // if (!responseRegisterSubscription.success) {
-    //   createLogger.error({
-    //     model: "lead/registerSubscriptionModel",
-    //     error: responseRegisterSubscription.error,
-    //   });
-    //   res.status(500).json({
-    //     error:
-    //       "registerSubscriptionModel: " + responseRegisterSubscription.error,
-    //   });
-    //   return;
-    // }
+      subscriptionData = {
+        id: subscription_id,
+        completion_url,
+        security_token,
+        status_code,
+      };
+    }
 
     const leadResponseData = {
       id: lead_id,
@@ -430,14 +421,29 @@ const createController = async (req: any, res: any) => {
         productPlan_id: leadProductResponse.data.productplan_id,
       },
       insured: insuredData,
-      subscription: {
-        id: subscription_id,
-        completion_url,
-        security_token,
-        status_code,
-      },
+      subscription: subscriptionData,
       isActive: true,
     };
+
+    // <b>Hola&nbsp;${companyResponse.data.companyName}</b><br/><br/>Bienvenido a ServiClick, a continuación te detallamos los datos de acceso a nuestra plataforma para que puedas completar o modificar la información que requieras:<br/><br/><b>https://empresa.serviclick.cl</b><br/><br/><b>Login:</b>&nbsp;${companyResponse.data.email}<br/><b>Password</b>:&nbsp;${generatedPassword}<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>
+
+    if (send) {
+      sendMail(
+        { name: "Bienvenido a ServiClick" },
+        customer.email || company.email,
+        `Link de pago para ${productResponse.data.name}`,
+        `<b>Hola&nbsp;${
+          company.rut ? contractor.companyname : contractor.name
+        }</b><br/><br/>Queremos que seas parte de ServiClick y solo estás a un paso, te dejamos el link de pago para que puedas completar la adquisición de ${
+          productResponse.data.name
+        } y disfrutes de los beneficios que te brinda:<br/><br/><a href="https://web.serviclick.cl/payment/${
+          customer.rut ? "customer" : "company"
+        }/${
+          leadProductResponse.data.product_id
+        }?leadId=${lead_id}">Concluye tu proceso de pago haciendo click aquí</a><br/><br/>Por que sabemos de asistencias, nos enfocamos en resolver todas las necesidades que te ayuden a vivir más tranquilo y seguro.<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
+        []
+      );
+    }
 
     createLogger.info({
       controller: "lead/createController",

@@ -195,6 +195,19 @@ export const listLeads = () => (dispatch: any) => {
     .catch((error) => console.log(error));
 };
 
+export const getLeadById = (leadId: string) => (dispatch: any) => {
+  axios
+    .get(`${config.server}/api/lead/getById/${leadId}`, {
+      headers: {
+        id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
+      },
+    })
+    .then((response) => {
+      dispatch(setLead(response.data));
+    })
+    .catch((error) => console.log(error));
+};
+
 export const getLeadBySubscriptionId =
   (subscriptionId: number) => (dispatch: any) => {
     axios
@@ -209,13 +222,17 @@ export const getLeadBySubscriptionId =
       .catch((error) => console.log(error));
   };
 
-export const createLead = (lead: LeadT) => (dispatch: any) => {
+export const createLead = (lead: LeadT, send: boolean) => (dispatch: any) => {
   axios
-    .post(`${config.server}/api/lead/create`, lead, {
-      headers: {
-        id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-      },
-    })
+    .post(
+      `${config.server}/api/lead/create`,
+      { ...lead, send },
+      {
+        headers: {
+          id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
+        },
+      }
+    )
     .then((response) => {
       dispatch(setLead(response.data));
     })

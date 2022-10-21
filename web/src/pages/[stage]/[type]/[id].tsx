@@ -14,7 +14,11 @@ import Loading from "../../../components/ui/Loading";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { getProduct } from "../../../redux/slices/productSlice";
 import { setStage } from "../../../redux/slices/stageSlice";
-import { setLeadProduct, resetLead } from "../../../redux/slices/leadSlice";
+import {
+  setLeadProduct,
+  resetLead,
+  getLeadById,
+} from "../../../redux/slices/leadSlice";
 
 import { useUI, useSubscription } from "../../../redux/hooks";
 
@@ -74,9 +78,12 @@ const Value: NextPage = () => {
 
   useEffect(() => {
     if (router.isReady) {
-      const { stage, id, type } = router.query;
+      const { stage, id, type, leadId } = router.query;
       dispatch(getProduct(id ? id.toString() : ""));
       dispatch(setStage({ name: stage, type }));
+      if (leadId) {
+        dispatch(getLeadById(leadId ? leadId.toString() : ""));
+      }
       setIsLoaded(true);
     }
   }, [dispatch, router]);

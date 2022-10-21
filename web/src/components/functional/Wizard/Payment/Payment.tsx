@@ -16,6 +16,7 @@ import {
 } from "../../../ui/Table";
 import Tooltip from "../../../ui/Tooltip";
 import { Modal, Window } from "../../../ui/Modal";
+import ModalWarning from "../../../ui/ModalWarning";
 
 import { CustomerForm } from "../Customer";
 import { CompanyForm } from "../Company";
@@ -29,8 +30,6 @@ import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { createLead } from "../../../../redux/slices/leadSlice";
 
 import { termsAndCondicions } from "../../../../data/termsAndConditions";
-
-import { config } from "../../../../utils/config";
 
 import styles from "./Payment.module.scss";
 
@@ -46,6 +45,8 @@ const Payment = ({ register }: any) => {
   const { product } = useAppSelector((state) => state.productSlice);
   const { stage } = useAppSelector((state) => state.stageSlice);
   const { lead } = useAppSelector((state) => state.leadSlice);
+
+  const [showWarning, setShowWarning] = useState(false);
 
   const initialDataCustomerForm = {
     rut: { value: lead.customer.rut, isValid: true },
@@ -179,9 +180,9 @@ const Payment = ({ register }: any) => {
     );
   };
 
-  const handleClickRegister = () => {
+  const handleClickRegister = (send: boolean) => {
     setIsLoading(true);
-    dispatch(createLead({ ...lead, agent_id: agentId }));
+    dispatch(createLead({ ...lead, agent_id: agentId }, send));
   };
 
   const handleClickTermsAndConditions = () => {
@@ -228,8 +229,15 @@ const Payment = ({ register }: any) => {
         completeInsured() &&
         completeChecks
     );
-    if (lead.subscription.id > 0) {
+    if (lead.subscription && lead.subscription.id > 0) {
       register();
+    }
+    if (lead.id !== "" && !lead.subscription) {
+      setIsLoading(false);
+      setShowWarning(true);
+      setTimeout(() => {
+        router.push("/");
+      }, 1000);
     }
   }, [
     completeLeadCustomer,
@@ -694,8 +702,15 @@ const Payment = ({ register }: any) => {
         </Content>
         <Buttons>
           <Button
-            onClick={handleClickRegister}
+            onClick={() => handleClickRegister(false)}
             text="Pagar"
+            width="150px"
+            enabled={isEnabled}
+            loading={isLoading}
+          />
+          <Button
+            onClick={() => handleClickRegister(true)}
+            text="Enviar"
             width="150px"
             enabled={isEnabled}
             loading={isLoading}
@@ -722,6 +737,15 @@ const Payment = ({ register }: any) => {
           </div>
         </Window>
       </Modal>
+      <ModalWarning
+        showModal={showWarning}
+        title="Aviso"
+        message={`Link de pago enviado al correo del cliente`}
+        setClosed={() => setShowWarning(false)}
+        iconName="mail"
+        color="blue"
+        buttons={[{ text: "Aceptar", function: () => setShowWarning(false) }]}
+      />
     </Fragment>
   );
 };

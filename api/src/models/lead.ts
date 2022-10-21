@@ -27,10 +27,7 @@ const createModel: any = async (
 
 const registerSubscriptionModel: any = async (
   id: string,
-  subscription_id: number,
-  completion_url: string,
-  security_token: string,
-  status_code: number
+  subscription_id: number
 ) => {
   try {
     const result = await pool.query(
@@ -72,7 +69,7 @@ const getById: any = async (id: string) => {
                 CASE WHEN COM.district IS NULL THEN '' ELSE COM.district END AS company_district,
                 CASE WHEN COM.email IS NULL THEN '' ELSE COM.email END AS company_email,
                 CASE WHEN COM.phone IS NULL THEN '' ELSE COM.phone END AS company_phone,
-                LEA.subscription_id,
+                LEA.subscription_id
         FROM    app.lead LEA LEFT OUTER JOIN app.customer CUS ON LEA.customer_id = CUS.id
                             LEFT OUTER JOIN app.company COM ON LEA.company_id = COM.id
         WHERE   LEA.id = $1`,

@@ -5,13 +5,13 @@
   z-index: 200;
   top: 140px;
   left: 15px;
-  background-color: rgba($green-color, 0.8);
+  background-color: rgba($green-color, 1);
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   max-width: 300px;
   padding: 20px;
   padding-right: 18px;
-  transition: left 0.3s;
+  transition: left 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
   &.show {
     left: calc(calc(100vw - 300px) / 2);
@@ -29,11 +29,15 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    height: 20px;
 
     span {
+      position: absolute;
       cursor: pointer;
       color: white;
       font-size: 20px;
+      right: 11px;
+      top: 15px;
     }
   }
 
@@ -50,15 +54,15 @@
       text-align: justify;
       line-height: 20px;
       font-size: 16px;
-      font-weight: 500;
+      font-weight: 200;
+      white-space: wrap;
 
       b {
         color: white;
         text-align: justify;
         line-height: 20px;
         font-size: 16px;
-        font-weight: 800;
-        text-decoration: underline;
+        font-weight: 400;
       }
     }
   }
