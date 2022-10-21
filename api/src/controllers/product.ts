@@ -497,43 +497,43 @@ const createProductPlans = async (id: string) => {
     return { success: false, error: productPlanCompanyResponse.error };
   }
 
-  // const planResponseCustomer = await axios[
-  //   customer_plan_id > 0 ? "patch" : "post"
-  // ](
-  //   `${config.reveniu.URL.plan}${customer_plan_id > 0 ? customer_plan_id : ""}`,
-  //   {
-  //     ...productData,
-  //     is_custom_amount: false,
-  //     price: customerprice,
-  //   },
-  //   {
-  //     headers: config.reveniu.apiKey,
-  //   }
-  // );
+  const planResponseCustomer = await axios[
+    customer_plan_id > 0 ? "patch" : "post"
+  ](
+    `${config.reveniu.URL.plan}${customer_plan_id > 0 ? customer_plan_id : ""}`,
+    {
+      ...productData,
+      is_custom_amount: false,
+      price: customerprice,
+    },
+    {
+      headers: config.reveniu.apiKey,
+    }
+  );
 
-  // const productPlanCustomerResponse = await ProductPlan.createModel(
-  //   id,
-  //   planResponseCustomer.data.id,
-  //   "customer",
-  //   customerprice,
-  //   frequency
-  // );
+  const productPlanCustomerResponse = await ProductPlan.createModel(
+    id,
+    planResponseCustomer.data.id,
+    "customer",
+    customerprice,
+    frequency
+  );
 
-  // if (!productPlanCustomerResponse.success) {
-  //   createLogger.error({
-  //     model: "productPlan/createModel",
-  //     error: productPlanCustomerResponse.error,
-  //   });
-  //   return { success: false, error: productPlanCustomerResponse.error };
-  // }
+  if (!productPlanCustomerResponse.success) {
+    createLogger.error({
+      model: "productPlan/createModel",
+      error: productPlanCustomerResponse.error,
+    });
+    return { success: false, error: productPlanCustomerResponse.error };
+  }
 
   return {
     success: true,
     data: {
-      // customer: {
-      //   id: planResponseCustomer.data.id,
-      //   price: planResponseCustomer.data.price,
-      // },
+      customer: {
+        id: planResponseCustomer.data.id,
+        price: planResponseCustomer.data.price,
+      },
       company: {
         id: planResponseCompany.data.id,
         price: planResponseCompany.data.price,

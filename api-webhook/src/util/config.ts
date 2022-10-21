@@ -14,8 +14,8 @@ const config = {
   queueLimit: 0,
   reveniu: {
     URL: {
-      plan: "https://integration.reveniu.com/api/v1/plans/",
-      subscription: "https://integration.reveniu.com/api/v1/subscriptions/",
+      plan: "https://production.reveniu.com/api/v1/plans/",
+      subscription: "https://production.reveniu.com/api/v1/subscriptions/",
     },
     apiKey: {
       "Reveniu-Secret-Key": process.env.REVENIU_SECRET_KEY || "",

@@ -35,19 +35,19 @@ const config = {
   queueLimit: 0,
   reveniu: {
     URL: {
-      plan: `https://${environment["dev"].domain}/api/v1/plans/`,
-      subscription: `https://${environment["dev"].domain}/api/v1/subscriptions/`,
+      plan: `https://${environment["prod"].domain}/api/v1/plans/`,
+      subscription: `https://${environment["prod"].domain}/api/v1/subscriptions/`,
     },
     apiKey: {
       "Reveniu-Secret-Key":
-        environment["dev"].secretKey || "EuG-6eULAwlqRRaLLi9HUcLSbO4I-ipd60zY",
+        environment["prod"].secretKey || "EuG-6eULAwlqRRaLLi9HUcLSbO4I-ipd60zY",
     },
     feedbackURL: {
       success:
-        environment["dev"].feedBack.success ||
+        environment["prod"].feedBack.success ||
         "http://localhost:3000/resume/success",
       error:
-        environment["dev"].feedBack.error ||
+        environment["prod"].feedBack.error ||
         "http://localhost:3000/resume/error",
     },
   },
@@ -66,7 +66,7 @@ const config = {
   },
   webHook: {
     URL: {
-      reveniu: environment["dev"].feedBack.webHook,
+      reveniu: environment["prod"].feedBack.webHook,
     },
   },
 };
