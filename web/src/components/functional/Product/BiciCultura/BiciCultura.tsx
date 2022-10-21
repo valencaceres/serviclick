@@ -42,7 +42,9 @@ const BiciCultura = () => {
               Asistencia disponible para el territorio nacional de Chile,
               incluyendo el área continental y la isla de Chiloé.
             </div>
-            <a href="#">Ver detalles de la asistencia</a>
+            <a href="/bicicultura/Asistencia_WEB_Bicicultura.pdf" target="new">
+              Ver detalles de la asistencia
+            </a>
             <Button
               text="Contratar"
               width="150px"
