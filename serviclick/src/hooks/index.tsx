@@ -6,6 +6,7 @@ import useProduct from "./useProduct";
 import useStatus from "./useStatus";
 import useTransaction from "./useTransaction";
 import useAgent from "./useAgent";
+import useBroker from "./useBroker";
 
 export {
   useUI,
@@ -16,4 +17,5 @@ export {
   useStatus,
   useTransaction,
   useAgent,
+  useBroker,
 };

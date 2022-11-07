@@ -27,7 +27,7 @@ import {
 import { createModel as createCustomerModel } from "../models/customer";
 import { createModel as createCompanyModel } from "../models/company";
 import { createModel as createInsuredModel } from "../models/insured";
-import { createModel as createBeneficiaryModel } from "../models/benericiary";
+import { createModel as createBeneficiaryModel } from "../models/beneficiary";
 import { getProduct } from "../models/product";
 
 export type CustomerT = {

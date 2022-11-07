@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 import { Content, ContentCell, ContentRow } from "../../layout/Content";
 
 import useUI from "../../../hooks/useUI";
@@ -6,7 +8,11 @@ import Icon from "../../ui/Icon";
 import styles from "./Welcome.module.scss";
 
 const Welcome = () => {
-  const { user } = useUI();
+  const { user, setTitleUI } = useUI();
+
+  useEffect(() => {
+    setTitleUI("Inicio");
+  }, []);
 
   return (
     <Content align="center">

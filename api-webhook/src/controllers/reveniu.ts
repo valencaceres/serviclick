@@ -1,4 +1,4 @@
-import axios from "axios";
+//import axios from "axios";
 
 import createLogger from "../util/logger";
 import { createSubscriptionModel } from "../models/subscription";
@@ -6,6 +6,7 @@ import { updateSubscription } from "../models/lead";
 import { createPaymentModel } from "../models/payment";
 
 import config from "../util/config";
+import axiosMonitored from "../util/axios";
 
 const reveniuController = async (req: any, res: any) => {
   try {
@@ -27,41 +28,56 @@ const reveniuController = async (req: any, res: any) => {
     }
 
     if (event === "subscription_activated") {
-      createLogger.info({
-        url: config.webHook.URL.subscriptionActivated,
-        method: "POST",
-        body: {
-          subscription_id,
-        },
-        params: "",
-        query: "",
-      });
-
-      const webHookResponse = await axios.post(
-        config.webHook.URL.subscriptionActivated,
-        {
-          subscription_id,
-        },
-        {
-          headers: { id: config.apiKey },
-        }
-      );
+      // createLogger.info({
+      //   url: config.webHook.URL.subscriptionActivated,
+      //   method: "POST",
+      //   body: {
+      //     subscription_id,
+      //   },
+      //   params: "",
+      //   query: "",
+      // });
+      // const webHookResponse = await axios.post(
+      //   config.webHook.URL.subscriptionActivated,
+      //   {
+      //     subscription_id,
+      //   },
+      //   {
+      //     headers: { id: config.apiKey },
+      //   }
+      // );
+      // TODO: Marcar tarjeta activada
     }
 
-    createLogger.info({
-      url: `${config.reveniu.URL.subscription}${subscription_id}`,
-      method: "GET",
-      body: "",
-      params: "",
-      query: "",
-    });
+    // createLogger.info({
+    //   url: `${config.reveniu.URL.subscription}${subscription_id}`,
+    //   method: "GET",
+    //   body: "",
+    //   params: "",
+    //   query: "",
+    // });
 
-    const subscriptionReveniuResponse = await axios.get(
+    // const subscriptionReveniuResponse = await axios.get(
+    //   `${config.reveniu.URL.subscription}${subscription_id}`,
+    //   {
+    //     headers: config.reveniu.apiKey,
+    //   }
+    // );
+    const subscriptionReveniuResponse = await axiosMonitored(
+      "get",
       `${config.reveniu.URL.subscription}${subscription_id}`,
-      {
-        headers: config.reveniu.apiKey,
-      }
+      null,
+      config.reveniu.apiKey
     );
+
+    if (!subscriptionReveniuResponse.success) {
+      createLogger.error({
+        url: `${config.reveniu.URL.subscription}${subscription_id}`,
+        error: subscriptionReveniuResponse.error,
+      });
+      res.status(500).json({ error: subscriptionReveniuResponse.error });
+      return;
+    }
 
     const {
       status: status_id,
@@ -70,19 +86,7 @@ const reveniuController = async (req: any, res: any) => {
       plan_amount,
       last_payment,
     } = subscriptionReveniuResponse.data;
-    const { date: last_payment_date } = last_payment;
-
-    createLogger.info({
-      model: "reveniu/createSubscriptionModel",
-      input: {
-        status_id,
-        interval_id,
-        subscription_id,
-        plan_amount,
-        plan_id,
-        last_payment_date,
-      },
-    });
+    const { date: last_payment_date, status } = last_payment;
 
     const subscriptionResponse = await createSubscriptionModel(
       status_id,
@@ -90,7 +94,8 @@ const reveniuController = async (req: any, res: any) => {
       subscription_id,
       plan_amount,
       plan_id,
-      last_payment_date
+      last_payment_date,
+      status
     );
 
     if (!subscriptionResponse.success) {
@@ -102,20 +107,35 @@ const reveniuController = async (req: any, res: any) => {
       return;
     }
 
-    createLogger.info({
-      url: `${config.reveniu.URL.subscription}${subscription_id}/payments`,
-      method: "GET",
-      body: "",
-      params: "",
-      query: "",
-    });
+    // createLogger.info({
+    //   url: `${config.reveniu.URL.subscription}${subscription_id}/payments`,
+    //   method: "GET",
+    //   body: "",
+    //   params: "",
+    //   query: "",
+    // });
 
-    const paymentReveniuResponse = await axios.get(
+    // const paymentReveniuResponse = await axios.get(
+    //   `${config.reveniu.URL.subscription}${subscription_id}/payments`,
+    //   {
+    //     headers: config.reveniu.apiKey,
+    //   }
+    // );
+    const paymentReveniuResponse = await axiosMonitored(
+      "get",
       `${config.reveniu.URL.subscription}${subscription_id}/payments`,
-      {
-        headers: config.reveniu.apiKey,
-      }
+      null,
+      config.reveniu.apiKey
     );
+
+    if (!paymentReveniuResponse.success) {
+      createLogger.error({
+        url: `${config.reveniu.URL.subscription}${subscription_id}/payments`,
+        error: paymentReveniuResponse.error,
+      });
+      res.status(500).json({ error: paymentReveniuResponse.error });
+      return;
+    }
 
     const { payments } = paymentReveniuResponse.data;
 
@@ -129,20 +149,6 @@ const reveniuController = async (req: any, res: any) => {
         is_recurrent,
         gateway_response,
       } = payment;
-
-      createLogger.info({
-        model: "reveniu/createPaymentModel",
-        input: {
-          payment_id,
-          date,
-          subscription_id,
-          amount,
-          buy_order,
-          credit_card_type,
-          is_recurrent,
-          gateway_response,
-        },
-      });
 
       const paymentResponse = await createPaymentModel(
         payment_id,
@@ -164,6 +170,17 @@ const reveniuController = async (req: any, res: any) => {
         return;
       }
     });
+
+    if (payments.length === 1 && payments[0].gateway_response === "0") {
+      axiosMonitored(
+        "post",
+        config.webHook.URL.subscriptionActivated,
+        {
+          subscription_id,
+        },
+        config.apiKey
+      );
+    }
 
     createLogger.info({
       controller: "reveniu",

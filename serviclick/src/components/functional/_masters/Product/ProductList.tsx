@@ -111,10 +111,16 @@ const ProductList = ({ editProduct, deleteProduct }: any) => {
                 <TableCell width="260px">{product.family_name}</TableCell>
                 <TableCell width="350px">{product.name}</TableCell>
                 <TableCell width="120px" align="flex-end">
-                  {product.price.customer}
+                  $
+                  {product.price.customer
+                    .toLocaleString("en-US")
+                    .replace(",", ".")}
                 </TableCell>
                 <TableCell width="110px" align="flex-end">
-                  {product.price.company}
+                  $
+                  {product.price.company
+                    .toLocaleString("en-US")
+                    .replace(",", ".")}
                 </TableCell>
                 <TableCell width="68px" align="center">
                   <TableIcons>

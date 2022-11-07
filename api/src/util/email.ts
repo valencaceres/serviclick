@@ -2,14 +2,14 @@ import axiosMonitored from "./axios";
 
 import config from "./config";
 
-export const sendMail = (
+export const sendMail = async (
   from: any,
   to: string,
   subject: string,
   message: string,
   attachments: string[]
 ) => {
-  axiosMonitored(
+  await axiosMonitored(
     "post",
     config.email.URL.send,
     {

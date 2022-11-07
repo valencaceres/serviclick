@@ -15,10 +15,10 @@ const Content = ({ children, align }: any) => {
   );
 };
 
-const ContentRow = ({ children, align, gap }: any) => {
+const ContentRow = ({ children, align, gap, className }: any) => {
   return (
     <div
-      className={styles.contentRow}
+      className={`${styles.contentRow} ${className}`}
       style={{
         alignItems: "center",
         justifyContent: align,
@@ -29,10 +29,10 @@ const ContentRow = ({ children, align, gap }: any) => {
   );
 };
 
-const ContentCell = ({ children, align, gap }: any) => {
+const ContentCell = ({ children, align, gap, className }: any) => {
   return (
     <div
-      className={styles.contentCell}
+      className={`${styles.contentCell} ${className}`}
       style={{
         alignItems: align,
         justifyContent: "center",

@@ -21,6 +21,7 @@ type StateT = {
   showMenu: boolean;
   title: string;
   options: OptionT[];
+  isDesktop: boolean;
 };
 
 const initialState: StateT = {
@@ -36,31 +37,41 @@ const initialState: StateT = {
   showMenu: false,
   title: "",
   options: [],
+  isDesktop: false,
 };
 
 export const userSlice = createSlice({
   name: "UI",
   initialState,
   reducers: {
-    setUser: (state: any, action: PayloadAction<any>) => {
+    setUser: (state: StateT, action: PayloadAction<UserT>) => {
       state.user = action.payload;
     },
-    setShowMenu: (state: any, action: PayloadAction<any>) => {
+    setShowMenu: (state: StateT, action: PayloadAction<boolean>) => {
       state.showMenu = action.payload;
     },
-    setTitle: (state: any, action: PayloadAction<any>) => {
+    setTitle: (state: StateT, action: PayloadAction<string>) => {
       state.title = action.payload;
     },
-    setOptions: (state: any, action: PayloadAction<any>) => {
+    setOptions: (state: StateT, action: PayloadAction<OptionT[]>) => {
       state.options = action.payload;
     },
-    resetAll: (state: any) => {
+    setDesktop: (state: StateT, action: PayloadAction<boolean>) => {
+      state.isDesktop = action.payload;
+    },
+    resetAll: (state: StateT) => {
       state = initialState;
     },
   },
 });
 
-export const { setUser, setShowMenu, setTitle, setOptions, resetAll } =
-  userSlice.actions;
+export const {
+  setUser,
+  setShowMenu,
+  setTitle,
+  setOptions,
+  setDesktop,
+  resetAll,
+} = userSlice.actions;
 
 export default userSlice.reducer;

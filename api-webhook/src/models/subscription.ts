@@ -1,6 +1,7 @@
 import moment from "moment";
 import { format } from "date-fns";
 
+import createLogger from "../util/logger";
 import pool from "../util/database";
 
 const createSubscriptionModel: any = async (
@@ -9,11 +10,25 @@ const createSubscriptionModel: any = async (
   subscription_id: number,
   plan_amount: number,
   plan_id: number,
-  last_payment_date: string
+  last_payment_date: string,
+  status: string
 ) => {
   try {
     const date = format(new Date(), "yyyy-MM-dd HH:mm:ss");
     let result: any;
+
+    createLogger.info({
+      model: "reveniu/createSubscriptionModel",
+      input: {
+        status_id,
+        interval_id,
+        subscription_id,
+        plan_amount,
+        plan_id,
+        last_payment_date,
+        status,
+      },
+    });
 
     result = await pool.query(
       `
@@ -34,7 +49,9 @@ const createSubscriptionModel: any = async (
         interval_id,
         plan_id,
         plan_amount,
-        last_payment_date && moment(last_payment_date).isValid()
+        last_payment_date &&
+        status === "0" &&
+        moment(last_payment_date).isValid()
           ? moment(last_payment_date).local().format()
           : null,
       ]
@@ -63,7 +80,9 @@ const createSubscriptionModel: any = async (
           interval_id,
           plan_id,
           plan_amount,
-          last_payment_date && moment(last_payment_date).isValid()
+          last_payment_date &&
+          status === "0" &&
+          moment(last_payment_date).isValid()
             ? moment(last_payment_date).local().format()
             : null,
           subscription_id,
@@ -89,7 +108,9 @@ const createSubscriptionModel: any = async (
           interval_id,
           plan_id,
           plan_amount,
-          last_payment_date && moment(last_payment_date).isValid()
+          last_payment_date &&
+          status === "0" &&
+          moment(last_payment_date).isValid()
             ? moment(last_payment_date).local().format()
             : null,
         ]

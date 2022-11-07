@@ -42,6 +42,16 @@ const BiciCultura = () => {
               Asistencia disponible para el territorio nacional de Chile,
               incluyendo el área continental y la isla de Chiloé.
             </div>
+            <div
+              className={styles.text}
+              style={{
+                color: "#333333",
+                fontSize: "25px",
+                fontFamily: "Oswald",
+                fontWeight: "400",
+              }}>
+              $3.200 mensuales
+            </div>
             <a href="/bicicultura/Asistencia_WEB_Bicicultura.pdf" target="new">
               Ver detalles de la asistencia
             </a>

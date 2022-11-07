@@ -1,0 +1,30 @@
+import { Router } from "express";
+
+import auth from "../middlewares/auth";
+import {
+  create,
+  getAll,
+  getById,
+  getByRut,
+  updateLogo,
+  deleteById,
+  getFamiliesByBrokerId,
+  getProductsByBrokerIdAndFamilyId,
+} from "../controllers/broker";
+
+const BrokerRouter = Router();
+
+BrokerRouter.post("/create", auth, create);
+BrokerRouter.get("/getAll", auth, getAll);
+BrokerRouter.get("/getById/:id", auth, getById);
+BrokerRouter.get("/getByRut/:rut", auth, getByRut);
+BrokerRouter.get("/getFamiliesByBrokerId/:id", auth, getFamiliesByBrokerId);
+BrokerRouter.get(
+  "/getProductsByBrokerIdAndFamilyId/:id/:family_id",
+  auth,
+  getProductsByBrokerIdAndFamilyId
+);
+BrokerRouter.put("/updateLogo/:id", updateLogo);
+BrokerRouter.delete("/deleteById/:id", auth, deleteById);
+
+export default BrokerRouter;

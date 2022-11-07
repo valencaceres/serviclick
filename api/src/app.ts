@@ -35,9 +35,11 @@ class App {
     this.server.use("/api/channel", reqLogger, routes.ChannelRouter);
     this.server.use("/api/family", reqLogger, routes.FamilyRouter);
     this.server.use("/api/insured", reqLogger, routes.InsuredRouter);
+    this.server.use("/api/beneficiary", reqLogger, routes.BeneficiaryRouter);
     this.server.use("/api/donor", reqLogger, routes.DonorRouter);
     this.server.use("/api/donation", reqLogger, routes.DonationRouter);
     this.server.use("/api/company", reqLogger, routes.CompanyRouter);
+    this.server.use("/api/customer", reqLogger, routes.CustomerRouter);
     this.server.use("/api/product", reqLogger, routes.ProductRouter);
     this.server.use("/api/lead", reqLogger, routes.LeadRouter);
     this.server.use("/api/webhook", reqLogger, routes.WebHookRouter);
@@ -48,6 +50,9 @@ class App {
       reqLogger,
       routes.ProductDescriptionRouter
     );
+    this.server.use("/api/broker", reqLogger, routes.BrokerRouter);
+    this.server.use("/api/userBroker", reqLogger, routes.UserBrokerRouter);
+    this.server.use("/api/district", reqLogger, routes.DistrictRouter);
   }
 }
 

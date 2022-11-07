@@ -21,12 +21,14 @@ const menu = [
   {
     icon: <Icon iconName="shopping_cart_checkout" />,
     text: "Canales de venta",
-    subOptions: [{ text: "Internet", route: "/channels/web" }],
+    subOptions: [
+      { text: "Internet", route: "/channels/web" },
+      { text: "Corredora de Seguros", route: "/channels/broker" },
+    ],
   },
   {
     icon: <Icon iconName="directions_car" />,
     text: "Procesos",
-    subOptions: [{ text: "Asignación de precios", route: "/processes/price" }],
   },
   {
     icon: <Icon iconName="receipt_long" />,

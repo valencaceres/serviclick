@@ -18,8 +18,8 @@
     text-align: center;
     width: 30px;
     height: 100%;
-    // border-left: 1px solid $gray-color;
-    background-color: white;
+    border-left: 1px solid $light-gray-color;
+    background-color: $ultra-light-gray-color;
     border-radius: 0 3px 3px 0;
     position: absolute;
     right: 0px;
@@ -37,6 +37,7 @@
     font-size: pxToRem(16);
     width: 100%;
     border-radius: 3px;
+    color: black;
 
     &:focus {
       background-color: $text-focus-color;

@@ -34,4 +34,16 @@ const TableIcons = ({ children }: any) => {
   return <div className={styles.icons}>{children}</div>;
 };
 
-export { Table, TableHeader, TableDetail, TableRow, TableCell, TableIcons };
+const TableCellEnd = () => {
+  return <div className={styles.cellEnd}></div>;
+};
+
+export {
+  Table,
+  TableHeader,
+  TableDetail,
+  TableRow,
+  TableCell,
+  TableIcons,
+  TableCellEnd,
+};

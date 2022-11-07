@@ -9,7 +9,6 @@ import * as InsuredModel from "../models/insured";
 
 import createLogger from "../util/logger";
 import { generateGenericPassword } from "../util/user";
-import { monthNames } from "../util/date";
 import config from "../util/config";
 
 const subscriptionActivated = async (req: any, res: any) => {

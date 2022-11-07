@@ -1,0 +1,77 @@
+@import "../../../styles/variables.scss";
+
+.section {
+  width: 1000px;
+
+  .sectionTitle {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: lighten($green-color, 0);
+    color: white;
+    height: 40px;
+    padding: 0 15px;
+    gap: 10px;
+  }
+
+  .sectionContent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: lighten(blue, 48);
+
+    .textColumn {
+      width: 400px;
+    }
+  }
+}
+
+.termsAndConditions {
+  width: 100%;
+  height: 400px;
+  overflow-y: auto;
+  padding: 20px;
+  text-align: justify;
+}
+
+.termsAndConditionsLink {
+  color: black;
+  font-weight: 600;
+}
+
+.menuModal {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  transition: all 0.3s ease-in;
+
+  .menuOption {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: $green-color;
+    border-radius: 20px;
+    gap: 10px;
+    padding: 20px;
+    color: white;
+    width: 220px;
+    transition: all 0.3s ease-in;
+    cursor: pointer;
+
+    span {
+      color: white;
+    }
+
+    &:hover {
+      background-color: darken($green-color, 10);
+    }
+
+    &:active {
+      transform: scale(0.9);
+    }
+  }
+}

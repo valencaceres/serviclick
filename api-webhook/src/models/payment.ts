@@ -1,5 +1,6 @@
 import moment from "moment";
 
+import createLogger from "../util/logger";
 import pool from "../util/database";
 
 const createPaymentModel: any = async (
@@ -13,6 +14,20 @@ const createPaymentModel: any = async (
   gateway_response: string
 ) => {
   try {
+    createLogger.info({
+      model: "reveniu/createPaymentModel",
+      input: {
+        payment_id,
+        date,
+        subscription_id,
+        amount,
+        buy_order,
+        credit_card_type,
+        is_recurrent,
+        gateway_response,
+      },
+    });
+
     const resultPayment = await pool.query(
       "SELECT * FROM app.payment WHERE payment_id = $1",
       [payment_id]
@@ -20,30 +35,31 @@ const createPaymentModel: any = async (
 
     let result: any;
     if (resultPayment.rows.length === 0) {
-      result = await pool.query(
-        `
-        INSERT  INTO app.payment(
-                payment_id,
-                date,
-                subscription_id,
-                amount,
-                buy_order,
-                credit_card_type,
-                is_recurrent,
-                gateway_response)
-        VALUES  ($1, $2, $3, $4, $5, $6, $7, $8)
-        RETURNING *`,
-        [
-          payment_id,
-          moment(date).local().format(),
-          subscription_id,
-          amount,
-          buy_order,
-          credit_card_type,
-          is_recurrent,
-          gateway_response,
-        ]
-      );
+      if (gateway_response === "0") {
+        result = await pool.query(
+          `INSERT   INTO app.payment(
+                    payment_id,
+                    date,
+                    subscription_id,
+                    amount,
+                    buy_order,
+                    credit_card_type,
+                    is_recurrent,
+                    gateway_response)
+           VALUES  ($1, $2, $3, $4, $5, $6, $7, $8)
+           RETURNING *`,
+          [
+            payment_id,
+            moment(date).local().format(),
+            subscription_id,
+            amount,
+            buy_order,
+            credit_card_type,
+            is_recurrent,
+            gateway_response,
+          ]
+        );
+      }
     }
     return {
       success: true,

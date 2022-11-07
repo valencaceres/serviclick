@@ -1,4 +1,3 @@
-import { isConstructorDeclaration } from "typescript";
 import pool from "../util/database";
 
 const createProduct: any = async (
@@ -144,7 +143,7 @@ const getProduct: any = async (id: string) => {
                     MAX(pro.cost) as cost, 
                     MAX(pro.customerprice) as customerprice, 
                     MAX(pro.companyprice) as companyprice, 
-                    MAX(pro.issubject :: text) as issubject, 
+                    MAX(pro.issubject :: text) ::boolean as issubject, 
                     MAX(pro.frequency) as frequency, 
                     MAX(pro.term) as term,
                     MAX(pro.beneficiaries) as beneficiaries,
@@ -179,7 +178,7 @@ const listProducts: any = async (values: any) => {
                   MAX(pro.cost) as cost, 
                   MAX(pro.customerprice) as customerprice, 
                   MAX(pro.companyprice) as companyprice, 
-                  MAX(pro.issubject :: text) as issubject, 
+                  MAX(pro.issubject :: text) ::boolean as issubject, 
                   MAX(pro.frequency) as frequency, 
                   MAX(pro.term) as term,
                   MAX(pro.beneficiaries) as beneficiaries,
@@ -215,7 +214,7 @@ const getProductByFamilyId: any = async (family_id: string) => {
                   MAX(pro.cost) as cost, 
                   MAX(pro.customerprice) as customerprice, 
                   MAX(pro.companyprice) as companyprice, 
-                  MAX(pro.issubject :: text) as issubject, 
+                  MAX(pro.issubject :: text) ::boolean as issubject, 
                   MAX(pro.frequency) as frequency, 
                   MAX(pro.term) as term,
                   MAX(pro.beneficiaries) as beneficiaries,
