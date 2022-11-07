@@ -18,7 +18,7 @@ const Login = () => {
   const { loading, sendUserBrokerCredentials, response } = useUserBroker();
 
   const initialLoginData = {
-    rut: { value: "76.989.196-K", isValid: true },
+    rut: { value: "", isValid: true },
     email: { value: "", isValid: false },
     password: { value: "", isValid: false },
   };
