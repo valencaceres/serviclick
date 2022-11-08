@@ -603,8 +603,7 @@ export const sendCredentials = async (
       };
     }
 
-    const { id, name, hash } = userBrokerResponse.data;
-    console.log({ id, name, hash });
+    const { id, name, hash } = userBrokerResponse.data.user;
 
     if (!hash || force) {
       const generatedPassword = generateGenericPassword();
