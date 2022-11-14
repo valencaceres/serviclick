@@ -4,8 +4,6 @@ const createProduct: any = async (
   family_id: string,
   name: string,
   cost: number,
-  customerprice: number,
-  companyprice: number,
   issubject: boolean,
   frequency: string,
   term: string,
@@ -21,8 +19,6 @@ const createProduct: any = async (
                   family_id,
                   name,
                   cost,
-                  customerprice,
-                  companyprice,
                   issubject,
                   frequency,
                   term,
@@ -30,14 +26,12 @@ const createProduct: any = async (
                   mininsuredcompanyprice,
                   dueday,
                   currency) 
-        VALUES (  $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) 
+        VALUES (  $1, $2, $3, $4, $5, $6, $7, $8, $9, $10) 
         RETURNING *`,
       [
         family_id,
         name,
         cost,
-        customerprice,
-        companyprice,
         issubject,
         frequency,
         term,
@@ -58,8 +52,6 @@ const updateProduct: any = async (
   family_id: string,
   name: string,
   cost: number,
-  customerprice: number,
-  companyprice: number,
   isSubject: boolean,
   frequency: string,
   term: string,
@@ -75,23 +67,19 @@ const updateProduct: any = async (
         SET       family_id = $1, 
                   name = $2,
                   cost = $3,
-                  customerprice = $4,
-                  companyprice = $5,
-                  issubject = $6,
-                  frequency = $7,
-                  term = $8,
-                  beneficiaries = $9,
-                  mininsuredcompanyprice = $10,
-                  dueday = $11,
-                  currency = $12
-        WHERE     id = $13
+                  issubject = $4,
+                  frequency = $5,
+                  term = $6,
+                  beneficiaries = $7,
+                  mininsuredcompanyprice = $8,
+                  dueday = $9,
+                  currency = $10
+        WHERE     id = $11
         RETURNING *`,
       [
         family_id,
         name,
         cost,
-        customerprice,
-        companyprice,
         isSubject,
         frequency,
         term,
@@ -120,11 +108,11 @@ const deleteProduct: any = async (id: string) => {
   }
 };
 
-const deletePlans: any = async (id: string) => {
+const deletePlans: any = async (id: string, agent_id: string) => {
   try {
     const result = await pool.query(
-      "DELETE FROM app.productplan WHERE product_id = $1",
-      [id]
+      "DELETE FROM app.productplan WHERE product_id = $1 and agent_id = $2",
+      [id, agent_id]
     );
     return { success: true, data: "Plans deleted", error: null };
   } catch (e) {
@@ -132,7 +120,7 @@ const deletePlans: any = async (id: string) => {
   }
 };
 
-const getProduct: any = async (id: string) => {
+const getProduct: any = async (id: string, agent_id: string) => {
   try {
     const result = await pool.query(
       `
@@ -141,8 +129,8 @@ const getProduct: any = async (id: string) => {
                     MAX(fam.name) as family_name,
                     MAX(pro.name) as name, 
                     MAX(pro.cost) as cost, 
-                    MAX(pro.customerprice) as customerprice, 
-                    MAX(pro.companyprice) as companyprice, 
+                    MAX(case when pla.type = 'customer' then pla.price else 0 end) as customerprice, 
+                    MAX(case when pla.type = 'company' then pla.price else 0 end) as companyprice, 
                     MAX(pro.issubject :: text) ::boolean as issubject, 
                     MAX(pro.frequency) as frequency, 
                     MAX(pro.term) as term,
@@ -155,11 +143,11 @@ const getProduct: any = async (id: string) => {
                     SUM(case when pla.type = 'customer' then pla.plan_id else 0 end) as customer_plan_id, 
                     SUM(case when pla.type = 'company' then pla.plan_id else 0 end) as company_plan_id
           FROM      app.product pro inner join app.family fam on pro.family_id = fam.id
-                                    left outer join app.productplan pla on pro.id = pla.product_id
+                                    left outer join app.productplan pla on pro.id = pla.product_id and pla.agent_id = $2
           WHERE     pro.id = $1
           GROUP     BY
                     pro.id`,
-      [id]
+      [id, agent_id]
     );
 
     return { success: true, data: result.rows[0], error: null };
@@ -168,42 +156,7 @@ const getProduct: any = async (id: string) => {
   }
 };
 
-const listProducts: any = async (values: any) => {
-  try {
-    const result = await pool.query(`
-          SELECT  pro.id,
-                  MAX(pro.family_id :: text) as family_id, 
-                  MAX(fam.name) as family_name,
-                  MAX(pro.name) as name, 
-                  MAX(pro.cost) as cost, 
-                  MAX(pro.customerprice) as customerprice, 
-                  MAX(pro.companyprice) as companyprice, 
-                  MAX(pro.issubject :: text) ::boolean as issubject, 
-                  MAX(pro.frequency) as frequency, 
-                  MAX(pro.term) as term,
-                  MAX(pro.beneficiaries) as beneficiaries,
-                  MAX(CASE WHEN pro.mininsuredcompanyprice IS NULL THEN 0 ELSE pro.mininsuredcompanyprice END) as mininsuredcompanyprice,
-                  MAX(CASE WHEN pro.dueday IS NULL THEN 0 ELSE pro.dueday END) as dueday,
-                  MAX(pro.currency) as currency,
-                  SUM(case when pla.type = 'customer' then pla.price else 0 end) as customer_plan_price, 
-                  SUM(case when pla.type = 'company' then pla.price else 0 end) as company_plan_price,
-                  SUM(case when pla.type = 'customer' then pla.plan_id else 0 end) as customer_plan_id, 
-                  SUM(case when pla.type = 'company' then pla.plan_id else 0 end) as company_plan_id
-          FROM    app.product pro inner join app.family fam on pro.family_id = fam.id
-                                  left outer join app.productplan pla on pro.id = pla.product_id
-          WHERE   pro.isActive IS true
-          GROUP   BY
-                  pro.id
-          ORDER   BY 
-                  pro.name`);
-
-    return { success: true, data: result.rows, error: null };
-  } catch (e) {
-    return { success: false, data: null, error: (e as Error).message };
-  }
-};
-
-const getProductByFamilyId: any = async (family_id: string) => {
+const listProducts: any = async (agent_id: string) => {
   try {
     const result = await pool.query(
       `
@@ -212,8 +165,8 @@ const getProductByFamilyId: any = async (family_id: string) => {
                   MAX(fam.name) as family_name,
                   MAX(pro.name) as name, 
                   MAX(pro.cost) as cost, 
-                  MAX(pro.customerprice) as customerprice, 
-                  MAX(pro.companyprice) as companyprice, 
+                  MAX(case when pla.type = 'customer' then pla.price else 0 end) as customerprice, 
+                  MAX(case when pla.type = 'company' then pla.price else 0 end) as companyprice, 
                   MAX(pro.issubject :: text) ::boolean as issubject, 
                   MAX(pro.frequency) as frequency, 
                   MAX(pro.term) as term,
@@ -226,14 +179,55 @@ const getProductByFamilyId: any = async (family_id: string) => {
                   SUM(case when pla.type = 'customer' then pla.plan_id else 0 end) as customer_plan_id, 
                   SUM(case when pla.type = 'company' then pla.plan_id else 0 end) as company_plan_id
           FROM    app.product pro inner join app.family fam on pro.family_id = fam.id
-                                  left outer join app.productplan pla on pro.id = pla.product_id
-          WHERE   pro.isActive IS true AND
-                  pro.family_id = $1
+                                  left outer join app.productplan pla on pro.id = pla.product_id and pla.agent_id = $1
+          WHERE   pro.isActive IS true
           GROUP   BY
                   pro.id
           ORDER   BY 
                   pro.name`,
-      [family_id]
+      [agent_id]
+    );
+
+    return { success: true, data: result.rows, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+const getProductByFamilyId: any = async (
+  family_id: string,
+  agent_id: string
+) => {
+  try {
+    const result = await pool.query(
+      `
+          SELECT  pro.id,
+                  MAX(pro.family_id :: text) as family_id, 
+                  MAX(fam.name) as family_name,
+                  MAX(pro.name) as name, 
+                  MAX(pro.cost) as cost, 
+                  MAX(case when pla.type = 'customer' then pla.price else 0 end) as customerprice, 
+                  MAX(case when pla.type = 'company' then pla.price else 0 end) as companyprice, 
+                  MAX(pro.issubject :: text) ::boolean as issubject, 
+                  MAX(pro.frequency) as frequency, 
+                  MAX(pro.term) as term,
+                  MAX(pro.beneficiaries) as beneficiaries,
+                  MAX(CASE WHEN pro.mininsuredcompanyprice IS NULL THEN 0 ELSE pro.mininsuredcompanyprice END) as mininsuredcompanyprice,
+                  MAX(CASE WHEN pro.dueday IS NULL THEN 0 ELSE pro.dueday END) as dueday,
+                  MAX(pro.currency) as currency,
+                  SUM(case when pla.type = 'customer' then pla.price else 0 end) as customer_plan_price, 
+                  SUM(case when pla.type = 'company' then pla.price else 0 end) as company_plan_price,
+                  SUM(case when pla.type = 'customer' then pla.plan_id else 0 end) as customer_plan_id, 
+                  SUM(case when pla.type = 'company' then pla.plan_id else 0 end) as company_plan_id
+          FROM    app.product pro inner join app.family fam on pro.family_id = fam.id
+                                  left outer join app.productplan pla on pro.id = pla.product_id and pla.agent_id = $1
+          WHERE   pro.isActive IS true AND
+                  pro.family_id = $2
+          GROUP   BY
+                  pro.id
+          ORDER   BY 
+                  pro.name`,
+      [family_id, agent_id]
     );
 
     return { success: true, data: result.rows, error: null };

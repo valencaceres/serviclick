@@ -8,14 +8,14 @@ import Button from "../../../ui/Button";
 import usePlan from "../../../../hooks/useProduct";
 
 const PlanDetail = ({ savePlan }: any) => {
-  const { product, reset } = usePlan();
+  const { product, resetProduct } = usePlan();
 
   const [id, setId] = useState("");
   const [name, setName] = useState("");
 
   const saveDataPlan = () => {
     savePlan(id, name, false);
-    reset();
+    resetProduct();
   };
 
   useEffect(() => {

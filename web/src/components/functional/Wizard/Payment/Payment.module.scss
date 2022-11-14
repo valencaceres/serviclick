@@ -85,3 +85,63 @@
     }
   }
 }
+
+.menuModal {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  transition: all 0.3s ease-in;
+
+  .menuOption {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: $green-color;
+    border-radius: 20px;
+    gap: 10px;
+    padding: 20px;
+    color: white;
+    width: 220px;
+    transition: all 0.3s ease-in;
+    cursor: pointer;
+
+    span {
+      color: white;
+    }
+
+    &:hover {
+      background-color: darken($green-color, 10);
+    }
+
+    &:active {
+      transform: scale(0.9);
+    }
+  }
+}
+
+.message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 600;
+  background-color: white;
+  padding: 20px 40px;
+  border-radius: 20px;
+  gap: 20px;
+
+  .success {
+    color: $green-color;
+  }
+
+  .warning {
+    color: orange;
+  }
+
+  .error {
+    color: red;
+  }
+}

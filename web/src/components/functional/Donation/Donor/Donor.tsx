@@ -14,7 +14,7 @@ import { formatRut } from "../../../../utils/format";
 import texts from "../../../../utils/texts";
 
 import {
-  useAppSelector,
+  useProduct,
   useSubscription,
   useDonation,
 } from "../../../../redux/hooks";
@@ -22,10 +22,8 @@ import {
 const Donor = () => {
   const router = useRouter();
 
-  const { active } = useSubscription();
+  const { product } = useProduct();
   const { setDonationDonor, donation } = useDonation();
-
-  const { product } = useAppSelector((state) => state.productSlice);
 
   const initialDataDonorForm = {
     rut: { value: donation.donor.rut, isValid: true },

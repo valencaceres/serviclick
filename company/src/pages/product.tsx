@@ -17,7 +17,6 @@ const ProductPage = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
-  const { product } = useAppSelector((state) => state.productSlice);
   const { userCompany } = useAppSelector((state) => state.userCompanySlice);
 
   const [showTooltip, setShowTooltip] = useState(true);

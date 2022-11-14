@@ -14,24 +14,14 @@ import CompanyForm from "./CompanyForm";
 import { formatRut } from "../../../../utils/format";
 import texts from "../../../../utils/texts";
 
-import {
-  useAppDispatch,
-  useAppSelector,
-  useSubscription,
-} from "../../../../redux/hooks";
-import {
-  setLeadCompany,
-  setLeadInsured,
-} from "../../../../redux/slices/leadSlice";
+import { useSubscription, useProduct, useLead } from "../../../../redux/hooks";
 
 const Company = ({ register }: any) => {
   const router = useRouter();
-  const dispatch = useAppDispatch();
 
+  const { product } = useProduct();
   const { active } = useSubscription();
-
-  const { lead } = useAppSelector((state) => state.leadSlice);
-  const { product } = useAppSelector((state) => state.productSlice);
+  const { lead, setLeadCompany } = useLead();
 
   const initialDataCompanyForm = {
     rut: { value: lead.company.rut, isValid: true },
@@ -64,6 +54,7 @@ const Company = ({ register }: any) => {
 
   const handleClickRegister = () => {
     const companyData = {
+      id: "",
       rut: formatRut(companyForm.rut.value),
       companyName: companyForm.companyName.value,
       legalRepresentative: companyForm.legalRepresentative.value,
@@ -74,7 +65,7 @@ const Company = ({ register }: any) => {
       phone: companyForm.phone.value,
     };
 
-    dispatch(setLeadCompany(companyData));
+    setLeadCompany(companyData);
 
     if (active.length !== 0) {
       setShowWarning(true);

@@ -24,6 +24,7 @@ const menu = [
     subOptions: [
       { text: "Internet", route: "/channels/web" },
       { text: "Corredora de Seguros", route: "/channels/broker" },
+      { text: "Retail", route: "/channels/retail" },
     ],
   },
   {

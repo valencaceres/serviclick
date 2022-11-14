@@ -97,7 +97,6 @@ const assignPassword: any = async (id: string, password: string) => {
     const saltRounds = 10;
     const hash = await bcrypt.hash(password, saltRounds);
 
-    console.log(id, password, hash);
     await pool.query("UPDATE app.userbroker SET hash = $2 WHERE id = $1", [
       id,
       hash,

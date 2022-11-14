@@ -22,7 +22,13 @@ import Icon from "../../../ui/Icon";
 import { useFamily, useProduct } from "../../../../hooks";
 
 const PlanList = ({ editPlan }: any) => {
-  const { listAll, list, getByFamilyId, set, product } = useProduct();
+  const {
+    getAllProducts,
+    productList,
+    getProductByFamilyId,
+    setProduct,
+    product,
+  } = useProduct();
   const { list: listFamilies } = useFamily();
 
   const initialSearchForm = {
@@ -48,7 +54,12 @@ const PlanList = ({ editPlan }: any) => {
   };
 
   const handleClickSearch = () => {
-    search.family.value !== "" ? getByFamilyId(search.family.value) : listAll();
+    search.family.value !== ""
+      ? getProductByFamilyId(
+          search.family.value,
+          "020579a3-8461-45ec-994b-ad22ff8e3275"
+        )
+      : getAllProducts("020579a3-8461-45ec-994b-ad22ff8e3275");
   };
 
   return (
@@ -88,7 +99,7 @@ const PlanList = ({ editPlan }: any) => {
             <TableCell width="186px">Empresa</TableCell>
           </TableHeader>
           <TableDetail>
-            {list.map((product: any, idx: number) => (
+            {productList.map((product: any, idx: number) => (
               <TableRow key={idx} className={"deleted"}>
                 <TableCell width="70px" align="center">
                   {idx + 1}
@@ -114,7 +125,7 @@ const PlanList = ({ editPlan }: any) => {
           </TableDetail>
         </Table>
         <ContentRow align="flex-end">
-          <ContentCellSummary>{`${list.length} registros`}</ContentCellSummary>
+          <ContentCellSummary>{`${productList.length} registros`}</ContentCellSummary>
         </ContentRow>
       </ContentCell>
     </Fragment>

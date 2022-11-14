@@ -16,7 +16,13 @@ import {
 } from "../../../ui/Table";
 import Tooltip from "../../../ui/Tooltip";
 import { Modal, Window } from "../../../ui/Modal";
-import ModalWarning from "../../../ui/ModalWarning";
+import ModalWindow from "../../../ui/ModalWindow";
+import Icon from "../../../ui/Icon";
+import {
+  ErrorMessage,
+  LoadingMessage,
+  SuccessMessage,
+} from "../../../ui/LoadingMessage";
 
 import { CustomerForm } from "../Customer";
 import { CompanyForm } from "../Company";
@@ -26,27 +32,22 @@ import { calculateValidity } from "../../../../utils/functions";
 
 import ProductBadge from "../../ProductBadge";
 
-import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { createLead } from "../../../../redux/slices/leadSlice";
-
 import { termsAndCondicions } from "../../../../data/termsAndConditions";
 
 import styles from "./Payment.module.scss";
 
-import { useUI } from "../../../../redux/hooks";
+import { useUI, useStage, useProduct, useLead } from "../../../../redux/hooks";
 
 const Payment = ({ register }: any) => {
   const router = useRouter();
-  const dispatch = useAppDispatch();
 
-  const { agentId } = useUI();
+  const { isDesktop } = useUI();
+  const { stage } = useStage();
+  const { product } = useProduct();
+  const { createLead, lead, leadLoading, leadError } = useLead();
 
-  const { isDesktop } = useAppSelector((state) => state.uiSlice);
-  const { product } = useAppSelector((state) => state.productSlice);
-  const { stage } = useAppSelector((state) => state.stageSlice);
-  const { lead } = useAppSelector((state) => state.leadSlice);
-
-  const [showWarning, setShowWarning] = useState(false);
+  const [message, setMessage] = useState("");
+  const [showModalPaymentType, setShowModalPaymentType] = useState(false);
 
   const initialDataCustomerForm = {
     rut: { value: lead.customer.rut, isValid: true },
@@ -91,7 +92,6 @@ const Payment = ({ register }: any) => {
   const [customerForm, setCustomerForm] = useState(initialDataCustomerForm);
   const [companyForm, setCompanyForm] = useState(initialDataCompanyForm);
   const [isEnabled, setIsEnabled] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [showTooltip, setShowTooltip] = useState(true);
   const [checks, setChecks] = useState({
     customer: false,
@@ -105,8 +105,7 @@ const Payment = ({ register }: any) => {
   const [showModalTermsAndConditions, setShowModalTermsAndConditions] =
     useState(false);
   const [completeChecks, setCompleteChecks] = useState(false);
-
-  const contractor = lead[stage.type];
+  const [paymentType, setPaymentType] = useState("");
 
   const { payment: paymentText, frequency } = texts;
 
@@ -138,13 +137,12 @@ const Payment = ({ register }: any) => {
   };
 
   const completeProduct = () => {
-    console.log(lead);
     const isValid: boolean =
       lead.product.id !== "" &&
       lead.product.price > 0 &&
       lead.product.currency_code !== "" &&
-      lead.product.frequency_code !== "" &&
-      lead.product.productPlan_id > 0;
+      lead.product.frequency_code !== ""; //&&
+    //lead.product.productPlan_id > 0;
     return isValid;
   };
 
@@ -180,9 +178,11 @@ const Payment = ({ register }: any) => {
     );
   };
 
-  const handleClickRegister = (send: boolean) => {
-    setIsLoading(true);
-    dispatch(createLead({ ...lead, agent_id: agentId }, send));
+  const handleClickRegister = () => {
+    // CHECK: Se elimina por que al parecer no se requiere
+    //setLoading(true);
+    //dispatch(createLead({ ...lead, agent_id: agentId }, send));
+    setShowModalPaymentType(true);
   };
 
   const handleClickTermsAndConditions = () => {
@@ -200,6 +200,29 @@ const Payment = ({ register }: any) => {
   const handleCloseTermsAndConditions = () => {
     setShowModalTermsAndConditions(false);
   };
+
+  const handleClickClosePaymentType = () => {
+    setShowModalPaymentType(false);
+  };
+
+  const handleClickCardPayment = () => {
+    setPaymentType("C");
+    setMessage("Transacción registrada");
+    createLead(lead, false, true);
+  };
+
+  const handleClickSendPaymentLink = () => {
+    setPaymentType("L");
+    createLead(lead, true, false);
+    setMessage("El link de pago ya fue enviado");
+  };
+
+  const handleCloseModalSuccess = () => {
+    if (paymentType === "C") register();
+    if (paymentType === "L") router.push("https://www.serviclick.cl");
+  };
+
+  const handleCloseModalError = () => {};
 
   useEffect(() => {
     if (stage.type === "customer") {
@@ -229,16 +252,18 @@ const Payment = ({ register }: any) => {
         completeInsured() &&
         completeChecks
     );
-    if (lead.subscription && lead.subscription.id > 0) {
-      register();
-    }
-    if (lead.id !== "" && !lead.subscription) {
-      setIsLoading(false);
-      setShowWarning(true);
-      setTimeout(() => {
-        router.push("/");
-      }, 1000);
-    }
+
+    // CHECK: Se elimina por que al parecer no se requiere
+    // if (lead.subscription && lead.subscription.id > 0) {
+    //   register();
+    // }
+    // if (lead.id !== "" && !lead.subscription) {
+    //   setIsLoading(false);
+    //   setShowWarning(true);
+    //   setTimeout(() => {
+    //     router.push("/");
+    //   }, 1000);
+    // }
   }, [
     completeLeadCustomer,
     completeLeadCompany,
@@ -615,12 +640,13 @@ const Payment = ({ register }: any) => {
                     &nbsp;&nbsp;Valores y plazos
                   </div>
                   <div className={styles.sectionContent}>
-                    <Component width={isDesktop ? "500px" : "auto"}>
+                    <Component width={isDesktop ? "610px" : "auto"}>
                       <Row>
                         <Cell>
                           <CellCenter>
                             <InputText
                               id="txtStartValidity"
+                              type="date"
                               label="Inicio de vigencia"
                               width="200px"
                               value={startValidity}
@@ -631,9 +657,20 @@ const Payment = ({ register }: any) => {
                         <Cell>
                           <CellCenter>
                             <InputText
+                              id="txtProductFrecuency"
+                              label="Frecuencia"
+                              width="200px"
+                              value={frequency[product.frequency]}
+                              disabled={true}
+                            />
+                          </CellCenter>
+                        </Cell>
+                        <Cell>
+                          <CellCenter>
+                            <InputText
                               id="txtTerm"
                               label="Duración"
-                              width={isDesktop ? "300px" : "200px"}
+                              width="200px"
                               value={`${product.term} meses`}
                               disabled={true}
                             />
@@ -645,11 +682,9 @@ const Payment = ({ register }: any) => {
                           <CellCenter>
                             <InputText
                               id="txtProductCompanyPrice"
-                              label="Valor ($)"
+                              label="Valor unitario ($)"
                               width="200px"
-                              value={(
-                                product.price[stage.type] * lead.insured.length
-                              )
+                              value={product.price[stage.type]
                                 .toLocaleString("en-US")
                                 .replace(",", ".")}
                               disabled={true}
@@ -659,10 +694,25 @@ const Payment = ({ register }: any) => {
                         <Cell>
                           <CellCenter>
                             <InputText
-                              id="txtProductFrecuency"
-                              label="Frecuencia"
-                              width={isDesktop ? "300px" : "200px"}
-                              value={frequency[product.frequency]}
+                              id="txtProductCompanyPrice"
+                              label="Asegurados"
+                              width="200px"
+                              value={lead.insured.length.toString()}
+                              disabled={true}
+                            />
+                          </CellCenter>
+                        </Cell>
+                        <Cell>
+                          <CellCenter>
+                            <InputText
+                              id="txtProductCompanyPrice"
+                              label="Valor ($)"
+                              width="200px"
+                              value={(
+                                product.price[stage.type] * lead.insured.length
+                              )
+                                .toLocaleString("en-US")
+                                .replace(",", ".")}
                               disabled={true}
                             />
                           </CellCenter>
@@ -702,18 +752,12 @@ const Payment = ({ register }: any) => {
         </Content>
         <Buttons>
           <Button
-            onClick={() => handleClickRegister(false)}
-            text="Pagar"
+            onClick={() =>
+              lead.id ? handleClickCardPayment() : handleClickRegister()
+            }
+            text={lead.id === "" ? "Aceptar" : "Pagar"}
             width="150px"
             enabled={isEnabled}
-            loading={isLoading}
-          />
-          <Button
-            onClick={() => handleClickRegister(true)}
-            text="Enviar"
-            width="150px"
-            enabled={isEnabled}
-            loading={isLoading}
           />
         </Buttons>
       </Wizard>
@@ -725,7 +769,10 @@ const Payment = ({ register }: any) => {
           <br />
           <br />
           Si estás conforme, al terminar de checkear, presiona el botón{" "}
-          <b>Pagar</b> y te llevaremos a nuestra plataforma de pago seguro.
+          <b>{lead.id === "" ? "Aceptar" : "Pagar"}</b>{" "}
+          {lead.id === ""
+            ? "y podrás seleccionar entre pagar directamente mediante nuestra plataforma de pago seguro o enviar un link de pago a tu correo electrónco."
+            : "y te llevaremos a nuestra plataforma de pago seguro."}
         </div>
       </Tooltip>
       <Modal showModal={showModalTermsAndConditions}>
@@ -737,7 +784,9 @@ const Payment = ({ register }: any) => {
           </div>
         </Window>
       </Modal>
-      <ModalWarning
+      {/* 
+        // CHECK: Se elimina por que al parecer no se requiere
+        <ModalWarning
         showModal={showWarning}
         title="Aviso"
         message={`Link de pago enviado al correo del cliente`}
@@ -745,7 +794,39 @@ const Payment = ({ register }: any) => {
         iconName="mail"
         color="blue"
         buttons={[{ text: "Aceptar", function: () => setShowWarning(false) }]}
-      />
+        /> 
+      */}
+      {message === "" ? (
+        <ModalWindow
+          showModal={showModalPaymentType}
+          setClosed={handleClickClosePaymentType}
+          title="Forma de pago">
+          <div className={styles.menuModal}>
+            <div className={styles.menuOption} onClick={handleClickCardPayment}>
+              <Icon iconName="credit_card" size="40px" />
+              Pago con tarjeta
+            </div>
+            <div
+              className={styles.menuOption}
+              onClick={handleClickSendPaymentLink}>
+              <Icon iconName="outgoing_mail" size="40px" />
+              Envío de link de pago
+            </div>
+          </div>
+        </ModalWindow>
+      ) : leadLoading ? (
+        <LoadingMessage showModal={leadLoading} />
+      ) : leadError ? (
+        <ErrorMessage showModal={leadError} callback={handleCloseModalError}>
+          Hubo un error al intentar la transacción
+        </ErrorMessage>
+      ) : (
+        <SuccessMessage
+          showModal={!leadLoading}
+          callback={handleCloseModalSuccess}>
+          {message}
+        </SuccessMessage>
+      )}
     </Fragment>
   );
 };

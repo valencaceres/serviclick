@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-type StageT = {
+export type StageT = {
   name: "contract" | "insured" | "beneficiary" | "payment" | "resume";
   type: "customer" | "company";
 };
@@ -19,13 +19,13 @@ export const stageSlice = createSlice({
   name: "stages",
   initialState,
   reducers: {
-    setStageList: (state: any, action: PayloadAction<any>) => {
+    setStageList: (state: StateT, action: PayloadAction<StageT[]>) => {
       state.list = action.payload;
     },
-    setStage: (state: any, action: PayloadAction<any>) => {
+    setStage: (state: StateT, action: PayloadAction<StageT>) => {
       state.stage = action.payload;
     },
-    resetStage: (state: any) => {
+    resetStage: (state: StateT) => {
       state.stage = initialState.stage;
     },
   },

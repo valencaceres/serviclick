@@ -16,7 +16,7 @@ const Plan = () => {
 
   const { setTitleUI } = useUI();
   const { listAll: getAllFamilies } = useFamily();
-  const { listAll, reset, product } = useProduct();
+  const { getAllProducts, resetProduct, product } = useProduct();
 
   const [enableSave, setEnableSave] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +24,7 @@ const Plan = () => {
   const editPlan = () => {};
 
   const handleClickBack = () => {
-    reset();
+    resetProduct();
     router.push("/processes/plan");
   };
 
@@ -33,7 +33,7 @@ const Plan = () => {
   };
 
   const handleClickRefresh = () => {
-    listAll();
+    getAllProducts("020579a3-8461-45ec-994b-ad22ff8e3275");
   };
 
   const handleClickSave = () => {
@@ -73,7 +73,7 @@ const Plan = () => {
   useEffect(() => {
     setTitleUI("Plan");
     getAllFamilies();
-    listAll();
+    getAllProducts("020579a3-8461-45ec-994b-ad22ff8e3275");
   }, []);
 
   return router.isReady && router.query.id ? (

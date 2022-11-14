@@ -1,19 +1,11 @@
-import React from "react";
-
-import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import leadSlice from "../../../redux/slices/leadSlice";
-
-import texts from "../../../utils/texts";
-import Icon from "../../ui/Icon";
+import { useStage, useProduct, useLead } from "../../../redux/hooks";
 
 import styles from "./ProductBadge.module.scss";
 
 const ProductBadge = () => {
-  const { lead } = useAppSelector((state) => state.leadSlice);
-  const { product } = useAppSelector((state) => state.productSlice);
-  const { stage } = useAppSelector((state) => state.stageSlice);
-
-  const { frequency } = texts;
+  const { stage } = useStage();
+  const { product } = useProduct();
+  const { lead } = useLead();
 
   return (
     <div className={styles.productBadge}>

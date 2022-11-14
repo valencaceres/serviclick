@@ -7,6 +7,8 @@ import useStatus from "./useStatus";
 import useTransaction from "./useTransaction";
 import useAgent from "./useAgent";
 import useBroker from "./useBroker";
+import useRetail from "./useRetail";
+import useDistrict from "./useDistrict";
 
 export {
   useUI,
@@ -18,4 +20,6 @@ export {
   useTransaction,
   useAgent,
   useBroker,
+  useRetail,
+  useDistrict,
 };

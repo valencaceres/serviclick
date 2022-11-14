@@ -12,8 +12,8 @@ import { useUI, useLead } from "../../../hooks";
 const Menu = () => {
   const router = useRouter();
 
-  const { setCustomerTypeUI } = useUI();
-  const { resetLead } = useLead();
+  const { setCustomerTypeUI, broker } = useUI();
+  const { setAgentId } = useLead();
 
   const [showModalCustomerType, setShowModalCustomerType] = useState(false);
 
@@ -22,7 +22,7 @@ const Menu = () => {
   };
 
   const handleProducts = () => {
-    resetLead();
+    setAgentId(broker.id);
     router.push("/menu/family");
     //setShowModalCustomerType(true);
   };

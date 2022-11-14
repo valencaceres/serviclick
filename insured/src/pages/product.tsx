@@ -10,12 +10,12 @@ import Navigate, { Back } from "../components/ui/Navigate";
 // 2464277
 import { ProductList, ProductDetail } from "../components/functional/Product";
 
-import { useAppSelector } from "../redux/hooks";
+import { useAppSelector, useProduct } from "../redux/hooks";
 
 const ProductPage = () => {
   const router = useRouter();
 
-  const { product } = useAppSelector((state) => state.productSlice);
+  const { product } = useProduct();
 
   const [showTooltip, setShowTooltip] = useState(true);
 

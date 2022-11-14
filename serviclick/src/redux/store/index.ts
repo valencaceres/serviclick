@@ -9,6 +9,8 @@ import productSlice from "../slices/productSlice";
 import transactionSlice from "../slices/transactionSlice";
 import agentSlice from "../slices/agentSlice";
 import brokerSlice from "../slices/brokerSlice";
+import retailSlice from "../slices/retailSlice";
+import districtSlice from "../slices/districtSlice";
 
 const store = configureStore({
   reducer: {
@@ -21,6 +23,8 @@ const store = configureStore({
     transactionSlice,
     agentSlice,
     brokerSlice,
+    retailSlice,
+    districtSlice,
   },
 });
 

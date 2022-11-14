@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
 
-import { config } from "../../utils/config";
+import { apiInstance } from "../../utils/api";
 
 export type CustomerT = {
   id: string;
@@ -28,7 +27,7 @@ export type CompanyT = {
   phone: string;
 };
 
-type ProductT = {
+export type ProductT = {
   id: string;
   price: number;
   currency_code: string;
@@ -49,7 +48,7 @@ type BeneficiaryT = {
   phone: string;
 };
 
-type InsuredT = {
+export type InsuredT = {
   id: string;
   rut: string;
   name: string;
@@ -70,7 +69,7 @@ type SubscriptionT = {
   status_code: number;
 };
 
-type LeadT = {
+export type LeadT = {
   id: string;
   date: string;
   customer: CustomerT;
@@ -83,8 +82,10 @@ type LeadT = {
 };
 
 type StateT = {
-  list: StateT[];
+  list: LeadT[];
   lead: LeadT;
+  loading: boolean;
+  error: boolean;
 };
 
 const initialState: StateT = {
@@ -132,45 +133,79 @@ const initialState: StateT = {
     agent_id: "",
     isActive: false,
   },
+  loading: false,
+  error: false,
 };
 
 export const leadSlice = createSlice({
   name: "leads",
   initialState,
   reducers: {
-    setLeadList: (state: any, action: PayloadAction<any>) => {
+    setLoading: (state: StateT, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
+    setError: (state: StateT, action: PayloadAction<boolean>) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
+    setLeadList: (state: StateT, action: PayloadAction<LeadT[]>) => {
       state.list = action.payload;
+      state.loading = false;
+      state.error = false;
     },
-    setLead: (state: any, action: PayloadAction<any>) => {
+    setLead: (state: StateT, action: PayloadAction<LeadT>) => {
       state.lead = action.payload;
+      state.loading = false;
+      state.error = false;
     },
-    setLeadProduct: (state: any, action: PayloadAction<any>) => {
+    setLeadAgent: (state: StateT, action: PayloadAction<string>) => {
+      state.lead.agent_id = action.payload;
+      state.loading = false;
+      state.error = false;
+    },
+    setLeadProduct: (state: StateT, action: PayloadAction<ProductT>) => {
       state.lead = { ...state.lead, product: action.payload };
+      state.loading = false;
+      state.error = false;
     },
-    setLeadCustomer: (state: any, action: PayloadAction<any>) => {
+    setLeadCustomer: (state: StateT, action: PayloadAction<CustomerT>) => {
       state.lead = { ...state.lead, customer: action.payload };
+      state.loading = false;
+      state.error = false;
     },
-    setLeadCompany: (state: any, action: PayloadAction<any>) => {
+    setLeadCompany: (state: StateT, action: PayloadAction<CompanyT>) => {
       state.lead = { ...state.lead, company: action.payload };
+      state.loading = false;
+      state.error = false;
     },
-    setLeadInsured: (state: any, action: PayloadAction<any>) => {
+    setLeadInsured: (state: StateT, action: PayloadAction<InsuredT[]>) => {
       state.lead = { ...state.lead, insured: action.payload };
+      state.loading = false;
+      state.error = false;
     },
-    setLeadSubscription: (state: any, action: PayloadAction<any>) => {
+    setLeadSubscription: (
+      state: StateT,
+      action: PayloadAction<SubscriptionT>
+    ) => {
       state.lead = { ...state.lead, subscription: action.payload };
+      state.loading = false;
+      state.error = false;
     },
-    resetLeadSubscription: (state: any) => {
+    resetLeadSubscription: (state: StateT) => {
       state.lead.subscription = initialState.lead.subscription;
     },
-    resetLead: (state: any) => {
+    resetLead: (state: StateT) => {
       state.lead = initialState.lead;
     },
   },
 });
 
 export const {
+  setLoading,
+  setError,
   setLeadList,
   setLead,
+  setLeadAgent,
   setLeadProduct,
   setLeadCustomer,
   setLeadCompany,
@@ -182,94 +217,51 @@ export const {
 
 export default leadSlice.reducer;
 
-export const listLeads = () => (dispatch: any) => {
-  axios
-    .get(`${config.server}/api/lead/list`, {
-      headers: {
-        id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-      },
-    })
-    .then((response) => {
-      dispatch(setLeadList(response.data));
-    })
-    .catch((error) => console.log(error));
-};
-
-export const getLeadById = (leadId: string) => (dispatch: any) => {
-  axios
-    .get(`${config.server}/api/lead/getById/${leadId}`, {
-      headers: {
-        id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-      },
-    })
-    .then((response) => {
-      dispatch(setLead(response.data));
-    })
-    .catch((error) => console.log(error));
+export const getLeadById = (leadId: string) => async (dispatch: any) => {
+  dispatch(setLoading(true));
+  const { data } = await apiInstance.get(`/lead/getById/${leadId}`);
+  dispatch(setLead(data));
 };
 
 export const getLeadBySubscriptionId =
-  (subscriptionId: number) => (dispatch: any) => {
-    axios
-      .get(`${config.server}/api/lead/getBySubscriptionId/${subscriptionId}`, {
-        headers: {
-          id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-        },
-      })
-      .then((response) => {
-        dispatch(setLead(response.data));
-      })
-      .catch((error) => console.log(error));
+  (subscriptionId: number) => async (dispatch: any) => {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.get(
+      `/lead/getBySubscriptionId/${subscriptionId}`
+    );
+    dispatch(setLead(data));
   };
 
-export const createLead = (lead: LeadT, send: boolean) => (dispatch: any) => {
-  axios
-    .post(
-      `${config.server}/api/lead/create`,
-      { ...lead, send },
-      {
-        headers: {
-          id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-        },
-      }
-    )
-    .then((response) => {
-      dispatch(setLead(response.data));
-    })
-    .catch((error) => console.log(error));
-};
+export const createLead =
+  (lead: LeadT, send: boolean, subscription: boolean) =>
+  async (dispatch: any) => {
+    try {
+      dispatch(setLoading(true));
+      const resolveData = await apiInstance.post(`/lead/create`, {
+        ...lead,
+        send,
+        subscription,
+      });
+      dispatch(setLead(resolveData.data));
+    } catch (e) {
+      dispatch(setError(true));
+    }
+  };
 
 export const updateLead =
-  (id: string, name: string, isBroker: boolean) => (dispatch: any) => {
-    axios
-      .put(
-        `${config.server}/api/lead/update/${id}`,
-        { name, isBroker },
-        {
-          headers: {
-            id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-          },
-        }
-      )
-      .then((response) => {
-        dispatch(listLeads());
-        dispatch(setLead(response.data));
-      })
-      .catch((error) => console.log(error));
+  (id: string, name: string, isBroker: boolean) => async (dispatch: any) => {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.put(`/lead/update/${id}`, {
+      name,
+      isBroker,
+    });
+    dispatch(setLead(data));
   };
 
-export const deleteLead = (id: string) => (dispatch: any) => {
-  axios
-    .delete(`${config.server}/api/lead/delete/${id}`, {
-      headers: {
-        id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-      },
-    })
-    .then(() => {
-      dispatch(listLeads());
-      dispatch(resetLead());
-    })
-    .catch((error) => console.log(error));
+export const deleteLead = (id: string) => async (dispatch: any) => {
+  dispatch(setLoading(true));
+  const { data } = await apiInstance.delete(`/lead/delete/${id}`);
+  dispatch(resetLead());
 };
 
 export const createSubscription =
@@ -282,27 +274,16 @@ export const createSubscription =
     rut: string,
     phone: string
   ) =>
-  (dispatch: any) => {
-    axios
-      .post(
-        `${config.server}/api/lead/createSubscription`,
-        {
-          plan_id,
-          email,
-          name,
-          amount,
-          address,
-          rut,
-          phone,
-        },
-        {
-          headers: {
-            id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-          },
-        }
-      )
-      .then((response) => {
-        dispatch(setLeadSubscription(response.data));
-      })
-      .catch((error) => console.log(error));
+  async (dispatch: any) => {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.post(`/lead/createSubscription`, {
+      plan_id,
+      email,
+      name,
+      amount,
+      address,
+      rut,
+      phone,
+    });
+    dispatch(setLeadSubscription(data));
   };

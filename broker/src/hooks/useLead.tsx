@@ -4,9 +4,19 @@ import { useAppDispatch, useAppSelector } from "../redux/hooks";
 const useLead = () => {
   const dispatch = useAppDispatch();
 
-  const { lead } = useAppSelector((state) => state.leadSlice);
+  const { lead, loading } = useAppSelector((state) => state.leadSlice);
 
-  // Create
+  const createLead = (
+    lead: Lead.LeadT,
+    sendPaymentLink: boolean,
+    createSubscription: boolean
+  ) => {
+    dispatch(Lead.createLead(lead, sendPaymentLink, createSubscription));
+  };
+
+  const setAgentId = (id: string) => {
+    dispatch(Lead.setAgentId(id));
+  };
 
   const setLeadCompany = (company: Lead.CompanyT) => {
     dispatch(Lead.setLeadCompany(company));
@@ -34,6 +44,9 @@ const useLead = () => {
 
   return {
     lead,
+    loading,
+    createLead,
+    setAgentId,
     setLeadCompany,
     setLeadCustomer,
     setLeadProduct,

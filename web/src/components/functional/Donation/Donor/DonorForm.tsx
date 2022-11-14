@@ -4,31 +4,17 @@ import InputText from "../../../ui/InputText";
 
 import { Component, Row, Cell } from "../../../layout/Component";
 
-import { unFormatRut, formatRut } from "../../../../utils/format";
+import { unFormatRut } from "../../../../utils/format";
 import { numberRegEx, rutRegEx, emailRegEx } from "../../../../utils/regEx";
 import { rutValidate } from "../../../../utils/validations";
 
-import {
-  useAppDispatch,
-  useAppSelector,
-  useSubscription,
-} from "../../../../redux/hooks";
-import { resetSubscription } from "../../../../redux/slices/subscriptionSlice";
-
-import { useDonation } from "../../../../redux/hooks";
+import { useSubscription, useDonation, useUI } from "../../../../redux/hooks";
 
 const DonorForm = ({ donorForm, setDonorForm, disabled }: any) => {
-  const dispatch = useAppDispatch();
-
-  const { getActiveSubscriptions } = useSubscription();
-  const { getDonationBySubscriptionId, resetDonationSubscription } =
+  const { isDesktop } = useUI();
+  const { resetSubscription, subscription } = useSubscription();
+  const { getDonationBySubscriptionId, resetDonationSubscription, donation } =
     useDonation();
-
-  const { isDesktop } = useAppSelector((state) => state.uiSlice);
-  const { stage } = useAppSelector((state) => state.stageSlice);
-  const { subscription } = useAppSelector((state) => state.subscriptionSlice);
-  const { product } = useAppSelector((state) => state.productSlice);
-  const { donation } = useAppSelector((state) => state.donationSlice);
 
   const handleFocusRut = (event: any) => {
     event.target.value = unFormatRut(event.target.value);
@@ -162,10 +148,10 @@ const DonorForm = ({ donorForm, setDonorForm, disabled }: any) => {
         email: { value: donation.donor.email, isValid: true },
         phone: { value: donation.donor.phone, isValid: true },
       });
-      dispatch(resetSubscription());
+      resetSubscription();
       resetDonationSubscription();
     }
-  }, [dispatch, donation.donor, setDonorForm]);
+  }, [donation.donor, setDonorForm]);
 
   return (
     <Component width={isDesktop ? "560px" : "100%"}>

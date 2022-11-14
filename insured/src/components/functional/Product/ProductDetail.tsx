@@ -10,24 +10,18 @@ import {
 } from "../../ui/Table";
 import Loading from "../../ui/Loading";
 
-import { getProduct, resetProduct } from "../../../redux/slices/productSlice";
-import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { useAppSelector, useProduct } from "../../../redux/hooks";
 
 import styles from "./Product.module.scss";
 
 const ProductDetail = ({ id }: any) => {
-  const dispatch = useAppDispatch();
+  const { product, resetProduct } = useProduct();
 
   const { isDesktop } = useAppSelector((state) => state.uiSlice);
-  const { product } = useAppSelector((state) => state.productSlice);
 
   useEffect(() => {
-    dispatch(resetProduct());
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(getProduct(id));
-  }, [dispatch, id]);
+    resetProduct();
+  }, []);
 
   return product.id ? (
     <div className={styles.sectionContent}>
@@ -81,8 +75,7 @@ const ProductDetail = ({ id }: any) => {
                     style={{
                       width: "calc(100% - 120px)",
                       paddingRight: "10px",
-                    }}
-                  >
+                    }}>
                     <b>{coverageItem.name}</b>
                   </div>
                   <div style={{ width: "120px" }}>

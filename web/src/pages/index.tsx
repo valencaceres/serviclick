@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
@@ -7,32 +8,33 @@ import {
   MenuProducts,
   MenuCustomerType,
 } from "../components/functional/Menu";
+import { LoadingMessage } from "../components/ui/LoadingMessage";
 
-import { useFamily, useProduct } from "../redux/hooks";
-import { resetProduct } from "../redux/slices/productSlice";
-
-import { useUI } from "../redux/hooks";
+import { useUI, useFamily, useProduct, useLead } from "../redux/hooks";
 
 const Home: NextPage = () => {
   const router = useRouter();
 
-  const { setAgentUI } = useUI();
-
+  const { setAgentUI, agentId } = useUI();
   const { listAll: getAllFamilies, reset: resetFamily, family } = useFamily();
   const {
-    getById: getProductById,
-    getByFamilyId: getProductsByFamilyId,
-    resetList: resetProductList,
+    getProductById,
+    getProductsByFamilyId,
+    resetProductList,
+    resetProduct,
     product,
+    productLoading,
   } = useProduct();
+  const { setLeadAgent } = useLead();
 
   const [menu, setMenu] = useState("FAM");
 
   const handleClickProduct = (product_id: string) => {
-    getProductById(product_id);
+    getProductById(product_id, agentId);
   };
 
   const handleClickCustomerType = (type: string) => {
+    setLeadAgent(agentId);
     router.push(`/contract/${type}/${product.id}`);
   };
 
@@ -44,7 +46,7 @@ const Home: NextPage = () => {
   const handleClickBackToProducts = () => {
     resetProduct();
     resetProductList();
-    getProductsByFamilyId(family.id);
+    getProductsByFamilyId(family.id, agentId);
     setMenu("PRO");
   };
 
@@ -55,8 +57,7 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     if (family.id !== "") {
-      resetProduct();
-      getProductsByFamilyId(family.id);
+      getProductsByFamilyId(family.id, agentId);
       setMenu("PRO");
     }
   }, [family.id]);
@@ -68,18 +69,23 @@ const Home: NextPage = () => {
     }
   }, [product.id]);
 
-  return menu === "FAM" ? (
-    <MenuFamilies />
-  ) : menu === "PRO" ? (
-    <MenuProducts
-      handleClickBack={handleClickBackToFamilies}
-      handleClickOption={handleClickProduct}
-    />
-  ) : (
-    <MenuCustomerType
-      handleClickBack={handleClickBackToProducts}
-      handleClickOption={handleClickCustomerType}
-    />
+  return (
+    <Fragment>
+      {menu === "FAM" ? (
+        <MenuFamilies />
+      ) : menu === "PRO" ? (
+        <MenuProducts
+          handleClickBack={handleClickBackToFamilies}
+          handleClickOption={handleClickProduct}
+        />
+      ) : (
+        <MenuCustomerType
+          handleClickBack={handleClickBackToProducts}
+          handleClickOption={handleClickCustomerType}
+        />
+      )}
+      <LoadingMessage showModa={productLoading} />
+    </Fragment>
   );
 };
 

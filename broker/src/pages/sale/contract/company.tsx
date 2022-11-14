@@ -73,7 +73,6 @@ const SaleContractCompanyPage = () => {
       />
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />
-        <ButtonIcon iconName="arrow_back" onClick={handleClickBack} />
         <ButtonIcon iconName="add" onClick={handleClickNew} />
         <ButtonIcon
           iconName="save"

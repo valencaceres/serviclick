@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import { TransientIdentifier } from "typescript";
 
-import { config } from "../../utils/config";
+import { apiInstance } from "../../utils/api";
 
 export type CustomerT = {
   id: string;
@@ -28,11 +29,13 @@ export type CompanyT = {
   phone: string;
 };
 
+type FrequencyT = "M" | "A" | "S";
+
 export type ProductT = {
   id: string;
   price: number;
   currency_code: string;
-  frequency_code: string;
+  frequency_code: FrequencyT;
   productPlan_id: number;
 };
 
@@ -70,7 +73,7 @@ type SubscriptionT = {
   status_code: number;
 };
 
-type LeadT = {
+export type LeadT = {
   id: string;
   date: string;
   customer: CustomerT;
@@ -85,6 +88,7 @@ type LeadT = {
 type StateT = {
   list: LeadT[];
   lead: LeadT;
+  loading: boolean;
 };
 
 const initialState: StateT = {
@@ -119,7 +123,7 @@ const initialState: StateT = {
       id: "",
       price: 0,
       currency_code: "",
-      frequency_code: "",
+      frequency_code: "M",
       productPlan_id: 0,
     },
     insured: [],
@@ -132,17 +136,22 @@ const initialState: StateT = {
     agent_id: "",
     isActive: false,
   },
+  loading: false,
 };
 
 export const leadSlice = createSlice({
   name: "leads",
   initialState,
   reducers: {
+    setAgentId: (state: StateT, action: PayloadAction<string>) => {
+      state.lead.agent_id = action.payload;
+    },
     setLeadList: (state: StateT, action: PayloadAction<LeadT[]>) => {
       state.list = action.payload;
     },
     setLead: (state: StateT, action: PayloadAction<LeadT>) => {
       state.lead = action.payload;
+      state.loading = false;
     },
     setLeadProduct: (state: StateT, action: PayloadAction<ProductT>) => {
       state.lead = { ...state.lead, product: action.payload };
@@ -168,6 +177,9 @@ export const leadSlice = createSlice({
     ) => {
       state.lead = { ...state.lead, subscription: action.payload };
     },
+    setLoading: (state: StateT, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
     resetLeadSubscription: (state: StateT) => {
       state.lead.subscription = initialState.lead.subscription;
     },
@@ -178,12 +190,14 @@ export const leadSlice = createSlice({
 });
 
 export const {
+  setAgentId,
   setLeadList,
   setLead,
   setLeadProduct,
   setLeadCustomer,
   setLeadCompany,
   setLeadInsured,
+  setLoading,
   addLeadInsured,
   setLeadSubscription,
   resetLeadSubscription,
@@ -191,3 +205,15 @@ export const {
 } = leadSlice.actions;
 
 export default leadSlice.reducer;
+
+export const createLead =
+  (lead: LeadT, send: boolean, subscription: boolean) =>
+  async (dispatch: any) => {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.post(`/lead/create`, {
+      ...lead,
+      send,
+      subscription,
+    });
+    dispatch(setLead(data));
+  };

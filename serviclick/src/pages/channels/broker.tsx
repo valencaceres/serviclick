@@ -26,7 +26,7 @@ const Web = () => {
     broker,
     loading: brokerLoading,
   } = useBroker();
-  const { listAll } = useProduct();
+  const { getAllProducts } = useProduct();
 
   const [enableSave, setEnableSave] = useState(false);
 
@@ -62,7 +62,7 @@ const Web = () => {
   useEffect(() => {
     setTitleUI(channels.broker.name);
     getAllBrokers();
-    listAll();
+    getAllProducts("020579a3-8461-45ec-994b-ad22ff8e3275");
   }, []);
 
   useEffect(() => {

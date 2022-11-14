@@ -32,6 +32,7 @@ export type FamilyT = {
 export type CustomerTypeT = "P" | "C";
 
 type StateT = {
+  agentId: string;
   broker: BrokerT;
   user: UserT;
   customerType: CustomerTypeT;
@@ -43,6 +44,7 @@ type StateT = {
 };
 
 const initialState: StateT = {
+  agentId: "",
   broker: {
     id: "",
     rut: "",
@@ -74,6 +76,9 @@ export const userSlice = createSlice({
   name: "UI",
   initialState,
   reducers: {
+    setAgent: (state: StateT, action: PayloadAction<string>) => {
+      state.agentId = action.payload;
+    },
     setUser: (state: StateT, action: PayloadAction<UserT>) => {
       state.user = action.payload;
     },
@@ -111,6 +116,7 @@ export const userSlice = createSlice({
 });
 
 export const {
+  setAgent,
   setBroker,
   setUser,
   setShowMenu,

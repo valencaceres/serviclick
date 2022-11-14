@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 
 import { ContentCenter } from "../../../layout/Content";
@@ -10,29 +11,32 @@ import { useUI, useBroker, useProduct, useLead } from "../../../../hooks";
 const Product = () => {
   const router = useRouter();
 
-  const { setCustomerTypeUI } = useUI();
+  const { setCustomerTypeUI, customerType, agentId } = useUI();
   const { productList, loading } = useBroker();
-  const { getById } = useProduct();
+  const { getProductById, product, productLoading } = useProduct();
   const { setLeadProduct } = useLead();
 
   const handleClickProduct = (productItem: any, priceItem: "P" | "C") => {
     setCustomerTypeUI(priceItem);
-
-    getById(productItem.id);
-
-    setLeadProduct({
-      id: productItem.id,
-      price: productItem.price[priceItem],
-      currency_code: productItem.currency,
-      frequency_code: productItem.frequency,
-      productPlan_id: 0,
-    });
-
-    router.push(`/sale/contract/${priceItem === "C" ? "company" : "customer"}`);
-    return;
+    getProductById(productItem.id, agentId);
   };
 
-  return loading ? (
+  useEffect(() => {
+    if (product.id !== "") {
+      const customerTypeName: "customer" | "company" =
+        customerType === "P" ? "customer" : "company";
+      setLeadProduct({
+        id: product.id,
+        price: product.price[customerTypeName],
+        currency_code: product.currency,
+        frequency_code: product.frequency,
+        productPlan_id: product.plan[customerTypeName].id,
+      });
+      router.push(`/sale/contract/${customerTypeName}`);
+    }
+  }, [product.id, customerType]);
+
+  return loading || productLoading ? (
     <Loading />
   ) : (
     <ContentCenter>

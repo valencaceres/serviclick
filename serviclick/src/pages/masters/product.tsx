@@ -16,8 +16,15 @@ const Product = () => {
 
   const { setTitleUI } = useUI();
   const { listAll: listAllFamilies } = useFamily();
-  const { create, update, deleteById, reset, listAll, getById, product } =
-    useProduct();
+  const {
+    createProduct,
+    updateProduct,
+    deleteProductById,
+    resetProduct,
+    getAllProducts,
+    getProductById,
+    product,
+  } = useProduct();
 
   const [enableSave, setEnableSave] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -27,21 +34,21 @@ const Product = () => {
   };
 
   const handleClickRefresh = () => {
-    listAll();
+    getAllProducts("020579a3-8461-45ec-994b-ad22ff8e3275");
   };
 
   const handleClickBack = () => {
-    reset();
+    resetProduct();
     router.push("/masters/product");
   };
 
   const handleClickNew = () => {
-    reset();
+    resetProduct();
     router.push("/masters/product?id=new");
   };
 
   const addProduct = () => {
-    reset();
+    resetProduct();
     router.push("/masters/product?id=new");
   };
 
@@ -50,16 +57,15 @@ const Product = () => {
   };
 
   const deleteProduct = (id: string) => {
-    deleteById(id);
+    deleteProductById(id);
   };
 
   const handleClickSave = () => {
     if (product.id === "") {
-      create(
+      createProduct(
         product.family_id,
         product.name,
         product.cost,
-        product.price,
         product.isSubject,
         product.frequency,
         product.term,
@@ -67,15 +73,15 @@ const Product = () => {
         product.minInsuredCompanyPrice,
         product.dueDay,
         product.coverages,
-        product.familyValues
+        product.familyValues,
+        product.currency
       );
     } else {
-      update(
+      updateProduct(
         product.id,
         product.family_id,
         product.name,
         product.cost,
-        product.price,
         product.isSubject,
         product.frequency,
         product.term,
@@ -83,7 +89,8 @@ const Product = () => {
         product.minInsuredCompanyPrice,
         product.dueDay,
         product.coverages,
-        product.familyValues
+        product.familyValues,
+        product.currency
       );
     }
     setTimeout(() => {
@@ -93,14 +100,18 @@ const Product = () => {
 
   useEffect(() => {
     setTitleUI("Producto");
-    listAll();
+    getAllProducts("020579a3-8461-45ec-994b-ad22ff8e3275");
     listAllFamilies();
   }, []);
 
   useEffect(() => {
-    reset();
+    resetProduct();
     if (router.query.id !== "" && router.query.id !== "new") {
-      router.query.id && getById(router.query.id?.toString());
+      router.query.id &&
+        getProductById(
+          router.query.id?.toString(),
+          "020579a3-8461-45ec-994b-ad22ff8e3275"
+        );
     }
   }, [router.query]);
 

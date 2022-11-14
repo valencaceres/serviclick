@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment } from "react";
+import { useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
 
 import FloatMenu from "../../components/ui/FloatMenu";

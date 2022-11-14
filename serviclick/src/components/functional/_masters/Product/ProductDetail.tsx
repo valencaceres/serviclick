@@ -28,8 +28,6 @@ import { useFamily, useProduct } from "../../../../hooks";
 
 import { frequencyList, termList } from "../../../../data/masters";
 
-import { CoverageT } from "../../../../redux/slices/productSlice";
-
 import { genetateUUID } from "../../../../utils/functions";
 
 type FamilyValuesDetailT = {
@@ -38,8 +36,18 @@ type FamilyValuesDetailT = {
   isChecked: boolean;
 };
 
+export type CoverageT = {
+  id: string;
+  name: string;
+  amount: string;
+  maximum: string;
+  lack: string;
+  events: string;
+  isCombined: boolean;
+};
+
 const ProductDetail = ({ setEnableSave }: any) => {
-  const { product, set } = useProduct();
+  const { product, setProduct } = useProduct();
   const {
     list: listFamilies,
     getById: getFamilyById,
@@ -153,7 +161,7 @@ const ProductDetail = ({ setEnableSave }: any) => {
 
   const handleValue = (field: string, value: any) => {
     const state = { ...product, [field]: value };
-    set(state);
+    setProduct(state);
   };
 
   const handleChangeFamily = (e: any) => {
@@ -271,7 +279,7 @@ const ProductDetail = ({ setEnableSave }: any) => {
         // product.cost > 0 &&
         // product.price.company > 0 &&
         // product.price.customer > 0 &&
-        product.frequency !== "" &&
+        // product.frequency !== "" &&
         product.term !== "" &&
         product.coverages.length > 0
     );

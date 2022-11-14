@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
 
-import { config } from "../../utils/config";
+import { apiInstance } from "../../utils/api";
 
 export type CoverageT = {
   id: string;
@@ -13,7 +12,7 @@ export type CoverageT = {
   isCombined: boolean;
 };
 
-type PriceT = {
+export type PriceT = {
   customer: number;
   company: number;
 };
@@ -29,7 +28,7 @@ type PlanT = {
   };
 };
 
-type FamilyValueT = {
+export type FamilyValueT = {
   id: string;
   name: string;
 };
@@ -41,13 +40,14 @@ export type ProductT = {
   cost: number;
   isSubject: boolean;
   price: PriceT;
-  frequency: string;
+  frequency: "M" | "A" | "S";
   term: string;
   beneficiaries: number;
-  minInsuredCompanyPrice: number;
-  dueDay: number;
   coverages: CoverageT[];
   familyValues: FamilyValueT[];
+  currency: string;
+  minInsuredCompanyPrice: number;
+  dueDay: number;
   plan: PlanT;
   isActive: boolean;
 };
@@ -55,6 +55,7 @@ export type ProductT = {
 type StateT = {
   list: ProductT[];
   product: ProductT;
+  loading: boolean;
 };
 
 export const initialState: StateT = {
@@ -64,38 +65,53 @@ export const initialState: StateT = {
     family_id: "",
     name: "",
     cost: 0,
-    isSubject: false,
+    isSubject: true,
     price: { customer: 0, company: 0 },
-    plan: { customer: { id: 0, price: 0 }, company: { id: 0, price: 0 } },
-    frequency: "",
+    frequency: "M",
     term: "",
     beneficiaries: 0,
-    minInsuredCompanyPrice: 0,
-    dueDay: 0,
     coverages: [],
     familyValues: [],
+    currency: "",
+    minInsuredCompanyPrice: 0,
+    dueDay: 0,
+    plan: { customer: { id: 0, price: 0 }, company: { id: 0, price: 0 } },
     isActive: true,
   },
+  loading: false,
 };
 
 export const productSlice = createSlice({
   name: "products",
   initialState,
   reducers: {
+    setLoading: (state: StateT, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
     setProductList: (state: StateT, action: PayloadAction<any>) => {
       state.list = action.payload;
+      state.loading = false;
     },
     setProduct: (state: StateT, action: PayloadAction<any>) => {
       state.product = action.payload;
+      state.loading = false;
     },
     resetProduct: (state: StateT) => {
       state.product = initialState.product;
     },
+    resetProductList: (state: StateT) => {
+      state.list = initialState.list;
+    },
   },
 });
 
-export const { setProductList, setProduct, resetProduct } =
-  productSlice.actions;
+export const {
+  setLoading,
+  setProductList,
+  setProduct,
+  resetProduct,
+  resetProductList,
+} = productSlice.actions;
 
 export default productSlice.reducer;
 
@@ -104,7 +120,6 @@ export const createProduct =
     family_id: string,
     name: string,
     cost: number,
-    price: PriceT,
     isSubject: boolean,
     frequency: string,
     term: string,
@@ -112,38 +127,39 @@ export const createProduct =
     minInsuredCompanyPrice: number,
     dueDay: number,
     coverages: CoverageT[],
-    familyValues: FamilyValueT[]
+    familyValues: FamilyValueT[],
+    currency: string
   ) =>
-  (dispatch: any) => {
-    axios
-      .post(
-        `${config.server}/api/product/create`,
-        {
-          family_id,
-          name,
-          cost,
-          customerprice: price.customer,
-          companyprice: price.company,
-          isSubject,
-          frequency,
-          term,
-          beneficiaries,
-          coverages,
-          minInsuredCompanyPrice,
-          dueDay,
-          familyValues,
-        },
-        {
-          headers: {
-            id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-          },
-        }
-      )
-      .then((response) => {
-        dispatch(listProducts());
-        dispatch(setProduct(response.data));
-      })
-      .catch((error) => console.log(error));
+  async (dispatch: any) => {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.post(`/product/create`, {
+      family_id,
+      name,
+      cost,
+      isSubject,
+      frequency,
+      term,
+      beneficiaries,
+      minInsuredCompanyPrice,
+      dueDay,
+      coverages,
+      familyValues,
+      currency,
+    });
+    dispatch(setProduct(data));
+  };
+
+export const assignProductPrices =
+  (id: string, agent_id: string, customerprice: number, companyprice: number) =>
+  async (dispatch: any) => {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.post(`/product/assignPrices`, {
+      id,
+      agent_id,
+      customerprice,
+      companyprice,
+    });
+    dispatch(setProduct(data));
   };
 
 export const updateProduct =
@@ -152,116 +168,68 @@ export const updateProduct =
     family_id: string,
     name: string,
     cost: number,
-    price: PriceT,
     isSubject: boolean,
     frequency: string,
     term: string,
     beneficiaries: number,
+    coverages: CoverageT[],
     minInsuredCompanyPrice: number,
     dueDay: number,
-    coverages: CoverageT[],
-    familyValues: FamilyValueT[]
+    familyValues: FamilyValueT[],
+    currency: string
   ) =>
-  (dispatch: any) => {
-    axios
-      .put(
-        `${config.server}/api/product/update/${id}`,
-        {
-          family_id,
-          name,
-          cost,
-          customerprice: price.customer,
-          companyprice: price.company,
-          isSubject,
-          frequency,
-          term,
-          beneficiaries,
-          coverages,
-          minInsuredCompanyPrice,
-          dueDay,
-          familyValues,
-        },
-        {
-          headers: {
-            id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-          },
-        }
-      )
-      .then((response) => {
-        dispatch(listProducts());
-        dispatch(setProduct(response.data));
-      })
-      .catch((error) => console.log(error));
+  async (dispatch: any) => {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.put(`/product/update/${id}`, {
+      family_id,
+      name,
+      cost,
+      isSubject,
+      frequency,
+      term,
+      beneficiaries,
+      coverages,
+      minInsuredCompanyPrice,
+      dueDay,
+      familyValues,
+      currency,
+    });
+    dispatch(setProduct(data));
   };
 
-export const deleteProduct = (id: string) => (dispatch: any) => {
-  axios
-    .delete(`${config.server}/api/product/delete/${id}`, {
-      headers: {
-        id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-      },
-    })
-    .then(() => {
-      dispatch(listProducts());
-      dispatch(resetProduct());
-    })
-    .catch((error) => console.log(error));
+export const deleteProduct = (id: string) => async (dispatch: any) => {
+  dispatch(setLoading(true));
+  const { data } = await apiInstance.delete(`/product/delete/${id}`);
+  dispatch(resetProduct());
 };
 
-export const getProduct = (id: string) => (dispatch: any) => {
-  axios
-    .get(`${config.server}/api/product/get/${id}`, {
-      headers: {
-        id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-      },
-    })
-    .then((response) => {
-      dispatch(setProduct(response.data));
-    })
-    .catch((error) => console.log(error));
+export const getAllProducts = (agent_id: string) => async (dispatch: any) => {
+  dispatch(setLoading(true));
+  const { data } = await apiInstance.get(`/product/list/${agent_id}`);
+  dispatch(setProductList(data));
 };
 
-export const listProducts = () => (dispatch: any) => {
-  axios
-    .get(`${config.server}/api/product/list`, {
-      headers: {
-        id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-      },
-    })
-    .then((response) => {
-      dispatch(setProductList(response.data));
-    })
-    .catch((error) => console.log(error));
-};
+export const getProductsByFamilyId =
+  (family_id: string, agent_id: string) => async (dispatch: any) => {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.get(
+      `/product/getByFamilyId/${family_id}/${agent_id}`
+    );
+    dispatch(setProductList(data));
+  };
 
-export const getProductsByFamilyId = (family_id: string) => (dispatch: any) => {
-  axios
-    .get(`${config.server}/api/product/getByFamilyId/${family_id}`, {
-      headers: {
-        id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-      },
-    })
-    .then((response) => {
-      dispatch(setProductList(response.data));
-    })
-    .catch((error) => console.log(error));
-};
+export const getProductById =
+  (id: string, agent_id: string) => async (dispatch: any) => {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.get(`/product/get/${id}/${agent_id}`);
+    dispatch(setProduct(data));
+  };
 
-export const createProductPlans =
-  (id: string, dueDay: number, trialCicles: any, discount: any) =>
-  (dispatch: any) => {
-    axios
-      .put(
-        `${config.server}/api/product/createPlans/${id}`,
-        { dueDay, trialCicles, discount },
-        {
-          headers: {
-            id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-          },
-        }
-      )
-      .then((response) => {
-        dispatch(setProductList(response.data));
-      })
-      .catch((error) => console.log(error));
+export const getProductsDescription =
+  (proeduct_id: string) => async (dispatch: any) => {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.get(
+      `/productDescription/getByProductId/${proeduct_id}`
+    );
+    dispatch(setProductList(data));
   };

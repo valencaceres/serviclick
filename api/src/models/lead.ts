@@ -3,22 +3,48 @@ import { format } from "date-fns";
 import pool from "../util/database";
 
 const createModel: any = async (
+  id: string,
   customer_id: string,
   company_id: string,
   agent_id: string
 ) => {
   try {
     const createDate = format(new Date(), "yyyy-MM-dd HH:mm:ss");
-    const result = await pool.query(
-      `
-        INSERT  INTO app.lead(
-                createdate,
-                customer_id,
-                company_id,
-                agent_id) 
-        VALUES( $1, $2, $3, $4) RETURNING *`,
-      [createDate, customer_id, company_id, agent_id]
-    );
+    let result;
+
+    if (id === "") {
+      result = await pool.query(
+        `
+          INSERT  INTO app.lead(
+                  createdate,
+                  customer_id,
+                  company_id,
+                  agent_id) 
+          VALUES( $1, $2, $3, $4) RETURNING *`,
+        [
+          createDate,
+          customer_id === "" ? null : customer_id,
+          company_id === "" ? null : company_id,
+          agent_id,
+        ]
+      );
+    } else {
+      result = await pool.query(
+        `
+          UPDATE  app.lead
+          SET     createdate = $1,
+                  customer_id = $2,
+                  company_id = $3
+          WHERE   id = $4 RETURNING *`,
+        [
+          createDate,
+          customer_id === "" ? null : customer_id,
+          company_id === "" ? null : company_id,
+          id,
+        ]
+      );
+    }
+
     return { success: true, data: result.rows[0], error: null };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
@@ -49,6 +75,7 @@ const getById: any = async (id: string) => {
       `
         SELECT  DISTINCT
                 LEA.id,
+                LEA.agent_id,
                 LEA.createdate,
                 CUS.id AS customer_id,
                 CASE WHEN CUS.rut IS NULL THEN '' ELSE CUS.rut END AS customer_rut,

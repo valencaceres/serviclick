@@ -9,12 +9,12 @@ import { unFormatRut, formatRut } from "../../../../utils/format";
 import { numberRegEx, rutRegEx, emailRegEx } from "../../../../utils/regEx";
 import { rutValidate } from "../../../../utils/validations";
 
-import { useAppSelector } from "../../../../redux/hooks";
+import { useUI } from "../../../../redux/hooks";
 
 import styles from "./Insured.module.scss";
 
 const InsuredDetail = ({ insuredForm, setInsuredForm, register }: any) => {
-  const { isDesktop } = useAppSelector((state) => state.uiSlice);
+  const { isDesktop } = useUI();
 
   const [isEnabled, setIsEnabled] = useState(false);
 

@@ -17,6 +17,7 @@ import {
 import {
   createModel as createLeadInsuredtModel,
   getByLeadId as getInsuredByLeadId,
+  deleteByLeadId as deleteInsuredByLeadId,
 } from "../models/leadInsured";
 import {
   createModel as createLeadBeneficiaryModel,
@@ -82,383 +83,836 @@ type InsuredT = {
   beneficiaries: BeneficiaryT[];
 };
 
-const createController = async (req: any, res: any) => {
-  const { customer, company, product, insured, agent_id, send } = req.body;
+type ProductT = {
+  product_id: string;
+  price: number;
+  currency_code: string;
+  frequency_code: string;
+  productPlan_id: number;
+};
+
+type LeadT = {
+  id: string;
+  customer: CustomerT;
+  company: CompanyT;
+  product: ProductT;
+  insured: InsuredT[];
+  subscription: any;
+};
+
+const initialLeadData: LeadT = {
+  id: "",
+  customer: {
+    id: "",
+    rut: "",
+    name: "",
+    paternalLastName: "",
+    maternalLastName: "",
+    birthDate: "",
+    address: "",
+    district: "",
+    email: "",
+    phone: "",
+  },
+  company: {
+    id: "",
+    rut: "",
+    companyName: "",
+    legalRepresentative: "",
+    line: "",
+    address: "",
+    district: "",
+    email: "",
+    phone: "",
+  },
+  product: {
+    product_id: "",
+    price: 0,
+    currency_code: "",
+    frequency_code: "",
+    productPlan_id: 0,
+  },
+  insured: [],
+  subscription: {},
+};
+
+const errorHandler = (response: any, path: string) => {
+  if (!response.success) {
+    createLogger.error({
+      model: path,
+      error: response.error,
+    });
+    //return { success: false, data: null, error: response.error };
+    throw new Error(
+      JSON.stringify({
+        model: path,
+        error: response.error,
+      })
+    );
+  }
+
+  return { success: true, data: response.data, error: null };
+};
+
+const createCustomer = async (customer: CustomerT) => {
+  const customerResponse = await createCustomerModel(
+    customer.rut,
+    customer.name,
+    customer.paternalLastName,
+    customer.maternalLastName,
+    customer.birthDate,
+    customer.address,
+    customer.district,
+    customer.email,
+    customer.phone
+  );
+  return errorHandler(customerResponse, "lead/createCustomerModel");
+};
+
+const createCompany = async (company: CompanyT) => {
+  const companyResponse = await createCompanyModel(
+    company.rut,
+    company.companyName,
+    company.legalRepresentative,
+    company.line,
+    company.address,
+    company.district,
+    company.email,
+    company.phone
+  );
+  return errorHandler(companyResponse, "lead/createCompanyModel");
+};
+
+const createProduct = async (id: string, product: any) => {
+  const leadProductResponse = await createLeadProductModel(
+    id,
+    product.id,
+    product.price,
+    product.currency_code,
+    product.frequency_code,
+    product.productPlan_id
+  );
+  return errorHandler(leadProductResponse, "lead/createLeadProductModel");
+};
+
+const createLead = async (
+  id: string,
+  agent_id: string,
+  customer_id: string,
+  company_id: string
+) => {
+  const leadResponse = await createLeadModel(
+    id,
+    customer_id,
+    company_id,
+    agent_id
+  );
+  return errorHandler(leadResponse, "lead/createLeadModel");
+};
+
+const deleteLeadInsured = async (id: string) => {
+  const deleteInsuredResponse = await deleteInsuredByLeadId(id);
+  return errorHandler(deleteInsuredResponse, "lead/deleteInsuredByLeadId");
+};
+
+const createInsured = async (insured: InsuredT) => {
+  const insuredResponse = await createInsuredModel(
+    insured.rut,
+    insured.name,
+    insured.paternalLastName,
+    insured.maternalLastName,
+    insured.birthDate,
+    insured.address,
+    insured.district,
+    insured.email,
+    insured.phone
+  );
+  return errorHandler(insuredResponse, "lead/createInsuredModel");
+};
+
+const createLeadInsured = async (id: string, insured_id: string) => {
+  const leadInsuredResponse = await createLeadInsuredtModel(id, insured_id);
+  return errorHandler(leadInsuredResponse, "lead/createLeadInsuredtModel");
+};
+
+const deleteLeadBeneficiaries = async (id: string, insured_id: string) => {
+  const deleteBeneficiariesResponse = await deleteBeneficiariesByLeadId(
+    id,
+    insured_id
+  );
+  return errorHandler(
+    deleteBeneficiariesResponse,
+    "lead/deleteBeneficiariesByLeadId"
+  );
+};
+
+const createBeneficiary = async (beneficiary: BeneficiaryT) => {
+  const beneficiaryResponse = await createBeneficiaryModel(
+    beneficiary.rut,
+    beneficiary.name,
+    beneficiary.paternalLastName,
+    beneficiary.maternalLastName,
+    beneficiary.birthDate,
+    beneficiary.address,
+    beneficiary.district,
+    beneficiary.email,
+    beneficiary.phone
+  );
+  return errorHandler(beneficiaryResponse, "lead/createBeneficiaryModel");
+};
+
+const createLeadBeneficiary = async (
+  id: string,
+  insured_id: string,
+  beneficiary_id: string
+) => {
+  const leadbeneficiaryResponse = await createLeadBeneficiaryModel(
+    id,
+    insured_id,
+    beneficiary_id
+  );
+  return errorHandler(leadbeneficiaryResponse, "lead/createBeneficiaryModel");
+};
+
+const sendPaymentLink = async (lead: LeadT) => {
+  const {
+    success,
+    data: product,
+    error,
+  } = await getProduct(lead.product.product_id);
+
+  if (!success) {
+    createLogger.error({
+      model: "model/getProduct",
+      error,
+    });
+    return { success, data: null, error };
+  }
+
+  sendMail(
+    { name: "Bienvenido a ServiClick" },
+    lead.customer.email || lead.company.email,
+    `Link de pago para ${product.name}`,
+    `<b>Hola&nbsp;${
+      lead.company.rut ? lead.company.companyName : lead.customer.name
+    }</b><br/><br/>Queremos que seas parte de ServiClick y solo estás a un paso, te dejamos el link de pago para que puedas completar la adquisición de ${
+      product.name
+    } y disfrutes de los beneficios que te brinda:<br/><br/><a href="https://web.serviclick.cl/payment/${
+      lead.customer.rut ? "customer" : "company"
+    }/${lead.product.product_id}?leadId=${
+      lead.id
+    }">Concluye tu proceso de pago haciendo click aquí</a><br/><br/>Por que sabemos de asistencias, nos enfocamos en resolver todas las necesidades que te ayuden a vivir más tranquilo y seguro.<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
+    []
+  );
+};
+
+const createSubscription = async (
+  lead_id: string,
+  customer: CustomerT,
+  company: CompanyT,
+  product: ProductT,
+  insured: InsuredT[]
+) => {
   try {
-    const insuredData: InsuredT[] = [];
+    const contractor = customer.rut !== "" ? customer : company;
 
-    let customer_id: string | null = null;
-    let company_id: string | null = null;
-    let contractor: any;
+    const name =
+      customer.rut !== ""
+        ? customer.name +
+          " " +
+          customer.paternalLastName +
+          " " +
+          customer.maternalLastName
+        : company.companyName;
+    const address = contractor.address + ", " + contractor.district;
 
-    if (customer.rut !== "") {
-      const customerResponse = await createCustomerModel(
-        customer.rut,
-        customer.name,
-        customer.paternalLastName,
-        customer.maternalLastName,
-        customer.birthDate,
-        customer.address,
-        customer.district,
-        customer.email,
-        customer.phone
-      );
-
-      if (!customerResponse.success) {
-        createLogger.error({
-          model: "lead/createCustomerModel",
-          error: customerResponse.error,
-        });
-        res
-          .status(500)
-          .json({ error: "createCustomerModel: " + customerResponse.error });
-        return;
-      }
-
-      contractor = customerResponse.data;
-      customer_id = contractor.id;
-    }
-
-    if (company.rut !== "") {
-      const companyResponse = await createCompanyModel(
-        company.rut,
-        company.companyName,
-        company.legalRepresentative,
-        company.line,
-        company.address,
-        company.district,
-        company.email,
-        company.phone
-      );
-
-      if (!companyResponse.success) {
-        createLogger.error({
-          model: "lead/createCompanyModel",
-          error: companyResponse.error,
-        });
-        res
-          .status(500)
-          .json({ error: "createCompapyModel: " + companyResponse.error });
-        return;
-      }
-
-      contractor = companyResponse.data;
-      company_id = contractor.id;
-    }
-
-    const leadResponse = await createLeadModel(
-      customer_id,
-      company_id,
-      agent_id
-    );
-
-    if (!leadResponse.success) {
-      createLogger.error({
-        model: "lead/createLeadModel",
-        error: leadResponse.error,
-      });
-      res.status(500).json({ error: "createLeadModel: " + leadResponse.error });
-      return;
-    }
-
-    const { id: lead_id, createdate } = leadResponse.data;
-
-    const leadProductResponse = await createLeadProductModel(
-      lead_id,
-      product.id,
-      product.price,
-      product.currency_code,
-      product.frequency_code,
-      product.productPlan_id
-    );
-
-    if (!leadProductResponse.success) {
-      createLogger.error({
-        model: "lead/createLeadProductModel",
-        error: leadProductResponse.error,
-      });
-      res.status(500).json({
-        error: "createLeadProductModel: " + leadProductResponse.error,
-      });
-      return;
-    }
-
-    const productResponse = await getProduct(product.id);
-
-    if (!productResponse.success) {
-      createLogger.error({
-        model: "product/getProduct",
-        error: productResponse.error,
-      });
-      res.status(500).json({
-        error: "createLeadProductModel: " + productResponse.error,
-      });
-      return;
-    }
-
-    insured.map(async (item: any) => {
-      const insuredResponse = await createInsuredModel(
-        item.rut,
-        item.name,
-        item.paternalLastName,
-        item.maternalLastName,
-        item.birthDate,
-        item.address,
-        item.district,
-        item.email,
-        item.phone
-      );
-
-      if (!insuredResponse.success) {
-        createLogger.error({
-          model: "lead/createInsuredModel",
-          error: insuredResponse.error,
-        });
-        res
-          .status(500)
-          .json({ error: "createInsuredModel: " + insuredResponse.error });
-        return;
-      }
-
-      const { id: insured_id } = insuredResponse.data;
-
-      const leadInsuredResponse = await createLeadInsuredtModel(
-        lead_id,
-        insured_id
-      );
-
-      if (!leadInsuredResponse.success) {
-        createLogger.error({
-          model: "lead/createLeadInsuredModel",
-          error: leadInsuredResponse.error,
-        });
-        res.status(500).json({
-          error: "createLeadInsuredModel: " + leadInsuredResponse.error,
-        });
-        return;
-      }
-
-      const responseBeneficiaries = await addBeneficiariesData(
-        item.beneficiaries,
-        lead_id,
-        insured_id
-      );
-
-      if (!responseBeneficiaries.success) {
-        createLogger.error({
-          model: "lead/addBeneficiariesData",
-          error: responseBeneficiaries.error,
-        });
-        res.status(500).json({
-          error: "createLeadBeneficiary: " + responseBeneficiaries.error,
-        });
-        return;
-      }
-
-      insuredData.push({
-        id: insuredResponse.data.id,
-        rut: insuredResponse.data.rut,
-        name: insuredResponse.data.name,
-        paternalLastName: insuredResponse.data.paternallastname,
-        maternalLastName: insuredResponse.data.maternallastname,
-        birthDate: insuredResponse.data.birthdate,
-        address: insuredResponse.data.address,
-        district: insuredResponse.data.district,
-        email: insuredResponse.data.email,
-        phone: insuredResponse.data.phone,
-        beneficiaries: responseBeneficiaries.data
-          ? responseBeneficiaries.data
-          : [],
-      });
+    createLogger.info({
+      url: config.reveniu.URL.subscription,
+      method: "POST",
+      body: {
+        plan_id: product.productPlan_id,
+        field_values: {
+          email: contractor.email,
+          name,
+          amount: product.price * insured.length,
+          address,
+          rut: contractor.rut,
+          phone: contractor.phone,
+        },
+      },
+      params: "",
+      query: "",
     });
 
-    let subscriptionData: any | null = null;
-
-    if (!send) {
-      const name =
-        customer.rut !== ""
-          ? contractor.name +
-            " " +
-            contractor.paternalLastName +
-            " " +
-            contractor.maternalLastName
-          : contractor.companyName;
-      const address = contractor.address + ", " + contractor.district;
-
-      createLogger.info({
-        url: config.reveniu.URL.subscription,
-        method: "POST",
-        body: {
-          plan_id: product.productPlan_id,
-          field_values: {
-            email: contractor.email,
-            name,
-            amount: product.price * insured.length,
-            address,
-            rut: contractor.rut,
-            phone: contractor.phone,
-          },
+    const subscriptionReveniuResponse = await axios.post(
+      config.reveniu.URL.subscription,
+      {
+        plan_id: product.productPlan_id,
+        field_values: {
+          email: contractor.email,
+          name,
+          amount: product.price * insured.length,
+          address,
+          rut: contractor.rut,
+          phone: contractor.phone,
         },
-        params: "",
-        query: "",
-      });
+      },
+      {
+        headers: config.reveniu.apiKey,
+      }
+    );
 
-      const subscriptionReveniuResponse = await axios.post(
-        config.reveniu.URL.subscription,
-        {
-          plan_id: product.productPlan_id,
-          field_values: {
-            email: contractor.email,
-            name,
-            amount: product.price * insured.length,
-            address,
-            rut: contractor.rut,
-            phone: contractor.phone,
-          },
-        },
-        {
-          headers: config.reveniu.apiKey,
-        }
-      );
+    const {
+      id: subscription_id,
+      completion_url,
+      security_token,
+      status_code,
+    } = subscriptionReveniuResponse.data;
 
-      const {
-        id: subscription_id,
-        completion_url,
-        security_token,
-        status_code,
-      } = subscriptionReveniuResponse.data;
-
-      createLogger.info({
-        url: config.webHook.URL.reveniu,
-        method: "POST",
-        body: {
-          data: {
-            data: {
-              subscription_id,
-              lead_id,
-            },
-          },
-        },
-        params: "",
-        query: "",
-      });
-
-      const webhookResponse = await axios.post(config.webHook.URL.reveniu, {
+    createLogger.info({
+      url: config.webHook.URL.reveniu,
+      method: "POST",
+      body: {
         data: {
           data: {
             subscription_id,
             lead_id,
           },
         },
-      });
+      },
+      params: "",
+      query: "",
+    });
 
-      subscriptionData = {
+    const webhookResponse = await axios.post(config.webHook.URL.reveniu, {
+      data: {
+        data: {
+          subscription_id,
+          lead_id,
+        },
+      },
+    });
+
+    return {
+      success: true,
+      data: {
         id: subscription_id,
         completion_url,
         security_token,
         status_code,
+      },
+      error: null,
+    };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+const create = async (lead: any) => {
+  try {
+    const { id, customer, company, product, insured, agent_id } = lead;
+
+    let leadDataResponse: LeadT = initialLeadData;
+
+    if (customer.rut !== "") {
+      const { data: customerData } = await createCustomer(customer);
+      leadDataResponse = { ...leadDataResponse, customer: customerData };
+    }
+
+    if (company.rut !== "") {
+      const { data: conpanyData } = await createCompany(company);
+      leadDataResponse = { ...leadDataResponse, company: conpanyData };
+    }
+
+    const { data: leadData } = await createLead(
+      id,
+      agent_id,
+      leadDataResponse.customer.id,
+      leadDataResponse.company.id
+    );
+    leadDataResponse = { ...leadDataResponse, id: leadData.id };
+
+    const { data: leadProductData } = await createProduct(
+      leadDataResponse.id,
+      product
+    );
+    leadDataResponse = { ...leadDataResponse, product: leadProductData };
+
+    const { data: leadInsuredDelete } = await deleteLeadInsured(
+      leadDataResponse.id
+    );
+
+    for (const item of insured) {
+      const { data: insuredData } = await createInsured(item);
+
+      const { data: leadInsuredData } = await createLeadInsured(
+        leadDataResponse.id,
+        insuredData.id
+      );
+
+      const { data: leadBeneficiaryDelete } = await deleteLeadBeneficiaries(
+        leadDataResponse.id,
+        insuredData.id
+      );
+
+      const newInsured = { ...insuredData, beneficiaries: [] };
+      for (const beneficiary of item.beneficiaries) {
+        const { data: beneficiaryData } = await createBeneficiary(beneficiary);
+
+        const { data: leadBeneficiaryData } = await createLeadBeneficiary(
+          leadDataResponse.id,
+          insuredData.id,
+          beneficiaryData.id
+        );
+
+        newInsured.beneficiaries.push(beneficiaryData);
+      }
+
+      leadDataResponse = {
+        ...leadDataResponse,
+        insured: [...leadDataResponse.insured, newInsured],
       };
     }
 
-    const leadResponseData = {
-      id: lead_id,
-      date: createdate,
-      customer:
-        customer.rut !== ""
-          ? {
-              id: contractor.id,
-              rut: contractor.rut,
-              name: contractor.name,
-              paternalLastName: contractor.paternallastname,
-              maternalLastName: contractor.maternallastname,
-              birthDate: contractor.birthdate,
-              address: contractor.address,
-              district: contractor.district,
-              email: contractor.email,
-              phone: contractor.phone,
-            }
-          : {
-              id: "",
-              rut: "",
-              name: "",
-              paternalLastName: "",
-              maternalLastName: "",
-              birthDate: "",
-              address: "",
-              district: "",
-              email: "",
-              phone: "",
-            },
-      company:
-        company.rut !== ""
-          ? {
-              id: contractor.id,
-              rut: contractor.rut,
-              companyName: contractor.companyname,
-              legalRepresentative: contractor.legalrepresentative,
-              line: contractor.line,
-              address: contractor.address,
-              district: contractor.district,
-              email: contractor.email,
-              phone: contractor.phone,
-            }
-          : {
-              id: "",
-              rut: "",
-              companyName: "",
-              legalRepresentative: "",
-              line: "",
-              address: "",
-              district: "",
-              email: "",
-              phone: "",
-            },
-      product: {
-        id: leadProductResponse.data.product_id,
-        price: leadProductResponse.data.price,
-        currency_code: leadProductResponse.data.currency_code,
-        frequency_code: leadProductResponse.data.frequency_code,
-        productPlan_id: leadProductResponse.data.productplan_id,
-      },
-      insured: insuredData,
-      subscription: subscriptionData,
-      isActive: true,
-    };
-
-    // <b>Hola&nbsp;${companyResponse.data.companyName}</b><br/><br/>Bienvenido a ServiClick, a continuación te detallamos los datos de acceso a nuestra plataforma para que puedas completar o modificar la información que requieras:<br/><br/><b>https://empresa.serviclick.cl</b><br/><br/><b>Login:</b>&nbsp;${companyResponse.data.email}<br/><b>Password</b>:&nbsp;${generatedPassword}<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>
-
-    if (send) {
-      sendMail(
-        { name: "Bienvenido a ServiClick" },
-        customer.email || company.email,
-        `Link de pago para ${productResponse.data.name}`,
-        `<b>Hola&nbsp;${
-          company.rut ? contractor.companyname : contractor.name
-        }</b><br/><br/>Queremos que seas parte de ServiClick y solo estás a un paso, te dejamos el link de pago para que puedas completar la adquisición de ${
-          productResponse.data.name
-        } y disfrutes de los beneficios que te brinda:<br/><br/><a href="https://web.serviclick.cl/payment/${
-          customer.rut ? "customer" : "company"
-        }/${
-          leadProductResponse.data.product_id
-        }?leadId=${lead_id}">Concluye tu proceso de pago haciendo click aquí</a><br/><br/>Por que sabemos de asistencias, nos enfocamos en resolver todas las necesidades que te ayuden a vivir más tranquilo y seguro.<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
-        []
-      );
-    }
-
-    createLogger.info({
-      controller: "lead/createController",
-      message: "OK",
-    });
-    res.status(200).json(leadResponseData);
-  } catch (error) {
-    createLogger.error({
-      controller: "lead/CreateController",
-      error: (error as Error).message,
-    });
-    res.status(500).json({ error });
-    return;
+    return { success: true, data: leadDataResponse, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
   }
 };
+
+const createController = async (req: any, res: any) => {
+  const {
+    id,
+    customer,
+    company,
+    product,
+    insured,
+    agent_id,
+    send,
+    subscription,
+  } = req.body;
+
+  let { success, data, error } = await create({
+    id,
+    customer,
+    company,
+    product,
+    insured,
+    agent_id,
+  });
+
+  if (!success || !data) {
+    res.status(500).json(JSON.parse(error || ""));
+    return;
+  }
+
+  if (send) {
+    sendPaymentLink(data);
+  }
+
+  if (subscription) {
+    const subscriptionResponse = await createSubscription(
+      data.id,
+      data.customer,
+      data.company,
+      product,
+      data.insured
+    );
+
+    if (!subscriptionResponse.success) {
+      res
+        .status(500)
+        .json({ error: "createSubscription: " + subscriptionResponse.error });
+      return;
+    }
+
+    data = { ...data, subscription: subscriptionResponse.data };
+  }
+
+  createLogger.info({
+    controller: "lead/createController",
+    message: "OK",
+  });
+  res.status(200).json(data);
+};
+
+// const createController = async (req: any, res: any) => {
+//   const { customer, company, product, insured, agent_id, send } = req.body;
+//   try {
+//     const insuredData: InsuredT[] = [];
+
+//     let customer_id: string | null = null;
+//     let company_id: string | null = null;
+//     let contractor: any;
+
+//     if (customer.rut !== "") {
+//       const customerResponse = await createCustomerModel(
+//         customer.rut,
+//         customer.name,
+//         customer.paternalLastName,
+//         customer.maternalLastName,
+//         customer.birthDate,
+//         customer.address,
+//         customer.district,
+//         customer.email,
+//         customer.phone
+//       );
+
+//       if (!customerResponse.success) {
+//         createLogger.error({
+//           model: "lead/createCustomerModel",
+//           error: customerResponse.error,
+//         });
+//         res
+//           .status(500)
+//           .json({ error: "createCustomerModel: " + customerResponse.error });
+//         return;
+//       }
+
+//       contractor = customerResponse.data;
+//       customer_id = contractor.id;
+//     }
+
+//     if (company.rut !== "") {
+//       const companyResponse = await createCompanyModel(
+//         company.rut,
+//         company.companyName,
+//         company.legalRepresentative,
+//         company.line,
+//         company.address,
+//         company.district,
+//         company.email,
+//         company.phone
+//       );
+
+//       if (!companyResponse.success) {
+//         createLogger.error({
+//           model: "lead/createCompanyModel",
+//           error: companyResponse.error,
+//         });
+//         res
+//           .status(500)
+//           .json({ error: "createCompapyModel: " + companyResponse.error });
+//         return;
+//       }
+
+//       contractor = companyResponse.data;
+//       company_id = contractor.id;
+//     }
+
+//     const leadResponse = await createLeadModel(
+//       customer_id,
+//       company_id,
+//       agent_id
+//     );
+
+//     if (!leadResponse.success) {
+//       createLogger.error({
+//         model: "lead/createLeadModel",
+//         error: leadResponse.error,
+//       });
+//       res.status(500).json({ error: "createLeadModel: " + leadResponse.error });
+//       return;
+//     }
+
+//     const { id: lead_id, createdate } = leadResponse.data;
+
+//     const leadProductResponse = await createLeadProductModel(
+//       lead_id,
+//       product.id,
+//       product.price,
+//       product.currency_code,
+//       product.frequency_code,
+//       product.productPlan_id
+//     );
+
+//     if (!leadProductResponse.success) {
+//       createLogger.error({
+//         model: "lead/createLeadProductModel",
+//         error: leadProductResponse.error,
+//       });
+//       res.status(500).json({
+//         error: "createLeadProductModel: " + leadProductResponse.error,
+//       });
+//       return;
+//     }
+
+//     const productResponse = await getProduct(product.id);
+
+//     if (!productResponse.success) {
+//       createLogger.error({
+//         model: "product/getProduct",
+//         error: productResponse.error,
+//       });
+//       res.status(500).json({
+//         error: "createLeadProductModel: " + productResponse.error,
+//       });
+//       return;
+//     }
+
+//     insured.map(async (item: any) => {
+//       const insuredResponse = await createInsuredModel(
+//         item.rut,
+//         item.name,
+//         item.paternalLastName,
+//         item.maternalLastName,
+//         item.birthDate,
+//         item.address,
+//         item.district,
+//         item.email,
+//         item.phone
+//       );
+
+//       if (!insuredResponse.success) {
+//         createLogger.error({
+//           model: "lead/createInsuredModel",
+//           error: insuredResponse.error,
+//         });
+//         res
+//           .status(500)
+//           .json({ error: "createInsuredModel: " + insuredResponse.error });
+//         return;
+//       }
+
+//       const { id: insured_id } = insuredResponse.data;
+
+//       const leadInsuredResponse = await createLeadInsuredtModel(
+//         lead_id,
+//         insured_id
+//       );
+
+//       if (!leadInsuredResponse.success) {
+//         createLogger.error({
+//           model: "lead/createLeadInsuredModel",
+//           error: leadInsuredResponse.error,
+//         });
+//         res.status(500).json({
+//           error: "createLeadInsuredModel: " + leadInsuredResponse.error,
+//         });
+//         return;
+//       }
+
+//       const responseBeneficiaries = await addBeneficiariesData(
+//         item.beneficiaries,
+//         lead_id,
+//         insured_id
+//       );
+
+//       if (!responseBeneficiaries.success) {
+//         createLogger.error({
+//           model: "lead/addBeneficiariesData",
+//           error: responseBeneficiaries.error,
+//         });
+//         res.status(500).json({
+//           error: "createLeadBeneficiary: " + responseBeneficiaries.error,
+//         });
+//         return;
+//       }
+
+//       insuredData.push({
+//         id: insuredResponse.data.id,
+//         rut: insuredResponse.data.rut,
+//         name: insuredResponse.data.name,
+//         paternalLastName: insuredResponse.data.paternallastname,
+//         maternalLastName: insuredResponse.data.maternallastname,
+//         birthDate: insuredResponse.data.birthdate,
+//         address: insuredResponse.data.address,
+//         district: insuredResponse.data.district,
+//         email: insuredResponse.data.email,
+//         phone: insuredResponse.data.phone,
+//         beneficiaries: responseBeneficiaries.data
+//           ? responseBeneficiaries.data
+//           : [],
+//       });
+//     });
+
+//     let subscriptionData: any | null = null;
+
+//     if (!send) {
+//       const name =
+//         customer.rut !== ""
+//           ? contractor.name +
+//             " " +
+//             contractor.paternalLastName +
+//             " " +
+//             contractor.maternalLastName
+//           : contractor.companyName;
+//       const address = contractor.address + ", " + contractor.district;
+
+//       createLogger.info({
+//         url: config.reveniu.URL.subscription,
+//         method: "POST",
+//         body: {
+//           plan_id: product.productPlan_id,
+//           field_values: {
+//             email: contractor.email,
+//             name,
+//             amount: product.price * insured.length,
+//             address,
+//             rut: contractor.rut,
+//             phone: contractor.phone,
+//           },
+//         },
+//         params: "",
+//         query: "",
+//       });
+
+//       const subscriptionReveniuResponse = await axios.post(
+//         config.reveniu.URL.subscription,
+//         {
+//           plan_id: product.productPlan_id,
+//           field_values: {
+//             email: contractor.email,
+//             name,
+//             amount: product.price * insured.length,
+//             address,
+//             rut: contractor.rut,
+//             phone: contractor.phone,
+//           },
+//         },
+//         {
+//           headers: config.reveniu.apiKey,
+//         }
+//       );
+
+//       const {
+//         id: subscription_id,
+//         completion_url,
+//         security_token,
+//         status_code,
+//       } = subscriptionReveniuResponse.data;
+
+//       createLogger.info({
+//         url: config.webHook.URL.reveniu,
+//         method: "POST",
+//         body: {
+//           data: {
+//             data: {
+//               subscription_id,
+//               lead_id,
+//             },
+//           },
+//         },
+//         params: "",
+//         query: "",
+//       });
+
+//       const webhookResponse = await axios.post(config.webHook.URL.reveniu, {
+//         data: {
+//           data: {
+//             subscription_id,
+//             lead_id,
+//           },
+//         },
+//       });
+
+//       subscriptionData = {
+//         id: subscription_id,
+//         completion_url,
+//         security_token,
+//         status_code,
+//       };
+//     }
+
+//     const leadResponseData = {
+//       id: lead_id,
+//       date: createdate,
+//       customer:
+//         customer.rut !== ""
+//           ? {
+//               id: contractor.id,
+//               rut: contractor.rut,
+//               name: contractor.name,
+//               paternalLastName: contractor.paternallastname,
+//               maternalLastName: contractor.maternallastname,
+//               birthDate: contractor.birthdate,
+//               address: contractor.address,
+//               district: contractor.district,
+//               email: contractor.email,
+//               phone: contractor.phone,
+//             }
+//           : {
+//               id: "",
+//               rut: "",
+//               name: "",
+//               paternalLastName: "",
+//               maternalLastName: "",
+//               birthDate: "",
+//               address: "",
+//               district: "",
+//               email: "",
+//               phone: "",
+//             },
+//       company:
+//         company.rut !== ""
+//           ? {
+//               id: contractor.id,
+//               rut: contractor.rut,
+//               companyName: contractor.companyname,
+//               legalRepresentative: contractor.legalrepresentative,
+//               line: contractor.line,
+//               address: contractor.address,
+//               district: contractor.district,
+//               email: contractor.email,
+//               phone: contractor.phone,
+//             }
+//           : {
+//               id: "",
+//               rut: "",
+//               companyName: "",
+//               legalRepresentative: "",
+//               line: "",
+//               address: "",
+//               district: "",
+//               email: "",
+//               phone: "",
+//             },
+//       product: {
+//         id: leadProductResponse.data.product_id,
+//         price: leadProductResponse.data.price,
+//         currency_code: leadProductResponse.data.currency_code,
+//         frequency_code: leadProductResponse.data.frequency_code,
+//         productPlan_id: leadProductResponse.data.productplan_id,
+//       },
+//       insured: insuredData,
+//       subscription: subscriptionData,
+//       isActive: true,
+//     };
+
+//     // <b>Hola&nbsp;${companyResponse.data.companyName}</b><br/><br/>Bienvenido a ServiClick, a continuación te detallamos los datos de acceso a nuestra plataforma para que puedas completar o modificar la información que requieras:<br/><br/><b>https://empresa.serviclick.cl</b><br/><br/><b>Login:</b>&nbsp;${companyResponse.data.email}<br/><b>Password</b>:&nbsp;${generatedPassword}<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>
+
+//     if (send) {
+//       sendMail(
+//         { name: "Bienvenido a ServiClick" },
+//         customer.email || company.email,
+//         `Link de pago para ${productResponse.data.name}`,
+//         `<b>Hola&nbsp;${
+//           company.rut ? contractor.companyname : contractor.name
+//         }</b><br/><br/>Queremos que seas parte de ServiClick y solo estás a un paso, te dejamos el link de pago para que puedas completar la adquisición de ${
+//           productResponse.data.name
+//         } y disfrutes de los beneficios que te brinda:<br/><br/><a href="https://web.serviclick.cl/payment/${
+//           customer.rut ? "customer" : "company"
+//         }/${
+//           leadProductResponse.data.product_id
+//         }?leadId=${lead_id}">Concluye tu proceso de pago haciendo click aquí</a><br/><br/>Por que sabemos de asistencias, nos enfocamos en resolver todas las necesidades que te ayuden a vivir más tranquilo y seguro.<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
+//         []
+//       );
+//     }
+
+//     createLogger.info({
+//       controller: "lead/createController",
+//       message: "OK",
+//     });
+//     res.status(200).json(leadResponseData);
+//   } catch (error) {
+//     createLogger.error({
+//       controller: "lead/CreateController",
+//       error: (error as Error).message,
+//     });
+//     res.status(500).json({ error });
+//     return;
+//   }
+// };
 
 const getByIdController = async (req: any, res: any) => {
   const { id } = req.params;
@@ -514,6 +968,7 @@ const getData = async (leadResponse: any, res: any) => {
   try {
     const {
       id,
+      agent_id,
       createdate,
       customer_id,
       customer_rut,
@@ -643,7 +1098,8 @@ const getData = async (leadResponse: any, res: any) => {
     });
 
     const leadResponseData = {
-      id: id,
+      id,
+      agent_id,
       date: createdate,
       customer: {
         id: customer_id,

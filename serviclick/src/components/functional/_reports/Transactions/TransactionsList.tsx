@@ -17,6 +17,7 @@ import {
   TableRow,
   TableCell,
   TableIcons,
+  TableCellEnd,
 } from "../../../ui/Table";
 
 import {
@@ -56,7 +57,7 @@ const TransactionsList = ({ search }: any) => {
   const periods = [
     { id: "d", name: "Hoy" },
     { id: "w", name: "Esta semana" },
-    { id: "m", name: "Septiembre 2022" },
+    { id: "m", name: "Noviembre 2022" },
     { id: "y", name: "Año 2022" },
   ];
 
@@ -200,11 +201,11 @@ const TransactionsList = ({ search }: any) => {
           </TableCell>
           <TableCell width="95px">Fecha</TableCell>
           <TableCell width="55px">Hora</TableCell>
-          <TableCell width="421px">Cliente</TableCell>
-          <TableCell width="197px">Producto</TableCell>
-          <TableCell width="83px">N° Aseg.</TableCell>
-          <TableCell width="72px">Estado</TableCell>
-          <TableCell width="137px">Monto</TableCell>
+          <TableCell width="321px">Cliente</TableCell>
+          <TableCell width="299px">Producto</TableCell>
+          <TableCell width="155px">Estado</TableCell>
+          <TableCell width="129px">Monto</TableCell>
+          <TableCellEnd />
           {/* <TableCell width="49px"></TableCell> */}
         </TableHeader>
         <TableDetail>
@@ -219,13 +220,12 @@ const TransactionsList = ({ search }: any) => {
               <TableCell width="55px" align="center">
                 {transaction.time}
               </TableCell>
-              <TableCell width="421px">{transaction.client_name}</TableCell>
-              <TableCell width="197px">{transaction.product_name}</TableCell>
-              <TableCell width="83px" align="flex-end">
-                {transaction.num_insured}
+              <TableCell width="321px">{transaction.contractor_name}</TableCell>
+              <TableCell width="299px">{transaction.product_name}</TableCell>
+              <TableCell width="155px">
+                {transaction.subscription_status_name}
               </TableCell>
-              <TableCell width="72px">{transaction.status_name}</TableCell>
-              <TableCell width="130px" align="flex-end">
+              <TableCell width="129px" align="flex-end">
                 {currencyFormat(transaction.amount)}
               </TableCell>
               {/* <TableCell width="45px" align="center">
@@ -239,7 +239,6 @@ const TransactionsList = ({ search }: any) => {
       </Table>
       <ContentRow gap="5px">
         <ContentCellSummary>{resume.records} registros</ContentCellSummary>
-        <ContentCellSummary>{resume.insured} asegurados</ContentCellSummary>
         <ContentCellSummary>
           {currencyFormat(resume.total)} Total
         </ContentCellSummary>

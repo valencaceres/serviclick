@@ -11,27 +11,17 @@ import Resume from "../../../components/functional/Wizard/Resume";
 
 import Loading from "../../../components/ui/Loading";
 
-import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { getProduct } from "../../../redux/slices/productSlice";
-import { setStage } from "../../../redux/slices/stageSlice";
-import {
-  setLeadProduct,
-  resetLead,
-  getLeadById,
-} from "../../../redux/slices/leadSlice";
-
-import { useUI, useSubscription } from "../../../redux/hooks";
+import { useUI, useStage, useProduct, useLead } from "../../../redux/hooks";
 
 const Value: NextPage = () => {
   const router = useRouter();
-  const dispatch = useAppDispatch();
 
-  const { product } = useAppSelector((state) => state.productSlice);
-  const { stage } = useAppSelector((state) => state.stageSlice);
-  const { lead } = useAppSelector((state) => state.leadSlice);
+  const { stage, setStage } = useStage();
+  const { getProductById, product } = useProduct();
+  const { lead, setLeadAgent, setLeadProduct, resetLead, getLeadById } =
+    useLead();
 
   const { agentId, setAgentUI } = useUI();
-  const { getActiveSubscriptions, active } = useSubscription();
 
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -70,37 +60,52 @@ const Value: NextPage = () => {
 
   useEffect(() => {
     agentId === "" && setAgentUI("020579a3-8461-45ec-994b-ad22ff8e3275");
+    resetLead();
+    setLeadAgent(agentId);
   }, []);
-
-  useEffect(() => {
-    dispatch(resetLead());
-  }, [dispatch]);
 
   useEffect(() => {
     if (router.isReady) {
       const { stage, id, type, leadId } = router.query;
-      dispatch(getProduct(id ? id.toString() : ""));
-      dispatch(setStage({ name: stage, type }));
-      if (leadId) {
-        dispatch(getLeadById(leadId ? leadId.toString() : ""));
+
+      if (
+        (stage === "contract" ||
+          stage === "insured" ||
+          stage === "beneficiary" ||
+          stage === "payment" ||
+          stage === "resume") &&
+        (type === "customer" || type === "company")
+      ) {
+        setStage({ name: stage, type });
+
+        getProductById(id ? id.toString() : "", agentId);
+
+        if (leadId) {
+          getLeadById(leadId ? leadId.toString() : "");
+        }
+        setIsLoaded(true);
       }
-      setIsLoaded(true);
     }
-  }, [dispatch, router]);
+  }, [router]);
 
   useEffect(() => {
     if (product.id && stage) {
-      dispatch(
-        setLeadProduct({
-          id: product.id,
-          price: product.price[stage.type],
-          currency_code: product.currency,
-          frequency_code: product.frequency,
-          productPlan_id: product.plan[stage.type].id,
-        })
-      );
+      setLeadProduct({
+        id: product.id,
+        price: product.price[stage.type],
+        currency_code: product.currency,
+        frequency_code: product.frequency,
+        productPlan_id: product.plan[stage.type].id,
+      });
     }
-  }, [dispatch, product, stage]);
+  }, [product, stage]);
+
+  useEffect(() => {
+    if (lead.id) {
+      setAgentUI(lead.agent_id);
+      getProductById(lead.product.id, lead.agent_id);
+    }
+  }, [lead.id]);
 
   const stateMachine = {
     contract: {

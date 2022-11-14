@@ -15,20 +15,22 @@ import texts from "../../../../utils/texts";
 
 import DonationBadge from "../../DonationBadge";
 
-import { useAppSelector } from "../../../../redux/hooks";
-
 import styles from "./Payment.module.scss";
 
-import { useUI, useProduct, useDonation } from "../../../../redux/hooks";
+import {
+  useUI,
+  useStage,
+  useProduct,
+  useDonation,
+} from "../../../../redux/hooks";
 
 const Payment = ({ register }: any) => {
   const router = useRouter();
 
   const { isDesktop } = useUI();
+  const { stage } = useStage();
   const { product } = useProduct();
   const { donation, createDonation } = useDonation();
-
-  const { stage } = useAppSelector((state) => state.stageSlice);
 
   const initialDataDonorForm = {
     rut: { value: donation.donor.rut, isValid: true },

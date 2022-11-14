@@ -2,6 +2,7 @@ import {
   OptionT,
   FamilyT,
   CustomerTypeT,
+  setAgent,
   setBroker,
   setUser,
   setShowMenu,
@@ -28,7 +29,12 @@ const useUI = () => {
     customerType,
     family,
     isDesktop,
+    agentId,
   } = useAppSelector((state) => state.uiSlice);
+
+  const setAgentUI = (id: string) => {
+    dispatch(setAgent(id));
+  };
 
   const setShowMenuUI = (value: boolean) => {
     dispatch(setShowMenu(value));
@@ -75,8 +81,10 @@ const useUI = () => {
   };
 
   return {
+    setAgentUI,
     setBrokerUI,
     setUserUI,
+    agentId,
     broker,
     user,
     setShowMenuUI,

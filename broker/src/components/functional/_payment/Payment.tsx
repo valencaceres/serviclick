@@ -9,9 +9,11 @@ import {
   TableRow,
 } from "../../ui/Table";
 import ModalWindow from "../../ui/ModalWindow";
-import ModalWarning from "../../ui/ModalWarning";
 import InputText from "../../ui/InputText";
 import { Content, ContentCell, ContentRow } from "../../layout/Content";
+
+import Icon from "../../ui/Icon";
+import { LoadingMessage, SuccessMessage } from "../../ui/LoadingMessage";
 
 import texts from "../../../utils/texts";
 import { calculateValidity } from "../../../utils/functions";
@@ -21,7 +23,6 @@ import { termsAndCondicions } from "../../../data/termsAndConditions";
 import styles from "./Payment.module.scss";
 
 import { useUI, useProduct, useLead, useBroker } from "../../../hooks";
-import Icon from "../../ui/Icon";
 
 const Payment = ({
   setIsButtonEnabled,
@@ -32,7 +33,7 @@ const Payment = ({
 
   const { isDesktop, customerType } = useUI();
   const { product } = useProduct();
-  const { lead } = useLead();
+  const { lead, createLead, loading } = useLead();
   const { broker } = useBroker();
 
   const customerTypeName = {
@@ -103,9 +104,7 @@ const Payment = ({
     const isValid: boolean =
       lead.product.id !== "" &&
       lead.product.price > 0 &&
-      //lead.product.currency_code !== "" &&
-      lead.product.frequency_code !== ""; //&&
-    //lead.product.productPlan_id > 0;
+      lead.product.productPlan_id > 0;
     return isValid;
   };
 
@@ -146,25 +145,30 @@ const Payment = ({
   };
 
   const handleClickInvoice = () => {
+    createLead(lead, false, false);
     setMessage("La solicitud de facturación ya fue registrada");
   };
 
   const handleClickLink = () => {
+    createLead(lead, true, false);
     setMessage("El link de pago ya fue enviado al cliente");
+  };
+
+  const handleCloseModal = () => {
+    router.push("/");
   };
 
   useEffect(() => {
     setIsButtonEnabled(
-      customerType === "P"
-        ? completeLeadCustomer()
-        : completeLeadCompany() &&
-            completeInsured() &&
-            completeProduct() &&
-            checks.company &&
-            checks.insured &&
-            checks.product &&
-            checks.values &&
-            checks.termsAndConditions
+      (customerType === "P"
+        ? checks.customer && completeLeadCustomer()
+        : checks.company && completeLeadCompany()) &&
+        completeInsured() &&
+        completeProduct() &&
+        checks.insured &&
+        checks.product &&
+        checks.values &&
+        checks.termsAndConditions
     );
   }, [checks]);
 
@@ -519,37 +523,55 @@ const Payment = ({
                       disabled={true}
                     />
                     <InputText
+                      id="txtProductCompanyPrice"
+                      label="Valor unitario ($)"
+                      width="200px"
+                      value={lead.product.price
+                        .toLocaleString("en-US")
+                        .replace(",", ".")}
+                      disabled={true}
+                    />
+                  </ContentCell>
+                  <ContentCell gap="5px">
+                    <InputText
                       id="txtTerm"
                       label="Duración"
                       width={isDesktop ? "300px" : "200px"}
                       value={`${product.term} meses`}
                       disabled={true}
                     />
-                  </ContentCell>
-                  <ContentCell gap="5px">
                     <InputText
                       id="txtProductCompanyPrice"
-                      label="Valor ($)"
+                      label="Asegurados"
                       width="200px"
-                      value={(
-                        product.price[
-                          customerType === "P" ? "customer" : "company"
-                        ] * lead.insured.length
-                      )
+                      value={lead.insured.length
                         .toLocaleString("en-US")
                         .replace(",", ".")}
                       disabled={true}
                     />
+                  </ContentCell>
+                  <ContentCell gap="5px">
                     <InputText
                       id="txtProductFrecuency"
-                      label="Frecuencia"
+                      label="Frecuencia de pago"
                       width={isDesktop ? "300px" : "200px"}
-                      value={frequency[product.frequency]}
+                      value={frequency[lead.product.frequency_code]}
+                      disabled={true}
+                    />
+                    <InputText
+                      id="txtProductCompanyPrice"
+                      label={`Valor a pagar ${
+                        frequency[lead.product.frequency_code]
+                      } ($)`}
+                      width="200px"
+                      value={(lead.product.price * lead.insured.length)
+                        .toLocaleString("en-US")
+                        .replace(",", ".")}
                       disabled={true}
                     />
                   </ContentCell>
                 </ContentRow>
-                <ContentRow gap="5px">
+                <ContentRow gap="5px" align="center">
                   <div style={{ marginTop: "15px" }}>
                     <input
                       name="termsAndConditions"
@@ -581,11 +603,11 @@ const Payment = ({
           {termsAndCondicions.data}
         </div>
       </ModalWindow>
-      <ModalWindow
-        showModal={showModalPaymentType}
-        setClosed={handleClickClosePaymentType}
-        title="Forma de pago">
-        {message === "" ? (
+      {message === "" ? (
+        <ModalWindow
+          showModal={showModalPaymentType}
+          setClosed={handleClickClosePaymentType}
+          title="Forma de pago">
           <div className={styles.menuModal}>
             <div className={styles.menuOption} onClick={handleClickInvoice}>
               <Icon iconName="description" size="40px" />
@@ -596,19 +618,14 @@ const Payment = ({
               Envío de link de pago
             </div>
           </div>
-        ) : (
-          <p>{message}</p>
-        )}
-      </ModalWindow>
-      <ModalWarning
-        showModal={showWarning}
-        title="Aviso"
-        message={`Link de pago enviado al correo del cliente`}
-        setClosed={() => setShowWarning(false)}
-        iconName="mail"
-        color="blue"
-        buttons={[{ text: "Aceptar", function: () => setShowWarning(false) }]}
-      />
+        </ModalWindow>
+      ) : loading ? (
+        <LoadingMessage showModal={loading} />
+      ) : (
+        <SuccessMessage showModal={!loading} callback={handleCloseModal}>
+          {message}
+        </SuccessMessage>
+      )}
     </Fragment>
   );
 };

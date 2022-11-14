@@ -23,8 +23,6 @@ const createProduct = async (req: any, res: any) => {
     family_id,
     name,
     cost,
-    customerprice,
-    companyprice,
     isSubject,
     frequency,
     term,
@@ -40,8 +38,6 @@ const createProduct = async (req: any, res: any) => {
     family_id,
     name,
     cost,
-    customerprice,
-    companyprice,
     isSubject,
     frequency,
     term,
@@ -69,13 +65,6 @@ const createProduct = async (req: any, res: any) => {
     familyValues
   );
 
-  const responsePlans = await createProductPlans(id);
-
-  if (!responsePlans.success) {
-    res.status(500).json({ error: responsePlans.error });
-    return;
-  }
-
   createLogger.info({
     controller: "products/createProduct",
     message: "OK",
@@ -86,16 +75,40 @@ const createProduct = async (req: any, res: any) => {
     family_id,
     name,
     cost,
-    price: { customer: customerprice, company: companyprice },
+    price: {},
     isSubject,
     frequency,
     term,
     beneficiaries,
     minInsuredCompanyPrice,
     dueDay,
-    plan: responsePlans.data,
+    plan: {},
     coverages: [...createdProductCoverages],
     familyValues: [...createdProductFamilyValues],
+  });
+};
+
+const assignPrices = async (req: any, res: any) => {
+  const { id, agent_id, customerprice, companyprice } = req.body;
+  const responsePlans = await createProductPlans(
+    id,
+    agent_id,
+    customerprice,
+    companyprice
+  );
+
+  if (!responsePlans.success) {
+    createLogger.error({
+      controller: "product/createProductPlans",
+      error: responsePlans.error,
+    });
+    res.status(500).json({ error: responsePlans.error });
+    return;
+  }
+
+  createLogger.info({
+    controller: "product/assignPrices",
+    message: "OK",
   });
 };
 
@@ -105,15 +118,13 @@ const updateProduct = async (req: any, res: any) => {
     family_id,
     name,
     cost,
-    customerprice,
-    companyprice,
     isSubject,
     frequency,
     term,
     beneficiaries,
-    coverages,
     minInsuredCompanyPrice,
     dueDay,
+    coverages,
     familyValues,
     currency,
   } = req.body;
@@ -124,8 +135,6 @@ const updateProduct = async (req: any, res: any) => {
       family_id,
       name,
       cost,
-      customerprice,
-      companyprice,
       isSubject,
       frequency,
       term,
@@ -175,35 +184,19 @@ const updateProduct = async (req: any, res: any) => {
       familyValues
     );
 
-    const responsePlans = await createProductPlans(id);
-
-    if (!responsePlans.success) {
-      createLogger.error({
-        controller: "product/createProductPlans",
-        error: responsePlans.error,
-      });
-      res.status(500).json({ error: responsePlans.error });
-      return;
-    }
-
-    createLogger.info({
-      controller: "products/updateProduct",
-      message: "OK",
-    });
-
     res.status(200).json({
       id,
       family_id,
       name,
       cost,
-      price: { customer: customerprice, company: companyprice },
+      price: {},
       isSubject,
       frequency,
       term,
       beneficiaries,
       minInsuredCompanyPrice,
       dueDay,
-      plan: responsePlans.data,
+      plan: {},
       coverages: [...createdProductCoverages],
       familyValues: [...createdProductFamilyValues],
       currency,
@@ -239,7 +232,8 @@ const deleteProduct = async (req: any, res: any) => {
 };
 
 const listProducts = async (req: any, res: any) => {
-  const productResponse = await Product.listProducts();
+  const { agent_id } = req.params;
+  const productResponse = await Product.listProducts(agent_id);
 
   if (!productResponse.success) {
     createLogger.error({
@@ -283,8 +277,11 @@ const listProducts = async (req: any, res: any) => {
 };
 
 const getProductByFamilyId = async (req: any, res: any) => {
-  const { family_id } = req.params;
-  const productResponse = await Product.getProductByFamilyId(family_id);
+  const { agent_id, family_id } = req.params;
+  const productResponse = await Product.getProductByFamilyId(
+    family_id,
+    agent_id
+  );
 
   if (!productResponse.success) {
     createLogger.error({
@@ -328,8 +325,8 @@ const getProductByFamilyId = async (req: any, res: any) => {
 };
 
 const getProduct = async (req: any, res: any) => {
-  const { id } = req.params;
-  const productResponse = await Product.getProduct(id);
+  const { id, agent_id } = req.params;
+  const productResponse = await Product.getProduct(id, agent_id);
 
   if (!productResponse.success) {
     createLogger.error({
@@ -363,7 +360,10 @@ const getProduct = async (req: any, res: any) => {
     return;
   }
 
-  const productPlansResponse = await ProductPlan.getByProductIdModel(id);
+  const productPlansResponse = await ProductPlan.getByProductIdModel(
+    id,
+    agent_id
+  );
   if (!productPlansResponse.success) {
     createLogger.error({
       model: "product/getByProductIdModel",
@@ -410,11 +410,16 @@ const getProduct = async (req: any, res: any) => {
   });
 };
 
-const createProductPlans = async (id: string) => {
+const createProductPlans = async (
+  id: string,
+  agent_id: string,
+  customerprice: number | null,
+  companyprice: number | null
+) => {
   const trialCicles = 0;
   const discount = false;
 
-  const productResponse = await Product.getProduct(id);
+  const productResponse = await Product.getProduct(id, agent_id);
 
   if (!productResponse.success) {
     createLogger.error({
@@ -426,15 +431,13 @@ const createProductPlans = async (id: string) => {
 
   const {
     name,
-    customerprice,
-    companyprice,
     frequency,
     dueday,
     customer_plan_id,
     company_plan_id,
   }: ProductT = productResponse.data;
 
-  const productPlansDeleted = await Product.deletePlans(id);
+  const productPlansDeleted = await Product.deletePlans(id, agent_id);
 
   if (!productPlansDeleted.success) {
     createLogger.error({
@@ -467,77 +470,92 @@ const createProductPlans = async (id: string) => {
     redirect_to_failure: config.reveniu.feedbackURL.error,
   };
 
-  const planResponseCompany = await axios[
-    company_plan_id > 0 ? "patch" : "post"
-  ](
-    `${config.reveniu.URL.plan}${company_plan_id > 0 ? company_plan_id : ""}`,
-    {
-      ...productData,
-      is_custom_amount: true,
-      price: companyprice,
-    },
-    {
-      headers: config.reveniu.apiKey,
+  let companyData: any = null;
+  let customerData: any = null;
+
+  if (companyprice) {
+    const planResponseCompany = await axios[
+      company_plan_id > 0 ? "patch" : "post"
+    ](
+      `${config.reveniu.URL.plan}${company_plan_id > 0 ? company_plan_id : ""}`,
+      {
+        ...productData,
+        is_custom_amount: true,
+        price: companyprice,
+      },
+      {
+        headers: config.reveniu.apiKey,
+      }
+    );
+
+    const productPlanCompanyResponse = await ProductPlan.createModel(
+      id,
+      agent_id,
+      planResponseCompany.data.id,
+      "company",
+      companyprice,
+      frequency
+    );
+
+    if (!productPlanCompanyResponse.success) {
+      createLogger.error({
+        model: "productPlan/createModel",
+        error: productPlanCompanyResponse.error,
+      });
+      return { success: false, error: productPlanCompanyResponse.error };
     }
-  );
 
-  const productPlanCompanyResponse = await ProductPlan.createModel(
-    id,
-    planResponseCompany.data.id,
-    "company",
-    companyprice,
-    frequency
-  );
-
-  if (!productPlanCompanyResponse.success) {
-    createLogger.error({
-      model: "productPlan/createModel",
-      error: productPlanCompanyResponse.error,
-    });
-    return { success: false, error: productPlanCompanyResponse.error };
+    companyData = {
+      id: planResponseCompany.data.id,
+      price: planResponseCompany.data.price,
+    };
   }
 
-  const planResponseCustomer = await axios[
-    customer_plan_id > 0 ? "patch" : "post"
-  ](
-    `${config.reveniu.URL.plan}${customer_plan_id > 0 ? customer_plan_id : ""}`,
-    {
-      ...productData,
-      is_custom_amount: false,
-      price: customerprice,
-    },
-    {
-      headers: config.reveniu.apiKey,
+  if (customerprice) {
+    const planResponseCustomer = await axios[
+      customer_plan_id > 0 ? "patch" : "post"
+    ](
+      `${config.reveniu.URL.plan}${
+        customer_plan_id > 0 ? customer_plan_id : ""
+      }`,
+      {
+        ...productData,
+        is_custom_amount: false,
+        price: customerprice,
+      },
+      {
+        headers: config.reveniu.apiKey,
+      }
+    );
+
+    const productPlanCustomerResponse = await ProductPlan.createModel(
+      id,
+      agent_id,
+      planResponseCustomer.data.id,
+      "customer",
+      customerprice,
+      frequency
+    );
+
+    if (!productPlanCustomerResponse.success) {
+      createLogger.error({
+        model: "productPlan/createModel",
+        error: productPlanCustomerResponse.error,
+      });
+      return { success: false, error: productPlanCustomerResponse.error };
     }
-  );
 
-  const productPlanCustomerResponse = await ProductPlan.createModel(
-    id,
-    planResponseCustomer.data.id,
-    "customer",
-    customerprice,
-    frequency
-  );
-
-  if (!productPlanCustomerResponse.success) {
-    createLogger.error({
-      model: "productPlan/createModel",
-      error: productPlanCustomerResponse.error,
-    });
-    return { success: false, error: productPlanCustomerResponse.error };
+    customerData = {
+      id: planResponseCustomer.data.id,
+      price: planResponseCustomer.data.price,
+    };
   }
 
   return {
     success: true,
     data: {
-      customer: {
-        id: planResponseCustomer.data.id,
-        price: planResponseCustomer.data.price,
-      },
-      company: {
-        id: planResponseCompany.data.id,
-        price: planResponseCompany.data.price,
-      },
+      customer: customerData,
+      company: companyData,
     },
   };
 };
@@ -615,5 +633,6 @@ export {
   getProduct,
   listProducts,
   getProductByFamilyId,
+  assignPrices,
   createProductPlans,
 };

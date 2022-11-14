@@ -222,29 +222,31 @@ const BeneficiaryForm = ({
         />
       </ContentRow>
       <InputText
-        label="Razón Social"
+        label="Nombres"
         width="100%"
         maxLength={50}
         value={beneficiaryForm?.name.value}
         onChange={handleChangeName}
         disabled={disabled}
       />
-      <InputText
-        label="Representante Legal"
-        width="100%"
-        maxLength={50}
-        value={beneficiaryForm?.paternalLastName.value}
-        onChange={handleChangePaternalLastName}
-        disabled={disabled}
-      />
-      <InputText
-        label="Giro"
-        width="100%"
-        maxLength={50}
-        value={beneficiaryForm?.maternalLastName.value}
-        onChange={handleChangeLine}
-        disabled={disabled}
-      />
+      <ContentRow gap="5px">
+        <InputText
+          label="Apellido Paterno"
+          width="100%"
+          maxLength={50}
+          value={beneficiaryForm?.paternalLastName.value}
+          onChange={handleChangePaternalLastName}
+          disabled={disabled}
+        />
+        <InputText
+          label="Apellido Materno"
+          width="100%"
+          maxLength={50}
+          value={beneficiaryForm?.maternalLastName.value}
+          onChange={handleChangeLine}
+          disabled={disabled}
+        />
+      </ContentRow>
       <InputText
         label="Dirección"
         width="100%"

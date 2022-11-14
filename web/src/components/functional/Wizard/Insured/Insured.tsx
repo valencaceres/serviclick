@@ -23,18 +23,15 @@ import InsuredDetail from "./InsuredDetail";
 
 import texts from "../../../../utils/texts";
 
-import { setLeadInsured } from "../../../../redux/slices/leadSlice";
-import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
+import { useUI, useLead } from "../../../../redux/hooks";
 
 import styles from "./Insured.module.scss";
 
 const Insured = ({ register }: any) => {
   const router = useRouter();
-  const dispatch = useAppDispatch();
 
-  const { isDesktop } = useAppSelector((state) => state.uiSlice);
-  const { product } = useAppSelector((state) => state.productSlice);
-  const { lead } = useAppSelector((state) => state.leadSlice);
+  const { lead, setLeadInsured } = useLead();
+  const { isDesktop } = useUI();
 
   const initialDataInsuredForm = {
     rut: { value: "", isValid: true },
@@ -55,24 +52,22 @@ const Insured = ({ register }: any) => {
   const { Insured: InsuredText } = texts;
 
   const registerInsured = () => {
-    dispatch(
-      setLeadInsured([
-        ...lead.insured.filter((item) => item.rut !== insuredForm.rut.value),
-        {
-          id: "",
-          rut: insuredForm.rut.value,
-          name: insuredForm.name.value,
-          paternalLastName: insuredForm.paternalLastName.value,
-          maternalLastName: insuredForm.maternalLastName.value,
-          birthDate: insuredForm.birthDate.value,
-          address: insuredForm.address.value,
-          district: insuredForm.district.value,
-          email: insuredForm.email.value,
-          phone: insuredForm.phone.value,
-          beneficiaries: [],
-        },
-      ])
-    );
+    setLeadInsured([
+      ...lead.insured.filter((item) => item.rut !== insuredForm.rut.value),
+      {
+        id: "",
+        rut: insuredForm.rut.value,
+        name: insuredForm.name.value,
+        paternalLastName: insuredForm.paternalLastName.value,
+        maternalLastName: insuredForm.maternalLastName.value,
+        birthDate: insuredForm.birthDate.value,
+        address: insuredForm.address.value,
+        district: insuredForm.district.value,
+        email: insuredForm.email.value,
+        phone: insuredForm.phone.value,
+        beneficiaries: [],
+      },
+    ]);
 
     handleCloseInsured();
   };
@@ -111,11 +106,9 @@ const Insured = ({ register }: any) => {
   };
 
   const handleClickDelete = (insured: any) => {
-    dispatch(
-      setLeadInsured([
-        ...lead.insured.filter((item) => item.rut !== insured.rut),
-      ])
-    );
+    setLeadInsured([
+      ...lead.insured.filter((item) => item.rut !== insured.rut),
+    ]);
   };
 
   return (

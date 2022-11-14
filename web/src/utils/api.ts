@@ -2,6 +2,11 @@ import axios from "axios";
 
 import { config } from "../utils/config";
 
+const apiInstance = axios.create({
+  baseURL: `${config.server}/api`,
+  headers: { id: config.apiKey },
+});
+
 const get = async (path: string) => {
   const { apiKey, server } = config;
   try {
@@ -55,4 +60,4 @@ const responseFromAPI = (data: any, error: string | null) => {
   };
 };
 
-export { get, post, erase };
+export { apiInstance, get, post, erase };

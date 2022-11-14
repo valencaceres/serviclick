@@ -1,43 +1,32 @@
-import {
-  createProduct,
-  updateProduct,
-  createProductPlans,
-  deleteProduct,
-  getProduct,
-  listProducts,
-  getProductsByFamilyId,
-  setProductList,
-  setProduct,
-  resetProduct,
-  ProductT,
-} from "../redux/slices/productSlice";
+import * as Product from "../redux/slices/productSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 
 const useProduct = () => {
   const dispatch = useAppDispatch();
 
-  const { product, list } = useAppSelector((state) => state.productSlice);
+  const { product, list: productList } = useAppSelector(
+    (state) => state.productSlice
+  );
 
-  const create = (
+  const createProduct = (
     family_id: string,
     name: string,
     cost: number,
-    price: any,
     isSubject: boolean,
     frequency: string,
     term: string,
     beneficiaries: number,
     minInsuredCompanyPrice: number,
     dueDay: number,
-    coverages: any,
-    familyValues: any
+    coverages: Product.CoverageT[],
+    familyValues: Product.FamilyValueT[],
+    currency: string
   ) => {
     dispatch(
-      createProduct(
+      Product.createProduct(
         family_id,
         name,
         cost,
-        price,
         isSubject,
         frequency,
         term,
@@ -45,95 +34,103 @@ const useProduct = () => {
         minInsuredCompanyPrice,
         dueDay,
         coverages,
-        familyValues
+        familyValues,
+        currency
       )
     );
   };
 
-  const update = (
+  const assignProductPrices = (
+    id: string,
+    agent_id: string,
+    customerprice: number,
+    companyprice: number
+  ) => {
+    dispatch(
+      Product.assignProductPrices(id, agent_id, customerprice, companyprice)
+    );
+  };
+
+  const updateProduct = (
     id: string,
     family_id: string,
     name: string,
     cost: number,
-    price: any,
     isSubject: boolean,
     frequency: string,
     term: string,
     beneficiaries: number,
     minInsuredCompanyPrice: number,
     dueDay: number,
-    coverages: any,
-    familyValues: any
+    coverages: Product.CoverageT[],
+    familyValues: Product.FamilyValueT[],
+    currency: string
   ) => {
     dispatch(
-      updateProduct(
+      Product.updateProduct(
         id,
         family_id,
         name,
         cost,
-        price,
         isSubject,
         frequency,
         term,
         beneficiaries,
+        coverages,
         minInsuredCompanyPrice,
         dueDay,
-        coverages,
-        familyValues
+        familyValues,
+        currency
       )
     );
   };
 
-  const createPlans = (
-    id: string,
-    dueDay: number,
-    trialCicles: any,
-    discount: any
-  ) => {
-    dispatch(createProductPlans(id, dueDay, trialCicles, discount));
+  const deleteProductById = (id: string) => {
+    dispatch(Product.deleteProduct(id));
   };
 
-  const deleteById = (value: string) => {
-    dispatch(deleteProduct(value));
+  const getAllProducts = (agent_id: string) => {
+    dispatch(Product.getAllProducts(agent_id));
   };
 
-  const getById = (value: string) => {
-    dispatch(getProduct(value));
+  const getProductByFamilyId = (family_id: string, agent_id: string) => {
+    dispatch(Product.getProductsByFamilyId(family_id, agent_id));
   };
 
-  const listAll = () => {
-    dispatch(listProducts());
+  const getProductById = (id: string, agent_id: string) => {
+    dispatch(Product.getProductById(id, agent_id));
   };
 
-  const getByFamilyId = (family_id: string) => {
-    dispatch(getProductsByFamilyId(family_id));
+  const setProductList = (value: Product.ProductT[]) => {
+    dispatch(Product.setProductList(value));
   };
 
-  const setList = (value: ProductT[]) => {
-    dispatch(setProductList(value));
+  const setProduct = (value: Product.ProductT) => {
+    dispatch(Product.setProduct(value));
   };
 
-  const set = (value: ProductT) => {
-    dispatch(setProduct(value));
+  const resetProduct = () => {
+    dispatch(Product.resetProduct());
   };
 
-  const reset = () => {
-    dispatch(resetProduct());
+  const resetProductList = () => {
+    dispatch(Product.resetProductList());
   };
 
   return {
-    create,
-    update,
-    createPlans,
-    deleteById,
-    getById,
-    listAll,
-    getByFamilyId,
-    setList,
-    set,
-    reset,
+    createProduct,
+    assignProductPrices,
+    updateProduct,
+    deleteProductById,
+    getAllProducts,
+    getProductById,
+    getProductByFamilyId,
+    setProductList,
+    setProduct,
+    resetProduct,
+    resetProductList,
     product,
-    list,
+    productList,
   };
 };
 

@@ -1,6 +1,6 @@
 import { useState, useEffect, Fragment } from "react";
 
-import { Content, ContentCell } from "../../layout/Content";
+import { Content, ContentCell, ContentCenter } from "../../layout/Content";
 
 import Icon from "../../ui/Icon";
 import ButtonLink from "../../ui/ButtonLink";
@@ -9,13 +9,14 @@ import InputText from "../../ui/InputText";
 import Button from "../../ui/Button";
 import Menu from "../Menu";
 
-import { useUI, useUserBroker } from "../../../hooks";
+import { useUI, useUserBroker, useLead } from "../../../hooks";
 
 import styles from "./Welcome.module.scss";
 
 const Welcome = () => {
-  const { user, broker, setTitleUI } = useUI();
+  const { user, broker, setTitleUI, agentId } = useUI();
   const { updateUserBrokerPassword, loading, response } = useUserBroker();
+  const { resetLead } = useLead();
 
   const initialPasswordData = {
     password: { value: "", isValid: false },
@@ -77,6 +78,7 @@ const Welcome = () => {
 
   useEffect(() => {
     setTitleUI("Inicio");
+    resetLead();
   }, []);
 
   useEffect(() => {
@@ -99,25 +101,28 @@ const Welcome = () => {
 
   return (
     <Fragment>
-      <Content align="center">
-        <ContentCell align="center" gap="30px">
-          <ContentCell align="center" gap="5px">
-            <div className={styles.photo}>
-              <Icon iconName="face" size="120px" />
-            </div>
-            <div className={styles.name}>
-              Bienvenido {user.name} {user.paternalLastName}{" "}
-              {user.maternalLastName}
+      <ContentCenter>
+        <Content align="center">
+          <ContentCell align="center" gap="30px">
+            <ContentCell align="center" gap="5px">
+              <div className={styles.photo}>
+                <Icon iconName="face" size="120px" />
+              </div>
+              <div className={styles.name} style={{ textAlign: "center" }}>
+                <h1>Bienvenido</h1>
+                {user.name} {user.paternalLastName} {user.maternalLastName}
+                <h2>{broker.name}</h2>
+              </div>
+            </ContentCell>
+            <Menu />
+            <div className={styles.link}>
+              <ButtonLink onClick={handleClickChangePassword}>
+                Cambiar contraseña
+              </ButtonLink>
             </div>
           </ContentCell>
-          <Menu />
-          <div className={styles.link}>
-            <ButtonLink onClick={handleClickChangePassword}>
-              Cambiar contraseña
-            </ButtonLink>
-          </div>
-        </ContentCell>
-      </Content>
+        </Content>
+      </ContentCenter>
       <ModalWindow
         showModal={showPasswordChange}
         setClosed={handleClickClosePasswordChange}

@@ -9,28 +9,24 @@ import { numberRegEx, rutRegEx, emailRegEx } from "../../../../utils/regEx";
 import { rutValidate } from "../../../../utils/validations";
 
 import {
-  useAppDispatch,
-  useAppSelector,
-  useSubscription,
   useUI,
+  useStage,
+  useSubscription,
+  useProduct,
+  useLead,
 } from "../../../../redux/hooks";
-import { resetSubscription } from "../../../../redux/slices/subscriptionSlice";
-import {
-  getLeadBySubscriptionId,
-  resetLeadSubscription,
-} from "../../../../redux/slices/leadSlice";
 
 const CustomerForm = ({ customerForm, setCustomerForm, disabled }: any) => {
-  const dispatch = useAppDispatch();
-
-  const { agentId } = useUI();
-  const { getActiveSubscriptions } = useSubscription();
-
-  const { isDesktop } = useAppSelector((state) => state.uiSlice);
-  const { stage } = useAppSelector((state) => state.stageSlice);
-  const { subscription } = useAppSelector((state) => state.subscriptionSlice);
-  const { product } = useAppSelector((state) => state.productSlice);
-  const { lead } = useAppSelector((state) => state.leadSlice);
+  const { isDesktop } = useUI();
+  const { stage } = useStage();
+  const { product } = useProduct();
+  const {
+    getActiveSubscriptions,
+    setSubscription,
+    resetSubscription,
+    subscription,
+  } = useSubscription();
+  const { lead, getLeadBySubscriptionId, resetLeadSubscription } = useLead();
 
   const handleBlurRut = (event: any) => {
     getActiveSubscriptions(
@@ -144,11 +140,12 @@ const CustomerForm = ({ customerForm, setCustomerForm, disabled }: any) => {
     }
   };
 
-  useEffect(() => {
-    if (subscription.id > 0) {
-      dispatch(getLeadBySubscriptionId(subscription.id));
-    }
-  }, [dispatch, subscription]);
+  // CHECK: Se elimina por que al parecer no se requiere
+  // useEffect(() => {
+  //   if (subscription.id > 0) {
+  //     getLeadBySubscriptionId(subscription.id);
+  //   }
+  // }, [subscription]);
 
   useEffect(() => {
     if (lead.customer.id !== "") {
@@ -173,10 +170,13 @@ const CustomerForm = ({ customerForm, setCustomerForm, disabled }: any) => {
         email: { value: lead.customer.email, isValid: true },
         phone: { value: lead.customer.phone, isValid: true },
       });
-      dispatch(resetSubscription());
-      dispatch(resetLeadSubscription());
+      setSubscription({ id: lead.subscription.id });
+
+      // CHECK: Se elimina por que al parecer no se requiere
+      //resetSubscription();
+      //resetLeadSubscription();
     }
-  }, [dispatch, lead.customer, setCustomerForm]);
+  }, [lead.customer, setCustomerForm]);
 
   return (
     <Component width={isDesktop ? "560px" : "100%"}>

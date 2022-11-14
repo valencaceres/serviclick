@@ -23,18 +23,16 @@ import BeneficiaryDetail from "./BeneficiaryDetail";
 
 import texts from "../../../../utils/texts";
 
-import { setLeadInsured } from "../../../../redux/slices/leadSlice";
-import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
+import { useUI, useProduct, useLead } from "../../../../redux/hooks";
 
 import styles from "./Beneficiary.module.scss";
 
 const Beneficiary = ({ register }: any) => {
   const router = useRouter();
-  const dispatch = useAppDispatch();
 
-  const { isDesktop } = useAppSelector((state) => state.uiSlice);
-  const { product } = useAppSelector((state) => state.productSlice);
-  const { lead } = useAppSelector((state) => state.leadSlice);
+  const { isDesktop } = useUI();
+  const { product } = useProduct();
+  const { setLeadInsured, lead } = useLead();
 
   const initialDataBeneficiaryForm = {
     rut: { value: "", isValid: true },
@@ -62,30 +60,28 @@ const Beneficiary = ({ register }: any) => {
   };
 
   const registerBeneficiary = () => {
-    dispatch(
-      setLeadInsured([
-        {
-          ...lead.insured[0],
-          beneficiaries: [
-            ...lead.insured[0].beneficiaries.filter(
-              (beneficiary) => beneficiary.rut !== beneficiaryForm.rut.value
-            ),
-            {
-              id: "",
-              rut: beneficiaryForm.rut.value,
-              name: beneficiaryForm.name.value,
-              paternalLastName: beneficiaryForm.paternalLastName.value,
-              maternalLastName: beneficiaryForm.maternalLastName.value,
-              birthDate: beneficiaryForm.birthDate.value,
-              address: beneficiaryForm.address.value,
-              district: beneficiaryForm.district.value,
-              email: beneficiaryForm.email.value,
-              phone: beneficiaryForm.phone.value,
-            },
-          ],
-        },
-      ])
-    );
+    setLeadInsured([
+      {
+        ...lead.insured[0],
+        beneficiaries: [
+          ...lead.insured[0].beneficiaries.filter(
+            (beneficiary) => beneficiary.rut !== beneficiaryForm.rut.value
+          ),
+          {
+            id: "",
+            rut: beneficiaryForm.rut.value,
+            name: beneficiaryForm.name.value,
+            paternalLastName: beneficiaryForm.paternalLastName.value,
+            maternalLastName: beneficiaryForm.maternalLastName.value,
+            birthDate: beneficiaryForm.birthDate.value,
+            address: beneficiaryForm.address.value,
+            district: beneficiaryForm.district.value,
+            email: beneficiaryForm.email.value,
+            phone: beneficiaryForm.phone.value,
+          },
+        ],
+      },
+    ]);
 
     handleCloseBeneficiary();
   };
@@ -124,18 +120,16 @@ const Beneficiary = ({ register }: any) => {
   };
 
   const handleClickDelete = (beneficiary: any) => {
-    dispatch(
-      setLeadInsured([
-        {
-          ...lead.insured[0],
-          beneficiaries: [
-            ...lead.insured[0].beneficiaries.filter(
-              (item) => item.rut !== beneficiary.rut
-            ),
-          ],
-        },
-      ])
-    );
+    setLeadInsured([
+      {
+        ...lead.insured[0],
+        beneficiaries: [
+          ...lead.insured[0].beneficiaries.filter(
+            (item) => item.rut !== beneficiary.rut
+          ),
+        ],
+      },
+    ]);
   };
 
   useEffect(() => {

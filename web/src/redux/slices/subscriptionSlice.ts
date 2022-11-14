@@ -1,54 +1,66 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
 
-import { config } from "../../utils/config";
+import { apiInstance } from "../../utils/api";
 
-const initialState = {
+export type SubscriptionT = {
+  id: number;
+};
+
+type StateT = {
+  list: any[];
+  active: any[];
+  subscription: SubscriptionT;
+  loading: boolean;
+};
+
+const initialState: StateT = {
   list: [],
   active: [],
   subscription: { id: 0 },
+  loading: false,
 };
 
 export const subscriptionSlice = createSlice({
   name: "subscriptions",
   initialState,
   reducers: {
-    setSubscription: (state: any, action: PayloadAction<any>) => {
+    setLoading: (state: StateT, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
+    setSubscription: (state: StateT, action: PayloadAction<SubscriptionT>) => {
       state.subscription = action.payload;
+      state.loading = false;
     },
-    setActiveSubscriptions: (state: any, action: PayloadAction<any>) => {
+    setActiveSubscriptions: (state: StateT, action: PayloadAction<any[]>) => {
       state.active = action.payload;
+      state.loading = false;
     },
-    resetSubscription: (state: any) => {
+    resetSubscription: (state: StateT) => {
       state.subscription = initialState.subscription;
     },
   },
 });
 
-export const { setSubscription, resetSubscription, setActiveSubscriptions } =
-  subscriptionSlice.actions;
+export const {
+  setLoading,
+  setSubscription,
+  resetSubscription,
+  setActiveSubscriptions,
+} = subscriptionSlice.actions;
 
 export default subscriptionSlice.reducer;
 
 export const getActivesByRutAndProductId =
   (customer_type: string, rut: string, product_id: string) =>
-  (dispatch: any) => {
-    axios
-      .post(
-        `${config.server}/api/transaction/getActivesByRutAndProductId`,
-        {
-          customer_type,
-          rut,
-          product_id,
-        },
-        {
-          headers: {
-            id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-          },
-        }
-      )
-      .then((response) => {
-        dispatch(setActiveSubscriptions(response.data));
-      })
-      .catch((error) => console.log(error));
+  async (dispatch: any) => {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.post(
+      `/api/transaction/getActivesByRutAndProductId`,
+      {
+        customer_type,
+        rut,
+        product_id,
+      }
+    );
+    dispatch(setActiveSubscriptions(data));
   };

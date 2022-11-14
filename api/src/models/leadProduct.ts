@@ -9,8 +9,25 @@ const createModel: any = async (
   productPlan_id: number
 ) => {
   try {
-    const result = await pool.query(
+    let data;
+
+    const resultCustomer = await pool.query(
       `
+      SELECT  lead_id,
+              product_id,
+              price,
+              currency_code,
+              frequency_code,
+              productplan_id
+      FROM    app.leadproduct
+      WHERE   lead_id = $1`,
+      [lead_id]
+    );
+    data = resultCustomer.rows[0];
+
+    if (resultCustomer.rows.length === 0) {
+      const resulInsert = await pool.query(
+        `
         INSERT  INTO app.leadproduct(
                 lead_id,
                 product_id,
@@ -19,17 +36,19 @@ const createModel: any = async (
                 frequency_code,
                 productplan_id) 
         VALUES( $1, $2, $3, $4, $5, $6) RETURNING *`,
-      [
-        lead_id,
-        product_id,
-        price,
-        currency_code,
-        frequency_code,
-        productPlan_id,
-      ]
-    );
+        [
+          lead_id,
+          product_id,
+          price,
+          currency_code,
+          frequency_code,
+          productPlan_id,
+        ]
+      );
+      data = resulInsert.rows[0];
+    }
 
-    return { success: true, data: result.rows[0], error: null };
+    return { success: true, data, error: null };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
   }

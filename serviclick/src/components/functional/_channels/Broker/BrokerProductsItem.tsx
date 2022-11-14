@@ -14,7 +14,7 @@ const BrokerProductsItem = ({
   saveProduct,
   setShowModal,
 }: any) => {
-  const { list: productList } = useProduct();
+  const { productList } = useProduct();
 
   const commisionTypeData = [
     { id: "P", name: "Porcentaje" },

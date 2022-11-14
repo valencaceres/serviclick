@@ -14,24 +14,14 @@ import CustomerForm from "./CustomerForm";
 import { formatRut } from "../../../../utils/format";
 import texts from "../../../../utils/texts";
 
-import {
-  useAppDispatch,
-  useAppSelector,
-  useSubscription,
-} from "../../../../redux/hooks";
-import {
-  setLeadCustomer,
-  setLeadInsured,
-} from "../../../../redux/slices/leadSlice";
+import { useProduct, useSubscription, useLead } from "../../../../redux/hooks";
 
 const Customer = ({ register }: any) => {
   const router = useRouter();
-  const dispatch = useAppDispatch();
 
   const { active } = useSubscription();
-
-  const { lead } = useAppSelector((state) => state.leadSlice);
-  const { product } = useAppSelector((state) => state.productSlice);
+  const { product } = useProduct();
+  const { lead, setLeadCustomer, setLeadInsured } = useLead();
 
   const initialDataCustomerForm = {
     rut: { value: lead.customer.rut, isValid: true },
@@ -62,6 +52,7 @@ const Customer = ({ register }: any) => {
 
   const handleClickRegister = () => {
     const customerData = {
+      id: "",
       rut: formatRut(customerForm.rut.value),
       name: customerForm.name.value,
       paternalLastName: customerForm.paternalLastName.value,
@@ -73,19 +64,17 @@ const Customer = ({ register }: any) => {
       phone: customerForm.phone.value,
     };
 
-    dispatch(setLeadCustomer(customerData));
-    dispatch(
-      setLeadInsured([
-        {
-          ...customerData,
-          beneficiaries: lead.insured
-            ? lead.insured.length > 0
-              ? [...lead.insured[0].beneficiaries]
-              : []
-            : [],
-        },
-      ])
-    );
+    setLeadCustomer(customerData);
+    setLeadInsured([
+      {
+        ...customerData,
+        beneficiaries: lead.insured
+          ? lead.insured.length > 0
+            ? [...lead.insured[0].beneficiaries]
+            : []
+          : [],
+      },
+    ]);
 
     if (active.length !== 0) {
       setShowWarning(true);
@@ -93,8 +82,6 @@ const Customer = ({ register }: any) => {
     }
     register();
   };
-
-  const setClosedWarning = () => {};
 
   useEffect(() => {
     let enableButton = true;

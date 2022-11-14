@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 import { Content, ContentCell, ContentRow } from "../../layout/Content";
 
-import useUI from "../../../hooks/useUI";
+import { useUI, useDistrict } from "../../../hooks";
 import Icon from "../../ui/Icon";
 
 import styles from "./Welcome.module.scss";

@@ -1,25 +1,17 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
-import {
-  Component,
-  Row,
-  Cell,
-  CellSeparator,
-} from "../../components/layout/Component";
 import Button from "../../components/ui/Button";
-
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { getLeadBySubscriptionId } from "../../redux/slices/leadSlice";
-import { setSubscription } from "../../redux/slices/subscriptionSlice";
 
 import styles from "./resume.module.scss";
 
+import { useLead, useSubscription } from "../../redux/hooks";
+
 const Error = () => {
   const router = useRouter();
-  const dispatch = useAppDispatch();
 
-  const { lead } = useAppSelector((state) => state.leadSlice);
+  const { lead, getLeadBySubscriptionId, leadLoading } = useLead();
+  const { setSubscription } = useSubscription();
 
   const [isEnabled, setIsEnabled] = useState(false);
 
@@ -27,18 +19,18 @@ const Error = () => {
     router.push(
       `/contract/${lead.customer.rut !== "" ? "customer" : "company"}/${
         lead.product.id
-      }`
+      }?leadId=${lead.id}`
     );
   };
 
   useEffect(() => {
     if (router.isReady) {
       const { id } = router.query;
-      dispatch(setSubscription({ id: id ? parseInt(id.toString()) : 0 }));
-      dispatch(getLeadBySubscriptionId(id ? parseInt(id.toString()) : 0));
+      setSubscription({ id: id ? parseInt(id.toString()) : 0 });
+      getLeadBySubscriptionId(id ? parseInt(id.toString()) : 0);
       setIsEnabled(true);
     }
-  }, [dispatch, router]);
+  }, [router]);
 
   return (
     <div>
@@ -54,6 +46,7 @@ const Error = () => {
           onClick={handleClickRetry}
           width="200px"
           enabled={isEnabled}
+          loading={leadLoading}
         />
       </div>
     </div>

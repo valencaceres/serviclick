@@ -1,50 +1,40 @@
-import {
-  createProduct,
-  updateProduct,
-  deleteProduct,
-  getProduct,
-  listProducts,
-  getProductsByFamilyId,
-  getProductsDescription,
-  setProductList,
-  setProduct,
-  resetProduct,
-  resetProductList,
-  ProductT,
-  PriceT,
-  CoverageT,
-  FamilyValueT,
-} from "../slices/productSlice";
+import * as Product from "../slices/productSlice";
 import { useAppDispatch, useAppSelector } from ".";
 
 const useProduct = () => {
   const dispatch = useAppDispatch();
 
-  const { product, list } = useAppSelector((state) => state.productSlice);
+  const {
+    product,
+    list: productList,
+    loading: productLoading,
+  } = useAppSelector((state) => state.productSlice);
 
-  const create = (
+  const createProduct = (
     family_id: string,
     name: string,
     cost: number,
-    price: PriceT,
     isSubject: boolean,
     frequency: string,
     term: string,
     beneficiaries: number,
-    coverages: CoverageT[],
-    familyValues: FamilyValueT[],
+    minInsuredCompanyPrice: number,
+    dueDay: number,
+    coverages: Product.CoverageT[],
+    familyValues: Product.FamilyValueT[],
     currency: string
   ) => {
     dispatch(
-      createProduct(
+      Product.createProduct(
         family_id,
         name,
         cost,
-        price,
         isSubject,
         frequency,
         term,
         beneficiaries,
+        minInsuredCompanyPrice,
+        dueDay,
         coverages,
         familyValues,
         currency
@@ -52,88 +42,98 @@ const useProduct = () => {
     );
   };
 
-  const update = (
+  const assignProductPrices = (
+    id: string,
+    agent_id: string,
+    customerprice: number,
+    companyprice: number
+  ) => {
+    dispatch(
+      Product.assignProductPrices(id, agent_id, customerprice, companyprice)
+    );
+  };
+
+  const updateProduct = (
     id: string,
     family_id: string,
     name: string,
     cost: number,
-    price: PriceT,
     isSubject: boolean,
     frequency: string,
     term: string,
     beneficiaries: number,
-    coverages: CoverageT[],
-    familyValues: FamilyValueT[],
+    minInsuredCompanyPrice: number,
+    dueDay: number,
+    coverages: Product.CoverageT[],
+    familyValues: Product.FamilyValueT[],
     currency: string
   ) => {
     dispatch(
-      updateProduct(
+      Product.updateProduct(
         id,
         family_id,
         name,
         cost,
-        price,
         isSubject,
         frequency,
         term,
         beneficiaries,
         coverages,
+        minInsuredCompanyPrice,
+        dueDay,
         familyValues,
         currency
       )
     );
   };
 
-  const deleteById = (id: string) => {
-    dispatch(deleteProduct(id));
+  const deleteProductById = (id: string) => {
+    dispatch(Product.deleteProduct(id));
   };
 
-  const getById = (id: string) => {
-    dispatch(getProduct(id));
+  const getAllProducts = (agent_id: string) => {
+    dispatch(Product.getAllProducts(agent_id));
   };
 
-  const getAll = () => {
-    dispatch(listProducts());
+  const getProductsByFamilyId = (family_id: string, agent_id: string) => {
+    dispatch(Product.getProductsByFamilyId(family_id, agent_id));
   };
 
-  const getByFamilyId = (family_id: string) => {
-    dispatch(getProductsByFamilyId(family_id));
+  const getProductById = (id: string, agent_id: string) => {
+    dispatch(Product.getProductById(id, agent_id));
   };
 
-  const getDescription = (id: string) => {
-    dispatch(getProductsDescription(id));
+  const setProductList = (value: Product.ProductT[]) => {
+    dispatch(Product.setProductList(value));
   };
 
-  const setList = (value: ProductT[]) => {
-    dispatch(setProductList(value));
+  const setProduct = (value: Product.ProductT) => {
+    dispatch(Product.setProduct(value));
   };
 
-  const set = (value: ProductT) => {
-    dispatch(setProduct(value));
+  const resetProduct = () => {
+    dispatch(Product.resetProduct());
   };
 
-  const reset = () => {
-    dispatch(resetProduct());
-  };
-
-  const resetList = () => {
-    dispatch(resetProductList());
+  const resetProductList = () => {
+    dispatch(Product.resetProductList());
   };
 
   return {
-    create,
-    update,
-    deleteById,
-    getById,
-    getAll,
-    getByFamilyId,
-    getDescription,
-    setList,
-    set,
-    reset,
-    resetList,
+    createProduct,
+    assignProductPrices,
+    updateProduct,
+    deleteProductById,
+    getAllProducts,
+    getProductById,
+    getProductsByFamilyId,
+    setProductList,
+    setProduct,
+    resetProduct,
+    resetProductList,
     product,
-    list,
+    productList,
+    productLoading,
   };
 };
 

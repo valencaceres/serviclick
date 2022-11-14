@@ -5,6 +5,7 @@ import { sendMail } from "../util/email";
 import * as Broker from "../models/broker";
 import * as BrokerProduct from "../models/brokerProduct";
 import * as UserBroker from "../models/userBroker";
+import * as Product from "../controllers/product";
 
 const create = async (req: any, res: any) => {
   try {
@@ -62,7 +63,7 @@ const create = async (req: any, res: any) => {
         return;
       }
 
-      products.map(async (product: any) => {
+      for (const product of products) {
         const { product_id, price, commisionTypeCode, value, currency } =
           product;
 
@@ -84,8 +85,24 @@ const create = async (req: any, res: any) => {
           return;
         }
 
+        const responsePlans = await Product.createProductPlans(
+          product_id,
+          broker_id,
+          price.customer,
+          price.company
+        );
+
+        if (!responsePlans.success) {
+          createLogger.error({
+            controller: "product/createProductPlans",
+            error: responsePlans.error,
+          });
+          res.status(500).json({ error: responsePlans.error });
+          return;
+        }
+
         // productsBrokerResponse.push(brokerProductResponse.data);
-      });
+      }
     }
 
     if (users.length > 0) {

@@ -3,10 +3,11 @@ import Wizard, { Title, Content, Buttons } from "../../layout/Wizard";
 import Navigate, { Back } from "../../ui/Navigate";
 import { MenuButtons, MenuItem } from "../../ui/MenuButtons";
 
-import { useFamily, useProduct } from "../../../redux/hooks";
+import { useUI, useFamily, useProduct } from "../../../redux/hooks";
 
 const MenuProducts = ({ handleClickBack, handleClickOption }: any) => {
-  const { list, getById } = useProduct();
+  const { agentId } = useUI();
+  const { productList, getProductById } = useProduct();
   const { family } = useFamily();
 
   return (
@@ -20,8 +21,10 @@ const MenuProducts = ({ handleClickBack, handleClickOption }: any) => {
       </Title>
       <Content>
         <MenuButtons>
-          {list.map((product: any, idx: number) => (
-            <MenuItem key={idx} onClick={() => getById(product.id)}>
+          {productList.map((product: any, idx: number) => (
+            <MenuItem
+              key={idx}
+              onClick={() => getProductById(product.id, agentId)}>
               {product.name}
             </MenuItem>
           ))}

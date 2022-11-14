@@ -1,5 +1,18 @@
 import pool from "../util/database";
 
+const deleteByLeadId: any = async (lead_id: string) => {
+  try {
+    const result = await pool.query(
+      `DELETE FROM app.leadinsured WHERE lead_id = $1`,
+      [lead_id]
+    );
+
+    return { success: true, data: "Insured deleted", error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 const createModel: any = async (lead_id: string, insured_id: string) => {
   try {
     const result = await pool.query(
@@ -41,4 +54,4 @@ const getByLeadId: any = async (lead_id: string) => {
   }
 };
 
-export { createModel, getByLeadId };
+export { deleteByLeadId, createModel, getByLeadId };
