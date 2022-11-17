@@ -1,3 +1,4 @@
+import HeadPages from "../../layout/HeadPages";
 import Wizard, { Title, Content } from "../../layout/Wizard";
 
 import Navigate, { Back } from "../../ui/Navigate";
@@ -11,6 +12,7 @@ const MenuCustomerType = ({ handleClickBack, handleClickOption }: any) => {
 
   return (
     <Wizard>
+      <HeadPages title="Tipo cliente" description="Tipo de cliente" />
       <Title>
         <Navigate>
           <Back onClick={handleClickBack} />

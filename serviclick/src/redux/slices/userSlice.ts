@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
 
-import { config } from "../../utils/config";
+import { apiInstance } from "../../utils/api";
 
 type UserT = {
   rut: string;
@@ -16,6 +15,8 @@ type UserT = {
 type StateT = {
   list: UserT[];
   user: UserT;
+  loading: boolean;
+  error: boolean;
 };
 
 const initialState: StateT = {
@@ -29,51 +30,81 @@ const initialState: StateT = {
     phone: "",
     isValid: false,
   },
+  loading: false,
+  error: false,
 };
 
 export const userSlice = createSlice({
   name: "users",
   initialState,
   reducers: {
-    setUserList: (state: any, action: PayloadAction<any>) => {
+    setLoading: (state: StateT, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+      state.error = false;
+    },
+    setError: (state: StateT, action: PayloadAction<boolean>) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
+    setUserList: (state: StateT, action: PayloadAction<UserT[]>) => {
       state.list = action.payload;
+      state.loading = false;
+      state.error = false;
     },
-    setUser: (state: any, action: PayloadAction<any>) => {
+    setUser: (state: StateT, action: PayloadAction<UserT>) => {
       state.user = action.payload;
+      state.loading = false;
+      state.error = false;
     },
-    resetUser: (state: any) => {
+    resetUser: (state: StateT) => {
       state.user = initialState.user;
     },
   },
 });
 
-export const { setUserList, setUser, resetUser } = userSlice.actions;
+export const { setLoading, setError, setUserList, setUser, resetUser } =
+  userSlice.actions;
 
 export default userSlice.reducer;
 
-export const getAllUsers = () => (dispatch: any) => {
-  axios
-    .get("https://reqres.in/api/users?per_page=12")
-    .then((response) => {
-      dispatch(setUserList(response.data.data));
-    })
-    .catch((error) => console.log(error));
+export const validateUser =
+  (login: string, password: string) => async (dispatch: any) => {
+    try {
+      dispatch(setLoading(true));
+      const { data } = await apiInstance.post(`/user/validate`, {
+        login,
+        password,
+      });
+      dispatch(setUser(data));
+    } catch (e) {
+      dispatch(setError(true));
+    }
+  };
+
+export const sendCredentials = (email: string) => async (dispatch: any) => {
+  try {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.post(`/user/sendCredentials`, {
+      email,
+    });
+    dispatch(setUser(data));
+  } catch (e) {
+    dispatch(setError(true));
+  }
 };
 
-export const validateUser =
-  (login: string, password: string) => (dispatch: any) => {
-    axios
-      .post(
-        `${config.server}/api/user/validate`,
-        { login, password },
-        {
-          headers: {
-            id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-          },
-        }
-      )
-      .then((response) => {
-        dispatch(setUser(response.data));
-      })
-      .catch((error) => console.log(error));
+export const updatePassword =
+  (email: string, password: string, newPassword: string) =>
+  async (dispatch: any) => {
+    try {
+      dispatch(setLoading(true));
+      const { data } = await apiInstance.post(`/user/updatePassword`, {
+        email,
+        password,
+        newPassword,
+      });
+      dispatch(setUser(data));
+    } catch (e) {
+      dispatch(setError(true));
+    }
   };

@@ -1,9 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
 
 import { apiInstance } from "../../utils/api";
-
-import { config } from "../../utils/config";
 
 type BrokerT = {
   id: string;
@@ -106,21 +103,6 @@ export default userBrokerSlice.reducer;
 export const validateUserBroker =
   (broker_rut: string, login: string, password: string) =>
   async (dispatch: any) => {
-    // axios
-    //   .post(
-    //     `${config.server}/api/userBroker/validate`,
-    //     { broker_rut, login, password },
-    //     {
-    //       headers: {
-    //         id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-    //       },
-    //     }
-    //   )
-    //   .then((response) => {
-    //     dispatch(setBroker(response.data.broker));
-    //     dispatch(setUserBroker(response.data.user));
-    //   })
-    //   .catch((error) => console.log(error));
     dispatch(setLoading(true));
 
     const { data } = await apiInstance.post(`/userBroker/validate`, {
@@ -136,19 +118,6 @@ export const validateUserBroker =
 
 export const sendCredentials =
   (broker_rut: string, email: string) => async (dispatch: any) => {
-    // const { success, data, error } = await post(`userBroker/sendCredentials`, {
-    //   broker_rut,
-    //   email,
-    // });
-
-    // if (!success) {
-    //   console.log(error);
-    //   return false;
-    // }
-
-    // dispatch(setResponse(data));
-    // dispatch(setLoading(false));
-    // return true;
     dispatch(setLoading(true));
 
     const { data } = await apiInstance.post(`/userBroker/sendCredentials`, {
@@ -162,21 +131,6 @@ export const sendCredentials =
 export const updatePassword =
   (broker_rut: string, email: string, password: string, newPassword: string) =>
   async (dispatch: any) => {
-    // const { success, data, error } = await post(`userBroker/updatePassword`, {
-    //   broker_rut,
-    //   email,
-    //   password,
-    //   newPassword,
-    // });
-
-    // if (!success) {
-    //   console.log(error);
-    //   return false;
-    // }
-
-    // dispatch(setResponse(data));
-    // dispatch(setLoading(false));
-    // return true;
     dispatch(setLoading(true));
 
     const { data } = await apiInstance.post(`/userBroker/updatePassword`, {

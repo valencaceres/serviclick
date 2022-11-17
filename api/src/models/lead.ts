@@ -51,6 +51,25 @@ const createModel: any = async (
   }
 };
 
+const updatePaymentTypeCode: any = async (
+  id: string,
+  paymentTypeCode: string
+) => {
+  try {
+    const result = await pool.query(
+      `
+          UPDATE  app.lead
+          SET     paymenttype_code = $2
+          WHERE   id = $1 RETURNING *`,
+      [id, paymentTypeCode]
+    );
+
+    return { success: true, data: result.rows[0], error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 const registerSubscriptionModel: any = async (
   id: string,
   subscription_id: number
@@ -60,6 +79,7 @@ const registerSubscriptionModel: any = async (
       `
           UPDATE app.lead
           SET    subscription_id = $2,
+                 paymenttype_code = 'C'
           WHERE  id = $1 RETURNING *`,
       [id, subscription_id]
     );
@@ -190,6 +210,7 @@ const getProductsById: any = async (id: string) => {
 
 export {
   createModel,
+  updatePaymentTypeCode,
   registerSubscriptionModel,
   getById,
   getBySubscriptionId,

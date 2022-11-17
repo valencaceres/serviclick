@@ -6,6 +6,7 @@ import { sendMail } from "../util/email";
 
 import {
   createModel as createLeadModel,
+  updatePaymentTypeCode,
   getById as getLeadById,
   getBySubscriptionId,
 } from "../models/lead";
@@ -289,7 +290,7 @@ const sendPaymentLink = async (lead: LeadT) => {
     return { success, data: null, error };
   }
 
-  sendMail(
+  const emailResponse = await sendMail(
     { name: "Bienvenido a ServiClick" },
     lead.customer.email || lead.company.email,
     `Link de pago para ${product.name}`,
@@ -304,6 +305,16 @@ const sendPaymentLink = async (lead: LeadT) => {
     }">Concluye tu proceso de pago haciendo click aquí</a><br/><br/>Por que sabemos de asistencias, nos enfocamos en resolver todas las necesidades que te ayuden a vivir más tranquilo y seguro.<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
     []
   );
+
+  return emailResponse.data;
+};
+
+const updateLeadPaymentType = async (
+  lead_id: string,
+  paymentTypeCode: string
+) => {
+  const responseUpdate = await updatePaymentTypeCode(lead_id, paymentTypeCode);
+  return errorHandler(responseUpdate, "lead/updatePaymentTypeCode");
 };
 
 const createSubscription = async (
@@ -507,7 +518,19 @@ const createController = async (req: any, res: any) => {
   }
 
   if (send) {
-    sendPaymentLink(data);
+    const emailResponse = await sendPaymentLink(data);
+    if (!emailResponse.success) {
+      res.status(500).json(emailResponse.error);
+      return;
+    }
+
+    const responseLeadUpdate = await updateLeadPaymentType(data.id, "L");
+    if (!responseLeadUpdate.success) {
+      res
+        .status(500)
+        .json({ error: "updateLeadPaymentType: " + responseLeadUpdate.error });
+      return;
+    }
   }
 
   if (subscription) {

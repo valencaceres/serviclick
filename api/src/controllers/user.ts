@@ -1,52 +1,11 @@
+import bcrypt from "bcrypt";
+
+import { generateGenericPassword } from "../util/user";
 import createLogger from "../util/logger";
+import { sendMail } from "../util/email";
 
 import * as User from "../models/user";
 import * as Person from "../models/person";
-
-type BeneficiaryT = {
-  id: string;
-  rut: string;
-  name: string;
-  paternalLastName: string;
-  maternalLastName: string;
-  birthDate: string;
-  address: string;
-  district: string;
-  email: string;
-  phone: string;
-};
-
-type ProductT = {
-  id: string;
-  family_icon: string;
-  family_name: string;
-  name: string;
-  price: number;
-  frequency_code: string;
-  beneficiaries: BeneficiaryT[];
-};
-
-type LeadT = {
-  lead_id: string;
-  customer_id: string;
-  company_id: string;
-  subscription_id: string;
-  products: ProductT[];
-};
-
-type UserInsuredT = {
-  id: string;
-  rut: string;
-  name: string;
-  paternalLastName: string;
-  maternalLastName: string;
-  birthDate: string;
-  address: string;
-  district: string;
-  email: string;
-  phone: string;
-  leads: LeadT[];
-};
 
 const create = async (req: any, res: any) => {
   const { rut, name, paternalLastName, maternalLastName, email, phone } =
@@ -109,30 +68,198 @@ const assignPassword = async (req: any, res: any) => {
 };
 
 const validate = async (req: any, res: any) => {
-  const result = await User.validate(req.body);
+  try {
+    const { login, password } = req.body;
+    const result = await User.getByEmail(login);
+
+    if (!result.success) {
+      createLogger.error({
+        model: "user/validate",
+        error: result.error,
+      });
+      res.status(500).json({ error: result.error });
+      return;
+    }
+
+    if (!result.data.hash) {
+      createLogger.error({
+        model: "user/validate",
+        error: "User not valid",
+      });
+      res.status(403).json({ error: "User not valid" });
+      return;
+    }
+
+    const isValid = await bcrypt.compare(password, result.data.hash);
+    if (!isValid) {
+      createLogger.error({
+        model: "user/validate",
+        error: "User not valid",
+      });
+      res.status(403).json({ error: "User not valid" });
+      return;
+    }
+
+    createLogger.info({
+      controller: "user/validate",
+      message: "OK",
+    });
+    res.status(200).json(result.data);
+  } catch (e) {
+    createLogger.error({
+      controller: "user/validate",
+      error: (e as Error).message,
+    });
+    res.status(500).json({ error: (e as Error).message });
+    return;
+  }
+};
+
+const getByEmail = async (req: any, res: any) => {
+  try {
+    const { email } = req.params;
+    const result = await User.getByEmail(email);
+
+    if (!result.success) {
+      createLogger.error({
+        model: "user/getByEmail",
+        error: result.error,
+      });
+      res.status(500).json({ error: result.error });
+      return;
+    }
+
+    createLogger.info({
+      controller: "user/getByEmail",
+      message: "OK",
+    });
+    res.status(200).json(result.data);
+  } catch (e) {
+    createLogger.error({
+      controller: "user/getByEmail",
+      error: (e as Error).message,
+    });
+    res.status(500).json({ error: (e as Error).message });
+    return;
+  }
+};
+
+const sendCredentials = async (req: any, res: any) => {
+  try {
+    const { email } = req.body;
+    const userResponse = await User.getByEmail(email);
+
+    if (!userResponse.success) {
+      createLogger.error({
+        model: "user/getByEmail",
+        error: userResponse.error,
+      });
+      res.status(500).json({ error: userResponse.error });
+      return;
+    }
+
+    const { id, name } = userResponse.data;
+
+    const generatedPassword = generateGenericPassword();
+
+    const userPasswordResponse = await User.assignPassword(
+      id,
+      generatedPassword
+    );
+
+    if (!userPasswordResponse.success) {
+      createLogger.error({
+        model: "user/assignPassword",
+        error: userPasswordResponse.error,
+      });
+      res.status(500).json({ error: userPasswordResponse.error });
+      return;
+    }
+
+    await sendMail(
+      { name: "Bienvenido a ServiClick" },
+      email,
+      `Tus credenciales de acceso a nuestra plataforma`,
+      `<b>Hola&nbsp;${name}</b><br/><br/>Bienvenido a ServiClick, a continuación te detallamos los datos de acceso a nuestra plataforma para que puedas realizar tus labores:<br/><br/><b>https://app.serviclick.cl</b><br/><br/><b>Login:</b>&nbsp;${email}<br/><b>Password</b>:&nbsp;${generatedPassword}<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
+      []
+    );
+
+    createLogger.info({
+      model: "user/sendCredentials",
+      data: "OK",
+      error: null,
+    });
+    res.status(200).json("e-mail send");
+    return;
+  } catch (e) {
+    createLogger.error({
+      controller: "user/assignPassword",
+      error: (e as Error).message,
+    });
+    res.status(500).json({ error: (e as Error).message });
+    return;
+  }
+};
+
+const updatePassword = async (req: any, res: any) => {
+  const { email, password, newPassword } = req.body;
+
+  const result = await User.getByEmail(email);
+
   if (!result.success) {
     createLogger.error({
-      model: "user/validate",
+      model: "user/getByEmail",
       error: result.error,
     });
     res.status(500).json({ error: result.error });
     return;
   }
 
-  if (!result.data.isValid) {
+  if (!result.data.hash) {
     createLogger.error({
-      model: "user",
+      model: "user/validate",
       error: "User not valid",
     });
     res.status(403).json({ error: "User not valid" });
     return;
   }
 
+  const isValid = await bcrypt.compare(password, result.data.hash);
+  if (!isValid) {
+    createLogger.error({
+      model: "user/validate",
+      error: "User not valid",
+    });
+    res.status(403).json({ error: "User not valid" });
+    return;
+  }
+
+  const { id } = result.data;
+
+  const responseUpdatePassword = await User.assignPassword(id, newPassword);
+
+  if (!responseUpdatePassword.success) {
+    createLogger.error({
+      model: "user/assignPassword",
+      error: responseUpdatePassword.error,
+    });
+    res.status(500).json({ error: responseUpdatePassword.error });
+    return;
+  }
+
   createLogger.info({
-    controller: "user/validate",
+    controller: "user/updatePassword",
     message: "OK",
   });
-  res.status(200).json(result.data);
+
+  res.status(200).json("OK");
 };
 
-export { create, assignPassword, validate };
+export {
+  create,
+  assignPassword,
+  validate,
+  getByEmail,
+  sendCredentials,
+  updatePassword,
+};

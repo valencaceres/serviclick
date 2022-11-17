@@ -166,9 +166,7 @@ const RetailDetail = ({ setEnableButtonSave, isSaving, setIsSaving }: any) => {
     });
   };
 
-  const handleClickSendCredentials = () => {
-    alert("Enviadas");
-  };
+  const handleClickSendCredentials = () => {};
 
   const handleCallbakAfterError = () => {};
 

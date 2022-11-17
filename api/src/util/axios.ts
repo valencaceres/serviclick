@@ -19,6 +19,8 @@ const axiosMonitored = async (
   const emailResponse: any = await axios[httpVerb](url, body, {
     headers: apiKey,
   });
+
+  return emailResponse;
 };
 
 export default axiosMonitored;

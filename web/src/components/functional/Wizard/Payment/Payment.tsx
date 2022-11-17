@@ -1,6 +1,7 @@
 import { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
 
+import HeadPages from "../../../layout/HeadPages";
 import Wizard, { Title, Content, Buttons } from "../../../layout/Wizard";
 import { Component, Row, Cell, CellCenter } from "../../../layout/Component";
 
@@ -106,6 +107,7 @@ const Payment = ({ register }: any) => {
     useState(false);
   const [completeChecks, setCompleteChecks] = useState(false);
   const [paymentType, setPaymentType] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
   const { payment: paymentText, frequency } = texts;
 
@@ -207,22 +209,17 @@ const Payment = ({ register }: any) => {
 
   const handleClickCardPayment = () => {
     setPaymentType("C");
+    setIsSaving(true);
     setMessage("Transacción registrada");
     createLead(lead, false, true);
   };
 
   const handleClickSendPaymentLink = () => {
     setPaymentType("L");
+    setIsSaving(true);
     createLead(lead, true, false);
     setMessage("El link de pago ya fue enviado");
   };
-
-  const handleCloseModalSuccess = () => {
-    if (paymentType === "C") register();
-    if (paymentType === "L") router.push("https://www.serviclick.cl");
-  };
-
-  const handleCloseModalError = () => {};
 
   useEffect(() => {
     if (stage.type === "customer") {
@@ -273,8 +270,16 @@ const Payment = ({ register }: any) => {
     lead,
   ]);
 
+  useEffect(() => {
+    if (isSaving === true && leadLoading === false && leadError === false) {
+      if (paymentType === "C") register();
+      if (paymentType === "L") router.push("https://www.serviclick.cl");
+    }
+  }, [isSaving, leadLoading, leadError, paymentType]);
+
   return (
     <Fragment>
+      <HeadPages title="Pago" description="Datos del pago" />
       <Wizard>
         <Title>
           <Navigate>
@@ -817,15 +822,11 @@ const Payment = ({ register }: any) => {
       ) : leadLoading ? (
         <LoadingMessage showModal={leadLoading} />
       ) : leadError ? (
-        <ErrorMessage showModal={leadError} callback={handleCloseModalError}>
+        <ErrorMessage showModal={leadError}>
           Hubo un error al intentar la transacción
         </ErrorMessage>
       ) : (
-        <SuccessMessage
-          showModal={!leadLoading}
-          callback={handleCloseModalSuccess}>
-          {message}
-        </SuccessMessage>
+        <SuccessMessage showModal={!leadLoading}>{message}</SuccessMessage>
       )}
     </Fragment>
   );

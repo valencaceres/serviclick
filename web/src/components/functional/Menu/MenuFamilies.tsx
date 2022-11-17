@@ -1,3 +1,4 @@
+import HeadPages from "../../layout/HeadPages";
 import Wizard, { Title, Content } from "../../layout/Wizard";
 
 import Icon from "../../ui/Icon";
@@ -10,6 +11,10 @@ const MenuFamilies = () => {
 
   return (
     <Wizard>
+      <HeadPages
+        title="Familia"
+        description="Selección de familia de producto"
+      />
       <Title>Familias</Title>
       <Content>
         <MenuButtons>

@@ -1,6 +1,7 @@
 import { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
 
+import HeadPages from "../../../layout/HeadPages";
 import Wizard, { Title, Content, Buttons } from "../../../layout/Wizard";
 
 import {
@@ -142,6 +143,10 @@ const Beneficiary = ({ register }: any) => {
 
   return (
     <Fragment>
+      <HeadPages
+        title="Beneficiarios"
+        description="Datos de los beneficiarios"
+      />
       <Wizard>
         <Title>
           <Navigate>

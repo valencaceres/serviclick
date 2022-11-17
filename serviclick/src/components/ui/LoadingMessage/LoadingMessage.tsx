@@ -42,12 +42,12 @@ const ErrorMessage = ({ showModal, children, callback }: any) => {
   );
 };
 
-const Message = ({ type, showModal, children, callback = null }: any) => {
+const Message = ({ type, showModal, children, callback }: any) => {
   const [show, setShow] = useState(showModal);
 
   useEffect(() => {
     setTimeout(() => {
-      if (callback) callback();
+      callback();
       setShow(false);
     }, 3000);
   }, [callback]);

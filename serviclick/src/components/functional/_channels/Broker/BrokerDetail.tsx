@@ -181,9 +181,7 @@ const BrokerDetail = ({ setEnableButtonSave }: any) => {
     });
   };
 
-  const handleClickSendCredentials = () => {
-    alert("Enviadas");
-  };
+  const handleClickSendCredentials = () => {};
 
   useEffect(() => {
     if (broker.rut === "") {

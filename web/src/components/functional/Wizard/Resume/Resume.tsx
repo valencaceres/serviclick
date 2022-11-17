@@ -1,5 +1,7 @@
 import { useRouter } from "next/router";
 
+import HeadPages from "../../../layout/HeadPages";
+
 import Wizard, {
   Title,
   Description,
@@ -14,6 +16,7 @@ const Resume = ({ register }: any) => {
 
   return (
     <Wizard>
+      <HeadPages title="Resumen" description="Resumen de la compra" />
       <Title>Resumen de tu compra</Title>
       <Content></Content>
       <Buttons>

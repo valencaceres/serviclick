@@ -1,5 +1,7 @@
-import { useEffect } from "react";
+import { Fragment, useEffect } from "react";
 import { useRouter } from "next/router";
+
+import HeadPages from "../../components/layout/HeadPages";
 
 import * as Product from "../../components/functional/Product";
 
@@ -16,7 +18,12 @@ const BiciCulturaPage = () => {
     setAgentUI("23027cc2-c294-4125-8d61-c8b23626d996");
   }, []);
 
-  return <Component />;
+  return (
+    <Fragment>
+      <HeadPages title="BiciCultura" description="Descripción del producto" />
+      <Component />
+    </Fragment>
+  );
 };
 
 export default BiciCulturaPage;

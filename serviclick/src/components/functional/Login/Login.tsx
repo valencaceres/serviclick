@@ -1,11 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment, useSyncExternalStore } from "react";
 
 import { Content, ContentCell } from "../../layout/Content";
 
-import InputText from "../../ui/InputText";
 import Button from "../../ui/Button";
+import { ErrorMessage } from "../../ui/LoadingMessage";
 
 import { useUI, useUser } from "../../../hooks";
+import LoginForm from "./LoginForm";
+import ButtonLink from "../../ui/ButtonLink";
+import ModalWindow from "../../ui/ModalWindow";
+import PasswordRecovery from "./PasswordRecovery";
 
 const Login = () => {
   const initialLoginData = {
@@ -13,28 +17,31 @@ const Login = () => {
     password: { value: "", isValid: false },
   };
 
+  const initialRecoveryData = {
+    email: { value: "", isValid: false },
+  };
+
   const { setTitleUI } = useUI();
-  const { validate } = useUser();
+  const { validateUser, userLoading, userError } = useUser();
 
   const [enabledButton, setEnabledButton] = useState(false);
   const [loginForm, setLoginForm] = useState(initialLoginData);
-
-  const handleChangeEmail = (e: any) => {
-    setLoginForm({
-      ...loginForm,
-      email: { value: e.target.value, isValid: e.target.value !== "" },
-    });
-  };
-
-  const handleChangePassword = (e: any) => {
-    setLoginForm({
-      ...loginForm,
-      password: { value: e.target.value, isValid: e.target.value !== "" },
-    });
-  };
+  const [showPasswordRecovery, setShowPasswordRecovery] = useState(false);
+  const [recoveryForm, setRecoveryForm] = useState(initialRecoveryData);
+  const [recoveryTextButton, setRecoveryTextButton] = useState("Solicitar");
 
   const handleClickEnter = () => {
-    validate(loginForm.email.value, loginForm.password.value);
+    validateUser(loginForm.email.value, loginForm.password.value);
+  };
+
+  const handlePasswordRecovery = () => {
+    setRecoveryForm(initialRecoveryData);
+    setRecoveryTextButton("Solicitar");
+    setShowPasswordRecovery(true);
+  };
+
+  const handleClickCloseRecoveryModal = () => {
+    setShowPasswordRecovery(false);
   };
 
   useEffect(() => {
@@ -46,32 +53,40 @@ const Login = () => {
   }, [loginForm]);
 
   return (
-    <Content align="center">
-      <ContentCell gap="30px" align="center">
-        <ContentCell gap="5px">
-          <InputText
-            label="Correo electrónico"
-            type="email"
-            width="250px"
-            value={loginForm.email.value}
-            onChange={handleChangeEmail}
+    <Fragment>
+      <Content align="center">
+        <ContentCell gap="30px" align="center">
+          <LoginForm loginForm={loginForm} setLoginForm={setLoginForm} />
+          <Button
+            text="Ingresar"
+            width="200px"
+            onClick={handleClickEnter}
+            enabled={enabledButton}
+            loading={userLoading}
           />
-          <InputText
-            label="Contraseña"
-            type="password"
-            width="250px"
-            value={loginForm.password.value}
-            onChange={handleChangePassword}
-          />
+          <ButtonLink onClick={handlePasswordRecovery}>
+            Olvidé mi contraseña
+          </ButtonLink>
         </ContentCell>
-        <Button
-          text="Ingresar"
-          width="200px"
-          onClick={handleClickEnter}
-          enabled={enabledButton}
+      </Content>
+      <ModalWindow
+        showModal={showPasswordRecovery}
+        setClosed={handleClickCloseRecoveryModal}
+        title="Recuperación de contraseña">
+        <PasswordRecovery
+          setShowPasswordRecovery={setShowPasswordRecovery}
+          recoveryForm={recoveryForm}
+          setRecoveryForm={setRecoveryForm}
+          recoveryTextButton={recoveryTextButton}
+          setRecoveryTextButton={setRecoveryTextButton}
         />
-      </ContentCell>
-    </Content>
+      </ModalWindow>
+      {!userLoading && (
+        <ErrorMessage showModal={userError} callback={() => {}}>
+          Usuario inválido
+        </ErrorMessage>
+      )}
+    </Fragment>
   );
 };
 

@@ -1,5 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
+
+import HeadPages from "../../components/layout/HeadPages";
 
 import Button from "../../components/ui/Button";
 
@@ -33,23 +35,26 @@ const Error = () => {
   }, [router]);
 
   return (
-    <div>
-      <div className={styles.message}>
-        <h1>Ha ocurrido un error con tu compra</h1>
-        <p>
-          Posiblemente se trate del algún error en la información digitada, por
-          ello la hemos guardado y puedes volver a intentar para revisarla y
-          corregir lo que gustes.
-        </p>
-        <Button
-          text="Volver a intentar"
-          onClick={handleClickRetry}
-          width="200px"
-          enabled={isEnabled}
-          loading={leadLoading}
-        />
+    <Fragment>
+      <HeadPages title="Error" description="Error al intentar pagar" />
+      <div>
+        <div className={styles.message}>
+          <h1>Ha ocurrido un error con tu compra</h1>
+          <p>
+            Posiblemente se trate del algún error en la información digitada,
+            por ello la hemos guardado y puedes volver a intentar para revisarla
+            y corregir lo que gustes.
+          </p>
+          <Button
+            text="Volver a intentar"
+            onClick={handleClickRetry}
+            width="200px"
+            enabled={isEnabled}
+            loading={leadLoading}
+          />
+        </div>
       </div>
-    </div>
+    </Fragment>
   );
 };
 

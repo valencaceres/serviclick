@@ -1,6 +1,7 @@
 import { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
 
+import HeadPages from "../../../layout/HeadPages";
 import Wizard, { Title, Content, Buttons } from "../../../layout/Wizard";
 
 import Button from "../../../ui/Button";
@@ -100,6 +101,10 @@ const Company = ({ register }: any) => {
 
   return (
     <Fragment>
+      <HeadPages
+        title="Empresa"
+        description="Datos de la empresa contratante"
+      />
       <Wizard>
         <Title>
           <Navigate>

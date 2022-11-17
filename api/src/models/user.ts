@@ -55,11 +55,11 @@ const assignPassword: any = async (id: string, password: string) => {
   }
 };
 
-const validate: any = async (values: any) => {
-  const { login, password } = values;
+const getByEmail: any = async (email: string) => {
   try {
     const result = await pool.query(
-      `SELECT PER.rut,
+      `SELECT USR.id,
+              PER.rut,
               PER.name,
               PER.paternalLastName,
               PER.maternalLastName,
@@ -68,20 +68,11 @@ const validate: any = async (values: any) => {
               USR.hash
        FROM   app.user USR INNER JOIN app.person PER ON USR.person_id = PER.id
        WHERE  USR.login = $1`,
-      [login]
+      [email]
     );
 
-    const {
-      id,
-      rut,
-      name,
-      paternallastname,
-      maternallastname,
-      email,
-      phone,
-      hash,
-    } = result.rows[0];
-    const isValid = await bcrypt.compare(password, hash);
+    const { id, rut, name, paternallastname, maternallastname, phone, hash } =
+      result.rows[0];
 
     return {
       success: true,
@@ -93,7 +84,7 @@ const validate: any = async (values: any) => {
         maternalLastName: maternallastname,
         email,
         phone,
-        isValid,
+        hash,
       },
       error: null,
     };
@@ -102,4 +93,4 @@ const validate: any = async (values: any) => {
   }
 };
 
-export { create, assignPassword, validate };
+export { create, assignPassword, getByEmail };

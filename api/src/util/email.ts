@@ -9,7 +9,7 @@ export const sendMail = async (
   message: string,
   attachments: string[]
 ) => {
-  await axiosMonitored(
+  const emailResponse = await axiosMonitored(
     "post",
     config.email.URL.send,
     {
@@ -21,4 +21,6 @@ export const sendMail = async (
     },
     config.email.apiKey
   );
+
+  return emailResponse;
 };

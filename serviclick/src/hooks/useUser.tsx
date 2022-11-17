@@ -1,8 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import useUI from "./useUI";
 
-import { validateUser } from "../redux/slices/userSlice";
+import * as User from "../redux/slices/userSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 
 const useUser = () => {
@@ -10,19 +10,47 @@ const useUser = () => {
 
   const { setUserUI } = useUI();
 
-  const { user } = useAppSelector((state) => state.userSlice);
+  const [isValidate, setIsValidate] = useState(false);
 
-  const validate = (login: string, password: string) => {
-    dispatch(validateUser(login, password));
+  const {
+    user,
+    list: userList,
+    loading: userLoading,
+    error: userError,
+  } = useAppSelector((state) => state.userSlice);
+
+  const validateUser = (login: string, password: string) => {
+    setIsValidate(true);
+    dispatch(User.validateUser(login, password));
+  };
+
+  const sendCredentials = (email: string) => {
+    dispatch(User.sendCredentials(email));
+  };
+
+  const updatePassword = (
+    email: string,
+    password: string,
+    newPassword: string
+  ) => {
+    dispatch(User.updatePassword(email, password, newPassword));
   };
 
   useEffect(() => {
-    if (user.rut !== "") {
+    if (user.rut !== "" && isValidate) {
       setUserUI(user);
     }
-  }, [setUserUI, user, user.rut]);
+  }, [isValidate, setUserUI, user, user.rut]);
 
-  return { validate };
+  return {
+    user,
+    userList,
+    userLoading,
+    userError,
+    validateUser,
+    sendCredentials,
+    updatePassword,
+  };
 };
 
 export default useUser;

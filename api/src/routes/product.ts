@@ -3,6 +3,7 @@ import { Router } from "express";
 import auth from "../middlewares/auth";
 import {
   createProduct,
+  createPlans,
   assignPrices,
   updateProduct,
   deleteProduct,
@@ -14,6 +15,7 @@ import {
 const ProductRouter = Router();
 
 ProductRouter.post("/create", auth, createProduct);
+ProductRouter.post("/createPlans", auth, createPlans);
 ProductRouter.post("/assignPrices", auth, assignPrices);
 ProductRouter.put("/update/:id", auth, updateProduct);
 ProductRouter.delete("/delete/:id", auth, deleteProduct);

@@ -19,7 +19,7 @@ const assignPassword = async (req: any, res: any) => {
   }
 
   createLogger.info({
-    controller: "userBroker",
+    controller: "userBroker/assignPassword",
     message: "OK",
   });
   res.status(200).json(result);

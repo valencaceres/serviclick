@@ -34,9 +34,10 @@ const BiciCultura = () => {
         <div className={styles.detail}>
           <div className={styles.description}>
             <div className={styles.text}>
-              Para que pedalees tranquilo y protegido por las calles, con esta
-              asistencia podrás contar con ayuda inmediata en caso de que así lo
-              necesites.
+              Cuando contratas la Asistencia al Ciclista BiciCultura, te
+              beneficias de sus prestaciones y a la vez apoyas el trabajo de
+              incidencia ciudadana de BiciCultura. Por cada Asistencia Ciclista
+              contratada, ServiClick hará una donación a BiciCultura.
             </div>
             <div className={styles.text}>
               Asistencia disponible para el territorio nacional de Chile,

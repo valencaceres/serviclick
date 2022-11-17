@@ -88,6 +88,31 @@ const createProduct = async (req: any, res: any) => {
   });
 };
 
+const createPlans = async (req: any, res: any) => {
+  const { product_id, agent_id, price } = req.body;
+
+  const responsePlans = await createProductPlans(
+    product_id,
+    agent_id,
+    price.customer,
+    price.company
+  );
+
+  if (!responsePlans.success) {
+    createLogger.error({
+      controller: "product/createProductPlans",
+      error: responsePlans.error,
+    });
+    res.status(500).json({ error: responsePlans.error });
+    return;
+  }
+
+  createLogger.info({
+    controller: "product/createPlans",
+    message: "OK",
+  });
+};
+
 const assignPrices = async (req: any, res: any) => {
   const { id, agent_id, customerprice, companyprice } = req.body;
   const responsePlans = await createProductPlans(
@@ -110,6 +135,8 @@ const assignPrices = async (req: any, res: any) => {
     controller: "product/assignPrices",
     message: "OK",
   });
+
+  res.status(200).json(responsePlans);
 };
 
 const updateProduct = async (req: any, res: any) => {
@@ -628,6 +655,7 @@ const createProductFamilyValues = async (id: string, familyValues: any) => {
 
 export {
   createProduct,
+  createPlans,
   updateProduct,
   deleteProduct,
   getProduct,
