@@ -8,7 +8,8 @@ const updateSubscription: any = async (
     const result = await pool.query(
       `
         UPDATE  app.lead
-        SET     subscription_id = $1
+        SET     subscription_id = $1,
+                paymenttype_code = 'C'
         WHERE   id = $2 RETURNING *`,
       [subscription_id, lead_id]
     );
