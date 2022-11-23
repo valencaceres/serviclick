@@ -78,10 +78,10 @@ const Value: NextPage = () => {
       ) {
         setStage({ name: stage, type });
 
-        getProductByIdWithPrices(id ? id.toString() : "", agentId);
-
         if (leadId) {
           getLeadById(leadId ? leadId.toString() : "");
+        } else {
+          getProductByIdWithPrices(id ? id.toString() : "", agentId);
         }
         setIsLoaded(true);
       }
@@ -101,9 +101,9 @@ const Value: NextPage = () => {
   }, [product, stage]);
 
   useEffect(() => {
-    if (lead.id) {
+    if (lead.id !== "") {
       setAgentUI(lead.agent_id);
-      //getOnlyProductById(lead.product.id);
+      getProductByIdWithPrices(lead.product.id, lead.agent_id);
     }
   }, [lead.id]);
 
