@@ -14,6 +14,7 @@ import {
   TableDetail,
   TableRow,
   TableCell,
+  TableCellEnd,
 } from "../../../ui/Table";
 import Tooltip from "../../../ui/Tooltip";
 import { Modal, Window } from "../../../ui/Modal";
@@ -88,7 +89,7 @@ const Payment = ({ register }: any) => {
     initialDataSectionSelected
   );
   const [startValidity, setStartValidity] = useState(
-    calculateValidity(product.coverages)
+    calculateValidity(product.assistances)
   );
   const [customerForm, setCustomerForm] = useState(initialDataCustomerForm);
   const [companyForm, setCompanyForm] = useState(initialDataCompanyForm);
@@ -161,6 +162,17 @@ const Payment = ({ register }: any) => {
       lead.insured[0].email !== "" &&
       lead.insured[0].phone !== "";
     return isValid;
+  };
+
+  const formatAmount = (amount: string, currency: string) => {
+    if (amount === "0") {
+      return "";
+    }
+    if (currency === "P") {
+      return `$${parseInt(amount).toLocaleString("en-US").replace(",", ".")}`;
+    } else {
+      return `${amount} UF`;
+    }
   };
 
   const handleCloseTooltip = () => {
@@ -346,46 +358,40 @@ const Payment = ({ register }: any) => {
                     <InputText
                       id="txtProductName"
                       label="Nombre"
-                      width={isDesktop ? "940px" : "100%"}
+                      width={isDesktop ? "953px" : "100%"}
                       value={product.name}
                       onChange={() => {}}
                       disabled={true}
                     />
                     {isDesktop ? (
-                      <Table width="940px" height="auto">
+                      <Table width="953px" height="347px">
                         <TableHeader>
-                          <TableCell width="270px">Servicio</TableCell>
-                          <TableCell width="160px">Monto</TableCell>
-                          <TableCell width="250px">Límite</TableCell>
-                          <TableCell
-                            width="70px"
-                            alt="Inicio de vigencia en díasx">
-                            Inicio
-                          </TableCell>
-                          <TableCell width="176px">Eventos</TableCell>
+                          <TableCell width="350px">Servicio</TableCell>
+                          <TableCell width="100px">Monto</TableCell>
+                          <TableCell width="240px">Límite</TableCell>
+                          <TableCell width="85px">Eventos</TableCell>
+                          <TableCell width="85px">Carencia</TableCell>
+                          <TableCell width="70px"></TableCell>
+                          <TableCellEnd />
                         </TableHeader>
                         <TableDetail>
-                          {product.coverages.map(
-                            (coverageItem: any, idx: number) => (
-                              <TableRow key={idx}>
-                                <TableCell width="270px">
-                                  {coverageItem.name}
-                                </TableCell>
-                                <TableCell width="160px" align="center">
-                                  {coverageItem.amount}
-                                </TableCell>
-                                <TableCell width="250px">
-                                  {coverageItem.maximum}
-                                </TableCell>
-                                <TableCell width="70px" align="flex-end">
-                                  {coverageItem.lack}
-                                </TableCell>
-                                <TableCell width="170px" align="center">
-                                  {coverageItem.events}
-                                </TableCell>
-                              </TableRow>
-                            )
-                          )}
+                          {product.assistances.map((item: any, idx: number) => (
+                            <TableRow key={idx}>
+                              <TableCell width="350px">{item.name}</TableCell>
+                              <TableCell width="100px" align="center">
+                                {formatAmount(item.amount, item.currency)}
+                              </TableCell>
+                              <TableCell width="240px" align="center">
+                                {item.maximum}
+                              </TableCell>
+                              <TableCell width="85px" align="center">
+                                {item.events === 0 ? "Ilimitado" : item.events}
+                              </TableCell>
+                              <TableCell width="85px" align="center">
+                                {item.lack}
+                              </TableCell>
+                            </TableRow>
+                          ))}
                         </TableDetail>
                       </Table>
                     ) : (
@@ -394,30 +400,32 @@ const Payment = ({ register }: any) => {
                           <TableCell width="100%">Cobertura</TableCell>
                         </TableHeader>
                         <TableDetail>
-                          {product.coverages.map(
-                            (coverageItem: any, idx: number) => (
-                              <TableRow key={idx}>
-                                <TableCell width="100%">
-                                  <div
-                                    style={{
-                                      width: "calc(100% - 120px)",
-                                      paddingRight: "10px",
-                                    }}>
-                                    <b>{coverageItem.name}</b>
-                                  </div>
-                                  <div style={{ width: "120px" }}>
-                                    Monto: {coverageItem.amount}
-                                    <br />
-                                    Límite: {coverageItem.maximum}
-                                    <br />
-                                    Carencia: {coverageItem.lack}
-                                    <br />
-                                    Cant. eventos: {coverageItem.events}
-                                  </div>
-                                </TableCell>
-                              </TableRow>
-                            )
-                          )}
+                          {product.assistances.map((item: any, idx: number) => (
+                            <TableRow key={idx}>
+                              <TableCell width="100%">
+                                <div
+                                  style={{
+                                    width: "calc(100% - 120px)",
+                                    paddingRight: "10px",
+                                  }}>
+                                  <b>{item.name}</b>
+                                </div>
+                                <div style={{ width: "120px" }}>
+                                  Monto:{" "}
+                                  {formatAmount(item.amount, item.currency)}
+                                  <br />
+                                  Límite: {item.maximum}
+                                  <br />
+                                  Cant. eventos:{" "}
+                                  {item.events === 0
+                                    ? "Ilimitado"
+                                    : item.events}
+                                  <br />
+                                  Carencia: {item.lack}
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
                         </TableDetail>
                       </Table>
                     )}
@@ -689,7 +697,7 @@ const Payment = ({ register }: any) => {
                               id="txtProductCompanyPrice"
                               label="Valor unitario ($)"
                               width="200px"
-                              value={product.price[stage.type]
+                              value={product.plan[stage.type].price
                                 .toLocaleString("en-US")
                                 .replace(",", ".")}
                               disabled={true}
@@ -714,7 +722,8 @@ const Payment = ({ register }: any) => {
                               label="Valor ($)"
                               width="200px"
                               value={(
-                                product.price[stage.type] * lead.insured.length
+                                product.plan[stage.type].price *
+                                lead.insured.length
                               )
                                 .toLocaleString("en-US")
                                 .replace(",", ".")}

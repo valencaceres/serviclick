@@ -10,15 +10,23 @@ import {
 } from "../components/functional/Menu";
 import { LoadingMessage } from "../components/ui/LoadingMessage";
 
-import { useUI, useFamily, useProduct, useLead } from "../redux/hooks";
+import {
+  useUI,
+  useDistrict,
+  useFamily,
+  useProduct,
+  useLead,
+} from "../redux/hooks";
 
 const Home: NextPage = () => {
   const router = useRouter();
 
   const { setAgentUI, agentId } = useUI();
-  const { listAll: getAllFamilies, reset: resetFamily, family } = useFamily();
+  const { listAllDistrict } = useDistrict();
+  const { reset: resetFamily, family } = useFamily();
   const {
-    getProductById,
+    getProductFamilies,
+    getProductByIdWithPrices,
     getProductsByFamilyId,
     resetProductList,
     resetProduct,
@@ -30,7 +38,10 @@ const Home: NextPage = () => {
   const [menu, setMenu] = useState("FAM");
 
   const handleClickProduct = (product_id: string) => {
-    getProductById(product_id, agentId);
+    getProductByIdWithPrices(
+      product_id,
+      "020579a3-8461-45ec-994b-ad22ff8e3275"
+    );
   };
 
   const handleClickCustomerType = (type: string) => {
@@ -52,7 +63,8 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     setAgentUI("020579a3-8461-45ec-994b-ad22ff8e3275");
-    getAllFamilies();
+    getProductFamilies();
+    listAllDistrict();
   }, []);
 
   useEffect(() => {

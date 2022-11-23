@@ -13,12 +13,12 @@ const Product = () => {
 
   const { setCustomerTypeUI, customerType, agentId } = useUI();
   const { productList, loading } = useBroker();
-  const { getProductById, product, productLoading } = useProduct();
+  const { getProductByIdWithPrices, product, productLoading } = useProduct();
   const { setLeadProduct } = useLead();
 
   const handleClickProduct = (productItem: any, priceItem: "P" | "C") => {
     setCustomerTypeUI(priceItem);
-    getProductById(productItem.id, agentId);
+    getProductByIdWithPrices(productItem.id, agentId);
   };
 
   useEffect(() => {
@@ -27,10 +27,10 @@ const Product = () => {
         customerType === "P" ? "customer" : "company";
       setLeadProduct({
         id: product.id,
-        price: product.price[customerTypeName],
+        price: product.plan[customerTypeName].price,
         currency_code: product.currency,
         frequency_code: product.frequency,
-        productPlan_id: product.plan[customerTypeName].id,
+        productPlan_id: product.plan[customerTypeName].plan_id,
       });
       router.push(`/sale/contract/${customerTypeName}`);
     }

@@ -7,9 +7,11 @@ import {
   assignPrices,
   updateProduct,
   deleteProduct,
-  getProduct,
+  getByIdWithPrices,
   listProducts,
   getProductByFamilyId,
+  getById,
+  getFamilies,
 } from "../controllers/product";
 
 const ProductRouter = Router();
@@ -25,6 +27,8 @@ ProductRouter.get(
   auth,
   getProductByFamilyId
 );
-ProductRouter.get("/get/:id/:agent_id", auth, getProduct);
+ProductRouter.get("/getById/:id", auth, getById);
+ProductRouter.get("/getByIdWithPrices/:id/:agent_id", auth, getByIdWithPrices);
+ProductRouter.get("/getFamilies", auth, getFamilies);
 
 export default ProductRouter;

@@ -25,12 +25,23 @@ const CompanyForm = ({ companyForm, setCompanyForm, disabled }: any) => {
   const { lead, getLeadBySubscriptionId, resetLeadSubscription } = useLead();
 
   const handleBlurRut = (event: any) => {
-    getActiveSubscriptions(
-      stage.type,
-      formatRut(event.target.value),
-      product.id
-    );
+    // getActiveSubscriptions(
+    //   stage.type,
+    //   formatRut(event.target.value),
+    //   product.id
+    // );
     event.target.value = formatRut(event.target.value);
+    setCompanyForm({
+      ...companyForm,
+      rut: {
+        value: event.target.value,
+        isValid:
+          (rutRegEx.test(unFormatRut(event.target.value)) &&
+            unFormatRut(event.target.value).length > 7 &&
+            rutValidate(unFormatRut(event.target.value))) ||
+          event.target.value === "",
+      },
+    });
   };
 
   const handleFocusRut = (event: any) => {

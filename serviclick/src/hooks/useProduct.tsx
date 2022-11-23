@@ -4,23 +4,31 @@ import { useAppDispatch, useAppSelector } from "../redux/hooks";
 const useProduct = () => {
   const dispatch = useAppDispatch();
 
-  const { product, list: productList } = useAppSelector(
-    (state) => state.productSlice
-  );
+  const {
+    product,
+    list: productList,
+    families,
+    error: productError,
+    loading: productLoading,
+  } = useAppSelector((state) => state.productSlice);
 
   const createProduct = (
     family_id: string,
     name: string,
     cost: number,
     isSubject: boolean,
-    frequency: string,
-    term: string,
+    frequency: Product.FrequencyT,
+    term: number,
     beneficiaries: number,
-    minInsuredCompanyPrice: number,
+    currency: string,
     dueDay: number,
-    coverages: Product.CoverageT[],
-    familyValues: Product.FamilyValueT[],
-    currency: string
+    minInsuredCompanyPrice: number,
+    title: string,
+    subTitle: string,
+    description: string,
+    territorialScope: string,
+    hiringConditions: string,
+    assistances: Product.AssistanceT[]
   ) => {
     dispatch(
       Product.createProduct(
@@ -31,11 +39,15 @@ const useProduct = () => {
         frequency,
         term,
         beneficiaries,
-        minInsuredCompanyPrice,
+        currency,
         dueDay,
-        coverages,
-        familyValues,
-        currency
+        minInsuredCompanyPrice,
+        title,
+        subTitle,
+        description,
+        territorialScope,
+        hiringConditions,
+        assistances
       )
     );
   };
@@ -57,14 +69,18 @@ const useProduct = () => {
     name: string,
     cost: number,
     isSubject: boolean,
-    frequency: string,
-    term: string,
+    frequency: Product.FrequencyT,
+    term: number,
     beneficiaries: number,
-    minInsuredCompanyPrice: number,
+    currency: string,
     dueDay: number,
-    coverages: Product.CoverageT[],
-    familyValues: Product.FamilyValueT[],
-    currency: string
+    minInsuredCompanyPrice: number,
+    title: string,
+    subTitle: string,
+    description: string,
+    territorialScope: string,
+    hiringConditions: string,
+    assistances: Product.AssistanceT[]
   ) => {
     dispatch(
       Product.updateProduct(
@@ -76,11 +92,15 @@ const useProduct = () => {
         frequency,
         term,
         beneficiaries,
-        coverages,
-        minInsuredCompanyPrice,
+        currency,
         dueDay,
-        familyValues,
-        currency
+        minInsuredCompanyPrice,
+        title,
+        subTitle,
+        description,
+        territorialScope,
+        hiringConditions,
+        assistances
       )
     );
   };
@@ -99,6 +119,14 @@ const useProduct = () => {
 
   const getProductById = (id: string, agent_id: string) => {
     dispatch(Product.getProductById(id, agent_id));
+  };
+
+  const getOnlyProductById = (id: string) => {
+    dispatch(Product.getOnlyProductById(id));
+  };
+
+  const getProductFamilies = () => {
+    dispatch(Product.getFamilies());
   };
 
   const setProductList = (value: Product.ProductT[]) => {
@@ -123,14 +151,19 @@ const useProduct = () => {
     updateProduct,
     deleteProductById,
     getAllProducts,
+    getOnlyProductById,
     getProductById,
     getProductByFamilyId,
+    getProductFamilies,
     setProductList,
     setProduct,
     resetProduct,
     resetProductList,
     product,
     productList,
+    families,
+    productError,
+    productLoading,
   };
 };
 

@@ -46,12 +46,21 @@ const WarningMessage = ({ showModal, message }: any) => {
   );
 };
 
-const ErrorMessage = ({ showModal, message }: any) => {
+const ErrorMessage = ({ showModal, children, callback }: any) => {
+  const [show, setShow] = useState(showModal);
+
+  useEffect(() => {
+    setTimeout(() => {
+      callback();
+      setShow(false);
+    }, 3000);
+  }, []);
+
   return (
-    <Modal showModal={!showModal}>
+    <Modal showModal={show}>
       <div className={styles.message}>
         <Icon iconName="check_circle" className={styles.error} size="50px" />
-        {message}
+        {children}
       </div>
     </Modal>
   );

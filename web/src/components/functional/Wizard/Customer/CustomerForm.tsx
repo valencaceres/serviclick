@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 
 import InputText from "../../../ui/InputText";
+import ComboBox from "../../../ui/ComboBox";
 
 import { Component, Row, Cell } from "../../../layout/Component";
 
@@ -10,6 +11,7 @@ import { rutValidate } from "../../../../utils/validations";
 
 import {
   useUI,
+  useDistrict,
   useStage,
   useSubscription,
   useProduct,
@@ -18,6 +20,7 @@ import {
 
 const CustomerForm = ({ customerForm, setCustomerForm, disabled }: any) => {
   const { isDesktop } = useUI();
+  const { list } = useDistrict();
   const { stage } = useStage();
   const { product } = useProduct();
   const {
@@ -29,12 +32,23 @@ const CustomerForm = ({ customerForm, setCustomerForm, disabled }: any) => {
   const { lead, getLeadBySubscriptionId, resetLeadSubscription } = useLead();
 
   const handleBlurRut = (event: any) => {
-    getActiveSubscriptions(
-      stage.type,
-      formatRut(event.target.value),
-      product.id
-    );
+    // getActiveSubscriptions(
+    //   stage.type,
+    //   formatRut(event.target.value),
+    //   product.id
+    // );
     event.target.value = formatRut(event.target.value);
+    setCustomerForm({
+      ...customerForm,
+      rut: {
+        value: event.target.value,
+        isValid:
+          (rutRegEx.test(unFormatRut(event.target.value)) &&
+            unFormatRut(event.target.value).length > 7 &&
+            rutValidate(unFormatRut(event.target.value))) ||
+          event.target.value === "",
+      },
+    });
   };
 
   const handleFocusRut = (event: any) => {
@@ -255,13 +269,16 @@ const CustomerForm = ({ customerForm, setCustomerForm, disabled }: any) => {
       </Row>
       <Row>
         <Cell>
-          <InputText
+          <ComboBox
             label="Comuna"
             width="100%"
-            maxLength={250}
             value={customerForm?.district.value}
             onChange={handleChangeDistrict}
-            disabled={disabled}
+            placeHolder=":: Seleccione comuna ::"
+            data={list}
+            dataValue="district_name"
+            dataText="district_name"
+            enabled={!disabled}
           />
         </Cell>
       </Row>

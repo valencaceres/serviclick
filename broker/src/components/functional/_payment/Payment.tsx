@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import {
   Table,
   TableCell,
+  TableCellEnd,
   TableDetail,
   TableHeader,
   TableRow,
@@ -55,7 +56,7 @@ const Payment = ({
     initialDataSectionSelected
   );
   const [startValidity, setStartValidity] = useState(
-    calculateValidity(product.coverages)
+    calculateValidity(product.assistances)
   );
   const [checks, setChecks] = useState({
     customer: false,
@@ -121,6 +122,17 @@ const Payment = ({
       lead.insured[0].email !== "" &&
       lead.insured[0].phone !== "";
     return isValid;
+  };
+
+  const formatAmount = (amount: string, currency: string) => {
+    if (amount === "0") {
+      return "";
+    }
+    if (currency === "P") {
+      return `$${parseInt(amount).toLocaleString("en-US").replace(",", ".")}`;
+    } else {
+      return `${amount} UF`;
+    }
   };
 
   const handleClickTermsAndConditions = () => {
@@ -350,36 +362,36 @@ const Payment = ({
                 <InputText
                   id="txtProductName"
                   label="Nombre"
-                  width={isDesktop ? "940px" : "100%"}
+                  width={isDesktop ? "953px" : "100%"}
                   value={product.name}
                   onChange={() => {}}
                   disabled={true}
                 />
-                <Table width="940px" height="auto">
+                <Table width="953px" height="auto">
                   <TableHeader>
-                    <TableCell width="270px">Servicio</TableCell>
-                    <TableCell width="160px">Monto</TableCell>
-                    <TableCell width="250px">Límite</TableCell>
-                    <TableCell width="70px" alt="Inicio de vigencia en díasx">
-                      Inicio
-                    </TableCell>
-                    <TableCell width="176px">Eventos</TableCell>
+                    <TableCell width="350px">Servicio</TableCell>
+                    <TableCell width="100px">Monto</TableCell>
+                    <TableCell width="240px">Límite</TableCell>
+                    <TableCell width="85px">Eventos</TableCell>
+                    <TableCell width="85px">Carencia</TableCell>
+                    <TableCell width="70px"></TableCell>
+                    <TableCellEnd />
                   </TableHeader>
                   <TableDetail>
-                    {product.coverages.map((coverageItem: any, idx: number) => (
+                    {product.assistances.map((item: any, idx: number) => (
                       <TableRow key={idx}>
-                        <TableCell width="270px">{coverageItem.name}</TableCell>
-                        <TableCell width="160px" align="center">
-                          {coverageItem.amount}
+                        <TableCell width="350px">{item.name}</TableCell>
+                        <TableCell width="100px" align="center">
+                          {formatAmount(item.amount, item.currency)}
                         </TableCell>
-                        <TableCell width="250px">
-                          {coverageItem.maximum}
+                        <TableCell width="240px" align="center">
+                          {item.maximum}
                         </TableCell>
-                        <TableCell width="70px" align="flex-end">
-                          {coverageItem.lack}
+                        <TableCell width="85px" align="center">
+                          {item.events === 0 ? "Ilimitado" : item.events}
                         </TableCell>
-                        <TableCell width="170px" align="center">
-                          {coverageItem.events}
+                        <TableCell width="85px" align="center">
+                          {item.lack}
                         </TableCell>
                       </TableRow>
                     ))}

@@ -2,35 +2,22 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { apiInstance } from "../../utils/api";
 
-export type CoverageT = {
+export type FrequencyT = "M" | "A" | "S";
+
+export type AssistanceT = {
   id: string;
   name: string;
-  amount: string;
+  amount: number;
   maximum: string;
-  lack: string;
-  events: string;
-  isCombined: boolean;
+  events: number;
+  lack: number;
+  currency: string;
 };
 
 export type PriceT = {
-  customer: number;
-  company: number;
-};
-
-type PlanT = {
-  customer: {
-    id: number;
-    price: number;
-  };
-  company: {
-    id: number;
-    price: number;
-  };
-};
-
-export type FamilyValueT = {
-  id: string;
-  name: string;
+  plan_id: number;
+  price: number;
+  frequency: FrequencyT;
 };
 
 export type ProductT = {
@@ -39,23 +26,35 @@ export type ProductT = {
   name: string;
   cost: number;
   isSubject: boolean;
-  price: PriceT;
-  frequency: "M" | "A" | "S";
-  term: string;
+  frequency: FrequencyT;
+  term: number;
   beneficiaries: number;
-  coverages: CoverageT[];
-  familyValues: FamilyValueT[];
   currency: string;
-  minInsuredCompanyPrice: number;
   dueDay: number;
-  plan: PlanT;
-  isActive: boolean;
+  minInsuredCompanyPrice: number;
+  title: string;
+  subTitle: string;
+  description: string;
+  territorialScope: string;
+  hiringConditions: string;
+  assistances: AssistanceT[];
+  plan: {
+    customer: PriceT;
+    company: PriceT;
+  };
+};
+
+type FamilyT = {
+  id: string;
+  name: string;
 };
 
 type StateT = {
   list: ProductT[];
   product: ProductT;
+  families: FamilyT[];
   loading: boolean;
+  error: boolean;
 };
 
 export const initialState: StateT = {
@@ -65,20 +64,35 @@ export const initialState: StateT = {
     family_id: "",
     name: "",
     cost: 0,
-    isSubject: true,
-    price: { customer: 0, company: 0 },
+    isSubject: false,
     frequency: "M",
-    term: "",
+    term: 0,
     beneficiaries: 0,
-    coverages: [],
-    familyValues: [],
     currency: "",
-    minInsuredCompanyPrice: 0,
     dueDay: 0,
-    plan: { customer: { id: 0, price: 0 }, company: { id: 0, price: 0 } },
-    isActive: true,
+    minInsuredCompanyPrice: 0,
+    title: "",
+    subTitle: "",
+    description: "",
+    territorialScope: "",
+    hiringConditions: "",
+    assistances: [],
+    plan: {
+      customer: {
+        plan_id: 0,
+        price: 0,
+        frequency: "M",
+      },
+      company: {
+        plan_id: 0,
+        price: 0,
+        frequency: "M",
+      },
+    },
   },
+  families: [],
   loading: false,
+  error: false,
 };
 
 export const productSlice = createSlice({
@@ -88,13 +102,24 @@ export const productSlice = createSlice({
     setLoading: (state: StateT, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },
+    setError: (state: StateT, action: PayloadAction<boolean>) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
+    setFamilies: (state: StateT, action: PayloadAction<FamilyT[]>) => {
+      state.families = action.payload;
+      state.loading = false;
+      state.error = false;
+    },
     setProductList: (state: StateT, action: PayloadAction<any>) => {
       state.list = action.payload;
       state.loading = false;
+      state.error = false;
     },
     setProduct: (state: StateT, action: PayloadAction<any>) => {
       state.product = action.payload;
       state.loading = false;
+      state.error = false;
     },
     resetProduct: (state: StateT) => {
       state.product = initialState.product;
@@ -107,6 +132,8 @@ export const productSlice = createSlice({
 
 export const {
   setLoading,
+  setError,
+  setFamilies,
   setProductList,
   setProduct,
   resetProduct,
@@ -121,14 +148,18 @@ export const createProduct =
     name: string,
     cost: number,
     isSubject: boolean,
-    frequency: string,
-    term: string,
+    frequency: FrequencyT,
+    term: number,
     beneficiaries: number,
-    minInsuredCompanyPrice: number,
+    currency: string,
     dueDay: number,
-    coverages: CoverageT[],
-    familyValues: FamilyValueT[],
-    currency: string
+    minInsuredCompanyPrice: number,
+    title: string,
+    subTitle: string,
+    description: string,
+    territorialScope: string,
+    hiringConditions: string,
+    assistances: AssistanceT[]
   ) =>
   async (dispatch: any) => {
     dispatch(setLoading(true));
@@ -140,11 +171,15 @@ export const createProduct =
       frequency,
       term,
       beneficiaries,
-      minInsuredCompanyPrice,
-      dueDay,
-      coverages,
-      familyValues,
       currency,
+      dueDay,
+      minInsuredCompanyPrice,
+      title,
+      subTitle,
+      description,
+      territorialScope,
+      hiringConditions,
+      assistances,
     });
     dispatch(setProduct(data));
   };
@@ -169,18 +204,23 @@ export const updateProduct =
     name: string,
     cost: number,
     isSubject: boolean,
-    frequency: string,
-    term: string,
+    frequency: FrequencyT,
+    term: number,
     beneficiaries: number,
-    coverages: CoverageT[],
-    minInsuredCompanyPrice: number,
+    currency: string,
     dueDay: number,
-    familyValues: FamilyValueT[],
-    currency: string
+    minInsuredCompanyPrice: number,
+    title: string,
+    subTitle: string,
+    description: string,
+    territorialScope: string,
+    hiringConditions: string,
+    assistances: AssistanceT[]
   ) =>
   async (dispatch: any) => {
     dispatch(setLoading(true));
     const { data } = await apiInstance.put(`/product/update/${id}`, {
+      id,
       family_id,
       name,
       cost,
@@ -188,48 +228,94 @@ export const updateProduct =
       frequency,
       term,
       beneficiaries,
-      coverages,
-      minInsuredCompanyPrice,
-      dueDay,
-      familyValues,
       currency,
+      dueDay,
+      minInsuredCompanyPrice,
+      title,
+      subTitle,
+      description,
+      territorialScope,
+      hiringConditions,
+      assistances,
     });
     dispatch(setProduct(data));
   };
 
 export const deleteProduct = (id: string) => async (dispatch: any) => {
-  dispatch(setLoading(true));
-  const { data } = await apiInstance.delete(`/product/delete/${id}`);
-  dispatch(resetProduct());
+  try {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.delete(`/product/delete/${id}`);
+    dispatch(resetProduct());
+  } catch (e) {
+    dispatch(setError(true));
+  }
 };
 
 export const getAllProducts = (agent_id: string) => async (dispatch: any) => {
-  dispatch(setLoading(true));
-  const { data } = await apiInstance.get(`/product/list/${agent_id}`);
-  dispatch(setProductList(data));
+  try {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.get(`/product/list/${agent_id}`);
+    dispatch(setProductList(data));
+  } catch (e) {
+    dispatch(setError(true));
+  }
 };
 
 export const getProductsByFamilyId =
   (family_id: string, agent_id: string) => async (dispatch: any) => {
-    dispatch(setLoading(true));
-    const { data } = await apiInstance.get(
-      `/product/getByFamilyId/${family_id}/${agent_id}`
-    );
-    dispatch(setProductList(data));
+    try {
+      dispatch(setLoading(true));
+      const { data } = await apiInstance.get(
+        `/product/getByFamilyId/${family_id}/${agent_id}`
+      );
+      dispatch(setProductList(data));
+    } catch (e) {
+      dispatch(setError(true));
+    }
   };
 
-export const getProductById =
+export const getByIdWithPrices =
   (id: string, agent_id: string) => async (dispatch: any) => {
-    dispatch(setLoading(true));
-    const { data } = await apiInstance.get(`/product/get/${id}/${agent_id}`);
-    dispatch(setProduct(data));
+    try {
+      dispatch(setLoading(true));
+      const { data } = await apiInstance.get(
+        `/product/getByIdWithPrices/${id}/${agent_id}`
+      );
+      dispatch(setProduct(data));
+    } catch (e) {
+      dispatch(setError(true));
+    }
   };
 
 export const getProductsDescription =
   (proeduct_id: string) => async (dispatch: any) => {
-    dispatch(setLoading(true));
-    const { data } = await apiInstance.get(
-      `/productDescription/getByProductId/${proeduct_id}`
-    );
-    dispatch(setProductList(data));
+    try {
+      dispatch(setLoading(true));
+      const { data } = await apiInstance.get(
+        `/productDescription/getByProductId/${proeduct_id}`
+      );
+      dispatch(setProductList(data));
+    } catch (e) {
+      dispatch(setError(true));
+    }
   };
+
+export const getById = (product_id: string) => async (dispatch: any) => {
+  try {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.get(`/product/getById/${product_id}`);
+    dispatch(setProduct(data));
+  } catch (e) {
+    dispatch(setError(true));
+  }
+};
+
+export const getFamilies = () => async (dispatch: any) => {
+  try {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.get(`/product/getFamilies`);
+    dispatch(setFamilies(data));
+  } catch (e) {
+    dispatch(setError(true));
+  }
+};

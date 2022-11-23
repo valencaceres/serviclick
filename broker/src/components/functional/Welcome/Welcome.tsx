@@ -9,13 +9,14 @@ import InputText from "../../ui/InputText";
 import Button from "../../ui/Button";
 import Menu from "../Menu";
 
-import { useUI, useUserBroker, useLead } from "../../../hooks";
-
 import styles from "./Welcome.module.scss";
+
+import { useUI, useUserBroker, useLead } from "../../../hooks";
 
 const Welcome = () => {
   const { user, broker, setTitleUI, agentId } = useUI();
-  const { updateUserBrokerPassword, loading, response } = useUserBroker();
+  const { updateUserBrokerPassword, userBrokerLoading, response } =
+    useUserBroker();
   const { resetLead } = useLead();
 
   const initialPasswordData = {
@@ -91,13 +92,11 @@ const Welcome = () => {
   }, [passwordForm]);
 
   useEffect(() => {
-    if (loading === false) {
+    if (userBrokerLoading === false) {
       setUpdatePasswordTextButton("Cerrar");
-      if (response === "OK") {
-        setSuccess(true);
-      }
+      setSuccess(true);
     }
-  }, [loading]);
+  }, [userBrokerLoading]);
 
   return (
     <Fragment>
@@ -162,7 +161,7 @@ const Welcome = () => {
             width="200px"
             onClick={handleClickUpdatePassword}
             enabled={enabledButton}
-            loading={loading}
+            loading={userBrokerLoading}
           />
         </ContentCell>
       </ModalWindow>

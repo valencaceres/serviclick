@@ -7,6 +7,8 @@ const useProduct = () => {
   const {
     product,
     list: productList,
+    families,
+    error: productError,
     loading: productLoading,
   } = useAppSelector((state) => state.productSlice);
 
@@ -15,14 +17,18 @@ const useProduct = () => {
     name: string,
     cost: number,
     isSubject: boolean,
-    frequency: string,
-    term: string,
+    frequency: Product.FrequencyT,
+    term: number,
     beneficiaries: number,
-    minInsuredCompanyPrice: number,
+    currency: string,
     dueDay: number,
-    coverages: Product.CoverageT[],
-    familyValues: Product.FamilyValueT[],
-    currency: string
+    minInsuredCompanyPrice: number,
+    title: string,
+    subTitle: string,
+    description: string,
+    territorialScope: string,
+    hiringConditions: string,
+    assistances: Product.AssistanceT[]
   ) => {
     dispatch(
       Product.createProduct(
@@ -33,11 +39,15 @@ const useProduct = () => {
         frequency,
         term,
         beneficiaries,
-        minInsuredCompanyPrice,
+        currency,
         dueDay,
-        coverages,
-        familyValues,
-        currency
+        minInsuredCompanyPrice,
+        title,
+        subTitle,
+        description,
+        territorialScope,
+        hiringConditions,
+        assistances
       )
     );
   };
@@ -59,14 +69,18 @@ const useProduct = () => {
     name: string,
     cost: number,
     isSubject: boolean,
-    frequency: string,
-    term: string,
+    frequency: Product.FrequencyT,
+    term: number,
     beneficiaries: number,
-    minInsuredCompanyPrice: number,
+    currency: string,
     dueDay: number,
-    coverages: Product.CoverageT[],
-    familyValues: Product.FamilyValueT[],
-    currency: string
+    minInsuredCompanyPrice: number,
+    title: string,
+    subTitle: string,
+    description: string,
+    territorialScope: string,
+    hiringConditions: string,
+    assistances: Product.AssistanceT[]
   ) => {
     dispatch(
       Product.updateProduct(
@@ -78,11 +92,15 @@ const useProduct = () => {
         frequency,
         term,
         beneficiaries,
-        coverages,
-        minInsuredCompanyPrice,
+        currency,
         dueDay,
-        familyValues,
-        currency
+        minInsuredCompanyPrice,
+        title,
+        subTitle,
+        description,
+        territorialScope,
+        hiringConditions,
+        assistances
       )
     );
   };
@@ -95,12 +113,20 @@ const useProduct = () => {
     dispatch(Product.getAllProducts(agent_id));
   };
 
-  const getProductByFamilyId = (family_id: string, agent_id: string) => {
+  const getProductsByFamilyId = (family_id: string, agent_id: string) => {
     dispatch(Product.getProductsByFamilyId(family_id, agent_id));
   };
 
-  const getProductById = (id: string, agent_id: string) => {
-    dispatch(Product.getProductById(id, agent_id));
+  const getProductById = (id: string) => {
+    dispatch(Product.getById(id));
+  };
+
+  const getProductByIdWithPrices = (id: string, agent_id: string) => {
+    dispatch(Product.getByIdWithPrices(id, agent_id));
+  };
+
+  const getProductFamilies = () => {
+    dispatch(Product.getFamilies());
   };
 
   const setProductList = (value: Product.ProductT[]) => {
@@ -126,13 +152,17 @@ const useProduct = () => {
     deleteProductById,
     getAllProducts,
     getProductById,
-    getProductByFamilyId,
+    getProductByIdWithPrices,
+    getProductsByFamilyId,
+    getProductFamilies,
     setProductList,
     setProduct,
     resetProduct,
     resetProductList,
     product,
     productList,
+    families,
+    productError,
     productLoading,
   };
 };

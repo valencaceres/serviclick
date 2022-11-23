@@ -10,6 +10,7 @@ import ButtonLink from "../../ui/ButtonLink";
 import ModalWindow from "../../ui/ModalWindow";
 
 import { useUI, useUserBroker } from "../../../hooks";
+import { ErrorMessage } from "../../ui/LoadingMessage";
 
 const Login = () => {
   const initialLoginData = {
@@ -24,7 +25,7 @@ const Login = () => {
   };
 
   const { setTitleUI } = useUI();
-  const { validate, loading } = useUserBroker();
+  const { validate, userBrokerLoading, userBrokerError } = useUserBroker();
 
   const [enabledButton, setEnabledButton] = useState(false);
   const [loginForm, setLoginForm] = useState(initialLoginData);
@@ -72,7 +73,7 @@ const Login = () => {
             width="200px"
             onClick={handleClickEnter}
             enabled={enabledButton}
-            loading={loading}
+            loading={userBrokerLoading}
           />
           <ButtonLink onClick={handlePasswordRecovery}>
             Olvidé mi contraseña
@@ -91,6 +92,11 @@ const Login = () => {
           setRecoveryTextButton={setRecoveryTextButton}
         />
       </ModalWindow>
+      {!userBrokerLoading && (
+        <ErrorMessage showModal={userBrokerError} callback={() => {}}>
+          Usuario inválido
+        </ErrorMessage>
+      )}
     </Fragment>
   );
 };

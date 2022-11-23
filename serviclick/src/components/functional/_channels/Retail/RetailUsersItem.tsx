@@ -11,9 +11,6 @@ import { emailRegEx } from "../../../../utils/regEx";
 import { isValidRut } from "../../../../utils/validations";
 
 import styles from "./Retail.module.scss";
-import ButtonIcon from "../../../ui/ButtonIcon";
-
-import { useRetail } from "../../../../hooks";
 
 const RetailUsersItem = ({
   retailUserForm,
@@ -22,8 +19,6 @@ const RetailUsersItem = ({
   setShowModal,
   sendCredentials,
 }: any) => {
-  const { retail } = useRetail();
-
   const profileData = [
     { id: "S", name: "Vendedor" },
     { id: "A", name: "Administrador" },

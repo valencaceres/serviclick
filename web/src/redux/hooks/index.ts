@@ -10,6 +10,7 @@ import useDonation from "./useDonation";
 import useDonor from "./useDonor";
 import useBroker from "./useBroker";
 import useLead from "./useLead";
+import useDistrict from "./useDistrict";
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch: () => AppDispatch = useDispatch;
@@ -25,4 +26,5 @@ export {
   useDonor,
   useBroker,
   useLead,
+  useDistrict,
 };

@@ -4,7 +4,7 @@ const createProduct: any = async (
   family_id: string,
   name: string,
   cost: number,
-  issubject: boolean,
+  isSubject: boolean,
   frequency: string,
   term: string,
   beneficiaries: number,
@@ -13,34 +13,35 @@ const createProduct: any = async (
   currency: string
 ) => {
   try {
-    const result = await pool.query(
-      `
-        INSERT  INTO app.product(
-                  family_id,
-                  name,
-                  cost,
-                  issubject,
-                  frequency,
-                  term,
-                  beneficiaries,
-                  mininsuredcompanyprice,
-                  dueday,
-                  currency) 
-        VALUES (  $1, $2, $3, $4, $5, $6, $7, $8, $9, $10) 
-        RETURNING *`,
-      [
-        family_id,
-        name,
-        cost,
-        issubject,
-        frequency,
-        term,
-        beneficiaries,
-        minInsuredCompanyPrice,
-        dueDay,
-        currency,
-      ]
+    const resultProduct = await pool.query(
+      "SELECT id FROM app.product WHERE family_id = $1 and name = $2",
+      [family_id, name]
     );
+
+    const arrayValues = [
+      cost,
+      isSubject,
+      frequency,
+      term,
+      beneficiaries,
+      currency,
+      minInsuredCompanyPrice,
+      dueDay,
+      name,
+      family_id,
+    ];
+
+    let query: string;
+    if (resultProduct.rows.length > 0) {
+      query =
+        "UPDATE app.product SET cost = $1, issubject = $2, frequency = $3, term = $4, beneficiaries = $5, currency = $6, mininsuredcompanyprice = $7, dueday = $8 WHERE name = $9 and family_id = $10 RETURNING *";
+    } else {
+      query =
+        "INSERT INTO app.product(cost, issubject, frequency, term, beneficiaries, currency, mininsuredcompanyprice, dueday, family_id, name) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *";
+    }
+
+    const result = await pool.query(query, arrayValues);
+
     return { success: true, data: result.rows[0], error: null };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
@@ -183,7 +184,8 @@ const listProducts: any = async (agent_id: string) => {
           WHERE   pro.isActive IS true
           GROUP   BY
                   pro.id
-          ORDER   BY 
+          ORDER   BY
+                  MAX(fam.name),
                   pro.name`,
       [agent_id]
     );
@@ -236,12 +238,120 @@ const getProductByFamilyId: any = async (
   }
 };
 
+const getById: any = async (id: string) => {
+  try {
+    const result = await pool.query(
+      `
+      select 	pro.id,
+              pro.family_id,
+              pro.name,
+              pro.cost,
+              pro.issubject,
+              pro.frequency,
+              pro.term,
+              pro.beneficiaries,
+              pro.currency,
+              pro.dueday,
+              pro.mininsuredcompanyprice,
+              des.title,
+              des.sub_title,
+              des.description,
+              des.territorial_scope,
+              des.hiring_conditions,
+              pas.number,
+              asi.id as assistance_id,
+              asi.name as assistance_name,
+              pas.amount,
+              pas.maximum,
+              pas.events,
+              pas.lack,
+              pas.currency
+        from 	app.product pro
+                inner join app.productdescription des on pro.id = des.product_id
+                inner join app.productassistance pas on pro.id = pas.product_id
+                inner join app.assistance asi on pas.assistance_id = asi.id
+        where 	pro.id = $1
+        order 	by
+                pas.number`,
+      [id]
+    );
+
+    let data: any = {};
+
+    if (result.rows.length > 0) {
+      data = {
+        id: result.rows[0].id,
+        family_id: result.rows[0].family_id,
+        name: result.rows[0].name,
+        cost: result.rows[0].cost,
+        isSubject: result.rows[0].issubject,
+        frequency: result.rows[0].frequency,
+        term: result.rows[0].term,
+        beneficiaries: result.rows[0].beneficiaries,
+        currency: result.rows[0].currency,
+        dueDay: result.rows[0].dueday,
+        minInsuredCompanyPrice: result.rows[0].mininsuredcompanyprice,
+        title: result.rows[0].title,
+        subTitle: result.rows[0].sub_title,
+        description: result.rows[0].description,
+        territorialScope: result.rows[0].territorial_scope,
+        hiringConditions: result.rows[0].hiring_conditions,
+        assistances: [],
+      };
+
+      result.rows.map((item: any) => {
+        data = {
+          ...data,
+          assistances: [
+            ...data.assistances,
+            {
+              id: item.assistance_id,
+              name: item.assistance_name,
+              amount: item.amount,
+              maximum: item.maximum,
+              events: item.events,
+              lack: item.lack,
+              currency: item.currency,
+            },
+          ],
+        };
+      });
+    }
+
+    return { success: true, data, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+const getFamilies = async () => {
+  try {
+    const result = await pool.query(
+      `
+        select  DISTINCT
+                fam.id,
+                fam.icon,
+                fam.name
+        from    app.family fam inner join app.product pro on fam.id = pro.family_id
+        where   pro.isactive is true
+        order 	by
+                fam.name`
+    );
+
+    return { success: true, data: result.rows, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 export {
   createProduct,
   updateProduct,
   deleteProduct,
   deletePlans,
+  getById,
   getProduct,
   listProducts,
   getProductByFamilyId,
+  getFamilies,
 };

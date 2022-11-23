@@ -134,14 +134,17 @@ const Company = ({ register }: any) => {
           Estás contratando el servicio <b>{product.name}</b>, el cual tiene un
           valor de{" "}
           <b>
-            ${product.price.company.toLocaleString("en-US").replace(",", ".")}{" "}
+            $
+            {product.plan.company.price
+              .toLocaleString("en-US")
+              .replace(",", ".")}{" "}
             {frequency[product.frequency]}
           </b>{" "}
           por cada asegurado y te brinda las siguientes coberturas:
           <br />
           <br />
-          {product.coverages.map((coverage, idx) => (
-            <div key={idx}>* {coverage.name}</div>
+          {product.assistances.map((assistance, idx) => (
+            <div key={idx}>* {assistance.name}</div>
           ))}
           <br />
           <div>

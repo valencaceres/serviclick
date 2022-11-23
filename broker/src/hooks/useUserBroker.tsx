@@ -2,12 +2,7 @@ import { useEffect } from "react";
 
 import useUI from "./useUI";
 
-import {
-  validateUserBroker,
-  sendCredentials,
-  updatePassword,
-  setLoading,
-} from "../redux/slices/userBrokerSlice";
+import * as UserBroker from "../redux/slices/userBrokerSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 
 const useUserBroker = () => {
@@ -15,17 +10,20 @@ const useUserBroker = () => {
 
   const { setUserUI, setBrokerUI } = useUI();
 
-  const { userBroker, broker, loading, response } = useAppSelector(
-    (state) => state.userBrokerSlice
-  );
+  const {
+    userBroker,
+    broker,
+    loading: userBrokerLoading,
+    error: userBrokerError,
+    response,
+  } = useAppSelector((state) => state.userBrokerSlice);
 
   const validate = (broker_rut: string, login: string, password: string) => {
-    dispatch(validateUserBroker(broker_rut, login, password));
+    dispatch(UserBroker.validateUserBroker(broker_rut, login, password));
   };
 
   const sendUserBrokerCredentials = (broker_rut: string, email: string) => {
-    dispatch(setLoading(true));
-    dispatch(sendCredentials(broker_rut, email));
+    dispatch(UserBroker.sendCredentials(broker_rut, email));
   };
 
   const updateUserBrokerPassword = (
@@ -34,8 +32,9 @@ const useUserBroker = () => {
     password: string,
     newPassword: string
   ) => {
-    dispatch(setLoading(true));
-    dispatch(updatePassword(broker_rut, email, password, newPassword));
+    dispatch(
+      UserBroker.updatePassword(broker_rut, email, password, newPassword)
+    );
   };
 
   useEffect(() => {
@@ -49,7 +48,8 @@ const useUserBroker = () => {
     validate,
     sendUserBrokerCredentials,
     updateUserBrokerPassword,
-    loading,
+    userBrokerLoading,
+    userBrokerError,
     response,
   };
 };

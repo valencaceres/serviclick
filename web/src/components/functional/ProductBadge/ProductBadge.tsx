@@ -11,8 +11,8 @@ const ProductBadge = () => {
     <div className={styles.productBadge}>
       $
       {(lead.insured.length === 0
-        ? product.price[stage.type]
-        : product.price[stage.type] * lead.insured.length
+        ? product.plan[stage.type].price
+        : product.plan[stage.type].price * lead.insured.length
       )
         .toLocaleString("en-US")
         .replace(",", ".")}

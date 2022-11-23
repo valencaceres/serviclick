@@ -17,7 +17,7 @@ const Value: NextPage = () => {
   const router = useRouter();
 
   const { stage, setStage } = useStage();
-  const { getProductById, product } = useProduct();
+  const { getProductByIdWithPrices, product } = useProduct();
   const { lead, setLeadAgent, setLeadProduct, resetLead, getLeadById } =
     useLead();
 
@@ -78,7 +78,7 @@ const Value: NextPage = () => {
       ) {
         setStage({ name: stage, type });
 
-        getProductById(id ? id.toString() : "", agentId);
+        getProductByIdWithPrices(id ? id.toString() : "", agentId);
 
         if (leadId) {
           getLeadById(leadId ? leadId.toString() : "");
@@ -92,10 +92,10 @@ const Value: NextPage = () => {
     if (product.id && stage) {
       setLeadProduct({
         id: product.id,
-        price: product.price[stage.type],
+        price: product.plan[stage.type].price,
         currency_code: product.currency,
         frequency_code: product.frequency,
-        productPlan_id: product.plan[stage.type].id,
+        productPlan_id: product.plan[stage.type].plan_id,
       });
     }
   }, [product, stage]);
@@ -103,7 +103,7 @@ const Value: NextPage = () => {
   useEffect(() => {
     if (lead.id) {
       setAgentUI(lead.agent_id);
-      getProductById(lead.product.id, lead.agent_id);
+      //getOnlyProductById(lead.product.id);
     }
   }, [lead.id]);
 

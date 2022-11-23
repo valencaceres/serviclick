@@ -55,6 +55,9 @@ class App {
     this.server.use("/api/userBroker", reqLogger, routes.UserBrokerRouter);
     this.server.use("/api/userRetail", reqLogger, routes.UserRetailRouter);
     this.server.use("/api/district", reqLogger, routes.DistrictRouter);
+    this.server.use("/api/assistance", reqLogger, routes.AssistanceRouter);
+    this.server.use("/api/value", reqLogger, routes.ValueRouter);
+    this.server.use("/api/valueType", reqLogger, routes.ValueTypeRouter);
   }
 }
 

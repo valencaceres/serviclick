@@ -4,6 +4,8 @@ import config from "../util/config";
 import createLogger from "../util/logger";
 
 import * as Product from "../models/product";
+import * as ProductDescription from "../models/productDescription";
+import * as productAssistance from "../models/productAssistance";
 import * as ProductCoverage from "../models/productCoverage";
 import * as ProductFamilyValue from "../models/productFamilyValue";
 import * as ProductPlan from "../models/productPlan";
@@ -27,11 +29,15 @@ const createProduct = async (req: any, res: any) => {
     frequency,
     term,
     beneficiaries,
-    minInsuredCompanyPrice,
-    dueDay,
-    coverages,
-    familyValues,
     currency,
+    dueDay,
+    minInsuredCompanyPrice,
+    title,
+    subTitle,
+    description,
+    territorialScope,
+    hiringConditions,
+    assistances,
   } = req.body;
 
   const productResponse = await Product.createProduct(
@@ -58,34 +64,66 @@ const createProduct = async (req: any, res: any) => {
 
   const { id } = productResponse.data;
 
-  const createdProductCoverages = await createProductCoverages(id, coverages);
-
-  const createdProductFamilyValues = await createProductFamilyValues(
+  const productDescriptionResponse = await ProductDescription.create(
     id,
-    familyValues
+    title,
+    subTitle,
+    description,
+    territorialScope,
+    hiringConditions
   );
+
+  if (!productDescriptionResponse.success) {
+    createLogger.error({
+      model: "productDescription/create",
+      error: productDescriptionResponse.error,
+    });
+    res.status(500).json({ error: productDescriptionResponse.error });
+    return;
+  }
+
+  let line_order = 1;
+  for (const assistance of assistances) {
+    const addValue = await productAssistance.create(
+      id,
+      assistance.id,
+      line_order,
+      assistance.amount,
+      assistance.maximum,
+      assistance.events,
+      assistance.lack,
+      assistance.currency
+    );
+
+    if (!addValue.success) {
+      createLogger.error({
+        model: "productAssistance/create",
+        error: addValue.error,
+      });
+      res.status(500).json({ error: addValue.error });
+      return;
+    }
+    line_order++;
+  }
 
   createLogger.info({
     controller: "products/createProduct",
     message: "OK",
   });
 
-  res.status(200).json({
-    id,
-    family_id,
-    name,
-    cost,
-    price: {},
-    isSubject,
-    frequency,
-    term,
-    beneficiaries,
-    minInsuredCompanyPrice,
-    dueDay,
-    plan: {},
-    coverages: [...createdProductCoverages],
-    familyValues: [...createdProductFamilyValues],
-  });
+  const productByIdResponse = await Product.getById(id);
+
+  if (!productByIdResponse.success) {
+    createLogger.error({
+      model: "product/getById",
+      error: productByIdResponse.error,
+    });
+
+    res.status(500).json({ error: productByIdResponse.error });
+    return;
+  }
+
+  res.status(200).json(productByIdResponse.data);
 };
 
 const createPlans = async (req: any, res: any) => {
@@ -351,41 +389,96 @@ const getProductByFamilyId = async (req: any, res: any) => {
   res.status(200).json(data);
 };
 
-const getProduct = async (req: any, res: any) => {
-  const { id, agent_id } = req.params;
-  const productResponse = await Product.getProduct(id, agent_id);
+const getFamilies = async (req: any, res: any) => {
+  const productResponse = await Product.getFamilies();
 
   if (!productResponse.success) {
     createLogger.error({
-      model: "product/getProduct",
+      model: "product/getFamilies",
       error: productResponse.error,
     });
+
     res.status(500).json({ error: productResponse.error });
     return;
   }
 
-  const productFamilyValuesResponse =
-    await ProductFamilyValue.listProductFamilyValues(id);
-  if (!productFamilyValuesResponse.success) {
+  createLogger.info({
+    controller: "products/getFamilies",
+    message: "OK",
+  });
+  res.status(200).json(productResponse.data);
+};
+
+const getById = async (req: any, res: any) => {
+  const { id } = req.params;
+
+  const productResponse = await Product.getById(id);
+
+  if (!productResponse.success) {
     createLogger.error({
-      model: "product/listProductFamilyValues",
+      model: "product/getById",
       error: productResponse.error,
     });
-    res.status(500).json({ error: productFamilyValuesResponse.error });
+
+    res.status(500).json({ error: productResponse.error });
     return;
   }
 
-  const productCoveragesResponse = await ProductCoverage.listProductCoverages(
-    id
-  );
-  if (!productCoveragesResponse.success) {
+  createLogger.info({
+    controller: "products/getById",
+    message: "OK",
+  });
+  res.status(200).json(productResponse.data);
+};
+
+const getByIdWithPrices = async (req: any, res: any) => {
+  const { id, agent_id } = req.params;
+
+  const productResponse = await Product.getById(id);
+
+  if (!productResponse.success) {
     createLogger.error({
-      model: "product/listProductCoverages",
+      model: "product/getById",
       error: productResponse.error,
     });
-    res.status(500).json({ error: productCoveragesResponse.error });
+
+    res.status(500).json({ error: productResponse.error });
     return;
   }
+
+  // const productResponse = await Product.getProduct(id, agent_id);
+
+  // if (!productResponse.success) {
+  //   createLogger.error({
+  //     model: "product/getProduct",
+  //     error: productResponse.error,
+  //   });
+  //   res.status(500).json({ error: productResponse.error });
+  //   return;
+  // }
+
+  // const productFamilyValuesResponse =
+  //   await ProductFamilyValue.listProductFamilyValues(id);
+  // if (!productFamilyValuesResponse.success) {
+  //   createLogger.error({
+  //     model: "product/listProductFamilyValues",
+  //     error: productResponse.error,
+  //   });
+  //   res.status(500).json({ error: productFamilyValuesResponse.error });
+  //   return;
+  // }
+
+  // const productCoveragesResponse = await ProductCoverage.listProductCoverages(
+  //   id
+  // );
+  // if (!productCoveragesResponse.success) {
+  //   createLogger.error({
+  //     model: "product/listProductCoverages",
+  //     error: productResponse.error,
+  //   });
+  //   res.status(500).json({ error: productCoveragesResponse.error });
+  //   return;
+  // }
 
   const productPlansResponse = await ProductPlan.getByProductIdModel(
     id,
@@ -406,35 +499,48 @@ const getProduct = async (req: any, res: any) => {
   });
 
   res.status(200).json({
-    id: productResponse.data.id,
-    family_id: productResponse.data.family_id,
-    name: productResponse.data.name,
-    cost: productResponse.data.cost,
-    price: {
-      customer: productResponse.data.customerprice,
-      company: productResponse.data.companyprice,
-    },
+    ...productResponse.data,
     plan: {
-      customer: {
-        id: productResponse.data.customer_plan_id,
-        price: productResponse.data.customer_plan_price,
-      },
-      company: {
-        id: productResponse.data.company_plan_id,
-        price: productResponse.data.company_plan_price,
-      },
+      customer: productPlansResponse.data.filter(
+        (item: any) => item.type === "customer"
+      )[0],
+      company: productPlansResponse.data.filter(
+        (item: any) => item.type === "company"
+      )[0],
     },
-    isSubject: productResponse.data.issubject,
-    frequency: productResponse.data.frequency,
-    term: productResponse.data.term,
-    beneficiaries: productResponse.data.beneficiaries,
-    minInsuredCompanyPrice: productResponse.data.mininsuredcompanyprice,
-    coverages: [...productCoveragesResponse.data],
-    familyValues: [...productFamilyValuesResponse.data],
-    plans: [...productPlansResponse.data],
-    currency: productResponse.data.currency,
-    dueDay: productResponse.data.dueday,
   });
+  return;
+
+  // res.status(200).json({
+  //   id: productResponse.data.id,
+  //   family_id: productResponse.data.family_id,
+  //   name: productResponse.data.name,
+  //   cost: productResponse.data.cost,
+  //   price: {
+  //     customer: productResponse.data.customerprice,
+  //     company: productResponse.data.companyprice,
+  //   },
+  //   plan: {
+  //     customer: {
+  //       id: productResponse.data.customer_plan_id,
+  //       price: productResponse.data.customer_plan_price,
+  //     },
+  //     company: {
+  //       id: productResponse.data.company_plan_id,
+  //       price: productResponse.data.company_plan_price,
+  //     },
+  //   },
+  //   isSubject: productResponse.data.issubject,
+  //   frequency: productResponse.data.frequency,
+  //   term: productResponse.data.term,
+  //   beneficiaries: productResponse.data.beneficiaries,
+  //   minInsuredCompanyPrice: productResponse.data.mininsuredcompanyprice,
+  //   coverages: [...productCoveragesResponse.data],
+  //   familyValues: [...productFamilyValuesResponse.data],
+  //   plans: [...productPlansResponse.data],
+  //   currency: productResponse.data.currency,
+  //   dueDay: productResponse.data.dueday,
+  // });
 };
 
 const createProductPlans = async (
@@ -658,9 +764,11 @@ export {
   createPlans,
   updateProduct,
   deleteProduct,
-  getProduct,
+  getById,
+  getByIdWithPrices,
   listProducts,
   getProductByFamilyId,
   assignPrices,
   createProductPlans,
+  getFamilies,
 };

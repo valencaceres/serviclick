@@ -4,8 +4,7 @@ const Table = ({ height, width, children }: any) => {
   return (
     <div
       className={styles.table}
-      style={{ height: height ? height : "calc(100vh - 253px)", width }}
-    >
+      style={{ height: height ? height : "calc(100vh - 253px)", width }}>
       {children}
     </div>
   );
@@ -35,4 +34,16 @@ const TableIcons = ({ children }: any) => {
   return <div className={styles.icons}>{children}</div>;
 };
 
-export { Table, TableHeader, TableDetail, TableRow, TableCell, TableIcons };
+const TableCellEnd = () => {
+  return <div className={styles.cellEnd}></div>;
+};
+
+export {
+  Table,
+  TableHeader,
+  TableDetail,
+  TableRow,
+  TableCell,
+  TableIcons,
+  TableCellEnd,
+};

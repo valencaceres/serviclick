@@ -2,10 +2,49 @@ import pool from "../util/database";
 
 import * as Assistance from "../models/assistance";
 
+const create: any = async (
+  product_id: string,
+  title: string,
+  subTitle: string,
+  description: string,
+  territorialScope: string,
+  hiringConditions: string
+) => {
+  try {
+    const arrayValues = [
+      product_id,
+      title,
+      subTitle,
+      description,
+      territorialScope,
+      hiringConditions,
+    ];
+
+    const resultProductDescription = await pool.query(
+      "SELECT id FROM app.productdescription WHERE product_id = $1",
+      [product_id]
+    );
+
+    let query: string;
+    if (resultProductDescription.rows.length > 0) {
+      query =
+        "UPDATE app.productdescription SET title = $2, sub_title = $3, description = $4, territorial_scope = $5, hiring_conditions = $6 WHERE product_id = $1 RETURNING *";
+    } else {
+      query =
+        "INSERT INTO app.productdescription(product_id, title, sub_title, description, territorial_scope, hiring_conditions) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *";
+    }
+
+    const result = await pool.query(query, arrayValues);
+    return { success: true, data: result.rows[0], error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 const getByProductId: any = async (lead_id: string, product_id: string) => {
   try {
     const productResponse = await getDescription(lead_id, product_id);
-    const assistanceResponse = await Assistance.getAll();
+    const assistanceResponse = await Assistance.getAllBenefits();
 
     type AssistanceT = {
       id: string;
@@ -152,4 +191,4 @@ const getDescription = async (lead_id: string, product_id: string) => {
   }
 };
 
-export { getByProductId };
+export { create, getByProductId };

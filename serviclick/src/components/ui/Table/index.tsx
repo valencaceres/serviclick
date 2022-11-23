@@ -4,6 +4,7 @@ import {
   TableDetail,
   TableRow,
   TableCell,
+  TableCellWide,
   TableIcons,
   TableCellEnd,
 } from "./Table";
@@ -14,6 +15,7 @@ export {
   TableDetail,
   TableRow,
   TableCell,
+  TableCellWide,
   TableIcons,
   TableCellEnd,
 };

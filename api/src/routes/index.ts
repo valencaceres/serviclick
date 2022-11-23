@@ -21,6 +21,9 @@ import RetailRouter from "./retail";
 import UserBrokerRouter from "./userBroker";
 import UserRetailRouter from "./userRetail";
 import DistrictRouter from "./district";
+import AssistanceRouter from "./assistance";
+import ValueRouter from "./value";
+import ValueTypeRouter from "./valueType";
 
 export {
   StatusRouter,
@@ -46,4 +49,7 @@ export {
   UserBrokerRouter,
   UserRetailRouter,
   DistrictRouter,
+  AssistanceRouter,
+  ValueRouter,
+  ValueTypeRouter,
 };

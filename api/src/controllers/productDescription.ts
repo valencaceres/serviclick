@@ -1,7 +1,6 @@
 import createLogger from "../util/logger";
 
 import * as ProductDescription from "../models/productDescription";
-import * as Assistance from "../models/assistance";
 
 const getByProductId = async (req: any, res: any) => {
   const { lead_id, id } = req.params;

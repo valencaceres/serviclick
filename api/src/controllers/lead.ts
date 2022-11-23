@@ -422,7 +422,6 @@ const createSubscription = async (
 const create = async (lead: any) => {
   try {
     const { id, customer, company, product, insured, agent_id } = lead;
-
     let leadDataResponse: LeadT = initialLeadData;
 
     if (customer.rut !== "") {
@@ -513,7 +512,7 @@ const createController = async (req: any, res: any) => {
   });
 
   if (!success || !data) {
-    res.status(500).json(JSON.parse(error || ""));
+    res.status(500).json(error || "");
     return;
   }
 

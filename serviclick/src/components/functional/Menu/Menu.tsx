@@ -14,7 +14,9 @@ const menu = [
     subOptions: [
       { text: "Canales de Venta", route: "/masters/channel" },
       { text: "Familias", route: "/masters/family" },
-      { text: "Coberturas", route: "/masters/coverage" },
+      { text: "Tipos de valor", route: "/masters/valueType" },
+      { text: "Valores", route: "/masters/value" },
+      { text: "Servicios", route: "/masters/assistance" },
       { text: "Productos", route: "/masters/product" },
     ],
   },

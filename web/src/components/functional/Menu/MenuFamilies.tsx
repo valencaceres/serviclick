@@ -4,10 +4,11 @@ import Wizard, { Title, Content } from "../../layout/Wizard";
 import Icon from "../../ui/Icon";
 import { MenuButtons, MenuItem } from "../../ui/MenuButtons";
 
-import { useFamily } from "../../../redux/hooks";
+import { useFamily, useProduct } from "../../../redux/hooks";
 
 const MenuFamilies = () => {
-  const { list, set } = useFamily();
+  const { set } = useFamily();
+  const { families } = useProduct();
 
   return (
     <Wizard>
@@ -18,7 +19,7 @@ const MenuFamilies = () => {
       <Title>Familias</Title>
       <Content>
         <MenuButtons>
-          {list.map((family: any, idx: number) => (
+          {families.map((family: any, idx: number) => (
             <MenuItem key={idx} onClick={() => set(family)}>
               <Icon iconName={family.icon} />
               {family.name}

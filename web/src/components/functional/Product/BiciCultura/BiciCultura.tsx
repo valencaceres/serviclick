@@ -62,7 +62,7 @@ const BiciCultura = () => {
               onClick={handleClickContract}
             />
           </div>
-          <div className={styles.coverages}>
+          <div className={styles.assistances}>
             <table className={styles.tableDesktop}>
               <thead>
                 <tr>

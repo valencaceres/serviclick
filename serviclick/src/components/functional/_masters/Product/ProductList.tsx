@@ -16,11 +16,12 @@ import {
   TableRow,
   TableCell,
   TableIcons,
+  TableCellEnd,
 } from "../../../ui/Table";
 import Icon from "../../../ui/Icon";
 import ModalWarning from "../../../ui/ModalWarning";
 
-import { useFamily, useProduct } from "../../../../hooks";
+import { useProduct } from "../../../../hooks";
 
 const ProductList = ({ editProduct, deleteProduct }: any) => {
   const {
@@ -28,9 +29,9 @@ const ProductList = ({ editProduct, deleteProduct }: any) => {
     productList,
     getProductByFamilyId,
     setProduct,
+    families,
     product,
   } = useProduct();
-  const { list: listFamilies } = useFamily();
 
   const initialSearchForm = {
     family: { value: "", isValid: true },
@@ -79,21 +80,21 @@ const ProductList = ({ editProduct, deleteProduct }: any) => {
 
   return (
     <Fragment>
-      <ContentCell gap="10px">
-        <ContentRow gap="10px" align="center">
+      <ContentCell gap="5px">
+        <ContentRow gap="5px" align="center">
           <ComboBox
             label="Familia"
             width="300px"
             value={search.family.value}
             onChange={handleChangeFamily}
             placeHolder=":: Seleccione familia ::"
-            data={listFamilies}
+            data={families}
             dataValue="id"
             dataText="name"
           />
           <InputText
             label="Texto a buscar"
-            width="640px"
+            width="590px"
             value={search.searchText.value}
             onChange={handleChangeSearchText}
           />
@@ -103,15 +104,17 @@ const ProductList = ({ editProduct, deleteProduct }: any) => {
             onClick={handleClickSearch}
           />
         </ContentRow>
-        <Table width="1000px">
+        <Table width="941px">
           <TableHeader>
             <TableCell width="70px" align="center">
               #
             </TableCell>
             <TableCell width="260px">Familia</TableCell>
             <TableCell width="350px">Nombre</TableCell>
-            <TableCell width="120px">Público</TableCell>
-            <TableCell width="186px">Empresa</TableCell>
+            <TableCell width="90px">Día pago</TableCell>
+            <TableCell width="80px">Afecto</TableCell>
+            <TableCell width="68px"></TableCell>
+            <TableCellEnd />
           </TableHeader>
           <TableDetail>
             {productList.map((product: any, idx: number) => (
@@ -121,17 +124,11 @@ const ProductList = ({ editProduct, deleteProduct }: any) => {
                 </TableCell>
                 <TableCell width="260px">{product.family_name}</TableCell>
                 <TableCell width="350px">{product.name}</TableCell>
-                <TableCell width="120px" align="flex-end">
-                  $
-                  {product.price.customer
-                    .toLocaleString("en-US")
-                    .replace(",", ".")}
+                <TableCell width="90px" align="center">
+                  {product.dueDay === 0 ? "" : product.dueDay}
                 </TableCell>
-                <TableCell width="110px" align="flex-end">
-                  $
-                  {product.price.company
-                    .toLocaleString("en-US")
-                    .replace(",", ".")}
+                <TableCell width="80px" align="center">
+                  {product.isSubject ? "SI" : ""}
                 </TableCell>
                 <TableCell width="68px" align="center">
                   <TableIcons>
@@ -150,7 +147,7 @@ const ProductList = ({ editProduct, deleteProduct }: any) => {
           </TableDetail>
         </Table>
         <ContentRow align="flex-end">
-          <ContentCellSummary>{`${productList.length} registros`}</ContentCellSummary>
+          <ContentCellSummary>{`${productList.length} productos`}</ContentCellSummary>
         </ContentRow>
       </ContentCell>
       <ModalWarning

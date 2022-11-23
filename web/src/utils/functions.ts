@@ -1,9 +1,9 @@
-export const calculateValidity = (coverages: any) => {
+export const calculateValidity = (assistances: any) => {
   let minLack: number = 0;
 
-  coverages.map((coverage: any) => {
-    if (coverage.lack < minLack || minLack === 0) {
-      minLack = coverage.lack;
+  assistances.map((assistance: any) => {
+    if (assistance.lack < minLack || minLack === 0) {
+      minLack = assistance.lack;
     }
   });
 

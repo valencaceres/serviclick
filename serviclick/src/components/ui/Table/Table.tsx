@@ -30,6 +30,16 @@ const TableCell = ({ width, align, alt, children }: any) => {
   );
 };
 
+const TableCellWide = ({ width, align, alt, children }: any) => {
+  return (
+    <div
+      className={styles.cell + " " + styles.cellWide}
+      style={{ width, justifyContent: align }}>
+      <p>{children}</p>
+    </div>
+  );
+};
+
 const TableIcons = ({ children }: any) => {
   return <div className={styles.icons}>{children}</div>;
 };
@@ -44,6 +54,7 @@ export {
   TableDetail,
   TableRow,
   TableCell,
+  TableCellWide,
   TableIcons,
   TableCellEnd,
 };

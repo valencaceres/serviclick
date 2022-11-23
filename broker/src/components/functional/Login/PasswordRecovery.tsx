@@ -16,7 +16,8 @@ const PasswordRecovery = ({
   recoveryTextButton,
   setRecoveryTextButton,
 }: any) => {
-  const { loading, sendUserBrokerCredentials, response } = useUserBroker();
+  const { userBrokerLoading, sendUserBrokerCredentials, response } =
+    useUserBroker();
 
   const [enabledButtonRecovery, setEnabledButtonRecovery] = useState(false);
   const [success, setSuccess] = useState<boolean | null>(null);
@@ -82,13 +83,13 @@ const PasswordRecovery = ({
   }, [recoveryForm]);
 
   useEffect(() => {
-    if (loading === false) {
+    if (userBrokerLoading === false) {
       setRecoveryTextButton("Cerrar");
       if (response === "OK") {
         setSuccess(true);
       }
     }
-  }, [loading]);
+  }, [userBrokerLoading]);
 
   return (
     <ContentCell gap="30px" align="center">
@@ -114,7 +115,7 @@ const PasswordRecovery = ({
             />
           </Fragment>
         ) : (
-          !loading && (
+          !userBrokerLoading && (
             <p style={{ fontWeight: 600 }}>Su contraseña fue enviada</p>
           )
         )}
@@ -124,7 +125,7 @@ const PasswordRecovery = ({
         width="200px"
         onClick={handleSendPassword}
         enabled={enabledButtonRecovery}
-        loading={loading}
+        loading={userBrokerLoading}
       />
     </ContentCell>
   );

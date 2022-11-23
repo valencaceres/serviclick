@@ -5,6 +5,15 @@ import {
   TableRow,
   TableCell,
   TableIcons,
+  TableCellEnd,
 } from "./Table";
 
-export { Table, TableHeader, TableDetail, TableRow, TableCell, TableIcons };
+export {
+  Table,
+  TableHeader,
+  TableDetail,
+  TableRow,
+  TableCell,
+  TableIcons,
+  TableCellEnd,
+};
