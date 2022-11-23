@@ -37,7 +37,7 @@ const createProduct: any = async (
         "UPDATE app.product SET cost = $1, issubject = $2, frequency = $3, term = $4, beneficiaries = $5, currency = $6, mininsuredcompanyprice = $7, dueday = $8 WHERE name = $9 and family_id = $10 RETURNING *";
     } else {
       query =
-        "INSERT INTO app.product(cost, issubject, frequency, term, beneficiaries, currency, mininsuredcompanyprice, dueday, family_id, name) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *";
+        "INSERT INTO app.product(cost, issubject, frequency, term, beneficiaries, currency, mininsuredcompanyprice, dueday, name, family_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *";
     }
 
     const result = await pool.query(query, arrayValues);

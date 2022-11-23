@@ -16,6 +16,7 @@ type ProductT = {
   companyprice: number;
   frequency: "U" | "S" | "M" | "A";
   dueday: number;
+
   customer_plan_id: number;
   company_plan_id: number;
 };
@@ -40,6 +41,25 @@ const createProduct = async (req: any, res: any) => {
     assistances,
   } = req.body;
 
+  console.log({
+    family_id,
+    name,
+    cost,
+    isSubject,
+    frequency,
+    term,
+    beneficiaries,
+    currency,
+    dueDay,
+    minInsuredCompanyPrice,
+    title,
+    subTitle,
+    description,
+    territorialScope,
+    hiringConditions,
+    assistances,
+  });
+
   const productResponse = await Product.createProduct(
     family_id,
     name,
@@ -61,6 +81,8 @@ const createProduct = async (req: any, res: any) => {
     res.status(500).json({ error: productResponse.error });
     return;
   }
+
+  console.log(productResponse);
 
   const { id } = productResponse.data;
 

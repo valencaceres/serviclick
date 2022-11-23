@@ -9,12 +9,13 @@ import {
 import FloatMenu from "../../components/ui/FloatMenu";
 import ButtonIcon from "../../components/ui/ButtonIcon";
 
-import { useUI, useProduct, useAssistance } from "../../hooks";
+import { useUI, useFamily, useProduct, useAssistance } from "../../hooks";
 
 const Product = () => {
   const router = useRouter();
 
   const { setTitleUI } = useUI();
+  const { listAll } = useFamily();
   const {
     createProduct,
     deleteProductById,
@@ -44,6 +45,7 @@ const Product = () => {
   };
 
   const handleClickNew = () => {
+    listAll();
     resetProduct();
     router.push("/masters/product?id=new");
   };
