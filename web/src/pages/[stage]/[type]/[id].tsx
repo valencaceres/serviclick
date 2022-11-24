@@ -11,12 +11,19 @@ import Resume from "../../../components/functional/Wizard/Resume";
 
 import Loading from "../../../components/ui/Loading";
 
-import { useUI, useStage, useProduct, useLead } from "../../../redux/hooks";
+import {
+  useUI,
+  useStage,
+  useDistrict,
+  useProduct,
+  useLead,
+} from "../../../redux/hooks";
 
 const Value: NextPage = () => {
   const router = useRouter();
 
   const { stage, setStage } = useStage();
+  const { listAllDistrict } = useDistrict();
   const { getProductByIdWithPrices, product } = useProduct();
   const { lead, setLeadAgent, setLeadProduct, resetLead, getLeadById } =
     useLead();
@@ -66,7 +73,7 @@ const Value: NextPage = () => {
 
   useEffect(() => {
     if (router.isReady) {
-      const { stage, id, type, leadId } = router.query;
+      const { stage, id, type, leadId, agent_id } = router.query;
 
       if (
         (stage === "contract" ||
@@ -78,10 +85,21 @@ const Value: NextPage = () => {
       ) {
         setStage({ name: stage, type });
 
+        if (leadId || agent_id) {
+          listAllDistrict();
+          if (agent_id) {
+            setAgentUI(agent_id.toString());
+            setLeadAgent(agent_id.toString());
+          }
+        }
+
         if (leadId) {
           getLeadById(leadId ? leadId.toString() : "");
         } else {
-          getProductByIdWithPrices(id ? id.toString() : "", agentId);
+          getProductByIdWithPrices(
+            id ? id.toString() : "",
+            agent_id ? agent_id.toString() : agentId
+          );
         }
         setIsLoaded(true);
       }

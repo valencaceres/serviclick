@@ -171,6 +171,8 @@ const createPlans = async (req: any, res: any) => {
     controller: "product/createPlans",
     message: "OK",
   });
+
+  res.status(200).json(responsePlans.data);
 };
 
 const assignPrices = async (req: any, res: any) => {
