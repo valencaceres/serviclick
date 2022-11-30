@@ -12,31 +12,30 @@ const menu = [
     icon: <Icon iconName="settings" />,
     text: "Maestros",
     subOptions: [
-      { text: "Canales de Venta", route: "/masters/channel" },
-      { text: "Familias", route: "/masters/family" },
-      { text: "Tipos de valor", route: "/masters/valueType" },
-      { text: "Valores", route: "/masters/value" },
-      { text: "Servicios", route: "/masters/assistance" },
-      { text: "Productos", route: "/masters/product" },
+      { text: "Familias" },
+      { text: "Especialidades" },
+      { text: "Datos" },
+      { text: "Documentos" },
+      { text: "Servicios" },
+      { text: "Etapas" },
+      { text: "Productos" },
     ],
   },
   {
-    icon: <Icon iconName="shopping_cart_checkout" />,
-    text: "Canales de venta",
+    icon: <Icon iconName="people" />,
+    text: "Entidades",
     subOptions: [
-      { text: "Internet", route: "/channels/web" },
-      { text: "Corredora de Seguros", route: "/channels/broker" },
-      { text: "Retail", route: "/channels/retail" },
+      { text: "Clientes", route: "/entities/contractor" },
+      { text: "Beneficiarios y cargas", route: "/entities/insured" },
+      { text: "Especialistas" },
+      { text: "Convenios" },
+      { text: "Operadores" },
     ],
   },
   {
-    icon: <Icon iconName="directions_car" />,
-    text: "Procesos",
-  },
-  {
-    icon: <Icon iconName="receipt_long" />,
-    text: "Reportes",
-    subOptions: [{ text: "Transacciones", route: "/reports/transactions" }],
+    icon: <Icon iconName="build_circle" />,
+    text: "Asistencia",
+    subOptions: [{ text: "Dashboard" }, { text: "Apertura" }],
   },
 ];
 
@@ -103,8 +102,12 @@ const SubOptions = ({ subOptions, show, setShowMenu }: any) => {
   return subOptions.map((item: any, key: number) => (
     <div
       key={key}
-      onClick={() => router.push(item.route)}
-      className={styles.subOption + " " + styles[show ? "show" : "hide"]}>
+      onClick={() => (item.route ? router.push(item.route) : {})}
+      className={styles.subOption + " " + styles[show ? "show" : "hide"]}
+      style={{
+        textDecoration: !item.route ? "line-through" : "none",
+        color: !item.route ? "gray" : "white",
+      }}>
       {item.text}
     </div>
   ));

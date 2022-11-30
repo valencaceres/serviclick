@@ -47,6 +47,26 @@ const create = async (req: any, res: any) => {
   res.status(200).json(userResponse.data);
 };
 
+const deleteUserById = async (req: any, res: any) => {
+  const { id } = req.params;
+  const userResponse = await User.deleteUserById(id);
+
+  if (!userResponse.success) {
+    createLogger.error({
+      model: "person/deleteUserById",
+      error: userResponse.error,
+    });
+    res.status(500).json({ error: userResponse.error });
+    return;
+  }
+
+  createLogger.info({
+    controller: "user/deleteUserById",
+    message: "OK",
+  });
+  res.status(200).json(userResponse.data);
+};
+
 const assignPassword = async (req: any, res: any) => {
   const { id, password } = req.body;
 
@@ -115,6 +135,35 @@ const validate = async (req: any, res: any) => {
   }
 };
 
+const getByRut = async (req: any, res: any) => {
+  try {
+    const { rut } = req.params;
+    const result = await User.getByRut(rut);
+
+    if (!result.success) {
+      createLogger.error({
+        model: "user/getByRut",
+        error: result.error,
+      });
+      res.status(500).json({ error: result.error });
+      return;
+    }
+
+    createLogger.info({
+      controller: "user/getByRut",
+      message: "OK",
+    });
+    res.status(200).json(result.data);
+  } catch (e) {
+    createLogger.error({
+      controller: "user/getByEmail",
+      error: (e as Error).message,
+    });
+    res.status(500).json({ error: (e as Error).message });
+    return;
+  }
+};
+
 const getByEmail = async (req: any, res: any) => {
   try {
     const { email } = req.params;
@@ -137,6 +186,34 @@ const getByEmail = async (req: any, res: any) => {
   } catch (e) {
     createLogger.error({
       controller: "user/getByEmail",
+      error: (e as Error).message,
+    });
+    res.status(500).json({ error: (e as Error).message });
+    return;
+  }
+};
+
+const getAll = async (req: any, res: any) => {
+  try {
+    const result = await User.getAll();
+
+    if (!result.success) {
+      createLogger.error({
+        model: "user/getAll",
+        error: result.error,
+      });
+      res.status(500).json({ error: result.error });
+      return;
+    }
+
+    createLogger.info({
+      controller: "user/getAll",
+      message: "OK",
+    });
+    res.status(200).json(result.data);
+  } catch (e) {
+    createLogger.error({
+      controller: "user/getAll",
       error: (e as Error).message,
     });
     res.status(500).json({ error: (e as Error).message });
@@ -257,9 +334,12 @@ const updatePassword = async (req: any, res: any) => {
 
 export {
   create,
+  deleteUserById,
   assignPassword,
   validate,
+  getByRut,
   getByEmail,
+  getAll,
   sendCredentials,
   updatePassword,
 };

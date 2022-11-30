@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   position: absolute;
-  width: 300px;
+  width: 200px;
   height: calc(100vh - 70px);
   top: 70px;
   background: rgba(0, 0, 0, 0.9);
@@ -18,7 +18,7 @@
   }
 
   &.hide {
-    left: -300px;
+    left: -200px;
   }
 
   * {
@@ -40,10 +40,10 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      height: 50px;
+      height: 40px;
       gap: 10px;
       cursor: pointer;
-      padding: 0 20px;
+      padding: 0 10px;
       background: rgba(0, 0, 0, 0.3);
 
       &:hover {
@@ -54,15 +54,12 @@
         display: flex;
         align-items: center;
         justify-content: flex-start;
-        gap: 10px;
+        gap: 5px;
 
         .icon {
           display: flex;
           justify-content: center;
           align-items: center;
-          background-color: #787878;
-          width: 30px;
-          height: 30px;
           border-radius: 5px;
 
           span {
@@ -71,7 +68,8 @@
         }
 
         p {
-          font-weight: 600;
+          font-family: Oswald;
+          font-weight: 400;
           color: #cccccc;
         }
       }
@@ -87,9 +85,11 @@
       display: flex;
       align-items: center;
       justify-content: flex-start;
-      height: 40px;
+      font-family: Oswald;
+      font-weight: 200;
+      height: 30px;
       color: #cccccc;
-      padding: 0 60px;
+      padding: 0 30px;
       cursor: pointer;
 
       &:hover {

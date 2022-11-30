@@ -19,6 +19,14 @@ const useUser = () => {
     error: userError,
   } = useAppSelector((state) => state.userSlice);
 
+  const createUser = (user: User.UserT) => {
+    dispatch(User.createUser(user));
+  };
+
+  const deleteUserById = (id: string) => {
+    dispatch(User.deleteUserById(id));
+  };
+
   const validateUser = (login: string, password: string) => {
     setIsValidate(true);
     dispatch(User.validateUser(login, password));
@@ -36,6 +44,26 @@ const useUser = () => {
     dispatch(User.updatePassword(email, password, newPassword));
   };
 
+  const getUserByRut = (rut: string) => {
+    dispatch(User.getUserByRut(rut));
+  };
+
+  const getUserByEmail = (email: string) => {
+    dispatch(User.getUserByEmail(email));
+  };
+
+  const getAllUsers = () => {
+    dispatch(User.getAll());
+  };
+
+  const resetUser = () => {
+    dispatch(User.resetUser());
+  };
+
+  const setUser = (user: User.UserT) => {
+    dispatch(User.setUser(user));
+  };
+
   useEffect(() => {
     if (user.rut !== "" && isValidate) {
       setUserUI(user);
@@ -47,9 +75,16 @@ const useUser = () => {
     userList,
     userLoading,
     userError,
+    createUser,
+    deleteUserById,
     validateUser,
     sendCredentials,
     updatePassword,
+    getUserByRut,
+    getUserByEmail,
+    getAllUsers,
+    resetUser,
+    setUser,
   };
 };
 

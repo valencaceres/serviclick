@@ -2,7 +2,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { apiInstance } from "../../utils/api";
 
-type UserT = {
+export type UserT = {
+  id: string;
   rut: string;
   name: string;
   paternalLastName: string;
@@ -22,6 +23,7 @@ type StateT = {
 const initialState: StateT = {
   list: [],
   user: {
+    id: "",
     rut: "",
     name: "",
     paternalLastName: "",
@@ -67,6 +69,34 @@ export const { setLoading, setError, setUserList, setUser, resetUser } =
 
 export default userSlice.reducer;
 
+export const deleteUserById = (id: string) => async (dispatch: any) => {
+  try {
+    dispatch(setLoading(true));
+    await apiInstance.delete(`/user/deleteUserById/${id}`);
+  } catch (e) {
+    dispatch(setError(true));
+  }
+};
+
+export const createUser = (user: UserT) => async (dispatch: any) => {
+  try {
+    dispatch(setLoading(true));
+    const { rut, name, paternalLastName, maternalLastName, email, phone } =
+      user;
+    const { data } = await apiInstance.post(`/user/create`, {
+      rut,
+      name,
+      paternalLastName,
+      maternalLastName,
+      email,
+      phone,
+    });
+    dispatch(setUser(data));
+  } catch (e) {
+    dispatch(setError(true));
+  }
+};
+
 export const validateUser =
   (login: string, password: string) => async (dispatch: any) => {
     try {
@@ -108,3 +138,33 @@ export const updatePassword =
       dispatch(setError(true));
     }
   };
+
+export const getUserByRut = (rut: string) => async (dispatch: any) => {
+  try {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.get(`/user/getByRut/${rut}`);
+    dispatch(setUser(data));
+  } catch (e) {
+    dispatch(setError(true));
+  }
+};
+
+export const getUserByEmail = (email: string) => async (dispatch: any) => {
+  try {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.get(`/user/getByRut/${email}`);
+    dispatch(setUser(data));
+  } catch (e) {
+    dispatch(setError(true));
+  }
+};
+
+export const getAll = () => async (dispatch: any) => {
+  try {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.get(`/user/getAll`);
+    dispatch(setUserList(data));
+  } catch (e) {
+    dispatch(setError(true));
+  }
+};

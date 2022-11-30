@@ -24,6 +24,7 @@ import DistrictRouter from "./district";
 import AssistanceRouter from "./assistance";
 import ValueRouter from "./value";
 import ValueTypeRouter from "./valueType";
+import ContractorRouter from "./contractor";
 
 export {
   StatusRouter,
@@ -52,4 +53,5 @@ export {
   AssistanceRouter,
   ValueRouter,
   ValueTypeRouter,
+  ContractorRouter,
 };

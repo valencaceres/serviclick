@@ -11,6 +11,7 @@ type ComboBoxT = {
   data: any;
   dataValue: string;
   dataText: string;
+  enabled?: boolean;
 };
 
 const ComboBox = ({
@@ -24,11 +25,15 @@ const ComboBox = ({
   data,
   dataValue,
   dataText,
+  enabled = true,
 }: ComboBoxT) => {
   return (
-    <div className={styles.comboBox} style={{ width }}>
+    <div
+      className={`${styles.comboBox}${!enabled ? " " + styles.disabled : ""}`}
+      style={{ width }}>
       <select
         id={id}
+        disabled={!enabled}
         value={value}
         onChange={onChange}
         placeholder=" "

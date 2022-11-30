@@ -58,6 +58,7 @@ class App {
     this.server.use("/api/assistance", reqLogger, routes.AssistanceRouter);
     this.server.use("/api/value", reqLogger, routes.ValueRouter);
     this.server.use("/api/valueType", reqLogger, routes.ValueTypeRouter);
+    this.server.use("/api/contractor", reqLogger, routes.ContractorRouter);
   }
 }
 

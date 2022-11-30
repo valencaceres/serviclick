@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import moment from "moment";
 
 import {
   ContentCell,
@@ -26,6 +27,8 @@ import {
   currencyFormat,
 } from "../../../../utils/format";
 import { isValidRut } from "../../../../utils/validations";
+
+import { monthNames } from "../../../../data/masters";
 
 import { useChannel, useStatus, useTransaction } from "../../../../hooks";
 
@@ -57,8 +60,8 @@ const TransactionsList = ({ search }: any) => {
   const periods = [
     { id: "d", name: "Hoy" },
     { id: "w", name: "Esta semana" },
-    { id: "m", name: "Noviembre 2022" },
-    { id: "y", name: "Año 2022" },
+    { id: "m", name: `${monthNames[moment().month()]} ${moment().year()}` },
+    { id: "y", name: `Año ${moment().year()}` },
   ];
 
   const initialDataSearchForm = {

@@ -9,8 +9,7 @@ const createModel: any = async (
   address: string,
   district: string,
   email: string,
-  phone: string,
-  beneficiary: any
+  phone: string
 ) => {
   try {
     const arrayValues = [
@@ -45,17 +44,17 @@ const createModel: any = async (
         WHERE   rut = $1 RETURNING *`;
     } else {
       query = `
-            INSERT   INTO app.customer(
-                    rut,
-                    name,
-                    paternallastname,
-                    maternallastname,
-                    birthdate,
-                    address,
-                    district,
-                    email,
-                    phone) 
-            VALUES( $1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`;
+        INSERT  INTO app.customer(
+                rut,
+                name,
+                paternallastname,
+                maternallastname,
+                birthdate,
+                address,
+                district,
+                email,
+                phone) 
+        VALUES( $1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`;
     }
     const result = await pool.query(query, arrayValues);
 
@@ -107,7 +106,17 @@ const getByRutModel: any = async (rut: string) => {
       district,
       email,
       phone,
-    } = result.rows[0];
+    } = result.rows[0] || {
+      id: "",
+      birthdate: "",
+      name: "",
+      paternallastname: "",
+      maternallastname: "",
+      address: "",
+      district: "",
+      email: "",
+      phone: "",
+    };
 
     const data = {
       id,

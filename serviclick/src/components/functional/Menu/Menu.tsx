@@ -18,6 +18,7 @@ const menu = [
       { text: "Valores", route: "/masters/value" },
       { text: "Servicios", route: "/masters/assistance" },
       { text: "Productos", route: "/masters/product" },
+      { text: "Usuarios", route: "/masters/user" },
     ],
   },
   {

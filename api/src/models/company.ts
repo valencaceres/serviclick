@@ -148,7 +148,16 @@ const getByRutModel: any = async (rut: string) => {
       district,
       email,
       phone,
-    } = result.rows[0];
+    } = result.rows[0] || {
+      id: "",
+      companyname: "",
+      legalrepresentative: "",
+      line: "",
+      address: "",
+      district: "",
+      email: "",
+      phone: "",
+    };
 
     const data = {
       id,

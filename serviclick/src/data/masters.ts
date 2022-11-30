@@ -22,3 +22,18 @@ export const channels = {
   },
   web: { id: "3e085593-ca72-404f-9013-c1cce7abd60d", name: "Internet" },
 };
+
+export const monthNames = [
+  "Enero",
+  "Febrero",
+  "Marzo",
+  "Abril",
+  "Mayo",
+  "Junio",
+  "Julio",
+  "Agosto",
+  "Septiembre",
+  "Octubre",
+  "Noviembre",
+  "Diciembre",
+];

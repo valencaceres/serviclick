@@ -1,0 +1,50 @@
+.menuButtons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  max-width: 500px;
+  height: 100%;
+  width: 100%;
+
+  .content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    .menuItem {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #b4cd25;
+      height: 100px;
+      width: 150px;
+      gap: 5px;
+      border-radius: 25px;
+      border: none;
+      color: #ededed;
+      padding: 0px 20px;
+      transition: all 0.5s;
+
+      span {
+        color: #ededed;
+      }
+
+      &:hover {
+        background-color: darken(#b4cd25, 10);
+        color: white;
+
+        span {
+          color: white;
+        }
+      }
+
+      &:active {
+        transform: scale(0.9);
+      }
+    }
+  }
+}
