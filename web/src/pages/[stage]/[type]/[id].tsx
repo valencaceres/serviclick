@@ -67,6 +67,7 @@ const Value: NextPage = () => {
 
   useEffect(() => {
     agentId === "" && setAgentUI("020579a3-8461-45ec-994b-ad22ff8e3275");
+    listAllDistrict();
     resetLead();
     setLeadAgent(agentId);
   }, []);
