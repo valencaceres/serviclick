@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { post, get, erase } from "../../utils/api";
+import { apiInstance } from "../../utils/api";
 
 export type PriceT = {
   customer: number;
@@ -43,6 +43,7 @@ export type StateT = {
   list: BrokerT[];
   broker: BrokerT;
   loading: boolean;
+  error: boolean;
 };
 
 const initialState: StateT = {
@@ -62,40 +63,58 @@ const initialState: StateT = {
     users: [],
   },
   loading: false,
+  error: false,
 };
 
 export const brokerSlice = createSlice({
   name: "brokers",
   initialState,
   reducers: {
-    setList: (state: StateT, action: PayloadAction<BrokerT[]>) => {
-      state.list = action.payload;
-    },
-    setBroker: (state: StateT, action: PayloadAction<BrokerT>) => {
-      state.broker = action.payload;
-    },
-    setLogo: (state: StateT, action: PayloadAction<string>) => {
-      state.broker.logo = action.payload;
-    },
     setLoading: (state: StateT, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },
+    setError: (state: StateT, action: PayloadAction<boolean>) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
+    setList: (state: StateT, action: PayloadAction<BrokerT[]>) => {
+      state.list = action.payload;
+      state.loading = false;
+      state.error = false;
+    },
+    setBroker: (state: StateT, action: PayloadAction<BrokerT>) => {
+      state.broker = action.payload;
+      state.loading = false;
+      state.error = false;
+    },
+    setLogo: (state: StateT, action: PayloadAction<string>) => {
+      state.broker.logo = action.payload;
+      state.loading = false;
+      state.error = false;
+    },
     resetBroker: (state: StateT) => {
       state.broker = initialState.broker;
+      state.loading = false;
+      state.error = false;
     },
     resetLogo: (state: StateT) => {
       state.broker.logo = initialState.broker.logo;
+      state.loading = false;
+      state.error = false;
     },
     reset: (state: StateT) => {
       state = initialState;
+      state.loading = false;
+      state.error = false;
     },
   },
 });
 
 export const {
+  setLoading,
+  setError,
   setList,
   setBroker,
-  setLoading,
   setLogo,
   resetLogo,
   resetBroker,
@@ -105,79 +124,61 @@ export const {
 export default brokerSlice.reducer;
 
 export const create = (values: BrokerT) => async (dispatch: any) => {
-  const { success, data, error } = await post(`broker/create`, values);
-
-  if (!success) {
-    console.log(error);
-    return false;
+  try {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.post(`broker/create`, values);
+    dispatch(setBroker(data));
+  } catch (e) {
+    dispatch(setError(true));
   }
-
-  dispatch(setBroker(data));
-  dispatch(setLoading(false));
-  return true;
 };
 
 export const getById = (id: string) => async (dispatch: any) => {
-  const { success, data, error } = await get(`broker/getById/${id}`);
-
-  if (!success) {
-    console.log(error);
-    return false;
+  try {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.get(`broker/getById/${id}`);
+    dispatch(setBroker(data));
+  } catch (e) {
+    dispatch(setError(true));
   }
-
-  dispatch(setBroker(data));
-  dispatch(setLoading(false));
-  return true;
 };
 
 export const getByRut = (rut: string) => async (dispatch: any) => {
-  const { success, data, error } = await get(`broker/getByRut/${rut}`);
-
-  if (!success) {
-    console.log(error);
-    return false;
+  try {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.get(`broker/getByRut/${rut}`);
+    dispatch(setBroker(data));
+  } catch (e) {
+    dispatch(setError(true));
   }
-
-  dispatch(setBroker(data));
-  dispatch(setLoading(false));
-  return true;
 };
 
 export const getAll = () => async (dispatch: any) => {
-  const { success, data, error } = await get(`broker/getAll`);
-
-  if (!success) {
-    console.log(error);
-    return false;
+  try {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.get(`broker/getAll`);
+    dispatch(setList(data));
+  } catch (e) {
+    dispatch(setError(true));
   }
-
-  dispatch(setList(data));
-  dispatch(setLoading(false));
-  return true;
 };
 
 export const uploadLogo = (logo: any) => async (dispatch: any) => {
-  const { success, data, error } = await post(`broker/uploadLogo`, logo);
-
-  if (!success) {
-    console.log(error);
-    return false;
+  try {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.post(`broker/uploadLogo`, logo);
+    dispatch(setList(data));
+  } catch (e) {
+    dispatch(setError(true));
   }
-
-  dispatch(setList(data));
-  dispatch(setLoading(false));
-  return true;
 };
 
 export const deleteById = (id: string) => async (dispatch: any) => {
-  const { success, data, error } = await erase(`broker/deleteById/${id}`);
-
-  if (!success) {
-    console.log(error);
-    return false;
+  try {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.delete(`broker/deleteById/${id}`);
+    dispatch(setList(data));
+  } catch (e) {
+    dispatch(setError(true));
   }
-
-  dispatch(setList(data));
-  dispatch(setLoading(false));
-  return true;
 };

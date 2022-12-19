@@ -26,7 +26,6 @@ const menu = [
     text: "Entidades",
     subOptions: [
       { text: "Clientes", route: "/entities/contractor" },
-      { text: "Beneficiarios y cargas", route: "/entities/insured" },
       { text: "Especialistas" },
       { text: "Convenios" },
       { text: "Operadores" },

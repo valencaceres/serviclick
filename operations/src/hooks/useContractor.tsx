@@ -1,17 +1,22 @@
 import * as ContractorSlice from "../redux/slices/contractorSlice";
+
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
+
+import { contractor } from "../interfaces";
 
 const useContractor = () => {
   const dispatch = useAppDispatch();
 
   const {
+    contractorList,
     contractor,
-    list: contractorList,
+    subscriptionItem,
+    processing: contractorProcessing,
     loading: contractorLoading,
     error: contractorError,
   } = useAppSelector((state) => state.contractorSlice);
 
-  const createContractor = (contractor: ContractorSlice.ContractorT) => {
+  const createContractor = (contractor: contractor.IContractor) => {
     dispatch(ContractorSlice.create(contractor));
   };
 
@@ -31,12 +36,16 @@ const useContractor = () => {
     dispatch(ContractorSlice.getByRut(rut, type));
   };
 
-  const setContractorList = (value: ContractorSlice.ContractorT[]) => {
-    dispatch(ContractorSlice.setContractorList(value));
+  const getSubscriptionById = (id: number) => {
+    dispatch(ContractorSlice.getSubscriptionById(id));
   };
 
-  const setContractor = (value: ContractorSlice.ContractorT) => {
+  const setContractor = (value: contractor.IContractor) => {
     dispatch(ContractorSlice.setContractor(value));
+  };
+
+  const setContractorProcessing = (value: boolean) => {
+    dispatch(ContractorSlice.setProcessing(value));
   };
 
   const resetContractor = () => {
@@ -48,18 +57,21 @@ const useContractor = () => {
   };
 
   return {
+    contractorList,
+    contractor,
+    subscriptionItem,
+    contractorProcessing,
+    contractorLoading,
+    contractorError,
     createContractor,
     getAllContractors,
     getContractorById,
     getContractorByRut,
-    setContractorList,
+    getSubscriptionById,
     setContractor,
+    setContractorProcessing,
     resetContractor,
     resetContractorAll,
-    contractorLoading,
-    contractorError,
-    contractor,
-    contractorList,
   };
 };
 

@@ -1,63 +1,77 @@
-import {
-  OptionT,
-  setUser,
-  setShowMenu,
-  setTitle,
-  setOptions,
-  setDesktop,
-  resetAll,
-  setFilters,
-} from "../redux/slices/uiSlice";
+import * as UISlice from "../redux/slices/uiSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 
-const useUI = () => {
+interface UseUII {
+  user: UISlice.UserT;
+  showMenu: boolean;
+  title: string;
+  options: UISlice.OptionT[];
+  filters: any;
+  isDesktop: boolean;
+  envApp: "dev" | "prod";
+  setEnvAppUI: any;
+  setUserUI: any;
+  setShowMenuUI: any;
+  setTitleUI: any;
+  setOptionsUI: any;
+  setDesktopUI: any;
+  setFiltersUI: any;
+  resetUI: any;
+}
+
+const useUI = (): UseUII => {
   const dispatch = useAppDispatch();
 
-  const { showMenu, user, title, options, isDesktop, filters } = useAppSelector(
-    (state) => state.uiSlice
-  );
+  const { showMenu, user, title, options, isDesktop, filters, envApp } =
+    useAppSelector((state) => state.uiSlice);
 
   const setShowMenuUI = (value: boolean) => {
-    dispatch(setShowMenu(value));
+    dispatch(UISlice.setShowMenu(value));
+  };
+
+  const setEnvAppUI = (value: UISlice.EnvAppT) => {
+    dispatch(UISlice.setEnv(value));
   };
 
   const setUserUI = (value: any) => {
-    dispatch(setUser(value));
+    dispatch(UISlice.setUser(value));
   };
 
   const setTitleUI = (value: string) => {
-    dispatch(setTitle(value));
+    dispatch(UISlice.setTitle(value));
   };
 
-  const setOptionsUI = (value: OptionT[]) => {
-    dispatch(setOptions(value));
+  const setOptionsUI = (value: UISlice.OptionT[]) => {
+    dispatch(UISlice.setOptions(value));
   };
 
   const setDesktopUI = (value: boolean) => {
-    dispatch(setDesktop(value));
+    dispatch(UISlice.setDesktop(value));
   };
 
   const setFiltersUI = (value: any) => {
-    dispatch(setFilters(value));
+    dispatch(UISlice.setFilters(value));
   };
 
-  const resetUI = (value: any) => {
-    dispatch(resetAll());
+  const resetUI = () => {
+    dispatch(UISlice.resetAll());
   };
 
   return {
-    setUserUI,
     user,
-    setFiltersUI,
-    setShowMenuUI,
     showMenu,
-    setTitleUI,
     title,
+    options,
     filters,
+    isDesktop,
+    envApp,
+    setEnvAppUI,
+    setUserUI,
+    setShowMenuUI,
+    setTitleUI,
     setOptionsUI,
     setDesktopUI,
-    options,
-    isDesktop,
+    setFiltersUI,
     resetUI,
   };
 };

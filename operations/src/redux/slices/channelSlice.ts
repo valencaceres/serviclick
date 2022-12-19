@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
 
-import { config } from "../../utils/config";
+import { apiInstance } from "../../utils/api";
 
 export type ChannelT = {
   id: string;
@@ -13,95 +12,103 @@ export type ChannelT = {
 type StateT = {
   list: ChannelT[];
   channel: ChannelT;
+  loading: boolean;
+  error: boolean;
 };
 
 const initialState: StateT = {
   list: [],
   channel: { id: "", name: "", isBroker: false, isActive: false },
+  loading: false,
+  error: false,
 };
 
 export const channelSlice = createSlice({
   name: "channels",
   initialState,
   reducers: {
+    setLoading: (state: StateT, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
+    setError: (state: StateT, action: PayloadAction<boolean>) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
     setChannelList: (state: any, action: PayloadAction<any>) => {
       state.list = action.payload;
+      state.loading = false;
+      state.error = false;
     },
     setChannel: (state: any, action: PayloadAction<any>) => {
       state.channel = action.payload;
+      state.loading = false;
+      state.error = false;
     },
     resetChannel: (state: any) => {
       state.channel = initialState.channel;
+      state.loading = false;
+      state.error = false;
     },
   },
 });
 
-export const { setChannelList, setChannel, resetChannel } =
-  channelSlice.actions;
+export const {
+  setLoading,
+  setError,
+  setChannelList,
+  setChannel,
+  resetChannel,
+} = channelSlice.actions;
 
 export default channelSlice.reducer;
 
 export const createChannel =
-  (name: string, isBroker: boolean) => (dispatch: any) => {
-    axios
-      .post(
-        `${config.server}/api/channel/create`,
-        { name, isBroker },
-        {
-          headers: {
-            id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-          },
-        }
-      )
-      .then((response) => {
-        dispatch(listChannels());
-        dispatch(setChannel(response.data));
-      })
-      .catch((error) => console.log(error));
+  (name: string, isBroker: boolean) => async (dispatch: any) => {
+    try {
+      dispatch(setLoading(true));
+      const { data } = await apiInstance.post(`/api/channel/create`, {
+        name,
+        isBroker,
+      });
+      dispatch(listChannels());
+      dispatch(setChannel(data));
+    } catch (e) {
+      dispatch(setError(true));
+    }
   };
 
 export const updateChannel =
-  (id: string, name: string, isBroker: boolean) => (dispatch: any) => {
-    axios
-      .put(
-        `${config.server}/api/channel/update/${id}`,
-        { name, isBroker },
-        {
-          headers: {
-            id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-          },
-        }
-      )
-      .then((response) => {
-        dispatch(listChannels());
-        dispatch(setChannel(response.data));
-      })
-      .catch((error) => console.log(error));
+  (id: string, name: string, isBroker: boolean) => async (dispatch: any) => {
+    try {
+      dispatch(setLoading(true));
+      const { data } = await apiInstance.put(`/api/channel/update/${id}`, {
+        name,
+        isBroker,
+      });
+      dispatch(listChannels());
+      dispatch(setChannel(data));
+    } catch (e) {
+      dispatch(setError(true));
+    }
   };
 
-export const deleteChannel = (id: string) => (dispatch: any) => {
-  axios
-    .delete(`${config.server}/api/channel/delete/${id}`, {
-      headers: {
-        id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-      },
-    })
-    .then(() => {
-      dispatch(listChannels());
-      dispatch(resetChannel());
-    })
-    .catch((error) => console.log(error));
+export const deleteChannel = (id: string) => async (dispatch: any) => {
+  try {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.delete(`/api/channel/delete/${id}`);
+    dispatch(listChannels());
+    dispatch(resetChannel());
+  } catch (e) {
+    dispatch(setError(true));
+  }
 };
 
-export const listChannels = () => (dispatch: any) => {
-  axios
-    .get(`${config.server}/api/channel/list`, {
-      headers: {
-        id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-      },
-    })
-    .then((response) => {
-      dispatch(setChannelList(response.data));
-    })
-    .catch((error) => console.log(error));
+export const listChannels = () => async (dispatch: any) => {
+  try {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.get(`/api/channel/list`);
+    dispatch(setChannelList(data));
+  } catch (e) {
+    dispatch(setError(true));
+  }
 };

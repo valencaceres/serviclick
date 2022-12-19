@@ -223,7 +223,7 @@ const Payment = ({
                       />
                     </ContentRow>
                     <InputText
-                      label="Razón Social"
+                      label="Nombres"
                       width="100%"
                       maxLength={50}
                       value={lead.customer.name}
@@ -231,7 +231,7 @@ const Payment = ({
                       disabled={true}
                     />
                     <InputText
-                      label="Representante Legal"
+                      label="Apellido paterno"
                       width="100%"
                       maxLength={50}
                       value={lead.customer.paternalLastName}
@@ -239,7 +239,7 @@ const Payment = ({
                       disabled={true}
                     />
                     <InputText
-                      label="Giro"
+                      label="Apellido materno"
                       width="100%"
                       maxLength={50}
                       value={lead.customer.maternalLastName}

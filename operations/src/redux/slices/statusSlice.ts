@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
 
-import { config } from "../../utils/config";
+import { apiInstance } from "../../utils/api";
 
 export type StatusT = {
   id: string;
@@ -11,42 +10,57 @@ export type StatusT = {
 type StateT = {
   list: StatusT[];
   status: StatusT;
+  loading: boolean;
+  error: boolean;
 };
 
 const initialState: StateT = {
   list: [],
   status: { id: "", name: "" },
+  loading: false,
+  error: false,
 };
 
 export const statusSlice = createSlice({
   name: "status",
   initialState,
   reducers: {
+    setLoading: (state: StateT, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
+    setError: (state: StateT, action: PayloadAction<boolean>) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
     setStatusList: (state: any, action: PayloadAction<any>) => {
       state.list = action.payload;
+      state.loading = false;
+      state.error = false;
     },
     setStatus: (state: any, action: PayloadAction<any>) => {
       state.status = action.payload;
+      state.loading = false;
+      state.error = false;
     },
     resetStatus: (state: any) => {
       state.status = initialState.status;
+      state.loading = false;
+      state.error = false;
     },
   },
 });
 
-export const { setStatusList, setStatus, resetStatus } = statusSlice.actions;
+export const { setLoading, setError, setStatusList, setStatus, resetStatus } =
+  statusSlice.actions;
 
 export default statusSlice.reducer;
 
-export const getAll = () => (dispatch: any) => {
-  axios
-    .get(`${config.server}/api/status/getAll`, {
-      headers: {
-        id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-      },
-    })
-    .then((response) => {
-      dispatch(setStatusList(response.data));
-    })
-    .catch((error) => console.log(error));
+export const getAll = () => async (dispatch: any) => {
+  try {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.get(`/api/status/getAll`);
+    dispatch(setStatusList(data));
+  } catch (e) {
+    dispatch(setError(true));
+  }
 };

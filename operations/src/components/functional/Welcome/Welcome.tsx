@@ -13,7 +13,7 @@ import styles from "./Welcome.module.scss";
 import { useUI, useUser } from "../../../hooks";
 
 const Welcome = () => {
-  const { user, setTitleUI } = useUI();
+  const { user, setTitleUI, envApp } = useUI();
   const { userLoading, updatePassword } = useUser();
 
   const initialPasswordData = {
@@ -103,6 +103,7 @@ const Welcome = () => {
           <div className={styles.name}>
             Bienvenido {user.name} {user.paternalLastName}{" "}
             {user.maternalLastName}
+            {envApp === "dev" ? " (Test)" : ""}
           </div>
           <div className={styles.link}>
             <ButtonLink onClick={handleClickChangePassword}>
@@ -115,7 +116,7 @@ const Welcome = () => {
         showModal={showPasswordChange}
         setClosed={handleClickClosePasswordChange}
         title="Modificación de contraseña">
-        <ContentCell align="center" gap="30px">
+        <ContentCell align="center" gap="20px">
           {success === null ? (
             <Fragment>
               <InputText

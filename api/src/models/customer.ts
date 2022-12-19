@@ -58,6 +58,8 @@ const createModel: any = async (
     }
     const result = await pool.query(query, arrayValues);
 
+    console.log(query);
+
     const data = {
       id: result.rows[0].id,
       rut: result.rows[0].rut,

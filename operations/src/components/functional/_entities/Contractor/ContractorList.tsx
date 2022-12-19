@@ -151,12 +151,12 @@ const ContractorList = ({
             <TableCell width="110px">Tipo cliente</TableCell>
             <TableCell width="350px">Nombre</TableCell>
             <TableCell width="100px">Productos</TableCell>
-            <TableCell width="70px"></TableCell>
+            <TableCell width="70px">&nbsp;</TableCell>
             <TableCellEnd />
           </TableHeader>
           <TableDetail>
             {contractorList.map((contractor: any, idx: number) => (
-              <TableRow key={idx} className={"deleted"}>
+              <TableRow key={idx}>
                 <TableCell width="70px" align="center">
                   {idx + 1}
                 </TableCell>
@@ -186,8 +186,12 @@ const ContractorList = ({
             ))}
           </TableDetail>
         </Table>
-        <ContentRow gap="10px" align="flex-end">
+        <ContentRow gap="5px" align="flex-start">
           <ContentCellSummary>{`${contractorList.length} clientes`}</ContentCellSummary>
+          <ContentCellSummary>{`${contractorList.reduce(
+            (acum: number, item) => acum + parseInt(item.quantity.toString()),
+            0
+          )} suscriptiones`}</ContentCellSummary>
         </ContentRow>
       </ContentCell>
       <ModalWarning

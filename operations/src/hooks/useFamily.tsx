@@ -1,16 +1,4 @@
-import {
-  createFamily,
-  updateFamily,
-  deleteFamily,
-  getFamily,
-  listFamilies,
-  setFamilyList,
-  setFamily,
-  addFamilyValue,
-  resetFamily,
-  FamilyT,
-  ValueT,
-} from "../redux/slices/familySlice";
+import * as FamilySlice from "../redux/slices/familySlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 
 const useFamily = () => {
@@ -18,40 +6,40 @@ const useFamily = () => {
 
   const { family, list } = useAppSelector((state) => state.familySlice);
 
-  const create = (name: string, values: ValueT) => {
-    dispatch(createFamily(name, values));
+  const create = (name: string, values: FamilySlice.ValueT) => {
+    dispatch(FamilySlice.createFamily(name, values));
   };
 
-  const update = (id: string, name: string, values: ValueT) => {
-    dispatch(updateFamily(id, name, values));
+  const update = (id: string, name: string, values: FamilySlice.ValueT) => {
+    dispatch(FamilySlice.updateFamily(id, name, values));
   };
 
   const deleteById = (value: string) => {
-    dispatch(deleteFamily(value));
+    dispatch(FamilySlice.deleteFamily(value));
   };
 
   const getById = (value: string) => {
-    dispatch(getFamily(value));
+    dispatch(FamilySlice.getFamily(value));
   };
 
   const listAll = () => {
-    dispatch(listFamilies());
+    dispatch(FamilySlice.listFamilies());
   };
 
-  const setList = (value: FamilyT[]) => {
-    dispatch(setFamilyList(value));
+  const setList = (value: FamilySlice.FamilyT[]) => {
+    dispatch(FamilySlice.setFamilyList(value));
   };
 
-  const set = (value: FamilyT) => {
-    dispatch(setFamily(value));
+  const set = (value: FamilySlice.FamilyT) => {
+    dispatch(FamilySlice.setFamily(value));
   };
 
-  const addValue = (value: ValueT) => {
-    dispatch(addFamilyValue(value));
+  const addValue = (value: FamilySlice.ValueT) => {
+    dispatch(FamilySlice.addFamilyValue(value));
   };
 
   const reset = () => {
-    dispatch(resetFamily());
+    dispatch(FamilySlice.resetFamily());
   };
 
   return {

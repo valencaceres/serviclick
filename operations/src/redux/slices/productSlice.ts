@@ -101,9 +101,13 @@ export const productSlice = createSlice({
     },
     resetProduct: (state: StateT) => {
       state.product = initialState.product;
+      state.loading = false;
+      state.error = false;
     },
     resetProductList: (state: StateT) => {
       state.list = initialState.list;
+      state.loading = false;
+      state.error = false;
     },
   },
 });
@@ -140,39 +144,47 @@ export const createProduct =
     assistances: AssistanceT[]
   ) =>
   async (dispatch: any) => {
-    dispatch(setLoading(true));
-    const { data } = await apiInstance.post(`/product/create`, {
-      family_id,
-      name,
-      cost,
-      isSubject,
-      frequency,
-      term,
-      beneficiaries,
-      currency,
-      dueDay,
-      minInsuredCompanyPrice,
-      title,
-      subTitle,
-      description,
-      territorialScope,
-      hiringConditions,
-      assistances,
-    });
-    dispatch(setProduct(data));
+    try {
+      dispatch(setLoading(true));
+      const { data } = await apiInstance.post(`/product/create`, {
+        family_id,
+        name,
+        cost,
+        isSubject,
+        frequency,
+        term,
+        beneficiaries,
+        currency,
+        dueDay,
+        minInsuredCompanyPrice,
+        title,
+        subTitle,
+        description,
+        territorialScope,
+        hiringConditions,
+        assistances,
+      });
+      dispatch(setProduct(data));
+    } catch (e) {
+      dispatch(setError(true));
+    }
   };
 
 export const assignProductPrices =
   (id: string, agent_id: string, customerprice: number, companyprice: number) =>
   async (dispatch: any) => {
-    dispatch(setLoading(true));
-    const { data } = await apiInstance.post(`/product/assignPrices`, {
-      id,
-      agent_id,
-      customerprice,
-      companyprice,
-    });
-    dispatch(setProduct(data));
+    try {
+      dispatch(setLoading(true));
+      const { data } = await apiInstance.post(`/product/assignPrices`, {
+        id,
+        agent_id,
+        customerprice,
+        companyprice,
+      });
+      dispatch(setProduct(data));
+    } catch (e) {
+      dispatch(setError(true));
+    }
   };
 
 export const updateProduct =
@@ -196,27 +208,31 @@ export const updateProduct =
     assistances: AssistanceT[]
   ) =>
   async (dispatch: any) => {
-    dispatch(setLoading(true));
-    const { data } = await apiInstance.put(`/product/update/${id}`, {
-      id,
-      family_id,
-      name,
-      cost,
-      isSubject,
-      frequency,
-      term,
-      beneficiaries,
-      currency,
-      dueDay,
-      minInsuredCompanyPrice,
-      title,
-      subTitle,
-      description,
-      territorialScope,
-      hiringConditions,
-      assistances,
-    });
-    dispatch(setProduct(data));
+    try {
+      dispatch(setLoading(true));
+      const { data } = await apiInstance.put(`/product/update/${id}`, {
+        id,
+        family_id,
+        name,
+        cost,
+        isSubject,
+        frequency,
+        term,
+        beneficiaries,
+        currency,
+        dueDay,
+        minInsuredCompanyPrice,
+        title,
+        subTitle,
+        description,
+        territorialScope,
+        hiringConditions,
+        assistances,
+      });
+      dispatch(setProduct(data));
+    } catch (e) {
+      dispatch(setError(true));
+    }
   };
 
 export const deleteProduct = (id: string) => async (dispatch: any) => {

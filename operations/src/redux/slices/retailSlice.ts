@@ -69,6 +69,13 @@ export const retailSlice = createSlice({
   name: "retails",
   initialState,
   reducers: {
+    setLoading: (state: StateT, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
+    setError: (state: StateT, action: PayloadAction<boolean>) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
     setList: (state: StateT, action: PayloadAction<RetailT[]>) => {
       state.list = action.payload;
       state.loading = false;
@@ -84,18 +91,15 @@ export const retailSlice = createSlice({
       state.loading = false;
       state.error = false;
     },
-    setLoading: (state: StateT, action: PayloadAction<boolean>) => {
-      state.loading = action.payload;
-    },
-    setError: (state: StateT, action: PayloadAction<boolean>) => {
-      state.error = action.payload;
-      state.loading = false;
-    },
     resetRetail: (state: StateT) => {
       state.retail = initialState.retail;
+      state.loading = false;
+      state.error = false;
     },
     resetLogo: (state: StateT) => {
       state.retail.logo = initialState.retail.logo;
+      state.loading = false;
+      state.error = false;
     },
     reset: (state: StateT) => {
       state = initialState;

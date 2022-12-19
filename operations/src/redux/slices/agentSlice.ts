@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
 
-import { config } from "../../utils/config";
+import { apiInstance } from "../../utils/api";
 
 export type AgentT = {
   id: string;
@@ -13,95 +12,99 @@ export type AgentT = {
 type StateT = {
   list: AgentT[];
   agent: AgentT;
+  loading: boolean;
+  error: boolean;
 };
 
 const initialState: StateT = {
   list: [],
   agent: { id: "", channel_id: "", name: "", isActive: false },
+  loading: false,
+  error: false,
 };
 
 export const agentSlice = createSlice({
   name: "agents",
   initialState,
   reducers: {
+    setLoading: (state: StateT, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
+    setError: (state: StateT, action: PayloadAction<boolean>) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
     setAgentList: (state: any, action: PayloadAction<any>) => {
       state.list = action.payload;
+      state.loading = false;
+      state.error = false;
     },
     setAgent: (state: any, action: PayloadAction<any>) => {
       state.agent = action.payload;
+      state.loading = false;
+      state.error = false;
     },
     resetAgent: (state: any) => {
       state.agent = initialState.agent;
+      state.loading = false;
+      state.error = false;
     },
   },
 });
 
-export const { setAgentList, setAgent, resetAgent } = agentSlice.actions;
+export const { setLoading, setError, setAgentList, setAgent, resetAgent } =
+  agentSlice.actions;
 
 export default agentSlice.reducer;
 
 export const createAgent =
-  (channel_id: string, name: string) => (dispatch: any) => {
-    axios
-      .post(
-        `${config.server}/api/agent/create`,
-        { channel_id, name },
-        {
-          headers: {
-            id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-          },
-        }
-      )
-      .then((response) => {
-        dispatch(listAgents(channel_id));
-        dispatch(setAgent(response.data));
-      })
-      .catch((error) => console.log(error));
+  (channel_id: string, name: string) => async (dispatch: any) => {
+    try {
+      dispatch(setLoading(true));
+      const { data } = await apiInstance.post(`/api/agent/create`, {
+        channel_id,
+        name,
+      });
+      dispatch(listAgents(channel_id));
+      dispatch(setAgent(data));
+    } catch (e) {
+      dispatch(setError(true));
+    }
   };
 
 export const updateAgent =
-  (id: string, channel_id: string, name: string) => (dispatch: any) => {
-    axios
-      .put(
-        `${config.server}/api/agent/update/${id}`,
-        { channel_id, name },
-        {
-          headers: {
-            id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-          },
-        }
-      )
-      .then((response) => {
-        dispatch(listAgents(channel_id));
-        dispatch(setAgent(response.data));
-      })
-      .catch((error) => console.log(error));
+  (id: string, channel_id: string, name: string) => async (dispatch: any) => {
+    try {
+      dispatch(setLoading(true));
+      const { data } = await apiInstance.put(`/api/agent/update/${id}`, {
+        channel_id,
+        name,
+      });
+      dispatch(listAgents(channel_id));
+      dispatch(setAgent(data));
+    } catch (e) {
+      dispatch(setError(true));
+    }
   };
 
 export const deleteAgent =
-  (id: string, channel_id: string) => (dispatch: any) => {
-    axios
-      .delete(`${config.server}/api/agent/delete/${id}`, {
-        headers: {
-          id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-        },
-      })
-      .then(() => {
-        dispatch(listAgents(channel_id));
-        dispatch(resetAgent());
-      })
-      .catch((error) => console.log(error));
+  (id: string, channel_id: string) => async (dispatch: any) => {
+    try {
+      dispatch(setLoading(true));
+      const { data } = await apiInstance.delete(`/api/agent/delete/${id}`);
+      dispatch(listAgents(channel_id));
+      dispatch(resetAgent());
+    } catch (e) {
+      dispatch(setError(true));
+    }
   };
 
-export const listAgents = (channel_id: string) => (dispatch: any) => {
-  axios
-    .get(`${config.server}/api/agent/list/${channel_id}`, {
-      headers: {
-        id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-      },
-    })
-    .then((response) => {
-      dispatch(setAgentList(response.data));
-    })
-    .catch((error) => console.log(error));
+export const listAgents = (channel_id: string) => async (dispatch: any) => {
+  try {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.get(`/api/agent/list/${channel_id}`);
+    dispatch(setAgentList(data));
+  } catch (e) {
+    dispatch(setError(true));
+  }
 };

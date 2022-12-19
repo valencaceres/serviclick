@@ -9,14 +9,14 @@ import {
   ContractorDetail,
 } from "../../components/functional/_entities/Contractor";
 
-import { useUI, useContractor } from "../../hooks";
+import { useUI, useContractor, useDistrict } from "../../hooks";
 
 const ContractorPage = () => {
   const router = useRouter();
 
   const { setTitleUI, filters } = useUI();
+  const { listAllDistrict } = useDistrict();
   const {
-    createContractor,
     getAllContractors,
     getContractorById,
     setContractor,
@@ -27,7 +27,6 @@ const ContractorPage = () => {
   } = useContractor();
 
   const [isSaving, setIsSaving] = useState(false);
-  const [enableSave, setEnableSave] = useState(false);
   const [showModalType, setShowModalType] = useState(false);
 
   const handleClickHome = () => {
@@ -52,6 +51,7 @@ const ContractorPage = () => {
       type: contractor.type,
       id: "",
       rut: "",
+      fullName: "",
       name: "",
       companyName: "",
       legalRepresentative: "",
@@ -64,6 +64,8 @@ const ContractorPage = () => {
       email: "",
       phone: "",
       quantity: 0,
+      subscriptions: [],
+      payment: [],
     });
   };
 
@@ -82,38 +84,9 @@ const ContractorPage = () => {
     router.push("/entities/contractor");
   };
 
-  const handleClickSave = () => {
-    // const contractorData =
-    //   contractor.type === "P"
-    //     ? {
-    //         ...contractor,
-    //         rut: personForm.rut.value,
-    //         name: personForm.name.value,
-    //         paternalLastName: personForm.paternalLastName.value,
-    //         maternalLastName: personForm.maternalLastName.value,
-    //         birthDate: personForm.birthDate.value,
-    //         address: personForm.address.value,
-    //         district: personForm.district.value,
-    //         email: personForm.email.value,
-    //         phone: personForm.phone.value,
-    //       }
-    //     : {
-    //         ...contractor,
-    //         rut: companyForm.rut.value,
-    //         companyName: companyForm.companyName.value,
-    //         legalRepresentative: companyForm.legalRepresentative.value,
-    //         line: companyForm.line.value,
-    //         address: companyForm.address.value,
-    //         district: companyForm.district.value,
-    //         email: companyForm.email.value,
-    //         phone: companyForm.phone.value,
-    //       };
-    // setContractor(contractorData);
-    createContractor(contractor);
-  };
-
   useEffect(() => {
     setTitleUI("Clientes");
+    listAllDistrict();
     getAllContractors(
       filters?.type || "",
       filters?.name || "",
@@ -123,8 +96,11 @@ const ContractorPage = () => {
 
   useEffect(() => {
     resetContractorAll();
-    if (router.query.id !== "" && router.query.id !== "new") {
-      router.query.id && getContractorById(router.query.id?.toString());
+    setTitleUI(router.query?.id ? "Cliente" : "Clientes");
+    if (router.query?.id) {
+      if (router.query.id !== "" && router.query.id !== "new") {
+        getContractorById(router.query.id?.toString());
+      }
     }
   }, [router.query]);
 
@@ -137,19 +113,11 @@ const ContractorPage = () => {
 
   return router.isReady && router.query.id ? (
     <Fragment>
-      <ContractorDetail setEnableSave={setEnableSave} />
+      <ContractorDetail />
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />
         <ButtonIcon iconName="arrow_back" onClick={handleClickBack} />
         <ButtonIcon iconName="add" onClick={handleClickClear} />
-        <ButtonIcon
-          iconName="save"
-          onClick={() => {
-            handleClickSave();
-          }}
-          disabled={!enableSave}
-          loading={contractorLoading}
-        />
       </FloatMenu>
     </Fragment>
   ) : (

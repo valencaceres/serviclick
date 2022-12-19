@@ -1,7 +1,6 @@
 import { createSlice, CaseReducer, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
 
-import { config } from "../../utils/config";
+import { apiInstance } from "../../utils/api";
 
 export type ValueT = {
   id: string;
@@ -18,22 +17,37 @@ export type FamilyT = {
 type StateT = {
   list: FamilyT[];
   family: FamilyT;
+  loading: boolean;
+  error: boolean;
 };
 
 const initialState: StateT = {
   list: [],
   family: { id: "", name: "", values: [], isActive: false },
+  loading: false,
+  error: false,
 };
 
 export const familySlice = createSlice({
   name: "families",
   initialState,
   reducers: {
+    setLoading: (state: StateT, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
+    setError: (state: StateT, action: PayloadAction<boolean>) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
     setFamilyList: (state: any, action: PayloadAction<any>) => {
       state.list = action.payload;
+      state.loading = false;
+      state.error = false;
     },
     setFamily: (state: any, action: PayloadAction<any>) => {
       state.family = action.payload;
+      state.loading = false;
+      state.error = false;
     },
     addFamilyValue: (state: any, action: PayloadAction<any>) => {
       state.family = {
@@ -41,91 +55,85 @@ export const familySlice = createSlice({
         name: state.family.name,
         values: [...state.family.values, { id: "", name: action.payload }],
       };
+      state.loading = false;
+      state.error = false;
     },
     resetFamily: (state: any) => {
       state.family = initialState.family;
+      state.loading = false;
+      state.error = false;
     },
   },
 });
 
-export const { setFamilyList, setFamily, addFamilyValue, resetFamily } =
-  familySlice.actions;
+export const {
+  setLoading,
+  setError,
+  setFamilyList,
+  setFamily,
+  addFamilyValue,
+  resetFamily,
+} = familySlice.actions;
 
 export default familySlice.reducer;
 
-export const createFamily = (name: string, values: any) => (dispatch: any) => {
-  axios
-    .post(
-      `${config.server}/api/family/create`,
-      { name, values },
-      {
-        headers: {
-          id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-        },
-      }
-    )
-    .then((response) => {
+export const createFamily =
+  (name: string, values: any) => async (dispatch: any) => {
+    try {
+      dispatch(setLoading(true));
+      const { data } = await apiInstance.post(`/api/family/create`, {
+        name,
+        values,
+      });
       dispatch(listFamilies());
-      dispatch(setFamily(response.data));
-    })
-    .catch((error) => console.log(error));
-};
-
-export const updateFamily =
-  (id: string, name: string, values: any) => (dispatch: any) => {
-    axios
-      .put(
-        `${config.server}/api/family/update/${id}`,
-        { name, values },
-        {
-          headers: {
-            id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-          },
-        }
-      )
-      .then((response) => {
-        dispatch(listFamilies());
-        dispatch(setFamily(response.data));
-      })
-      .catch((error) => console.log(error));
+      dispatch(setFamily(data));
+    } catch (e) {
+      dispatch(setError(true));
+    }
   };
 
-export const deleteFamily = (id: string) => (dispatch: any) => {
-  axios
-    .delete(`${config.server}/api/family/delete/${id}`, {
-      headers: {
-        id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-      },
-    })
-    .then(() => {
+export const updateFamily =
+  (id: string, name: string, values: any) => async (dispatch: any) => {
+    try {
+      dispatch(setLoading(true));
+      const { data } = await apiInstance.put(`/api/family/update/${id}`, {
+        name,
+        values,
+      });
       dispatch(listFamilies());
-      dispatch(resetFamily());
-    })
-    .catch((error) => console.log(error));
+      dispatch(setFamily(data));
+    } catch (e) {
+      dispatch(setError(true));
+    }
+  };
+
+export const deleteFamily = (id: string) => async (dispatch: any) => {
+  try {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.delete(`/api/family/delete/${id}`);
+    dispatch(listFamilies());
+    dispatch(resetFamily());
+  } catch (e) {
+    dispatch(setError(true));
+  }
 };
 
-export const getFamily = (id: string) => (dispatch: any) => {
-  axios
-    .get(`${config.server}/api/family/get/${id}`, {
-      headers: {
-        id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-      },
-    })
-    .then((response) => {
-      dispatch(setFamily(response.data));
-    })
-    .catch((error) => console.log(error));
+export const getFamily = (id: string) => async (dispatch: any) => {
+  try {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.get(`/api/family/get/${id}`);
+    dispatch(setFamily(data));
+  } catch (e) {
+    dispatch(setError(true));
+  }
 };
 
-export const listFamilies = () => (dispatch: any) => {
-  axios
-    .get(`${config.server}/api/family/list`, {
-      headers: {
-        id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-      },
-    })
-    .then((response) => {
-      dispatch(setFamilyList(response.data));
-    })
-    .catch((error) => console.log(error));
+export const listFamilies = () => async (dispatch: any) => {
+  try {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.get(`/api/family/list`);
+    dispatch(setFamilyList(data));
+  } catch (e) {
+    dispatch(setError(true));
+  }
 };

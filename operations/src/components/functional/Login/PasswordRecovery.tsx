@@ -49,7 +49,7 @@ const PasswordRecovery = ({
   }, [userLoading]);
 
   return (
-    <ContentCell gap="30px" align="center">
+    <ContentCell gap="20px" align="center">
       <ContentCell gap="5px" align="center">
         {recoveryTextButton === "Solicitar" ? (
           <Fragment>

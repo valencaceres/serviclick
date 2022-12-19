@@ -15,7 +15,7 @@ const ModalWarning = ({
 }: any) => {
   return (
     <ModalWindow showModal={showModal} title={title} setClosed={setClosed}>
-      <ContentCell gap="30px" align="center">
+      <ContentCell gap="20px" align="center">
         <ContentRow gap="20px">
           {iconName && (
             <Icon iconName="warning" className={styles.orange} size="50px" />

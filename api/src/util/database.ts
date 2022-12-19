@@ -23,6 +23,7 @@ const pool = new Pool({
   database: dbName,
   password: dbPassword,
   port: 5432,
+  keepAlive: true,
   ssl: {
     ca: fs.readFileSync(path.join(__dirname, "/certificate.crt")),
   },

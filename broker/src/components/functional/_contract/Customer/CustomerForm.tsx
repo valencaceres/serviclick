@@ -189,7 +189,7 @@ const CustomerForm = ({ customerForm, setCustomerForm, disabled }: any) => {
         />
       </ContentRow>
       <InputText
-        label="Razón Social"
+        label="Nombres"
         width="100%"
         maxLength={50}
         value={customerForm?.name.value}
@@ -197,7 +197,7 @@ const CustomerForm = ({ customerForm, setCustomerForm, disabled }: any) => {
         disabled={disabled}
       />
       <InputText
-        label="Representante Legal"
+        label="Apellido paterno"
         width="100%"
         maxLength={50}
         value={customerForm?.paternalLastName.value}
@@ -205,7 +205,7 @@ const CustomerForm = ({ customerForm, setCustomerForm, disabled }: any) => {
         disabled={disabled}
       />
       <InputText
-        label="Giro"
+        label="Apellido materno"
         width="100%"
         maxLength={50}
         value={customerForm?.maternalLastName.value}

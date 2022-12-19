@@ -1,3 +1,5 @@
+import InputText from "../../ui/InputText";
+
 import styles from "./ComboBox.module.scss";
 
 type ComboBoxT = {
@@ -27,7 +29,7 @@ const ComboBox = ({
   dataText,
   enabled = true,
 }: ComboBoxT) => {
-  return (
+  return enabled ? (
     <div
       className={`${styles.comboBox}${!enabled ? " " + styles.disabled : ""}`}
       style={{ width }}>
@@ -48,6 +50,14 @@ const ComboBox = ({
       </select>
       {label && display && <label htmlFor={id}>{label}</label>}
     </div>
+  ) : (
+    <InputText
+      label={label}
+      width={width}
+      value={value}
+      disabled={!enabled}
+      onChange={onChange}
+    />
   );
 };
 

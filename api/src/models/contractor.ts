@@ -1,6 +1,42 @@
 import pool from "../util/database";
 
-import { _selectAll, _selectById, _selectByRut } from "../queries/contractor";
+import {
+  _selectAll,
+  _selectById,
+  _selectByRut,
+  _selectSubscriptions,
+  _selectSubscription,
+  _selectInsured,
+  _selectPayment,
+} from "../queries/contractor";
+
+interface IBeneficiary {
+  id: string;
+  rut: string;
+  birthdate: string;
+  name: string;
+  paternalLastName: string;
+  maternalLastName: string;
+  address: string;
+  district: string;
+  email: string;
+  phone: string;
+}
+
+interface IInsured {
+  id: string;
+  rut: string;
+  birthdate: string;
+  name: string;
+  paternalLastName: string;
+  maternalLastName: string;
+  address: string;
+  district: string;
+  email: string;
+  phone: string;
+  incorporation: string;
+  beneficiaries: IBeneficiary[];
+}
 
 const create: any = async (
   type: string,
@@ -113,24 +149,6 @@ const create: any = async (
       phone: result.rows[0].phone,
     };
 
-    // const data = {
-    //   type,
-    //   id: "123",
-    //   rut: "11.222.333-4",
-    //   name: "Carlos",
-    //   companyName: "Prodalam S.A.",
-    //   legalRepresentative: "Alfredo Castro Jimenez",
-    //   line: "Alambres",
-    //   paternalLastName: "Paredes",
-    //   maternalLastName: "Bonilla",
-    //   birthDate: "1982-02-08",
-    //   address: "Alameda 723, depto 702",
-    //   district: "Santiago",
-    //   email: "cma.ing@gmail.com+carlos",
-    //   phone: "+568 1112 2223",
-    //   quantity: 12,
-    // };
-
     return { success: true, data, error: null };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
@@ -236,4 +254,153 @@ const getByRut: any = async (rut: string, type: string) => {
   }
 };
 
-export { create, getAll, getById, getByRut };
+const getSubscriptionsById: any = async (id: string) => {
+  try {
+    const result = await pool.query(_selectSubscriptions, [id]);
+
+    const data = result.rows.map((item: any) => {
+      return {
+        subscription_id: item.subscription_id,
+        product_id: item.product_id,
+        product_name: item.product_name,
+        createDate: item.createdate,
+      };
+    });
+
+    return { success: true, data, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+const getSubscriptionById: any = async (id: string) => {
+  try {
+    const result = await pool.query(_selectSubscription, [id]);
+    const data = result.rows.length
+      ? {
+          subscription_id: result.rows[0].subscription_id,
+          name: result.rows[0].product_name,
+          frequency: result.rows[0].product_frequency,
+          price: result.rows[0].product_price,
+          currency_code: result.rows[0].product_currency_code,
+          createDate: result.rows[0].policy_createdate,
+          startDate: result.rows[0].policy_startdate,
+          assistances: result.rows.map((item: any) => {
+            return {
+              name: item.assistance_name,
+              amount: item.assistance_amount,
+              currency: item.assistance_currency,
+              maximum: item.assistance_maximum,
+              events: item.assistance_events,
+              lack: item.assistance_lack,
+            };
+          }),
+        }
+      : [];
+
+    return {
+      success: true,
+      data,
+      error: null,
+    };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+const getInsuredBySubscriptionId: any = async (id: string) => {
+  try {
+    const result = await pool.query(_selectInsured, [id]);
+
+    let previous: any;
+    let newInsured: IInsured;
+    let dataResult: IInsured[] = [];
+
+    result.rows.forEach((item: any, idx: number) => {
+      if (item.insured_rut !== previous?.insured_rut) {
+        if (newInsured) {
+          dataResult.push(newInsured);
+        }
+        newInsured = {
+          id: item.insured_id,
+          rut: item.insured_rut,
+          birthdate: item.insured_birthdate,
+          name: item.insured_name,
+          paternalLastName: item.insured_paternallastname,
+          maternalLastName: item.insured_maternallastname,
+          address: item.insured_address,
+          district: item.insured_district,
+          email: item.insured_email,
+          phone: item.insured_phone,
+          incorporation: item.insured_incorporation,
+          beneficiaries: [],
+        };
+      }
+      if (item.beneficiary_id !== "") {
+        newInsured.beneficiaries.push({
+          id: item.beneficiary_id,
+          rut: item.beneficiary_rut,
+          birthdate: item.beneficiary_birthdate,
+          name: item.beneficiary_name,
+          paternalLastName: item.beneficiary_paternallastname,
+          maternalLastName: item.beneficiary_maternallastname,
+          address: item.beneficiary_address,
+          district: item.beneficiary_district,
+          email: item.beneficiary_email,
+          phone: item.beneficiary_phone,
+        });
+      }
+      previous = item;
+      if (idx === result.rows.length - 1) {
+        dataResult.push(newInsured);
+      }
+    });
+
+    const data = result.rows.length > 0 ? dataResult : [];
+
+    return {
+      success: true,
+      data,
+      error: null,
+    };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+const getPaymentById: any = async (id: string) => {
+  try {
+    const result = await pool.query(_selectPayment, [id]);
+
+    const data = result.rows.map((item: any) => {
+      return {
+        subscription_id: item.subscription_id,
+        product_id: item.product_id,
+        product_name: item.product_name,
+        createDate: item.createdate,
+        frequency: item.frequency,
+        price: item.price,
+        insured: item.insured,
+        collected_dues: item.collected_dues,
+        collected_amount: item.collected_amount,
+        paid_dues: item.paid_dues,
+        paid_amount: item.paid_amount,
+      };
+    });
+
+    return { success: true, data, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+export {
+  create,
+  getAll,
+  getById,
+  getByRut,
+  getSubscriptionsById,
+  getSubscriptionById,
+  getInsuredBySubscriptionId,
+  getPaymentById,
+};

@@ -51,9 +51,13 @@ export const valueTypeSlice = createSlice({
     },
     reset: (state: StateT) => {
       state.valueType = initialState.valueType;
+      state.loading = false;
+      state.error = false;
     },
     resetList: (state: StateT) => {
       state.list = initialState.list;
+      state.loading = false;
+      state.error = false;
     },
     resetAll: (state: any) => {
       state = initialState;

@@ -1,13 +1,4 @@
-import {
-  createChannel,
-  updateChannel,
-  deleteChannel,
-  listChannels,
-  setChannelList,
-  setChannel,
-  resetChannel,
-  ChannelT,
-} from "../redux/slices/channelSlice";
+import * as ChannelSlice from "../redux/slices/channelSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 
 const useChannel = () => {
@@ -16,31 +7,31 @@ const useChannel = () => {
   const { channel, list } = useAppSelector((state) => state.channelSlice);
 
   const create = (name: string, isBroker: boolean) => {
-    dispatch(createChannel(name, isBroker));
+    dispatch(ChannelSlice.createChannel(name, isBroker));
   };
 
   const update = (id: string, name: string, isBroker: boolean) => {
-    dispatch(updateChannel(id, name, isBroker));
+    dispatch(ChannelSlice.updateChannel(id, name, isBroker));
   };
 
   const deleteById = (value: string) => {
-    dispatch(deleteChannel(value));
+    dispatch(ChannelSlice.deleteChannel(value));
   };
 
   const listAll = () => {
-    dispatch(listChannels());
+    dispatch(ChannelSlice.listChannels());
   };
 
-  const setList = (value: ChannelT[]) => {
-    dispatch(setChannelList(value));
+  const setList = (value: ChannelSlice.ChannelT[]) => {
+    dispatch(ChannelSlice.setChannelList(value));
   };
 
-  const set = (value: ChannelT) => {
-    dispatch(setChannel(value));
+  const set = (value: ChannelSlice.ChannelT) => {
+    dispatch(ChannelSlice.setChannel(value));
   };
 
   const reset = () => {
-    dispatch(resetChannel());
+    dispatch(ChannelSlice.resetChannel());
   };
 
   return {

@@ -13,24 +13,32 @@ import { useDistrict, useContractor } from "../../../../hooks";
 
 import styles from "./Contractor.module.scss";
 
-const ContractorFormPerson = ({ setEnableSave }: any) => {
+const ContractorCompanyForm = ({ enabled, setEnableSave }: any) => {
   const { list: districtList } = useDistrict();
-  const { getContractorByRut, setContractor, contractor, contractorLoading } =
-    useContractor();
+  const {
+    getContractorByRut,
+    setContractor,
+    setContractorProcessing,
+    contractor,
+    contractorLoading,
+    contractorProcessing,
+  } = useContractor();
 
-  const initialDataPersonForm = {
+  const initialDataCompanyForm = {
     rut: { value: contractor.rut, isValid: true },
-    name: { value: contractor.name, isValid: true },
-    paternalLastName: { value: contractor.paternalLastName, isValid: true },
-    maternalLastName: { value: contractor.maternalLastName, isValid: true },
-    birthDate: { value: contractor.birthDate, isValid: true },
+    companyName: { value: contractor.companyName, isValid: true },
+    legalRepresentative: {
+      value: contractor.legalRepresentative,
+      isValid: true,
+    },
+    line: { value: contractor.line, isValid: true },
     address: { value: contractor.address, isValid: true },
     district: { value: contractor.district, isValid: true },
     email: { value: contractor.email, isValid: true },
     phone: { value: contractor.phone, isValid: true },
   };
 
-  const [personForm, setPersonForm] = useState(initialDataPersonForm);
+  const [companyForm, setCompanyForm] = useState(initialDataCompanyForm);
   const [isSearching, setIsSearching] = useState(false);
 
   const handleBlurRut = (event: any) => {
@@ -41,8 +49,8 @@ const ContractorFormPerson = ({ setEnableSave }: any) => {
       event.target.value = formatRut(event.target.value);
       setIsSearching(true);
       getContractorByRut(event.target.value, contractor.type);
-      setPersonForm({
-        ...personForm,
+      setCompanyForm({
+        ...companyForm,
         rut: {
           value: event.target.value,
           isValid:
@@ -60,11 +68,10 @@ const ContractorFormPerson = ({ setEnableSave }: any) => {
   };
 
   const handleChangeRut = (event: any) => {
-    setPersonForm({
-      name: { value: "", isValid: true },
-      paternalLastName: { value: "", isValid: true },
-      maternalLastName: { value: "", isValid: true },
-      birthDate: { value: "", isValid: true },
+    setCompanyForm({
+      companyName: { value: "", isValid: true },
+      legalRepresentative: { value: "", isValid: true },
+      line: { value: "", isValid: true },
       address: { value: "", isValid: true },
       district: { value: "", isValid: true },
       email: { value: "", isValid: true },
@@ -80,40 +87,30 @@ const ContractorFormPerson = ({ setEnableSave }: any) => {
     });
   };
 
-  const handleChangeName = (event: any) => {
-    setPersonForm({
-      ...personForm,
-      name: {
+  const handleChangeCompanyName = (event: any) => {
+    setCompanyForm({
+      ...companyForm,
+      companyName: {
         value: event.target.value,
         isValid: true,
       },
     });
   };
 
-  const handleChangePaternalLastName = (event: any) => {
-    setPersonForm({
-      ...personForm,
-      paternalLastName: {
+  const handleChangeLegalRepresentative = (event: any) => {
+    setCompanyForm({
+      ...companyForm,
+      legalRepresentative: {
         value: event.target.value,
         isValid: true,
       },
     });
   };
 
-  const handleChangeMaternalLastName = (event: any) => {
-    setPersonForm({
-      ...personForm,
-      maternalLastName: {
-        value: event.target.value,
-        isValid: true,
-      },
-    });
-  };
-
-  const handleChangeBirthDate = (event: any) => {
-    setPersonForm({
-      ...personForm,
-      birthDate: {
+  const handleChangeLine = (event: any) => {
+    setCompanyForm({
+      ...companyForm,
+      line: {
         value: event.target.value,
         isValid: true,
       },
@@ -121,8 +118,8 @@ const ContractorFormPerson = ({ setEnableSave }: any) => {
   };
 
   const handleChangeAddress = (event: any) => {
-    setPersonForm({
-      ...personForm,
+    setCompanyForm({
+      ...companyForm,
       address: {
         value: event.target.value,
         isValid: true,
@@ -131,8 +128,8 @@ const ContractorFormPerson = ({ setEnableSave }: any) => {
   };
 
   const handleChangeDistrict = (event: any) => {
-    setPersonForm({
-      ...personForm,
+    setCompanyForm({
+      ...companyForm,
       district: {
         value: event.target.value,
         isValid: true,
@@ -141,8 +138,8 @@ const ContractorFormPerson = ({ setEnableSave }: any) => {
   };
 
   const handleChangeEmail = (event: any) => {
-    setPersonForm({
-      ...personForm,
+    setCompanyForm({
+      ...companyForm,
       email: {
         value: event.target.value,
         isValid:
@@ -153,8 +150,8 @@ const ContractorFormPerson = ({ setEnableSave }: any) => {
 
   const handleChangePhone = (event: any) => {
     if (numberRegEx.test(event.target.value) || event.target.value === "") {
-      setPersonForm({
-        ...personForm,
+      setCompanyForm({
+        ...companyForm,
         phone: {
           value: event.target.value,
           isValid: event.target.value.length === 9,
@@ -165,46 +162,73 @@ const ContractorFormPerson = ({ setEnableSave }: any) => {
     }
   };
 
+  const refreshContractorState = () => {
+    setContractor({
+      ...contractor,
+      rut: companyForm.rut.value,
+      companyName: companyForm.companyName.value,
+      legalRepresentative: companyForm.legalRepresentative.value,
+      line: companyForm.line.value,
+      address: companyForm.address.value,
+      district: companyForm.district.value,
+      email: companyForm.email.value,
+      phone: companyForm.phone.value,
+    });
+  };
+
+  const refreshContractorFormData = () => {
+    setCompanyForm({
+      rut: { value: contractor.rut, isValid: true },
+      companyName: { value: contractor.companyName, isValid: true },
+      legalRepresentative: {
+        value: contractor.legalRepresentative,
+        isValid: true,
+      },
+      line: { value: contractor.line, isValid: true },
+      address: { value: contractor.address, isValid: true },
+      district: { value: contractor.district, isValid: true },
+      email: { value: contractor.email, isValid: true },
+      phone: { value: contractor.phone, isValid: true },
+    });
+  };
+
   useEffect(() => {
     setEnableSave(false);
     if (
-      personForm.rut.isValid &&
-      personForm.email.isValid &&
-      personForm.phone.isValid &&
-      personForm.rut.value !== "" &&
-      personForm.name.value !== "" &&
-      personForm.paternalLastName.value !== "" &&
-      personForm.maternalLastName.value !== "" &&
-      personForm.birthDate.value !== "" &&
-      personForm.address.value !== "" &&
-      personForm.district.value !== "" &&
-      personForm.email.value !== "" &&
-      personForm.phone.value !== ""
+      companyForm.rut.isValid &&
+      companyForm.email.isValid &&
+      companyForm.phone.isValid &&
+      companyForm.rut.value !== "" &&
+      companyForm.companyName.value !== "" &&
+      companyForm.legalRepresentative.value !== "" &&
+      companyForm.line.value !== "" &&
+      companyForm.address.value !== "" &&
+      companyForm.district.value !== "" &&
+      companyForm.email.value !== "" &&
+      companyForm.phone.value !== ""
     ) {
-      setContractor({
-        ...contractor,
-        rut: personForm.rut.value,
-        name: personForm.name.value,
-        paternalLastName: personForm.paternalLastName.value,
-        maternalLastName: personForm.maternalLastName.value,
-        birthDate: personForm.birthDate.value,
-        address: personForm.address.value,
-        district: personForm.district.value,
-        email: personForm.email.value,
-        phone: personForm.phone.value,
-      });
+      refreshContractorState();
       setEnableSave(true);
     }
-  }, [personForm]);
+  }, [companyForm]);
+
+  useEffect(() => {
+    if (contractorLoading === false && contractorProcessing === true) {
+      refreshContractorFormData();
+      setContractorProcessing(false);
+    }
+  }, [contractorLoading, contractorProcessing]);
 
   useEffect(() => {
     if (isSearching === true && contractorLoading === false) {
-      setPersonForm({
+      setCompanyForm({
         rut: { value: contractor.rut, isValid: true },
-        name: { value: contractor.name, isValid: true },
-        paternalLastName: { value: contractor.paternalLastName, isValid: true },
-        maternalLastName: { value: contractor.maternalLastName, isValid: true },
-        birthDate: { value: contractor.birthDate, isValid: true },
+        companyName: { value: contractor.companyName, isValid: true },
+        legalRepresentative: {
+          value: contractor.legalRepresentative,
+          isValid: true,
+        },
+        line: { value: contractor.line, isValid: true },
         address: { value: contractor.address, isValid: true },
         district: { value: contractor.district, isValid: true },
         email: { value: contractor.email, isValid: true },
@@ -223,52 +247,44 @@ const ContractorFormPerson = ({ setEnableSave }: any) => {
           onFocus={handleFocusRut}
           onBlur={handleBlurRut}
           maxLength={9}
-          value={personForm?.rut.value}
+          value={companyForm?.rut.value}
           onChange={handleChangeRut}
-          isValid={personForm?.rut.isValid}
+          isValid={companyForm?.rut.isValid}
         />
-        <InputText
-          type="date"
-          label="Fecha de nacimiento"
-          width={"100%"}
-          maxLength={10}
-          value={personForm?.birthDate.value}
-          onChange={handleChangeBirthDate}
-          isValid={personForm?.birthDate.isValid}
-        />
+        <div style={{ width: "100%" }}></div>
       </ContentRow>
       <InputText
-        label="Nombres"
+        label="Razón Social"
         width="100%"
         maxLength={50}
-        value={personForm?.name.value}
-        onChange={handleChangeName}
+        value={companyForm?.companyName.value}
+        onChange={handleChangeCompanyName}
       />
       <InputText
-        label="Apellido Paterno"
+        label="Repsesentante Legal"
         width="100%"
         maxLength={50}
-        value={personForm?.paternalLastName.value}
-        onChange={handleChangePaternalLastName}
+        value={companyForm?.legalRepresentative.value}
+        onChange={handleChangeLegalRepresentative}
       />
       <InputText
-        label="Apellido Materno"
+        label="Giro"
         width="100%"
         maxLength={50}
-        value={personForm?.maternalLastName.value}
-        onChange={handleChangeMaternalLastName}
+        value={companyForm?.line.value}
+        onChange={handleChangeLine}
       />
       <InputText
         label="Dirección"
         width="100%"
         maxLength={250}
-        value={personForm?.address.value}
+        value={companyForm?.address.value}
         onChange={handleChangeAddress}
       />
       <ComboBox
         label="Comuna"
         width="100%"
-        value={personForm?.district.value}
+        value={companyForm?.district.value}
         onChange={handleChangeDistrict}
         placeHolder=":: Seleccione comuna ::"
         data={districtList}
@@ -280,21 +296,21 @@ const ContractorFormPerson = ({ setEnableSave }: any) => {
         width="100%"
         type="email"
         maxLength={250}
-        value={personForm?.email.value}
+        value={companyForm?.email.value}
         onChange={handleChangeEmail}
-        isValid={personForm?.email.isValid}
+        isValid={companyForm?.email.isValid}
       />
       <InputText
         label="Teléfono"
         width="100%"
         type="tel"
         maxLength={9}
-        value={personForm?.phone.value}
+        value={companyForm?.phone.value}
         onChange={handleChangePhone}
-        isValid={personForm?.phone.isValid}
+        isValid={companyForm?.phone.isValid}
       />
     </ContentCell>
   );
 };
 
-export default ContractorFormPerson;
+export default ContractorCompanyForm;

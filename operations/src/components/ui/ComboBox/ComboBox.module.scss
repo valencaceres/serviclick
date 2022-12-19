@@ -28,6 +28,17 @@
     font-size: 25px;
   }
 
+  &.disabled {
+    border: 1px solid lighten($light-gray-color, 10);
+    background-color: lighten(gray, 49);
+
+    &::after {
+      content: "";
+      background-color: lighten(gray, 49);
+      border: none;
+    }
+  }
+
   .combo {
     height: 100%;
     background: transparent;
@@ -38,6 +49,11 @@
     width: 100%;
     border-radius: 3px;
     color: black;
+
+    &:disabled {
+      color: black;
+      font-weight: 500;
+    }
 
     &:focus {
       background-color: $text-focus-color;

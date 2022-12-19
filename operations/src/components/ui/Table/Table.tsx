@@ -1,5 +1,17 @@
 import styles from "./Table.module.scss";
 
+interface ITableRow {
+  link?: boolean;
+  onClick?: any;
+  children: any;
+}
+
+interface ITableCell {
+  width: string;
+  align?: string;
+  children: any;
+}
+
 const Table = ({ height, width, children }: any) => {
   return (
     <div
@@ -18,11 +30,17 @@ const TableDetail = ({ children }: any) => {
   return <div className={styles.tableDetail}>{children}</div>;
 };
 
-const TableRow = ({ children }: any) => {
-  return <div className={styles.row}>{children}</div>;
+const TableRow = ({ link, onClick, children }: ITableRow) => {
+  return (
+    <div
+      className={`${styles.row} ${link ? styles.link : ``}`}
+      onClick={() => (onClick ? onClick() : {})}>
+      {children}
+    </div>
+  );
 };
 
-const TableCell = ({ width, align, alt, children }: any) => {
+const TableCell = ({ width, align, children }: ITableCell) => {
   return (
     <div className={styles.cell} style={{ width, justifyContent: align }}>
       {children}

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-type UserT = {
+export type UserT = {
   rut: string;
   name: string;
   paternalLastName: string;
@@ -16,6 +16,8 @@ export type OptionT = {
   enabled: boolean;
 };
 
+export type EnvAppT = "dev" | "prod";
+
 type StateT = {
   user: UserT;
   showMenu: boolean;
@@ -23,6 +25,7 @@ type StateT = {
   options: OptionT[];
   filters: any;
   isDesktop: boolean;
+  envApp: EnvAppT;
 };
 
 const initialState: StateT = {
@@ -40,9 +43,10 @@ const initialState: StateT = {
   options: [],
   filters: null,
   isDesktop: false,
+  envApp: "dev",
 };
 
-export const userSlice = createSlice({
+export const uiSlice = createSlice({
   name: "UI",
   initialState,
   reducers: {
@@ -64,6 +68,9 @@ export const userSlice = createSlice({
     setFilters: (state: StateT, action: PayloadAction<any>) => {
       state.filters = action.payload;
     },
+    setEnv: (state: StateT, action: PayloadAction<EnvAppT>) => {
+      state.envApp = action.payload;
+    },
     resetAll: (state: StateT) => {
       state = initialState;
     },
@@ -71,6 +78,7 @@ export const userSlice = createSlice({
 });
 
 export const {
+  setEnv,
   setUser,
   setShowMenu,
   setTitle,
@@ -78,6 +86,6 @@ export const {
   setDesktop,
   setFilters,
   resetAll,
-} = userSlice.actions;
+} = uiSlice.actions;
 
-export default userSlice.reducer;
+export default uiSlice.reducer;

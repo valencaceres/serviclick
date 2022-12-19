@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
 
-import { config } from "../../utils/config";
+import { apiInstance } from "../../utils/api";
 
 export type DistrictT = {
   id: string;
@@ -11,25 +10,42 @@ export type DistrictT = {
 type StateT = {
   list: DistrictT[];
   district: DistrictT;
+  loading: boolean;
+  error: boolean;
 };
 
 const initialState: StateT = {
   list: [],
   district: { id: "", name: "" },
+  loading: false,
+  error: false,
 };
 
 export const districtSlice = createSlice({
   name: "districts",
   initialState,
   reducers: {
+    setLoading: (state: StateT, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
+    setError: (state: StateT, action: PayloadAction<boolean>) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
     setDistrictList: (state: StateT, action: PayloadAction<DistrictT[]>) => {
       state.list = action.payload;
+      state.loading = false;
+      state.error = false;
     },
     setDistrict: (state: StateT, action: PayloadAction<DistrictT>) => {
       state.district = action.payload;
+      state.loading = false;
+      state.error = false;
     },
     resetDistrict: (state: StateT) => {
       state.district = initialState.district;
+      state.loading = false;
+      state.error = false;
     },
     reset: (state: StateT) => {
       state = initialState;
@@ -37,20 +53,23 @@ export const districtSlice = createSlice({
   },
 });
 
-export const { setDistrictList, setDistrict, resetDistrict, reset } =
-  districtSlice.actions;
+export const {
+  setLoading,
+  setError,
+  setDistrictList,
+  setDistrict,
+  resetDistrict,
+  reset,
+} = districtSlice.actions;
 
 export default districtSlice.reducer;
 
-export const listAll = () => (dispatch: any) => {
-  axios
-    .get(`${config.server}/api/district/listAll`, {
-      headers: {
-        id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-      },
-    })
-    .then((response) => {
-      dispatch(setDistrictList(response.data));
-    })
-    .catch((error) => console.log(error));
+export const listAll = () => async (dispatch: any) => {
+  try {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.get(`/district/listAll`);
+    dispatch(setDistrictList(data));
+  } catch (e) {
+    dispatch(setError(true));
+  }
 };

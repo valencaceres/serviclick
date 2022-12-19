@@ -55,7 +55,7 @@ const Login = () => {
   return (
     <Fragment>
       <Content align="center">
-        <ContentCell gap="30px" align="center">
+        <ContentCell gap="20px" align="center">
           <LoginForm loginForm={loginForm} setLoginForm={setLoginForm} />
           <Button
             text="Ingresar"

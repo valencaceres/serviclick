@@ -40,7 +40,6 @@ export const userSlice = createSlice({
   reducers: {
     setLoading: (state: StateT, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
-      state.error = false;
     },
     setError: (state: StateT, action: PayloadAction<boolean>) => {
       state.error = action.payload;
@@ -58,6 +57,8 @@ export const userSlice = createSlice({
     },
     resetUser: (state: StateT) => {
       state.user = initialState.user;
+      state.loading = false;
+      state.error = false;
     },
   },
 });
@@ -95,7 +96,7 @@ export const sendCredentials = (email: string) => async (dispatch: any) => {
 
 export const updatePassword =
   (email: string, password: string, newPassword: string) =>
-  async (dispatch: any) => {
+  async (dispatch: any, getState: any) => {
     try {
       dispatch(setLoading(true));
       const { data } = await apiInstance.post(`/user/updatePassword`, {
