@@ -45,14 +45,14 @@ const UserList = ({ setShowModal, showModal }: any) => {
   const editUser = (user: any) => {
     setUser(user);
     setUserForm({
-      id: { value: user.id, isValid: true },
+      //id: { value: user.id, isValid: true },
       rut: { value: user.rut, isValid: true },
       name: { value: user.name, isValid: true },
       paternalLastName: { value: user.paternalLastName, isValid: true },
       maternalLastName: { value: user.maternalLastName, isValid: true },
       email: { value: user.email, isValid: true },
       phone: { value: user.phone, isValid: true },
-      isValid: { value: user.isValid, isValid: true },
+      //isValid: { value: user.isValid, isValid: true },
     });
     setShowModal(true);
   };
