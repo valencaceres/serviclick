@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 
-import { ContentCell } from "../../../layout/Content";
+import { ContentCell } from "../../../../layout/Content";
 
-import InputText from "../../../ui/InputText";
-import Button from "../../../ui/Button";
+import InputText from "../../../../ui/InputText";
+import Button from "../../../../ui/Button";
 
-import { useValueType } from "../../../../hooks";
+import { useValueType } from "../../../../../hooks";
 
 const ValueTypeDetail = ({ saveValueType }: any) => {
   const { valueType, resetValueTypeAll } = useValueType();
