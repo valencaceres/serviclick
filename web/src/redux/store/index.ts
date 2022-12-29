@@ -12,6 +12,7 @@ import donorSlice from "../slices/donorSlice";
 import donationSlice from "../slices/donationSlice";
 import brokerSlice from "../slices/brokerSlice";
 import districtSlice from "../slices/districtSlice";
+import customerSlice from "../slices/customerSlice";
 
 // import { loadState } from "../../utils/reduxPersist";
 
@@ -29,6 +30,7 @@ const store = configureStore({
     donationSlice,
     brokerSlice,
     districtSlice,
+    customerSlice,
   },
   // preloadedState: loadState(),
 });

@@ -2,6 +2,8 @@ import { useAppDispatch, useAppSelector } from "../redux/hooks";
 
 import * as Assistance from "../redux/slices/assistanceSlice";
 
+import { IAssistance } from "../interfaces/assistance";
+
 const useAssistance = () => {
   const dispatch = useAppDispatch();
 
@@ -13,11 +15,11 @@ const useAssistance = () => {
     error: assistanceError,
   } = useAppSelector((state) => state.assistanceSlice);
 
-  const createAssistance = (assistance: Assistance.AssistanceT) => {
+  const createAssistance = (assistance: IAssistance) => {
     dispatch(Assistance.create(assistance));
   };
 
-  const updateAssistanceById = (assistance: Assistance.AssistanceT) => {
+  const updateAssistanceById = (assistance: IAssistance) => {
     dispatch(Assistance.updateById(assistance));
   };
 
@@ -37,7 +39,7 @@ const useAssistance = () => {
     dispatch(Assistance.getByFamilyId(family_id));
   };
 
-  const setAssistance = (assistance: Assistance.AssistanceT) => {
+  const setAssistance = (assistance: IAssistance) => {
     dispatch(Assistance.set(assistance));
   };
 

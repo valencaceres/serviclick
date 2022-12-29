@@ -21,7 +21,6 @@ const AssistanceValues = ({ setShowModal }: any) => {
 
   const handleClickAddValue = (item: any) => {
     setAssistance({ ...assistance, values: [...assistance.values, item] });
-    console.log(assistance.values.map((itemAssistance) => itemAssistance.name));
     setShowModal(false);
   };
 

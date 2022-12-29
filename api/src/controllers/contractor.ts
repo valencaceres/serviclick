@@ -109,7 +109,6 @@ const getSubscriptionsById = async (req: any, res: any) => {
   const { id } = req.params;
 
   const contractorResponse = await Contractor.getSubscriptionsById(id);
-  console.log(contractorResponse);
 
   if (!contractorResponse.success) {
     createLogger.error({

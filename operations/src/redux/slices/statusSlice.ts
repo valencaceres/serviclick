@@ -58,7 +58,7 @@ export default statusSlice.reducer;
 export const getAll = () => async (dispatch: any) => {
   try {
     dispatch(setLoading(true));
-    const { data } = await apiInstance.get(`/api/status/getAll`);
+    const { data } = await apiInstance.get(`/status/getAll`);
     dispatch(setStatusList(data));
   } catch (e) {
     dispatch(setError(true));

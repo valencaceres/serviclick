@@ -16,6 +16,7 @@ import {
   useSubscription,
   useProduct,
   useLead,
+  useCustomer,
 } from "../../../../redux/hooks";
 
 const CustomerForm = ({ customerForm, setCustomerForm, disabled }: any) => {
@@ -30,6 +31,7 @@ const CustomerForm = ({ customerForm, setCustomerForm, disabled }: any) => {
     subscription,
   } = useSubscription();
   const { lead, getLeadBySubscriptionId, resetLeadSubscription } = useLead();
+  const { customer, getCustomerByRut } = useCustomer();
 
   const handleBlurRut = (event: any) => {
     // getActiveSubscriptions(
@@ -49,6 +51,7 @@ const CustomerForm = ({ customerForm, setCustomerForm, disabled }: any) => {
           event.target.value === "",
       },
     });
+    getCustomerByRut(event.target.value);
   };
 
   const handleFocusRut = (event: any) => {
@@ -162,6 +165,25 @@ const CustomerForm = ({ customerForm, setCustomerForm, disabled }: any) => {
   // }, [subscription]);
 
   useEffect(() => {
+    if (customer.rut !== "") {
+      setCustomerForm({
+        rut: { value: customer.rut, isValid: true },
+        birthDate: { value: customer.birthDate, isValid: true },
+        name: { value: customer.name, isValid: true },
+        paternalLastName: {
+          value: customer.paternalLastName,
+          isValid: true,
+        },
+        maternalLastName: { value: customer.maternalLastName, isValid: true },
+        address: { value: customer.address, isValid: true },
+        district: { value: customer.district, isValid: true },
+        email: { value: customer.email, isValid: true },
+        phone: { value: customer.phone, isValid: true },
+      });
+    }
+  }, [customer]);
+
+  useEffect(() => {
     if (lead.customer.id !== "") {
       setCustomerForm({
         id: { value: lead.customer.id, isValid: true },
@@ -214,7 +236,7 @@ const CustomerForm = ({ customerForm, setCustomerForm, disabled }: any) => {
             label="Fecha de nacimiento"
             width={"100%"}
             maxLength={10}
-            value={customerForm?.birthDate.value}
+            value={customerForm.birthDate.value}
             onChange={handleChangeBirthDate}
             isValid={customerForm?.birthDate.isValid}
             disabled={disabled}

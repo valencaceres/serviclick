@@ -155,7 +155,7 @@ const getAll: any = async () => {
               PER.phone,
               USR.hash
        FROM   app.user USR INNER JOIN app.person PER ON USR.person_id = PER.id
-       WHERE  USR.isvalid is true`
+       WHERE  USR.isactive is true`
     );
 
     const data =

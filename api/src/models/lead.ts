@@ -135,6 +135,10 @@ const getBySubscriptionId: any = async (subscription_id: string) => {
         SELECT  DISTINCT
                 LEA.id,
                 LEA.createdate,
+                CASE WHEN POL.id is null THEN '' ELSE POL.id :: text END as policy_id,
+                CASE WHEN POL.number is null THEN 0 ELSE POL.number END as policy_number,
+                CASE WHEN POL.createdate is null THEN '' ELSE POL.createdate :: text END as policy_createdate,
+                CASE WHEN POL.startdate is null THEN '' ELSE POL.startdate :: text END as policy_startdate,
                 CUS.id AS customer_id,
                 CASE WHEN CUS.rut IS NULL THEN '' ELSE CUS.rut END AS customer_rut,
                 CASE WHEN CUS.name IS NULL THEN '' ELSE CUS.name END AS customer_name,
@@ -155,8 +159,11 @@ const getBySubscriptionId: any = async (subscription_id: string) => {
                 CASE WHEN COM.email IS NULL THEN '' ELSE COM.email END AS company_email,
                 CASE WHEN COM.phone IS NULL THEN '' ELSE COM.phone END AS company_phone,
                 LEA.subscription_id
-        FROM    app.lead LEA LEFT OUTER JOIN app.customer CUS ON LEA.customer_id = CUS.id
-                             LEFT OUTER JOIN app.company COM ON LEA.company_id = COM.id
+        FROM    app.lead LEA 
+                  LEFT OUTER JOIN app.policy POL on LEA.policy_id = POL.id
+                  LEFT OUTER JOIN app.customer CUS ON LEA.customer_id = CUS.id
+                  LEFT OUTER JOIN app.company COM ON LEA.company_id = COM.id
+                  LEFT OUTER JOIN app.policy POL on LEA.policy_id = POL.id
         WHERE   LEA.subscription_id = $1`,
       [subscription_id]
     );
@@ -208,6 +215,25 @@ const getProductsById: any = async (id: string) => {
   }
 };
 
+const updateSubscription: any = async (
+  lead_id: string,
+  subscription_id: number
+) => {
+  try {
+    const result = await pool.query(
+      `
+        UPDATE  app.lead
+        SET     subscription_id = $1,
+                paymenttype_code = 'C'
+        WHERE   id = $2 RETURNING *`,
+      [subscription_id, lead_id]
+    );
+    return { success: true, data: result.rows[0], error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 export {
   createModel,
   updatePaymentTypeCode,
@@ -216,4 +242,5 @@ export {
   getBySubscriptionId,
   getInsuredById,
   getProductsById,
+  updateSubscription,
 };

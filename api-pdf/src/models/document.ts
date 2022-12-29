@@ -17,21 +17,25 @@ const createContract: any = async (
   contact: any,
   company: any,
   customer: any,
-  plan: any
+  plan: any,
+  policy: any
 ) => {
   try {
     const { name: planName, coverages, price } = plan;
     const { phone: contactPhone, email: contactEmail } = contact;
+    const {
+      number: policy_number,
+      createdate: policy_createdate,
+      startdate: policy_startdate,
+    } = policy;
 
-    const todayDate = `${moment().format("DD")} de ${
-      monthNames[parseInt(moment().format("MM")) - 1]
-    } de ${moment().format("YYYY")}`;
+    const todayDate = `${moment(policy_createdate).format("DD")} de ${
+      monthNames[parseInt(moment(policy_createdate).format("MM")) - 1]
+    } de ${moment(policy_createdate).format("YYYY")}`;
 
-    const unformattedLackDate = moment().add(25, "days");
-
-    const lackDate = `${unformattedLackDate.format("DD")} de ${
-      monthNames[parseInt(unformattedLackDate.format("MM")) - 1]
-    } de ${unformattedLackDate.format("YYYY")}`;
+    const lackDate = `${moment(policy_startdate).format("DD")} de ${
+      monthNames[parseInt(moment(policy_startdate).format("MM")) - 1]
+    } de ${moment(policy_startdate).format("YYYY")}`;
 
     const title1 =
       "Contrato de prestación de servicios & Certificado de cobertura en asistencia";

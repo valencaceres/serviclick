@@ -59,6 +59,10 @@ class App {
     this.server.use("/api/value", reqLogger, routes.ValueRouter);
     this.server.use("/api/valueType", reqLogger, routes.ValueTypeRouter);
     this.server.use("/api/contractor", reqLogger, routes.ContractorRouter);
+    this.server.use("/api/specialty", reqLogger, routes.SpecialtyRouter);
+    this.server.use("/api/document", reqLogger, routes.DocumentRouter);
+    this.server.use("/api/stage", reqLogger, routes.StageRouter);
+    this.server.use("/api/specialist", reqLogger, routes.SpecialistRouter);
   }
 }
 

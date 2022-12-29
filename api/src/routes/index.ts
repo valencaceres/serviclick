@@ -25,6 +25,10 @@ import AssistanceRouter from "./assistance";
 import ValueRouter from "./value";
 import ValueTypeRouter from "./valueType";
 import ContractorRouter from "./contractor";
+import SpecialtyRouter from "./specialty";
+import DocumentRouter from "./document";
+import StageRouter from "./stage";
+import SpecialistRouter from "./specialist";
 
 export {
   StatusRouter,
@@ -54,4 +58,8 @@ export {
   ValueRouter,
   ValueTypeRouter,
   ContractorRouter,
+  SpecialtyRouter,
+  DocumentRouter,
+  StageRouter,
+  SpecialistRouter,
 };

@@ -16,6 +16,7 @@ const subscriptionActivated = async (req: any, res: any) => {
 
   try {
     const leadResponse = await LeadModel.getBySubscriptionId(subscription_id);
+
     if (!leadResponse.success) {
       createLogger.error({
         model: "lead/getBySubscriptionId",
@@ -25,7 +26,14 @@ const subscriptionActivated = async (req: any, res: any) => {
       return;
     }
 
-    const { id: lead_id, company_id } = leadResponse.data;
+    const {
+      id: lead_id,
+      company_id,
+      policy_id,
+      policy_number,
+      policy_createdate,
+      policy_startdate,
+    } = leadResponse.data;
 
     const leadProductResponse = await LeadModel.getProductsById(
       lead_id //leadResponse.data.id
@@ -40,8 +48,7 @@ const subscriptionActivated = async (req: any, res: any) => {
       return;
     }
 
-    const { product_id, price, currency_code, frequency_code } =
-      leadProductResponse.data;
+    const { product_id, price } = leadProductResponse.data;
 
     const productDescriptionResponse =
       await ProductDescriptionModel.getByProductId(
@@ -88,7 +95,10 @@ const subscriptionActivated = async (req: any, res: any) => {
         null,
         companyResponse.data,
         productDescriptionResponse.data,
-        price * leadInsuredResponse.data.length
+        price * leadInsuredResponse.data.length,
+        policy_number,
+        policy_createdate,
+        policy_startdate
       );
 
       if (!responseDocuments.success) {
@@ -104,6 +114,7 @@ const subscriptionActivated = async (req: any, res: any) => {
         company_id,
         companyResponse.data.email
       );
+
       if (!userCompanyResponse.success) {
         createLogger.error({
           model: "userCompany/create",
@@ -192,7 +203,10 @@ const subscriptionActivated = async (req: any, res: any) => {
         insuredResponse.data,
         null,
         productDescriptionResponse.data,
-        price
+        price,
+        policy_number,
+        policy_createdate,
+        policy_startdate
       );
 
       if (!responseDocuments.success) {
@@ -225,6 +239,7 @@ const subscriptionActivated = async (req: any, res: any) => {
           model: "userInsured/create",
           error: userInsuredResponse.error,
         });
+
         responses.push({
           insured_id: insured.id,
           error: "User error: " + userInsuredResponse.error,
@@ -311,7 +326,10 @@ const generateDocuments = async (
   customer: any,
   company: any,
   productDescription: any,
-  price: number
+  price: number,
+  policy_number: number,
+  policy_createdate: string,
+  policy_startdate: string
 ) => {
   try {
     const correlative = `${new Date().getFullYear()}-${
@@ -360,19 +378,16 @@ const generateDocuments = async (
             .join(", "),
           price,
         },
+        policy: {
+          number: policy_number,
+          createdate: policy_createdate,
+          startdate: policy_startdate,
+        },
       },
       {
         headers: config.pdf.apiKey,
       }
     );
-
-    // if (contractResponse.status !== 200) {
-    //   return {
-    //     success: false,
-    //     model: "api-pdf/document/annex",
-    //     error: contractResponse.error,
-    //   };
-    // }
 
     createLogger.info({
       url: config.pdf.URL.annex,
@@ -389,14 +404,6 @@ const generateDocuments = async (
         headers: config.pdf.apiKey,
       }
     );
-
-    // if (annexResponse.status !== 200) {
-    //   return {
-    //     success: false,
-    //     model: "api-pdf/document/annex",
-    //     error: contractResponse.error,
-    //   };
-    // }
 
     return {
       success: true,

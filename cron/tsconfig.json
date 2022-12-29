@@ -1,0 +1,28 @@
+{
+    "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "module": "CommonJS",
+        "target": "es2018",
+        "lib": ["es2019"],
+        "noImplicitAny": false,
+        "declaration": false,
+        "allowJs": true,
+        "preserveConstEnums": true,
+        "outDir": "./dist",
+        "sourceMap": true,
+        "skipLibCheck": true,
+        "baseUrl": "./",
+        "types": ["node"],
+        "typeRoots": ["../node_modules/@types"],
+        "strict": true,
+        "esModuleInterop": true,
+        "disableReferencedProjectLoad": true,
+        "paths": {
+            "root-common/*": ["../common/*"],
+            "root-config/*": ["../config/*"],
+            "root/*": ["../*"]
+        }
+    },
+    "include": ["./**/*"],
+    "exclude": ["node_modules", "**/*.spec.ts", "**/*.test.*", "./dist/**/*", "../common/**/*test.*"]
+}

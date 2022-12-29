@@ -7,7 +7,7 @@ type ComboBoxT = {
   label?: string;
   width: string;
   value: string;
-  onChange: any;
+  onChange?: any;
   placeHolder?: string;
   display?: boolean;
   data: any;
@@ -54,7 +54,11 @@ const ComboBox = ({
     <InputText
       label={label}
       width={width}
-      value={value}
+      value={
+        data.filter((item: any) => item[dataValue] === value).length > 0
+          ? data.filter((item: any) => item[dataValue] === value)[0][dataText]
+          : ""
+      }
       disabled={!enabled}
       onChange={onChange}
     />

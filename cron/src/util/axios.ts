@@ -1,0 +1,25 @@
+import axios from "axios";
+
+import createLogger from "../util/logger";
+
+const axiosMonitored = async (
+  httpVerb: "get" | "post" | "delete" | "put",
+  url: string,
+  body: any,
+  apiKey: any
+) => {
+  createLogger.info({
+    url,
+    method: httpVerb.toUpperCase(),
+    body: body || "",
+    apiKey,
+  });
+
+  const emailResponse: any = await axios[httpVerb](url, body, {
+    headers: apiKey,
+  });
+
+  return emailResponse;
+};
+
+export default axiosMonitored;

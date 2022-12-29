@@ -4,33 +4,17 @@ import config from "../util/config";
 import createLogger from "../util/logger";
 import { sendMail } from "../util/email";
 
-import {
-  createModel as createLeadModel,
-  updatePaymentTypeCode,
-  getById as getLeadById,
-  getBySubscriptionId,
-} from "../models/lead";
-import {
-  createModel as createLeadProductModel,
-  getByLeadId as getProductByLeadId,
-  getProductByInsuredId,
-} from "../models/leadProduct";
-import {
-  createModel as createLeadInsuredtModel,
-  getByLeadId as getInsuredByLeadId,
-  deleteByLeadId as deleteInsuredByLeadId,
-} from "../models/leadInsured";
-import {
-  createModel as createLeadBeneficiaryModel,
-  getByLeadId as getBeneficiariesByLeadId,
-  deleteByLeadId as deleteBeneficiariesByLeadId,
-} from "../models/leadBeneficiary";
+import * as Lead from "../models/lead";
+import * as Subscription from "../models/subscription";
+import * as LeadProduct from "../models/leadProduct";
+import * as LeadInsured from "../models/leadInsured";
+import * as LeadBeneficiary from "../models/leadBeneficiary";
 
-import { createModel as createCustomerModel } from "../models/customer";
-import { createModel as createCompanyModel } from "../models/company";
-import { createModel as createInsuredModel } from "../models/insured";
-import { createModel as createBeneficiaryModel } from "../models/beneficiary";
-import { getProduct } from "../models/product";
+import * as Customer from "../models/customer";
+import * as Company from "../models/company";
+import * as Insured from "../models/insured";
+import * as Beneficiary from "../models/beneficiary";
+import * as Product from "../models/product";
 
 export type CustomerT = {
   id: string;
@@ -156,7 +140,7 @@ const errorHandler = (response: any, path: string) => {
 };
 
 const createCustomer = async (customer: CustomerT) => {
-  const customerResponse = await createCustomerModel(
+  const customerResponse = await Customer.createModel(
     customer.rut,
     customer.name,
     customer.paternalLastName,
@@ -171,7 +155,7 @@ const createCustomer = async (customer: CustomerT) => {
 };
 
 const createCompany = async (company: CompanyT) => {
-  const companyResponse = await createCompanyModel(
+  const companyResponse = await Company.createModel(
     company.rut,
     company.companyName,
     company.legalRepresentative,
@@ -185,7 +169,7 @@ const createCompany = async (company: CompanyT) => {
 };
 
 const createProduct = async (id: string, product: any) => {
-  const leadProductResponse = await createLeadProductModel(
+  const leadProductResponse = await LeadProduct.createModel(
     id,
     product.id,
     product.price,
@@ -202,7 +186,7 @@ const createLead = async (
   customer_id: string,
   company_id: string
 ) => {
-  const leadResponse = await createLeadModel(
+  const leadResponse = await Lead.createModel(
     id,
     customer_id,
     company_id,
@@ -212,12 +196,12 @@ const createLead = async (
 };
 
 const deleteLeadInsured = async (id: string) => {
-  const deleteInsuredResponse = await deleteInsuredByLeadId(id);
+  const deleteInsuredResponse = await LeadInsured.deleteByLeadId(id);
   return errorHandler(deleteInsuredResponse, "lead/deleteInsuredByLeadId");
 };
 
 const createInsured = async (insured: InsuredT) => {
-  const insuredResponse = await createInsuredModel(
+  const insuredResponse = await Insured.createModel(
     insured.rut,
     insured.name,
     insured.paternalLastName,
@@ -232,12 +216,12 @@ const createInsured = async (insured: InsuredT) => {
 };
 
 const createLeadInsured = async (id: string, insured_id: string) => {
-  const leadInsuredResponse = await createLeadInsuredtModel(id, insured_id);
+  const leadInsuredResponse = await LeadInsured.createModel(id, insured_id);
   return errorHandler(leadInsuredResponse, "lead/createLeadInsuredtModel");
 };
 
 const deleteLeadBeneficiaries = async (id: string, insured_id: string) => {
-  const deleteBeneficiariesResponse = await deleteBeneficiariesByLeadId(
+  const deleteBeneficiariesResponse = await LeadBeneficiary.deleteByLeadId(
     id,
     insured_id
   );
@@ -248,7 +232,7 @@ const deleteLeadBeneficiaries = async (id: string, insured_id: string) => {
 };
 
 const createBeneficiary = async (beneficiary: BeneficiaryT) => {
-  const beneficiaryResponse = await createBeneficiaryModel(
+  const beneficiaryResponse = await Beneficiary.createModel(
     beneficiary.rut,
     beneficiary.name,
     beneficiary.paternalLastName,
@@ -267,7 +251,7 @@ const createLeadBeneficiary = async (
   insured_id: string,
   beneficiary_id: string
 ) => {
-  const leadbeneficiaryResponse = await createLeadBeneficiaryModel(
+  const leadbeneficiaryResponse = await LeadBeneficiary.createModel(
     id,
     insured_id,
     beneficiary_id
@@ -280,7 +264,7 @@ const sendPaymentLink = async (lead: LeadT) => {
     success,
     data: product,
     error,
-  } = await getProduct(lead.product.product_id);
+  } = await Product.getProduct(lead.product.product_id);
 
   if (!success) {
     createLogger.error({
@@ -313,7 +297,10 @@ const updateLeadPaymentType = async (
   lead_id: string,
   paymentTypeCode: string
 ) => {
-  const responseUpdate = await updatePaymentTypeCode(lead_id, paymentTypeCode);
+  const responseUpdate = await Lead.updatePaymentTypeCode(
+    lead_id,
+    paymentTypeCode
+  );
   return errorHandler(responseUpdate, "lead/updatePaymentTypeCode");
 };
 
@@ -395,14 +382,59 @@ const createSubscription = async (
       query: "",
     });
 
-    const webhookResponse = await axios.post(config.webHook.URL.reveniu, {
-      data: {
-        data: {
-          subscription_id,
-          lead_id,
-        },
-      },
-    });
+    const leadResponse = await Lead.updateSubscription(
+      lead_id,
+      subscription_id
+    );
+
+    if (!leadResponse.success) {
+      createLogger.error({
+        model: "lead/updateSubscription",
+        error: leadResponse.error,
+      });
+      return {
+        success: false,
+        data: null,
+        error: leadResponse.error,
+      };
+    }
+
+    const subscriptionReveniu = await axios.get(
+      `${config.reveniu.URL.subscription}${subscription_id}`,
+      {
+        headers: config.reveniu.apiKey,
+      }
+    );
+
+    const {
+      status: status_id,
+      interval: interval_id,
+      plan_id,
+      plan_amount,
+      last_payment,
+    } = subscriptionReveniu.data;
+    const { date: last_payment_date, status } = last_payment;
+
+    const subscriptionResponse = await Subscription.createModel(
+      status_id,
+      interval_id,
+      subscription_id,
+      plan_amount,
+      plan_id,
+      last_payment_date,
+      status
+    );
+
+    if (!subscriptionResponse.success) {
+      createLogger.error({
+        model: "subscription/createModel",
+        error: subscriptionResponse.error,
+      });
+      return {
+        success: false,
+        error: subscriptionResponse.error,
+      };
+    }
 
     return {
       success: true,
@@ -558,388 +590,10 @@ const createController = async (req: any, res: any) => {
   res.status(200).json(data);
 };
 
-// const createController = async (req: any, res: any) => {
-//   const { customer, company, product, insured, agent_id, send } = req.body;
-//   try {
-//     const insuredData: InsuredT[] = [];
-
-//     let customer_id: string | null = null;
-//     let company_id: string | null = null;
-//     let contractor: any;
-
-//     if (customer.rut !== "") {
-//       const customerResponse = await createCustomerModel(
-//         customer.rut,
-//         customer.name,
-//         customer.paternalLastName,
-//         customer.maternalLastName,
-//         customer.birthDate,
-//         customer.address,
-//         customer.district,
-//         customer.email,
-//         customer.phone
-//       );
-
-//       if (!customerResponse.success) {
-//         createLogger.error({
-//           model: "lead/createCustomerModel",
-//           error: customerResponse.error,
-//         });
-//         res
-//           .status(500)
-//           .json({ error: "createCustomerModel: " + customerResponse.error });
-//         return;
-//       }
-
-//       contractor = customerResponse.data;
-//       customer_id = contractor.id;
-//     }
-
-//     if (company.rut !== "") {
-//       const companyResponse = await createCompanyModel(
-//         company.rut,
-//         company.companyName,
-//         company.legalRepresentative,
-//         company.line,
-//         company.address,
-//         company.district,
-//         company.email,
-//         company.phone
-//       );
-
-//       if (!companyResponse.success) {
-//         createLogger.error({
-//           model: "lead/createCompanyModel",
-//           error: companyResponse.error,
-//         });
-//         res
-//           .status(500)
-//           .json({ error: "createCompapyModel: " + companyResponse.error });
-//         return;
-//       }
-
-//       contractor = companyResponse.data;
-//       company_id = contractor.id;
-//     }
-
-//     const leadResponse = await createLeadModel(
-//       customer_id,
-//       company_id,
-//       agent_id
-//     );
-
-//     if (!leadResponse.success) {
-//       createLogger.error({
-//         model: "lead/createLeadModel",
-//         error: leadResponse.error,
-//       });
-//       res.status(500).json({ error: "createLeadModel: " + leadResponse.error });
-//       return;
-//     }
-
-//     const { id: lead_id, createdate } = leadResponse.data;
-
-//     const leadProductResponse = await createLeadProductModel(
-//       lead_id,
-//       product.id,
-//       product.price,
-//       product.currency_code,
-//       product.frequency_code,
-//       product.productPlan_id
-//     );
-
-//     if (!leadProductResponse.success) {
-//       createLogger.error({
-//         model: "lead/createLeadProductModel",
-//         error: leadProductResponse.error,
-//       });
-//       res.status(500).json({
-//         error: "createLeadProductModel: " + leadProductResponse.error,
-//       });
-//       return;
-//     }
-
-//     const productResponse = await getProduct(product.id);
-
-//     if (!productResponse.success) {
-//       createLogger.error({
-//         model: "product/getProduct",
-//         error: productResponse.error,
-//       });
-//       res.status(500).json({
-//         error: "createLeadProductModel: " + productResponse.error,
-//       });
-//       return;
-//     }
-
-//     insured.map(async (item: any) => {
-//       const insuredResponse = await createInsuredModel(
-//         item.rut,
-//         item.name,
-//         item.paternalLastName,
-//         item.maternalLastName,
-//         item.birthDate,
-//         item.address,
-//         item.district,
-//         item.email,
-//         item.phone
-//       );
-
-//       if (!insuredResponse.success) {
-//         createLogger.error({
-//           model: "lead/createInsuredModel",
-//           error: insuredResponse.error,
-//         });
-//         res
-//           .status(500)
-//           .json({ error: "createInsuredModel: " + insuredResponse.error });
-//         return;
-//       }
-
-//       const { id: insured_id } = insuredResponse.data;
-
-//       const leadInsuredResponse = await createLeadInsuredtModel(
-//         lead_id,
-//         insured_id
-//       );
-
-//       if (!leadInsuredResponse.success) {
-//         createLogger.error({
-//           model: "lead/createLeadInsuredModel",
-//           error: leadInsuredResponse.error,
-//         });
-//         res.status(500).json({
-//           error: "createLeadInsuredModel: " + leadInsuredResponse.error,
-//         });
-//         return;
-//       }
-
-//       const responseBeneficiaries = await addBeneficiariesData(
-//         item.beneficiaries,
-//         lead_id,
-//         insured_id
-//       );
-
-//       if (!responseBeneficiaries.success) {
-//         createLogger.error({
-//           model: "lead/addBeneficiariesData",
-//           error: responseBeneficiaries.error,
-//         });
-//         res.status(500).json({
-//           error: "createLeadBeneficiary: " + responseBeneficiaries.error,
-//         });
-//         return;
-//       }
-
-//       insuredData.push({
-//         id: insuredResponse.data.id,
-//         rut: insuredResponse.data.rut,
-//         name: insuredResponse.data.name,
-//         paternalLastName: insuredResponse.data.paternallastname,
-//         maternalLastName: insuredResponse.data.maternallastname,
-//         birthDate: insuredResponse.data.birthdate,
-//         address: insuredResponse.data.address,
-//         district: insuredResponse.data.district,
-//         email: insuredResponse.data.email,
-//         phone: insuredResponse.data.phone,
-//         beneficiaries: responseBeneficiaries.data
-//           ? responseBeneficiaries.data
-//           : [],
-//       });
-//     });
-
-//     let subscriptionData: any | null = null;
-
-//     if (!send) {
-//       const name =
-//         customer.rut !== ""
-//           ? contractor.name +
-//             " " +
-//             contractor.paternalLastName +
-//             " " +
-//             contractor.maternalLastName
-//           : contractor.companyName;
-//       const address = contractor.address + ", " + contractor.district;
-
-//       createLogger.info({
-//         url: config.reveniu.URL.subscription,
-//         method: "POST",
-//         body: {
-//           plan_id: product.productPlan_id,
-//           field_values: {
-//             email: contractor.email,
-//             name,
-//             amount: product.price * insured.length,
-//             address,
-//             rut: contractor.rut,
-//             phone: contractor.phone,
-//           },
-//         },
-//         params: "",
-//         query: "",
-//       });
-
-//       const subscriptionReveniuResponse = await axios.post(
-//         config.reveniu.URL.subscription,
-//         {
-//           plan_id: product.productPlan_id,
-//           field_values: {
-//             email: contractor.email,
-//             name,
-//             amount: product.price * insured.length,
-//             address,
-//             rut: contractor.rut,
-//             phone: contractor.phone,
-//           },
-//         },
-//         {
-//           headers: config.reveniu.apiKey,
-//         }
-//       );
-
-//       const {
-//         id: subscription_id,
-//         completion_url,
-//         security_token,
-//         status_code,
-//       } = subscriptionReveniuResponse.data;
-
-//       createLogger.info({
-//         url: config.webHook.URL.reveniu,
-//         method: "POST",
-//         body: {
-//           data: {
-//             data: {
-//               subscription_id,
-//               lead_id,
-//             },
-//           },
-//         },
-//         params: "",
-//         query: "",
-//       });
-
-//       const webhookResponse = await axios.post(config.webHook.URL.reveniu, {
-//         data: {
-//           data: {
-//             subscription_id,
-//             lead_id,
-//           },
-//         },
-//       });
-
-//       subscriptionData = {
-//         id: subscription_id,
-//         completion_url,
-//         security_token,
-//         status_code,
-//       };
-//     }
-
-//     const leadResponseData = {
-//       id: lead_id,
-//       date: createdate,
-//       customer:
-//         customer.rut !== ""
-//           ? {
-//               id: contractor.id,
-//               rut: contractor.rut,
-//               name: contractor.name,
-//               paternalLastName: contractor.paternallastname,
-//               maternalLastName: contractor.maternallastname,
-//               birthDate: contractor.birthdate,
-//               address: contractor.address,
-//               district: contractor.district,
-//               email: contractor.email,
-//               phone: contractor.phone,
-//             }
-//           : {
-//               id: "",
-//               rut: "",
-//               name: "",
-//               paternalLastName: "",
-//               maternalLastName: "",
-//               birthDate: "",
-//               address: "",
-//               district: "",
-//               email: "",
-//               phone: "",
-//             },
-//       company:
-//         company.rut !== ""
-//           ? {
-//               id: contractor.id,
-//               rut: contractor.rut,
-//               companyName: contractor.companyname,
-//               legalRepresentative: contractor.legalrepresentative,
-//               line: contractor.line,
-//               address: contractor.address,
-//               district: contractor.district,
-//               email: contractor.email,
-//               phone: contractor.phone,
-//             }
-//           : {
-//               id: "",
-//               rut: "",
-//               companyName: "",
-//               legalRepresentative: "",
-//               line: "",
-//               address: "",
-//               district: "",
-//               email: "",
-//               phone: "",
-//             },
-//       product: {
-//         id: leadProductResponse.data.product_id,
-//         price: leadProductResponse.data.price,
-//         currency_code: leadProductResponse.data.currency_code,
-//         frequency_code: leadProductResponse.data.frequency_code,
-//         productPlan_id: leadProductResponse.data.productplan_id,
-//       },
-//       insured: insuredData,
-//       subscription: subscriptionData,
-//       isActive: true,
-//     };
-
-//     // <b>Hola&nbsp;${companyResponse.data.companyName}</b><br/><br/>Bienvenido a ServiClick, a continuación te detallamos los datos de acceso a nuestra plataforma para que puedas completar o modificar la información que requieras:<br/><br/><b>https://empresa.serviclick.cl</b><br/><br/><b>Login:</b>&nbsp;${companyResponse.data.email}<br/><b>Password</b>:&nbsp;${generatedPassword}<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>
-
-//     if (send) {
-//       sendMail(
-//         { name: "Bienvenido a ServiClick" },
-//         customer.email || company.email,
-//         `Link de pago para ${productResponse.data.name}`,
-//         `<b>Hola&nbsp;${
-//           company.rut ? contractor.companyname : contractor.name
-//         }</b><br/><br/>Queremos que seas parte de ServiClick y solo estás a un paso, te dejamos el link de pago para que puedas completar la adquisición de ${
-//           productResponse.data.name
-//         } y disfrutes de los beneficios que te brinda:<br/><br/><a href="https://web.serviclick.cl/payment/${
-//           customer.rut ? "customer" : "company"
-//         }/${
-//           leadProductResponse.data.product_id
-//         }?leadId=${lead_id}">Concluye tu proceso de pago haciendo click aquí</a><br/><br/>Por que sabemos de asistencias, nos enfocamos en resolver todas las necesidades que te ayuden a vivir más tranquilo y seguro.<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
-//         []
-//       );
-//     }
-
-//     createLogger.info({
-//       controller: "lead/createController",
-//       message: "OK",
-//     });
-//     res.status(200).json(leadResponseData);
-//   } catch (error) {
-//     createLogger.error({
-//       controller: "lead/CreateController",
-//       error: (error as Error).message,
-//     });
-//     res.status(500).json({ error });
-//     return;
-//   }
-// };
-
 const getByIdController = async (req: any, res: any) => {
   const { id } = req.params;
   try {
-    const leadResponse = await getLeadById(id);
+    const leadResponse = await Lead.getById(id);
 
     if (!leadResponse.success) {
       createLogger.error({
@@ -964,7 +618,7 @@ const getByIdController = async (req: any, res: any) => {
 const getBySubscriptionIdController = async (req: any, res: any) => {
   const { subscription_id } = req.params;
   try {
-    const leadResponse = await getBySubscriptionId(subscription_id);
+    const leadResponse = await Lead.getBySubscriptionId(subscription_id);
 
     if (!leadResponse.success) {
       createLogger.error({
@@ -1017,7 +671,7 @@ const getData = async (leadResponse: any, res: any) => {
       status_code,
     } = leadResponse.data;
 
-    const leadProductResponse = await getProductByLeadId(id);
+    const leadProductResponse = await LeadProduct.getByLeadId(id);
 
     if (!leadProductResponse.success) {
       createLogger.error({
@@ -1030,7 +684,7 @@ const getData = async (leadResponse: any, res: any) => {
       return;
     }
 
-    const leadInsuredResponse = await getInsuredByLeadId(id);
+    const leadInsuredResponse = await LeadInsured.getByLeadId(id);
 
     if (!leadInsuredResponse.success) {
       createLogger.error({
@@ -1043,7 +697,7 @@ const getData = async (leadResponse: any, res: any) => {
       return;
     }
 
-    const leadBeneficiariesResponse = await getBeneficiariesByLeadId(id);
+    const leadBeneficiariesResponse = await LeadBeneficiary.getByLeadId(id);
 
     if (!leadBeneficiariesResponse.success) {
       createLogger.error({
@@ -1181,7 +835,7 @@ const getData = async (leadResponse: any, res: any) => {
 const getProductByInsuredIdController = async (req: any, res: any) => {
   const { insured_id } = req.params;
   try {
-    const leadResponse = await getProductByInsuredId(insured_id);
+    const leadResponse = await LeadProduct.getProductByInsuredId(insured_id);
 
     if (!leadResponse.success) {
       createLogger.error({
@@ -1238,7 +892,7 @@ const addBeneficiariesData = async (
 ) => {
   const beneficiaryData: BeneficiaryT[] = [];
 
-  const deleteBeneficiariesResponse = await deleteBeneficiariesByLeadId(
+  const deleteBeneficiariesResponse = await LeadBeneficiary.deleteByLeadId(
     lead_id,
     insured_id
   );
@@ -1253,7 +907,7 @@ const addBeneficiariesData = async (
   }
 
   beneficiaries.map(async (beneficiary: any) => {
-    const beneficiaryResponse = await createBeneficiaryModel(
+    const beneficiaryResponse = await Beneficiary.createModel(
       beneficiary.rut,
       beneficiary.name,
       beneficiary.paternalLastName,
@@ -1275,7 +929,7 @@ const addBeneficiariesData = async (
 
     const { id: beneficiary_id } = beneficiaryResponse.data;
 
-    const leadbeneficiaryResponse = await createLeadBeneficiaryModel(
+    const leadbeneficiaryResponse = await LeadBeneficiary.createModel(
       lead_id,
       insured_id,
       beneficiary_id

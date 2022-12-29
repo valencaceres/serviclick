@@ -61,7 +61,7 @@ export const createAgent =
   (channel_id: string, name: string) => async (dispatch: any) => {
     try {
       dispatch(setLoading(true));
-      const { data } = await apiInstance.post(`/api/agent/create`, {
+      const { data } = await apiInstance.post(`/agent/create`, {
         channel_id,
         name,
       });
@@ -76,7 +76,7 @@ export const updateAgent =
   (id: string, channel_id: string, name: string) => async (dispatch: any) => {
     try {
       dispatch(setLoading(true));
-      const { data } = await apiInstance.put(`/api/agent/update/${id}`, {
+      const { data } = await apiInstance.put(`/agent/update/${id}`, {
         channel_id,
         name,
       });
@@ -91,7 +91,7 @@ export const deleteAgent =
   (id: string, channel_id: string) => async (dispatch: any) => {
     try {
       dispatch(setLoading(true));
-      const { data } = await apiInstance.delete(`/api/agent/delete/${id}`);
+      const { data } = await apiInstance.delete(`/agent/delete/${id}`);
       dispatch(listAgents(channel_id));
       dispatch(resetAgent());
     } catch (e) {
@@ -102,7 +102,7 @@ export const deleteAgent =
 export const listAgents = (channel_id: string) => async (dispatch: any) => {
   try {
     dispatch(setLoading(true));
-    const { data } = await apiInstance.get(`/api/agent/list/${channel_id}`);
+    const { data } = await apiInstance.get(`/agent/list/${channel_id}`);
     dispatch(setAgentList(data));
   } catch (e) {
     dispatch(setError(true));

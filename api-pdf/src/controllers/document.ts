@@ -4,7 +4,8 @@ import * as Test from "../models/test";
 
 const createContract = async (req: any, res: any) => {
   try {
-    const { lead_id, correlative, contact, company, customer, plan } = req.body;
+    const { lead_id, correlative, contact, company, customer, plan, policy } =
+      req.body;
 
     const pdf = await Document.createContract(
       lead_id,
@@ -12,19 +13,22 @@ const createContract = async (req: any, res: any) => {
       contact,
       company,
       customer,
-      plan
+      plan,
+      policy
     );
 
     createLogger.info({
       controller: "document/createContract",
       message: "OK",
     });
+
     res.status(200).json("OK");
   } catch (e) {
     createLogger.error({
       model: "document/createContract",
       error: (e as Error).message,
     });
+
     res.status(500).json({
       error: "document/createContract: " + (e as Error).message,
     });

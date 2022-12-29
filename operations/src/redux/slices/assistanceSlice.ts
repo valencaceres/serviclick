@@ -2,40 +2,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { apiInstance } from "../../utils/api";
 
-type FamilyT = {
-  id: string;
-  name: string;
-};
-
-type ValueT = {
-  id: string;
-  name: string;
-};
-
-type BenefitT = {
-  id: string;
-  description: string;
-};
-
-type ExclusionT = {
-  id: string;
-  description: string;
-};
-
-export type AssistanceT = {
-  id: string;
-  name: string;
-  description: string;
-  family: FamilyT;
-  values: ValueT[];
-  benefits: BenefitT[];
-  exclusions: ExclusionT[];
-};
+import { IFamily } from "../../interfaces/family";
+import { IAssistance } from "../../interfaces/assistance";
 
 type StateT = {
-  list: AssistanceT[];
-  assistance: AssistanceT;
-  families: FamilyT[];
+  list: IAssistance[];
+  assistance: IAssistance;
+  families: IFamily[];
   loading: boolean;
   error: boolean;
 };
@@ -51,6 +24,8 @@ const initialState: StateT = {
       name: "",
     },
     values: [],
+    specialties: [],
+    documents: [],
     benefits: [],
     exclusions: [],
   },
@@ -70,17 +45,17 @@ export const assistanceSlice = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
-    setFamilies: (state: StateT, action: PayloadAction<FamilyT[]>) => {
+    setFamilies: (state: StateT, action: PayloadAction<IFamily[]>) => {
       state.families = action.payload;
       state.loading = false;
       state.error = false;
     },
-    setList: (state: StateT, action: PayloadAction<AssistanceT[]>) => {
+    setList: (state: StateT, action: PayloadAction<IAssistance[]>) => {
       state.list = action.payload;
       state.loading = false;
       state.error = false;
     },
-    set: (state: StateT, action: PayloadAction<AssistanceT>) => {
+    set: (state: StateT, action: PayloadAction<IAssistance>) => {
       state.assistance = action.payload;
       state.loading = false;
       state.error = false;
@@ -114,7 +89,7 @@ export const {
 
 export default assistanceSlice.reducer;
 
-export const create = (assistance: AssistanceT) => async (dispatch: any) => {
+export const create = (assistance: IAssistance) => async (dispatch: any) => {
   try {
     dispatch(setLoading(true));
     const resolveData = await apiInstance.post(
@@ -128,7 +103,7 @@ export const create = (assistance: AssistanceT) => async (dispatch: any) => {
 };
 
 export const updateById =
-  (assistance: AssistanceT) => async (dispatch: any) => {
+  (assistance: IAssistance) => async (dispatch: any) => {
     try {
       dispatch(setLoading(true));
       const resolveData = await apiInstance.put(

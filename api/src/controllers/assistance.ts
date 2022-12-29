@@ -1,42 +1,29 @@
 import createLogger from "../util/logger";
 import * as Assistance from "../models/assistance";
 import * as AssistanceValue from "../models/assistanceValue";
+import * as AssistanceSpecialty from "../models/assistanceSpecialty";
+import * as AssistanceDocument from "../models/assistanceDocument";
 import * as AssistanceBenefit from "../models/assistanceBenefit";
 import * as AssistanceExclusion from "../models/assistanceExclusion";
 
-type FamilyT = {
-  id: string;
-  name: string;
-};
-
-type ValueT = {
-  id: string;
-  name: string;
-};
-
-type BenefitT = {
-  id: string;
-  description: string;
-};
-
-type ExclusionT = {
-  id: string;
-  description: string;
-};
-
-export type AssistanceT = {
-  id: string;
-  name: string;
-  description: string;
-  family: FamilyT;
-  values: ValueT[];
-  benefits: BenefitT[];
-  exclusions: ExclusionT[];
-};
+import { IFamily } from "../interfaces/family";
+import { IValue } from "../interfaces/value";
+import { IBenefit } from "../interfaces/benefit";
+import { IExclusion } from "../interfaces/exclusion";
+import { IAssistance } from "../interfaces/assistance";
 
 const create = async (req: any, res: any) => {
-  const { id, family, name, description, values, benefits, exclusions } =
-    req.body;
+  const {
+    id,
+    family,
+    name,
+    description,
+    values,
+    specialties,
+    documents,
+    benefits,
+    exclusions,
+  }: IAssistance = req.body;
 
   const assistanceResponse = id
     ? await Assistance.updateById(id, family.id, name, description)
@@ -83,6 +70,70 @@ const create = async (req: any, res: any) => {
       return;
     }
     line_order++;
+  }
+
+  const deleteSpecialties = await AssistanceSpecialty.deleteByAssistanceId(
+    assistance_id
+  );
+
+  if (!deleteSpecialties.success) {
+    createLogger.error({
+      model: "assistanceSpecialty/deleteByAssistanceId",
+      error: deleteSpecialties.error,
+    });
+    res.status(500).json({ error: deleteSpecialties.error });
+    return;
+  }
+
+  if (specialties && specialties.length > 0) {
+    for (const specialty of specialties) {
+      const addSpecialty = await AssistanceSpecialty.create(
+        assistance_id,
+        specialty.id,
+        line_order
+      );
+
+      if (!addSpecialty.success) {
+        createLogger.error({
+          model: "assistanceSpecialty/create",
+          error: addSpecialty.error,
+        });
+        res.status(500).json({ error: addSpecialty.error });
+        return;
+      }
+    }
+  }
+
+  const deleteDocuments = await AssistanceDocument.deleteByAssistanceId(
+    assistance_id
+  );
+
+  if (!deleteDocuments.success) {
+    createLogger.error({
+      model: "assistanceDocument/deleteByAssistanceId",
+      error: deleteDocuments.error,
+    });
+    res.status(500).json({ error: deleteDocuments.error });
+    return;
+  }
+
+  if (documents && documents.length > 0) {
+    for (const document of documents) {
+      const addDocument = await AssistanceDocument.create(
+        assistance_id,
+        document.id,
+        line_order
+      );
+
+      if (!addDocument.success) {
+        createLogger.error({
+          model: "assistanceDocument/create",
+          error: addDocument.error,
+        });
+        res.status(500).json({ error: addDocument.error });
+        return;
+      }
+    }
   }
 
   const deleteBenefits = await AssistanceBenefit.deleteByAssistanceId(
@@ -298,6 +349,8 @@ const functionGetById = async (id: string) => {
   const data = {
     ...assistanceResponse.data,
     values: [],
+    specialties: [],
+    documents: [],
     benefits: [],
     exclusions: [],
   };
@@ -313,6 +366,30 @@ const functionGetById = async (id: string) => {
   }
 
   data.values = responseValues.data;
+
+  const responseSpecialties = await AssistanceSpecialty.getByAssistanceId(id);
+
+  if (!responseSpecialties.success) {
+    createLogger.error({
+      model: "assistanceSpecialty/getByAssistanceId",
+      error: responseSpecialties.error,
+    });
+    return { success: false, data: null, error: responseSpecialties.error };
+  }
+
+  data.specialties = responseSpecialties.data;
+
+  const responseDocuments = await AssistanceDocument.getByAssistanceId(id);
+
+  if (!responseDocuments.success) {
+    createLogger.error({
+      model: "assistanceDocument/getByAssistanceId",
+      error: responseDocuments.error,
+    });
+    return { success: false, data: null, error: responseDocuments.error };
+  }
+
+  data.documents = responseDocuments.data;
 
   const responseBenefits = await AssistanceBenefit.getByAssistanceId(id);
 

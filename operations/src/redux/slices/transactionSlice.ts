@@ -90,7 +90,7 @@ export const getByFilters =
   async (dispatch: any) => {
     try {
       dispatch(setLoading(true));
-      const { data } = await apiInstance.post(`/api/transaction/getByFilters`, {
+      const { data } = await apiInstance.post(`/transaction/getByFilters`, {
         channel_id,
         client_type,
         rut,

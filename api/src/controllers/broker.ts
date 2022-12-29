@@ -46,9 +46,6 @@ const create = async (req: any, res: any) => {
 
     const { id: broker_id, rut: broker_rut } = brokerResponse.data;
 
-    // let productsBrokerResponse: any = [];
-    // let usersBrokerResponse: any = [];
-
     if (products.length > 0) {
       const brokerProductDelete = await BrokerProduct.deleteByBrokerId(
         broker_id
@@ -100,8 +97,6 @@ const create = async (req: any, res: any) => {
           res.status(500).json({ error: responsePlans.error });
           return;
         }
-
-        // productsBrokerResponse.push(brokerProductResponse.data);
       }
     }
 

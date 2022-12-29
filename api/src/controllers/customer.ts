@@ -1,10 +1,47 @@
 import createLogger from "../util/logger";
 
-import { getByRutModel } from "../models/customer";
+import * as Customer from "../models/customer";
 
-const getByRutController = async (req: any, res: any) => {
-  const { rut } = req.params;
-  const response = await getByRutModel(rut);
+const create = async (req: any, res: any) => {
+  const {
+    rut,
+    name,
+    paternalLastName,
+    maternalLastName,
+    birthDate,
+    address,
+    district,
+    email,
+    phone,
+  } = req.body;
+
+  const customerResponse = await Customer.createModel(
+    rut,
+    name,
+    paternalLastName,
+    maternalLastName,
+    birthDate,
+    address,
+    district,
+    email,
+    phone
+  );
+
+  if (!customerResponse.success) {
+    createLogger.error({
+      model: "customer/create",
+      error: customerResponse.error,
+    });
+    res.status(500).json({ error: customerResponse.error });
+    return;
+  }
+
+  createLogger.info({
+    controller: "customer/create",
+    message: "OK",
+  });
+
+  const response = await getByRut(rut);
 
   if (!response.success) {
     createLogger.error({
@@ -22,4 +59,40 @@ const getByRutController = async (req: any, res: any) => {
   res.status(200).json(response.data);
 };
 
-export { getByRutController };
+const getByRutController = async (req: any, res: any) => {
+  const { rut } = req.params;
+  const response = await getByRut(rut);
+
+  if (!response.success) {
+    createLogger.error({
+      model: "customer/getByRutModel",
+      error: response.error,
+    });
+    res.status(500).json({ error: response.error });
+    return;
+  }
+
+  createLogger.info({
+    controller: "customer",
+    message: "OK",
+  });
+  res.status(200).json(response.data);
+};
+
+export { create, getByRutController };
+
+const getByRut = async (rut: string) => {
+  const response = await Customer.getByRutModel(rut);
+
+  if (!response.success) {
+    return {
+      success: false,
+      error: response.error,
+    };
+  }
+
+  return {
+    success: true,
+    data: response.data,
+  };
+};

@@ -6,20 +6,20 @@ const useFamily = () => {
 
   const { family, list } = useAppSelector((state) => state.familySlice);
 
-  const create = (name: string, values: FamilySlice.ValueT) => {
-    dispatch(FamilySlice.createFamily(name, values));
+  const create = (name: string) => {
+    dispatch(FamilySlice.createFamily(name));
   };
 
-  const update = (id: string, name: string, values: FamilySlice.ValueT) => {
-    dispatch(FamilySlice.updateFamily(id, name, values));
+  const update = (id: string, name: string) => {
+    dispatch(FamilySlice.updateFamily(id, name));
   };
 
-  const deleteById = (value: string) => {
-    dispatch(FamilySlice.deleteFamily(value));
+  const deleteById = (id: string) => {
+    dispatch(FamilySlice.deleteFamily(id));
   };
 
-  const getById = (value: string) => {
-    dispatch(FamilySlice.getFamily(value));
+  const getById = (id: string) => {
+    dispatch(FamilySlice.getFamily(id));
   };
 
   const listAll = () => {
@@ -34,10 +34,6 @@ const useFamily = () => {
     dispatch(FamilySlice.setFamily(value));
   };
 
-  const addValue = (value: FamilySlice.ValueT) => {
-    dispatch(FamilySlice.addFamilyValue(value));
-  };
-
   const reset = () => {
     dispatch(FamilySlice.resetFamily());
   };
@@ -50,7 +46,6 @@ const useFamily = () => {
     listAll,
     setList,
     set,
-    addValue,
     reset,
     family,
     list,

@@ -58,15 +58,13 @@ const createModel: any = async (
     }
     const result = await pool.query(query, arrayValues);
 
-    console.log(query);
-
     const data = {
       id: result.rows[0].id,
       rut: result.rows[0].rut,
       name: result.rows[0].name,
       paternalLastName: result.rows[0].paternallastname,
       maternalLastName: result.rows[0].maternallastname,
-      birthDate: result.rows[0].birthdate,
+      birthDate: result.rows[0].birthdate.toString().slice(0, 10),
       address: result.rows[0].address,
       district: result.rows[0].district,
       email: result.rows[0].email,

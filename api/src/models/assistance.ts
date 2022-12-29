@@ -1,5 +1,7 @@
 import pool from "../util/database";
 
+import { IAssistance } from "../interfaces/assistance";
+
 const getByAssistanceId: any = async (assistance_id: string) => {
   try {
     const result = await pool.query(

@@ -15,14 +15,21 @@ import CustomerForm from "./CustomerForm";
 import { formatRut } from "../../../../utils/format";
 import texts from "../../../../utils/texts";
 
-import { useProduct, useSubscription, useLead } from "../../../../redux/hooks";
+import {
+  useProduct,
+  useCustomer,
+  useSubscription,
+  useLead,
+} from "../../../../redux/hooks";
+import { LoadingMessage } from "../../../ui/LoadingMessage";
 
 const Customer = ({ register }: any) => {
   const router = useRouter();
 
   const { active } = useSubscription();
   const { product } = useProduct();
-  const { lead, setLeadCustomer, setLeadInsured } = useLead();
+  const { lead, setLeadCustomer, setLeadInsured, setLeadAgent } = useLead();
+  const { createCustomer, customerLoading } = useCustomer();
 
   const initialDataCustomerForm = {
     rut: { value: lead.customer.rut, isValid: true },
@@ -81,8 +88,15 @@ const Customer = ({ register }: any) => {
       setShowWarning(true);
       return;
     }
+    createCustomer(customerData);
     register();
   };
+
+  useEffect(() => {
+    if (lead.agent_id === "") {
+      setLeadAgent("020579a3-8461-45ec-994b-ad22ff8e3275");
+    }
+  }, []);
 
   useEffect(() => {
     let enableButton = true;
@@ -172,6 +186,7 @@ const Customer = ({ register }: any) => {
         iconName="warning"
         buttons={[{ text: "Aceptar", function: () => setShowWarning(false) }]}
       />
+      <LoadingMessage showModal={customerLoading} />
     </Fragment>
   );
 };

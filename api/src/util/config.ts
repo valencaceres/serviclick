@@ -71,31 +71,4 @@ const config = {
   },
 };
 
-/*
-  reveniu: {
-    URL: {
-      plan: `https://integration.reveniu.com/api/v1/plans/`,
-      subscription: `https://integration.reveniu.com/api/v1/subscriptions/`,
-    },
-    apiKey: {
-      "Reveniu-Secret-Key": process.env.REVENIU_SECRET_KEY || "",
-    },
-    feedbackURL: {
-      success: process.env.SUCCESS || "http://localhost:3000/resume/success",
-      error: process.env.ERROR || "http://localhost:3000/resume/error",
-    },
-  },
-  email: {
-    URL: {
-      send: "https://api-email.serviclick.cl/api/email/send",
-    },
-    apiKey: { id: "12345678" },
-  },
-  webHook: {
-    URL: {
-      reveniu: "https://webhook.serviclick.cl/reveniu",
-    },
-  },
-*/
-
 export default config;

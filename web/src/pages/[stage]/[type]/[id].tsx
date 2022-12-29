@@ -17,6 +17,7 @@ import {
   useDistrict,
   useProduct,
   useLead,
+  useCustomer,
 } from "../../../redux/hooks";
 
 const Value: NextPage = () => {
@@ -27,6 +28,7 @@ const Value: NextPage = () => {
   const { getProductByIdWithPrices, product } = useProduct();
   const { lead, setLeadAgent, setLeadProduct, resetLead, getLeadById } =
     useLead();
+  const { customerLoading } = useCustomer();
 
   const { agentId, setAgentUI } = useUI();
 
@@ -39,7 +41,7 @@ const Value: NextPage = () => {
   };
 
   const registerCustomer = () => {
-    router.push(stateMachine[stage.name].next);
+    !customerLoading && router.push(stateMachine[stage.name].next);
   };
 
   const registerInsured = () => {

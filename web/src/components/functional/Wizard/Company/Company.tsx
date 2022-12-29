@@ -22,7 +22,7 @@ const Company = ({ register }: any) => {
 
   const { product } = useProduct();
   const { active } = useSubscription();
-  const { lead, setLeadCompany } = useLead();
+  const { lead, setLeadCompany, setLeadAgent } = useLead();
 
   const initialDataCompanyForm = {
     rut: { value: lead.company.rut, isValid: true },
@@ -74,6 +74,12 @@ const Company = ({ register }: any) => {
     }
     register();
   };
+
+  useEffect(() => {
+    if (lead.agent_id === "") {
+      setLeadAgent("020579a3-8461-45ec-994b-ad22ff8e3275");
+    }
+  }, []);
 
   useEffect(() => {
     let enableButton = true;

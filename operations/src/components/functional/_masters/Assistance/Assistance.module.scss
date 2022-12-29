@@ -1,0 +1,130 @@
+@import "../../../../styles/variables.scss";
+
+.table {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background-color: lighten($light-gray-color, 19);
+  border: 1px solid $light-gray-color;
+  padding: 2px;
+  border-radius: 5px;
+  gap: 2px;
+
+  .tableHeader {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 35px;
+    width: 100%;
+    gap: 2px;
+
+    .cell {
+      font-weight: 500;
+      background-color: $ultra-light-gray-color;
+      text-align: center;
+      justify-content: center;
+      color: $dark-gray-color;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .cellEnd {
+      height: 35px;
+      width: 5px;
+      background-color: $ultra-light-gray-color;
+    }
+  }
+
+  .tableDetail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    height: calc(100% - 35px);
+    overflow-y: scroll;
+    gap: 2px;
+
+    .row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      width: 100%;
+      gap: 2px;
+      height: auto;
+
+      @media screen and (min-width: 1200px) {
+        height: 35px;
+      }
+
+      @media screen and (min-width: 1200px) {
+        flex-direction: row;
+      }
+
+      &:nth-child(even) .cell {
+        background-color: lighten(lightblue, 19);
+      }
+
+      &:nth-child(odd) .cell {
+        background-color: lighten(gray, 49);
+      }
+
+      &:hover {
+        .cell {
+          background-color: #959595;
+          color: white;
+
+          span {
+            color: white;
+
+            &:hover {
+              color: red;
+            }
+          }
+        }
+      }
+
+      .cell {
+        font-size: 18px;
+        font-weight: 200;
+        color: $dark-gray-color;
+        font-family: Oswald;
+        height: auto;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        @media screen and (min-width: 1200px) {
+          height: 35px;
+        }
+      }
+    }
+  }
+
+  .cell {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    height: 80px;
+    padding: 0 10px;
+
+    p {
+      display: block;
+      display: -webkit-box;
+      width: 100%;
+      overflow: hidden;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      text-align: justify;
+      font-size: 17px;
+      font-weight: 200;
+      color: $dark-gray-color;
+      font-family: Oswald;
+      line-height: 1.2;
+    }
+  }
+}

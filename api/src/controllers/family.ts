@@ -4,7 +4,8 @@ import * as Family from "../models/family";
 import * as FamilyValue from "../models/familyValue";
 
 const createFamily = async (req: any, res: any) => {
-  const { name, values } = req.body;
+  const { name } = req.body;
+
   const familyResponse = await Family.createFamily(name);
 
   if (!familyResponse.success) {
@@ -16,19 +17,16 @@ const createFamily = async (req: any, res: any) => {
     return;
   }
 
-  const { id } = familyResponse.data;
-  const createdValues = await createValues(id, values);
-
   createLogger.info({
     controller: "family",
     message: "OK",
   });
-  res.status(200).json({ ...familyResponse.data, values: [...createdValues] });
+  res.status(200).json(familyResponse.data);
 };
 
 const updateFamily = async (req: any, res: any) => {
   const { id } = req.params;
-  const { name, values } = req.body;
+  const { name } = req.body;
 
   const familyResponse = await Family.updateFamily(id, name);
   if (!familyResponse.success) {
@@ -40,23 +38,11 @@ const updateFamily = async (req: any, res: any) => {
     return;
   }
 
-  const responseDeletedValues = await FamilyValue.deleteFamilyValues(id);
-  if (!responseDeletedValues.success) {
-    createLogger.error({
-      model: "family/deleteFamilyValues",
-      error: responseDeletedValues.error,
-    });
-    res.status(500).json({ error: responseDeletedValues.error });
-    return;
-  }
-
-  const createdValues = await createValues(id, values);
-
   createLogger.info({
     controller: "family",
     message: "OK",
   });
-  res.status(200).json({ ...familyResponse.data, values: [...createdValues] });
+  res.status(200).json(familyResponse.data);
 };
 
 const deleteFamily = async (req: any, res: any) => {
@@ -111,45 +97,11 @@ const getFamily = async (req: any, res: any) => {
     return;
   }
 
-  const familyValuesResponse = await FamilyValue.listFamilyValues(id);
-  if (!familyValuesResponse.success) {
-    createLogger.error({
-      model: "family/listFamilyValues",
-      error: familyResponse.error,
-    });
-    res.status(500).json({ error: familyValuesResponse.error });
-    return;
-  }
-
   createLogger.info({
     controller: "family",
     message: "OK",
   });
-  res.status(200).json({
-    ...familyResponse.data,
-    values: [...familyValuesResponse.data],
-  });
-};
-
-const createValues = async (id: string, values: any) => {
-  const errors: any = [];
-
-  const createdValues = await Promise.all(
-    values.map(async (value: any) => {
-      const familyValueRespose = await FamilyValue.createFamilyValue(id, value);
-      if (!familyValueRespose.success) {
-        createLogger.error({
-          model: "familyValue/createFamilyValue",
-          error: familyValueRespose.error,
-        });
-        errors.push(familyValueRespose.error);
-      }
-
-      return familyValueRespose.data;
-    })
-  );
-
-  return createdValues;
+  res.status(200).json(familyResponse.data);
 };
 
 export { createFamily, updateFamily, deleteFamily, getFamily, listFamilies };

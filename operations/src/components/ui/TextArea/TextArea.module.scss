@@ -27,7 +27,7 @@
     }
 
     &:disabled {
-      border: 1px solid lighten($light-gray-color, 10);
+      border: 1px solid $light-gray-color;
       background-color: lighten(gray, 49);
     }
 

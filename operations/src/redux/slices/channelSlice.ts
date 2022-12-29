@@ -66,7 +66,7 @@ export const createChannel =
   (name: string, isBroker: boolean) => async (dispatch: any) => {
     try {
       dispatch(setLoading(true));
-      const { data } = await apiInstance.post(`/api/channel/create`, {
+      const { data } = await apiInstance.post(`/channel/create`, {
         name,
         isBroker,
       });
@@ -81,7 +81,7 @@ export const updateChannel =
   (id: string, name: string, isBroker: boolean) => async (dispatch: any) => {
     try {
       dispatch(setLoading(true));
-      const { data } = await apiInstance.put(`/api/channel/update/${id}`, {
+      const { data } = await apiInstance.put(`/channel/update/${id}`, {
         name,
         isBroker,
       });
@@ -95,7 +95,7 @@ export const updateChannel =
 export const deleteChannel = (id: string) => async (dispatch: any) => {
   try {
     dispatch(setLoading(true));
-    const { data } = await apiInstance.delete(`/api/channel/delete/${id}`);
+    const { data } = await apiInstance.delete(`/channel/delete/${id}`);
     dispatch(listChannels());
     dispatch(resetChannel());
   } catch (e) {
@@ -106,7 +106,7 @@ export const deleteChannel = (id: string) => async (dispatch: any) => {
 export const listChannels = () => async (dispatch: any) => {
   try {
     dispatch(setLoading(true));
-    const { data } = await apiInstance.get(`/api/channel/list`);
+    const { data } = await apiInstance.get(`/channel/list`);
     dispatch(setChannelList(data));
   } catch (e) {
     dispatch(setError(true));

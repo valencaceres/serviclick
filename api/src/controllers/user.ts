@@ -7,16 +7,30 @@ import { sendMail } from "../util/email";
 import * as User from "../models/user";
 import * as Person from "../models/person";
 
+import { IPerson } from "../interfaces/person";
+
 const create = async (req: any, res: any) => {
-  const { rut, name, paternalLastName, maternalLastName, email, phone } =
-    req.body;
+  const {
+    rut,
+    name,
+    paternalLastName,
+    maternalLastName,
+    address,
+    district,
+    email,
+    phone,
+    birthDate,
+  }: IPerson = req.body;
   const personResponse = await Person.create(
     rut,
     name,
     paternalLastName,
     maternalLastName,
+    address,
+    district,
     email,
-    phone
+    phone,
+    birthDate
   );
 
   if (!personResponse.success) {
