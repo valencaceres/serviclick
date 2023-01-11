@@ -21,6 +21,7 @@ type StateT = {
   showMenu: boolean;
   title: string;
   options: OptionT[];
+  filters: any;
   isDesktop: boolean;
 };
 
@@ -37,6 +38,7 @@ const initialState: StateT = {
   showMenu: false,
   title: "",
   options: [],
+  filters: null,
   isDesktop: false,
 };
 
@@ -59,6 +61,9 @@ export const userSlice = createSlice({
     setDesktop: (state: StateT, action: PayloadAction<boolean>) => {
       state.isDesktop = action.payload;
     },
+    setFilters: (state: StateT, action: PayloadAction<any>) => {
+      state.filters = action.payload;
+    },
     resetAll: (state: StateT) => {
       state = initialState;
     },
@@ -71,6 +76,7 @@ export const {
   setTitle,
   setOptions,
   setDesktop,
+  setFilters,
   resetAll,
 } = userSlice.actions;
 

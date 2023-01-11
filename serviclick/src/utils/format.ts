@@ -15,4 +15,15 @@ const currencyFormat = (number: number) => {
   });
 };
 
-export { unFormatRut, formatRut, currencyFormat };
+const formatAmount = (amount: string, currency: string) => {
+  if (amount === "0") {
+    return "";
+  }
+  if (currency === "P") {
+    return `$${parseInt(amount).toLocaleString("en-US").replace(",", ".")}`;
+  } else {
+    return `${amount} UF`;
+  }
+};
+
+export { unFormatRut, formatRut, currencyFormat, formatAmount };

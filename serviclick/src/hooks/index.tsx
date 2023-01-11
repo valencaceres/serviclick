@@ -12,6 +12,7 @@ import useDistrict from "./useDistrict";
 import useAssistance from "./useAssistance";
 import useValue from "./useValue";
 import useValueType from "./useValueType";
+import useContractor from "./useContractor";
 
 export {
   useUI,
@@ -28,4 +29,5 @@ export {
   useAssistance,
   useValue,
   useValueType,
+  useContractor,
 };

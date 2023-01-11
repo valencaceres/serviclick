@@ -37,7 +37,10 @@ const menu = [
   {
     icon: <Icon iconName="receipt_long" />,
     text: "Reportes",
-    subOptions: [{ text: "Transacciones", route: "/reports/transactions" }],
+    subOptions: [
+      { text: "Transacciones", route: "/reports/transactions" },
+      { text: "Clientes", route: "/reports/contractor" },
+    ],
   },
 ];
 

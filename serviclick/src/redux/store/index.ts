@@ -14,6 +14,7 @@ import districtSlice from "../slices/districtSlice";
 import assistanceSlice from "../slices/assistanceSlice";
 import valueSlice from "../slices/valueSlice";
 import valueTypeSlice from "../slices/valueTypeSlice";
+import contractorSlice from "../slices/contractorSlice";
 
 const store = configureStore({
   reducer: {
@@ -31,6 +32,7 @@ const store = configureStore({
     assistanceSlice,
     valueSlice,
     valueTypeSlice,
+    contractorSlice,
   },
 });
 

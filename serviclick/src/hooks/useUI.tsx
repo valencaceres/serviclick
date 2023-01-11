@@ -5,6 +5,7 @@ import {
   setTitle,
   setOptions,
   setDesktop,
+  setFilters,
   resetAll,
 } from "../redux/slices/uiSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
@@ -12,7 +13,7 @@ import { useAppDispatch, useAppSelector } from "../redux/hooks";
 const useUI = () => {
   const dispatch = useAppDispatch();
 
-  const { showMenu, user, title, options, isDesktop } = useAppSelector(
+  const { showMenu, user, title, options, filters, isDesktop } = useAppSelector(
     (state) => state.uiSlice
   );
 
@@ -36,6 +37,10 @@ const useUI = () => {
     dispatch(setDesktop(value));
   };
 
+  const setFiltersUI = (value: any) => {
+    dispatch(setFilters(value));
+  };
+
   const resetUI = (value: any) => {
     dispatch(resetAll());
   };
@@ -49,7 +54,9 @@ const useUI = () => {
     title,
     setOptionsUI,
     setDesktopUI,
+    setFiltersUI,
     options,
+    filters,
     isDesktop,
     resetUI,
   };
