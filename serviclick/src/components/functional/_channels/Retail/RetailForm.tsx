@@ -68,16 +68,6 @@ const RetailForm = ({
     });
   };
 
-  const handleChangeLegalRepresentative = (event: any) => {
-    setRetailForm({
-      ...retailForm,
-      legalRepresentative: {
-        value: event.target.value,
-        isValid: event.target.value !== "",
-      },
-    });
-  };
-
   const handleChangeLine = (event: any) => {
     setRetailForm({
       ...retailForm,
@@ -87,6 +77,17 @@ const RetailForm = ({
       },
     });
   };
+
+  const handleChangeFantasyName = (event: any) => {
+    setRetailForm({
+      ...retailForm,
+      fantasyName: {
+        value: event.target.value,
+        isValid: event.target.value !== "",
+      },
+    });
+  };
+
   const handleChangeAddress = (event: any) => {
     setRetailForm({
       ...retailForm,
@@ -137,11 +138,8 @@ const RetailForm = ({
       setRetailForm({
         rut: { value: retail.rut, isValid: true },
         name: { value: retail.name, isValid: true },
-        legalRepresentative: {
-          value: retail.legalRepresentative,
-          isValid: true,
-        },
         line: { value: retail.line, isValid: true },
+        fantasyName: { value: retail.fantasyName, isValid: true },
         address: { value: retail.address, isValid: true },
         district: { value: retail.district, isValid: true },
         email: { value: retail.email, isValid: true },
@@ -155,8 +153,8 @@ const RetailForm = ({
     const isValid =
       retailForm.rut.isValid &&
       retailForm.name.isValid &&
-      retailForm.legalRepresentative.isValid &&
       retailForm.line.isValid &&
+      retailForm.fantasyName.isValid &&
       retailForm.address.isValid &&
       retailForm.district.isValid &&
       retailForm.email.isValid &&
@@ -167,8 +165,8 @@ const RetailForm = ({
         ...retail,
         rut: retailForm.rut.value,
         name: retailForm.name.value,
-        legalRepresentative: retailForm.legalRepresentative.value,
         line: retailForm.line.value,
+        fantasyName: retailForm.fantasyName.value,
         address: retailForm.address.value,
         district: retailForm.district.value,
         email: retailForm.email.value,
@@ -210,12 +208,12 @@ const RetailForm = ({
           isValid={retailForm?.line.isValid}
         />
         <InputText
-          label="Representante Legal"
+          label="Nombre de fantasía"
           width="100%"
           maxLength={50}
-          value={retailForm?.legalRepresentative.value}
-          onChange={handleChangeLegalRepresentative}
-          isValid={retailForm?.legalRepresentative.isValid}
+          value={retailForm?.fantasyName.value}
+          onChange={handleChangeFantasyName}
+          isValid={retailForm?.fantasyName.isValid}
         />
         <InputText
           label="Dirección"
@@ -235,26 +233,24 @@ const RetailForm = ({
           dataValue="district_name"
           dataText="district_name"
         />
-        <ContentRow gap="5px">
-          <InputText
-            label="Correo"
-            width="100%"
-            type="email"
-            maxLength={250}
-            value={retailForm?.email.value}
-            onChange={handleChangeEmail}
-            isValid={retailForm?.email.isValid}
-          />
-          <InputText
-            label="Teléfono"
-            width="100%"
-            type="tel"
-            maxLength={9}
-            value={retailForm?.phone.value}
-            onChange={handleChangePhone}
-            isValid={retailForm?.phone.isValid}
-          />
-        </ContentRow>
+        <InputText
+          label="Correo"
+          width="100%"
+          type="email"
+          maxLength={250}
+          value={retailForm?.email.value}
+          onChange={handleChangeEmail}
+          isValid={retailForm?.email.isValid}
+        />
+        <InputText
+          label="Teléfono"
+          width="100%"
+          type="tel"
+          maxLength={9}
+          value={retailForm?.phone.value}
+          onChange={handleChangePhone}
+          isValid={retailForm?.phone.isValid}
+        />
       </ContentCell>
     </ContentRow>
   );

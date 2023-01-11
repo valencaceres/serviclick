@@ -7,10 +7,16 @@ export type PriceT = {
   company: number;
 };
 
+export type LegalRepresentativeT = {
+  rut: string;
+  namer: string;
+};
+
 export type ProductT = {
   product_id: string;
   campaign: string;
   price: PriceT;
+  trialMonths: number;
   currency: string;
 };
 
@@ -27,13 +33,14 @@ export type RetailT = {
   id: string;
   rut: string;
   name: string;
-  legalRepresentative: string;
   line: string;
+  fantasyName: string;
   address: string;
   district: string;
   email: string;
   phone: string;
   logo: string;
+  legalRepresentatives: LegalRepresentativeT[];
   products: ProductT[];
   users: UserT[];
 };
@@ -51,13 +58,14 @@ const initialState: StateT = {
     id: "",
     rut: "",
     name: "",
-    legalRepresentative: "",
     line: "",
+    fantasyName: "",
     address: "",
     district: "",
     email: "",
     phone: "",
     logo: "",
+    legalRepresentatives: [],
     products: [],
     users: [],
   },

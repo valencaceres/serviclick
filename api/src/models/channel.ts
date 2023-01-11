@@ -43,7 +43,7 @@ const deleteChannel: any = async (id: string) => {
 const listChannels: any = async (values: any) => {
   try {
     const result = await pool.query(
-      "SELECT id, name, isBroker FROM app.channel WHERE isActive IS true ORDER BY name"
+      "SELECT id, name, code, isBroker FROM app.channel WHERE isActive IS true ORDER BY name"
     );
     return { success: true, data: result.rows, error: null };
   } catch (e) {

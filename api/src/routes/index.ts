@@ -1,3 +1,4 @@
+import SlugRouter from "./slug";
 import StatusRouter from "./status";
 import UserRouter from "./user";
 import UserInsuredRouter from "./userInsured";
@@ -31,6 +32,7 @@ import StageRouter from "./stage";
 import SpecialistRouter from "./specialist";
 
 export {
+  SlugRouter,
   StatusRouter,
   UserRouter,
   UserInsuredRouter,

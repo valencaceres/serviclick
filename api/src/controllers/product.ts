@@ -12,6 +12,7 @@ import * as ProductPlan from "../models/productPlan";
 
 type ProductT = {
   name: string;
+  alias: string;
   customerprice: number;
   companyprice: number;
   frequency: "U" | "S" | "M" | "A";
@@ -23,6 +24,7 @@ type ProductT = {
 
 const createProduct = async (req: any, res: any) => {
   const {
+    id: product_id,
     family_id,
     name,
     cost,
@@ -35,6 +37,8 @@ const createProduct = async (req: any, res: any) => {
     minInsuredCompanyPrice,
     title,
     subTitle,
+    alias,
+    promotional,
     description,
     territorialScope,
     hiringConditions,
@@ -42,6 +46,7 @@ const createProduct = async (req: any, res: any) => {
   } = req.body;
 
   const productResponse = await Product.createProduct(
+    product_id,
     family_id,
     name,
     cost,
@@ -69,6 +74,8 @@ const createProduct = async (req: any, res: any) => {
     id,
     title,
     subTitle,
+    alias,
+    promotional,
     description,
     territorialScope,
     hiringConditions
@@ -317,6 +324,8 @@ const listProducts = async (req: any, res: any) => {
       id: row.id,
       family_id: row.family_id,
       family_name: row.family_name,
+      alias: row.alias,
+      promotional: row.promotional,
       name: row.name,
       cost: row.cost,
       price: {
@@ -550,9 +559,9 @@ const createProductPlans = async (
   id: string,
   agent_id: string,
   customerprice: number | null,
-  companyprice: number | null
+  companyprice: number | null,
+  trialCicles: number = 0
 ) => {
-  const trialCicles = 0;
   const discount = false;
 
   const productResponse = await Product.getProduct(id, agent_id);
@@ -567,6 +576,7 @@ const createProductPlans = async (
 
   const {
     name,
+    alias,
     frequency,
     dueday,
     customer_plan_id,
@@ -595,7 +605,7 @@ const createProductPlans = async (
     cicles: 1,
     trial_cicles: trialCicles,
     title: name,
-    description: name,
+    description: name + " " + "(" + alias + ")",
     is_custom_link: true,
     price: 0,
     is_uf: false,

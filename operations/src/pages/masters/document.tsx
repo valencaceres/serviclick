@@ -33,7 +33,7 @@ const Document = () => {
   };
 
   useEffect(() => {
-    setTitleUI("Especialidades");
+    setTitleUI("Documentos");
     listAll();
     getFamilies();
     getAllDocuments();

@@ -122,4 +122,29 @@ const createSubscriptionModel: any = async (
   }
 };
 
-export { createSubscriptionModel };
+const updateLastPayment: any = async (subscription_id: number) => {
+  try {
+    const resultPayment = await pool.query(
+      "select max(date) as date from app.payment where subscription_id = $1",
+      [subscription_id]
+    );
+
+    if (resultPayment.rows.length > 0) {
+      const result = await pool.query(
+        `
+        UPDATE  app.subscription
+        SET     last_payment_date = $2,
+                last_payment_success = $3
+        WHERE   subscription_id = $1
+        RETURNING *`,
+        [subscription_id, resultPayment.rows[0].date, true]
+      );
+    }
+
+    return { success: true, data: true, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+export { createSubscriptionModel, updateLastPayment };

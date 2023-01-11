@@ -40,7 +40,7 @@ export type CoverageT = {
 };
 
 const ProductDetail = ({ setEnableSave, isSaving, setIsSaving }: any) => {
-  const { product, setProduct, productLoading } = useProduct();
+  const { product, setProduct, productLoading, families } = useProduct();
   const {
     list: listFamilies,
     getById: getFamilyById,
@@ -98,6 +98,14 @@ const ProductDetail = ({ setEnableSave, isSaving, setIsSaving }: any) => {
 
   const handleChangeSubTitle = (e: any) => {
     handleValue("subTitle", e.target.value);
+  };
+
+  const handleChangeAlias = (e: any) => {
+    handleValue("alias", e.target.value);
+  };
+
+  const handleChangePromotional = (e: any) => {
+    handleValue("promotional", e.target.value);
   };
 
   const handleChangeDescription = (e: any) => {
@@ -193,7 +201,7 @@ const ProductDetail = ({ setEnableSave, isSaving, setIsSaving }: any) => {
               value={product.family_id}
               onChange={handleChangeFamily}
               placeHolder=":: Seleccione familia ::"
-              data={listFamilies}
+              data={families}
               dataValue="id"
               dataText="name"
             />
@@ -217,16 +225,31 @@ const ProductDetail = ({ setEnableSave, isSaving, setIsSaving }: any) => {
             <InputText
               id="txtSubTitle"
               label="Sub título"
-              width="638px"
+              width="333px"
               value={product.subTitle}
               onChange={handleChangeSubTitle}
+            />
+            <InputText
+              id="txtAlias"
+              label="Alianza"
+              width="300px"
+              value={product.alias}
+              onChange={handleChangeAlias}
             />
           </ContentRow>
           <TextArea
             id="txtName"
-            label="Descripción"
+            label="Descripción Promocional"
             width="953px"
-            height="100px"
+            height="70px"
+            value={product.promotional}
+            onChange={handleChangePromotional}
+          />
+          <TextArea
+            id="txtName"
+            label="Descripción Formal"
+            width="953px"
+            height="150px"
             value={product.description}
             onChange={handleChangeDescription}
           />
@@ -235,7 +258,7 @@ const ProductDetail = ({ setEnableSave, isSaving, setIsSaving }: any) => {
               id="txtName"
               label="Ambito regional"
               width="100%"
-              height="150px"
+              height="200px"
               value={product.territorialScope}
               onChange={handleChangeTerritorialScope}
             />
@@ -243,7 +266,7 @@ const ProductDetail = ({ setEnableSave, isSaving, setIsSaving }: any) => {
               id="txtName"
               label="Condiciones de contratación"
               width="100%"
-              height="150px"
+              height="200px"
               value={product.hiringConditions}
               onChange={handleChangeHiringConditions}
             />

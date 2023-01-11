@@ -9,12 +9,13 @@ import {
 import FloatMenu from "../../components/ui/FloatMenu";
 import ButtonIcon from "../../components/ui/ButtonIcon";
 
-import { useUI, useAssistance } from "../../hooks";
+import { useUI, useFamily, useAssistance } from "../../hooks";
 
 const Assistance = () => {
   const router = useRouter();
 
   const { setTitleUI } = useUI();
+  const { listAll: getAllFamilies } = useFamily();
   const {
     createAssistance,
     updateAssistanceById,
@@ -58,6 +59,7 @@ const Assistance = () => {
 
   useEffect(() => {
     setTitleUI("Servicios");
+    getAllFamilies();
     getAllAssistances();
     getAssistanceFamilies();
   }, []);

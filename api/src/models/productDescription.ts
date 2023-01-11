@@ -6,6 +6,8 @@ const create: any = async (
   product_id: string,
   title: string,
   subTitle: string,
+  alias: string,
+  promotional: string,
   description: string,
   territorialScope: string,
   hiringConditions: string
@@ -15,6 +17,8 @@ const create: any = async (
       product_id,
       title,
       subTitle,
+      alias,
+      promotional,
       description,
       territorialScope,
       hiringConditions,
@@ -28,10 +32,10 @@ const create: any = async (
     let query: string;
     if (resultProductDescription.rows.length > 0) {
       query =
-        "UPDATE app.productdescription SET title = $2, sub_title = $3, description = $4, territorial_scope = $5, hiring_conditions = $6 WHERE product_id = $1 RETURNING *";
+        "UPDATE app.productdescription SET title = $2, sub_title = $3, alias = $4, promotional = $5, description = $6, territorial_scope = $7, hiring_conditions = $8 WHERE product_id = $1 RETURNING *";
     } else {
       query =
-        "INSERT INTO app.productdescription(product_id, title, sub_title, description, territorial_scope, hiring_conditions) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *";
+        "INSERT INTO app.productdescription(product_id, title, sub_title, alias, promotional, description, territorial_scope, hiring_conditions) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *";
     }
 
     const result = await pool.query(query, arrayValues);
@@ -62,6 +66,8 @@ const getByProductId: any = async (lead_id: string, product_id: string) => {
       name: string;
       title: string;
       subTitle: string;
+      alias: string;
+      promotional: string;
       description: string;
       territorialScope: string;
       hiringConditions: string;
@@ -95,6 +101,8 @@ const getByProductId: any = async (lead_id: string, product_id: string) => {
       name: productResponse.name,
       title: productResponse.title,
       subTitle: productResponse.subTitle,
+      alias: productResponse.alias,
+      promotional: productResponse.promotional,
       description: productResponse.description,
       territorialScope: productResponse.territorialScope,
       hiringConditions: productResponse.hiringConditions,
@@ -115,6 +123,8 @@ const getDescription = async (lead_id: string, product_id: string) => {
         select	pro.name,
                 des.title,
                 des.sub_title,
+                des.alias,
+                des.promotional,
                 des.description,
                 des.territorial_scope,
                 des.hiring_conditions,
@@ -154,6 +164,8 @@ const getDescription = async (lead_id: string, product_id: string) => {
       name: string;
       title: string;
       subTitle: string;
+      alias: string;
+      promotional: string;
       description: string;
       territorialScope: string;
       hiringConditions: string;
@@ -166,6 +178,8 @@ const getDescription = async (lead_id: string, product_id: string) => {
       name: result.rows[0].name,
       title: result.rows[0].title,
       subTitle: result.rows[0].sub_title,
+      alias: result.rows[0].alias,
+      promotional: result.rows[0].promotional,
       description: result.rows[0].description,
       territorialScope: result.rows[0].territorial_scope,
       hiringConditions: result.rows[0].hiring_conditions,

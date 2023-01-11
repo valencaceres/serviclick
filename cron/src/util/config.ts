@@ -52,6 +52,11 @@ const config = {
         "http://localhost:3000/resume/error",
     },
   },
+  api: {
+    URL: {
+      base: "https://api.serviclick.cl/api",
+    },
+  },
   email: {
     URL: {
       send: "https://api-email.serviclick.cl/api/email/send",

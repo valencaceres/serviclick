@@ -1,0 +1,64 @@
+.info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Quicksand;
+  font-weight: 700;
+  font-size: 12px;
+  width: 260px;
+  height: 30px;
+  color: #03495c;
+}
+
+.promotional {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  font-family: Quicksand;
+  font-weight: 500;
+  font-size: 12px;
+  width: 260px;
+  height: 70px;
+  color: #03495c;
+  text-align: center;
+}
+
+.price {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Oswald;
+  font-weight: 600;
+  font-size: 16px;
+  width: 260px;
+  height: 30px;
+  color: #b4cd25;
+}
+
+.priceNormal {
+  font-family: Quicksand;
+  font-weight: 500;
+  font-size: 12px;
+  width: 260px;
+  height: 30px;
+  color: red;
+  text-align: center;
+
+  span {
+    font-weight: 500;
+    font-size: 12px;
+    width: 260px;
+    height: 30px;
+    color: red;
+    text-decoration: line-through;
+  }
+}
+
+a.link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 13px;
+  width: 260px;
+  height: 30px;
+}

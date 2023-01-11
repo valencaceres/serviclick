@@ -411,7 +411,7 @@ export {
   getProductsByBrokerIdAndFamilyId,
 };
 
-const getBrokerDataById = async (id: string) => {
+export const getBrokerDataById = async (id: string) => {
   try {
     const brokerResponse = await Broker.getById(id);
 

@@ -163,7 +163,6 @@ const getBySubscriptionId: any = async (subscription_id: string) => {
                   LEFT OUTER JOIN app.policy POL on LEA.policy_id = POL.id
                   LEFT OUTER JOIN app.customer CUS ON LEA.customer_id = CUS.id
                   LEFT OUTER JOIN app.company COM ON LEA.company_id = COM.id
-                  LEFT OUTER JOIN app.policy POL on LEA.policy_id = POL.id
         WHERE   LEA.subscription_id = $1`,
       [subscription_id]
     );

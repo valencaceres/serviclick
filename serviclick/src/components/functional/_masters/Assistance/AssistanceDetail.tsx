@@ -36,11 +36,12 @@ import {
 import ButtonIcon from "../../../ui/ButtonIcon";
 import ModalWindow from "../../../ui/ModalWindow";
 
-import { useValue, useAssistance } from "../../../../hooks";
+import { useValue, useAssistance, useFamily } from "../../../../hooks";
 import { LoadingMessage } from "../../../ui/LoadingMessage";
 
 const AssistanceDetail = ({ setEnableSave }: any) => {
   const { getValuesByFamilyId } = useValue();
+  const { list: familyList } = useFamily();
   const {
     setAssistance,
     resetAssistanceAll,
@@ -151,7 +152,7 @@ const AssistanceDetail = ({ setEnableSave }: any) => {
                 value={assistance.family?.id}
                 onChange={handleChangeFamily}
                 placeHolder=":: Seleccione familia ::"
-                data={families}
+                data={familyList}
                 dataValue="id"
                 dataText="name"
               />

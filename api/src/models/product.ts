@@ -1,6 +1,7 @@
 import pool from "../util/database";
 
 const createProduct: any = async (
+  id: string,
   family_id: string,
   name: string,
   cost: number,
@@ -13,10 +14,18 @@ const createProduct: any = async (
   currency: string
 ) => {
   try {
-    const resultProduct = await pool.query(
-      "SELECT id FROM app.product WHERE family_id = $1 and name = $2",
-      [family_id, name]
-    );
+    // const resultProduct = await pool.query(
+    //   "SELECT pro.id FROM app.product pro inner join app.productdescription des on pro.id = des.product_id WHERE pro.family_id = $1 and pro.name = $2 and des.alias = $3",
+    //   [family_id, name, alias]
+    // );
+
+    // if (resultProduct.rows.length > 0) {
+    //   query =
+    //     "UPDATE app.product SET cost = $1, issubject = $2, frequency = $3, term = $4, beneficiaries = $5, currency = $6, mininsuredcompanyprice = $7, dueday = $8 WHERE name = $9 and family_id = $10 RETURNING *";
+    // } else {
+    //   query =
+    //     "INSERT INTO app.product(cost, issubject, frequency, term, beneficiaries, currency, mininsuredcompanyprice, dueday, name, family_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *";
+    // }
 
     const arrayValues = [
       cost,
@@ -29,18 +38,45 @@ const createProduct: any = async (
       dueDay,
       name,
       family_id,
+      id,
     ];
 
-    let query: string;
-    if (resultProduct.rows.length > 0) {
-      query =
-        "UPDATE app.product SET cost = $1, issubject = $2, frequency = $3, term = $4, beneficiaries = $5, currency = $6, mininsuredcompanyprice = $7, dueday = $8 WHERE name = $9 and family_id = $10 RETURNING *";
-    } else {
-      query =
-        "INSERT INTO app.product(cost, issubject, frequency, term, beneficiaries, currency, mininsuredcompanyprice, dueday, name, family_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *";
-    }
+    let result: any;
 
-    const result = await pool.query(query, arrayValues);
+    if (id && id !== "") {
+      result = await pool.query(
+        "UPDATE app.product SET cost = $1, issubject = $2, frequency = $3, term = $4, beneficiaries = $5, currency = $6, mininsuredcompanyprice = $7, dueday = $8, name = $9, family_id = $10 WHERE id = $11 RETURNING *",
+        [
+          cost,
+          isSubject,
+          frequency,
+          term,
+          beneficiaries,
+          currency,
+          minInsuredCompanyPrice,
+          dueDay,
+          name,
+          family_id,
+          id,
+        ]
+      );
+    } else {
+      result = await pool.query(
+        `INSERT INTO app.product(cost, issubject, frequency, term, beneficiaries, currency, mininsuredcompanyprice, dueday, name, family_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`,
+        [
+          cost,
+          isSubject,
+          frequency,
+          term,
+          beneficiaries,
+          currency,
+          minInsuredCompanyPrice,
+          dueDay,
+          name,
+          family_id,
+        ]
+      );
+    }
 
     return { success: true, data: result.rows[0], error: null };
   } catch (e) {
@@ -128,6 +164,7 @@ const getProduct: any = async (id: string, agent_id: string) => {
           SELECT    pro.id,
                     MAX(pro.family_id :: text) as family_id, 
                     MAX(fam.name) as family_name,
+                    MAX(des.alias) as alias,
                     MAX(pro.name) as name, 
                     MAX(pro.cost) as cost, 
                     MAX(case when pla.type = 'customer' then pla.price else 0 end) as customerprice, 
@@ -145,6 +182,7 @@ const getProduct: any = async (id: string, agent_id: string) => {
                     SUM(case when pla.type = 'company' then pla.plan_id else 0 end) as company_plan_id
           FROM      app.product pro inner join app.family fam on pro.family_id = fam.id
                                     left outer join app.productplan pla on pro.id = pla.product_id and pla.agent_id = $2
+                                    left outer join app.productdescription des on pro.id = des.product_id
           WHERE     pro.id = $1
           GROUP     BY
                     pro.id`,
@@ -164,6 +202,7 @@ const listProducts: any = async (agent_id: string) => {
           SELECT  pro.id,
                   MAX(pro.family_id :: text) as family_id, 
                   MAX(fam.name) as family_name,
+                  MAX(des.alias) as alias,
                   MAX(pro.name) as name, 
                   MAX(pro.cost) as cost, 
                   MAX(case when pla.type = 'customer' then pla.price else 0 end) as customerprice, 
@@ -181,6 +220,7 @@ const listProducts: any = async (agent_id: string) => {
                   SUM(case when pla.type = 'company' then pla.plan_id else 0 end) as company_plan_id
           FROM    app.product pro inner join app.family fam on pro.family_id = fam.id
                                   left outer join app.productplan pla on pro.id = pla.product_id and pla.agent_id = $1
+                                  left outer join app.productdescription des on pro.id = des.product_id
           WHERE   pro.isActive IS true
           GROUP   BY
                   pro.id
@@ -255,6 +295,8 @@ const getById: any = async (id: string) => {
               pro.mininsuredcompanyprice,
               des.title,
               des.sub_title,
+              des.alias,
+              des.promotional,
               des.description,
               des.territorial_scope,
               des.hiring_conditions,
@@ -293,6 +335,8 @@ const getById: any = async (id: string) => {
         minInsuredCompanyPrice: result.rows[0].mininsuredcompanyprice,
         title: result.rows[0].title,
         subTitle: result.rows[0].sub_title,
+        alias: result.rows[0].alias,
+        promotional: result.rows[0].promotional,
         description: result.rows[0].description,
         territorialScope: result.rows[0].territorial_scope,
         hiringConditions: result.rows[0].hiring_conditions,

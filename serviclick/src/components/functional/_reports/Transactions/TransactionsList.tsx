@@ -17,7 +17,6 @@ import {
   TableDetail,
   TableRow,
   TableCell,
-  TableIcons,
   TableCellEnd,
 } from "../../../ui/Table";
 
@@ -30,21 +29,11 @@ import { isValidRut } from "../../../../utils/validations";
 
 import { monthNames } from "../../../../data/masters";
 
-import { useChannel, useStatus, useTransaction } from "../../../../hooks";
+import { useTransaction } from "../../../../hooks";
 
-const TransactionsList = ({ search }: any) => {
-  const { list: channelList } = useChannel();
-  const { statusList } = useStatus();
+const TransactionsList = ({ setSearchForm, searchForm, search }: any) => {
   const { getByFilters, resetTransactionList, transactionList } =
     useTransaction();
-
-  type SearchFormT = {
-    channelId: string;
-    clientType: string;
-    rut: string;
-    period: string;
-    statusId: string;
-  };
 
   type ResumeT = {
     records: number;
@@ -62,15 +51,9 @@ const TransactionsList = ({ search }: any) => {
     { id: "w", name: "Esta semana" },
     { id: "m", name: `${monthNames[moment().month()]} ${moment().year()}` },
     { id: "y", name: `Año ${moment().year()}` },
+    { id: "l", name: `Año ${moment().subtract(1, "year").year()}` },
+    { id: "a", name: `Todo` },
   ];
-
-  const initialDataSearchForm = {
-    channelId: "",
-    clientType: "",
-    rut: "",
-    period: "d",
-    statusId: "",
-  };
 
   const initialDataResume = {
     records: 0,
@@ -78,9 +61,6 @@ const TransactionsList = ({ search }: any) => {
     total: 0,
   };
 
-  const [searchForm, setSearchForm] = useState<SearchFormT>(
-    initialDataSearchForm
-  );
   const [resume, setResume] = useState<ResumeT>(initialDataResume);
 
   const changeSearchformValue = (field: string, value: string) => {
@@ -99,21 +79,9 @@ const TransactionsList = ({ search }: any) => {
     changeSearchformValue("rut", event.target.value);
   };
 
-  const handleClickSearch = () => {
-    resetTransactionList();
-
-    getByFilters(
-      searchForm.channelId,
-      searchForm.clientType,
-      searchForm.rut,
-      searchForm.period,
-      searchForm.statusId
-    );
-  };
-
   useEffect(() => {
     resetTransactionList();
-    handleClickSearch();
+    search();
   }, []);
 
   useEffect(() => {
@@ -138,20 +106,8 @@ const TransactionsList = ({ search }: any) => {
     <ContentCell gap="5px">
       <ContentRow gap="5px" align="center">
         <ComboBox
-          label="Canal"
-          width="230px"
-          value={searchForm.channelId}
-          onChange={(e: any) =>
-            changeSearchformValue("channelId", e.target.value)
-          }
-          placeHolder=":: Seleccione canal ::"
-          data={channelList}
-          dataValue="id"
-          dataText="name"
-        />
-        <ComboBox
           label="Tipo cliente"
-          width="230px"
+          width="250px"
           value={searchForm.clientType}
           onChange={(e: any) =>
             changeSearchformValue("clientType", e.target.value)
@@ -162,42 +118,33 @@ const TransactionsList = ({ search }: any) => {
           dataText="name"
         />
         <InputText
-          width="170px"
-          label="Rut"
+          width="150px"
+          label="Rut cliente"
           maxLength={9}
           value={searchForm.rut}
           onFocus={handleFocusRut}
           onBlur={handleBlurRut}
           onChange={(e: any) => changeSearchformValue("rut", e.target.value)}
         />
+        <InputText
+          width="320px"
+          label="Nombre cliente"
+          maxLength={9}
+          value={searchForm.name}
+          onChange={(e: any) => changeSearchformValue("name", e.target.value)}
+        />
         <ComboBox
           label="Período"
-          width="230px"
+          width="200px"
           value={searchForm.period}
           onChange={(e: any) => changeSearchformValue("period", e.target.value)}
           data={periods}
           dataValue="id"
           dataText="name"
         />
-        <ComboBox
-          label="Estado transacción"
-          width="225px"
-          value={searchForm.statusId?.toString() || ""}
-          onChange={(e: any) =>
-            changeSearchformValue("statusId", e.target.value)
-          }
-          placeHolder=":: Seleccione ::"
-          data={statusList}
-          dataValue="id"
-          dataText="name"
-        />
-        <ButtonIcon
-          iconName="search"
-          color="gray"
-          onClick={handleClickSearch}
-        />
+        <ButtonIcon iconName="search" color="gray" onClick={search} />
       </ContentRow>
-      <Table width="1149px" height="calc(100vh - 210px)">
+      <Table width="991px" height="calc(100vh - 210px)">
         <TableHeader>
           <TableCell width="69px" align="center">
             #
@@ -206,10 +153,8 @@ const TransactionsList = ({ search }: any) => {
           <TableCell width="55px">Hora</TableCell>
           <TableCell width="321px">Cliente</TableCell>
           <TableCell width="299px">Producto</TableCell>
-          <TableCell width="155px">Estado</TableCell>
           <TableCell width="129px">Monto</TableCell>
           <TableCellEnd />
-          {/* <TableCell width="49px"></TableCell> */}
         </TableHeader>
         <TableDetail>
           {transactionList.map((transaction: any, idx: number) => (
@@ -225,23 +170,15 @@ const TransactionsList = ({ search }: any) => {
               </TableCell>
               <TableCell width="321px">{transaction.contractor_name}</TableCell>
               <TableCell width="299px">{transaction.product_name}</TableCell>
-              <TableCell width="155px">
-                {transaction.subscription_status_name}
-              </TableCell>
               <TableCell width="129px" align="flex-end">
                 {currencyFormat(transaction.amount)}
               </TableCell>
-              {/* <TableCell width="45px" align="center">
-                <TableIcons>
-                  <Icon iconName="search" onClick={() => {}} />
-                </TableIcons>
-              </TableCell> */}
             </TableRow>
           ))}
         </TableDetail>
       </Table>
       <ContentRow gap="5px">
-        <ContentCellSummary>{resume.records} registros</ContentCellSummary>
+        <ContentCellSummary>{resume.records} transacciones</ContentCellSummary>
         <ContentCellSummary>
           {currencyFormat(resume.total)} Total
         </ContentCellSummary>

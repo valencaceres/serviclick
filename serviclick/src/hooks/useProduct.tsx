@@ -13,6 +13,7 @@ const useProduct = () => {
   } = useAppSelector((state) => state.productSlice);
 
   const createProduct = (
+    id: string,
     family_id: string,
     name: string,
     cost: number,
@@ -25,6 +26,8 @@ const useProduct = () => {
     minInsuredCompanyPrice: number,
     title: string,
     subTitle: string,
+    alias: string,
+    promotional: string,
     description: string,
     territorialScope: string,
     hiringConditions: string,
@@ -32,6 +35,7 @@ const useProduct = () => {
   ) => {
     dispatch(
       Product.createProduct(
+        id,
         family_id,
         name,
         cost,
@@ -44,6 +48,8 @@ const useProduct = () => {
         minInsuredCompanyPrice,
         title,
         subTitle,
+        alias,
+        promotional,
         description,
         territorialScope,
         hiringConditions,
@@ -77,6 +83,8 @@ const useProduct = () => {
     minInsuredCompanyPrice: number,
     title: string,
     subTitle: string,
+    alias: string,
+    promotional: string,
     description: string,
     territorialScope: string,
     hiringConditions: string,
@@ -97,6 +105,8 @@ const useProduct = () => {
         minInsuredCompanyPrice,
         title,
         subTitle,
+        alias,
+        promotional,
         description,
         territorialScope,
         hiringConditions,

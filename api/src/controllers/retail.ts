@@ -3,6 +3,7 @@ import { generateGenericPassword } from "../util/user";
 import { sendMail } from "../util/email";
 
 import * as Retail from "../models/retail";
+import * as RetailLegalRepresentative from "../models/retailLegalRepresentative";
 import * as RetailProduct from "../models/retailProduct";
 import * as RetailCampaign from "../models/retailCampaign";
 import * as UserRetail from "../models/userRetail";
@@ -13,8 +14,8 @@ const create = async (req: any, res: any) => {
     const {
       rut,
       name,
-      legalRepresentative,
       line,
+      fantasyName,
       address,
       district,
       email,
@@ -22,18 +23,20 @@ const create = async (req: any, res: any) => {
       logo,
       products,
       users,
+      legalRepresentatives,
     } = req.body;
 
     const retailResponse = await Retail.create(
       rut,
       name,
-      legalRepresentative,
       line,
+      fantasyName,
       address,
       district,
       email,
       phone,
-      logo
+      logo,
+      legalRepresentatives
     );
 
     if (!retailResponse.success) {
@@ -47,8 +50,38 @@ const create = async (req: any, res: any) => {
 
     const { id: retail_id, rut: retail_rut } = retailResponse.data;
 
-    // let productsRetailResponse: any = [];
-    // let usersRetailResponse: any = [];
+    if (legalRepresentatives && legalRepresentatives.length > 0) {
+      const deleteResponse = await RetailLegalRepresentative.deleteByRetailId(
+        retail_id
+      );
+
+      if (!deleteResponse.success) {
+        createLogger.error({
+          model: "retailLegalRepresentative/deleteByRetailId",
+          error: deleteResponse.error,
+        });
+        res.status(500).json({ error: deleteResponse.error });
+        return;
+      }
+
+      for (const legalRepresentative of legalRepresentatives) {
+        const { rut, name } = legalRepresentative;
+
+        if (rut && name) {
+          const legalRepresentativeResponse =
+            await RetailLegalRepresentative.create(retail_id, rut, name);
+
+          if (!legalRepresentativeResponse.success) {
+            createLogger.error({
+              model: "legalRepresentative/create",
+              error: legalRepresentativeResponse.error,
+            });
+            res.status(500).json({ error: legalRepresentativeResponse.error });
+            return;
+          }
+        }
+      }
+    }
 
     if (products.length > 0) {
       const retailProductDelete = await RetailProduct.deleteByRetailId(
@@ -65,7 +98,7 @@ const create = async (req: any, res: any) => {
       }
 
       for (const product of products) {
-        const { product_id, campaign, price, currency } = product;
+        const { product_id, campaign, price, currency, trialMonths } = product;
 
         let retailcampaign_id: string | null = null;
 
@@ -87,9 +120,27 @@ const create = async (req: any, res: any) => {
           retailcampaign_id = retailCampaign.data.id;
         }
 
+        const responsePlans = await Product.createProductPlans(
+          product_id,
+          retail_id,
+          null,
+          price.company,
+          trialMonths
+        );
+
+        if (!responsePlans.success) {
+          createLogger.error({
+            controller: "product/createProductPlans",
+            error: responsePlans.error,
+          });
+          res.status(500).json({ error: responsePlans.error });
+          return;
+        }
+
         const retailProductResponse = await RetailProduct.create(
           retail_id,
           product_id,
+          responsePlans.data?.company.id | 0,
           retailcampaign_id,
           price,
           currency
@@ -101,22 +152,6 @@ const create = async (req: any, res: any) => {
             error: retailProductResponse.error,
           });
           res.status(500).json({ error: retailProductResponse.error });
-          return;
-        }
-
-        const responsePlans = await Product.createProductPlans(
-          product_id,
-          retail_id,
-          null,
-          price.company
-        );
-
-        if (!responsePlans.success) {
-          createLogger.error({
-            controller: "product/createProductPlans",
-            error: responsePlans.error,
-          });
-          res.status(500).json({ error: responsePlans.error });
           return;
         }
 
@@ -424,17 +459,6 @@ const getProductsByRetailIdAndFamilyId = async (req: any, res: any) => {
   }
 };
 
-export {
-  create,
-  getById,
-  getByRut,
-  getAll,
-  updateLogo,
-  deleteById,
-  getFamiliesByRetailId,
-  getProductsByRetailIdAndFamilyId,
-};
-
 const getRetailDataById = async (id: string) => {
   try {
     const retailResponse = await Retail.getById(id);
@@ -486,26 +510,28 @@ const getRetailDataById = async (id: string) => {
     const {
       rut,
       name,
-      legalRepresentative,
       line,
+      fantasyName,
       address,
       district,
       email,
       phone,
       logo,
+      legalRepresentatives,
     } = retailResponse.data;
 
     const data = {
       id,
       rut,
       name,
-      legalRepresentative,
       line,
+      fantasyName,
       address,
       district,
       email,
       phone,
       logo,
+      legalRepresentatives,
       products: retailProductResponse.data,
       users: userRetailResponse.data,
     };
@@ -555,8 +581,8 @@ const getRetailDataByRut = async (rut: string) => {
     const {
       id,
       name,
-      legalRepresentative,
       line,
+      fantasyName,
       address,
       district,
       email,
@@ -592,8 +618,8 @@ const getRetailDataByRut = async (rut: string) => {
       id,
       rut,
       name,
-      legalRepresentative,
       line,
+      fantasyName,
       address,
       district,
       email,
@@ -691,4 +717,16 @@ export const sendCredentials = async (
       status: 500,
     };
   }
+};
+
+export {
+  create,
+  getById,
+  getByRut,
+  getAll,
+  updateLogo,
+  deleteById,
+  getFamiliesByRetailId,
+  getProductsByRetailIdAndFamilyId,
+  getRetailDataById,
 };

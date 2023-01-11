@@ -28,6 +28,7 @@ class App {
   }
 
   routes() {
+    this.server.use("/api/slug", reqLogger, routes.SlugRouter);
     this.server.use("/api/status", reqLogger, routes.StatusRouter);
     this.server.use("/api/user", reqLogger, routes.UserRouter);
     this.server.use("/api/userInsured", reqLogger, routes.UserInsuredRouter);

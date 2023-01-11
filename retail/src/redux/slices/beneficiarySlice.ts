@@ -94,7 +94,6 @@ export const getByRut = (rut: string) => async (dispatch: any) => {
   const { success, data, error } = await get(`beneficiary/getByRut/${rut}`);
 
   if (!success) {
-    console.log(error);
     return false;
   }
 

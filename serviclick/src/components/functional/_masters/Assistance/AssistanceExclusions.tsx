@@ -30,9 +30,9 @@ const AssistanceExclusions = ({
     <ContentCell gap="30px" align="center">
       <TextArea
         id="txtName"
-        label="Prestación"
-        width="500px"
-        height="100px"
+        label="Exclusión"
+        width="700px"
+        height="200px"
         value={exclusionValue.description}
         onChange={(e: any) =>
           setExclusionValue({ id: "", description: e.target.value })

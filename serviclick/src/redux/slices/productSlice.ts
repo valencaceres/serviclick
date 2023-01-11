@@ -28,6 +28,8 @@ export type ProductT = {
   minInsuredCompanyPrice: number;
   title: string;
   subTitle: string;
+  alias: string;
+  promotional: string;
   description: string;
   territorialScope: string;
   hiringConditions: string;
@@ -63,6 +65,8 @@ export const initialState: StateT = {
     minInsuredCompanyPrice: 0,
     title: "",
     subTitle: "",
+    alias: "",
+    promotional: "",
     description: "",
     territorialScope: "",
     hiringConditions: "",
@@ -122,6 +126,7 @@ export default productSlice.reducer;
 
 export const createProduct =
   (
+    id: string,
     family_id: string,
     name: string,
     cost: number,
@@ -134,6 +139,8 @@ export const createProduct =
     minInsuredCompanyPrice: number,
     title: string,
     subTitle: string,
+    alias: string,
+    promotional: string,
     description: string,
     territorialScope: string,
     hiringConditions: string,
@@ -142,6 +149,7 @@ export const createProduct =
   async (dispatch: any) => {
     dispatch(setLoading(true));
     const { data } = await apiInstance.post(`/product/create`, {
+      id,
       family_id,
       name,
       cost,
@@ -154,6 +162,8 @@ export const createProduct =
       minInsuredCompanyPrice,
       title,
       subTitle,
+      alias,
+      promotional,
       description,
       territorialScope,
       hiringConditions,
@@ -190,6 +200,8 @@ export const updateProduct =
     minInsuredCompanyPrice: number,
     title: string,
     subTitle: string,
+    alias: string,
+    promotional: string,
     description: string,
     territorialScope: string,
     hiringConditions: string,
@@ -211,6 +223,8 @@ export const updateProduct =
       minInsuredCompanyPrice,
       title,
       subTitle,
+      alias,
+      promotional,
       description,
       territorialScope,
       hiringConditions,

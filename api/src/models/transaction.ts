@@ -40,92 +40,84 @@ const getByFiltersModel: any = async (
     let sqlWhere = "";
 
     if (channel_id !== "") {
-      sqlWhere += ` and channel_id = '${channel_id}'`;
+      sqlWhere += ` and case when age.id is null then case when bro.id is null then ret.id else bro.id end else age.id end = '${channel_id}'`;
     }
 
     if (client_type !== "") {
-      sqlWhere += ` and contractor_type = '${client_type}'`;
+      sqlWhere += ` and case when cus.rut is null then 'c' else 'p' end = '${client_type}'`;
     }
 
     if (rut !== "") {
-      sqlWhere += ` and contractor_rut = '${rut}'`;
+      sqlWhere += ` and case when com.companyname is null then cus.rut else com.rut end = '${rut}'`;
     }
 
     if (period_id !== "") {
       switch (period_id) {
+        case "l":
+          sqlWhere += ` and EXTRACT(YEAR FROM pay.date) = ${moment()
+            .subtract(1, "year")
+            .format("YYYY")}`;
+          break;
         case "y":
-          sqlWhere += ` and EXTRACT(YEAR FROM datetime) = ${moment().format(
+          sqlWhere += ` and EXTRACT(YEAR FROM pay.date) = ${moment().format(
             "YYYY"
           )}`;
           break;
         case "m":
-          sqlWhere += ` and to_char(datetime, 'YYYYMM') = '${moment().format(
+          sqlWhere += ` and to_char(pay.date, 'YYYYMM') = '${moment().format(
             "YYYYMM"
           )}'`;
           break;
         case "w":
-          sqlWhere += ` and to_char(datetime, 'YYYYMMDD') BETWEEN '${moment()
+          sqlWhere += ` and to_char(pay.date, 'YYYYMMDD') BETWEEN '${moment()
             .isoWeekday(1)
             .format("YYYYMMDD")}' and '${moment()
             .isoWeekday(7)
             .format("YYYYMMDD")}'`;
           break;
         case "d":
-          sqlWhere += ` and to_char(datetime, 'YYYYMMDD') = '${moment().format(
+          sqlWhere += ` and to_char(pay.date, 'YYYYMMDD') = '${moment().format(
             "YYYYMMDD"
           )}'`;
           break;
       }
     }
 
-    if (status_id !== "") {
-      sqlWhere += ` and status_id = '${status_id}'`;
-    }
+    // if (status_id !== "") {
+    //   sqlWhere += ` and status_id = '${status_id}'`;
+    // }
     // pro_rated_sub = True
     const result = await pool.query(`
-      select 	datetime,
-              to_char(datetime, 'DD/MM/YYYY') as date,
-              to_char(datetime, 'HH24:MI') as time,
-              channel_id,
-              channel_name,
-              contractor_rut,
-              contractor_name,
-              product_name,
-              subscription_status_id,
-              subscription_status_name,
-              amount
-      from 	(
-        select  max(case when ch1.id is null then case when ch2.id is null then ch3.id else ch2.id end else ch1.id end :: text) as channel_id,
-                max(case when ch1.name is null then case when ch2.name is null then ch3.name else ch2.name end else ch1.name end) as channel_name,
-                max(prd.name) as product_name,
-                max(case when cus.rut is null then 'c' else 'p' end) as contractor_type,
-                max(case when com.companyname is null then cus.rut else com.rut end) as contractor_rut,
-                max(case when com.companyname is null then concat(cus.name, ' ', cus.paternallastname, ' ', cus.maternallastname) else com.companyname end) as contractor_name,
-                max(case when com.companyname is null then cus.email else com.email end) as contractor_email,
-                max(sta.status_id) as subscription_status_id,
-                max(sta.name) as subscription_status_name,
-                max(case when not pay.date is null then pay.date else case when not sus.last_payment_date is null then sus.last_payment_date else case when not sus.date is null then sus.date else lea.createdate end end end) as datetime,
-                max(case when pay.amount is null then 0 else pay.amount end) as amount
-        from    app.lead lea
-                  left outer join app.customer cus on lea.customer_id = cus.id
-                  left outer join app.company com on lea.company_id = com.id
-                  left outer join app.subscription sus on lea.subscription_id = sus.subscription_id
-                  left outer join app.leadproduct pro on lea.id = pro.lead_id
-                  left outer join app.product prd on pro.product_id = prd.id
-                  left outer join app.payment pay on sus.subscription_id = pay.subscription_id 
-                  left outer join app.status sta on sus.status_id = sta.status_id
-                  left outer join app.agent age on lea.agent_id = age.id
-                  left outer join app.channel ch1 on age.channel_id = ch1.id
-                  left outer join app.broker bro on lea.agent_id = bro.id
-                  left outer join app.channel ch2 on bro.channel_id = ch2.id
-                  left outer join app.retail ret on lea.agent_id = ret.id
-                  left outer join app.channel ch3 on ret.channel_id = ch3.id
-        where   sus.status_id in (1, 4, 6)
-        group 	by
-                lea.id) as leads
-      where   amount >=0 ${sqlWhere}
-      order 	by
-              datetime desc`);
+      select	pay.date,
+              to_char(pay.date, 'DD/MM/YYYY') as date,
+              to_char(pay.date, 'HH24:MI') as time,
+              case when age.id is null then case when bro.id is null then ret.id else bro.id end else age.id end as agent_id,
+              case when age.name is null then case when bro.name is null then ret.name else bro.name end else age.name end as agent_name,
+              prd.name product_name,
+              case when cus.rut is null then 'c' else 'p' end as contractor_type,
+              case when com.companyname is null then cus.rut else com.rut end as contractor_rut,
+              case when com.companyname is null then concat(cus.name, ' ', cus.paternallastname, ' ', cus.maternallastname) else com.companyname end as contractor_name,
+              case when com.companyname is null then cus.address else com.address end as contractor_address,
+              case when com.companyname is null then cus.district else com.address end as contractor_disrtrict,
+              case when com.companyname is null then cus.email else com.email end as contractor_email,
+              case when com.companyname is null then cus.phone else com.phone end as contractor_phone,
+              lea.subscription_id,
+              pay.amount
+      from	  app.lead lea
+                inner join app.policy pol on lea.policy_id = pol.id
+                left outer join app.customer cus on lea.customer_id = cus.id
+                left outer join app.company com on lea.company_id = com.id
+                left outer join app.subscription sus on lea.subscription_id = sus.subscription_id
+                left outer join app.leadproduct pro on lea.id = pro.lead_id
+                left outer join app.product prd on pro.product_id = prd.id
+                left outer join app.payment pay on sus.subscription_id = pay.subscription_id 
+                left outer join app.agent age on lea.agent_id = age.id
+                left outer join app.broker bro on lea.agent_id = bro.id
+                left outer join app.retail ret on lea.agent_id = ret.id
+      where   pay.amount > 0 ${sqlWhere}
+      order	  by
+              pay.date desc,
+              contractor_name`);
 
     return { success: true, data: result.rows, error: null };
   } catch (e) {

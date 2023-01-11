@@ -3,8 +3,8 @@ import pool from "../util/database";
 const create: any = async (
   rut: string,
   name: string,
-  legalrepresentative: string,
   line: string,
+  fantasyName: string,
   address: string,
   district: string,
   email: string,
@@ -15,8 +15,8 @@ const create: any = async (
     const arrayValues = [
       rut,
       name,
-      legalrepresentative,
       line,
+      fantasyName,
       address,
       district,
       email,
@@ -34,8 +34,8 @@ const create: any = async (
       query = `
         UPDATE  app.retail
         SET     name = $2,
-                legalrepresentative = $3,
-                line = $4,
+                line = $3,
+                fantasyname = $4,
                 address = $5,
                 district = $6,
                 email = $7,
@@ -48,8 +48,8 @@ const create: any = async (
         INSERT  INTO app.retail(
                 rut,
                 name,
-                legalrepresentative,
                 line,
+                fantasyname,
                 address,
                 district,
                 email,
@@ -59,19 +59,9 @@ const create: any = async (
     }
 
     const result = await pool.query(query, arrayValues);
+    const { id } = result.rows[0];
 
-    const data = {
-      id: result.rows[0].id,
-      rut: result.rows[0].rut,
-      name: result.rows[0].name,
-      legalRepresentative: result.rows[0].legalrepresentative,
-      line: result.rows[0].line,
-      address: result.rows[0].address,
-      district: result.rows[0].district,
-      email: result.rows[0].email,
-      phone: result.rows[0].phone,
-      logo: result.rows[0].logo,
-    };
+    const { data } = await getById(id);
 
     return { success: true, data, error: null };
   } catch (e) {
@@ -83,47 +73,58 @@ const getById: any = async (id: string) => {
   try {
     const result = await pool.query(
       `
-        SELECT  id,
-                rut,
-                name,
-                legalrepresentative,
-                line,
-                address,
-                district,
-                email,
-                phone,
-                logo
-        FROM    app.retail
-        WHERE   id = $1`,
+        SELECT  ret.id,
+                ret.rut,
+                ret.name,
+                ret.line,
+                ret.fantasyname,
+                ret.address,
+                ret.district,
+                ret.email,
+                ret.phone,
+                ret.logo,
+                leg.rut as legalrepresentative_rut,
+                leg.name as legalrepresentative_name
+        FROM    app.retail ret
+                  left outer join app.retaillegalrepresentative leg on ret.id = leg.retail_id
+        WHERE   ret.id = $1
+        ORDER   BY
+                leg.name`,
       [id]
     );
 
     const {
       rut,
       name,
-      legalrepresentative,
       line,
+      fantasyname,
       address,
       district,
       email,
       phone,
       logo,
-    } = result.rows[0] || [];
+    } = result.rows[0] || {};
 
     const data = {
       id,
       rut,
       name,
-      legalRepresentative: legalrepresentative,
       line,
+      fantasyName: fantasyname,
       address,
       district,
       email,
       phone,
       logo,
+      legalRepresentatives: result.rows.map((item: any) => {
+        return {
+          rut: item.legalrepresentative_rut,
+          name: item.legalrepresentative_name,
+        };
+      }),
     };
 
-    return { success: true, data: result.rows[0] ? data : null, error: null };
+    return { success: true, data, error: null };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
   }
@@ -136,8 +137,8 @@ const getByRut: any = async (rut: string) => {
         SELECT  id,
                 rut,
                 name,
-                legalrepresentative,
                 line,
+                fantasyname,
                 address,
                 district,
                 email,
@@ -151,26 +152,32 @@ const getByRut: any = async (rut: string) => {
     const {
       id,
       name,
-      legalrepresentative,
       line,
+      fantasyname,
       address,
       district,
       email,
       phone,
       logo,
-    } = result.rows[0] || [];
+    } = result.rows[0] || {};
 
     const data = {
       id,
       rut,
       name,
-      legalRepresentative: legalrepresentative,
       line,
+      fantasyName: fantasyname,
       address,
       district,
       email,
       phone,
       logo,
+      legalRepresentatives: result.rows.map((item: any) => {
+        return {
+          rut: item.legalrepresentative_rut,
+          name: item.legalrepresentative_name,
+        };
+      }),
     };
 
     return { success: true, data, error: null };
@@ -186,8 +193,8 @@ const getAll: any = async () => {
         SELECT  id,
                 rut,
                 name,
-                legalrepresentative,
                 line,
+                fantasyname,
                 address,
                 district,
                 email,
@@ -201,8 +208,8 @@ const getAll: any = async () => {
         id,
         rut,
         name,
-        legalrepresentative,
         line,
+        fantasyname,
         address,
         district,
         email,
@@ -212,8 +219,8 @@ const getAll: any = async () => {
         id,
         rut,
         name,
-        legalRepresentative: legalrepresentative,
         line,
+        fantasyName: fantasyname,
         address,
         district,
         email,

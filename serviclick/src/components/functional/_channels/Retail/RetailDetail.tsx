@@ -27,11 +27,8 @@ const RetailDetail = ({ setEnableButtonSave, isSaving, setIsSaving }: any) => {
   const initialDataRetailForm = {
     rut: { value: "", isValid: false },
     name: { value: "", isValid: false },
-    legalRepresentative: {
-      value: "",
-      isValid: false,
-    },
     line: { value: "", isValid: false },
+    fantasyName: { value: "", isValid: false },
     address: { value: "", isValid: false },
     district: { value: "", isValid: false },
     email: { value: "", isValid: false },
@@ -44,9 +41,11 @@ const RetailDetail = ({ setEnableButtonSave, isSaving, setIsSaving }: any) => {
     name: { value: "", isValid: true },
     campaign: { value: "", isValid: true },
     price: {
+      normal: { value: 0, isValid: false },
       company: { value: 0, isValid: false },
     },
     currency: { value: "", isValid: true },
+    trialMonths: { value: 0, isValid: true },
   };
 
   const initialDataRetailUserForm = {
@@ -80,9 +79,11 @@ const RetailDetail = ({ setEnableButtonSave, isSaving, setIsSaving }: any) => {
       name: { value: item.name, isValid: true },
       campaign: { value: item.campaign, isValid: true },
       price: {
+        normal: { value: item.price.normal, isValid: true },
         company: { value: item.price.company, isValid: true },
       },
       currency: { value: item.currency, isValid: true },
+      trialMonths: { value: item.trialMonths, isValid: true },
     });
     setShowModalProducts(true);
   };
@@ -138,8 +139,10 @@ const RetailDetail = ({ setEnableButtonSave, isSaving, setIsSaving }: any) => {
           name: retailProductForm.name.value,
           campaign: retailProductForm.campaign.value,
           price: {
+            normal: retailProductForm.price.normal.value,
             company: retailProductForm.price.company.value,
           },
+          trialMonths: retailProductForm.trialMonths.value,
           currency: "P",
         },
       ],
@@ -244,7 +247,7 @@ const RetailDetail = ({ setEnableButtonSave, isSaving, setIsSaving }: any) => {
           Se ha registrado la información correctamente
         </SuccessMessage>
       ) : (
-        <p>Espere</p>
+        <p></p>
       )}
     </Fragment>
   );

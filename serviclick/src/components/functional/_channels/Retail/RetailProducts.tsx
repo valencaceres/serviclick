@@ -24,10 +24,9 @@ const RetailProducts = ({ addNewProduct, editProduct, deleteProduct }: any) => {
 
   return (
     <ContentCell gap="5px">
-      <Table width="739px" height="200px">
+      <Table width="739px" height="255px">
         <TableHeader>
-          <TableCell width="300px">Producto</TableCell>
-          <TableCell width="252px">Campaña</TableCell>
+          <TableCell width="552px">Producto</TableCell>
           <TableCell width="100px">Precio</TableCell>
           <TableCell width="68px"></TableCell>
           <TableCellEnd />
@@ -35,8 +34,7 @@ const RetailProducts = ({ addNewProduct, editProduct, deleteProduct }: any) => {
         <TableDetail>
           {retail.products.map((item: any, idx: number) => (
             <TableRow key={idx}>
-              <TableCell width="300px">{item.name}</TableCell>
-              <TableCell width="252px">{item.campaign}</TableCell>
+              <TableCell width="552px">{item.name}</TableCell>
               <TableCell width="100px" align="right">
                 $
                 {parseInt(item.price.company)

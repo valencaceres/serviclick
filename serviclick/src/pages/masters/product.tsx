@@ -66,6 +66,7 @@ const Product = () => {
   const handleClickSave = () => {
     setIsSaving(true);
     createProduct(
+      product.id,
       product.family_id,
       product.name,
       product.cost,
@@ -78,6 +79,8 @@ const Product = () => {
       product.minInsuredCompanyPrice,
       product.title,
       product.subTitle,
+      product.alias,
+      product.promotional,
       product.description,
       product.territorialScope,
       product.hiringConditions,

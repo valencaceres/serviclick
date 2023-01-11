@@ -2,13 +2,14 @@ import moment from "moment";
 
 import createLogger from "../util/logger";
 import * as cronModel from "../models/cron";
+import * as Subscription from "../models/subscription";
 import * as Lead from "../models/lead";
 import * as Payment from "../models/payment";
 import * as Policy from "../models/policy";
 
 import config from "../util/config";
 import axiosMonitored from "../util/axios";
-import { apiReveniu } from "../util/api";
+import { apiReveniu, apiServiClick } from "../util/api";
 
 interface IPayment {
   payment_id: number;
@@ -40,25 +41,41 @@ const process = async () => {
     let subscriptions: ISubscriptionResume[] = [];
 
     for (const process of cronResponse.data) {
-      const { subscription_id, event } = process;
+      const { id: cron_id, subscription_id, event } = process;
+
+      if (event === "subscription_activated") {
+        const cronResponse = await cronModel.process(cron_id);
+
+        if (!cronResponse.success) {
+          createLogger.error({
+            model: "cron/process",
+            error: cronResponse.error,
+          });
+          return;
+        }
+
+        createLogger.info({
+          model: "reveniu/createPaymentModel",
+          message: {
+            subscription_id,
+            date: cronResponse.data.processingdate,
+            success: true,
+          },
+        });
+      }
+
       if (event === "subscription_payment_succeeded") {
         const subscriptionReveniuResponse = await apiReveniu.get(
           `/subscriptions/${subscription_id}`
         );
-        // const subscriptionReveniuResponse = await axiosMonitored(
-        //   "get",
-        //   `${config.reveniu.URL.subscription}${subscription_id}`,
-        //   null,
-        //   config.reveniu.apiKey
-        // );
 
-        // if (!subscriptionReveniuResponse.success) {
-        //   createLogger.error({
-        //     url: `${config.reveniu.URL.subscription}${subscription_id}`,
-        //     error: subscriptionReveniuResponse.error,
-        //   });
-        //   return;
-        // }
+        if (subscriptionReveniuResponse.status !== 200) {
+          createLogger.error({
+            url: `${config.reveniu.URL.base}/subscriptions/${subscription_id}`,
+            error: subscriptionReveniuResponse.statusText,
+          });
+          return;
+        }
 
         const {
           status: status_id,
@@ -69,20 +86,9 @@ const process = async () => {
         } = subscriptionReveniuResponse.data;
         const { date: last_payment_date, status } = last_payment;
 
-        const paymentReveniuResponse = await axiosMonitored(
-          "get",
-          `${config.reveniu.URL.subscription}${subscription_id}/payments`,
-          null,
-          config.reveniu.apiKey
+        const paymentReveniuResponse = await apiReveniu.get(
+          `/subscriptions/${subscription_id}/payments`
         );
-
-        if (!paymentReveniuResponse.success) {
-          createLogger.error({
-            url: `${config.reveniu.URL.subscription}${subscription_id}/payments`,
-            error: paymentReveniuResponse.error,
-          });
-          return;
-        }
 
         const { payments } = paymentReveniuResponse.data;
 
@@ -98,7 +104,7 @@ const process = async () => {
             date: moment(last_payment_date).isValid()
               ? moment(last_payment_date).local().format()
               : null,
-            success: status === 0,
+            success: status === "0",
           },
           payments: payments
             .filter((payment: any) => payment.gateway_response === "0")
@@ -117,61 +123,105 @@ const process = async () => {
             }),
         };
 
-        //   for (const payment of subscriptionData.payments) {
-        //     if (payment.date) {
-        //       const paymentResponse = await Payment.createPaymentModel(
-        //         payment.payment_id,
-        //         payment.date,
-        //         subscription_id,
-        //         payment.amount,
-        //         payment.buy_order,
-        //         payment.credit_card_type,
-        //         payment.is_recurrent,
-        //         payment.gateway_response
-        //       );
+        for (const payment of subscriptionData.payments) {
+          if (payment.date) {
+            const paymentResponse = await Payment.createPaymentModel(
+              payment.payment_id,
+              payment.date,
+              subscription_id,
+              payment.amount,
+              payment.buy_order,
+              payment.credit_card_type,
+              payment.is_recurrent,
+              payment.gateway_response
+            );
 
-        //       if (!paymentResponse.success) {
-        //         createLogger.error({
-        //           model: "reveniu/createPaymentModel",
-        //           error: paymentResponse.error,
-        //         });
-        //         return;
-        //       }
-        //     }
-        //   }
+            if (!paymentResponse.success) {
+              createLogger.error({
+                model: "reveniu/createPaymentModel",
+                error: paymentResponse.error,
+              });
+              return;
+            }
 
-        //   const leadResponse = Lead.getPolicyBySubscriptionId(subscription_id);
+            if (paymentResponse.data) {
+              const subscriptionResponse = await Subscription.updateLastPayment(
+                subscription_id
+              );
 
-        //   if (!leadResponse.success) {
-        //     createLogger.error({
-        //       model: `lead/getPolicyBySubscriptionId`,
-        //       error: leadResponse.error,
-        //     });
-        //     return;
-        //   }
+              if (!subscriptionResponse.success) {
+                createLogger.error({
+                  model: "subscription/updateLastPayment",
+                  error: subscriptionResponse.error,
+                });
+                return;
+              }
 
-        //   const { id: policy_id, lack } = leadResponse.data;
+              const cronResponse = await cronModel.process(cron_id);
 
-        //   if (!policy_id) {
-        //     const policyResponse = Policy.create(lack);
+              if (!cronResponse.success) {
+                createLogger.error({
+                  model: "cron/process",
+                  error: cronResponse.error,
+                });
+                return;
+              }
 
-        //     if (!policyResponse.success) {
-        //       createLogger.error({
-        //         model: `policy/create`,
-        //         error: policyResponse.error,
-        //       });
-        //       return;
-        //     }
+              createLogger.info({
+                model: "reveniu/createPaymentModel",
+                message: {
+                  subscription_id,
+                  date: payment.date,
+                  success: true,
+                },
+              });
+            }
+          }
+        }
 
-        //     axiosMonitored(
-        //       "post",
-        //       config.webHook.URL.subscriptionActivated,
-        //       { subscription_id },
-        //       config.apiKey
-        //     );
-        //   }
+        const leadResponse = await Lead.getPolicyBySubscriptionId(
+          subscription_id
+        );
 
-        //   subscriptions.push({ subscription_id: subscription_id, payments });
+        if (!leadResponse.success) {
+          createLogger.error({
+            model: `lead/getPolicyBySubscriptionId`,
+            error: leadResponse.error,
+          });
+          return;
+        }
+
+        const {
+          id: lead_id,
+          policy_id,
+          policy_createdate,
+          policy_startdate,
+          lack,
+        } = leadResponse.data;
+
+        if (!policy_id) {
+          const policyResponse = await Policy.create(
+            lead_id,
+            policy_createdate,
+            policy_startdate,
+            lack
+          );
+
+          if (!policyResponse.success) {
+            createLogger.error({
+              model: `policy/create`,
+              error: policyResponse.error,
+            });
+            return;
+          }
+
+          const paymentReveniuResponse = await apiServiClick.post(
+            "/webHook/subscriptionActivated",
+            { subscription_id }
+          );
+        }
+
+        subscriptions.push({ subscription_id: subscription_id, payments });
       }
     }
 

@@ -109,9 +109,9 @@ const ProductList = ({ editProduct, deleteProduct }: any) => {
             <TableCell width="70px" align="center">
               #
             </TableCell>
-            <TableCell width="260px">Familia</TableCell>
+            <TableCell width="200px">Familia</TableCell>
+            <TableCell width="150px">Alianza</TableCell>
             <TableCell width="350px">Nombre</TableCell>
-            <TableCell width="90px">Día pago</TableCell>
             <TableCell width="80px">Afecto</TableCell>
             <TableCell width="68px"></TableCell>
             <TableCellEnd />
@@ -122,11 +122,11 @@ const ProductList = ({ editProduct, deleteProduct }: any) => {
                 <TableCell width="70px" align="center">
                   {idx + 1}
                 </TableCell>
-                <TableCell width="260px">{product.family_name}</TableCell>
-                <TableCell width="350px">{product.name}</TableCell>
-                <TableCell width="90px" align="center">
-                  {product.dueDay === 0 ? "" : product.dueDay}
+                <TableCell width="200px">{product.family_name}</TableCell>
+                <TableCell width="150px" align="left">
+                  {product.alias}
                 </TableCell>
+                <TableCell width="350px">{product.name}</TableCell>
                 <TableCell width="80px" align="center">
                   {product.isSubject ? "SI" : ""}
                 </TableCell>

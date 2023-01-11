@@ -1,0 +1,22 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 300px;
+
+  h2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: Tahoma;
+    font-size: 19px;
+    font-weight: bold;
+    width: 260px;
+    height: 70px;
+    color: #03495c;
+    text-align: center;
+    text-transform: uppercase;
+  }
+}

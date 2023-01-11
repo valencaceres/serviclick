@@ -16,9 +16,10 @@ export const _selectAll = (_where: string) => `
                     com.district,
                     com.email,
                     com.phone,
-                    case when lea.paymenttype_code in ('A', 'I') then 1 else 0 end as active_product
-            from 	app.company com
+                    case when not pol.id is null then 1 else 0 end as active_product
+            from        app.company com
                         left outer join app.lead lea on lea.company_id = com.id and lea.paymenttype_code in ('A', 'I')
+                        left outer join app.policy pol on lea.policy_id = pol.id
                         
             union   all
             
@@ -30,10 +31,11 @@ export const _selectAll = (_where: string) => `
                     com.district,
                     com.email,
                     com.phone,
-                    case when sus.status_id in (1, 2, 3, 4, 6) then 1 else 0 end as active_product
+                    case when not pol.id is null then 1 else 0 end as active_product
             from 	app.company com
                         left outer join app.lead lea on lea.company_id = com.id
                         left outer join app.subscription sus on lea.subscription_id = sus.subscription_id
+                        left outer join app.policy pol on lea.policy_id = pol.id
                         
             union   all
                     
@@ -45,9 +47,10 @@ export const _selectAll = (_where: string) => `
                     cus.district,
                     cus.email,
                     cus.phone,
-                    case when lea.paymenttype_code in ('A', 'I') then 1 else 0 end as active_product
+                    case when not pol.id is null then 1 else 0 end as active_product
             from 	app.customer cus
                         left outer join app.lead lea on lea.customer_id = cus.id and lea.paymenttype_code in ('A', 'I')
+                        left outer join app.policy pol on lea.policy_id = pol.id
                         
             union   all
                         
@@ -59,10 +62,11 @@ export const _selectAll = (_where: string) => `
                     cus.district,
                     cus.email,
                     cus.phone,
-                    case when sus.status_id in (1, 2, 3, 4, 6) then 1 else 0 end as active_product
+                    case when not pol.id is null then 1 else 0 end as active_product
             from 	app.customer cus
                         left outer join app.lead lea on lea.customer_id = cus.id
-                        left outer join app.subscription sus on lea.subscription_id = sus.subscription_id) as contractor
+                        left outer join app.subscription sus on lea.subscription_id = sus.subscription_id
+                        left outer join app.policy pol on lea.policy_id = pol.id) as contractor
     where   active_product >= 0 ${_where}
     group   by
             id

@@ -42,6 +42,20 @@ const RetailProductsItem = ({
     });
   };
 
+  const handleChangeNormalPrice = (event: any) => {
+    setRetailProductForm({
+      ...retailProductForm,
+      price: {
+        ...retailProductForm.price,
+        normal: {
+          value: event.target.value,
+          isValid:
+            event.target.value !== "" && parseInt(event.target.value) > 0,
+        },
+      },
+    });
+  };
+
   const handleChangeCompanyPrice = (event: any) => {
     setRetailProductForm({
       ...retailProductForm,
@@ -52,6 +66,16 @@ const RetailProductsItem = ({
           isValid:
             event.target.value !== "" && parseInt(event.target.value) > 0,
         },
+      },
+    });
+  };
+
+  const handleChangeTrialMonths = (event: any) => {
+    setRetailProductForm({
+      ...retailProductForm,
+      trialMonths: {
+        value: parseInt(event.target.value ? event.target.value : "0"),
+        isValid: event.target.value !== "" && parseInt(event.target.value) > 0,
       },
     });
   };
@@ -75,32 +99,51 @@ const RetailProductsItem = ({
         <ComboBox
           id="cmbProduct"
           label="Producto"
-          width="400px"
+          width="470px"
           value={retailProductForm.product_id.value}
           onChange={handleChangeProduct}
           placeHolder=":: Seleccione Producto ::"
-          data={productList}
+          data={productList.map((item: any) => {
+            return { id: item.id, name: item.name + " (" + item.alias + ")" };
+          })}
           dataValue="id"
           dataText="name"
         />
-        <InputText
+        {/* <InputText
           label="Campaña"
-          width="100%"
+          width="450px"
           value={retailProductForm.campaign.value}
           onChange={handleChangeCampaing}
           isValid={retailProductForm.campaign.isValid}
-        />
+        /> */}
         <ContentRow gap="5px">
           <InputText
-            label="Precio ($)"
-            width="100%"
+            label="Precio Normal ($)"
+            width="170px"
+            type="number"
+            maxLength={6}
+            value={retailProductForm.price.normal.value}
+            onChange={handleChangeNormalPrice}
+            isValid={retailProductForm.price.normal.isValid}
+          />
+          <InputText
+            label="Precio Oferta ($)"
+            width="170px"
             type="number"
             maxLength={6}
             value={retailProductForm.price.company.value}
             onChange={handleChangeCompanyPrice}
             isValid={retailProductForm.price.company.isValid}
           />
-          <div style={{ width: "100%" }}></div>
+          <InputText
+            label="Meses gratis"
+            width="120px"
+            type="number"
+            maxLength={6}
+            value={retailProductForm.trialMonths.value}
+            onChange={handleChangeTrialMonths}
+            isValid={retailProductForm.trialMonths.isValid}
+          />
         </ContentRow>
       </ContentCell>
       <Button

@@ -1,4 +1,4 @@
-import { useEffect, Fragment } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
 
 import FloatMenu from "../../components/ui/FloatMenu";
@@ -9,18 +9,55 @@ import {
   TransactionsList,
 } from "../../components/functional/_reports/Transactions";
 
-import { useUI, useChannel, useStatus } from "../../hooks";
+import { useUI, useStatus, useTransaction } from "../../hooks";
+
+type SearchFormT = {
+  channelId: string;
+  clientType: string;
+  rut: string;
+  name: string;
+  period: string;
+  statusId: string;
+};
 
 const Transactions = () => {
   const router = useRouter();
 
+  const initialDataSearchForm = {
+    channelId: "",
+    clientType: "",
+    rut: "",
+    name: "",
+    period: "y",
+    statusId: "",
+  };
+
   const { setTitleUI } = useUI();
-  const { listAll: getAllChannels } = useChannel();
   const { getAllStatus } = useStatus();
+  const { resetTransactionList, getByFilters } = useTransaction();
+
+  const [searchForm, setSearchForm] = useState<SearchFormT>(
+    initialDataSearchForm
+  );
+
+  const handleClickHome = () => {
+    router.push("/");
+  };
+
+  const handleClickSearch = () => {
+    resetTransactionList();
+
+    getByFilters(
+      searchForm.channelId,
+      searchForm.clientType,
+      searchForm.rut,
+      searchForm.period,
+      searchForm.statusId
+    );
+  };
 
   useEffect(() => {
     setTitleUI("Transacciones");
-    getAllChannels();
     getAllStatus();
   }, []);
 
@@ -36,10 +73,14 @@ const Transactions = () => {
     </Fragment>
   ) : (
     <Fragment>
-      <TransactionsList />
+      <TransactionsList
+        setSearchForm={setSearchForm}
+        searchForm={searchForm}
+        search={handleClickSearch}
+      />
       <FloatMenu>
-        <ButtonIcon iconName="home" />
-        <ButtonIcon iconName="cloud_download" />
+        <ButtonIcon iconName="home" onClick={handleClickHome} />
+        <ButtonIcon iconName="refresh" onClick={handleClickSearch} />
       </FloatMenu>
     </Fragment>
   );

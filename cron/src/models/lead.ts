@@ -24,18 +24,23 @@ const getPolicyBySubscriptionId: any = async (subscription_id: number) => {
     const result = await pool.query(
       ` select 	lea.id,
                 max(lea.policy_id :: text) as policy_id,
+                max(sub.last_payment_date :: date) as policy_createdate,
+                min(sub.last_payment_date :: date + pas.lack) as policy_startdate,
                 min(pas.lack) as lack
         from 	  app.lead lea
                   inner join app.leadproduct lpr on lea.id = lpr.lead_id
                   inner join app.productassistance pas on lpr.product_id = pas.product_id
-        where 	lea.subscription_id = 74340
+                  inner join app.subscription sub on lea.subscription_id = sub.subscription_id
+        where 	lea.subscription_id = $1 and
+                sub.last_payment_success is true
         group   by
                 lea.id`,
       [subscription_id]
     );
+
     return {
       success: true,
-      data: result.rows,
+      data: result.rows[0],
       error: null,
     };
   } catch (e) {
