@@ -22,6 +22,12 @@ type ProductT = {
   company_plan_id: number;
 };
 
+type DiscountT = {
+  type: string;
+  percent: number;
+  cicles: number;
+};
+
 const createProduct = async (req: any, res: any) => {
   const {
     id: product_id,
@@ -135,13 +141,14 @@ const createProduct = async (req: any, res: any) => {
 };
 
 const createPlans = async (req: any, res: any) => {
-  const { product_id, agent_id, price } = req.body;
+  const { product_id, agent_id, price, discount } = req.body;
 
   const responsePlans = await createProductPlans(
     product_id,
     agent_id,
     price.customer,
-    price.company
+    price.company,
+    discount
   );
 
   if (!responsePlans.success) {
@@ -162,12 +169,13 @@ const createPlans = async (req: any, res: any) => {
 };
 
 const assignPrices = async (req: any, res: any) => {
-  const { id, agent_id, customerprice, companyprice } = req.body;
+  const { id, agent_id, customerprice, companyprice, discount } = req.body;
   const responsePlans = await createProductPlans(
     id,
     agent_id,
     customerprice,
-    companyprice
+    companyprice,
+    discount
   );
 
   if (!responsePlans.success) {
@@ -560,10 +568,8 @@ const createProductPlans = async (
   agent_id: string,
   customerprice: number | null,
   companyprice: number | null,
-  trialCicles: number = 0
+  discount: DiscountT
 ) => {
-  const discount = false;
-
   const productResponse = await Product.getProduct(id, agent_id);
 
   if (!productResponse.success) {
@@ -603,7 +609,8 @@ const createProductPlans = async (
   const productData = {
     frequency: FrequencyCode[frequency],
     cicles: 1,
-    trial_cicles: trialCicles,
+    trial_cicles:
+      discount.type === "t" && discount.cicles > 0 ? discount.cicles : 0,
     title: name,
     description: name + " " + "(" + alias + ")",
     is_custom_link: true,
@@ -611,21 +618,42 @@ const createProductPlans = async (
     is_uf: false,
     auto_renew: true,
     prefferred_due_day: dueday > 0 ? dueday : null,
-    discount_enabled: discount,
+    discount_enabled: discount.type === "p" && discount.percent > 0,
     redirect_to: config.reveniu.feedbackURL.success,
     redirect_to_failure: config.reveniu.feedbackURL.error,
   };
+
+  let productPlanData: any = { ...productData };
+  if (discount.type === "p" && discount.percent > 0 && discount.cicles > 0) {
+    productPlanData = {
+      ...productPlanData,
+      coupon: {
+        is_fixed: true,
+        code: 1,
+        discount_rate: discount.percent,
+        discount_cicles: discount.cicles,
+        discount_use_limit: 0,
+      },
+    };
+  }
 
   let companyData: any = null;
   let customerData: any = null;
 
   if (companyprice) {
+    console.log({
+      company_plan_id,
+      ...productPlanData,
+      is_custom_amount: true,
+      price: companyprice,
+    });
+
     const planResponseCompany = await axios[
       company_plan_id > 0 ? "patch" : "post"
     ](
       `${config.reveniu.URL.plan}${company_plan_id > 0 ? company_plan_id : ""}`,
       {
-        ...productData,
+        ...productPlanData,
         is_custom_amount: true,
         price: companyprice,
       },
@@ -640,7 +668,8 @@ const createProductPlans = async (
       planResponseCompany.data.id,
       "company",
       companyprice,
-      frequency
+      frequency,
+      discount
     );
 
     if (!productPlanCompanyResponse.success) {
@@ -658,6 +687,13 @@ const createProductPlans = async (
   }
 
   if (customerprice) {
+    console.log({
+      customer_plan_id,
+      ...productPlanData,
+      is_custom_amount: false,
+      price: customerprice,
+    });
+
     const planResponseCustomer = await axios[
       customer_plan_id > 0 ? "patch" : "post"
     ](
@@ -665,7 +701,7 @@ const createProductPlans = async (
         customer_plan_id > 0 ? customer_plan_id : ""
       }`,
       {
-        ...productData,
+        ...productPlanData,
         is_custom_amount: false,
         price: customerprice,
       },
@@ -680,7 +716,8 @@ const createProductPlans = async (
       planResponseCustomer.data.id,
       "customer",
       customerprice,
-      frequency
+      frequency,
+      discount
     );
 
     if (!productPlanCustomerResponse.success) {

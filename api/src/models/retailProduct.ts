@@ -3,7 +3,7 @@ import pool from "../util/database";
 const create: any = async (
   retail_id: string,
   product_id: string,
-  productPlan_id: number,
+  plan_id: number,
   retailCampaign_id: string,
   price: any,
   currency: string
@@ -12,7 +12,7 @@ const create: any = async (
     const arrayValues = [
       retail_id,
       product_id,
-      productPlan_id,
+      plan_id,
       retailCampaign_id,
       price.normal,
       price.company,
@@ -23,7 +23,7 @@ const create: any = async (
             INSERT  INTO app.retailProduct(
                     retail_id,
                     product_id,
-                    productplan_id,
+                    plan_id,
                     retailcampaign_id,
                     normalprice,
                     companyprice,
@@ -34,7 +34,7 @@ const create: any = async (
     const data = {
       retail_id: result.rows[0].retail_id,
       product_id: result.rows[0].product_id,
-      productPlan_id: result.rows[0].productplan_id,
+      plan_id: result.rows[0].plan_id,
       retailcampaign_id: result.rows[0].retailcampaign_id,
       price: {
         normal: result.rows[0].normalprice,
@@ -72,10 +72,15 @@ const getByRetailId: any = async (retail_id: string) => {
                 case when cam.name is null then '' else cam.name end as campaign,
                 brp.normalprice,
                 brp.companyprice,
-                brp.currency
-        FROM    app.retailProduct brp inner join app.product pro on brp.product_id = pro.id
+                brp.currency,
+                pla.discount_type,
+                pla.discount_percent,
+                pla.discount_cicles
+        FROM    app.retailProduct brp 
+                  inner join app.product pro on brp.product_id = pro.id
                   left outer join app.retailcampaign cam on brp.retail_id = cam.retail_id and brp.retailcampaign_id = cam.id
                   left outer join app.productdescription des on pro.id = des.product_id
+                  left outer join app.productplan pla on pla.product_id = pro.id and pla.plan_id = brp.plan_id
         WHERE   brp.retail_id = $1 and brp.isactive is true
         ORDER   BY
                 cam.name,
@@ -92,7 +97,11 @@ const getByRetailId: any = async (retail_id: string) => {
         normalprice,
         companyprice,
         currency,
+        discount_type,
+        discount_percent,
+        discount_cicles,
       } = row;
+
       return {
         product_id,
         name,
@@ -100,6 +109,11 @@ const getByRetailId: any = async (retail_id: string) => {
         campaign,
         price: { normal: normalprice, company: companyprice },
         currency,
+        discount: {
+          type: discount_type,
+          percent: discount_percent,
+          cicles: discount_cicles,
+        },
       };
     });
 

@@ -181,8 +181,8 @@ const getProduct: any = async (id: string, agent_id: string) => {
                     SUM(case when pla.type = 'customer' then pla.plan_id else 0 end) as customer_plan_id, 
                     SUM(case when pla.type = 'company' then pla.plan_id else 0 end) as company_plan_id
           FROM      app.product pro inner join app.family fam on pro.family_id = fam.id
-                                    left outer join app.productplan pla on pro.id = pla.product_id and pla.agent_id = $2
-                                    left outer join app.productdescription des on pro.id = des.product_id
+                      left outer join app.productplan pla on pro.id = pla.product_id and pla.agent_id = $2
+                      left outer join app.productdescription des on pro.id = des.product_id
           WHERE     pro.id = $1
           GROUP     BY
                     pro.id`,

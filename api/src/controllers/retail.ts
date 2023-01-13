@@ -98,7 +98,7 @@ const create = async (req: any, res: any) => {
       }
 
       for (const product of products) {
-        const { product_id, campaign, price, currency, trialMonths } = product;
+        const { product_id, campaign, price, currency, discount } = product;
 
         let retailcampaign_id: string | null = null;
 
@@ -125,7 +125,7 @@ const create = async (req: any, res: any) => {
           retail_id,
           null,
           price.company,
-          trialMonths
+          discount
         );
 
         if (!responsePlans.success) {

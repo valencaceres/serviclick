@@ -5,7 +5,7 @@ import { sendMail } from "../util/email";
 import * as Broker from "../models/broker";
 import * as BrokerProduct from "../models/brokerProduct";
 import * as UserBroker from "../models/userBroker";
-import * as Product from "../controllers/product";
+import * as Product from "./product";
 
 const create = async (req: any, res: any) => {
   try {
@@ -14,6 +14,7 @@ const create = async (req: any, res: any) => {
       name,
       legalRepresentative,
       line,
+      fantasyName,
       address,
       district,
       email,
@@ -28,6 +29,7 @@ const create = async (req: any, res: any) => {
       name,
       legalRepresentative,
       line,
+      fantasyName,
       address,
       district,
       email,
@@ -61,12 +63,37 @@ const create = async (req: any, res: any) => {
       }
 
       for (const product of products) {
-        const { product_id, price, commisionTypeCode, value, currency } =
-          product;
+        const {
+          product_id,
+          price,
+          commisionTypeCode,
+          value,
+          currency,
+          discount,
+        } = product;
+
+        const responsePlans = await Product.createProductPlans(
+          product_id,
+          broker_id,
+          price.customer,
+          price.company,
+          discount
+        );
+
+        if (!responsePlans.success) {
+          createLogger.error({
+            controller: "product/createProductPlans",
+            error: responsePlans.error,
+          });
+          res.status(500).json({ error: responsePlans.error });
+          return;
+        }
 
         const brokerProductResponse = await BrokerProduct.create(
           broker_id,
           product_id,
+          responsePlans.data?.customer.id | 0,
+          responsePlans.data?.company.id | 0,
           price,
           commisionTypeCode,
           value,
@@ -79,22 +106,6 @@ const create = async (req: any, res: any) => {
             error: brokerProductResponse.error,
           });
           res.status(500).json({ error: brokerProductResponse.error });
-          return;
-        }
-
-        const responsePlans = await Product.createProductPlans(
-          product_id,
-          broker_id,
-          price.customer,
-          price.company
-        );
-
-        if (!responsePlans.success) {
-          createLogger.error({
-            controller: "product/createProductPlans",
-            error: responsePlans.error,
-          });
-          res.status(500).json({ error: responsePlans.error });
           return;
         }
       }
@@ -464,6 +475,7 @@ export const getBrokerDataById = async (id: string) => {
       name,
       legalRepresentative,
       line,
+      fantasyName,
       address,
       district,
       email,
@@ -477,6 +489,7 @@ export const getBrokerDataById = async (id: string) => {
       name,
       legalRepresentative,
       line,
+      fantasyName,
       address,
       district,
       email,
@@ -533,6 +546,7 @@ const getBrokerDataByRut = async (rut: string) => {
       name,
       legalRepresentative,
       line,
+      fantasyName,
       address,
       district,
       email,
@@ -570,6 +584,7 @@ const getBrokerDataByRut = async (rut: string) => {
       name,
       legalRepresentative,
       line,
+      fantasyName,
       address,
       district,
       email,
