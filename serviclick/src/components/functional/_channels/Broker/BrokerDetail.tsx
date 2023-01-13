@@ -22,12 +22,62 @@ import { useBroker } from "../../../../hooks";
 
 import styles from "./Broker.module.scss";
 
+interface IFormFieldString {
+  value: string;
+  isValid: boolean;
+}
+
+interface IFormFieldNumber {
+  value: number;
+  isValid: boolean;
+}
+
+interface IBrokerForm {
+  rut: IFormFieldString;
+  name: IFormFieldString;
+  legalRepresentative: IFormFieldString;
+  line: IFormFieldString;
+  fantasyName: IFormFieldString;
+  address: IFormFieldString;
+  district: IFormFieldString;
+  email: IFormFieldString;
+  phone: IFormFieldString;
+  logo: IFormFieldString;
+}
+
+interface IBrokerProductForm {
+  product_id: IFormFieldString;
+  name: IFormFieldString;
+  price: {
+    customer: IFormFieldNumber;
+    company: IFormFieldNumber;
+  };
+  commisionTypeCode: IFormFieldString;
+  value: IFormFieldNumber;
+  currency: IFormFieldString;
+  discount: {
+    type: IFormFieldString;
+    percent: IFormFieldNumber;
+    cicles: IFormFieldNumber;
+  };
+}
+
+interface IBrokerUserForm {
+  rut: IFormFieldString;
+  name: IFormFieldString;
+  paternalLastName: IFormFieldString;
+  maternalLastName: IFormFieldString;
+  email: IFormFieldString;
+  profileCode: IFormFieldString;
+  profileName: IFormFieldString;
+}
+
 const BrokerDetail = ({ setEnableButtonSave }: any) => {
   const router = useRouter();
 
   const { broker, setBroker, loading } = useBroker();
 
-  const initialDataBrokerForm = {
+  const initialDataBrokerForm: IBrokerForm = {
     rut: { value: "", isValid: false },
     name: { value: "", isValid: false },
     legalRepresentative: {
@@ -35,6 +85,7 @@ const BrokerDetail = ({ setEnableButtonSave }: any) => {
       isValid: false,
     },
     line: { value: "", isValid: false },
+    fantasyName: { value: "", isValid: false },
     address: { value: "", isValid: false },
     district: { value: "", isValid: false },
     email: { value: "", isValid: false },
@@ -42,7 +93,7 @@ const BrokerDetail = ({ setEnableButtonSave }: any) => {
     logo: { value: "", isValid: false },
   };
 
-  const initialDataBrokerProductForm = {
+  const initialDataBrokerProductForm: IBrokerProductForm = {
     product_id: { value: "", isValid: false },
     name: { value: "", isValid: true },
     price: {
@@ -55,9 +106,14 @@ const BrokerDetail = ({ setEnableButtonSave }: any) => {
     },
     value: { value: 0, isValid: false },
     currency: { value: "", isValid: false },
+    discount: {
+      type: { value: "", isValid: true },
+      percent: { value: 0, isValid: true },
+      cicles: { value: 0, isValid: true },
+    },
   };
 
-  const initialDataBrokerUserForm = {
+  const initialDataBrokerUserForm: IBrokerUserForm = {
     rut: { value: "", isValid: false },
     name: { value: "", isValid: false },
     paternalLastName: { value: "", isValid: false },
@@ -67,11 +123,12 @@ const BrokerDetail = ({ setEnableButtonSave }: any) => {
     profileName: { value: "", isValid: false },
   };
 
-  const [brokerForm, setBrokerForm] = useState(initialDataBrokerForm);
-  const [brokerProductForm, setBrokerProductForm] = useState(
-    initialDataBrokerProductForm
+  const [brokerForm, setBrokerForm] = useState<IBrokerForm>(
+    initialDataBrokerForm
   );
-  const [brokerUserForm, setBrokerUserForm] = useState(
+  const [brokerProductForm, setBrokerProductForm] =
+    useState<IBrokerProductForm>(initialDataBrokerProductForm);
+  const [brokerUserForm, setBrokerUserForm] = useState<IBrokerUserForm>(
     initialDataBrokerUserForm
   );
   const [showModalProducts, setShowModalProducts] = useState(false);
@@ -96,6 +153,11 @@ const BrokerDetail = ({ setEnableButtonSave }: any) => {
       },
       value: { value: item.value, isValid: true },
       currency: { value: item.currency, isValid: true },
+      discount: {
+        type: { value: item.discount.type, isValid: true },
+        percent: { value: item.discount.percent, isValid: true },
+        cicles: { value: item.discount.cicles, isValid: true },
+      },
     });
     setShowModalProducts(true);
   };
@@ -156,6 +218,11 @@ const BrokerDetail = ({ setEnableButtonSave }: any) => {
           commisionTypeCode: brokerProductForm.commisionTypeCode.value,
           value: brokerProductForm.value.value,
           currency: "P",
+          discount: {
+            type: brokerProductForm.discount.type.value,
+            percent: brokerProductForm.discount.percent.value,
+            cicles: brokerProductForm.discount.cicles.value,
+          },
         },
       ],
     });

@@ -85,6 +85,17 @@ const BrokerForm = ({
       },
     });
   };
+
+  const handleChangeFantasyName = (event: any) => {
+    setBrokerForm({
+      ...brokerForm,
+      fantasyName: {
+        value: event.target.value,
+        isValid: event.target.value !== "",
+      },
+    });
+  };
+
   const handleChangeAddress = (event: any) => {
     setBrokerForm({
       ...brokerForm,
@@ -140,6 +151,7 @@ const BrokerForm = ({
           isValid: true,
         },
         line: { value: broker.line, isValid: true },
+        fantasyName: { value: broker.fantasyName, isValid: true },
         address: { value: broker.address, isValid: true },
         district: { value: broker.district, isValid: true },
         email: { value: broker.email, isValid: true },
@@ -155,6 +167,7 @@ const BrokerForm = ({
       brokerForm.name.isValid &&
       brokerForm.legalRepresentative.isValid &&
       brokerForm.line.isValid &&
+      brokerForm.fantasyName.isValid &&
       brokerForm.address.isValid &&
       brokerForm.district.isValid &&
       brokerForm.email.isValid &&
@@ -167,6 +180,7 @@ const BrokerForm = ({
         name: brokerForm.name.value,
         legalRepresentative: brokerForm.legalRepresentative.value,
         line: brokerForm.line.value,
+        fantasyName: brokerForm.fantasyName.value,
         address: brokerForm.address.value,
         district: brokerForm.district.value,
         email: brokerForm.email.value,
@@ -206,6 +220,14 @@ const BrokerForm = ({
           value={brokerForm?.line.value}
           onChange={handleChangeLine}
           isValid={brokerForm?.line.isValid}
+        />
+        <InputText
+          label="Nombre de fantasía"
+          width="100%"
+          maxLength={50}
+          value={brokerForm?.fantasyName.value}
+          onChange={handleChangeFantasyName}
+          isValid={brokerForm?.fantasyName.isValid}
         />
         <InputText
           label="Representante Legal"

@@ -19,12 +19,60 @@ import ModalWindow from "../../../ui/ModalWindow";
 
 import { useRetail } from "../../../../hooks";
 
+interface IFormFieldString {
+  value: string;
+  isValid: boolean;
+}
+
+interface IFormFieldNumber {
+  value: number;
+  isValid: boolean;
+}
+
+interface IRetailForm {
+  rut: IFormFieldString;
+  name: IFormFieldString;
+  line: IFormFieldString;
+  fantasyName: IFormFieldString;
+  address: IFormFieldString;
+  district: IFormFieldString;
+  email: IFormFieldString;
+  phone: IFormFieldString;
+  logo: IFormFieldString;
+}
+
+interface IRetailProductForm {
+  product_id: IFormFieldString;
+  name: IFormFieldString;
+  campaign: IFormFieldString;
+  price: {
+    normal: IFormFieldNumber;
+    company: IFormFieldNumber;
+  };
+  currency: IFormFieldString;
+  discount: {
+    type: IFormFieldString;
+    percent: IFormFieldNumber;
+    cicles: IFormFieldNumber;
+  };
+}
+
+interface IRetailUserForm {
+  rut: IFormFieldString;
+  name: IFormFieldString;
+  paternalLastName: IFormFieldString;
+  maternalLastName: IFormFieldString;
+  email: IFormFieldString;
+  profileCode: IFormFieldString;
+  profileName: IFormFieldString;
+}
+
 const RetailDetail = ({ setEnableButtonSave, isSaving, setIsSaving }: any) => {
   const router = useRouter();
 
   const { retail, setRetail, retailLoading, retailError } = useRetail();
 
-  const initialDataRetailForm = {
+  const initialDataRetailForm: IRetailForm = {
     rut: { value: "", isValid: false },
     name: { value: "", isValid: false },
     line: { value: "", isValid: false },
@@ -36,7 +84,7 @@ const RetailDetail = ({ setEnableButtonSave, isSaving, setIsSaving }: any) => {
     logo: { value: "", isValid: false },
   };
 
-  const initialDataRetailProductForm = {
+  const initialDataRetailProductForm: IRetailProductForm = {
     product_id: { value: "", isValid: false },
     name: { value: "", isValid: true },
     campaign: { value: "", isValid: true },
@@ -45,10 +93,14 @@ const RetailDetail = ({ setEnableButtonSave, isSaving, setIsSaving }: any) => {
       company: { value: 0, isValid: false },
     },
     currency: { value: "", isValid: true },
-    trialMonths: { value: 0, isValid: true },
+    discount: {
+      type: { value: "", isValid: true },
+      percent: { value: 0, isValid: true },
+      cicles: { value: 0, isValid: true },
+    },
   };
 
-  const initialDataRetailUserForm = {
+  const initialDataRetailUserForm: IRetailUserForm = {
     rut: { value: "", isValid: false },
     name: { value: "", isValid: false },
     paternalLastName: { value: "", isValid: false },
@@ -58,11 +110,12 @@ const RetailDetail = ({ setEnableButtonSave, isSaving, setIsSaving }: any) => {
     profileName: { value: "", isValid: false },
   };
 
-  const [retailForm, setRetailForm] = useState(initialDataRetailForm);
-  const [retailProductForm, setRetailProductForm] = useState(
-    initialDataRetailProductForm
+  const [retailForm, setRetailForm] = useState<IRetailForm>(
+    initialDataRetailForm
   );
-  const [retailUserForm, setRetailUserForm] = useState(
+  const [retailProductForm, setRetailProductForm] =
+    useState<IRetailProductForm>(initialDataRetailProductForm);
+  const [retailUserForm, setRetailUserForm] = useState<IRetailUserForm>(
     initialDataRetailUserForm
   );
   const [showModalProducts, setShowModalProducts] = useState(false);
@@ -83,7 +136,11 @@ const RetailDetail = ({ setEnableButtonSave, isSaving, setIsSaving }: any) => {
         company: { value: item.price.company, isValid: true },
       },
       currency: { value: item.currency, isValid: true },
-      trialMonths: { value: item.trialMonths, isValid: true },
+      discount: {
+        type: { value: item.discount.type, isValid: true },
+        percent: { value: item.discount.percent, isValid: true },
+        cicles: { value: item.discount.cicles, isValid: true },
+      },
     });
     setShowModalProducts(true);
   };
@@ -142,8 +199,12 @@ const RetailDetail = ({ setEnableButtonSave, isSaving, setIsSaving }: any) => {
             normal: retailProductForm.price.normal.value,
             company: retailProductForm.price.company.value,
           },
-          trialMonths: retailProductForm.trialMonths.value,
           currency: "P",
+          discount: {
+            type: retailProductForm.discount.type.value,
+            percent: retailProductForm.discount.percent.value,
+            cicles: retailProductForm.discount.cicles.value,
+          },
         },
       ],
     });

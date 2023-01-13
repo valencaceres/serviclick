@@ -7,12 +7,19 @@ export type PriceT = {
   company: number;
 };
 
+export type DiscountT = {
+  type: string;
+  percent: number;
+  cicles: number;
+};
+
 export type ProductT = {
   product_id: string;
   price: PriceT;
   commisionTypeCode: string;
   value: number;
   currency: string;
+  discount: DiscountT;
 };
 
 export type UserT = {
@@ -30,6 +37,7 @@ export type BrokerT = {
   name: string;
   legalRepresentative: string;
   line: string;
+  fantasyName: string;
   address: string;
   district: string;
   email: string;
@@ -53,6 +61,7 @@ const initialState: StateT = {
     name: "",
     legalRepresentative: "",
     line: "",
+    fantasyName: "",
     address: "",
     district: "",
     email: "",

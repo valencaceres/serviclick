@@ -49,7 +49,8 @@ const RetailUsers = ({ addNewUser, editUser, deleteUser }: any) => {
         </TableDetail>
       </Table>
       <ContentRow align="space-between">
-        <ContentCellSummary>
+        <ContentCellSummary
+          color={retail.users.length > 0 ? "blue" : "#959595"}>
           {retail.users.length === 0
             ? "Sin usuarios asociados"
             : retail.users.length === 1

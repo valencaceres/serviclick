@@ -22,7 +22,7 @@ const BrokerUsers = ({ addNewUser, editUser, deleteUser }: any) => {
 
   return (
     <ContentCell gap="5px">
-      <Table width="739px" height="200px">
+      <Table width="739px" height="226px">
         <TableHeader>
           <TableCell width="300px">Nombre</TableCell>
           <TableCell width="232px">e-mail</TableCell>
@@ -49,7 +49,8 @@ const BrokerUsers = ({ addNewUser, editUser, deleteUser }: any) => {
         </TableDetail>
       </Table>
       <ContentRow align="space-between">
-        <ContentCellSummary>
+        <ContentCellSummary
+          color={broker.users.length > 0 ? "blue" : "#959595"}>
           {broker.users.length === 0
             ? "Sin usuarios asociados"
             : broker.users.length === 1

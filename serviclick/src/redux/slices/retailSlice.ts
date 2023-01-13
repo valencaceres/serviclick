@@ -12,12 +12,18 @@ export type LegalRepresentativeT = {
   namer: string;
 };
 
+export type DiscountT = {
+  type: string;
+  percent: number;
+  cicles: number;
+};
+
 export type ProductT = {
   product_id: string;
   campaign: string;
   price: PriceT;
-  trialMonths: number;
   currency: string;
+  discount: DiscountT;
 };
 
 export type UserT = {
