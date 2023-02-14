@@ -1,4 +1,5 @@
-import { Content, Footer, Col, Row } from "../../../layout/Generic";
+import { Col, Row } from "../../../layout/Generic";
+import { useMediaQuery } from "react-responsive";
 
 import {
   Table,
@@ -13,7 +14,9 @@ import InfoText from "../../../ui/InfoText";
 import { formatAmount } from "../../../../utils/format";
 
 const PaymentCoverage = ({ product }: any) => {
-  return (
+  const isDesktop = useMediaQuery({ minWidth: 1200 });
+
+  return isDesktop ? (
     <Col>
       <InfoText label="Nombre del producto" value={product.name} />
       <Table height="auto">
@@ -43,6 +46,36 @@ const PaymentCoverage = ({ product }: any) => {
                 </TableCell>
                 <TableCell align="center" width="100px">
                   {item.lack}
+                </TableCell>
+              </TableRow>
+            ))}
+        </TableDetail>
+      </Table>
+    </Col>
+  ) : (
+    <Col>
+      <InfoText label="Nombre del producto" value={product.name} />
+      <Table height="auto">
+        <TableHeader>
+          <TableCell width="290px">Servicio</TableCell>
+          <TableCellEnd />
+        </TableHeader>
+        <TableDetail>
+          {product &&
+            product.assistances.map((item: any, idx: number) => (
+              <TableRow key={idx}>
+                <TableCell align="left" width="290px">
+                  {item.name}
+                  {item.maximum !== "" && <br />}
+                  {item.maximum !== "" && item.maximum}
+                  {item.amount > 0 && <br />}
+                  {item.amount > 0 && formatAmount(item.amount, item.currency)}
+                  <br />
+                  {item.events === 0 ? "Ilimitados" : item.events}
+                  {" eventos en el año"}
+                  {" ("}
+                  {item.lack}
+                  {" días carencia)"}
                 </TableCell>
               </TableRow>
             ))}

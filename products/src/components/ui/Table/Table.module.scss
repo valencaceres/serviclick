@@ -102,6 +102,10 @@
         overflow: hidden;
         text-overflow: ellipsis;
 
+        .main {
+          color: red;
+        }
+
         @media screen and (min-width: 1200px) {
           height: 35px;
         }

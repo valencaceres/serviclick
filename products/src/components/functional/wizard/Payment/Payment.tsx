@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { useMediaQuery } from "react-responsive";
 
 import PaymentSection from "./PaymentSection";
 import PaymentPerson from "./PaymentPerson";
@@ -26,6 +27,8 @@ import { config } from "../../../../utils/config";
 
 const Payment = () => {
   const router = useRouter();
+
+  const isDesktop = useMediaQuery({ minWidth: 1200 });
 
   const paymentTypeData = [
     {
@@ -142,41 +145,87 @@ const Payment = () => {
     <Body>
       <Content>
         <Col gap="10px">
-          <Row gap="10px">
-            <PaymentSection
-              title="Contratante"
-              selected={isSelectedContractor}
-              state={setIsSelectedContractor}>
-              <PaymentPerson data={lead.customer} />
-            </PaymentSection>
-            <PaymentSection
-              title="Asegurado"
-              selected={isSelectedinsured}
-              state={setIsSelectedinsured}>
-              <PaymentInsured data={lead.insured && lead.insured[0]} />
-            </PaymentSection>
-          </Row>
-          <PaymentSection
-            title="Producto"
-            selected={isSelectedProduct}
-            state={setIsSelectedProduct}>
-            <PaymentCoverage product={product} />
-          </PaymentSection>
-          {product.beneficiaries > 0 && (
-            <PaymentSection
-              title="Cargas"
-              selected={isSelectedBeneficiaries}
-              state={setIsSelectedBeneficiaries}>
-              <PaymentBeneficiaries lead={lead} />
-            </PaymentSection>
+          {isDesktop ? (
+            <>
+              <Row gap="10px">
+                <PaymentSection
+                  title="Contratante"
+                  selected={isSelectedContractor}
+                  state={setIsSelectedContractor}>
+                  <PaymentPerson data={lead.customer} />
+                </PaymentSection>
+                <PaymentSection
+                  title="Asegurado"
+                  selected={isSelectedinsured}
+                  state={setIsSelectedinsured}>
+                  <PaymentInsured data={lead.insured && lead.insured[0]} />
+                </PaymentSection>
+              </Row>
+              <PaymentSection
+                title="Producto"
+                selected={isSelectedProduct}
+                state={setIsSelectedProduct}>
+                <PaymentCoverage product={product} />
+              </PaymentSection>
+              {product.beneficiaries > 0 && (
+                <PaymentSection
+                  title="Cargas"
+                  selected={isSelectedBeneficiaries}
+                  state={setIsSelectedBeneficiaries}>
+                  <PaymentBeneficiaries lead={lead} />
+                </PaymentSection>
+              )}
+              <PaymentSection
+                title="Valores"
+                selected={isSelectedPayment}
+                state={setIsSelectedPayment}>
+                <PaymentProduct lead={lead} product={product} />
+              </PaymentSection>
+              <PaymentTerms
+                state={setIsSelectedTerms}
+                onClick={handleClickTerms}
+              />
+            </>
+          ) : (
+            <Col gap="10px">
+              <PaymentSection
+                title="Contratante"
+                selected={isSelectedContractor}
+                state={setIsSelectedContractor}>
+                <PaymentPerson data={lead.customer} />
+              </PaymentSection>
+              <PaymentSection
+                title="Asegurado"
+                selected={isSelectedinsured}
+                state={setIsSelectedinsured}>
+                <PaymentInsured data={lead.insured && lead.insured[0]} />
+              </PaymentSection>
+              <PaymentSection
+                title="Producto"
+                selected={isSelectedProduct}
+                state={setIsSelectedProduct}>
+                <PaymentCoverage product={product} />
+              </PaymentSection>
+              {product.beneficiaries > 0 && (
+                <PaymentSection
+                  title="Cargas"
+                  selected={isSelectedBeneficiaries}
+                  state={setIsSelectedBeneficiaries}>
+                  <PaymentBeneficiaries lead={lead} />
+                </PaymentSection>
+              )}
+              <PaymentSection
+                title="Valores"
+                selected={isSelectedPayment}
+                state={setIsSelectedPayment}>
+                <PaymentProduct lead={lead} product={product} />
+              </PaymentSection>
+              <PaymentTerms
+                state={setIsSelectedTerms}
+                onClick={handleClickTerms}
+              />
+            </Col>
           )}
-          <PaymentSection
-            title="Valores"
-            selected={isSelectedPayment}
-            state={setIsSelectedPayment}>
-            <PaymentProduct lead={lead} product={product} />
-          </PaymentSection>
-          <PaymentTerms state={setIsSelectedTerms} onClick={handleClickTerms} />
           <Row>&nbsp;</Row>
         </Col>
       </Content>

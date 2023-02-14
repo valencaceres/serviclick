@@ -12,9 +12,9 @@ const Footer = ({ children }: any) => {
   return <div className={styles.footer}>{children}</div>;
 };
 
-const Col = ({ children, width, gap = "5px" }: any) => {
+const Col = ({ children, width, gap = "5px", align = "flex-start" }: any) => {
   return (
-    <div className={styles.col} style={{ width, gap }}>
+    <div className={styles.col} style={{ width, gap, alignItems: align }}>
       {children}
     </div>
   );

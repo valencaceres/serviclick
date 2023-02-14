@@ -1,10 +1,13 @@
-import { Content, Footer, Col, Row } from "../../../layout/Generic";
+import { Col, Row } from "../../../layout/Generic";
+import { useMediaQuery } from "react-responsive";
 
 import InfoText from "../../../ui/InfoText";
 
 const PaymentPerson = ({ data }: any) => {
+  const isDesktop = useMediaQuery({ minWidth: 1200 });
+
   return (
-    <Col width="340px">
+    <Col width={isDesktop ? "340px" : "300px"}>
       <Row align="space-between">
         <InfoText label="Rut" width="150px" value={data?.rut} />
       </Row>
