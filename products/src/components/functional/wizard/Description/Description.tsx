@@ -5,12 +5,13 @@ import { useUI, useProduct } from "../../../../store/hooks";
 
 import styles from "./Description.module.scss";
 import { useEffect } from "react";
+import Loading from "@/components/ui/Loading";
 
 const Description = () => {
   const router = useRouter();
 
   const { setUI, ui } = useUI();
-  const { product } = useProduct();
+  const { product, productIsLoading } = useProduct();
 
   const handleClickHire = () => {
     router.push(`/contractor?productPlanId=${ui.product.productPlan_id}`);
@@ -43,7 +44,7 @@ const Banner = () => {
 };
 
 const Coverage = () => {
-  const { product } = useProduct();
+  const { product, productIsLoading } = useProduct();
 
   const limitDescription = (item: any) => {
     const oDiv = [];
@@ -65,7 +66,9 @@ const Coverage = () => {
     return oDiv;
   };
 
-  return (
+  return productIsLoading ? (
+    <Loading />
+  ) : (
     <div className={styles.table}>
       <div className={styles.header}>
         <div className={styles.headerTitie}>Servicio</div>

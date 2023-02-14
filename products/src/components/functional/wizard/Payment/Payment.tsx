@@ -87,30 +87,7 @@ const Payment = () => {
     setShowPaymentType(false);
   };
 
-  // const handleClickCard = () => {
-  //   setPaymentType("C");
-  //   // createLead({
-  //   //   ...lead,
-  //   //   link: `${config.baseURL}${router.asPath}`,
-  //   //   subscription: true,
-  //   //   send: false,
-  //   // });
-  //   setShowPaymentType(false);
-  // };
-
-  // const handleClickLink = () => {
-  //   setPaymentType("L");
-  //   createLead({
-  //     ...lead,
-  //     link: `${config.baseURL}${router.asPath}`,
-  //     subscription: false,
-  //     send: true,
-  //   });
-  //   setShowPaymentType(false);
-  // };
-
   const handleClickPaymentType = (type: string) => {
-    alert(1);
     setIsProcessing(true);
     setPaymentType(type);
     createLead({
