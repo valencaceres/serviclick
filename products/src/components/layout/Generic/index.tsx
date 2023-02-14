@@ -1,3 +1,3 @@
-import { Body, Content, Row, Col, Footer } from "./Generic";
+import { Body, Content, Row, Col, RowCol, Footer } from "./Generic";
 
-export { Body, Content, Row, Col, Footer };
+export { Body, Content, Row, Col, RowCol, Footer };

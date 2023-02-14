@@ -28,4 +28,12 @@ const Row = ({ children, align = "flex-start", gap = "5px" }: any) => {
   );
 };
 
-export { Body, Content, Col, Row, Footer };
+const RowCol = ({ children, align = "flex-start", gap = "5px" }: any) => {
+  return (
+    <div className={styles.rowCol} style={{ justifyContent: align, gap }}>
+      {children}
+    </div>
+  );
+};
+
+export { Body, Content, Col, Row, RowCol, Footer };
