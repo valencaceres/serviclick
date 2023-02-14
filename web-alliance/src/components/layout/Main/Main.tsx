@@ -4,14 +4,17 @@ import HeaderServiClick from "../../ui/HeaderServiClick";
 
 import styles from "./Main.module.scss";
 
+import { useUI } from "../../../hooks/store";
+
 const Main = ({ children }: any) => {
+  const { ui } = useUI();
+
   return (
     <Fragment>
       <Header>
-        <HeaderServiClick />
+        <HeaderServiClick title={ui.title} />
       </Header>
       <Section>{children}</Section>
-      <Footer />
     </Fragment>
   );
 };

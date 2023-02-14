@@ -7,6 +7,7 @@ import {
   getByIdController,
   getBySubscriptionIdController,
   getProductByInsuredIdController,
+  getProductValuesByInsuredId,
 } from "../controllers/lead";
 
 const LeadRouter = Router();
@@ -23,6 +24,11 @@ LeadRouter.get(
   "/getProductByInsuredId/:insured_id",
   auth,
   getProductByInsuredIdController
+);
+LeadRouter.get(
+  "/getProductValuesByInsuredId/:lead_id/:product_id/:insured_id",
+  auth,
+  getProductValuesByInsuredId
 );
 
 export default LeadRouter;

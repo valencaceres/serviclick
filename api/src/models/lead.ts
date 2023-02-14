@@ -6,7 +6,8 @@ const createModel: any = async (
   id: string,
   customer_id: string,
   company_id: string,
-  agent_id: string
+  agent_id: string,
+  link: string = ""
 ) => {
   try {
     const createDate = format(new Date(), "yyyy-MM-dd HH:mm:ss");
@@ -19,13 +20,15 @@ const createModel: any = async (
                   createdate,
                   customer_id,
                   company_id,
-                  agent_id) 
-          VALUES( $1, $2, $3, $4) RETURNING *`,
+                  agent_id,
+                  link) 
+          VALUES( $1, $2, $3, $4, $5) RETURNING *`,
         [
           createDate,
           customer_id === "" ? null : customer_id,
           company_id === "" ? null : company_id,
           agent_id,
+          link,
         ]
       );
     } else {
@@ -34,13 +37,15 @@ const createModel: any = async (
           UPDATE  app.lead
           SET     createdate = $1,
                   customer_id = $2,
-                  company_id = $3
+                  company_id = $3,
+                  link = $5
           WHERE   id = $4 RETURNING *`,
         [
           createDate,
           customer_id === "" ? null : customer_id,
           company_id === "" ? null : company_id,
           id,
+          link,
         ]
       );
     }
@@ -116,7 +121,8 @@ const getById: any = async (id: string) => {
                 CASE WHEN COM.district IS NULL THEN '' ELSE COM.district END AS company_district,
                 CASE WHEN COM.email IS NULL THEN '' ELSE COM.email END AS company_email,
                 CASE WHEN COM.phone IS NULL THEN '' ELSE COM.phone END AS company_phone,
-                LEA.subscription_id
+                LEA.subscription_id,
+                CASE WHEN LEA.link IS NULL THEN '' ELSE LEA.link END AS link
         FROM    app.lead LEA LEFT OUTER JOIN app.customer CUS ON LEA.customer_id = CUS.id
                             LEFT OUTER JOIN app.company COM ON LEA.company_id = COM.id
         WHERE   LEA.id = $1`,

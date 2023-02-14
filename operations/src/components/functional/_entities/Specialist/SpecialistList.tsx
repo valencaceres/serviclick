@@ -20,7 +20,7 @@ import {
 } from "../../../ui/Table";
 import Icon from "../../../ui/Icon";
 
-import { useSpecialist } from "../../../../hooks";
+import { useSpecialist } from "../../../../store/hooks";
 import { LoadingMessage, SuccessMessage } from "../../../ui/LoadingMessage";
 
 const SpecialistList = ({
@@ -29,12 +29,12 @@ const SpecialistList = ({
   isSaving,
 }: any) => {
   const {
-    getAssistances,
-    getByFamilyAssistance,
+    specialist,
+    specialistList,
+    specialistIsLoading,
+    getAssistancesByFamilyId,
     families,
     assistances,
-    specialistList,
-    specialistLoading,
   } = useSpecialist();
 
   const initialSearchForm = {
@@ -49,7 +49,7 @@ const SpecialistList = ({
       ...search,
       family_id: e.target.value,
     });
-    getAssistances(e.target.value);
+    getAssistancesByFamilyId(e.target.value);
   };
 
   const handleChangeAssistance = (e: any) => {
@@ -63,11 +63,11 @@ const SpecialistList = ({
 
   return (
     <Fragment>
-      <ContentCell gap="10px">
-        <ContentRow gap="10px" align="center">
+      <ContentCell gap="5px" className="fade-in-fwd">
+        <ContentRow gap="5px" align="center">
           <ComboBox
             label="Familia"
-            width="300px"
+            width="250px"
             value={search.family_id}
             onChange={handleChangeFamily}
             placeHolder=":: Seleccione familia ::"
@@ -91,12 +91,12 @@ const SpecialistList = ({
             onClick={handleClickSearch}
           />
         </ContentRow>
-        <Table width="735px">
+        <Table>
           <TableHeader>
             <TableCell width="70px" align="center">
               #
             </TableCell>
-            <TableCell width="580px">Nombre</TableCell>
+            <TableCell width="455px">Nombre</TableCell>
             <TableCell width="68px">&nbsp;</TableCell>
             <TableCellEnd />
           </TableHeader>
@@ -106,7 +106,7 @@ const SpecialistList = ({
                 <TableCell width="70px" align="center">
                   {idx + 1}
                 </TableCell>
-                <TableCell width="580px">{specialist.name}</TableCell>
+                <TableCell width="455px">{specialist.name}</TableCell>
                 <TableCell width="68px" align="center">
                   <TableIcons>
                     <Icon
@@ -123,15 +123,22 @@ const SpecialistList = ({
             ))}
           </TableDetail>
         </Table>
-        <ContentRow align="flex-end">
-          <ContentCellSummary>{`${specialistList.length} servicios`}</ContentCellSummary>
+        <ContentRow align="flex-start">
+          <ContentCellSummary
+            color={specialistList.length > 0 ? "blue" : "#959595"}>
+            {specialistList.length === 0
+              ? "No hay especialistas"
+              : specialistList.length === 1
+              ? "1 especialista"
+              : `${specialistList.length} especialistas`}
+          </ContentCellSummary>
         </ContentRow>
       </ContentCell>
-      {specialistLoading ? (
-        <LoadingMessage showModal={specialistLoading} />
+      {specialistIsLoading ? (
+        <LoadingMessage showModal={specialistIsLoading} />
       ) : (
         isSaving && (
-          <SuccessMessage showModal={!specialistLoading} callback={() => {}}>
+          <SuccessMessage showModal={!specialistIsLoading} callback={() => {}}>
             Servicio registrado correctamente
           </SuccessMessage>
         )

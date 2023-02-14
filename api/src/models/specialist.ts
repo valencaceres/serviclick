@@ -64,7 +64,8 @@ const getById: any = async (id: string) => {
               PER.email,
               PER.phone,
               to_char(PER.birthdate, 'YYYY-MM-DD') as birthdate
-       FROM   app.specialist SPE INNER JOIN app.person PER ON SPE.person_id = PER.id
+       FROM   app.specialist SPE
+                INNER JOIN app.person PER ON SPE.person_id = PER.id
        WHERE  SPE.id = $1`,
       [id]
     );

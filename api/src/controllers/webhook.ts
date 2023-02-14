@@ -311,7 +311,6 @@ const subscriptionActivated = async (req: any, res: any) => {
     });
     res.status(200).json("OK");
   } catch (e) {
-    console.log(e);
     createLogger.error({
       controller: "webhook/subscriptionActivated",
       error: (e as Error).message,

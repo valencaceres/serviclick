@@ -33,7 +33,7 @@ const createPaymentModel: any = async (
 
     let result: any;
     if (resultPayment.rows.length === 0) {
-      if (gateway_response === "0") {
+      if (gateway_response === "Approved") {
         result = await pool.query(
           `INSERT   INTO app.payment(
                     payment_id,

@@ -1,9 +1,9 @@
-import { useSlug } from "../../../hooks";
+import * as SlugHook from "../../../hooks/store/useSlug";
 
 import styles from "./Banner.module.scss";
 
 const Banner = () => {
-  const { slug } = useSlug();
+  const { slug } = SlugHook.default();
 
   return (
     <div className={styles.banner}>
@@ -12,11 +12,11 @@ const Banner = () => {
           ¡En ServiClick somos <span>especialistas</span> en protección!
         </h1>
       </div>
-      {slug.logo && (
+      {slug && (
         <div className={styles.right}>
           <div
             className={styles.logo}
-            style={{ backgroundImage: `url(${slug.logo})` }}></div>
+            style={{ backgroundImage: `url(${slug?.logo || ""})` }}></div>
         </div>
       )}
     </div>

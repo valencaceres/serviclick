@@ -53,7 +53,7 @@ const create: any = async (
                 name,
                 legalrepresentative,
                 line,
-                fantasyname
+                fantasyname,
                 address,
                 district,
                 email,

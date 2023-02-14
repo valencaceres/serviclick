@@ -5,7 +5,6 @@ const createModel: any = async (
   name: string,
   paternalLastName: string,
   maternalLastName: string,
-  birthDate: string,
   address: string,
   district: string,
   email: string,
@@ -17,7 +16,6 @@ const createModel: any = async (
       name,
       paternalLastName,
       maternalLastName,
-      birthDate,
       address,
       district,
       email,
@@ -36,11 +34,10 @@ const createModel: any = async (
         SET     name = $2,
                 paternallastname = $3,
                 maternallastname = $4,
-                birthdate = $5,
-                address = $6,
-                district = $7,
-                email = $8,
-                phone = $9
+                address = $5,
+                district = $6,
+                email = $7,
+                phone = $8
         WHERE   rut = $1 RETURNING *`;
     } else {
       query = `
@@ -49,12 +46,11 @@ const createModel: any = async (
                 name,
                 paternallastname,
                 maternallastname,
-                birthdate,
                 address,
                 district,
                 email,
                 phone) 
-        VALUES( $1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`;
+        VALUES( $1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`;
     }
     const result = await pool.query(query, arrayValues);
 
@@ -64,7 +60,6 @@ const createModel: any = async (
       name: result.rows[0].name,
       paternalLastName: result.rows[0].paternallastname,
       maternalLastName: result.rows[0].maternallastname,
-      birthDate: result.rows[0].birthdate.toString().slice(0, 10),
       address: result.rows[0].address,
       district: result.rows[0].district,
       email: result.rows[0].email,

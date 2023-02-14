@@ -111,7 +111,6 @@ const getByProductId: any = async (lead_id: string, product_id: string) => {
 
     return { success: true, data, error: null };
   } catch (e) {
-    console.log(e);
     throw new Error((e as Error).message);
   }
 };

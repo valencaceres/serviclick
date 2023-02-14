@@ -8,7 +8,6 @@ const create: any = async (assistance_id: string, specialty_id: string) => {
     );
     return { success: true, data: result.rows[0], error: null };
   } catch (e) {
-    console.log(e);
     return { success: false, data: null, error: (e as Error).message };
   }
 };

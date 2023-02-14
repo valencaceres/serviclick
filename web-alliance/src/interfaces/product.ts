@@ -1,3 +1,19 @@
+interface IValue {
+  id: string;
+  valuetypeCode: string;
+  family: {
+    id: string;
+    name: string;
+  };
+  name: string;
+}
+
+interface IDiscount {
+  type: string;
+  percent: number;
+  cicles: number;
+}
+
 export interface IProduct {
   id: string;
   familyId: string;
@@ -10,6 +26,9 @@ export interface IProduct {
   currency: string;
   minInsuredCompanyPrice: number;
   dueDay: number;
+  plan: IProductPlan;
+  assistances: IProductAssistance[];
+  values: IValue[];
 }
 
 export interface IProductPlan {
@@ -21,5 +40,15 @@ export interface IProductPlan {
   price: number;
   frequencyCode: string;
   agentId: string;
-  trialCicles: number;
+  discount: IDiscount;
+}
+
+export interface IProductAssistance {
+  id: string;
+  name: string;
+  amount: number;
+  currency: string;
+  maximum: string;
+  events: number;
+  lack: number;
 }

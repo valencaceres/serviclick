@@ -4,4 +4,5 @@ export const config = {
     dev: "http://localhost:3001",
     prod: "https://api.serviclick.cl",
   },
+  baseURL: "https://alianza.serviclick.cl",
 };

@@ -9,6 +9,7 @@ import * as productAssistance from "../models/productAssistance";
 import * as ProductCoverage from "../models/productCoverage";
 import * as ProductFamilyValue from "../models/productFamilyValue";
 import * as ProductPlan from "../models/productPlan";
+import * as Value from "../models/value";
 
 type ProductT = {
   name: string;
@@ -809,6 +810,83 @@ const createProductFamilyValues = async (id: string, familyValues: any) => {
   return createdProductFamilyValues;
 };
 
+const getByProductPlanId = async (req: any, res: any) => {
+  const { productplan_id } = req.params;
+
+  const productPlanResponse = await ProductPlan.getProductById(productplan_id);
+
+  if (!productPlanResponse.success) {
+    createLogger.error({
+      model: "productPlan/getProductById",
+      error: productPlanResponse.error,
+    });
+
+    res.status(500).json({ error: productPlanResponse.error });
+    return;
+  }
+
+  const valueResponse = await Value.getByProductId(
+    productPlanResponse.data[0].id
+  );
+
+  if (!valueResponse.success) {
+    createLogger.error({
+      model: "value/getByProductId",
+      error: valueResponse.error,
+    });
+
+    res.status(500).json({ error: valueResponse.error });
+    return;
+  }
+
+  const data = {
+    id: productPlanResponse.data[0].id,
+    familyId: productPlanResponse.data[0].family_id,
+    name: productPlanResponse.data[0].name,
+    promotional: productPlanResponse.data[0].promotional,
+    cost: productPlanResponse.data[0].cost,
+    isSubject: productPlanResponse.data[0].issubject,
+    frequency: productPlanResponse.data[0].frequency,
+    term: productPlanResponse.data[0].term,
+    beneficiaries: productPlanResponse.data[0].beneficiaries,
+    currency: productPlanResponse.data[0].currency,
+    minInsuredCompanyPrice: productPlanResponse.data[0].mininsuredcompanyprice,
+    dueDay: productPlanResponse.data[0].dueday,
+    plan: {
+      id: productPlanResponse.data[0].productplan_id,
+      createDate: productPlanResponse.data[0].createdate,
+      planId: productPlanResponse.data[0].plan_id,
+      customerType: productPlanResponse.data[0].customer_type,
+      price: productPlanResponse.data[0].price,
+      frequencyCode: productPlanResponse.data[0].frequency,
+      agentId: productPlanResponse.data[0].agent_id,
+      discount: {
+        type: productPlanResponse.data[0].discount_type,
+        percent: productPlanResponse.data[0].discount_percent,
+        cicles: productPlanResponse.data[0].discount_cicles,
+      },
+    },
+    assistances: productPlanResponse.data.map((assistance: any) => {
+      return {
+        id: assistance.assistance_id,
+        name: assistance.assistance_name,
+        amount: assistance.amount,
+        currency: assistance.currency,
+        maximum: assistance.maximum,
+        events: assistance.events,
+        lack: assistance.lack,
+      };
+    }),
+    values: valueResponse.data,
+  };
+
+  createLogger.info({
+    controller: "products/getByProductPlanId",
+    message: "OK",
+  });
+  res.status(200).json(data);
+};
+
 export {
   createProduct,
   createPlans,
@@ -821,4 +899,5 @@ export {
   assignPrices,
   createProductPlans,
   getFamilies,
+  getByProductPlanId,
 };

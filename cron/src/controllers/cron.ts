@@ -41,9 +41,54 @@ const process = async () => {
     let subscriptions: ISubscriptionResume[] = [];
 
     for (const process of cronResponse.data) {
-      const { id: cron_id, subscription_id, event } = process;
+      const { id: cron_id, createddate, subscription_id, event } = process;
 
       if (event === "subscription_activated") {
+        const leadResponse = await Lead.getDiscountBySubscriptionId(
+          createddate,
+          subscription_id
+        );
+
+        if (!leadResponse.success) {
+          createLogger.error({
+            model: `lead/getPolicyBySubscriptionId`,
+            error: leadResponse.error,
+          });
+          return;
+        }
+
+        const {
+          id: lead_id,
+          policy_id,
+          policy_createdate,
+          policy_startdate,
+          lack,
+          discount_type,
+          discount_cicles,
+        } = leadResponse.data;
+
+        if (!policy_id && discount_type === "t" && discount_cicles > 0) {
+          const policyResponse = await Policy.create(
+            lead_id,
+            policy_createdate,
+            policy_startdate,
+            lack
+          );
+
+          if (!policyResponse.success) {
+            createLogger.error({
+              model: `policy/create`,
+              error: policyResponse.error,
+            });
+            return;
+          }
+
+          const paymentReveniuResponse = await apiServiClick.post(
+            "/webHook/subscriptionActivated",
+            { subscription_id }
+          );
+        }
+
         const cronResponse = await cronModel.process(cron_id);
 
         if (!cronResponse.success) {
@@ -107,7 +152,7 @@ const process = async () => {
             success: status === "0",
           },
           payments: payments
-            .filter((payment: any) => payment.gateway_response === "0")
+            .filter((payment: any) => payment.gateway_response === "Approved")
             .map((payment: any) => {
               return {
                 payment_id: payment.id,

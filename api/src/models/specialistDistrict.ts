@@ -8,7 +8,6 @@ const create: any = async (specialist_id: string, district_id: string) => {
     );
     return { success: true, data: result.rows[0], error: null };
   } catch (e) {
-    console.log(e);
     return { success: false, data: null, error: (e as Error).message };
   }
 };

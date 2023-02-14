@@ -159,4 +159,52 @@ const getByFamilyId = async (family_id: string) => {
   }
 };
 
-export { create, updateById, getAll, getById, getFamilies, getByFamilyId };
+const getByProductId = async (product_id: string) => {
+  try {
+    const query = `
+    select	val.id,
+            val.valuetype_code,
+            val.family_id,
+            fam.name as family_name,
+            val.name
+    from    app.product pro
+              inner join app.productassistance pas on pro.id = pas.product_id
+              inner join app.assistancevalue asv on pas.assistance_id = asv.assistance_id
+              inner join app.value val on asv.value_id = val.id
+              inner join app.family fam on val.family_id = fam.id
+    where   pro.id = $1
+    order 	by
+            fam.name,
+            val.name`;
+    const result = await pool.query(query, [product_id]);
+
+    const data =
+      result.rows.length > 0
+        ? result.rows.map((item: any) => {
+            return {
+              id: item.id,
+              valuetypeCode: item.valuetype_code,
+              family: {
+                id: item.family_id,
+                name: item.family_id,
+              },
+              name: item.name,
+            };
+          })
+        : [];
+
+    return { success: true, data, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+export {
+  create,
+  updateById,
+  getAll,
+  getById,
+  getFamilies,
+  getByFamilyId,
+  getByProductId,
+};

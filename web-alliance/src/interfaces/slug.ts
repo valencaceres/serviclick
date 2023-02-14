@@ -1,5 +1,6 @@
 export interface ISlug {
   id: string;
+  code: string;
   rut: string;
   name: string;
   line: string;

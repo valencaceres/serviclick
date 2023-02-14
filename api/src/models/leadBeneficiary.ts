@@ -49,7 +49,8 @@ const getByLeadId: any = async (lead_id: string) => {
                 BEN.address,
                 BEN.district,
                 BEN.email,
-                BEN.phone
+                BEN.phone,
+                CASE WHEN BEN.relationship IS NULL THEN '' ELSE BEN.relationship END AS relationship
         FROM    app.leadbeneficiary LEA INNER JOIN app.beneficiary BEN ON LEA.beneficiary_id = BEN.id
         WHERE   LEA.lead_id = $1`,
       [lead_id]

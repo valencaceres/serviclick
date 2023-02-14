@@ -15,7 +15,7 @@ type StateT = {
 
 const initialState: StateT = {
   list: [],
-  specialty: { id: "", family_id: "", name: "" },
+  specialty: { id: "", family_id: "", family_name: "", name: "" },
   families: [],
   loading: false,
   error: false,

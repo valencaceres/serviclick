@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React from "react";
+import { useRouter } from "next/router";
 
 import Card from "../../ui/Card";
 import Button from "../../ui/Button";
@@ -8,7 +8,7 @@ import style from "./CardProduct.module.scss";
 
 import { currencyFormat } from "../../../utils/format";
 
-const CardProduct = ({ product }: any) => {
+const CardProduct = ({ product, onClick }: any) => {
   return (
     <Card>
       <Image
@@ -26,7 +26,12 @@ const CardProduct = ({ product }: any) => {
       <div className={style.priceNormal}>
         Valor Normal <span>{currencyFormat(product.price.normal)}</span>
       </div>
-      <Button width="135px" type="web" text="¡Lo quiero!" />
+      <Button
+        width="135px"
+        type="web"
+        text="¡Lo quiero!"
+        onClick={() => onClick(product.productplan_id)}
+      />
       <a className={style.link}>Descargar PDF</a>
     </Card>
   );

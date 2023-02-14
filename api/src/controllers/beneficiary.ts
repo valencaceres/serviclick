@@ -34,6 +34,7 @@ const createController = async (req: any, res: any) => {
     district,
     email,
     phone,
+    relationship,
   } = req.body;
   const response = await createModel(
     rut,
@@ -44,7 +45,8 @@ const createController = async (req: any, res: any) => {
     address,
     district,
     email,
-    phone
+    phone,
+    relationship
   );
 
   if (!response.success) {

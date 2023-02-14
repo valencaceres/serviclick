@@ -14,8 +14,7 @@ const Modal = ({ showModal, children }: any) => {
   return (
     <div
       className={styles.modal}
-      style={{ display: isShowModal ? "flex" : "none" }}
-    >
+      style={{ display: isShowModal ? "flex" : "none" }}>
       {children}
     </div>
   );
@@ -23,7 +22,7 @@ const Modal = ({ showModal, children }: any) => {
 
 const Window = ({ title, children, setClosed }: any) => {
   return (
-    <div className={styles.window}>
+    <div className={styles.window + " slide-in-top"}>
       <div className={styles.header}>
         <div className={styles.left}></div>
         <div className={styles.title}>{title}</div>

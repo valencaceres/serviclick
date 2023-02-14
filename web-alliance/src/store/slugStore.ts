@@ -1,69 +1,59 @@
-import create from "zustand";
-
-import { apiInstance } from "../utils/api";
+import { create } from "zustand";
 
 import { ISlug } from "../interfaces/slug";
 
 interface slugState {
-  slugList: ISlug[];
   slug: ISlug;
-  loading: boolean;
-  error: boolean;
+  isLoading: boolean;
+  isError: boolean;
+  error: string;
+  setIsLoading: (isLoading: boolean) => void;
+  setIsError: (isError: boolean) => void;
+  setError: (error: string) => void;
+  setSlug: (slug: ISlug) => void;
   reset: () => void;
   resetAll: () => void;
-  setLoading: (loading: boolean) => void;
-  setError: (error: boolean) => void;
-  setSlug: (slug: ISlug) => void;
-  getByCode: any;
 }
 
-const initialData = {
-  slugList: [],
-  slug: {
-    id: "",
-    rut: "",
-    name: "",
-    line: "",
-    fantasyName: "",
-    address: "",
-    district: "",
-    email: "",
-    phone: "",
-    logo: "",
-    legalRepresentatives: [],
-    products: [],
-  },
+const initialData: ISlug = {
+  id: "",
+  code: "",
+  rut: "",
+  name: "",
+  line: "",
+  fantasyName: "",
+  address: "",
+  district: "",
+  email: "",
+  phone: "",
+  logo: "",
+  legalRepresentatives: [],
+  products: [],
 };
 
 export const slugStore = create<slugState>((set, get) => ({
-  slugList: initialData.slugList,
-  slug: initialData.slug,
-  loading: false,
-  error: false,
+  slug: initialData,
+  isLoading: false,
+  isError: false,
+  error: "",
 
-  reset: () => set((state) => ({ ...state, slug: initialData.slug })),
-
-  resetAll: () => set({}, true),
-
-  setLoading: (loading: boolean) => {
-    set((state) => ({ ...state, loading }));
+  setIsLoading: (isLoading: boolean) => {
+    set((state) => ({ ...state, isLoading }));
   },
 
-  setError: (error: boolean) => {
-    set((state) => ({ ...state, error, loading: false }));
+  setIsError: (isError: boolean) => {
+    set((state) => ({ ...state, isError }));
+  },
+
+  setError: (error: string) => {
+    set((state) => ({ ...state, error }));
   },
 
   setSlug: (slug: ISlug) => {
     set((state) => ({ ...state, slug }));
   },
 
-  setSlugList: (slugs: ISlug[]) => {
-    set((state) => ({ ...state, slugList: slugs }));
-  },
+  reset: () => set((state) => ({ ...state, slug: initialData })),
 
-  getByCode: async (code: string) => {
-    set((state) => ({ ...state, loading: true }));
-    const { data } = await apiInstance.get(`/slug/getByCode/${code}`);
-    set((state) => ({ ...state, slug: data, loading: false }));
-  },
+  resetAll: () => set({}, true),
 }));

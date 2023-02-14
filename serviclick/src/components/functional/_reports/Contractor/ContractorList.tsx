@@ -191,7 +191,7 @@ const ContractorList = ({
           <ContentCellSummary>{`${contractorList.reduce(
             (acum: number, item) => acum + parseInt(item.quantity.toString()),
             0
-          )} suscriptiones`}</ContentCellSummary>
+          )} suscripciones`}</ContentCellSummary>
         </ContentRow>
       </ContentCell>
       <ModalWarning

@@ -1,0 +1,20 @@
+.info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  background-color: rgb(172, 255, 192);
+  height: 40px;
+  border-radius: 3px;
+  border: 1px solid rgb(135, 252, 162);
+
+  span {
+    color: #00af49;
+  }
+
+  p {
+    margin: 0;
+    font-size: 16px;
+    color: #00af49;
+  }
+}

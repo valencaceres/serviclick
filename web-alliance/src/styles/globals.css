@@ -14,7 +14,7 @@ a {
   font-family: Quicksand;
   font-weight: 700;
   font-size: 16px;
-  color: #03495C;
+  color: blue;
   text-decoration: underline;
   cursor: pointer;
   transition: transform 0.3s;

@@ -73,6 +73,10 @@ const getByRetailId: any = async (retail_id: string) => {
                 brp.normalprice,
                 brp.companyprice,
                 brp.currency,
+                pla.id as productplan_id,
+                pla.type,
+                pla.agent_id,
+                pla.plan_id,
                 pla.discount_type,
                 pla.discount_percent,
                 pla.discount_cicles
@@ -97,6 +101,10 @@ const getByRetailId: any = async (retail_id: string) => {
         normalprice,
         companyprice,
         currency,
+        productplan_id,
+        type,
+        agent_id,
+        plan_id,
         discount_type,
         discount_percent,
         discount_cicles,
@@ -104,6 +112,10 @@ const getByRetailId: any = async (retail_id: string) => {
 
       return {
         product_id,
+        productplan_id,
+        type,
+        agent_id,
+        plan_id,
         name,
         promotional,
         campaign,

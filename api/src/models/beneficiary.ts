@@ -9,7 +9,8 @@ const createModel: any = async (
   address: string,
   district: string,
   email: string,
-  phone: string
+  phone: string,
+  relationship?: string
 ) => {
   try {
     const arrayValues = [
@@ -22,6 +23,7 @@ const createModel: any = async (
       district,
       email,
       phone,
+      relationship,
     ];
 
     const resultBeneficiary = await pool.query(
@@ -40,7 +42,8 @@ const createModel: any = async (
                 address = $6,
                 district = $7,
                 email = $8,
-                phone = $9 
+                phone = $9,
+                relationship = $10
         WHERE   rut = $1 RETURNING *`;
     } else {
       query = `
@@ -53,26 +56,14 @@ const createModel: any = async (
                     address,
                     district,
                     email,
-                    phone) 
-            VALUES( $1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`;
+                    phone,
+                    relationship) 
+            VALUES( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`;
     }
 
     const result = await pool.query(query, arrayValues);
 
-    const data = {
-      id: result.rows[0].id,
-      rut: result.rows[0].rut,
-      name: result.rows[0].name,
-      paternalLastName: result.rows[0].paternallastname,
-      maternalLastName: result.rows[0].maternallastname,
-      birthDate: result.rows[0].birthdate,
-      address: result.rows[0].address,
-      district: result.rows[0].district,
-      email: result.rows[0].email,
-      phone: result.rows[0].phone,
-    };
-
-    return { success: true, data, error: null };
+    return getByRutModel(result.rows[0].rut);
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
   }
@@ -91,7 +82,8 @@ const getByRutModel: any = async (rut: string) => {
               address,
               district,
               email,
-              phone
+              phone,
+              case when relationship is null then '' else relationship end as relationship
       FROM    app.beneficiary
       WHERE   rut = $1`,
       [rut]
@@ -107,6 +99,7 @@ const getByRutModel: any = async (rut: string) => {
       district,
       email,
       phone,
+      relationship,
     } = result.rows[0];
 
     const data = {
@@ -120,6 +113,7 @@ const getByRutModel: any = async (rut: string) => {
       district,
       email,
       phone,
+      relationship,
     };
 
     return { success: true, data, error: null };

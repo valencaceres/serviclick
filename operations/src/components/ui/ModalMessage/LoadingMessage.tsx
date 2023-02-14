@@ -7,7 +7,7 @@ import styles from "./LoadingMessage.module.scss";
 const LoadingMessage = ({ showModal }: any) => {
   return (
     <Modal showModal={showModal}>
-      <div className={styles.message}>
+      <div className={styles.message + " fade-in-fwd"}>
         <Icon iconName="refresh" className={styles.loading} />
         Por favor espere...
       </div>
@@ -51,7 +51,7 @@ const Message = ({ type, showModal, children, callback }: any) => {
 
   return (
     <Modal showModal={show}>
-      <div className={styles.message}>
+      <div className={styles.message + " bounce-in-top"}>
         <Icon
           iconName={
             type === "error"

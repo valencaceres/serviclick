@@ -109,7 +109,7 @@ const ContractorList = ({
 
   return (
     <Fragment>
-      <ContentCell gap="5px">
+      <ContentCell gap="5px" className="fade-in-fwd">
         <ContentRow gap="5px" align="center">
           <ComboBox
             label="Tipo cliente"
@@ -191,7 +191,7 @@ const ContractorList = ({
           <ContentCellSummary>{`${contractorList.reduce(
             (acum: number, item) => acum + parseInt(item.quantity.toString()),
             0
-          )} suscriptiones`}</ContentCellSummary>
+          )} suscripciones`}</ContentCellSummary>
         </ContentRow>
       </ContentCell>
       <ModalWarning

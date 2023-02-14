@@ -15,6 +15,7 @@ import * as Company from "../models/company";
 import * as Insured from "../models/insured";
 import * as Beneficiary from "../models/beneficiary";
 import * as Product from "../models/product";
+import * as LeadProductValues from "../models/leadProductValue";
 
 export type CustomerT = {
   id: string;
@@ -52,6 +53,16 @@ type BeneficiaryT = {
   district: string;
   email: string;
   phone: string;
+  relationship?: string;
+};
+
+type ValuesT = {
+  value_id: string;
+  valuetype_code: string;
+  family_id: string;
+  family_name: string;
+  value_name: string;
+  value: string;
 };
 
 type InsuredT = {
@@ -66,6 +77,7 @@ type InsuredT = {
   email: string;
   phone: string;
   beneficiaries: BeneficiaryT[];
+  values: ValuesT[];
 };
 
 type ProductT = {
@@ -145,7 +157,6 @@ const createCustomer = async (customer: CustomerT) => {
     customer.name,
     customer.paternalLastName,
     customer.maternalLastName,
-    customer.birthDate,
     customer.address,
     customer.district,
     customer.email,
@@ -184,13 +195,15 @@ const createLead = async (
   id: string,
   agent_id: string,
   customer_id: string,
-  company_id: string
+  company_id: string,
+  link: string = ""
 ) => {
   const leadResponse = await Lead.createModel(
     id,
     customer_id,
     company_id,
-    agent_id
+    agent_id,
+    link
   );
   return errorHandler(leadResponse, "lead/createLeadModel");
 };
@@ -232,6 +245,11 @@ const deleteLeadBeneficiaries = async (id: string, insured_id: string) => {
 };
 
 const createBeneficiary = async (beneficiary: BeneficiaryT) => {
+  console.log({
+    rut: beneficiary.rut,
+    nombre: beneficiary.name,
+    relationship: beneficiary.relationship || "",
+  });
   const beneficiaryResponse = await Beneficiary.createModel(
     beneficiary.rut,
     beneficiary.name,
@@ -241,8 +259,10 @@ const createBeneficiary = async (beneficiary: BeneficiaryT) => {
     beneficiary.address,
     beneficiary.district,
     beneficiary.email,
-    beneficiary.phone
+    beneficiary.phone,
+    beneficiary.relationship || ""
   );
+  console.log(beneficiaryResponse);
   return errorHandler(beneficiaryResponse, "lead/createBeneficiaryModel");
 };
 
@@ -259,7 +279,7 @@ const createLeadBeneficiary = async (
   return errorHandler(leadbeneficiaryResponse, "lead/createBeneficiaryModel");
 };
 
-const sendPaymentLink = async (lead: LeadT) => {
+const sendPaymentLink = async (lead: LeadT, link: string = "") => {
   const {
     success,
     data: product,
@@ -274,6 +294,13 @@ const sendPaymentLink = async (lead: LeadT) => {
     return { success, data: null, error };
   }
 
+  const href =
+    link === ""
+      ? `https://web.serviclick.cl/payment/${
+          lead.customer.rut ? "customer" : "company"
+        }/${lead.product.product_id}?leadId=${lead.id}`
+      : link;
+
   const emailResponse = await sendMail(
     { name: "Bienvenido a ServiClick" },
     lead.customer.email || lead.company.email,
@@ -282,11 +309,7 @@ const sendPaymentLink = async (lead: LeadT) => {
       lead.company.rut ? lead.company.companyName : lead.customer.name
     }</b><br/><br/>Queremos que seas parte de ServiClick y solo estás a un paso, te dejamos el link de pago para que puedas completar la adquisición de ${
       product.name
-    } y disfrutes de los beneficios que te brinda:<br/><br/><a href="https://web.serviclick.cl/payment/${
-      lead.customer.rut ? "customer" : "company"
-    }/${lead.product.product_id}?leadId=${
-      lead.id
-    }">Concluye tu proceso de pago haciendo click aquí</a><br/><br/>Por que sabemos de asistencias, nos enfocamos en resolver todas las necesidades que te ayuden a vivir más tranquilo y seguro.<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
+    } y disfrutes de los beneficios que te brinda:<br/><br/><a href="${href}">Concluye tu proceso de pago haciendo click aquí</a><br/><br/>Por que sabemos de asistencias, nos enfocamos en resolver todas las necesidades que te ayuden a vivir más tranquilo y seguro.<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
     []
   );
 
@@ -453,7 +476,15 @@ const createSubscription = async (
 
 const create = async (lead: any) => {
   try {
-    const { id, customer, company, product, insured, agent_id } = lead;
+    const {
+      id,
+      customer,
+      company,
+      product,
+      insured,
+      agent_id,
+      link = "",
+    } = lead;
     let leadDataResponse: LeadT = initialLeadData;
 
     if (customer.rut !== "") {
@@ -461,7 +492,7 @@ const create = async (lead: any) => {
       leadDataResponse = { ...leadDataResponse, customer: customerData };
     }
 
-    if (company.rut !== "") {
+    if (company && company.rut !== "") {
       const { data: conpanyData } = await createCompany(company);
       leadDataResponse = { ...leadDataResponse, company: conpanyData };
     }
@@ -470,7 +501,8 @@ const create = async (lead: any) => {
       id,
       agent_id,
       leadDataResponse.customer.id,
-      leadDataResponse.company.id
+      leadDataResponse.company.id,
+      link
     );
     leadDataResponse = { ...leadDataResponse, id: leadData.id };
 
@@ -480,40 +512,62 @@ const create = async (lead: any) => {
     );
     leadDataResponse = { ...leadDataResponse, product: leadProductData };
 
-    const { data: leadInsuredDelete } = await deleteLeadInsured(
-      leadDataResponse.id
-    );
-
-    for (const item of insured) {
-      const { data: insuredData } = await createInsured(item);
-
-      const { data: leadInsuredData } = await createLeadInsured(
-        leadDataResponse.id,
-        insuredData.id
+    if (insured) {
+      const { data: leadInsuredDelete } = await deleteLeadInsured(
+        leadDataResponse.id
       );
 
-      const { data: leadBeneficiaryDelete } = await deleteLeadBeneficiaries(
-        leadDataResponse.id,
-        insuredData.id
-      );
+      for (const item of insured) {
+        const { data: insuredData } = await createInsured(item);
 
-      const newInsured = { ...insuredData, beneficiaries: [] };
-      for (const beneficiary of item.beneficiaries) {
-        const { data: beneficiaryData } = await createBeneficiary(beneficiary);
-
-        const { data: leadBeneficiaryData } = await createLeadBeneficiary(
+        const { data: leadInsuredData } = await createLeadInsured(
           leadDataResponse.id,
-          insuredData.id,
-          beneficiaryData.id
+          insuredData.id
         );
 
-        newInsured.beneficiaries.push(beneficiaryData);
-      }
+        await LeadProductValues.deleteByInsuredId(
+          leadDataResponse.id,
+          product.id,
+          insuredData.id
+        );
 
-      leadDataResponse = {
-        ...leadDataResponse,
-        insured: [...leadDataResponse.insured, newInsured],
-      };
+        for (const value of item.values) {
+          const leadProductValue = await LeadProductValues.create(
+            leadDataResponse.id,
+            product.id,
+            insuredData.id,
+            value.value_id,
+            value.value
+          );
+        }
+
+        const { data: leadBeneficiaryDelete } = await deleteLeadBeneficiaries(
+          leadDataResponse.id,
+          insuredData.id
+        );
+
+        const newInsured = { ...insuredData, beneficiaries: [] };
+        for (const beneficiary of item.beneficiaries) {
+          const { data: beneficiaryData } = await createBeneficiary(
+            beneficiary
+          );
+
+          console.log(beneficiaryData);
+
+          const { data: leadBeneficiaryData } = await createLeadBeneficiary(
+            leadDataResponse.id,
+            insuredData.id,
+            beneficiaryData.id
+          );
+
+          newInsured.beneficiaries.push(beneficiaryData);
+        }
+
+        leadDataResponse = {
+          ...leadDataResponse,
+          insured: [...leadDataResponse.insured, newInsured],
+        };
+      }
     }
 
     return { success: true, data: leadDataResponse, error: null };
@@ -530,6 +584,7 @@ const createController = async (req: any, res: any) => {
     product,
     insured,
     agent_id,
+    link,
     send,
     subscription,
   } = req.body;
@@ -541,6 +596,7 @@ const createController = async (req: any, res: any) => {
     product,
     insured,
     agent_id,
+    link,
   });
 
   if (!success || !data) {
@@ -549,7 +605,7 @@ const createController = async (req: any, res: any) => {
   }
 
   if (send) {
-    const emailResponse = await sendPaymentLink(data);
+    const emailResponse = await sendPaymentLink(data, link);
     if (!emailResponse.success) {
       res.status(500).json(emailResponse.error);
       return;
@@ -597,7 +653,7 @@ const getByIdController = async (req: any, res: any) => {
 
     if (!leadResponse.success) {
       createLogger.error({
-        model: "lead/getLeadById",
+        model: "lead/getById",
         error: leadResponse.error,
       });
       res.status(500).json({ error: leadResponse.error });
@@ -607,7 +663,7 @@ const getByIdController = async (req: any, res: any) => {
     getData(leadResponse, res);
   } catch (error) {
     createLogger.error({
-      controller: "lead/getByIdController",
+      controller: "lead/getById",
       error: (error as Error).message,
     });
     res.status(500).json({ error });
@@ -669,7 +725,10 @@ const getData = async (leadResponse: any, res: any) => {
       completion_url,
       security_token,
       status_code,
+      link,
     } = leadResponse.data;
+
+    const lead_id = id;
 
     const leadProductResponse = await LeadProduct.getByLeadId(id);
 
@@ -712,7 +771,25 @@ const getData = async (leadResponse: any, res: any) => {
 
     const insuredData: InsuredT[] = [];
 
-    leadInsuredResponse.data.map(async (item: any) => {
+    //leadInsuredResponse.data.map(async (item: any) => {
+    for (const item of leadInsuredResponse.data) {
+      const responseValues = await LeadProductValues.getByInsuredId(
+        lead_id,
+        leadProductResponse.data.product_id,
+        item.id
+      );
+
+      if (!responseValues.success) {
+        createLogger.error({
+          model: "leadProductValues/getByInsuredId",
+          error: responseValues.error,
+        });
+        res.status(500).json({
+          error: "leadProductValues: " + responseValues.error,
+        });
+        return;
+      }
+
       const beneficiaryData: BeneficiaryT[] = [];
 
       leadBeneficiariesResponse.data
@@ -729,6 +806,7 @@ const getData = async (leadResponse: any, res: any) => {
             district,
             email,
             phone,
+            relationship,
           } = beneficiary;
 
           beneficiaryData.push({
@@ -742,6 +820,7 @@ const getData = async (leadResponse: any, res: any) => {
             district,
             email,
             phone,
+            relationship,
           });
         });
 
@@ -770,8 +849,9 @@ const getData = async (leadResponse: any, res: any) => {
         email,
         phone,
         beneficiaries: beneficiaryData,
+        values: responseValues.data,
       });
-    });
+    }
 
     const leadResponseData = {
       id,
@@ -814,6 +894,7 @@ const getData = async (leadResponse: any, res: any) => {
         security_token,
         status_code,
       },
+      link,
       isActive: true,
     };
 
@@ -883,6 +964,30 @@ const addBeneficiariesController = async (req: any, res: any) => {
     message: "OK",
   });
   res.status(200).json(responseBeneficiaries.data);
+};
+
+const getProductValuesByInsuredId = async (req: any, res: any) => {
+  const { lead_id, product_id, insured_id } = req.body;
+  const responseProductValues = await LeadProductValues.getByInsuredId(
+    lead_id,
+    product_id,
+    insured_id
+  );
+
+  if (!responseProductValues.success) {
+    createLogger.error({
+      model: "leadProductValues/getByInsuredId",
+      error: responseProductValues.error,
+    });
+    res.status(500).json(responseProductValues.error);
+    return;
+  }
+
+  createLogger.info({
+    controller: "leadProductValues/getByInsuredId",
+    message: "OK",
+  });
+  res.status(200).json(responseProductValues.data);
 };
 
 const addBeneficiariesData = async (
@@ -970,4 +1075,5 @@ export {
   getByIdController,
   getBySubscriptionIdController,
   getProductByInsuredIdController,
+  getProductValuesByInsuredId,
 };

@@ -7,7 +7,7 @@ import styles from "./LoadingMessage.module.scss";
 const LoadingMessage = ({ showModal }: any) => {
   return (
     <Modal showModal={showModal}>
-      <div className={styles.message}>
+      <div className={styles.message + " fade-in-fwd"}>
         <Icon iconName="refresh" className={styles.loading} />
         Por favor espere
       </div>

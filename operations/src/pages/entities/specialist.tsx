@@ -9,7 +9,8 @@ import {
   SpecialistDetail,
 } from "../../components/functional/_entities/Specialist";
 
-import { useUI, useSpecialist, useDistrict } from "../../hooks";
+import { useUI, useDistrict } from "../../hooks";
+import { useSpecialist } from "../../store/hooks";
 
 const SpecialistPage = () => {
   const router = useRouter();
@@ -17,16 +18,17 @@ const SpecialistPage = () => {
   const { setTitleUI, filters } = useUI();
   const { listAllDistrict } = useDistrict();
   const {
-    getFamilies,
+    specialistIsLoading,
+    getSpecialistsFamilies,
     getAllSpecialists,
     getSpecialistById,
     setSpecialist,
     resetSpecialist,
-    specialist,
-    specialistLoading,
   } = useSpecialist();
 
   const [isSaving, setIsSaving] = useState(false);
+  const [enabled, setEnabled] = useState(false);
+  const [enableSave, setEnableSave] = useState(false);
   const [showModalType, setShowModalType] = useState(false);
 
   const handleClickHome = () => {
@@ -66,13 +68,14 @@ const SpecialistPage = () => {
 
   const handleClickBack = () => {
     resetSpecialist();
-    getAllSpecialists();
+    //getAllSpecialists();
     router.push("/entities/specialist");
   };
 
   useEffect(() => {
     setTitleUI("Especialistas");
-    getFamilies();
+    listAllDistrict();
+    getSpecialistsFamilies();
     getAllSpecialists();
   }, []);
 
@@ -84,18 +87,18 @@ const SpecialistPage = () => {
         getSpecialistById(router.query.id?.toString());
       }
     }
-  }, [router.query]);
+  }, [router]);
 
   useEffect(() => {
-    if (isSaving === true && specialistLoading === false) {
+    if (isSaving === true && specialistIsLoading === false) {
       getAllSpecialists();
       setIsSaving(false);
     }
-  }, [isSaving, specialistLoading]);
+  }, [isSaving, specialistIsLoading]);
 
   return router.isReady && router.query.id ? (
     <Fragment>
-      <SpecialistDetail />
+      <SpecialistDetail setEnableSave={setEnableSave} />
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />
         <ButtonIcon iconName="arrow_back" onClick={handleClickBack} />

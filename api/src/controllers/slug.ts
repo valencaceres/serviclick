@@ -6,6 +6,7 @@ import * as Broker from "../controllers/broker";
 
 const getByCode = async (req: any, res: any) => {
   const { code } = req.params;
+
   const slugResponse = await Slug.getByCode(code);
 
   if (!slugResponse.success) {

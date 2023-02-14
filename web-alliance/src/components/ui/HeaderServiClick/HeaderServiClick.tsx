@@ -1,10 +1,15 @@
 import Image from "next/image";
 
-import useUI from "../../../hooks/useUI";
-
 import styles from "./HeaderServiClick.module.scss";
+import Badge from "../Badge";
+
+import { currencyFormat } from "../../../utils/format";
+
+import { useProduct } from "../../../hooks/store";
 
 const HeaderServiClick = ({ title }: any) => {
+  const { product } = useProduct();
+
   return (
     <div className={styles.header}>
       <div className={styles.left}>
@@ -15,7 +20,10 @@ const HeaderServiClick = ({ title }: any) => {
           height={51}
         />
       </div>
-      <div className={styles.right}>{title}</div>
+      <div className={styles.right}>
+        <h1>{title}</h1>
+        <Badge>{currencyFormat(product?.plan.price || 0)}</Badge>
+      </div>
     </div>
   );
 };

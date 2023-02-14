@@ -37,7 +37,11 @@ const assignPassword: any = async (id: string, password: string) => {
       hash,
     ]);
 
-    return { success: true, data: "Password updated", error: null };
+    return {
+      success: true,
+      data: "Password updated (" + hash + ")",
+      error: null,
+    };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
   }
@@ -92,16 +96,19 @@ const getByEmail: any = async (email: string) => {
         left outer join app.beneficiary BEN on LBE.beneficiary_id = BEN.id
       where 
         USR.login = $1 and
-        SUS.status_id <> 10
+        NOT LEA.policy_id is null
       order by
         PRO.id,
         LEA.id`,
       [email]
     );
 
+    const data = await formatDataInsured(result.rows);
+    console.log(data);
+
     return {
       success: true,
-      data: await formatDataInsured(result.rows),
+      data,
       error: null,
     };
   } catch (e) {

@@ -1,14 +1,17 @@
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import { Fragment, useEffect } from "react";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import Main from "../components/layout/Main/Main";
 
 import "../styles/globals.css";
 
+const queryClient = new QueryClient();
+
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <Fragment>
+    <QueryClientProvider client={queryClient}>
       <Head>
         <title>
           ServiClick.cl - Todas las soluciones para tu hogar, en la palma de tu
@@ -23,6 +26,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <Main>
         <Component {...pageProps} />
       </Main>
-    </Fragment>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 }
