@@ -3,23 +3,35 @@
 .buttonMenu {
   background-color: $green-color;
   border: 0;
-  border-radius: 20px;
-  width: 400px;
+  border-radius: 10px;
+  width: 320px;
   padding: 20px;
   cursor: pointer;
   transition: all 0.3s;
 
+  @media screen and (min-width: 1200px) {
+    width: 400px;
+  }
+
   span {
     color: white;
-    font-size: 70px !important;
+    font-size: 60px !important;
     font-weight: 300;
+
+    @media screen and (min-width: 1200px) {
+      font-size: 70px !important;
+    }
   }
 
   h1 {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
     color: white;
     text-align: left;
+
+    @media screen and (min-width: 1200px) {
+      font-size: 18px;
+    }
   }
 
   p {

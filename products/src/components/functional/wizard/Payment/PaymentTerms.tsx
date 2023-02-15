@@ -1,8 +1,12 @@
+import { useMediaQuery } from "react-responsive";
+
 import { Row } from "../../../layout/Generic";
 
 import styles from "./Payment.module.scss";
 
 const PaymentTerms = ({ state, onClick }: any) => {
+  const isDesktop = useMediaQuery({ minWidth: 1200 });
+
   return (
     <Row align="center">
       <p className={styles.terms}>

@@ -6,10 +6,22 @@ p.terms {
   align-items: center;
   margin: 0;
   margin-top: 10px;
-  font-size: 16px;
+  font-size: 14px;
   color: #666666;
   font-weight: 600;
   gap: 5px;
+
+  a {
+    font-size: 14px;
+  }
+
+  @media screen and (min-width: 1200px) {
+    font-size: 16px;
+
+    a {
+      font-size: 16px;
+    }
+  }
 }
 
 .paymentSection {
