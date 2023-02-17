@@ -1,7 +1,4 @@
-import React from "react";
-
 import { Modal, Window } from "@/components/ui/Modal";
-import { useEffect } from "react";
 
 const ModalWindow = ({ showModal, setClosed, title, children }: any) => {
   return (
