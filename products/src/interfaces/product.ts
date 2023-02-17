@@ -21,7 +21,7 @@ export interface IProduct {
   promotional: string;
   cost: number;
   isSubject: boolean;
-  frequency: string;
+  frequency: "M" | "A" | "S";
   term: string;
   beneficiaries: number;
   currency: string;

@@ -11,19 +11,19 @@ import PaymentBeneficiaries from "./PaymentBeneficiaries";
 import PaymentTerms from "./PaymentTerms";
 import PaymentType from "./PaymentType";
 
-import { Body, Content, Footer, Col, Row } from "../../../layout/Generic";
+import { Body, Content, Footer, Col, Row } from "@/components/layout/Generic";
 
-import Button from "../../../ui/Button/Button";
-import Loading from "../../../ui/Loading";
+import Button from "@/components/ui/Button/Button";
+import Loading from "@/components/ui/Loading";
+import Tooltip from "@/components/ui/Tooltip";
+import ModalWindow from "@/components/ui/ModalWindow/index";
 
-import ModalWindow from "../../../ui/ModalWindow/index";
-
-import { useProduct, useLead } from "../../../../store/hooks";
+import { useProduct, useLead } from "@/store/hooks";
 
 import styles from "./Payment.module.scss";
 
-import { termsAndCondicions } from "../../../../data/termsAndConditions";
-import { config } from "../../../../utils/config";
+import { termsAndCondicions } from "@/data/termsAndConditions";
+import { config } from "@/utils/config";
 
 const Payment = () => {
   const router = useRouter();
@@ -248,6 +248,20 @@ const Payment = () => {
         />
       </Footer>
       {leadIsLoading && <Loading />}
+      <Tooltip>
+        <h1>Revisa la información</h1>
+        <br />
+        Verifica que los datos ingresados sean los correctos, para ello te
+        desplegamos la información del servicio que estás contratanto, te
+        pedimos que hagas click en el ckeck al lado de cada título y finalmente
+        en nuestros&nbsp;<b>&quot;términos y condiciones&quot;</b>.
+        <br />
+        <br />
+        Si estás conforme, al terminar de checkear, presiona el botón&nbsp;
+        <b>&quot;Pagar&quot;</b>&nbsp;y podrás seleccionar entre pagar
+        directamente mediante nuestra plataforma de pago seguro o enviar un link
+        de pago a tu correo electrónco.
+      </Tooltip>
       <ModalWindow
         showModal={showTerms}
         setClosed={handleClickCloseTerms}

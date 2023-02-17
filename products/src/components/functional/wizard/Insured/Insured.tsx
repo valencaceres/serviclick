@@ -3,10 +3,11 @@ import { useRouter } from "next/router";
 
 import { Body, Content, Footer, Col, Row } from "../../../layout/Generic";
 
-import Button from "../../../ui/Button/Button";
-import ComboBox from "../../../ui/ComboBox";
-import InputText from "../../../ui/InputText";
-import Loading from "../../../ui/Loading";
+import Button from "@/components/ui/Button/Button";
+import ComboBox from "@/components/ui/ComboBox";
+import InputText from "@/components/ui/InputText";
+import Loading from "@/components/ui/Loading";
+import Tooltip from "@/components/ui/Tooltip";
 
 import { unFormatRut, formatRut } from "../../../../utils/format";
 import { numberRegEx, rutRegEx, emailRegEx } from "../../../../utils/regEx";
@@ -122,7 +123,7 @@ const Insured = () => {
         isValid: isValidRut(event.target.value),
       },
     });
-    getInsuredByRut(event.target.value);
+    event.target.value !== "" && getInsuredByRut(event.target.value);
     setSearch(false);
   };
 
@@ -271,6 +272,7 @@ const Insured = () => {
       setLeadInsured({
         customerType: formData.birthDate.value,
         rut: formData.rut.value,
+        birthDate: formData.birthDate.value,
         name: formData.name.value,
         paternalLastName: formData.paternalLastName.value,
         maternalLastName: formData.maternalLastName.value,
@@ -330,7 +332,7 @@ const Insured = () => {
     <Body>
       <Content>
         <Col width="340px">
-          <Row align="space-between">
+          <Row align="space-between" width="100%">
             <InputText
               label="Rut"
               width="150px"
@@ -412,6 +414,18 @@ const Insured = () => {
           enabled={completedForm}></Button>
       </Footer>
       {(districtIsLoading || leadIsLoading) && <Loading />}
+      <Tooltip>
+        <h1>Datos del asegurado</h1>
+        <br />
+        ¿Es para tí este producto o lo estás adquiriendo para otra persona?, si
+        es para ti, solo presiona&nbsp;<b>&quot;Registrar&quot;</b>&nbsp;para
+        continuar.
+        <br />
+        <br />
+        Si es para otra persona, llena este formulario con sus datos y
+        finalmente presiona&nbsp;<b>&quot;Registrar&quot;</b>&nbsp;para
+        continuar.
+      </Tooltip>
     </Body>
   );
 };

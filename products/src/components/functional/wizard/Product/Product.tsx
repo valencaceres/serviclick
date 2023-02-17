@@ -3,9 +3,10 @@ import { useRouter } from "next/router";
 
 import { Body, Content, Footer, Col } from "../../../layout/Generic";
 
-import Button from "../../../ui/Button/Button";
-import Loading from "../../../ui/Loading";
-import InputText from "../../../ui/InputText";
+import Button from "@/components/ui/Button/Button";
+import Loading from "@/components/ui/Loading";
+import InputText from "@/components/ui/InputText";
+import Tooltip from "@/components/ui/Tooltip";
 
 import { useUI, useProduct, useLead } from "../../../../store/hooks";
 
@@ -129,6 +130,16 @@ const Product = () => {
         />
       </Footer>
       {leadIsLoading && <Loading />}
+      <Tooltip>
+        <h1>Datos del producto</h1>
+        <br />
+        Ingresa la información que te solicitamos para asociarla al producto que
+        estás contratanto y así mejorar nuestra atención.
+        <br />
+        <br />
+        En el caso del tipo de previsión, debes especificar si estás afiliado a
+        isapre o Fonasa (A o B)
+      </Tooltip>
     </Body>
   );
 };

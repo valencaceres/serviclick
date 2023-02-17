@@ -25,7 +25,7 @@ const initialData: IProduct = {
   promotional: "",
   cost: 0,
   isSubject: false,
-  frequency: "",
+  frequency: "M",
   term: "",
   beneficiaries: 0,
   currency: "",

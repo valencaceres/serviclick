@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import { useUI, useProduct } from "../../../../store/hooks";
 
 import styles from "./Description.module.scss";
-import { useEffect } from "react";
 import Loading from "@/components/ui/Loading";
 
 const Description = () => {
@@ -19,7 +18,7 @@ const Description = () => {
 
   return (
     <div className={styles.landingPage}>
-      <Banner />
+      {product.id && <Banner />}
       <div className={styles.title}>{product.name}</div>
       <div className={styles.description}>{product.promotional}</div>
       <div className={styles.highlighted}>Plan mensual</div>
@@ -78,17 +77,23 @@ const Coverage = () => {
       </div>
       <div className={styles.detail}>
         {product.assistances.map((item, idx: number) => (
-          <div className={styles.row} key={idx}>
-            <div className={styles.cell}>{item.name}</div>
-            <div className={styles.cell}>{limitDescription(item)}</div>
-            <div className={styles.cell}>
+          <div className={styles.row} key={`item_${idx}`}>
+            <div className={styles.cell} key={`name_${idx}`}>
+              {item.name}
+            </div>
+            <div className={styles.cell} key={`limit_${idx}`}>
+              {limitDescription(item)}
+            </div>
+            <div className={styles.cell} key={`events_${idx}`}>
               {item.events === 0
                 ? "Ilimitado"
                 : item.events === 1
                 ? `${item.events} evento`
                 : `${item.events} eventos`}
             </div>
-            <div className={styles.cell}>{item.lack} días</div>
+            <div className={styles.cell} key={`lack_${idx}`}>
+              {item.lack} días
+            </div>
           </div>
         ))}
       </div>

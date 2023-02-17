@@ -74,7 +74,7 @@ export interface ILead {
   customer: ICustomer;
   company?: ICompany;
   product: IProduct;
-  insured?: IInsured[];
+  insured: IInsured[];
   link: string;
   subscriptionData: {
     id: number;

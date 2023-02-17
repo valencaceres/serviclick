@@ -6,8 +6,10 @@ import { Body, Content, Footer } from "../../../layout/Generic";
 import Person from "../../entities/Person";
 import Company from "../../entities/Company";
 
-import Button from "../../../ui/Button/Button";
-import Loading from "../../../ui/Loading";
+import Button from "@/components/ui/Button/Button";
+import Loading from "@/components/ui/Loading";
+import Tooltip from "@/components/ui/Tooltip";
+import { currencyFormat } from "@/utils/format";
 
 import {
   useUI,
@@ -119,6 +121,25 @@ const Contractor = () => {
           enabled={completedForm}></Button>
       </Footer>
       {leadIsLoading && <Loading />}
+      <Tooltip>
+        <h1>Datos del contratante</h1>
+        <br />
+        Estás contratando el Servicio&nbsp;<b>{product.name}</b>, el cual tiene
+        un valor exclusivo de&nbsp;
+        <b>{currencyFormat(product.plan.price)} mensual</b>
+        &nbsp;y te brinda los siguientes beneficios:
+        <br />
+        <br />
+        {product.assistances.map((item, idx: number) => (
+          <p key={idx}>
+            - {item.name}
+            <br />
+          </p>
+        ))}
+        <br />
+        Ingresa tus datos personales como contratante y al terminar presiona el
+        botón&nbsp;<b>&quot;Registrar&quot;</b>&nbsp;.
+      </Tooltip>
     </Body>
   );
 };

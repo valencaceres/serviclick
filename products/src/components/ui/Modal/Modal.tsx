@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import classNames from "classnames";
 
 import styles from "./Modal.module.scss";
 
@@ -6,7 +7,9 @@ const Modal = ({ showModal, children }: any) => {
   const [isShowModal, setIsShowModal] = useState(showModal);
 
   useEffect(() => {
-    setIsShowModal(showModal);
+    setTimeout(() => {
+      setIsShowModal(showModal);
+    }, 200);
   }, [showModal]);
 
   return (
@@ -18,9 +21,15 @@ const Modal = ({ showModal, children }: any) => {
   );
 };
 
-const Window = ({ title, children, setClosed }: any) => {
+const Window = ({ title, children, setClosed, className }: any) => {
+  const windowClass = classNames(
+    styles.window,
+    styles.animated,
+    styles[className]
+  );
+
   return (
-    <div className={styles.window}>
+    <div className={windowClass}>
       <div className={styles.header}>
         <div className={styles.left}></div>
         <div className={styles.title}>{title}</div>
