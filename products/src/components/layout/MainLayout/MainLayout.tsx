@@ -23,8 +23,10 @@ const MainLayout = ({ children }: Props) => {
 };
 
 const Screen = ({ children }: Props) => {
-  const vh = window.innerHeight * 0.01;
-  const root = document.documentElement.style.setProperty("--vh", `${vh}px`);
+  let vh = typeof window !== "undefined" ? window.innerHeight * 0.01 : 0;
+  const root =
+    typeof document !== "undefined" &&
+    document.documentElement.style.setProperty("--vh", `${vh}px`);
 
   return <div className={styles.screen}>{children}</div>;
 };
@@ -32,8 +34,6 @@ const Screen = ({ children }: Props) => {
 const HeaderServiClick = () => {
   const { ui } = useUI();
   const { product } = useProduct();
-
-  let vh = window.innerHeight * 0.01;
 
   return (
     <div className={styles.screenHeader}>
