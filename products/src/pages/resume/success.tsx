@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import { useRouter } from "next/router";
 
-import HeadPages from "../../components/layout/HeadPages";
+// import HeadPages from "../../components/layout/HeadPages";
 
 import Button from "../../components/ui/Button";
 
@@ -16,7 +16,7 @@ const Success = () => {
 
   return (
     <Fragment>
-      <HeadPages title="Exito" description="Pago exitoso" />
+      {/* <HeadPages title="Exito" description="Pago exitoso" /> */}
       <div>
         <div className={styles.message}>
           <h1>Gracias por tu pedido</h1>
