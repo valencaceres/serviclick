@@ -30,7 +30,7 @@ const PaymentProduct = ({ product, lead }: any) => {
           value={formatAmount(product.plan.price, "P")}
         />
         <InfoText
-          label="Cantidad de asegurados"
+          label="Cantidad de beneficiarioss"
           width="170px"
           value={lead.insured.length}
         />

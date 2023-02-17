@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { config } from "../utils/config";
+import { config } from "@/utils/config";
 
 const envApp = "prod";
 

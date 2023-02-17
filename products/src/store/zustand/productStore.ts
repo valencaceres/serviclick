@@ -1,8 +1,8 @@
 import { create } from "zustand";
 
-import { IProduct } from "../../interfaces/product";
+import { IProduct } from "@/interfaces/product";
 
-import { apiInstance } from "../../utils/api";
+import { apiInstance } from "@/utils/api";
 
 interface productState {
   product: IProduct;

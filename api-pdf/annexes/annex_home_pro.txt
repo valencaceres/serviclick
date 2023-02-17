@@ -9,7 +9,7 @@ El servicio de asistencia antes indicado contempla la siguiente tabla:
 <b>SERVICIOS DE PLOMERIA.
 <b>Definiciones
 Cuando a consecuencia de una avería imprevista en las instalaciones fijas de abastecimiento de agua y/o sanitarias propias del “inmueble beneficiario”, se presente alguna ruptura o averías, se enviara a la brevedad un técnico especializado que realice las labores de emergencia necesarias para restablecer el servicio, siempre y cuando el estado de red del “inmueble beneficiario” lo permitan y la avería no se deba a responsabilidad de la empresa sanitaria correspondiente al domicilio o esté dentro de las responsabilidades del mantenimiento periódico de las redes.
-Las instalaciones que corresponden a bienes comunes de inmueble o de edificios regidos de la ley de piso o de propiedad horizontal o que son propiedad de tercero, no se considera como pertenecientes al “inmueble asegurado” aun cuando puedan estar situadas su recinto.
+Las instalaciones que corresponden a bienes comunes de inmueble o de edificios regidos de la ley de piso o de propiedad horizontal o que son propiedad de tercero, no se considera como pertenecientes al “inmueble beneficiado” aun cuando puedan estar situadas su recinto.
 <b>Detalle de Servicios
 1) Reparación de matrices de agua
 2) Cambio de Grifería
@@ -48,7 +48,7 @@ El servicio no incluye modificaciones ni mejoras a las instalaciones ya existent
 <b>EXCLUSIONES DEL SERVICIO VIDRIERIA
 a) Cualquier clase de espejo y cualquier tipo de vidrio que a pesar de ser parte de la edificación en caso de una ruptura no formen parte del perímetro horizontal del “inmueble beneficiario”
 b) Ruptura de vidrio por fenómenos naturales como: terremoto, inundaciones, temporales, maremotos, erupciones volcánicas, caída de árboles o ramas, etc.
-c) Vidrio que a pesar de formar parte del perímetro horizontal del “inmueble asegurado” sean vitrales, bronce, de colores, vidrios espejos, ahumados, foto cromáticos, pigmentados, polarizados o similares, en cuyo caso se repondrá un vidrio normal trasparente incoloro que sirve con el propósito de resolver la emergencia.
+c) Vidrio que a pesar de formar parte del perímetro horizontal del “inmueble beneficiado” sean vitrales, bronce, de colores, vidrios espejos, ahumados, foto cromáticos, pigmentados, polarizados o similares, en cuyo caso se repondrá un vidrio normal trasparente incoloro que sirve con el propósito de resolver la emergencia.
 d) No cubre pre existencia.
 e) No se considera como emergencia un servicio solicitado posterior a 3 días ocurrido el imprevisto. De esta manera el servicio quedara fuera de cobertura.
 f) Quedan excluida de la cobertura la reposición de vidrio termo panel, vidrio laminados, templado o de seguridad
@@ -57,7 +57,7 @@ g) Quedan excluida de la cobertura vidrios interiores que no pertenezcan al per�
 Si el cliente necesita cambiar o instalar luminaria y/o lámparas en el interior de su domicilio.
 Serviclick enviara un técnico especialista para realizar la labor.
 <b>EXCLUSIONES DEL SERVICIO INSTALACION DE LUMINARIAS Y/O LAMPARAS
-a) El servicio incluye el traslado del técnico y mano de obra, la luminaria o lámpara que necesiten ser reemplazada o instaladas deben ser provista o compradas por el asegurado.
+a) El servicio incluye el traslado del técnico y mano de obra, la luminaria o lámpara que necesiten ser reemplazada o instaladas deben ser provista o compradas por el beneficiario.
 b) La instalación de la luminaria se llevara a cabo siempre que existan las condiciones necesarias para la instalación, vale decir, existe el arranque eléctrico y cableado en general.
 c) El servicio de instalación de lámpara o luminaria no incluye la creación de arranque eléctrico o cableado para la instalación de la luminaria.
 d) Estas instalaciones se limitan a una altura máxima de 2,5 metros de altura, si la supera esta se considerará fuera de cobertura.

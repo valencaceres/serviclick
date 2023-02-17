@@ -144,7 +144,7 @@ const Insured = ({
         <ContentRow align="space-between">
           <ContentCellSummary>
             {lead.insured.length > 0 ? lead.insured.length : "Sin"}{" "}
-            {lead.insured.length === 1 ? "asegurado" : "asegurados"}
+            {lead.insured.length === 1 ? "beneficiario" : "beneficiarios"}
           </ContentCellSummary>
           <ContentRow gap="5px">
             <Button text="Excel" color="gray" />
@@ -159,7 +159,7 @@ const Insured = ({
       <ModalWindow
         showModal={showModal}
         setClosed={handleCloseClick}
-        title={`Asegurado`}>
+        title={`Beneficiario`}>
         <ContentCell align="center" gap="30px">
           <InsuredForm
             insuredForm={insuredForm}

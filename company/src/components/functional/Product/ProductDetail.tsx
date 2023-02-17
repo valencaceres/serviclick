@@ -53,7 +53,7 @@ const ProductDetail = ({ id }: any) => {
         />
         <InputText
           id="txtProductCompanyInsured"
-          label="Cantidad asegurados"
+          label="Cantidad beneficiarios"
           width="100%"
           value={products
             .filter((item) => item.id === product.id)[0]

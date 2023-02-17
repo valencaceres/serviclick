@@ -1,8 +1,8 @@
 import { create } from "zustand";
 
-import { apiInstance } from "../../utils/api";
+import { apiInstance } from "@/utils/api";
 
-import { ILead } from "../../interfaces/lead";
+import { ILead } from "@/interfaces/lead";
 
 interface leadState {
   lead: ILead;
@@ -143,7 +143,6 @@ export const leadStore = create<leadState>((set, get) => ({
         isLoading: false,
       }));
     } catch (e) {
-      alert((e as Error).message);
       set((state) => ({
         ...state,
         isLoading: false,

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 
 import Link from "@/components/functional/resume/Link";
 
-import { useLead } from "../../store/hooks";
+import { useLead } from "@/store/hooks";
 
 const LinkResumePage = () => {
   const router = useRouter();

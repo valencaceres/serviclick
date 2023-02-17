@@ -1,6 +1,6 @@
 import shallow from "zustand/shallow";
 
-import { uiStore } from "../zustand";
+import { uiStore } from "@/store/zustand";
 
 const useUI = () => {
   const {

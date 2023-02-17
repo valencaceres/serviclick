@@ -153,7 +153,7 @@ const Payment = () => {
               <PaymentPerson data={lead.customer} />
             </PaymentSection>
             <PaymentSection
-              title="Asegurado"
+              title="Beneficiario"
               selected={isSelectedinsured}
               state={setIsSelectedinsured}>
               <PaymentInsured data={lead.insured && lead.insured[0]} />

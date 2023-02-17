@@ -1,4 +1,4 @@
-import { Col } from "../../../layout/Generic";
+import { Col } from "@/components/layout/Generic";
 
 import {
   Table,
@@ -7,7 +7,7 @@ import {
   TableDetail,
   TableHeader,
   TableRow,
-} from "../../../ui/Table";
+} from "@/components/ui/Table";
 
 const PaymentBeneficiaries = ({ lead }: any) => {
   return (

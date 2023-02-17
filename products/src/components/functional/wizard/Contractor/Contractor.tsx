@@ -1,27 +1,18 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
-import { Body, Content, Footer } from "../../../layout/Generic";
+import { Body, Content, Footer } from "@/components/layout/Generic";
 
-import Person from "../../entities/Person";
-import Company from "../../entities/Company";
+import Person from "@/components/functional/entities/Person";
 
 import Button from "@/components/ui/Button/Button";
 import Loading from "@/components/ui/Loading";
 import Tooltip from "@/components/ui/Tooltip";
 import { currencyFormat } from "@/utils/format";
 
-import {
-  useUI,
-  useContractor,
-  useProduct,
-  useLead,
-} from "../../../../store/hooks";
+import { useUI, useContractor, useProduct, useLead } from "@/store/hooks";
 
-import {
-  IFieldFormCustomerType,
-  IFieldFormString,
-} from "../../../../interfaces/form";
+import { IFieldFormCustomerType, IFieldFormString } from "@/interfaces/form";
 
 interface ICustomerForm {
   customerType: IFieldFormCustomerType;
@@ -122,7 +113,8 @@ const Contractor = () => {
       </Footer>
       {leadIsLoading && <Loading />}
       <Tooltip>
-        <h1>Datos del contratante</h1>
+        <h1>Datos del Contratante</h1>
+        <h2>(Paso 1 de 4)</h2>
         <br />
         Estás contratando el Servicio&nbsp;<b>{product.name}</b>, el cual tiene
         un valor exclusivo de&nbsp;

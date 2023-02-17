@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
-import { Body, Content, Footer, Col } from "../../../layout/Generic";
+import { Body, Content, Footer, Col } from "@/components/layout/Generic";
 
 import Button from "@/components/ui/Button/Button";
 import Loading from "@/components/ui/Loading";
 import InputText from "@/components/ui/InputText";
 import Tooltip from "@/components/ui/Tooltip";
 
-import { useUI, useProduct, useLead } from "../../../../store/hooks";
+import { useUI, useProduct, useLead } from "@/store/hooks";
 
 interface IValue {
   id: string;
@@ -131,14 +131,17 @@ const Product = () => {
       </Footer>
       {leadIsLoading && <Loading />}
       <Tooltip>
-        <h1>Datos del producto</h1>
+        <h1>Datos del Producto</h1>
+        <h2>(Paso 3 de 4)</h2>
         <br />
         Ingresa la información que te solicitamos para asociarla al producto que
         estás contratanto y así mejorar nuestra atención.
         <br />
         <br />
-        En el caso del tipo de previsión, debes especificar si estás afiliado a
-        isapre o Fonasa (A o B)
+        En el caso del&nbsp;<b>Tipo de previsión</b>, debes especificarnos si
+        estás afiliado a isapre y brindarnos su nombre (Isapre Consalud, Isapre
+        Banmédica, etc.) o si estás afiliado a Fonasa indicanos si eres Fonasa A
+        o Fonasa B.
       </Tooltip>
     </Body>
   );

@@ -1,6 +1,6 @@
 import { shallow } from "zustand/shallow";
 
-import { districtStore } from "../zustand";
+import { districtStore } from "@/store/zustand";
 
 const useDistrict = () => {
   const {

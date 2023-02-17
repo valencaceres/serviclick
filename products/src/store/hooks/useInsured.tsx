@@ -1,6 +1,6 @@
 import { shallow } from "zustand/shallow";
 
-import { insuredStore } from "../zustand";
+import { insuredStore } from "@/store/zustand";
 
 const useInsured = () => {
   const {

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 
 import SaleError from "@/components/functional/resume/SaleError";
 
-import { useLead } from "../../store/hooks";
+import { useLead } from "@/store/hooks";
 
 const LinkResumePage = () => {
   const router = useRouter();

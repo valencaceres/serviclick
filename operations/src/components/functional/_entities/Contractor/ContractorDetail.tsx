@@ -38,7 +38,7 @@ const ContractorDetail = () => {
       <ContentCell align="center" gap="20px">
         <ContentRow gap="20px">
           <ContentCell gap="5px">
-            <Section title="Datos del contratante" width="350px" />
+            <Section title="Datos del Contratante" width="350px" />
             <ContractorForm enabled={false} />
             <ContentRow align="right">
               <ButtonIcon
@@ -61,7 +61,7 @@ const ContractorDetail = () => {
           <ContractorProduct />
         </ContentCell>
         <ContentCell gap="5px">
-          <Section title="Asegurados" width="855px" />
+          <Section title="Beneficiarios" width="855px" />
           <ContractorInsured />
         </ContentCell>
         <ContentCell gap="5px">

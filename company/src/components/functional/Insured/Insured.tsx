@@ -154,7 +154,7 @@ const Insured = ({ setShowTooltip }: any) => {
         ) : (
           <Table width="90%" height={`calc(100vh - 350px)`}>
             <TableHeader>
-              <TableCell width="100%">Asegurado</TableCell>
+              <TableCell width="100%">Beneficiario</TableCell>
             </TableHeader>
             <TableDetail>
               {session.insured.map((insured: any, idx: number) => (
@@ -191,7 +191,7 @@ const Insured = ({ setShowTooltip }: any) => {
         <div className={styles.messageContent}>
           <div className={styles.messageWindow}>
             <div className={styles.text1}>
-              Presione el botón (+) para ingresar asegurados
+              Presione el botón (+) para ingresar beneficiarios
             </div>
             <div className={styles.text2}>
               (si lo prefiere, puede presionar el botón <b>Omitir</b> para
@@ -206,7 +206,7 @@ const Insured = ({ setShowTooltip }: any) => {
         disabled={!isEnabled}
       />
       <Modal showModal={showModalInsured}>
-        <Window title="Asegurado" setClosed={handleCloseInsured}>
+        <Window title="Beneficiario" setClosed={handleCloseInsured}>
           <InsuredDetail
             insuredForm={insuredForm}
             setInsuredForm={setInsuredForm}

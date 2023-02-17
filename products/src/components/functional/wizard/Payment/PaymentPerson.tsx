@@ -1,7 +1,7 @@
-import { Col, Row } from "../../../layout/Generic";
+import { Col, Row } from "@/components/layout/Generic";
 import { useMediaQuery } from "react-responsive";
 
-import InfoText from "../../../ui/InfoText";
+import InfoText from "@/components/ui/InfoText";
 
 const PaymentPerson = ({ data }: any) => {
   const isDesktop = useMediaQuery({ minWidth: 1200 });

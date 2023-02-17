@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 
 // import HeadPages from "../../components/layout/HeadPages";
 
-import Button from "../../components/ui/Button";
+import Button from "@/components/ui/Button";
 
 import styles from "./resume.module.scss";
 

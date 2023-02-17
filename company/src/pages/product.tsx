@@ -64,7 +64,7 @@ const ProductPage = () => {
           {router.isReady && router.query.id ? (
             <Button
               onClick={handleInsuredClick}
-              text="Asegurados"
+              text="Beneficiarios"
               width="150px"
             />
           ) : (
@@ -75,7 +75,7 @@ const ProductPage = () => {
       {router.isReady && router.query.id ? (
         <Tooltip isShow={showTooltip} onClose={handleCloseTooltip}>
           <div>
-            Adicionalmente haciendo click sobre el botón <b>Asegurados</b>,
+            Adicionalmente haciendo click sobre el botón <b>Beneficiarios</b>,
             podrás revisar el detalle de estos.
           </div>
         </Tooltip>

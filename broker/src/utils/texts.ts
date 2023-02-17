@@ -18,7 +18,7 @@ const texts = {
   customer: {
     title: "Contratante",
     description: (name: string) =>
-      `Estás contratando el producto <b>&nbsp;${name.trim()}</b>, ingresa tus datos como contratante y asegurado principal`,
+      `Estás contratando el producto <b>&nbsp;${name.trim()}</b>, ingresa tus datos como contratante y beneficiario principal`,
   },
   donor: {
     title: "Donador",
@@ -26,9 +26,9 @@ const texts = {
       `Estás realizando una donación, ingresa tus datos como donador y luego presiona <b>&nbsp;Registrar</b>`,
   },
   insured: {
-    title: "Asegurados",
+    title: "Beneficiarios",
     description:
-      "Ingrese a continuación los datos de los asegurados o seleccione la opción de subida mediante planilla Excel, al concluír presione Continuar",
+      "Ingrese a continuación los datos de los beneficiarios o seleccione la opción de subida mediante planilla Excel, al concluír presione Continuar",
   },
   Beneficiary: {
     title: "Beneficiarios",
@@ -36,8 +36,8 @@ const texts = {
       `Puede agregar hasta ${beneficiaries} beneficiarios a su plan, ingreselos a continuación y al concluír, presione Continuar`,
   },
   Insured: {
-    title: "Asegurados",
-    description: `Puede agregar los asegurados que desee al servicio, ingreselos a continuación y al concluír, presione Continuar`,
+    title: "Beneficiarios",
+    description: `Puede agregar los beneficiarios que desee al servicio, ingreselos a continuación y al concluír, presione Continuar`,
   },
   payment: {
     title: "Pago",

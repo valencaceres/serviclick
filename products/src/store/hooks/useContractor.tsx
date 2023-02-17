@@ -1,6 +1,6 @@
 import { shallow } from "zustand/shallow";
 
-import { contractorStore } from "../zustand";
+import { contractorStore } from "@/store/zustand";
 
 const useContractor = () => {
   const {

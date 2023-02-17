@@ -14,6 +14,10 @@
   outline-width: 0;
 }
 
+body {
+  overflow: hidden;
+}
+
 a {
   font-family: Quicksand;
   font-weight: 700;

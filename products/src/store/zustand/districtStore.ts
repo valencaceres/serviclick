@@ -1,8 +1,8 @@
 import { create } from "zustand";
 
-import { IDistrict } from "../../interfaces/district";
+import { IDistrict } from "@/interfaces/district";
 
-import { apiInstance } from "../../utils/api";
+import { apiInstance } from "@/utils/api";
 
 interface districtState {
   district: IDistrict;

@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 
-import { Body, Content, Footer, Col, Row } from "../../../layout/Generic";
+import { Body, Content, Footer, Col, Row } from "@/components/layout/Generic";
 
 import Loading from "@/components/ui/Loading";
 import Button from "@/components/ui/Button";
 
-import { useLead } from "../../../../store/hooks";
+import { useLead } from "@/store/hooks";
 
 import styles from "../Resume.module.scss";
 

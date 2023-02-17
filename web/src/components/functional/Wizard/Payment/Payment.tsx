@@ -291,7 +291,7 @@ const Payment = ({ register }: any) => {
 
   return (
     <Fragment>
-      <HeadPages title="Pago" description="Datos del pago" />
+      <HeadPages title="Pago" description="Datos del Pago" />
       <Wizard>
         <Title>
           <Navigate>
@@ -317,7 +317,7 @@ const Payment = ({ register }: any) => {
                       type="checkbox"
                       onChange={(e) => handleClickCheck(e, stage.type)}
                     />
-                    &nbsp;&nbsp;Datos del contratante
+                    &nbsp;&nbsp;Datos del Contratante
                   </div>
                   <div className={styles.sectionContent}>
                     {stage.type === "customer" ? (
@@ -449,7 +449,7 @@ const Payment = ({ register }: any) => {
                         type="checkbox"
                         onChange={(e) => handleClickCheck(e, "insured")}
                       />
-                      &nbsp;&nbsp;Asegurados ({lead.insured.length})
+                      &nbsp;&nbsp;Beneficiarios ({lead.insured.length})
                     </div>
                     <div className={styles.sectionContent}>
                       {lead.insured && lead.insured.length > 0 ? (
@@ -488,7 +488,7 @@ const Payment = ({ register }: any) => {
                         ) : (
                           <Table width="100%" height={`auto`}>
                             <TableHeader>
-                              <TableCell width="100%">Asegurado</TableCell>
+                              <TableCell width="100%">Beneficiario</TableCell>
                             </TableHeader>
                             <TableDetail>
                               {lead.insured.map((item: any, idx: number) => (
@@ -516,7 +516,7 @@ const Payment = ({ register }: any) => {
                           </div>
                           <div className={styles.text2}>
                             No podrá realizar el pago del servicio si no ha
-                            ingresado los asegurados.
+                            ingresado los beneficiarios.
                           </div>
                         </div>
                       )}
@@ -708,7 +708,7 @@ const Payment = ({ register }: any) => {
                           <CellCenter>
                             <InputText
                               id="txtProductCompanyPrice"
-                              label="Asegurados"
+                              label="Beneficiarios"
                               width="200px"
                               value={lead.insured.length.toString()}
                               disabled={true}

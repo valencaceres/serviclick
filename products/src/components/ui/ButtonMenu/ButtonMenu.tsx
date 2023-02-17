@@ -1,8 +1,8 @@
 import React from "react";
 
-import { Row, Col } from "../../layout/Generic";
+import { Row, Col } from "@/components/layout/Generic";
 
-import Icon from "../Icon/Icon";
+import Icon from "@/components/ui/Icon";
 
 import styles from "./ButtonMenu.module.scss";
 

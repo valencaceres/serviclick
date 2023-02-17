@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 
 import None from "@/components/functional/wizard/None/None";
 
-import { stages } from "../data/stage";
+import { stages } from "@/data/stage";
 
-import { useUI, useProduct, useLead } from "../store/hooks";
+import { useUI, useProduct, useLead } from "@/store/hooks";
 
 const StagePage = () => {
   const router = useRouter();

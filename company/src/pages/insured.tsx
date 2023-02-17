@@ -77,7 +77,7 @@ const InsuredPage = () => {
           <Navigate>
             <Back onClick={handleClickBack} />
           </Navigate>
-          Asegurados
+          Beneficiarios
           <div></div>
         </Title>
         <Content>
@@ -95,8 +95,8 @@ const InsuredPage = () => {
       </Wizard>
       <Tooltip isShow={showTooltip} onClose={handleCloseTooltip}>
         <div>
-          Mediante esta opción podrás revisar la información de tus asegurados,
-          darlos de baja o agregar uno nuevo.
+          Mediante esta opción podrás revisar la información de tus
+          beneficiarios, darlos de baja o agregar uno nuevo.
         </div>
       </Tooltip>
     </Fragment>

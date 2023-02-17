@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
-import { Body, Content, Footer, Col, Row } from "../../../layout/Generic";
+import { Body, Content, Footer, Col, Row } from "@/components/layout/Generic";
 
 import Button from "@/components/ui/Button/Button";
 import ComboBox from "@/components/ui/ComboBox";
@@ -9,18 +9,13 @@ import InputText from "@/components/ui/InputText";
 import Loading from "@/components/ui/Loading";
 import Tooltip from "@/components/ui/Tooltip";
 
-import { unFormatRut, formatRut } from "../../../../utils/format";
-import { numberRegEx, rutRegEx, emailRegEx } from "../../../../utils/regEx";
-import { rutValidate } from "../../../../utils/validations";
+import { unFormatRut, formatRut } from "@/utils/format";
+import { numberRegEx, rutRegEx, emailRegEx } from "@/utils/regEx";
+import { rutValidate } from "@/utils/validations";
 
-import {
-  useUI,
-  useDistrict,
-  useInsured,
-  useLead,
-} from "../../../../store/hooks";
+import { useUI, useDistrict, useInsured, useLead } from "@/store/hooks";
 
-import { IFieldFormString } from "../../../../interfaces/form";
+import { IFieldFormString } from "@/interfaces/form";
 
 interface ICustomerForm {
   rut: IFieldFormString;
@@ -235,7 +230,6 @@ const Insured = () => {
 
   const handleClickRegister = () => {
     setIsProcessing(true);
-    console.log(lead);
     createLead({
       ...lead,
     });
@@ -302,6 +296,29 @@ const Insured = () => {
       setFormData({
         rut: { value: rut, isValid: true },
         birthDate: { value: birthDate, isValid: true },
+        name: { value: name, isValid: true },
+        paternalLastName: { value: paternalLastName, isValid: true },
+        maternalLastName: { value: maternalLastName, isValid: true },
+        address: { value: address, isValid: true },
+        district: { value: district, isValid: true },
+        email: { value: email, isValid: true },
+        phone: { value: phone, isValid: true },
+      });
+    } else {
+      const {
+        rut,
+        name,
+        paternalLastName,
+        maternalLastName,
+        address,
+        district,
+        email,
+        phone,
+      } = lead.customer;
+
+      setFormData({
+        rut: { value: rut, isValid: true },
+        birthDate: { value: "", isValid: false },
         name: { value: name, isValid: true },
         paternalLastName: { value: paternalLastName, isValid: true },
         maternalLastName: { value: maternalLastName, isValid: true },
@@ -415,11 +432,12 @@ const Insured = () => {
       </Footer>
       {(districtIsLoading || leadIsLoading) && <Loading />}
       <Tooltip>
-        <h1>Datos del asegurado</h1>
+        <h1>Datos del Beneficiario</h1>
+        <h2>(Paso 2 de 4)</h2>
         <br />
         ¿Es para tí este producto o lo estás adquiriendo para otra persona?, si
-        es para ti, solo presiona&nbsp;<b>&quot;Registrar&quot;</b>&nbsp;para
-        continuar.
+        es para ti, indicanos tu fecha de nacimienrto y presiona&nbsp;
+        <b>&quot;Registrar&quot;</b>&nbsp;para continuar.
         <br />
         <br />
         Si es para otra persona, llena este formulario con sus datos y

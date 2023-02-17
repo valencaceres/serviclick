@@ -1,7 +1,7 @@
 import { currencyFormat, formatAmount } from "@/utils/format";
 import { useRouter } from "next/router";
 
-import { useUI, useProduct } from "../../../../store/hooks";
+import { useUI, useProduct } from "@/store/hooks";
 
 import styles from "./Description.module.scss";
 import Loading from "@/components/ui/Loading";

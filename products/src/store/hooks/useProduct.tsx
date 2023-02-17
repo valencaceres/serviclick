@@ -1,6 +1,6 @@
 import { shallow } from "zustand/shallow";
 
-import { productStore } from "../zustand";
+import { productStore } from "@/store/zustand";
 
 const useProduct = () => {
   const {

@@ -1,4 +1,4 @@
-import { Col, Row } from "../../../layout/Generic";
+import { Col, Row } from "@/components/layout/Generic";
 import { useMediaQuery } from "react-responsive";
 
 import {
@@ -8,10 +8,10 @@ import {
   TableDetail,
   TableHeader,
   TableRow,
-} from "../../../ui/Table";
-import InfoText from "../../../ui/InfoText";
+} from "@/components/ui/Table";
+import InfoText from "@/components/ui/InfoText";
 
-import { formatAmount } from "../../../../utils/format";
+import { formatAmount } from "@/utils/format";
 
 const PaymentCoverage = ({ product }: any) => {
   const isDesktop = useMediaQuery({ minWidth: 1200 });

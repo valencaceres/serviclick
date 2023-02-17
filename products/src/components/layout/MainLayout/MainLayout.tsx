@@ -2,10 +2,12 @@ import Image from "next/image";
 
 import styles from "./MainLayout.module.scss";
 
-import { useUI, useProduct } from "../../../store/hooks";
+import Back from "@/components/functional/navigation/Back";
 
-import { currencyFormat } from "../../../utils/format";
-import Badge from "../../ui/Badge/Badge";
+import { useUI, useProduct } from "@/store/hooks";
+
+import { currencyFormat } from "@/utils/format";
+import Badge from "@/components/ui/Badge/Badge";
 
 interface Props {
   children: JSX.Element | JSX.Element[];
@@ -29,18 +31,24 @@ const HeaderServiClick = () => {
   const { product } = useProduct();
 
   return (
-    <div className={styles.header}>
-      <div className={styles.left}></div>
+    <div className={styles.screenHeader}>
+      <div className={styles.left}>
+        {ui.stage.code !== "description" && ui.stage.code !== "contractor" && (
+          <Back />
+        )}
+      </div>
       <div className={styles.right}>
         <h1>{ui.stage.name}</h1>
-        {product && <Badge>{currencyFormat(product?.plan.price || 0)}</Badge>}
+        {ui.stage.code !== "description" && (
+          <Badge>{currencyFormat(product?.plan.price || 0)}</Badge>
+        )}
       </div>
     </div>
   );
 };
 
 const Content = ({ children }: Props) => {
-  return <div className={styles.content}>{children}</div>;
+  return <div className={styles.screenContent}>{children}</div>;
 };
 
 export default MainLayout;

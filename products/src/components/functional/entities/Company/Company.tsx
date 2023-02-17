@@ -1,22 +1,19 @@
 import { useState, useEffect } from "react";
 
-import { Content, Col, Row, Footer } from "../../../layout/Generic";
+import { Content, Col, Row, Footer } from "@/components/layout/Generic";
 
-import ComboBox from "../../../ui/ComboBox";
-import InputText from "../../../ui/InputText";
-import CustomerType from "../../../ui/CustomerType";
-import Loading from "../../../ui/Loading";
+import ComboBox from "@/components/ui/ComboBox";
+import InputText from "@/components/ui/InputText";
+import CustomerType from "@/components/ui/CustomerType";
+import Loading from "@/components/ui/Loading";
 
-import { unFormatRut, formatRut } from "../../../../utils/format";
-import { numberRegEx, rutRegEx, emailRegEx } from "../../../../utils/regEx";
-import { rutValidate } from "../../../../utils/validations";
+import { unFormatRut, formatRut } from "@/utils/format";
+import { numberRegEx, rutRegEx, emailRegEx } from "@/utils/regEx";
+import { rutValidate } from "@/utils/validations";
 
-import { useDistrict } from "../../../../store/hooks";
+import { useDistrict } from "@/store/hooks";
 
-import {
-  IFieldFormCustomerType,
-  IFieldFormString,
-} from "../../../../interfaces/form";
+import { IFieldFormCustomerType, IFieldFormString } from "@/interfaces/form";
 
 interface ICustomerForm {
   customerType: IFieldFormCustomerType;

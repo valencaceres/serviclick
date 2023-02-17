@@ -150,7 +150,7 @@ const Payment = ({ register }: any) => {
                       type="checkbox"
                       onChange={(e) => handleClickCheck(e, "donor")}
                     />
-                    &nbsp;&nbsp;Datos del donador
+                    &nbsp;&nbsp;Datos del Donador
                   </div>
                   <div className={styles.sectionContent}>
                     <DonorForm

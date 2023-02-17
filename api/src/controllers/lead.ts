@@ -383,6 +383,9 @@ const createSubscription = async (
       }
     );
 
+    console.log("==HERE(3)==");
+    console.log(subscriptionReveniuResponse);
+
     const {
       id: subscription_id,
       completion_url,
@@ -649,6 +652,7 @@ const createController = async (req: any, res: any) => {
 
     if (!subscriptionResponse.success) {
       console.log("==HERE(4)==");
+      console.log(subscriptionResponse.error);
       res
         .status(500)
         .json({ error: "createSubscription: " + subscriptionResponse.error });

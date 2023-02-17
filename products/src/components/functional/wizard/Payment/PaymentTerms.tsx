@@ -1,6 +1,6 @@
 import { useMediaQuery } from "react-responsive";
 
-import { Row } from "../../../layout/Generic";
+import { Row } from "@/components/layout/Generic";
 
 import styles from "./Payment.module.scss";
 

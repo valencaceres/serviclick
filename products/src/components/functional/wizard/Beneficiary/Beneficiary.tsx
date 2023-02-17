@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
-import { unFormatRut } from "../../../../utils/format";
-import { emailRegEx } from "../../../../utils/regEx";
-import { isValidRut } from "../../../../utils/validations";
-import { dbDateToText } from "../../../../utils/date";
+import { unFormatRut } from "@/utils/format";
+import { emailRegEx } from "@/utils/regEx";
+import { isValidRut } from "@/utils/validations";
+import { dbDateToText } from "@/utils/date";
 
-import { Content, Footer, Col, Row } from "../../../layout/Generic";
+import { Content, Footer, Col, Row } from "@/components/layout/Generic";
 
 import BeneficiaryForm from "./BeneficiaryForm";
 
@@ -18,18 +18,18 @@ import {
   TableHeader,
   TableIcons,
   TableRow,
-} from "../../../ui/Table";
-import Icon from "../../../ui/Icon";
-import Button from "../../../ui/Button";
-import ButtonIcon from "../../../ui/ButtonIcon";
-import ModalWindow from "../../../ui/ModalWindow";
-import Loading from "../../../ui/Loading";
-import Summary from "../../../ui/Summary";
+} from "@/components/ui/Table";
+import Icon from "@/components/ui/Icon";
+import Button from "@/components/ui/Button";
+import ButtonIcon from "@/components/ui/ButtonIcon";
+import ModalWindow from "@/components/ui/ModalWindow";
+import Loading from "@/components/ui/Loading";
+import Summary from "@/components/ui/Summary";
 
-import { useUI, useProduct, useLead } from "../../../../store/hooks";
+import { useUI, useProduct, useLead } from "@/store/hooks";
 
-import { IFieldFormString } from "../../../../interfaces/form";
-import { IBeneficiary } from "../../../../interfaces/beneficiary";
+import { IFieldFormString } from "@/interfaces/form";
+import { IBeneficiary } from "@/interfaces/beneficiary";
 
 interface IBeneficiaryForm {
   rut: IFieldFormString;

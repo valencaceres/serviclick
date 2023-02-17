@@ -1,8 +1,8 @@
 import { create } from "zustand";
 
-import { IContractor } from "../../interfaces/contractor";
+import { IContractor } from "@/interfaces/contractor";
 
-import { apiInstance } from "../../utils/api";
+import { apiInstance } from "@/utils/api";
 
 interface contractorState {
   contractor: IContractor;

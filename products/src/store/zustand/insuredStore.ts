@@ -1,8 +1,8 @@
 import { create } from "zustand";
 
-import { apiInstance } from "../../utils/api";
+import { apiInstance } from "@/utils/api";
 
-import { IInsured } from "../../interfaces/insured";
+import { IInsured } from "@/interfaces/insured";
 
 interface insuredState {
   insured: IInsured;

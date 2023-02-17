@@ -93,9 +93,9 @@ const ContractorInsured = () => {
               color={subscriptionItem.insured.length > 0 ? "blue" : "#959595"}>
               {subscriptionItem.insured.length > 0
                 ? subscriptionItem.insured.length === 1
-                  ? `${subscriptionItem.insured.length} asegurado`
-                  : `${subscriptionItem.insured.length} asegurados`
-                : `No hay asegurados`}
+                  ? `${subscriptionItem.insured.length} beneficiario`
+                  : `${subscriptionItem.insured.length} beneficiarios`
+                : `No hay beneficiarios`}
             </ContentCellSummary>
           </ContentRow>
           <ButtonIcon iconName="add" color="gray" />

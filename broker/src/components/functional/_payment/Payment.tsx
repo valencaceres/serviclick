@@ -197,7 +197,7 @@ const Payment = ({
                   handleClickCheck(e, customerTypeName[customerType])
                 }
               />
-              Datos del contratante
+              Datos del Contratante
             </div>
             <div className={styles.sectionContent}>
               {customerType === "P" ? (
@@ -407,7 +407,7 @@ const Payment = ({
                 type="checkbox"
                 onChange={(e) => handleClickCheck(e, "insured")}
               />
-              Asegurados ({lead.insured.length})
+              Beneficiarios ({lead.insured.length})
             </div>
             <div className={styles.sectionContent}>
               {lead.insured && lead.insured.length > 0 ? (
@@ -443,7 +443,7 @@ const Payment = ({
                   <div className={styles.text1}>Pendientes por ingresar</div>
                   <div className={styles.text2}>
                     No podrá realizar el pago del servicio si no ha ingresado
-                    los asegurados.
+                    los beneficiarios.
                   </div>
                 </div>
               )}
@@ -554,7 +554,7 @@ const Payment = ({
                     />
                     <InputText
                       id="txtProductCompanyPrice"
-                      label="Asegurados"
+                      label="Beneficiarios"
                       width="200px"
                       value={lead.insured.length
                         .toLocaleString("en-US")

@@ -114,7 +114,10 @@ const Insured = ({ register }: any) => {
 
   return (
     <Fragment>
-      <HeadPages title="Asegurados" description="Datos de los asegurados" />
+      <HeadPages
+        title="Beneficiarios"
+        description="Datos de los beneficiarios"
+      />
       <Wizard>
         <Title>
           <Navigate>
@@ -205,7 +208,7 @@ const Insured = ({ register }: any) => {
             <div className={styles.messageContent}>
               <div className={styles.messageWindow}>
                 <div className={styles.text1}>
-                  Presione el botón (+) para ingresar asegurados
+                  Presione el botón (+) para ingresar beneficiarios
                 </div>
                 <div className={styles.text2}>
                   (si lo prefiere, puede subir una planilla Excel presionando el
@@ -227,12 +230,13 @@ const Insured = ({ register }: any) => {
       </Wizard>
       <Tooltip isShow={showTooltip} onClose={handleCloseTooltip}>
         <div>
-          Este servicio te permite ingresar los asegurados que desees, para ello
-          debes presionar el botón (+) o subirlos mediante una planilla Excel.
+          Este servicio te permite ingresar los beneficiarios que desees, para
+          ello debes presionar el botón (+) o subirlos mediante una planilla
+          Excel.
         </div>
       </Tooltip>
       <Modal showModal={showModalInsured}>
-        <Window title="Asegurado" setClosed={handleCloseInsured}>
+        <Window title="Beneficiario" setClosed={handleCloseInsured}>
           <InsuredDetail
             insuredForm={insuredForm}
             setInsuredForm={setInsuredForm}

@@ -22,7 +22,7 @@ export const stages: IStage[] = [
     name: "Contratante",
     component: <Contractor />,
   },
-  { code: "insured", name: "Asegurado", component: <Insured /> },
+  { code: "insured", name: "Beneficiario", component: <Insured /> },
   { code: "product", name: "Producto", component: <Product /> },
   {
     code: "beneficiaries",

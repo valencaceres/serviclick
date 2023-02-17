@@ -146,7 +146,7 @@ const Company = ({ register }: any) => {
               .replace(",", ".")}{" "}
             {frequency[product.frequency]}
           </b>{" "}
-          por cada asegurado y te brinda las siguientes coberturas:
+          por cada beneficiario y te brinda las siguientes coberturas:
           <br />
           <br />
           {product.assistances.map((assistance, idx) => (

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-import { IUI, IStage } from "../../interfaces/ui";
+import { IUI, IStage } from "@/interfaces/ui";
 
 interface uiState {
   ui: IUI;

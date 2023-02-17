@@ -1,6 +1,6 @@
-import { Col } from "../../../layout/Generic";
+import { Col } from "@/components/layout/Generic";
 
-import ButtonMenu from "../../../ui/ButtonMenu";
+import ButtonMenu from "@/components/ui/ButtonMenu";
 
 import styles from "./Payment.module.scss";
 

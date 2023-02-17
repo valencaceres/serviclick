@@ -166,7 +166,7 @@ const Payment = () => {
                   <PaymentPerson data={lead.customer} />
                 </PaymentSection>
                 <PaymentSection
-                  title="Asegurado"
+                  title="Beneficiario"
                   selected={isSelectedinsured}
                   state={setIsSelectedinsured}>
                   <PaymentInsured data={lead.insured && lead.insured[0]} />
@@ -206,7 +206,7 @@ const Payment = () => {
                 <PaymentPerson data={lead.customer} />
               </PaymentSection>
               <PaymentSection
-                title="Asegurado"
+                title="Beneficiario"
                 selected={isSelectedinsured}
                 state={setIsSelectedinsured}>
                 <PaymentInsured data={lead.insured && lead.insured[0]} />
@@ -250,11 +250,12 @@ const Payment = () => {
       {leadIsLoading && <Loading />}
       <Tooltip>
         <h1>Revisa la información</h1>
+        <h2>(Paso 4 de 4)</h2>
         <br />
         Verifica que los datos ingresados sean los correctos, para ello te
         desplegamos la información del servicio que estás contratanto, te
         pedimos que hagas click en el ckeck al lado de cada título y finalmente
-        en nuestros&nbsp;<b>&quot;términos y condiciones&quot;</b>.
+        en nuestros&nbsp;<b>&quot;Términos y Condiciones&quot;</b>.
         <br />
         <br />
         Si estás conforme, al terminar de checkear, presiona el botón&nbsp;

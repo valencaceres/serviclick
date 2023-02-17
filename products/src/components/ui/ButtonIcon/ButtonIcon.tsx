@@ -1,6 +1,6 @@
 import styles from "./ButtonIcon.module.scss";
 
-import Icon from "../Icon";
+import Icon from "@/components/ui/Icon";
 
 type ButtonIconT = {
   onClick?: any;

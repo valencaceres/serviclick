@@ -104,7 +104,7 @@ const SaleInsuredCompanyPage = () => {
   };
 
   useEffect(() => {
-    setTitleUI("Asegurados");
+    setTitleUI("Beneficiarios");
     setInsuredForm(initialDataInsured);
     listAllDistrict();
   }, []);

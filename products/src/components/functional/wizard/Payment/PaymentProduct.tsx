@@ -1,13 +1,13 @@
 import { useMediaQuery } from "react-responsive";
 
-import { Col, Row } from "../../../layout/Generic";
+import { Col, Row } from "@/components/layout/Generic";
 
-import InfoText from "../../../ui/InfoText";
-import Info from "../../../ui/Info/Info";
+import InfoText from "@/components/ui/InfoText";
+import Info from "@/components/ui/Info/Info";
 
-import { formatAmount } from "../../../../utils/format";
+import { formatAmount } from "@/utils/format";
 
-import { calculateValidity } from "../../../../utils/functions";
+import { calculateValidity } from "@/utils/functions";
 import { IProduct } from "@/interfaces/product";
 import { ILead } from "@/interfaces/lead";
 
@@ -54,7 +54,7 @@ const PaymentProduct = ({ product, lead }: IPaymentProduct) => {
           value={formatAmount(product.plan.price.toString(), "P")}
         />
         <InfoText
-          label="Cantidad de asegurados"
+          label="Cantidad de beneficiarios"
           width="170px"
           value={lead.insured?.length || 0}
         />
@@ -108,7 +108,7 @@ const PaymentProduct = ({ product, lead }: IPaymentProduct) => {
         value={formatAmount(product.plan.price.toString(), "P")}
       />
       <InfoText
-        label="Cantidad de asegurados"
+        label="Cantidad de beneficiarios"
         width="170px"
         value={lead.insured.length}
       />

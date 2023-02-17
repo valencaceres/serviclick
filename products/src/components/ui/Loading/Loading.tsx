@@ -1,6 +1,6 @@
 import Image from "next/image";
 import React from "react";
-import { Modal } from "../Modal";
+import { Modal } from "@/components/ui/Modal";
 
 const Loading = () => {
   return (

@@ -1,15 +1,15 @@
-import { Col, Row } from "../../../layout/Generic";
+import { Col, Row } from "@/components/layout/Generic";
 
-import InputText from "../../../ui/InputText";
-import ComboBox from "../../../ui/ComboBox";
+import InputText from "@/components/ui/InputText";
+import ComboBox from "@/components/ui/ComboBox";
 
-import { unFormatRut, formatRut } from "../../../../utils/format";
-import { numberRegEx, rutRegEx, emailRegEx } from "../../../../utils/regEx";
-import { rutValidate } from "../../../../utils/validations";
+import { unFormatRut, formatRut } from "@/utils/format";
+import { numberRegEx, rutRegEx, emailRegEx } from "@/utils/regEx";
+import { rutValidate } from "@/utils/validations";
 
-// import { useRelationship } from "../../../../hooks/store";
+//import { useRelationship } from "@/store/hooks";
 
-import {useDistrict} from "../../../../store/hooks"
+import { useDistrict } from "@/store/hooks";
 
 type BeneficiaryT = {
   getByRut: any;
@@ -24,7 +24,7 @@ const BeneficiaryForm = ({
   formData,
   setFormData,
 }: BeneficiaryT) => {
-   const { districtList } = useDistrict();
+  const { districtList } = useDistrict();
 
   // const { relationship: relationshipList } = useRelationship();
 

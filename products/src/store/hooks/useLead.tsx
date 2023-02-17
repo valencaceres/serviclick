@@ -1,6 +1,6 @@
 import { shallow } from "zustand/shallow";
 
-import { leadStore } from "../zustand";
+import { leadStore } from "@/store/zustand";
 
 const useLead = () => {
   const {

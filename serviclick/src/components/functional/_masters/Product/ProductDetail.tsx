@@ -285,7 +285,7 @@ const ProductDetail = ({ setEnableSave, isSaving, setIsSaving }: any) => {
               />
               <InputText
                 id="txtProductBeneficiaries"
-                label="N° mínimo asegurados"
+                label="N° mínimo beneficiarios"
                 width="200px"
                 value={product.minInsuredCompanyPrice.toString()}
                 onChange={handleChangeMinInsuredCompanyPrice}
