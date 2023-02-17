@@ -20,6 +20,7 @@ const useLead = () => {
   const {
     set: setLead,
     getById: getLeadById,
+    getBySubscriptionId: getLeadBySubscriptionId,
     create: createLead,
     reset: resetLead,
   } = leadStore();
@@ -31,6 +32,7 @@ const useLead = () => {
     leadError,
     setLead,
     getLeadById,
+    getLeadBySubscriptionId,
     createLead,
     resetLead,
   };

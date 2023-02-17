@@ -6,6 +6,13 @@ import InfoText from "../../../ui/InfoText/InfoText";
 const PaymentInsured = ({ data }: any) => {
   const isDesktop = useMediaQuery({ minWidth: 1200 });
 
+  const infoDate = (date: string) => {
+    if (date) {
+      const oDate = date.split("T")[0].split("-");
+      return `${oDate[2]}-${oDate[1]}-${oDate[0]}`;
+    }
+  };
+
   return (
     <Col width={isDesktop ? "340px" : "300px"}>
       <Row align="space-between">
@@ -13,7 +20,7 @@ const PaymentInsured = ({ data }: any) => {
         <InfoText
           label="Fecha nacimiento"
           width="150px"
-          value={data?.birthDate}
+          value={infoDate(data?.birthDate)}
         />
       </Row>
       <InfoText label="Nombres" value={data?.name} />

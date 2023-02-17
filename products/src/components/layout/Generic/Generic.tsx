@@ -20,9 +20,14 @@ const Col = ({ children, width, gap = "5px", align = "flex-start" }: any) => {
   );
 };
 
-const Row = ({ children, align = "flex-start", gap = "5px" }: any) => {
+const Row = ({
+  children,
+  align = "flex-start",
+  gap = "5px",
+  width = "auto",
+}: any) => {
   return (
-    <div className={styles.row} style={{ justifyContent: align, gap }}>
+    <div className={styles.row} style={{ justifyContent: align, gap, width }}>
       {children}
     </div>
   );

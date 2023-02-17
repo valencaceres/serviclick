@@ -102,6 +102,10 @@ const getById: any = async (id: string) => {
                 LEA.id,
                 LEA.agent_id,
                 LEA.createdate,
+                CASE WHEN POL.id is null THEN '' ELSE POL.id :: text END as policy_id,
+                CASE WHEN POL.number is null THEN 0 ELSE POL.number END as policy_number,
+                CASE WHEN POL.createdate is null THEN '' ELSE POL.createdate :: text END as policy_createdate,
+                CASE WHEN POL.startdate is null THEN '' ELSE POL.startdate :: text END as policy_startdate,
                 CUS.id AS customer_id,
                 CASE WHEN CUS.rut IS NULL THEN '' ELSE CUS.rut END AS customer_rut,
                 CASE WHEN CUS.name IS NULL THEN '' ELSE CUS.name END AS customer_name,
@@ -123,8 +127,10 @@ const getById: any = async (id: string) => {
                 CASE WHEN COM.phone IS NULL THEN '' ELSE COM.phone END AS company_phone,
                 LEA.subscription_id,
                 CASE WHEN LEA.link IS NULL THEN '' ELSE LEA.link END AS link
-        FROM    app.lead LEA LEFT OUTER JOIN app.customer CUS ON LEA.customer_id = CUS.id
-                            LEFT OUTER JOIN app.company COM ON LEA.company_id = COM.id
+        FROM    app.lead LEA
+                  LEFT OUTER JOIN app.policy POL on LEA.policy_id = POL.id
+                  LEFT OUTER JOIN app.customer CUS ON LEA.customer_id = CUS.id
+                  LEFT OUTER JOIN app.company COM ON LEA.company_id = COM.id
         WHERE   LEA.id = $1`,
       [id]
     );
@@ -140,6 +146,7 @@ const getBySubscriptionId: any = async (subscription_id: string) => {
       `
         SELECT  DISTINCT
                 LEA.id,
+                LEA.agent_id,
                 LEA.createdate,
                 CASE WHEN POL.id is null THEN '' ELSE POL.id :: text END as policy_id,
                 CASE WHEN POL.number is null THEN 0 ELSE POL.number END as policy_number,
@@ -164,7 +171,8 @@ const getBySubscriptionId: any = async (subscription_id: string) => {
                 CASE WHEN COM.district IS NULL THEN '' ELSE COM.district END AS company_district,
                 CASE WHEN COM.email IS NULL THEN '' ELSE COM.email END AS company_email,
                 CASE WHEN COM.phone IS NULL THEN '' ELSE COM.phone END AS company_phone,
-                LEA.subscription_id
+                LEA.subscription_id,
+                CASE WHEN LEA.link IS NULL THEN '' ELSE LEA.link END AS link
         FROM    app.lead LEA 
                   LEFT OUTER JOIN app.policy POL on LEA.policy_id = POL.id
                   LEFT OUTER JOIN app.customer CUS ON LEA.customer_id = CUS.id

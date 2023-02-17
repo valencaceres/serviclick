@@ -13,7 +13,7 @@ const PaymentProduct = ({ product, lead }: any) => {
   const isDesktop = useMediaQuery({ minWidth: 1200 });
 
   return isDesktop ? (
-    <Col width="500px">
+    <Col width="712px" align="center">
       <Row>
         <InfoText
           label="Inicio de vigencia"

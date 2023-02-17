@@ -14,6 +14,7 @@ interface leadState {
   setError: (error: string) => void;
   set: (lead: ILead) => void;
   getById: (id: string) => void;
+  getBySubscriptionId: (subscription_id: number) => void;
   create: (lead: ILead) => void;
   reset: () => void;
   resetAll: () => void;
@@ -105,6 +106,28 @@ export const leadStore = create<leadState>((set, get) => ({
     }
   },
 
+  getBySubscriptionId: async (subscription_id: number) => {
+    try {
+      set((state) => ({
+        ...state,
+        isLoading: true,
+        isError: false,
+        error: "",
+      }));
+      const { data } = await apiInstance.get(
+        `/lead/getBySubscriptionId/${subscription_id}`
+      );
+      set((state) => ({ ...state, lead: data, isLoading: false }));
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
+  },
+
   create: async (lead: ILead) => {
     try {
       set((state) => ({
@@ -120,6 +143,7 @@ export const leadStore = create<leadState>((set, get) => ({
         isLoading: false,
       }));
     } catch (e) {
+      alert((e as Error).message);
       set((state) => ({
         ...state,
         isLoading: false,

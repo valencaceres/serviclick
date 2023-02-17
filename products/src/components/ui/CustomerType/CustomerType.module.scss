@@ -1,8 +1,14 @@
+@import "../../../styles/variables.scss";
+
 .customerType {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 50px;
+  background-color: #ededed;
+  border: 1px solid $light-gray-color;
+  width: 150px;
+  border-radius: 3px;
 
   span {
     font-size: 40px;

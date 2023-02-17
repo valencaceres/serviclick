@@ -48,7 +48,8 @@ const Payment = () => {
   ];
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
 
-  const { lead, getLeadById, createLead, leadIsLoading } = useLead();
+  const { lead, getLeadById, createLead, leadIsLoading, leadIsError } =
+    useLead();
   const { product } = useProduct();
 
   const [isSelectedContractor, setIsSelectedContractor] = useState(false);
@@ -139,6 +140,16 @@ const Payment = () => {
 
       setIsProcessing(false);
     }
+
+    if (
+      lead &&
+      paymentType === "L" &&
+      leadIsLoading === false &&
+      isProcessing === true
+    ) {
+      setIsProcessing(false);
+      router.push(`/resume/link?leadId=${lead.id}&success=${!leadIsError}`);
+    }
   }, [lead.subscriptionData, leadIsLoading, isProcessing]);
 
   return (
@@ -226,7 +237,6 @@ const Payment = () => {
               />
             </Col>
           )}
-          <Row>&nbsp;</Row>
         </Col>
       </Content>
       <Footer>

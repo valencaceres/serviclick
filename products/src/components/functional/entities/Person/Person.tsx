@@ -237,7 +237,7 @@ const Person = ({ data, setData, setCompletedForm, getByRut }: any) => {
     <Loading />
   ) : (
     <Col width="340px">
-      <Row align="space-between">
+      <Row align="space-between" width="100%">
         <InputText
           label="Rut"
           width="150px"
