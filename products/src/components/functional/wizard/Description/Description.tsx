@@ -35,7 +35,7 @@ const Banner = () => {
   const { product } = useProduct();
   return (
     <div
-      className={styles.banner}
+      className={styles.landingBanner}
       style={{
         backgroundImage: `url(/images/products/banners/${product.id}.jpg)`,
       }}></div>
@@ -69,29 +69,29 @@ const Coverage = () => {
     <Loading />
   ) : (
     <div className={styles.table}>
-      <div className={styles.header}>
-        <div className={styles.headerTitie}>Servicio</div>
-        <div className={styles.headerTitie}>Límite</div>
-        <div className={styles.headerTitie}>Máximo</div>
-        <div className={styles.headerTitie}>Carencia</div>
+      <div className={styles.tableHeader}>
+        <div className={styles.tableHeaderTitie}>Servicio</div>
+        <div className={styles.tableHeaderTitie}>Límite</div>
+        <div className={styles.tableHeaderTitie}>Máximo</div>
+        <div className={styles.tableHeaderTitie}>Carencia</div>
       </div>
-      <div className={styles.detail}>
+      <div className={styles.tableDetail}>
         {product.assistances.map((item, idx: number) => (
-          <div className={styles.row} key={`item_${idx}`}>
-            <div className={styles.cell} key={`name_${idx}`}>
+          <div className={styles.tableRow} key={`item_${idx}`}>
+            <div className={styles.tableCell} key={`name_${idx}`}>
               {item.name}
             </div>
-            <div className={styles.cell} key={`limit_${idx}`}>
+            <div className={styles.tableCell} key={`limit_${idx}`}>
               {limitDescription(item)}
             </div>
-            <div className={styles.cell} key={`events_${idx}`}>
+            <div className={styles.tableCell} key={`events_${idx}`}>
               {item.events === 0
                 ? "Ilimitado"
                 : item.events === 1
                 ? `${item.events} evento`
                 : `${item.events} eventos`}
             </div>
-            <div className={styles.cell} key={`lack_${idx}`}>
+            <div className={styles.tableCell} key={`lack_${idx}`}>
               {item.lack} días
             </div>
           </div>

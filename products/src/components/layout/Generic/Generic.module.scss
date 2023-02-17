@@ -5,14 +5,15 @@
   height: 100%;
 
   .content {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
     height: calc(100% - 140px);
     width: 100%;
-    overflow: hidden;
-    overflow-y: auto;
+    // overflow: hidden;
+    // overflow-y: auto;
 
     -webkit-animation-duration: 1s;
     animation-duration: 1s;
@@ -34,6 +35,8 @@
   }
 
   .footer {
+    position: fixed;
+    bottom: 0;
     display: flex;
     justify-content: center;
     align-items: center;
