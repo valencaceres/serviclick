@@ -238,10 +238,6 @@ const Payment = () => {
             </Col>
           )}
         </Col>
-        <Col>&nbsp;</Col>
-        <Col>&nbsp;</Col>
-        <Col>&nbsp;</Col>
-        <Col>&nbsp;</Col>
       </Content>
       <Footer>
         <Button

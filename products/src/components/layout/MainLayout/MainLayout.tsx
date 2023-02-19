@@ -23,11 +23,6 @@ const MainLayout = ({ children }: Props) => {
 };
 
 const Screen = ({ children }: Props) => {
-  let vh = typeof window !== "undefined" ? window.innerHeight * 0.01 : 0;
-  const root =
-    typeof document !== "undefined" &&
-    document.documentElement.style.setProperty("--vh", `${vh}px`);
-
   return <div className={styles.screen}>{children}</div>;
 };
 

@@ -3,13 +3,14 @@
 .screen {
   width: 100%;
   // height: calc(var(--vh, 1vh) * 100);
-  // overflow: hidden;
+  //overflow: hidden;
 
   @media screen and (min-width: 1200px) {
     height: 100vh;
   }
 
   .screenHeader {
+    position: -webkit-sticky;
     position: sticky;
     top: 0;
     display: flex;
