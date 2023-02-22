@@ -362,7 +362,7 @@ const Insured = () => {
             <InputText
               type="date"
               label="Fecha de nacimiento"
-              width={"150px"}
+              width="150px"
               maxLength={10}
               value={formData?.birthDate.value}
               onChange={handleChangeBirthDate}
