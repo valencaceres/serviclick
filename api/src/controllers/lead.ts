@@ -543,16 +543,18 @@ const create = async (lead: any) => {
           );
         console.log(leadProductDeleteResponse);
 
-        for (const value of item.values) {
-          console.log("OK9---");
-          const leadProductValue = await LeadProductValues.create(
-            leadDataResponse.id,
-            product.id,
-            insuredData.id,
-            value.value_id,
-            value.value
-          );
-          console.log("OK9");
+        if (item.values) {
+          for (const value of item.values) {
+            console.log("OK9---");
+            const leadProductValue = await LeadProductValues.create(
+              leadDataResponse.id,
+              product.id,
+              insuredData.id,
+              value.value_id,
+              value.value
+            );
+            console.log("OK9");
+          }
         }
 
         const { data: leadBeneficiaryDelete } = await deleteLeadBeneficiaries(
