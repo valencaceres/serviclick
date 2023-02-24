@@ -1,5 +1,6 @@
 import { currencyFormat, formatAmount } from "@/utils/format";
 import { useRouter } from "next/router";
+import ReactHtmlParser from "react-html-parser";
 
 import { useUI, useProduct } from "@/store/hooks";
 
@@ -76,7 +77,7 @@ const Coverage = () => {
     const oDiv = [];
 
     if (item.maximum !== "") {
-      oDiv.push(<div>{item.maximum}</div>);
+      oDiv.push(<div>{maximumDescription(item.maximum)}</div>);
     }
 
     if (item.amount > 0) {
@@ -90,6 +91,18 @@ const Coverage = () => {
     }
 
     return oDiv;
+  };
+
+  const maximumDescription = (maximum: string) => {
+    const regexPercentage = /^\d+(\.\d+)?%$/;
+
+    let text = "";
+    maximum.split(" ").forEach((m) => {
+      if (regexPercentage.test(m)) return (text += `<span>${m}</span>&nbsp;`);
+      return (text += `<p>${m}&nbsp;</p>`);
+    });
+
+    return ReactHtmlParser(`<div>${text}</div>`);
   };
 
   return productIsLoading ? (

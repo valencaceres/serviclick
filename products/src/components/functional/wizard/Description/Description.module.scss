@@ -137,6 +137,7 @@
     border-radius: 15px;
     margin-top: 10px;
     transition: all 0.3s;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 
     &:active {
       transform: scale(0.9);
@@ -257,21 +258,43 @@
 
           &:nth-child(2) {
             div:nth-child(1) {
+              display: flex;
+              justify-content: center;
+              align-items: center;
               font-family: Inter;
               font-size: 16px;
               font-weight: bold;
               text-transform: none;
               color: #b4cd25;
 
+              //white-space: nowrap;
+
+              span {
+                font-size: 16px;
+                color: #b4cd25;
+              }
+
+              p {
+                font-size: 12px;
+                color: #03495c;
+              }
+
               @media screen and (min-width: 1200px) {
                 font-size: 22px;
+
+                p {
+                  font-size: 16px;
+                }
+
+                span {
+                  font-size: 24px;
+                }
               }
             }
 
             div:nth-child(2) {
               font-family: Inter;
-              font-size: 14px;
-              font-weight: bold;
+              font-size: 12px;
               color: #03495c;
 
               @media screen and (min-width: 1200px) {
