@@ -21,9 +21,9 @@
     border-bottom: 1px solid $ultra-light-gray-color;
     z-index: 10;
 
-    @media screen and (min-width: 1200px) {
-      position: fixed;
-    }
+    // @media screen and (min-width: 1200px) {
+    //   position: sticky;
+    // }
 
     .left {
       display: flex;
