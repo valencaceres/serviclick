@@ -12,13 +12,13 @@ const Banner = () => {
           ¡En ServiClick somos <span>especialistas</span> en protección!
         </h1>
       </div>
-      {slug && (
+      {/* {slug && (
         <div className={styles.right}>
           <div
             className={styles.logo}
             style={{ backgroundImage: `url(${slug?.logo || ""})` }}></div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
