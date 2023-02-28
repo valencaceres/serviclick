@@ -1,96 +1,177 @@
-.info {
+.cardContain {
   display: flex;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
-  font-family: Inter;
-  font-weight: 800;
-  font-size: 6px;
-  width: 260px;
-  color: #03495c;
+  width: 320px;
+  gap: 5px;
 
   @media screen and (min-width: 1200px) {
-    height: 30px;
-    font-size: 12px;
+    flex-direction: column;
+    width: 300px;
+    gap: 0;
   }
 }
 
-.promotional {
-  display: none;
-  justify-content: center;
-  align-items: flex-start;
-  font-family: Inter;
-  font-weight: 300;
-  font-size: 12px;
-  width: 260px;
-  color: #03495c;
-  text-align: center;
-
-  @media screen and (min-width: 1200px) {
-    display: flex;
-    height: 70px;
-    font-size: 12px;
-  }
-}
-
-.price {
+.left {
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: center;
-  font-family: Inter;
-  font-weight: 800;
-  font-size: 10px;
-  width: 260px;
-  color: #b4cd25;
+  flex-direction: column;
+  width: 100px;
 
   @media screen and (min-width: 1200px) {
-    display: flex;
-    height: 30px;
-    font-size: 13px;
-  }
-}
-
-.priceNormal {
-  font-family: Inter;
-  font-weight: 300;
-  font-size: 8px;
-  width: 260px;
-  color: red;
-  text-align: center;
-
-  @media screen and (min-width: 1200px) {
-    font-weight: 500;
-    height: 30px;
-    font-size: 10px;
+    width: 100%;
   }
 
-  span {
-    font-family: Inter;
-    font-weight: 300;
-    font-size: 8px;
-    width: 260px;
-    color: red;
-    text-decoration: line-through;
+  img {
+    border-radius: 10px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    width: 100px;
+    height: 82px;
 
     @media screen and (min-width: 1200px) {
-      font-weight: 500;
-      height: 30px;
-      font-size: 10px;
+      width: 300px;
+      height: 247px;
+      border-radius: 60px;
     }
   }
 }
 
-a.link {
+.right {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-family: Inter;
-  font-weight: 800;
-  font-size: 6px;
-  width: 260px;
-  text-decoration: none;
+  flex-direction: column;
+  width: 220px;
 
   @media screen and (min-width: 1200px) {
-    height: 30px;
-    font-size: 13px;
+    width: 100%;
+  }
+
+  h2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: Inter;
+    font-size: 11px;
+    font-weight: 800;
+    color: #03495c;
+    text-align: center;
+    text-transform: uppercase;
+
+    @media screen and (min-width: 1200px) {
+      width: 300px;
+      font-size: 20px;
+      font-weight: 800;
+      height: 70px;
+    }
+  }
+
+  .info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Inter;
+    font-weight: 800;
+    font-size: 6px;
+    color: #03495c;
+    padding-top: 5px;
+
+    @media screen and (min-width: 1200px) {
+      height: 30px;
+      font-size: 12px;
+      padding-top: 0;
+      width: 260px;
+    }
+  }
+
+  .promotional {
+    display: none;
+    justify-content: center;
+    align-items: flex-start;
+    font-family: Inter;
+    font-weight: 300;
+    font-size: 12px;
+    width: 260px;
+    color: #03495c;
+    text-align: center;
+
+    @media screen and (min-width: 1200px) {
+      display: flex;
+      height: 70px;
+      font-size: 12px;
+    }
+  }
+
+  .price {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Inter;
+    font-weight: 800;
+    font-size: 10px;
+    color: #b4cd25;
+    padding-top: 5px;
+
+    @media screen and (min-width: 1200px) {
+      display: flex;
+      height: 30px;
+      font-size: 13px;
+      padding-top: 0;
+      width: 260px;
+    }
+  }
+
+  .priceNormal {
+    font-family: Inter;
+    font-weight: 300;
+    font-size: 8px;
+    color: red;
+    text-align: center;
+    padding-top: 5px;
+
+    @media screen and (min-width: 1200px) {
+      width: 260px;
+      font-weight: 500;
+      height: 30px;
+      font-size: 10px;
+      padding-top: 0;
+    }
+
+    span {
+      font-family: Inter;
+      font-weight: 300;
+      font-size: 8px;
+      color: red;
+      text-decoration: line-through;
+
+      @media screen and (min-width: 1200px) {
+        width: 260px;
+        font-weight: 500;
+        height: 30px;
+        font-size: 10px;
+      }
+    }
+  }
+
+  a.link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Inter;
+    font-weight: 800;
+    font-size: 6px;
+    text-decoration: none;
+    padding-top: 5px;
+
+    @media screen and (min-width: 1200px) {
+      width: 260px;
+      height: 30px;
+      font-size: 13px;
+      padding-top: 0;
+    }
   }
 }
