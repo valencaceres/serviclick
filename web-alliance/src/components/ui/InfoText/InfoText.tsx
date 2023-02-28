@@ -1,4 +1,4 @@
-import styles from "./Infotext.module.scss";
+import styles from "./InfoText.module.scss";
 
 const InfoText = ({ label, width = "100%", value }: any) => {
   return (
