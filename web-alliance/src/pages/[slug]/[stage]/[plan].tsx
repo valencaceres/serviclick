@@ -47,32 +47,6 @@ const PlanPage = () => {
   }, []);
 
   useEffect(() => {
-    if (router.isReady) {
-      const { slug: code, stage, plan, leadId } = router.query;
-
-      if ((!slug || slug.id === "") && code) {
-        getByCode(code.toString());
-      }
-
-      if (stage && plan) {
-        setUI({
-          ...ui,
-          stage: {
-            code: stage.toString(),
-            name: getStageData(stage.toString())?.name,
-          },
-          title: getStageData(stage.toString())?.name,
-        });
-        getByPlanId(plan.toString());
-      }
-
-      if (leadId) {
-        getById(leadId.toString());
-      }
-    }
-  }, [router]);
-
-  useEffect(() => {
     if (product.id !== "") {
       const { slug: code } = router.query;
 

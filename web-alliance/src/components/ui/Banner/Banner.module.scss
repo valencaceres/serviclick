@@ -11,6 +11,7 @@
   padding: 0 50px;
 
   .left {
+    position: relative;
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -18,17 +19,40 @@
 
     h1 {
       color: white;
-      font-family: Tahoma;
-      font-weight: bold;
-      font-size: 42px;
-      width: 420px;
+      font-family: Inter;
+      font-weight: 800;
+      font-size: 55px;
+      width: 570px;
 
       span {
         color: #15495d;
-        font-family: Tahoma;
-        font-weight: bold;
-        font-size: 42px;
+        font-family: Inter;
+        font-weight: 800;
+        font-size: 55px;
       }
+    }
+
+    .logoServiClick {
+      position: absolute;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      background-image: url(/images/banners/logo_white.png);
+      width: 220px;
+      height: 163px;
+      bottom: -30px;
+    }
+
+    .logo1 {
+      position: absolute;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      background-image: url(/images/banners/logo_001.png);
+      width: 183px;
+      height: 163px;
+      bottom: -30px;
+      left: 250px;
     }
   }
 

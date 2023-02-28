@@ -7,6 +7,7 @@ import Banner from "../../components/ui/Banner/Banner";
 import CardSection from "../../components/ui/CardSection";
 
 import { useSlug } from "../../hooks/store";
+import Footer from "../../components/ui/Footer/Footer";
 
 const AlliancePage = () => {
   const router = useRouter();
@@ -14,7 +15,10 @@ const AlliancePage = () => {
   const { getByCode, slug } = useSlug();
 
   const handleClickProduct = (productPlan_id: string) => {
-    router.push(`${router.asPath}/contractor/${productPlan_id}`);
+    //router.push(`${router.asPath}/contractor/${productPlan_id}`);
+    router.push(
+      `https://productos.serviclick.cl/contractor?productPlanId=${productPlan_id}`
+    );
   };
 
   useEffect(() => {
@@ -43,6 +47,7 @@ const AlliancePage = () => {
             />
           ))}
       </CardSection>
+      <Footer />
     </Fragment>
   );
 };

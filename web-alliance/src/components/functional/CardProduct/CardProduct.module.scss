@@ -2,7 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: Quicksand;
+  font-family: Inter;
   font-weight: 700;
   font-size: 12px;
   width: 260px;
@@ -14,8 +14,8 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  font-family: Quicksand;
-  font-weight: 500;
+  font-family: Inter;
+  font-weight: 300;
   font-size: 12px;
   width: 260px;
   height: 70px;
@@ -27,26 +27,27 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: Oswald;
+  font-family: Inter;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 13px;
   width: 260px;
   height: 30px;
   color: #b4cd25;
 }
 
 .priceNormal {
-  font-family: Quicksand;
+  font-family: Inter;
   font-weight: 500;
-  font-size: 12px;
+  font-size: 10px;
   width: 260px;
   height: 30px;
   color: red;
   text-align: center;
 
   span {
+    font-family: Inter;
     font-weight: 500;
-    font-size: 12px;
+    font-size: 10px;
     width: 260px;
     height: 30px;
     color: red;
@@ -58,6 +59,7 @@ a.link {
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: Inter;
   font-size: 13px;
   width: 260px;
   height: 30px;
