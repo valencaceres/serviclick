@@ -16,8 +16,8 @@ const Button = ({
       onClick={onClick}
       disabled={!enabled || loading}
       style={{
-        width,
-        height: type === "form" ? "40px" : "30px",
+        //width,
+        //height: type === "form" ? "40px" : "30px",
         backgroundColor: type === "form" ? "#15495d" : "#B4CD25",
       }}>
       <Fragment>

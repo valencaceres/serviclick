@@ -12,7 +12,7 @@ const CardProduct = ({ product, onClick }: any) => {
   return (
     <Card>
       <Image
-        src={`/images/products/thumbs/${product.product_id}.png`}
+        src={`/images/products/thumbs/${product.product_id}.jpg`}
         alt={product.name}
         width={300}
         height={247}

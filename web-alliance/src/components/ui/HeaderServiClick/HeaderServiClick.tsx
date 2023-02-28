@@ -9,14 +9,7 @@ const HeaderServiClick = ({ title }: any) => {
 
   return (
     <div className={styles.header}>
-      <div className={styles.left}>
-        <Image
-          alt="Logo ServiClick"
-          src="/images/logos/serviclick.jpg"
-          width={243}
-          height={51}
-        />
-      </div>
+      <div className={styles.left}></div>
       <div className={styles.right}>
         <h1>{title}</h1>
       </div>

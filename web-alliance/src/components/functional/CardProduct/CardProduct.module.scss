@@ -3,24 +3,33 @@
   justify-content: center;
   align-items: center;
   font-family: Inter;
-  font-weight: 700;
-  font-size: 12px;
+  font-weight: 800;
+  font-size: 6px;
   width: 260px;
-  height: 30px;
   color: #03495c;
+
+  @media screen and (min-width: 1200px) {
+    height: 30px;
+    font-size: 12px;
+  }
 }
 
 .promotional {
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: flex-start;
   font-family: Inter;
   font-weight: 300;
   font-size: 12px;
   width: 260px;
-  height: 70px;
   color: #03495c;
   text-align: center;
+
+  @media screen and (min-width: 1200px) {
+    display: flex;
+    height: 70px;
+    font-size: 12px;
+  }
 }
 
 .price {
@@ -28,30 +37,45 @@
   justify-content: center;
   align-items: center;
   font-family: Inter;
-  font-weight: 600;
-  font-size: 13px;
+  font-weight: 800;
+  font-size: 10px;
   width: 260px;
-  height: 30px;
   color: #b4cd25;
+
+  @media screen and (min-width: 1200px) {
+    display: flex;
+    height: 30px;
+    font-size: 13px;
+  }
 }
 
 .priceNormal {
   font-family: Inter;
-  font-weight: 500;
-  font-size: 10px;
+  font-weight: 300;
+  font-size: 8px;
   width: 260px;
-  height: 30px;
   color: red;
   text-align: center;
 
+  @media screen and (min-width: 1200px) {
+    font-weight: 500;
+    height: 30px;
+    font-size: 10px;
+  }
+
   span {
     font-family: Inter;
-    font-weight: 500;
-    font-size: 10px;
+    font-weight: 300;
+    font-size: 8px;
     width: 260px;
-    height: 30px;
     color: red;
     text-decoration: line-through;
+
+    @media screen and (min-width: 1200px) {
+      font-weight: 500;
+      height: 30px;
+      font-size: 10px;
+    }
   }
 }
 
@@ -60,7 +84,13 @@ a.link {
   justify-content: center;
   align-items: center;
   font-family: Inter;
-  font-size: 13px;
+  font-weight: 800;
+  font-size: 6px;
   width: 260px;
-  height: 30px;
+  text-decoration: none;
+
+  @media screen and (min-width: 1200px) {
+    height: 30px;
+    font-size: 13px;
+  }
 }
