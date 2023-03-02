@@ -3,14 +3,21 @@ type IconT = {
   className?: string;
   onClick?: any;
   size?: string;
+  button?: boolean;
 };
 
-const Icon = ({ iconName, className, onClick, size = "24px" }: IconT) => {
+const Icon = ({
+  iconName,
+  className,
+  onClick,
+  size = "24px",
+  button = false,
+}: IconT) => {
   return (
     <span
       className={`${className} material-symbols-outlined`}
       onClick={onClick}
-      style={{ fontSize: size }}>
+      style={{ fontSize: size, cursor: button ? "pointer" : "default" }}>
       {iconName}
     </span>
   );

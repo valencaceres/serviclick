@@ -77,7 +77,7 @@ const SpecialistList = ({
           />
           <ComboBox
             label="Asistencia"
-            width="300px"
+            width="310px"
             value={search.assistance_id}
             onChange={handleChangeAssistance}
             placeHolder=":: Seleccione asistencia ::"

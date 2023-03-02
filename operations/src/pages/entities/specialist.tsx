@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 
 import FloatMenu from "../../components/ui/FloatMenu";
 import ButtonIcon from "../../components/ui/ButtonIcon";
+import ModalWindow from "../../components/ui/ModalWindow";
 
 import {
   SpecialistList,

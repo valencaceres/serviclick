@@ -18,9 +18,14 @@ import ButtonIcon from "../../../ui/ButtonIcon";
 import { useDistrict } from "../../../../hooks";
 import { useSpecialist } from "../../../../store/hooks";
 
-const SpecialistDistricts = () => {
-  const { list: districtList } = useDistrict();
+const SpecialistDistricts = ({ setShowDistrictsModal }: any) => {
+  const { listAllDistrict } = useDistrict();
   const { specialist } = useSpecialist();
+
+  const handleClickAddDistrict = () => {
+    listAllDistrict();
+    setShowDistrictsModal(true);
+  };
 
   return (
     <ContentCell gap="5px">
@@ -42,8 +47,19 @@ const SpecialistDistricts = () => {
         </TableDetail>
       </Table>
       <ContentRow align="space-between">
-        <ContentCellSummary color="#959595">{`Sin comunas`}</ContentCellSummary>
-        <ButtonIcon iconName="add" color="gray" />
+        <ContentCellSummary
+          color={specialist.districts.length > 0 ? "blue" : "#959595"}>
+          {specialist.districts.length > 0
+            ? `${specialist.districts.length} ${
+                specialist.districts.length === 1 ? "comuna" : "comunas"
+              }`
+            : `Sin comunas`}
+        </ContentCellSummary>
+        <ButtonIcon
+          iconName="add"
+          color="gray"
+          onClick={handleClickAddDistrict}
+        />
       </ContentRow>
     </ContentCell>
   );
