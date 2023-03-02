@@ -28,8 +28,8 @@ class App {
   }
 
   routes() {
-    this.server.use("/integration/insured", reqLogger, routes.InsuredRouter);
-    this.server.use("/integration/customer", reqLogger, routes.CustomerRouter);
+    this.server.use("/insured", reqLogger, routes.InsuredRouter);
+    this.server.use("/customer", reqLogger, routes.CustomerRouter);
   }
 }
 
