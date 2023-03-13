@@ -20,6 +20,7 @@ const Product = () => {
 
   const { ui } = useUI();
   const { lead, getLeadById, createLead, leadIsLoading } = useLead();
+  const { product } = useProduct();
 
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
   const [values, setValues] = useState<IValue[]>();
@@ -95,7 +96,9 @@ const Product = () => {
   useEffect(() => {
     if (lead.id !== "" && leadIsLoading === false && isProcessing === true) {
       router.push(
-        `/payment?productPlanId=${ui.product.productPlan_id}&leadId=${lead.id}`
+        `/${
+          product.beneficiaries > 0 ? "beneficiaries" : "payment"
+        }?productPlanId=${ui.product.productPlan_id}&leadId=${lead.id}`
       );
       setIsProcessing(false);
     }
