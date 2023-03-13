@@ -84,6 +84,7 @@ const getByBrokerId: any = async (broker_id: string) => {
       `
       SELECT  brp.product_id,
               pro.name,
+              pro.beneficiaries,
               des.promotional,
               brp.baseprice,
               brp.customerprice,
@@ -114,6 +115,7 @@ const getByBrokerId: any = async (broker_id: string) => {
       const {
         product_id,
         name,
+        beneficiaries,
         promotional,
         baseprice,
         customerprice,
@@ -130,6 +132,7 @@ const getByBrokerId: any = async (broker_id: string) => {
       return {
         product_id,
         name,
+        beneficiaries,
         promotional,
         productPlan_id: {
           customer: productplan_customer_id,
