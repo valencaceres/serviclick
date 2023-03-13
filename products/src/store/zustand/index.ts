@@ -4,6 +4,8 @@ import { districtStore } from "./districtStore";
 import { leadStore } from "./leadStore";
 import { contractorStore } from "./contractorStore";
 import { insuredStore } from "./insuredStore";
+import { relationshipStore } from "./relationshipStore";
+import { beneficiaryStore } from "./beneficiaryStore";
 
 export {
   uiStore,
@@ -12,4 +14,6 @@ export {
   leadStore,
   contractorStore,
   insuredStore,
+  relationshipStore,
+  beneficiaryStore,
 };

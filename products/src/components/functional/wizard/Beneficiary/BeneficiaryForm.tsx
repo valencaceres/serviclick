@@ -7,9 +7,7 @@ import { unFormatRut, formatRut } from "@/utils/format";
 import { numberRegEx, rutRegEx, emailRegEx } from "@/utils/regEx";
 import { rutValidate } from "@/utils/validations";
 
-//import { useRelationship } from "@/store/hooks";
-
-import { useDistrict } from "@/store/hooks";
+import { useDistrict, useRelationship, useBeneficiary } from "@/store/hooks";
 
 type BeneficiaryT = {
   getByRut: any;
@@ -25,8 +23,8 @@ const BeneficiaryForm = ({
   setFormData,
 }: BeneficiaryT) => {
   const { districtList } = useDistrict();
-
-  // const { relationship: relationshipList } = useRelationship();
+  const { relationshipList } = useRelationship();
+  const { beneficiary } = useBeneficiary();
 
   const isValidRut = (rut: string) => {
     return (
@@ -167,7 +165,7 @@ const BeneficiaryForm = ({
 
   return (
     <Col width="340px">
-      <Row align="space-between">
+      <Row align="space-between" width="100%">
         <InputText
           label="Rut"
           width="150px"
@@ -195,21 +193,23 @@ const BeneficiaryForm = ({
         value={formData?.name.value}
         onChange={handleChangeName}
       />
-      <InputText
-        label="Apellido Paterno"
-        width="100%"
-        maxLength={50}
-        value={formData?.paternalLastName.value}
-        onChange={handleChangePaternalLastName}
-      />
-      <InputText
-        label="Apellido Materno"
-        width="100%"
-        maxLength={50}
-        value={formData?.maternalLastName.value}
-        onChange={handleChangeMaternalLastName}
-      />
-      <InputText
+      <Row gap="5px">
+        <InputText
+          label="Apellido Paterno"
+          width="100%"
+          maxLength={50}
+          value={formData?.paternalLastName.value}
+          onChange={handleChangePaternalLastName}
+        />
+        <InputText
+          label="Apellido Materno"
+          width="100%"
+          maxLength={50}
+          value={formData?.maternalLastName.value}
+          onChange={handleChangeMaternalLastName}
+        />
+      </Row>
+      {/* <InputText
         label="Dirección"
         width="100%"
         maxLength={250}
@@ -225,7 +225,7 @@ const BeneficiaryForm = ({
         data={districtList}
         dataValue="district_name"
         dataText="district_name"
-      />
+      /> */}
       <InputText
         label="Correo"
         width="100%"
@@ -250,7 +250,7 @@ const BeneficiaryForm = ({
         placeHolder=":: Seleccione parentesco ::"
         value={formData?.relationship.value}
         onChange={handleChangeRelationship}
-        data={[]}
+        data={relationshipList}
         dataValue="name"
         dataText="name"
       />

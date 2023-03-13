@@ -46,12 +46,6 @@ const StagePage = () => {
     });
   }, [product]);
 
-  useEffect(() => {
-    if (lead.id) {
-      console.log(lead);
-    }
-  }, [lead.id]);
-
   return component;
 };
 

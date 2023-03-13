@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { useMediaQuery } from "react-responsive";
 
 import { unFormatRut } from "@/utils/format";
 import { emailRegEx } from "@/utils/regEx";
 import { isValidRut } from "@/utils/validations";
 import { dbDateToText } from "@/utils/date";
 
-import { Content, Footer, Col, Row } from "@/components/layout/Generic";
+import { Content, Footer, Col, Row, Body } from "@/components/layout/Generic";
 
 import BeneficiaryForm from "./BeneficiaryForm";
 
@@ -26,7 +27,13 @@ import ModalWindow from "@/components/ui/ModalWindow";
 import Loading from "@/components/ui/Loading";
 import Summary from "@/components/ui/Summary";
 
-import { useUI, useProduct, useLead } from "@/store/hooks";
+import {
+  useUI,
+  useRelationship,
+  useProduct,
+  useBeneficiary,
+  useLead,
+} from "@/store/hooks";
 
 import { IFieldFormString } from "@/interfaces/form";
 import { IBeneficiary } from "@/interfaces/beneficiary";
@@ -46,6 +53,8 @@ interface IBeneficiaryForm {
 
 const Beneficiary = () => {
   const router = useRouter();
+
+  const isDesktop = useMediaQuery({ minWidth: 1200 });
 
   const initialDataForm = {
     birthDate: { value: "", isValid: true },
@@ -75,8 +84,9 @@ const Beneficiary = () => {
 
   const { ui } = useUI();
   const { product } = useProduct();
-  // const { beneficiary, getByRut } = useBeneficiary();
+  const { beneficiary, getBeneficiaryByRut } = useBeneficiary();
   const { lead, getLeadById, createLead, leadIsLoading } = useLead();
+  const { getAllRelationships } = useRelationship();
 
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isButtonAddEnabled, setIsButtonAddEnabled] = useState(false);
@@ -87,6 +97,7 @@ const Beneficiary = () => {
   });
   const [beneficiaries, setBeneficiaries] = useState<IBeneficiary[]>([]);
   const [position, setPosition] = useState<number>(0);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const isValidEmail = (email: string) => {
     return emailRegEx.test(email) || email === "";
@@ -160,8 +171,8 @@ const Beneficiary = () => {
           name: beneficiaryForm.name.value,
           paternalLastName: beneficiaryForm.paternalLastName.value,
           maternalLastName: beneficiaryForm.maternalLastName.value,
-          address: beneficiaryForm.address.value,
-          district: beneficiaryForm.district.value,
+          address: lead.insured[0].address,
+          district: lead.insured[0].district,
           email: beneficiaryForm.email.value,
           phone: beneficiaryForm.phone.value,
           relationship: beneficiaryForm.relationship.value,
@@ -178,8 +189,8 @@ const Beneficiary = () => {
         name: beneficiaryForm.name.value,
         paternalLastName: beneficiaryForm.paternalLastName.value,
         maternalLastName: beneficiaryForm.maternalLastName.value,
-        address: beneficiaryForm.address.value,
-        district: beneficiaryForm.district.value,
+        address: lead.insured[0].address,
+        district: lead.insured[0].district,
         email: beneficiaryForm.email.value,
         phone: beneficiaryForm.phone.value,
         relationship: beneficiaryForm.relationship.value,
@@ -203,17 +214,20 @@ const Beneficiary = () => {
   };
 
   const handleClickSave = () => {
-    router.push(`/payment?productPlanId=${ui.product.productPlan_id}`);
-    // createLead({
-    //   ...lead,
-    //   insured: lead.insured ? [{ ...lead.insured[0], beneficiaries }] : [],
-    //   subscription: false,
-    //   send: false,
-    // });
+    if (lead && lead.insured && lead.insured.length > 0) {
+      setIsProcessing(true);
+      createLead({
+        ...lead,
+        insured: lead.insured ? [{ ...lead.insured[0], beneficiaries }] : [],
+        subscription: false,
+        send: false,
+      });
+    }
   };
 
   useEffect(() => {
     getLeadById(lead.id);
+    getAllRelationships();
   }, []);
 
   useEffect(() => {
@@ -228,10 +242,10 @@ const Beneficiary = () => {
       beneficiaryForm.paternalLastName.isValid &&
       beneficiaryForm.maternalLastName.value !== "" &&
       beneficiaryForm.maternalLastName.isValid &&
-      beneficiaryForm.address.value !== "" &&
-      beneficiaryForm.address.isValid &&
-      beneficiaryForm.district.value !== "" &&
-      beneficiaryForm.district.isValid &&
+      // beneficiaryForm.address.value !== "" &&
+      // beneficiaryForm.address.isValid &&
+      // beneficiaryForm.district.value !== "" &&
+      // beneficiaryForm.district.isValid &&
       beneficiaryForm.email.value !== "" &&
       beneficiaryForm.email.isValid &&
       beneficiaryForm.phone.value !== "" &&
@@ -263,61 +277,100 @@ const Beneficiary = () => {
     }
   }, [lead.insured]);
 
-  // useEffect(() => {
-  //   if (isSuccess) {
-  //     const { slug, plan } = router.query;
-  //     router.push(`/${slug}/payment/${plan}?leadId=${lead.id}`);
-  //   }
-  // }, [isSuccess]);
+  useEffect(() => {
+    if (lead.id !== "" && leadIsLoading === false && isProcessing === true) {
+      router.push(
+        `/payment?productPlanId=${ui.product.productPlan_id}&leadId=${lead.id}`
+      );
+      setIsProcessing(false);
+    }
+  }, [lead.id, leadIsLoading, isProcessing]);
 
   return (
-    <>
+    <Body>
       <Content>
         <Col>
-          <Table>
-            <TableHeader>
-              <TableCell width="70px" align="center">{`#`}</TableCell>
-              <TableCell width="120px">Rut</TableCell>
-              <TableCell width="300px">Nombre Completo</TableCell>
-              <TableCell width="110px">Nacimiento</TableCell>
-              <TableCell width="150px">Parentesco</TableCell>
-              <TableCell width="60px">&nbsp;</TableCell>
-              <TableCellEnd />
-            </TableHeader>
-            <TableDetail>
-              {beneficiaries.length > 0 &&
-                beneficiaries.map((itemBeneficiary, idx: number) => (
-                  <TableRow key={idx}>
-                    <TableCell width="70px" align="center">
-                      {idx + 1}
-                    </TableCell>
-                    <TableCell width="120px" align="right">
-                      {itemBeneficiary.rut}
-                    </TableCell>
-                    <TableCell width="300px">{`${itemBeneficiary.name} ${itemBeneficiary.paternalLastName} ${itemBeneficiary.maternalLastName}`}</TableCell>
-                    <TableCell width="110px" align="center">
-                      {dbDateToText(itemBeneficiary.birthDate)}
-                    </TableCell>
-                    <TableCell width="150px">
-                      {itemBeneficiary.relationship}
-                    </TableCell>
-                    <TableCell width="60px" align="center">
-                      <TableIcons>
-                        <Icon
-                          iconName="edit"
-                          onClick={() => editBeneficiary(itemBeneficiary, idx)}
-                        />
-                        <Icon
-                          iconName="delete"
-                          onClick={() => deleteBeneficiary(itemBeneficiary.rut)}
-                        />
-                      </TableIcons>
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableDetail>
-          </Table>
-          <Row align="space-between">
+          {isDesktop ? (
+            <Table>
+              <TableHeader>
+                <TableCell width="70px" align="center">{`#`}</TableCell>
+                <TableCell width="120px">Rut</TableCell>
+                <TableCell width="300px">Nombre Completo</TableCell>
+                <TableCell width="110px">Nacimiento</TableCell>
+                <TableCell width="150px">Parentesco</TableCell>
+                <TableCell width="60px">&nbsp;</TableCell>
+                <TableCellEnd />
+              </TableHeader>
+              <TableDetail>
+                {beneficiaries.length > 0 &&
+                  beneficiaries.map((itemBeneficiary, idx: number) => (
+                    <TableRow key={idx}>
+                      <TableCell width="70px" align="center">
+                        {idx + 1}
+                      </TableCell>
+                      <TableCell width="120px" align="right">
+                        {itemBeneficiary.rut}
+                      </TableCell>
+                      <TableCell width="300px">{`${itemBeneficiary.name} ${itemBeneficiary.paternalLastName} ${itemBeneficiary.maternalLastName}`}</TableCell>
+                      <TableCell width="110px" align="center">
+                        {dbDateToText(itemBeneficiary.birthDate)}
+                      </TableCell>
+                      <TableCell width="150px">
+                        {itemBeneficiary.relationship}
+                      </TableCell>
+                      <TableCell width="60px" align="center">
+                        <TableIcons>
+                          <Icon
+                            iconName="edit"
+                            onClick={() =>
+                              editBeneficiary(itemBeneficiary, idx)
+                            }
+                          />
+                          <Icon
+                            iconName="delete"
+                            onClick={() =>
+                              deleteBeneficiary(itemBeneficiary.rut)
+                            }
+                          />
+                        </TableIcons>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableDetail>
+            </Table>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableCell width="320px">Nombre Completo</TableCell>
+                <TableCellEnd />
+              </TableHeader>
+              <TableDetail>
+                {beneficiaries.length > 0 &&
+                  beneficiaries.map((itemBeneficiary, idx: number) => (
+                    <TableRow key={idx}>
+                      <TableCell width="320px">
+                        {`${itemBeneficiary.name} ${itemBeneficiary.paternalLastName} ${itemBeneficiary.maternalLastName}`}
+                        <TableIcons>
+                          <Icon
+                            iconName="edit"
+                            onClick={() =>
+                              editBeneficiary(itemBeneficiary, idx)
+                            }
+                          />
+                          <Icon
+                            iconName="delete"
+                            onClick={() =>
+                              deleteBeneficiary(itemBeneficiary.rut)
+                            }
+                          />
+                        </TableIcons>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableDetail>
+            </Table>
+          )}
+          <Row align="space-between" width="100%">
             <Summary color={beneficiaries.length > 0 ? "blue" : "#959595"}>
               {beneficiaries.length === 0
                 ? "No tiene cargas asociadas"
@@ -338,12 +391,12 @@ const Beneficiary = () => {
           title={`Beneficiario`}>
           <Col gap="20px">
             <BeneficiaryForm
-              getByRut={() => {}} //getByRut
+              getByRut={getBeneficiaryByRut} //getByRut
               initialDataForm={initialDataForm}
               formData={beneficiaryForm}
               setFormData={setBeneficiaryForm}
             />
-            <Row align="center">
+            <Row align="center" width="100%">
               <Button
                 text="Registrar"
                 width="150px"
@@ -363,7 +416,7 @@ const Beneficiary = () => {
         />
       </Footer>
       {leadIsLoading && <Loading />}
-    </>
+    </Body>
   );
 };
 

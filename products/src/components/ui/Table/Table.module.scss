@@ -70,11 +70,11 @@
       }
 
       &:nth-child(even) .cell {
-        background-color: lighten(lightblue, 19);
+        background-color: lighten(lightblue, 16);
       }
 
       &:nth-child(odd) .cell {
-        background-color: lighten(gray, 49);
+        background-color: lighten(gray, 47);
       }
 
       &:hover {
