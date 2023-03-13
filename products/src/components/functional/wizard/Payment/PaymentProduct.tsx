@@ -38,7 +38,7 @@ const PaymentProduct = ({ product, lead }: IPaymentProduct) => {
         <InfoText
           label="Inicio de vigencia"
           width="170px"
-          value={`DD/MM/YYYY`}
+          value={infoDate(calculateValidity(product.assistances))}
         />
         <InfoText label="Frecuencia" width="170px" value={product.frequency} />
         <InfoText
@@ -67,23 +67,23 @@ const PaymentProduct = ({ product, lead }: IPaymentProduct) => {
           )}
         />
       </Row>
-      {product.plan.discount.type === "t" ||
-        (product.plan.discount.type === "p" && (
-          <Info
-            iconName="redeem"
-            text={`Tienes ${
-              product.plan.discount.type === String("t")
-                ? product.plan.discount.cicles === 1
-                  ? "un mes gratis"
-                  : `${product.plan.discount.cicles} meses gratis`
-                : `${product.plan.discount.percent}% de descuento por ${
-                    product.plan.discount.cicles === 1
-                      ? "un mes"
-                      : `${product.plan.discount.cicles} meses`
-                  }`
-            }`}
-          />
-        ))}
+      {(product.plan.discount.type === String("t") ||
+        product.plan.discount.type === String("p")) && (
+        <Info
+          iconName="redeem"
+          text={`Tienes ${
+            product.plan.discount.type === String("t")
+              ? product.plan.discount.cicles === 1
+                ? "un mes gratis"
+                : `${product.plan.discount.cicles} meses gratis`
+              : `${product.plan.discount.percent}% de descuento por ${
+                  product.plan.discount.cicles === 1
+                    ? "un mes"
+                    : `${product.plan.discount.cicles} meses`
+                }`
+          }`}
+        />
+      )}
     </Col>
   ) : (
     <Col width="300px" align="center">
@@ -120,23 +120,23 @@ const PaymentProduct = ({ product, lead }: IPaymentProduct) => {
           "P"
         )}
       />
-      {product.plan.discount.type === "t" ||
-        (product.plan.discount.type === "p" && (
-          <Info
-            iconName="redeem"
-            text={`Tienes ${
-              product.plan.discount.type === String("t")
-                ? product.plan.discount.cicles === 1
-                  ? "un mes gratis"
-                  : `${product.plan.discount.cicles} meses gratis`
-                : `${product.plan.discount.percent}% de descuento por ${
-                    product.plan.discount.cicles === 1
-                      ? "un mes"
-                      : `${product.plan.discount.cicles} meses`
-                  }`
-            }`}
-          />
-        ))}
+      {(product.plan.discount.type === String("t") ||
+        product.plan.discount.type === String("p")) && (
+        <Info
+          iconName="redeem"
+          text={`Tienes ${
+            product.plan.discount.type === String("t")
+              ? product.plan.discount.cicles === 1
+                ? "un mes gratis"
+                : `${product.plan.discount.cicles} meses gratis`
+              : `${product.plan.discount.percent}% de descuento por ${
+                  product.plan.discount.cicles === 1
+                    ? "un mes"
+                    : `${product.plan.discount.cicles} meses`
+                }`
+          }`}
+        />
+      )}
     </Col>
   );
 };

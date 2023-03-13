@@ -75,6 +75,7 @@ const create = async (req: any, res: any) => {
         const responsePlans = await Product.createProductPlans(
           product_id,
           broker_id,
+          price.base || null,
           price.customer,
           price.company,
           discount

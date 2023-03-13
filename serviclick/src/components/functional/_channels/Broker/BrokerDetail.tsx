@@ -49,6 +49,7 @@ interface IBrokerProductForm {
   product_id: IFormFieldString;
   name: IFormFieldString;
   price: {
+    base: IFormFieldNumber;
     customer: IFormFieldNumber;
     company: IFormFieldNumber;
   };
@@ -97,6 +98,7 @@ const BrokerDetail = ({ setEnableButtonSave }: any) => {
     product_id: { value: "", isValid: false },
     name: { value: "", isValid: true },
     price: {
+      base: { value: 0, isValid: false },
       customer: { value: 0, isValid: false },
       company: { value: 0, isValid: false },
     },
@@ -144,6 +146,7 @@ const BrokerDetail = ({ setEnableButtonSave }: any) => {
       product_id: { value: item.product_id, isValid: true },
       name: { value: item.name, isValid: true },
       price: {
+        base: { value: item.price.base, isValid: true },
         customer: { value: item.price.customer, isValid: true },
         company: { value: item.price.company, isValid: true },
       },
@@ -212,6 +215,7 @@ const BrokerDetail = ({ setEnableButtonSave }: any) => {
           product_id: brokerProductForm.product_id.value,
           name: brokerProductForm.name.value,
           price: {
+            base: brokerProductForm.price.base.value,
             customer: brokerProductForm.price.customer.value,
             company: brokerProductForm.price.company.value,
           },

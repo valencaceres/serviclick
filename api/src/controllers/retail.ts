@@ -124,6 +124,7 @@ const create = async (req: any, res: any) => {
           product_id,
           retail_id,
           null,
+          price.base,
           price.company,
           discount
         );

@@ -13,7 +13,13 @@ import { unFormatRut, formatRut } from "@/utils/format";
 import { numberRegEx, rutRegEx, emailRegEx } from "@/utils/regEx";
 import { rutValidate } from "@/utils/validations";
 
-import { useUI, useDistrict, useInsured, useLead } from "@/store/hooks";
+import {
+  useUI,
+  useDistrict,
+  useInsured,
+  useLead,
+  useProduct,
+} from "@/store/hooks";
 
 import { IFieldFormString } from "@/interfaces/form";
 
@@ -47,6 +53,7 @@ const Insured = () => {
   const { getAllDistricts, districtList, districtIsLoading } = useDistrict();
   const { insured, getInsuredByRut } = useInsured();
   const { createLead, setLead, lead, leadIsLoading } = useLead();
+  const { product } = useProduct();
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [completedForm, setCompletedForm] = useState(false);
@@ -333,7 +340,13 @@ const Insured = () => {
   useEffect(() => {
     if (lead.id !== "" && leadIsLoading === false && isProcessing === true) {
       router.push(
-        `/product?productPlanId=${ui.product.productPlan_id}&leadId=${lead.id}`
+        `/${
+          product.values.length > 0
+            ? "product"
+            : product.beneficiaries > 0
+            ? "beneficiaries"
+            : "payment"
+        }?productPlanId=${ui.product.productPlan_id}&leadId=${lead.id}`
       );
       setIsProcessing(false);
     }

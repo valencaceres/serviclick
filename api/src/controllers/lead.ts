@@ -383,9 +383,6 @@ const createSubscription = async (
       }
     );
 
-    console.log("==HERE(3)==");
-    console.log(subscriptionReveniuResponse);
-
     const {
       id: subscription_id,
       completion_url,

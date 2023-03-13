@@ -1,8 +1,6 @@
 import Head from "next/head";
 import { Fragment } from "react";
 
-import Channel from "../components/functional/Channel";
-
 export default function Home() {
   return (
     <Fragment>

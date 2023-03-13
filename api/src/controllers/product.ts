@@ -147,6 +147,7 @@ const createPlans = async (req: any, res: any) => {
   const responsePlans = await createProductPlans(
     product_id,
     agent_id,
+    price.base,
     price.customer,
     price.company,
     discount
@@ -170,10 +171,12 @@ const createPlans = async (req: any, res: any) => {
 };
 
 const assignPrices = async (req: any, res: any) => {
-  const { id, agent_id, customerprice, companyprice, discount } = req.body;
+  const { id, agent_id, baseprice, customerprice, companyprice, discount } =
+    req.body;
   const responsePlans = await createProductPlans(
     id,
     agent_id,
+    baseprice,
     customerprice,
     companyprice,
     discount
@@ -567,6 +570,7 @@ const getByIdWithPrices = async (req: any, res: any) => {
 const createProductPlans = async (
   id: string,
   agent_id: string,
+  baseprice: number | null,
   customerprice: number | null,
   companyprice: number | null,
   discount: DiscountT
@@ -646,6 +650,7 @@ const createProductPlans = async (
       company_plan_id,
       ...productPlanData,
       is_custom_amount: true,
+      baseprice,
       price: companyprice,
     });
 
@@ -668,6 +673,7 @@ const createProductPlans = async (
       agent_id,
       planResponseCompany.data.id,
       "company",
+      baseprice,
       companyprice,
       frequency,
       discount
@@ -692,6 +698,7 @@ const createProductPlans = async (
       customer_plan_id,
       ...productPlanData,
       is_custom_amount: false,
+      baseprice,
       price: customerprice,
     });
 
@@ -716,6 +723,7 @@ const createProductPlans = async (
       agent_id,
       planResponseCustomer.data.id,
       "customer",
+      baseprice,
       customerprice,
       frequency,
       discount

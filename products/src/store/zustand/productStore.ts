@@ -48,6 +48,11 @@ const initialData: IProduct = {
   },
   assistances: [],
   values: [],
+  discount: {
+    type: "",
+    percent: 0,
+    cicles: 0,
+  },
 };
 
 export const productStore = create<productState>((set, get) => ({

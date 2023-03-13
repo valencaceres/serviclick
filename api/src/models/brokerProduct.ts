@@ -17,6 +17,7 @@ const create: any = async (
       product_id,
       customer_plan_id,
       company_plan_id,
+      price.base,
       price.customer,
       price.company,
       commisionTypeCode,
@@ -30,12 +31,13 @@ const create: any = async (
                     product_id,
                     customer_plan_id,
                     company_plan_id,
+                    baseprice,
                     customerprice,
                     companyprice,
                     commisiontype_code,
                     value,
                     currency)
-            VALUES( $1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`;
+            VALUES( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`;
     const result = await pool.query(query, arrayValues);
 
     const data = {
@@ -43,6 +45,7 @@ const create: any = async (
       product_id: result.rows[0].product_id,
       price: {
         customer: {
+          base: result.rows[0].baseprice,
           price: result.rows[0].customerprice,
           plan_id: result.rows[0].customer_plan_id,
         },
@@ -82,11 +85,14 @@ const getByBrokerId: any = async (broker_id: string) => {
       SELECT  brp.product_id,
               pro.name,
               des.promotional,
+              brp.baseprice,
               brp.customerprice,
               brp.companyprice,
               brp.commisiontype_code,
               brp.value,
               brp.currency,
+              plp.id as productplan_customer_id,
+              plc.id as productplan_company_id,
               plp.discount_type,
               plp.discount_percent,
               plp.discount_cicles,
@@ -109,11 +115,14 @@ const getByBrokerId: any = async (broker_id: string) => {
         product_id,
         name,
         promotional,
+        baseprice,
         customerprice,
         companyprice,
         commisiontype_code,
         value,
         currency,
+        productplan_customer_id,
+        productplan_company_id,
         discount_type,
         discount_percent,
         discount_cicles,
@@ -122,7 +131,15 @@ const getByBrokerId: any = async (broker_id: string) => {
         product_id,
         name,
         promotional,
-        price: { customer: customerprice, company: companyprice },
+        productPlan_id: {
+          customer: productplan_customer_id,
+          company: productplan_company_id,
+        },
+        price: {
+          base: baseprice,
+          customer: customerprice,
+          company: companyprice,
+        },
         commisionTypeCode: commisiontype_code,
         value,
         currency,

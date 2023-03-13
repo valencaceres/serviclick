@@ -15,7 +15,7 @@ const CardProduct = ({ product, onClick }: any) => {
         <div className={style.left}>
           <Image
             src={`/images/products/thumbs/${product.product_id}.jpg`}
-            alt={product.name}
+            alt={product.id}
             width={300}
             height={247}
           />
@@ -28,15 +28,22 @@ const CardProduct = ({ product, onClick }: any) => {
             Contrátalo por solo {currencyFormat(product.price.company)}
           </div>
           <div className={style.priceNormal}>
-            Valor Normal <span>{currencyFormat(product.price.normal)}</span>
+            Valor Normal <span>{currencyFormat(product.price.base)}</span>
           </div>
           <Button
             width="135px"
             type="web"
             text="¡Lo quiero!"
-            onClick={() => onClick(product.productplan_id)}
+            onClick={() => onClick(product.productPlan_id.customer)}
           />
-          <a className={style.link}>Descargar PDF</a>
+          <a
+            className={style.link}
+            href={`/pdf/products/${product.product_id}.pdf`}
+            target="_blank"
+            rel="noreferrer">
+            Descargar PDF
+          </a>
+          <div className={style.freeMonth}></div>
         </div>
       </div>
     </Card>

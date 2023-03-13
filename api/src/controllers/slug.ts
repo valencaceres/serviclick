@@ -34,10 +34,11 @@ const getByCode = async (req: any, res: any) => {
     return;
   }
 
-  const productsResponse = await createLogger.info({
+  createLogger.info({
     controller: "slug/getByCode",
     message: "OK",
   });
+
   res.status(200).json(agentResponse.data);
 };
 

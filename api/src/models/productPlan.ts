@@ -5,19 +5,21 @@ const createModel: any = async (
   agent_id: string,
   plan_id: number,
   type: string,
+  baseprice: number,
   price: number,
   frequency: string,
   discount: any
 ) => {
   try {
     const result = await pool.query(
-      "INSERT INTO app.productPlan(agent_id, createdate, product_id, plan_id, type, price, frequency, discount_type, discount_percent, discount_cicles) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *",
+      "INSERT INTO app.productPlan(agent_id, createdate, product_id, plan_id, type, baseprice, price, frequency, discount_type, discount_percent, discount_cicles) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *",
       [
         agent_id,
         new Date().toISOString(),
         id,
         plan_id,
         type,
+        baseprice,
         price,
         frequency,
         discount.type,
@@ -37,7 +39,7 @@ const getByProductIdModel: any = async (
 ) => {
   try {
     const result = await pool.query(
-      "SELECT id, createdate, plan_id, type, price, frequency, discount_type, discount_percent, discount_cicles FROM app.productPlan WHERE product_id = $1 AND agent_id = $2",
+      "SELECT id, createdate, plan_id, type, baseprice, price, frequency, discount_type, discount_percent, discount_cicles FROM app.productPlan WHERE product_id = $1 AND agent_id = $2",
       [product_id, agent_id]
     );
     return { success: true, data: result.rows, error: null };
@@ -66,6 +68,7 @@ const getProductById: any = async (id: string) => {
               pla.createdate,
               pla.plan_id,
               pla.type as customer_type,
+              pla.baseprice,
               pla.price,		
               pla.agent_id,
               pla.discount_type,

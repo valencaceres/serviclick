@@ -62,6 +62,20 @@ const BrokerProductsItem = ({
     });
   };
 
+  const handleChangeBasePrice = (event: any) => {
+    setBrokerProductForm({
+      ...brokerProductForm,
+      price: {
+        ...brokerProductForm.price,
+        base: {
+          value: event.target.value,
+          isValid:
+            event.target.value !== "" && parseInt(event.target.value) > 0,
+        },
+      },
+    });
+  };
+
   const handleChangeCustomerPrice = (event: any) => {
     setBrokerProductForm({
       ...brokerProductForm,
@@ -197,8 +211,17 @@ const BrokerProductsItem = ({
         </ContentRow>
         <ContentRow gap="5px">
           <InputText
+            label="Precio normal ($)"
+            width="132px"
+            type="number"
+            maxLength={6}
+            value={brokerProductForm.price.base.value}
+            onChange={handleChangeBasePrice}
+            isValid={brokerProductForm.price.base.isValid}
+          />
+          <InputText
             label="Precio público ($)"
-            width="100%"
+            width="132px"
             type="number"
             maxLength={6}
             value={brokerProductForm.price.customer.value}
@@ -207,7 +230,7 @@ const BrokerProductsItem = ({
           />
           <InputText
             label="Precio empresa ($)"
-            width="100%"
+            width="132px"
             type="number"
             maxLength={6}
             value={brokerProductForm.price.company.value}

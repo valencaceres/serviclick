@@ -30,6 +30,7 @@ export interface IProduct {
   plan: IProductPlan;
   assistances: IProductAssistance[];
   values: IValue[];
+  discount: IDiscount;
 }
 
 export interface IProductPlan {
