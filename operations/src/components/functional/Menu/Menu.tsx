@@ -109,9 +109,11 @@ const SubOptions = ({ subOptions, show, setShowMenu }: any) => {
     <Disclosure.Panel
       key={key}
       onClick={() =>
-        (item.route ? router.push(item.route) : {}) && setShowMenu(false)
+        item.route ? (router.push(item.route), setShowMenu(false)) : {}
       }
-      className={styles.subOption}
+      className={`${styles.subOption} ${
+        router.pathname === item.route ? "bg-black" : ""
+      }`}
       style={{
         textDecoration: !item.route ? "line-through" : "none",
         color: !item.route ? "gray" : "white",
