@@ -22,7 +22,7 @@
   }
 
   * {
-    transition: all 0.5s;
+    transition: all 0.1s;
   }
 
   .menuOption {
@@ -41,6 +41,7 @@
       justify-content: space-between;
       align-items: center;
       height: 40px;
+      width: 100%;
       gap: 10px;
       cursor: pointer;
       padding: 0 10px;

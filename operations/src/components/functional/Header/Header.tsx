@@ -4,7 +4,7 @@ import ButtonIcon from "../../ui/ButtonIcon";
 
 import useUI from "../../../hooks/useUI";
 
-import styles from "./Header.module.scss";
+// import styles from './Header.module.scss';
 
 const Header = () => {
   const { setShowMenuUI, showMenu, title, user } = useUI();
@@ -14,8 +14,8 @@ const Header = () => {
   };
 
   return (
-    <div className={styles.header}>
-      <div className={styles.left}>
+    <div className={"flex h-[70px] w-full border-b border-ultraLightGrey"}>
+      <div className={"flex w-full items-center pl-2 md:w-1/2"}>
         {user.rut !== "" && (
           <ButtonIcon
             iconName="menu"
@@ -23,9 +23,28 @@ const Header = () => {
             color="transparent"
           />
         )}
-        <Image alt="ServiClick" src="/logo.jpg" width={243} height={51} />
+        <Image
+          alt="ServiClick"
+          src="/logo.jpg"
+          width={243}
+          height={51}
+          className={"hidden md:block"}
+        />
+        <Image
+          alt="ServiClick Logo"
+          src="/favicon.png"
+          width={48}
+          height={48}
+          className={"md:hidden"}
+        />
       </div>
-      <div className={styles.right}>{title}</div>
+      <div
+        className={
+          "flex h-full w-full items-center bg-primary-500 pl-5 text-[22px] font-semibold text-white md:w-1/2"
+        }
+      >
+        {title}
+      </div>
     </div>
   );
 };

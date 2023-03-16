@@ -1,3 +1,4 @@
+import { Disclosure, Transition } from "@headlessui/react";
 import { Router, useRouter } from "next/router";
 
 import Icon from "../../ui/Icon";
@@ -40,10 +41,10 @@ const menu = [
 ];
 
 const Menu = () => {
-  const { showMenu } = useUI();
+  const { showMenu, setShowMenuUI } = useUI();
 
   return (
-    <div className={styles.menu + " " + styles[showMenu ? "show" : "hide"]}>
+    <div className={`${styles.menu} ${showMenu ? "left-0" : " -left-[200px]"}`}>
       {menu.map((item: any, idx: number) => (
         <MenuOption
           key={idx}
@@ -53,6 +54,7 @@ const Menu = () => {
           className={styles.menuOption}
           subOptions={item.subOptions}
           route={item.route}
+          setShowMenu={setShowMenuUI}
         />
       ))}
     </div>
@@ -67,6 +69,7 @@ const MenuOption = ({
   setShowSubOptions,
   showSubOptions,
   route,
+  setShowMenu,
 }: any) => {
   const router = useRouter();
 
@@ -78,20 +81,44 @@ const MenuOption = ({
 
   return (
     <div className={className}>
-      <div className={styles.option} onClick={() => handleClickOption(route)}>
-        <div className={styles.left}>
-          <Icon iconName={iconName} className={styles.icon} />
-          <p>{text}</p>
-        </div>
-        {subOptions && <Icon iconName="chevron_right" />}
-      </div>
-      {subOptions && (
-        <SubOptions
-          subOptions={subOptions}
-          show={showSubOptions}
-          setShowMenu={setShowSubOptions}
-        />
-      )}
+      <Disclosure>
+        {({ open }) => (
+          <>
+            <Disclosure.Button
+              className={styles.option}
+              onClick={() => handleClickOption(route)}
+            >
+              <div className={styles.left}>
+                <Icon iconName={iconName} className={styles.icon} />
+                <p>{text}</p>
+              </div>
+              {subOptions && (
+                <Icon
+                  iconName="chevron_right"
+                  className={`${open ? "rotate-90" : ""}`}
+                />
+              )}
+            </Disclosure.Button>
+            <Transition
+              show={open}
+              enter="transition duration-100 ease-out"
+              enterFrom="transform scale-95 opacity-0"
+              enterTo="transform scale-100 opacity-100"
+              leave="transition duration-75 ease-out"
+              leaveFrom="transform scale-100 opacity-100"
+              leaveTo="transform scale-95 opacity-0"
+            >
+              {subOptions && (
+                <SubOptions
+                  subOptions={subOptions}
+                  show={showSubOptions}
+                  setShowMenu={setShowMenu}
+                />
+              )}
+            </Transition>
+          </>
+        )}
+      </Disclosure>
     </div>
   );
 };
@@ -100,16 +127,21 @@ const SubOptions = ({ subOptions, show, setShowMenu }: any) => {
   const router = useRouter();
 
   return subOptions.map((item: any, key: number) => (
-    <div
+    <Disclosure.Panel
       key={key}
-      onClick={() => (item.route ? router.push(item.route) : {})}
-      className={styles.subOption + " " + styles[show ? "show" : "hide"]}
+      onClick={() =>
+        item.route ? (router.push(item.route), setShowMenu(false)) : {}
+      }
+      className={`${styles.subOption} ${
+        router.pathname === item.route ? "bg-black" : ""
+      }`}
       style={{
         textDecoration: !item.route ? "line-through" : "none",
         color: !item.route ? "gray" : "white",
-      }}>
+      }}
+    >
       {item.text}
-    </div>
+    </Disclosure.Panel>
   ));
 };
 

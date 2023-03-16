@@ -10,13 +10,8 @@ interface IContentCellSummary {
 }
 
 const Content = ({ children, align }: any) => {
-  const { setShowMenuUI } = useUI();
-
   return (
-    <div
-      className={styles.content}
-      style={{ justifyContent: align }}
-      onClick={() => setShowMenuUI(false)}>
+    <div className={styles.content} style={{ justifyContent: align }}>
       {children}
     </div>
   );
@@ -30,7 +25,8 @@ const ContentRow = ({ children, align, gap, className }: any) => {
         alignItems: "center",
         justifyContent: align,
         gap,
-      }}>
+      }}
+    >
       {children}
     </div>
   );
@@ -44,7 +40,8 @@ const ContentCell = ({ children, align, gap, className }: any) => {
         alignItems: align,
         justifyContent: "center",
         gap,
-      }}>
+      }}
+    >
       {children}
     </div>
   );
@@ -57,7 +54,8 @@ const ContentCellSummary: FC<IContentCellSummary> = ({
   return (
     <div
       className={styles.contentCellSummary}
-      style={{ backgroundColor: color || "#959595" }}>
+      style={{ backgroundColor: color || "#959595" }}
+    >
       {children}
     </div>
   );
