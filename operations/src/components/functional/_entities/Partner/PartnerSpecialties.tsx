@@ -71,7 +71,7 @@ const PartnerSpecialties = ({ setShowSpecialitiesModal }: any) => {
           </TableDetail>
         </Table>
         <ContentRow align="space-between">
-          {/* <ContentCellSummary
+          <ContentCellSummary
             color={partner.specialties.length > 0 ? "blue" : "#959595"}
           >
             {partner.specialties.length > 0
@@ -81,7 +81,7 @@ const PartnerSpecialties = ({ setShowSpecialitiesModal }: any) => {
                     : "especialidades"
                 }`
               : `Sin especialidades`}
-          </ContentCellSummary> */}
+          </ContentCellSummary>
           <ButtonIcon
             iconName="add"
             color="gray"
