@@ -65,6 +65,7 @@ class App {
     this.server.use("/api/stage", reqLogger, routes.StageRouter);
     this.server.use("/api/specialist", reqLogger, routes.SpecialistRouter);
     this.server.use("/api/relationship", reqLogger, routes.RelationshipRouter);
+    this.server.use("/api/partner", reqLogger, routes.PartnerRouter);
   }
 }
 

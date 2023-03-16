@@ -31,6 +31,7 @@ import DocumentRouter from "./document";
 import StageRouter from "./stage";
 import SpecialistRouter from "./specialist";
 import RelationshipRouter from "./relationship";
+import PartnerRouter from "./partner";
 
 export {
   SlugRouter,
@@ -66,4 +67,5 @@ export {
   StageRouter,
   SpecialistRouter,
   RelationshipRouter,
+  PartnerRouter,
 };
