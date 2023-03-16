@@ -19,12 +19,14 @@ const PartnerPage = () => {
   const { setTitleUI, filters } = useUI();
   const { listAllDistrict } = useDistrict();
   const {
+    partner,
     partnerIsLoading,
     getPartnersFamilies,
     getAllPartners,
     getPartnerById,
     setPartner,
     resetPartner,
+    createPartner,
   } = usePartner();
 
   const [isSaving, setIsSaving] = useState(false);
@@ -43,6 +45,12 @@ const PartnerPage = () => {
   const handleClickNew = () => {
     resetPartner();
     setShowModalType(true);
+  };
+
+  const handleClickSave = () => {
+    setIsSaving(true);
+    createPartner(partner);
+    setIsSaving(false);
   };
 
   const handleClickClear = () => {
@@ -101,7 +109,7 @@ const PartnerPage = () => {
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />
         <ButtonIcon iconName="arrow_back" onClick={handleClickBack} />
-        <ButtonIcon iconName="add" onClick={handleClickClear} />
+        <ButtonIcon iconName="save" onClick={handleClickSave} />
       </FloatMenu>
     </Fragment>
   ) : (

@@ -18,7 +18,7 @@ const PartnerForm = ({ setEnableSave }: any) => {
   const { getPartnerByRut, setPartner, partner, partnerIsLoading } =
     usePartner();
 
-  const initialDataPersonForm = {
+  const initialDataPartnerForm = {
     rut: { value: partner.rut, isValid: true },
     name: { value: partner.name, isValid: true },
     legalrepresentative: {
@@ -32,7 +32,7 @@ const PartnerForm = ({ setEnableSave }: any) => {
     phone: { value: partner.phone, isValid: true },
   };
 
-  const [personForm, setPersonForm] = useState(initialDataPersonForm);
+  const [partnerForm, setPartnerForm] = useState(initialDataPartnerForm);
   const [isSearching, setIsSearching] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -52,8 +52,8 @@ const PartnerForm = ({ setEnableSave }: any) => {
     ) {
       event.target.value = formatRut(event.target.value);
       setIsSearching(true);
-      setPersonForm({
-        ...personForm,
+      setPartnerForm({
+        ...partnerForm,
         rut: {
           value: event.target.value,
           isValid: isValidRut(event.target.value),
@@ -68,7 +68,7 @@ const PartnerForm = ({ setEnableSave }: any) => {
   };
 
   const handleChangeRut = (event: any) => {
-    setPersonForm({
+    setPartnerForm({
       name: { value: "", isValid: true },
       legalrepresentative: { value: "", isValid: true },
       line: { value: "", isValid: true },
@@ -84,8 +84,8 @@ const PartnerForm = ({ setEnableSave }: any) => {
   };
 
   const handleChangeName = (event: any) => {
-    setPersonForm({
-      ...personForm,
+    setPartnerForm({
+      ...partnerForm,
       name: {
         value: event.target.value,
         isValid: true,
@@ -94,8 +94,8 @@ const PartnerForm = ({ setEnableSave }: any) => {
   };
 
   const handleChangeLegalrelegalrepresentative = (event: any) => {
-    setPersonForm({
-      ...personForm,
+    setPartnerForm({
+      ...partnerForm,
       legalrepresentative: {
         value: event.target.value,
         isValid: true,
@@ -104,8 +104,8 @@ const PartnerForm = ({ setEnableSave }: any) => {
   };
 
   const handleChangeLine = (event: any) => {
-    setPersonForm({
-      ...personForm,
+    setPartnerForm({
+      ...partnerForm,
       line: {
         value: event.target.value,
         isValid: true,
@@ -114,8 +114,8 @@ const PartnerForm = ({ setEnableSave }: any) => {
   };
 
   const handleChangeAddress = (event: any) => {
-    setPersonForm({
-      ...personForm,
+    setPartnerForm({
+      ...partnerForm,
       address: {
         value: event.target.value,
         isValid: true,
@@ -124,8 +124,8 @@ const PartnerForm = ({ setEnableSave }: any) => {
   };
 
   const handleChangeDistrict = (event: any) => {
-    setPersonForm({
-      ...personForm,
+    setPartnerForm({
+      ...partnerForm,
       district: {
         value: event.target.value,
         isValid: true,
@@ -134,8 +134,8 @@ const PartnerForm = ({ setEnableSave }: any) => {
   };
 
   const handleChangeEmail = (event: any) => {
-    setPersonForm({
-      ...personForm,
+    setPartnerForm({
+      ...partnerForm,
       email: {
         value: event.target.value,
         isValid:
@@ -146,8 +146,8 @@ const PartnerForm = ({ setEnableSave }: any) => {
 
   const handleChangePhone = (event: any) => {
     if (numberRegEx.test(event.target.value) || event.target.value === "") {
-      setPersonForm({
-        ...personForm,
+      setPartnerForm({
+        ...partnerForm,
         phone: {
           value: event.target.value,
           isValid: event.target.value.length === 9,
@@ -161,19 +161,19 @@ const PartnerForm = ({ setEnableSave }: any) => {
   const refreshPartnerState = () => {
     setPartner({
       ...partner,
-      rut: personForm.rut.value,
-      name: personForm.name.value,
-      legalrepresentative: personForm.legalrepresentative.value,
-      line: personForm.line.value,
-      address: personForm.address.value,
-      district: personForm.district.value,
-      email: personForm.email.value,
-      phone: personForm.phone.value,
+      rut: partnerForm.rut.value,
+      name: partnerForm.name.value,
+      legalrepresentative: partnerForm.legalrepresentative.value,
+      line: partnerForm.line.value,
+      address: partnerForm.address.value,
+      district: partnerForm.district.value,
+      email: partnerForm.email.value,
+      phone: partnerForm.phone.value,
     });
   };
 
   const refreshPartnerFormData = () => {
-    setPersonForm({
+    setPartnerForm({
       rut: { value: partner.rut, isValid: true },
       name: { value: partner.name, isValid: true },
       legalrepresentative: {
@@ -194,33 +194,33 @@ const PartnerForm = ({ setEnableSave }: any) => {
   useEffect(() => {
     setEnableSave(false);
     if (
-      personForm.rut.isValid &&
-      personForm.email.isValid &&
-      personForm.phone.isValid &&
-      personForm.rut.value !== "" &&
-      personForm.name.value !== "" &&
-      personForm.legalrepresentative.value !== "" &&
-      personForm.line.value !== "" &&
-      personForm.address.value !== "" &&
-      personForm.district.value !== "" &&
-      personForm.email.value !== "" &&
-      personForm.phone.value !== ""
+      partnerForm.rut.isValid &&
+      partnerForm.email.isValid &&
+      partnerForm.phone.isValid &&
+      partnerForm.rut.value !== "" &&
+      partnerForm.name.value !== "" &&
+      partnerForm.legalrepresentative.value !== "" &&
+      partnerForm.line.value !== "" &&
+      partnerForm.address.value !== "" &&
+      partnerForm.district.value !== "" &&
+      partnerForm.email.value !== "" &&
+      partnerForm.phone.value !== ""
     ) {
       refreshPartnerState();
       setEnableSave(true);
     }
   }, [
-    personForm.rut.value,
-    personForm.email.value,
-    personForm.phone.value,
-    personForm.rut.value,
-    personForm.name.value,
-    personForm.legalrepresentative.value,
-    personForm.line.value,
-    personForm.address.value,
-    personForm.district.value,
-    personForm.email.value,
-    personForm.phone.value,
+    partnerForm.rut.value,
+    partnerForm.email.value,
+    partnerForm.phone.value,
+    partnerForm.rut.value,
+    partnerForm.name.value,
+    partnerForm.legalrepresentative.value,
+    partnerForm.line.value,
+    partnerForm.address.value,
+    partnerForm.district.value,
+    partnerForm.email.value,
+    partnerForm.phone.value,
   ]);
 
   useEffect(() => {
@@ -232,7 +232,7 @@ const PartnerForm = ({ setEnableSave }: any) => {
 
   useEffect(() => {
     if (isSearching === true && partnerIsLoading === false) {
-      setPersonForm({
+      setPartnerForm({
         rut: { value: partner.rut, isValid: true },
         name: { value: partner.name, isValid: true },
         legalrepresentative: {
@@ -259,75 +259,75 @@ const PartnerForm = ({ setEnableSave }: any) => {
   }, [partner]);
 
   return (
-    <ContentCell gap="5px">
-      <ContentRow gap="20px">
-        <InputText
-          label="Rut"
-          width={"100%"}
-          onFocus={handleFocusRut}
-          onBlur={handleBlurRut}
-          maxLength={9}
-          value={personForm?.rut.value}
-          onChange={handleChangeRut}
-          isValid={personForm?.rut.isValid}
-        />
-      </ContentRow>
+    <ContentCell gap="5px" className="w-[525px]">
+      <InputText
+        label="Rut"
+        width={"50%"}
+        onFocus={handleFocusRut}
+        onBlur={handleBlurRut}
+        maxLength={9}
+        value={partnerForm?.rut.value}
+        onChange={handleChangeRut}
+        isValid={partnerForm?.rut.isValid}
+      />
       <InputText
         label="Razón Social"
         width="100%"
         maxLength={50}
-        value={personForm?.name.value}
+        value={partnerForm?.name.value}
         onChange={handleChangeName}
       />
       <InputText
         label="Representante Legal"
         width="100%"
         maxLength={50}
-        value={personForm?.legalrepresentative.value}
+        value={partnerForm?.legalrepresentative.value}
         onChange={handleChangeLegalrelegalrepresentative}
       />
       <InputText
         label="Giro"
         width="100%"
         maxLength={50}
-        value={personForm?.line.value}
+        value={partnerForm?.line.value}
         onChange={handleChangeLine}
       />
       <InputText
         label="Dirección"
         width="100%"
         maxLength={250}
-        value={personForm?.address.value}
+        value={partnerForm?.address.value}
         onChange={handleChangeAddress}
       />
       <ComboBox
         label="Comuna"
         width="100%"
-        value={personForm?.district.value}
+        value={partnerForm?.district.value}
         onChange={handleChangeDistrict}
         placeHolder=":: Seleccione comuna ::"
         data={districtList}
         dataValue="district_name"
         dataText="district_name"
       />
-      <InputText
-        label="Correo"
-        width="100%"
-        type="email"
-        maxLength={250}
-        value={personForm?.email.value}
-        onChange={handleChangeEmail}
-        isValid={personForm?.email.isValid}
-      />
-      <InputText
-        label="Teléfono"
-        width="100%"
-        type="tel"
-        maxLength={9}
-        value={personForm?.phone.value}
-        onChange={handleChangePhone}
-        isValid={personForm?.phone.isValid}
-      />
+      <ContentRow gap="5px">
+        <InputText
+          label="Correo"
+          width="100%"
+          type="email"
+          maxLength={250}
+          value={partnerForm?.email.value}
+          onChange={handleChangeEmail}
+          isValid={partnerForm?.email.isValid}
+        />
+        <InputText
+          label="Teléfono"
+          width="100%"
+          type="tel"
+          maxLength={9}
+          value={partnerForm?.phone.value}
+          onChange={handleChangePhone}
+          isValid={partnerForm?.phone.isValid}
+        />
+      </ContentRow>
     </ContentCell>
   );
 };
