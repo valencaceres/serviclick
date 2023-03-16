@@ -2,6 +2,7 @@ import { Disclosure, Transition } from "@headlessui/react";
 import { Router, useRouter } from "next/router";
 
 import Icon from "../../ui/Icon";
+
 import useUI from "../../../hooks/useUI";
 
 import styles from "./Menu.module.scss";
