@@ -80,22 +80,31 @@ const MenuOption = ({
   return (
     <div className={className}>
       <Disclosure>
-        <Disclosure.Button
-          className={styles.option}
-          onClick={() => handleClickOption(route)}
-        >
-          <div className={styles.left}>
-            <Icon iconName={iconName} className={styles.icon} />
-            <p>{text}</p>
-          </div>
-          {subOptions && <Icon iconName="chevron_right" />}
-        </Disclosure.Button>
-        {subOptions && (
-          <SubOptions
-            subOptions={subOptions}
-            show={showSubOptions}
-            setShowMenu={setShowMenu}
-          />
+        {({ open }) => (
+          <>
+            <Disclosure.Button
+              className={styles.option}
+              onClick={() => handleClickOption(route)}
+            >
+              <div className={styles.left}>
+                <Icon iconName={iconName} className={styles.icon} />
+                <p>{text}</p>
+              </div>
+              {subOptions && (
+                <Icon
+                  iconName="chevron_right"
+                  className={`${open ? "rotate-90" : ""}`}
+                />
+              )}
+            </Disclosure.Button>
+            {subOptions && (
+              <SubOptions
+                subOptions={subOptions}
+                show={showSubOptions}
+                setShowMenu={setShowMenu}
+              />
+            )}
+          </>
         )}
       </Disclosure>
     </div>
