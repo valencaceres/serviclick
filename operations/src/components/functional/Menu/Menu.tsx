@@ -1,6 +1,6 @@
+import { Disclosure, Transition } from "@headlessui/react";
 import { Router, useRouter } from "next/router";
 
-import { Disclosure } from "@headlessui/react";
 import Icon from "../../ui/Icon";
 import styles from "./Menu.module.scss";
 import useUI from "../../../hooks/useUI";
@@ -97,13 +97,23 @@ const MenuOption = ({
                 />
               )}
             </Disclosure.Button>
-            {subOptions && (
-              <SubOptions
-                subOptions={subOptions}
-                show={showSubOptions}
-                setShowMenu={setShowMenu}
-              />
-            )}
+            <Transition
+              show={open}
+              enter="transition duration-100 ease-out"
+              enterFrom="transform scale-95 opacity-0"
+              enterTo="transform scale-100 opacity-100"
+              leave="transition duration-75 ease-out"
+              leaveFrom="transform scale-100 opacity-100"
+              leaveTo="transform scale-95 opacity-0"
+            >
+              {subOptions && (
+                <SubOptions
+                  subOptions={subOptions}
+                  show={showSubOptions}
+                  setShowMenu={setShowMenu}
+                />
+              )}
+            </Transition>
           </>
         )}
       </Disclosure>
