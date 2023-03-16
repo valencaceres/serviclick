@@ -32,7 +32,10 @@ const Product = () => {
         frequency_code: product.frequency,
         productPlan_id: product.plan[customerTypeName].plan_id,
       });
-      router.push(`/sale/contract/${customerTypeName}`);
+      router.push(
+        `https://productos.serviclick.cl/contractor?productPlanId=${product.plan[customerTypeName].id}`
+      );
+      //router.push(`/sale/contract/${customerTypeName}`);
     }
   }, [product.id, customerType]);
 

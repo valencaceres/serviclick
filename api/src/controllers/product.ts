@@ -833,6 +833,11 @@ const getByProductPlanId = async (req: any, res: any) => {
     return;
   }
 
+  if (productPlanResponse.data.length === 0) {
+    res.status(500).json("Product not found");
+    return;
+  }
+
   const valueResponse = await Value.getByProductId(
     productPlanResponse.data[0].id
   );

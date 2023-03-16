@@ -77,7 +77,7 @@ const BrokerProducts = ({ addNewProduct, editProduct, deleteProduct }: any) => {
             ? "1 producto asociado"
             : `${broker.products.length} productos asociados`}
         </ContentCellSummary>
-        <ButtonIcon iconName="add" color="gray" onClick={addNewProduct} />
+        {/* <ButtonIcon iconName="add" color="gray" onClick={addNewProduct} /> */}
       </ContentRow>
     </ContentCell>
   );

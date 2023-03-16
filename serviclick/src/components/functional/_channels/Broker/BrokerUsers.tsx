@@ -57,7 +57,7 @@ const BrokerUsers = ({ addNewUser, editUser, deleteUser }: any) => {
             ? "1 usuario asociado"
             : `${broker.users.length} usuarios asociados`}
         </ContentCellSummary>
-        <ButtonIcon iconName="add" color="gray" onClick={addNewUser} />
+        {/* <ButtonIcon iconName="add" color="gray" onClick={addNewUser} /> */}
       </ContentRow>
     </ContentCell>
   );

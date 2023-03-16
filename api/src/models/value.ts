@@ -191,7 +191,7 @@ const getByProductId = async (product_id: string) => {
               name: item.name,
             };
           })
-        : [];
+        : {};
 
     return { success: true, data, error: null };
   } catch (e) {
