@@ -1,53 +1,53 @@
-@import "../../../styles/variables.scss";
+@import '../../../styles/variables.scss';
 
 .screen {
-  height: calc(100vh - 60px);
-  width: 100vw;
-
-  @media screen and (min-width: 1200px) {
-    height: calc(100vh);
-  }
-
-  .header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 70px;
-    width: 100%;
-    border-bottom: 1px solid $ultra-light-gray-color;
-    //filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.1));
-
-    .left {
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      background-color: $white-color;
-      height: 100%;
-      width: 100%;
-      padding-left: 11px;
-
-      @media screen and (min-width: 1200px) {
-        padding-left: 80px;
-      }
-    }
+    height: calc(100vh - 60px);
+    width: 100vw;
 
     @media screen and (min-width: 1200px) {
-      .right {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        background-color: $green-color;
-        height: 100%;
-        width: 100%;
-      }
+        height: calc(100vh);
     }
-  }
 
-  .body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: calc(100% - 70px);
-    width: 100%;
-  }
+    .header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 70px;
+        width: 100%;
+        border-bottom: 1px solid $ultra-light-gray-color;
+        //filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.1));
+
+        .left {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            background-color: $white-color;
+            height: 100%;
+            width: 100%;
+            padding-left: 11px;
+
+            @media screen and (min-width: 1200px) {
+                padding-left: 80px;
+            }
+        }
+
+        @media screen and (min-width: 1200px) {
+            .right {
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                background-color: $green-color;
+                height: 100%;
+                width: 100%;
+            }
+        }
+    }
+
+    .body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: calc(100% - 70px);
+        width: 100%;
+    }
 }

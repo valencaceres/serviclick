@@ -1,8 +1,6 @@
-import { FC } from "react";
-
-import useUI from "../../../hooks/useUI";
-
-import styles from "./Content.module.scss";
+import { FC } from 'react';
+import styles from './Content.module.scss';
+import useUI from '../../../hooks/useUI';
 
 interface IContentCellSummary {
   color?: string;
@@ -10,13 +8,8 @@ interface IContentCellSummary {
 }
 
 const Content = ({ children, align }: any) => {
-  const { setShowMenuUI } = useUI();
-
   return (
-    <div
-      className={styles.content}
-      style={{ justifyContent: align }}
-      onClick={() => setShowMenuUI(false)}>
+    <div className={styles.content} style={{ justifyContent: align }}>
       {children}
     </div>
   );
@@ -27,10 +20,11 @@ const ContentRow = ({ children, align, gap, className }: any) => {
     <div
       className={`${styles.contentRow} ${className}`}
       style={{
-        alignItems: "center",
+        alignItems: 'center',
         justifyContent: align,
         gap,
-      }}>
+      }}
+    >
       {children}
     </div>
   );
@@ -42,22 +36,24 @@ const ContentCell = ({ children, align, gap, className }: any) => {
       className={`${styles.contentCell} ${className}`}
       style={{
         alignItems: align,
-        justifyContent: "center",
+        justifyContent: 'center',
         gap,
-      }}>
+      }}
+    >
       {children}
     </div>
   );
 };
 
 const ContentCellSummary: FC<IContentCellSummary> = ({
-  color = "#959595",
+  color = '#959595',
   children,
 }: any) => {
   return (
     <div
       className={styles.contentCellSummary}
-      style={{ backgroundColor: color || "#959595" }}>
+      style={{ backgroundColor: color || '#959595' }}
+    >
       {children}
     </div>
   );
