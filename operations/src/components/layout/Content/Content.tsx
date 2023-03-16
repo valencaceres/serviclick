@@ -1,6 +1,8 @@
 import { FC } from "react";
-import styles from "./Content.module.scss";
+
 import useUI from "../../../hooks/useUI";
+
+import styles from "./Content.module.scss";
 
 interface IContentCellSummary {
   color?: string;

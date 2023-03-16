@@ -1,7 +1,10 @@
-import ButtonIcon from "../../ui/ButtonIcon";
 import Image from "next/image";
-// import styles from './Header.module.scss';
+
+import ButtonIcon from "../../ui/ButtonIcon";
+
 import useUI from "../../../hooks/useUI";
+
+// import styles from './Header.module.scss';
 
 const Header = () => {
   const { setShowMenuUI, showMenu, title, user } = useUI();
