@@ -1,40 +1,40 @@
-import { Router, useRouter } from 'next/router';
+import { Router, useRouter } from "next/router";
 
-import { Disclosure } from '@headlessui/react';
-import Icon from '../../ui/Icon';
-import styles from './Menu.module.scss';
-import useUI from '../../../hooks/useUI';
+import { Disclosure } from "@headlessui/react";
+import Icon from "../../ui/Icon";
+import styles from "./Menu.module.scss";
+import useUI from "../../../hooks/useUI";
 
 const menu = [
-  { icon: <Icon iconName="home" />, text: 'Inicio', route: '/' },
+  { icon: <Icon iconName="home" />, text: "Inicio", route: "/" },
   {
     icon: <Icon iconName="settings" />,
-    text: 'Maestros',
+    text: "Maestros",
     subOptions: [
-      { text: 'Familias', route: '/masters/family' },
-      { text: 'Especialidades', route: '/masters/specialty' },
-      { text: 'Tipos de valor', route: '/masters/valueType' },
-      { text: 'Valores', route: '/masters/value' },
-      { text: 'Documentos', route: '/masters/document' },
-      { text: 'Servicios', route: '/masters/assistance' },
-      { text: 'Etapas', route: '/masters/stage' },
-      { text: 'Productos', route: '/masters/product' },
+      { text: "Familias", route: "/masters/family" },
+      { text: "Especialidades", route: "/masters/specialty" },
+      { text: "Tipos de valor", route: "/masters/valueType" },
+      { text: "Valores", route: "/masters/value" },
+      { text: "Documentos", route: "/masters/document" },
+      { text: "Servicios", route: "/masters/assistance" },
+      { text: "Etapas", route: "/masters/stage" },
+      { text: "Productos", route: "/masters/product" },
     ],
   },
   {
     icon: <Icon iconName="people" />,
-    text: 'Entidades',
+    text: "Entidades",
     subOptions: [
-      { text: 'Clientes', route: '/entities/contractor' },
-      { text: 'Especialistas', route: '/entities/specialist' },
-      { text: 'Convenios' },
-      { text: 'Operadores' },
+      { text: "Clientes", route: "/entities/contractor" },
+      { text: "Especialistas", route: "/entities/specialist" },
+      { text: "Convenios" },
+      { text: "Operadores" },
     ],
   },
   {
     icon: <Icon iconName="build_circle" />,
-    text: 'Asistencia',
-    subOptions: [{ text: 'Dashboard' }, { text: 'Apertura' }],
+    text: "Asistencia",
+    subOptions: [{ text: "Dashboard" }, { text: "Apertura" }],
   },
 ];
 
@@ -42,7 +42,7 @@ const Menu = () => {
   const { showMenu, setShowMenuUI } = useUI();
 
   return (
-    <div className={`${styles.menu} ${showMenu ? 'left-0' : ' -left-[200px]'}`}>
+    <div className={`${styles.menu} ${showMenu ? "left-0" : " -left-[200px]"}`}>
       {menu.map((item: any, idx: number) => (
         <MenuOption
           key={idx}
@@ -113,8 +113,8 @@ const SubOptions = ({ subOptions, show, setShowMenu }: any) => {
       }
       className={styles.subOption}
       style={{
-        textDecoration: !item.route ? 'line-through' : 'none',
-        color: !item.route ? 'gray' : 'white',
+        textDecoration: !item.route ? "line-through" : "none",
+        color: !item.route ? "gray" : "white",
       }}
     >
       {item.text}

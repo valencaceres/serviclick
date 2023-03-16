@@ -1,6 +1,6 @@
-import * as UISlice from '../redux/slices/uiSlice';
+import * as UISlice from "../redux/slices/uiSlice";
 
-import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 
 interface UseUII {
   user: UISlice.UserT;
@@ -9,7 +9,7 @@ interface UseUII {
   options: UISlice.OptionT[];
   filters: any;
   isDesktop: boolean;
-  envApp: 'dev' | 'prod';
+  envApp: "dev" | "prod";
   setEnvAppUI: any;
   setUserUI: any;
   setShowMenuUI: any;

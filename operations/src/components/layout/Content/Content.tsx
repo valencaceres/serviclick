@@ -1,6 +1,6 @@
-import { FC } from 'react';
-import styles from './Content.module.scss';
-import useUI from '../../../hooks/useUI';
+import { FC } from "react";
+import styles from "./Content.module.scss";
+import useUI from "../../../hooks/useUI";
 
 interface IContentCellSummary {
   color?: string;
@@ -20,7 +20,7 @@ const ContentRow = ({ children, align, gap, className }: any) => {
     <div
       className={`${styles.contentRow} ${className}`}
       style={{
-        alignItems: 'center',
+        alignItems: "center",
         justifyContent: align,
         gap,
       }}
@@ -36,7 +36,7 @@ const ContentCell = ({ children, align, gap, className }: any) => {
       className={`${styles.contentCell} ${className}`}
       style={{
         alignItems: align,
-        justifyContent: 'center',
+        justifyContent: "center",
         gap,
       }}
     >
@@ -46,13 +46,13 @@ const ContentCell = ({ children, align, gap, className }: any) => {
 };
 
 const ContentCellSummary: FC<IContentCellSummary> = ({
-  color = '#959595',
+  color = "#959595",
   children,
 }: any) => {
   return (
     <div
       className={styles.contentCellSummary}
-      style={{ backgroundColor: color || '#959595' }}
+      style={{ backgroundColor: color || "#959595" }}
     >
       {children}
     </div>
