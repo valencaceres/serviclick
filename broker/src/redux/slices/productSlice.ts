@@ -15,6 +15,7 @@ export type AssistanceT = {
 };
 
 export type PriceT = {
+  id: string;
   plan_id: number;
   price: number;
   frequency: FrequencyT;
@@ -79,11 +80,13 @@ export const initialState: StateT = {
     assistances: [],
     plan: {
       customer: {
+        id: "",
         plan_id: 0,
         price: 0,
         frequency: "M",
       },
       company: {
+        id: "",
         plan_id: 0,
         price: 0,
         frequency: "M",
