@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 
 import { ContentCell, ContentRow } from "../../../layout/Content";
 
@@ -14,6 +15,7 @@ import { useDistrict } from "../../../../hooks";
 import { usePartner } from "../../../../store/hooks";
 
 const PartnerForm = ({ setEnableSave }: any) => {
+  const router = useRouter();
   const { list: districtList } = useDistrict();
   const { getPartnerByRut, setPartner, partner, partnerIsLoading } =
     usePartner();
@@ -69,13 +71,7 @@ const PartnerForm = ({ setEnableSave }: any) => {
 
   const handleChangeRut = (event: any) => {
     setPartnerForm({
-      name: { value: "", isValid: true },
-      legalrepresentative: { value: "", isValid: true },
-      line: { value: "", isValid: true },
-      address: { value: "", isValid: true },
-      district: { value: "", isValid: true },
-      email: { value: "", isValid: true },
-      phone: { value: "", isValid: true },
+      ...partnerForm,
       rut: {
         value: event.target.value,
         isValid: isValidRut(event.target.value),

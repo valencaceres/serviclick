@@ -25,7 +25,6 @@ const getByPartnerId: any = async (partner_id: string) => {
         WHERE PS.partner_id = $1`,
       [partner_id]
     );
-    console.log(specialtiesResponse.rows);
 
     return { success: true, data: specialtiesResponse.rows, error: null };
   } catch (e) {

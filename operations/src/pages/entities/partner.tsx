@@ -27,6 +27,7 @@ const PartnerPage = () => {
     setPartner,
     resetPartner,
     createPartner,
+    deletePartner,
   } = usePartner();
 
   const [isSaving, setIsSaving] = useState(false);
@@ -44,7 +45,7 @@ const PartnerPage = () => {
 
   const handleClickNew = () => {
     resetPartner();
-    setShowModalType(true);
+    router.push("/entities/partner?id=new");
   };
 
   const handleClickSave = () => {
@@ -75,7 +76,7 @@ const PartnerPage = () => {
 
   const handleClickBack = () => {
     resetPartner();
-    //getAllPartners();
+    getAllPartners();
     router.push("/entities/partner");
   };
 
@@ -114,7 +115,7 @@ const PartnerPage = () => {
     </Fragment>
   ) : (
     <Fragment>
-      <PartnerList editPartner={editPartner} />
+      <PartnerList editPartner={editPartner} deletePartner={deletePartner} />
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />
         <ButtonIcon iconName="refresh" onClick={handleClickRefresh} />

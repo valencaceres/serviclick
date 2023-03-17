@@ -138,6 +138,38 @@ const getById: any = async (id: string) => {
   }
 };
 
+const getByRut: any = async (rut: string) => {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM app.partner WHERE rut = $1`,
+      [rut]
+    );
+
+    if (result.rows.length > 0) {
+      const data = {
+        id: result.rows[0].id,
+        rut: result.rows[0].rut,
+        name: result.rows[0].name,
+        legalrepresentative: result.rows[0].legalrepresentative,
+        line: result.rows[0].line,
+        address: result.rows[0].address,
+        district: result.rows[0].district,
+        email: result.rows[0].email,
+        phone: result.rows[0].phone,
+      };
+
+      return { success: true, data, error: null };
+    }
+    return {
+      success: true,
+      data: null,
+      error: "Partner does not exist",
+    };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 const getFamilies = async () => {
   try {
     const result = await pool.query(
@@ -157,4 +189,110 @@ const getFamilies = async () => {
   }
 };
 
-export { create, getAll, getById, getFamilies };
+const deletePartner: any = async (id: string) => {
+  try {
+    const result = await pool.query(
+      `DELETE FROM app.partner WHERE id = $1 RETURNING *`,
+      [id]
+    );
+
+    return { success: true, data: result.rows[0], error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+const getBySpecialtyId: any = async (id: string) => {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM app.partner P
+      INNER JOIN app.partnerspecialty PS ON PS.partner_id = P.id
+      WHERE PS.specialty_id = $1`,
+      [id]
+    );
+
+    const data =
+      result.rows.length > 0
+        ? result.rows.map((item: any) => {
+            const {
+              id,
+              rut,
+              name,
+              legalrepresentative,
+              line,
+              address,
+              district,
+              email,
+              phone,
+            } = item;
+            return {
+              id,
+              rut,
+              name,
+              legalrepresentative,
+              line,
+              address,
+              district,
+              email,
+              phone,
+            };
+          })
+        : [];
+
+    return { success: true, data: data, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+const getByName = async (name: string) => {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM app.partner WHERE name LIKE $1`,
+      [`%${name}%`]
+    );
+
+    const data =
+      result.rows.length > 0
+        ? result.rows.map((item: any) => {
+            const {
+              id,
+              rut,
+              name,
+              legalrepresentative,
+              line,
+              address,
+              district,
+              email,
+              phone,
+            } = item;
+            return {
+              id,
+              rut,
+              name,
+              legalrepresentative,
+              line,
+              address,
+              district,
+              email,
+              phone,
+            };
+          })
+        : [];
+
+    return { success: true, data: data, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+export {
+  create,
+  getAll,
+  getById,
+  getByRut,
+  getFamilies,
+  deletePartner,
+  getBySpecialtyId,
+  getByName,
+};

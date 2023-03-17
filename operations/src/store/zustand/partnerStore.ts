@@ -23,6 +23,9 @@ interface partnerState {
   create: (partner: IPartner) => void;
   reset: () => void;
   resetAll: () => void;
+  delete: (id: string) => void;
+  getBySpecialtyId: (id: string) => void;
+  getByName: (name: string) => void;
 }
 
 const initialData: IPartner = {
@@ -114,6 +117,15 @@ export const partnerStore = create<partnerState>((set, get) => ({
     try {
       set((state) => ({ ...state, isLoading: true }));
       const { data } = await apiInstance.get(`partner/getByRut/${rut}`);
+      console.log(data);
+      if (data === null) {
+        return set((state) => ({
+          ...state,
+          partner: { ...initialData, rut },
+          isLoading: false,
+          isError: false,
+        }));
+      }
       set((state) => ({
         ...state,
         partner: data,
@@ -160,4 +172,64 @@ export const partnerStore = create<partnerState>((set, get) => ({
     })),
 
   resetAll: () => set({}, true),
+
+  delete: async (id: string) => {
+    try {
+      set((state) => ({ ...state, isLoading: true }));
+      await apiInstance.delete(`partner/deletePartner/${id}`);
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: false,
+        error: "",
+      }));
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
+  },
+
+  getBySpecialtyId: async (id: string) => {
+    try {
+      set((state) => ({ ...state, isLoading: true }));
+      const { data } = await apiInstance.get(`partner/getBySpecialtyId/${id}`);
+      set((state) => ({
+        ...state,
+        list: data,
+        isLoading: false,
+        isError: false,
+      }));
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
+  },
+
+  getByName: async (name: string) => {
+    try {
+      set((state) => ({ ...state, isLoading: true }));
+      const { data } = await apiInstance.get(`partner/getByName/${name}`);
+      set((state) => ({
+        ...state,
+        list: data,
+        isLoading: false,
+        isError: false,
+      }));
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
+  },
 }));

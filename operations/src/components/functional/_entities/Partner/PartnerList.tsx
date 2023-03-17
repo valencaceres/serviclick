@@ -1,4 +1,4 @@
-import { useState, Fragment } from "react";
+import { useState, Fragment, useEffect } from "react";
 
 import {
   ContentCell,
@@ -24,7 +24,16 @@ import { usePartner } from "../../../../store/hooks";
 import { LoadingMessage, SuccessMessage } from "../../../ui/LoadingMessage";
 
 const PartnerList = ({ editPartner, deletePartner, isSaving }: any) => {
-  const { partner, partnerList, partnerIsLoading, families } = usePartner();
+  const [isDeleting, setIsDeleting] = useState(false);
+  const {
+    partner,
+    partnerList,
+    partnerIsLoading,
+    families,
+    getAllPartners,
+    getPartnersBySpecialtyId,
+    getPartnersByName,
+  } = usePartner();
 
   const initialSearchForm = {
     family_id: "",
@@ -47,7 +56,27 @@ const PartnerList = ({ editPartner, deletePartner, isSaving }: any) => {
     });
   };
 
-  const handleClickSearch = () => {};
+  const handleClickSearch = () => {
+    if (search.family_id !== "") {
+      return getPartnersBySpecialtyId(search.family_id);
+    }
+    if (search.name !== "") {
+      return getPartnersByName(search.name);
+    }
+    return getAllPartners();
+  };
+
+  const handleDeletePartner = async (id: string) => {
+    setIsDeleting(true);
+    await deletePartner(id);
+    setIsDeleting(false);
+  };
+
+  useEffect(() => {
+    if (isDeleting === false) {
+      getAllPartners();
+    }
+  }, [isDeleting]);
 
   return (
     <Fragment>
@@ -64,7 +93,7 @@ const PartnerList = ({ editPartner, deletePartner, isSaving }: any) => {
             dataText="name"
           />
           <InputText
-            label="Texto a buscar"
+            label="Buscar por nombre"
             width="481px"
             value={search.name}
             onChange={handleChangePartner}
@@ -101,7 +130,7 @@ const PartnerList = ({ editPartner, deletePartner, isSaving }: any) => {
                     />
                     <Icon
                       iconName="delete"
-                      onClick={() => deletePartner(partner.id)}
+                      onClick={() => handleDeletePartner(partner.id)}
                     />
                   </TableIcons>
                 </TableCell>

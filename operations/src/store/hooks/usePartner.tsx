@@ -25,6 +25,9 @@ const usePartner = () => {
     getById: getPartnerById,
     create: createPartner,
     reset: resetPartner,
+    delete: deletePartner,
+    getBySpecialtyId: getPartnersBySpecialtyId,
+    getByName: getPartnersByName,
   } = partnerStore();
 
   return {
@@ -41,6 +44,9 @@ const usePartner = () => {
     getPartnerById,
     createPartner,
     resetPartner,
+    deletePartner,
+    getPartnersBySpecialtyId,
+    getPartnersByName,
   };
 };
 
