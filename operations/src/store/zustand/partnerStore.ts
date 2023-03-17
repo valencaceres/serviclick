@@ -117,7 +117,6 @@ export const partnerStore = create<partnerState>((set, get) => ({
     try {
       set((state) => ({ ...state, isLoading: true }));
       const { data } = await apiInstance.get(`partner/getByRut/${rut}`);
-      console.log(data);
       if (data === null) {
         return set((state) => ({
           ...state,

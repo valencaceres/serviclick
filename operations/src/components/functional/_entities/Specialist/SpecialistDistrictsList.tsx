@@ -8,23 +8,20 @@ import { useDistrict } from "../../../../hooks";
 import { useSpecialist } from "../../../../store/hooks";
 
 const SpecialistSpecialtiesList = ({ setShow }: any) => {
-  const { list } = useDistrict();
+  const { list: districtList } = useDistrict();
   const { specialist, setSpecialist } = useSpecialist();
 
   const initialData = {
-    family_id: "",
-    family_name: "",
-    specialty_id: "",
-    specialty_name: "",
+    district_id: "",
+    district_name: "",
   };
 
-  const [specialityItem, setSpecialityItem] = useState(initialData);
+  const [districtItem, setDistrictItem] = useState(initialData);
 
   const handleChangeDistrict = (e: any) => {
-    setSpecialityItem({
-      ...specialityItem,
-      specialty_id: e.target.value,
-      specialty_name: e.target.options[e.target.selectedIndex].text,
+    setDistrictItem({
+      district_id: e.target.value,
+      district_name: e.target.options[e.target.selectedIndex].text,
     });
   };
 
@@ -34,15 +31,15 @@ const SpecialistSpecialtiesList = ({ setShow }: any) => {
       districts: [
         ...specialist.districts,
         {
-          id: specialityItem.specialty_id,
+          id: districtItem.district_id,
           region_number: 0,
           region_name: "",
           province_name: "",
-          district_name: specialityItem.specialty_name,
+          district_name: districtItem.district_name,
         },
       ],
     });
-    setSpecialityItem(initialData);
+    setDistrictItem(initialData);
     setShow(false);
   };
 
@@ -52,12 +49,12 @@ const SpecialistSpecialtiesList = ({ setShow }: any) => {
         id="cmbDistrict"
         label="Comuna"
         width="300px"
-        value={specialityItem.family_id}
+        value={districtItem.district_id}
         onChange={handleChangeDistrict}
         placeHolder=":: Seleccione comuna ::"
-        data={list || []}
+        data={districtList}
         dataValue="id"
-        dataText="name"
+        dataText="district_name"
       />
       <Button text="Agregar" onClick={handleClickAdd} />
     </ContentCell>

@@ -73,14 +73,7 @@ const SpecialistForm = ({ setEnableSave }: any) => {
 
   const handleChangeRut = (event: any) => {
     setPersonForm({
-      name: { value: "", isValid: true },
-      paternalLastName: { value: "", isValid: true },
-      maternalLastName: { value: "", isValid: true },
-      birthDate: { value: "", isValid: true },
-      address: { value: "", isValid: true },
-      district: { value: "", isValid: true },
-      email: { value: "", isValid: true },
-      phone: { value: "", isValid: true },
+      ...personForm,
       rut: {
         value: event.target.value,
         isValid: isValidRut(event.target.value),

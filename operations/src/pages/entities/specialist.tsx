@@ -19,12 +19,14 @@ const SpecialistPage = () => {
   const { setTitleUI, filters } = useUI();
   const { listAllDistrict } = useDistrict();
   const {
+    specialist,
     specialistIsLoading,
     getSpecialistsFamilies,
     getAllSpecialists,
     getSpecialistById,
     setSpecialist,
     resetSpecialist,
+    createSpecialist,
   } = useSpecialist();
 
   const [isSaving, setIsSaving] = useState(false);
@@ -42,7 +44,13 @@ const SpecialistPage = () => {
 
   const handleClickNew = () => {
     resetSpecialist();
-    setShowModalType(true);
+    router.push("/entities/specialist?id=new");
+  };
+
+  const handleClickSave = () => {
+    setIsSaving(true);
+    createSpecialist(specialist);
+    setIsSaving(false);
   };
 
   const handleClickClear = () => {
@@ -103,7 +111,7 @@ const SpecialistPage = () => {
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />
         <ButtonIcon iconName="arrow_back" onClick={handleClickBack} />
-        <ButtonIcon iconName="add" onClick={handleClickClear} />
+        <ButtonIcon iconName="save" onClick={handleClickSave} />
       </FloatMenu>
     </Fragment>
   ) : (

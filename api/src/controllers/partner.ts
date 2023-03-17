@@ -4,7 +4,6 @@ import * as Partner from "../models/partner";
 import * as PartnerSpecialty from "../models/partnerSpecialty";
 
 import { IPartner } from "../interfaces/partner";
-import pool from "../util/database";
 
 const create = async (req: any, res: any) => {
   const {

@@ -1,3 +1,4 @@
+import { getByFamilyAssistance } from "./../../redux/slices/specialistSlice";
 import { create } from "zustand";
 
 import { apiInstance } from "../../utils/api";
@@ -26,6 +27,8 @@ interface specialistState {
   create: (specialist: ISpecialist) => void;
   reset: () => void;
   resetAll: () => void;
+  getBySpecialtyId: (id: string) => void;
+  getByName: (name: string) => void;
 }
 
 const initialData: ISpecialist = {
@@ -142,6 +145,14 @@ export const specialistStore = create<specialistState>((set, get) => ({
     try {
       set((state) => ({ ...state, isLoading: true }));
       const { data } = await apiInstance.get(`specialist/getByRut/${rut}`);
+      if (data === null) {
+        return set((state) => ({
+          ...state,
+          specialist: { ...initialData, rut },
+          isLoading: false,
+          isError: false,
+        }));
+      }
       set((state) => ({
         ...state,
         specialist: data,
@@ -188,4 +199,46 @@ export const specialistStore = create<specialistState>((set, get) => ({
     })),
 
   resetAll: () => set({}, true),
+
+  getBySpecialtyId: async (id: string) => {
+    try {
+      set((state) => ({ ...state, isLoading: true }));
+      const { data } = await apiInstance.get(
+        `specialist/getBySpecialtyId/${id}`
+      );
+      set((state) => ({
+        ...state,
+        list: data,
+        isLoading: false,
+        isError: false,
+      }));
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
+  },
+
+  getByName: async (name: string) => {
+    try {
+      set((state) => ({ ...state, isLoading: true }));
+      const { data } = await apiInstance.get(`specialist/getByName/${name}`);
+      set((state) => ({
+        ...state,
+        list: data,
+        isLoading: false,
+        isError: false,
+      }));
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
+  },
 }));

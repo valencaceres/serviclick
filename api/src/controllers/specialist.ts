@@ -182,6 +182,37 @@ const getById = async (req: any, res: any) => {
   res.status(200).json(responseGet.data);
 };
 
+const getByRut = async (req: any, res: any) => {
+  const { rut } = req.params;
+
+  const specialistResponse = await Specialist.getByRut(rut);
+
+  if (!specialistResponse.success) {
+    createLogger.error({
+      model: "specialist/getByRut",
+      error: specialistResponse.error,
+    });
+    res.status(500).json({ error: specialistResponse.error });
+    return;
+  }
+
+  if (specialistResponse.error === "Person does not exist") {
+    createLogger.info({
+      controller: "specialist/getByRut",
+      message: "OK - Person does not exist",
+    });
+    return res.status(200).json(specialistResponse.data);
+  }
+
+  const responseGet = await functionGetById(specialistResponse.data.id);
+
+  createLogger.info({
+    controller: "specialist/getByRut",
+    message: "OK - Get Specialist by Rut",
+  });
+  res.status(200).json(responseGet.data);
+};
+
 const getFamilies = async (req: any, res: any) => {
   const specialistResponse = await Specialist.getFamilies();
 
@@ -244,14 +275,57 @@ const getByFamilyAssistance = async (req: any, res: any) => {
   res.status(200).json(specialistResponse.data);
 };
 
+const getBySpecialtyId = async (req: any, res: any) => {
+  const { id } = req.params;
+  const specialistResponse = await Specialist.getBySpecialtyId(id);
+
+  if (!specialistResponse.success) {
+    createLogger.error({
+      model: "specialist/getBySpecialtyId",
+      error: specialistResponse.error,
+    });
+    res.status(500).json({ error: specialistResponse.error });
+    return;
+  }
+
+  createLogger.info({
+    controller: "specialist/getBySpecialtyId",
+    message: "OK",
+  });
+  res.status(200).json(specialistResponse.data);
+};
+
+const getByName = async (req: any, res: any) => {
+  const { name } = req.params;
+  const specialistResponse = await Specialist.getByName(name);
+
+  if (!specialistResponse.success) {
+    createLogger.error({
+      model: "specialist/getByName",
+      error: specialistResponse.error,
+    });
+    res.status(500).json({ error: specialistResponse.error });
+    return;
+  }
+
+  createLogger.info({
+    controller: "specialist/getByName",
+    message: "OK",
+  });
+  res.status(200).json(specialistResponse.data);
+};
+
 export {
   create,
   deleteById,
   getAll,
   getById,
+  getByRut,
   getFamilies,
   getAssistances,
   getByFamilyAssistance,
+  getBySpecialtyId,
+  getByName,
 };
 
 const functionGetById = async (id: string) => {
