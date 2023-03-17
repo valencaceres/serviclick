@@ -1,5 +1,3 @@
-import shallow from "zustand/shallow";
-
 import { specialistStore } from "../zustand";
 
 const useSpecialist = () => {
@@ -11,18 +9,15 @@ const useSpecialist = () => {
     isLoading: specialistIsLoading,
     isError: specialistIsError,
     error: specialistError,
-  } = specialistStore(
-    (state) => ({
-      families: state.families,
-      assistances: state.assistances,
-      list: state.list,
-      specialist: state.specialist,
-      isLoading: state.isLoading,
-      isError: state.isError,
-      error: state.error,
-    }),
-    shallow
-  );
+  } = specialistStore((state) => ({
+    families: state.families,
+    assistances: state.assistances,
+    list: state.list,
+    specialist: state.specialist,
+    isLoading: state.isLoading,
+    isError: state.isError,
+    error: state.error,
+  }));
 
   const {
     set: setSpecialist,
@@ -33,6 +28,9 @@ const useSpecialist = () => {
     getById: getSpecialistById,
     create: createSpecialist,
     reset: resetSpecialist,
+    getBySpecialtyId: getSpecialistsBySpecialtyId,
+    getByName: getSpecialistsByName,
+    delete: deleteSpecialist,
   } = specialistStore();
 
   return {
@@ -51,6 +49,9 @@ const useSpecialist = () => {
     getSpecialistById,
     createSpecialist,
     resetSpecialist,
+    getSpecialistsBySpecialtyId,
+    getSpecialistsByName,
+    deleteSpecialist,
   };
 };
 

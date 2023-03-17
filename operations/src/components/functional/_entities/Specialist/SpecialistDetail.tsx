@@ -30,7 +30,7 @@ const SpecialistDetail = ({ setEnableSave }: any) => {
             setShowSpecialitiesModal={setShowSpecialitiesListModal}
           />
           <SpecialistDistricts
-            setShowDistrictsModal={setShowSpecialitiesListModal}
+            setShowDistrictsModal={setShowDistrictsListModal}
           />
         </ContentRow>
       </ContentCell>
@@ -40,7 +40,8 @@ const SpecialistDetail = ({ setEnableSave }: any) => {
         setClosed={() => {
           setShowSpecialitiesListModal(false);
         }}
-        title="Especialidades">
+        title="Especialidades"
+      >
         <SpecialistSpecialtiesList setShow={setShowSpecialitiesListModal} />
       </ModalWindow>
       <ModalWindow
@@ -48,7 +49,8 @@ const SpecialistDetail = ({ setEnableSave }: any) => {
         setClosed={() => {
           setShowDistrictsListModal(false);
         }}
-        title="Comunas">
+        title="Comunas"
+      >
         <SpecialistDistrictsList setShow={setShowDistrictsListModal} />
       </ModalWindow>
     </Fragment>

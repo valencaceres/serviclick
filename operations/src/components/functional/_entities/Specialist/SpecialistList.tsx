@@ -1,4 +1,4 @@
-import { useState, Fragment } from "react";
+import { useState, Fragment, useEffect } from "react";
 
 import {
   ContentCell,
@@ -28,19 +28,22 @@ const SpecialistList = ({
   deleteSpecialist,
   isSaving,
 }: any) => {
+  const [isDeleting, setIsDeleting] = useState(false);
   const {
     specialist,
     specialistList,
     specialistIsLoading,
-    getAssistancesByFamilyId,
+    getAllSpecialists,
     families,
-    assistances,
+    getSpecialistsBySpecialtyId,
+    getSpecialistsByName,
   } = useSpecialist();
 
   const initialSearchForm = {
     family_id: "",
-    assistance_id: "",
+    name: "",
   };
+  console.log(specialistList);
 
   const [search, setSearch] = useState(initialSearchForm);
 
@@ -49,41 +52,56 @@ const SpecialistList = ({
       ...search,
       family_id: e.target.value,
     });
-    getAssistancesByFamilyId(e.target.value);
   };
 
-  const handleChangeAssistance = (e: any) => {
+  const handleChangeSpecialist = (e: any) => {
     setSearch({
       ...search,
-      assistance_id: e.target.value,
+      name: e.target.value,
     });
   };
 
-  const handleClickSearch = () => {};
+  const handleDeleteSpecialist = async (id: string) => {
+    setIsDeleting(true);
+    await deleteSpecialist(id);
+    setIsDeleting(false);
+  };
+
+  useEffect(() => {
+    if (isDeleting === false) {
+      getAllSpecialists();
+    }
+  }, [isDeleting]);
+
+  const handleClickSearch = () => {
+    if (search.family_id !== "") {
+      getSpecialistsBySpecialtyId(search.family_id);
+    } else if (search.name !== "") {
+      getSpecialistsByName(search.name);
+    } else {
+      getAllSpecialists();
+    }
+  };
 
   return (
     <Fragment>
       <ContentCell gap="5px" className="fade-in-fwd">
         <ContentRow gap="5px" align="center">
           <ComboBox
-            label="Familia"
+            label="Especialidad"
             width="250px"
             value={search.family_id}
             onChange={handleChangeFamily}
-            placeHolder=":: Seleccione familia ::"
+            placeHolder=":: Seleccione especialidad ::"
             data={families}
             dataValue="id"
             dataText="name"
           />
-          <ComboBox
-            label="Asistencia"
+          <InputText
+            label="Buscar por nombre"
             width="310px"
-            value={search.assistance_id}
-            onChange={handleChangeAssistance}
-            placeHolder=":: Seleccione asistencia ::"
-            data={assistances}
-            dataValue="id"
-            dataText="name"
+            value={search.name}
+            onChange={handleChangeSpecialist}
           />
           <ButtonIcon
             iconName="search"
@@ -115,7 +133,7 @@ const SpecialistList = ({
                     />
                     <Icon
                       iconName="delete"
-                      onClick={() => deleteSpecialist(specialist.id)}
+                      onClick={() => handleDeleteSpecialist(specialist.id)}
                     />
                   </TableIcons>
                 </TableCell>
@@ -125,7 +143,8 @@ const SpecialistList = ({
         </Table>
         <ContentRow align="flex-start">
           <ContentCellSummary
-            color={specialistList.length > 0 ? "blue" : "#959595"}>
+            color={specialistList.length > 0 ? "blue" : "#959595"}
+          >
             {specialistList.length === 0
               ? "No hay especialistas"
               : specialistList.length === 1

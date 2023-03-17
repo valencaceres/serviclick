@@ -6,9 +6,12 @@ import {
   deleteById,
   getAll,
   getById,
+  getByRut,
   getFamilies,
   getAssistances,
   getByFamilyAssistance,
+  getBySpecialtyId,
+  getByName,
 } from "../controllers/specialist";
 
 const SpecialistRouter = Router();
@@ -24,5 +27,8 @@ SpecialistRouter.get(
   auth,
   getByFamilyAssistance
 );
+SpecialistRouter.get("/getByRut/:rut", auth, getByRut);
+SpecialistRouter.get("/getBySpecialtyId/:id", auth, getBySpecialtyId);
+SpecialistRouter.get("/getByName/:name", auth, getByName);
 
 export default SpecialistRouter;

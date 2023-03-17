@@ -2,37 +2,40 @@ import pool from "../util/database";
 
 const create: any = async (person_id: string) => {
   try {
-    const resultSpecialistExists = await pool.query(
-      "SELECT id, person_id, isactive FROM app.specialist WHERE person_id = $1",
+    const specialistExists = await pool.query(
+      `
+      SELECT * FROM app.specialist WHERE person_id = $1`,
       [person_id]
     );
 
-    if (resultSpecialistExists.rows.length === 0) {
+    if (specialistExists.rows.length > 0) {
       const result = await pool.query(
-        "INSERT INTO app.specialist(person_id) VALUES ($1) RETURNING *",
+        `
+        UPDATE app.specialist
+        SET isactive = true
+        WHERE person_id = $1
+        RETURNING *`,
         [person_id]
       );
 
-      const { id, isactive, type } = result.rows[0];
-
-      const data = {
-        id,
-        person_id,
-        isActive: isactive,
+      return {
+        success: true,
+        data: result.rows[0],
+        error: null,
       };
-
-      return { success: true, data, error: null };
-    } else {
-      const { id, person_id, isactive } = resultSpecialistExists.rows[0];
-
-      const data = {
-        id,
-        person_id,
-        isActive: isactive,
-      };
-
-      return { success: true, data, error: null };
     }
+
+    const result = await pool.query(
+      `
+      INSERT INTO app.specialist (person_id, isactive) VALUES ($1, $2) RETURNING *`,
+      [person_id, true]
+    );
+
+    return {
+      success: true,
+      data: result.rows[0],
+      error: null,
+    };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
   }
@@ -119,41 +122,30 @@ const getByRut: any = async (rut: string) => {
               PER.email,
               PER.phone,
               to_char(PER.birthdate, 'YYYY-MM-DD') as birthdate
-       FROM   app.specialist SPE INNER JOIN app.person PER ON SPE.person_id = PER.id
-       WHERE  PER.rut = $1`,
+        FROM   app.specialist SPE INNER JOIN app.person PER ON SPE.person_id = PER.id
+        WHERE  PER.rut = $1`,
       [rut]
     );
 
-    const {
-      id,
-      person_id,
-      email,
-      name,
-      paternallastname,
-      maternallastname,
-      phone,
-      address,
-      district,
-      birthdate,
-    } = result.rows[0];
+    if (result.rows.length > 0) {
+      const data = {
+        id: result.rows[0].id,
+        person_id: result.rows[0].person_id,
+        rut: result.rows[0].rut,
+        email: result.rows[0].email,
+        name: result.rows[0].name,
+        paternalLastName: result.rows[0].paternallastname,
+        maternalLastName: result.rows[0].maternallastname,
+        phone: result.rows[0].phone,
+        address: result.rows[0].address,
+        district: result.rows[0].district,
+        birthDate: result.rows[0].birthdate,
+      };
 
-    return {
-      success: true,
-      data: {
-        id,
-        person_id,
-        rut,
-        email,
-        name,
-        paternalLastName: paternallastname,
-        maternalLastName: maternallastname,
-        phone,
-        address,
-        district,
-        birthDate: birthdate,
-      },
-      error: null,
-    };
+      return { success: true, data, error: null };
+    }
+
+    return { success: true, data: null, error: "Person does not exist" };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
   }
@@ -223,16 +215,16 @@ const getFamilies = async () => {
   try {
     const result = await pool.query(
       `
-        select  DISTINCT
-                fam.id,
-                fam.icon,
-                fam.name
-        from    app.family fam
-                  inner join app.assistance asi on fam.id = asi.family_id
-                  inner join app.assistancespecialty asp on asi.id = asp.assistance_id
-                  inner join app.specialistspecialty ssp on asp.specialty_id = ssp.specialty_id
-        order 	by
-                fam.name`
+        SELECT  DISTINCT
+                FAM.id,
+                FAM.icon,
+                FAM.name,
+                SPE.id,
+                SPE.name
+        FROM    app.family FAM
+        INNER JOIN app.specialty SPE ON SPE.family_id = FAM.id
+        WHERE   FAM.isactive is true
+        ORDER BY FAM.id`
     );
 
     return { success: true, data: result.rows, error: null };
@@ -341,6 +333,111 @@ const getByFamilyAssistance = async (
   }
 };
 
+const getBySpecialtyId: any = async (id: string) => {
+  try {
+    const result = await pool.query(
+      `SELECT *
+      FROM app.person
+      INNER JOIN app.specialist ON app.person.id = app.specialist.person_id
+      INNER JOIN app.specialistspecialty ON app.specialist.id = app.specialistspecialty.specialist_id
+      WHERE app.specialistspecialty.specialty_id = $1;`,
+      [id]
+    );
+
+    const data =
+      result.rows.length > 0
+        ? result.rows.map((item: any) => {
+            const {
+              id,
+              person_id,
+              rut,
+              email,
+              name,
+              paternallastname,
+              maternallastname,
+              address,
+              district,
+              phone,
+              birthdate,
+            } = item;
+            return {
+              id,
+              person_id,
+              rut,
+              name,
+              paternalLastName: paternallastname,
+              maternalLastName: maternallastname,
+              address,
+              district,
+              email,
+              phone,
+              birthDate: birthdate,
+            };
+          })
+        : [];
+
+    return {
+      success: true,
+      data,
+      error: null,
+    };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+const getByName: any = async (name: string) => {
+  try {
+    const result = await pool.query(
+      `SELECT *
+      FROM app.person
+      INNER JOIN app.specialist ON app.person.id = app.specialist.person_id
+      WHERE app.person.name LIKE '%' || $1 || '%';`,
+      [name]
+    );
+
+    const data =
+      result.rows.length > 0
+        ? result.rows.map((item: any) => {
+            const {
+              id,
+              person_id,
+              rut,
+              email,
+              name,
+              paternallastname,
+              maternallastname,
+              address,
+              district,
+              phone,
+              birthdate,
+            } = item;
+            return {
+              id,
+              person_id,
+              rut,
+              name,
+              paternalLastName: paternallastname,
+              maternalLastName: maternallastname,
+              address,
+              district,
+              email,
+              phone,
+              birthDate: birthdate,
+            };
+          })
+        : [];
+
+    return {
+      success: true,
+      data,
+      error: null,
+    };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 export {
   create,
   deleteSpecialistById,
@@ -350,4 +447,6 @@ export {
   getFamilies,
   getAssistances,
   getByFamilyAssistance,
+  getBySpecialtyId,
+  getByName,
 };
