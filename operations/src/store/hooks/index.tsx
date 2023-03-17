@@ -1,3 +1,4 @@
 import useSpecialist from "./useSpecialist";
+import usePartner from "./usePartner";
 
-export { useSpecialist };
+export { useSpecialist, usePartner };

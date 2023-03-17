@@ -208,7 +208,8 @@ const ContractorList = ({
       <ModalWindow
         showModal={showModalType}
         setClosed={() => setShowModalType(false)}
-        title="Tipo de cliente">
+        title="Tipo de cliente"
+      >
         <MenuButtons>
           <MenuItem key={1} onClick={() => handleClickContractorType("P")}>
             <Icon iconName="accessibility_new" />

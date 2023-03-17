@@ -29,7 +29,7 @@ const menu = [
     subOptions: [
       { text: "Clientes", route: "/entities/contractor" },
       { text: "Especialistas", route: "/entities/specialist" },
-      { text: "Convenios" },
+      { text: "Convenios", route: "/entities/partner" },
       { text: "Operadores" },
     ],
   },
