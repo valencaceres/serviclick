@@ -27,6 +27,7 @@ interface specialistState {
   create: (specialist: ISpecialist) => void;
   reset: () => void;
   resetAll: () => void;
+  delete: (id: string) => void;
   getBySpecialtyId: (id: string) => void;
   getByName: (name: string) => void;
 }
@@ -199,6 +200,26 @@ export const specialistStore = create<specialistState>((set, get) => ({
     })),
 
   resetAll: () => set({}, true),
+
+  delete: async (id: string) => {
+    try {
+      set((state) => ({ ...state, isLoading: true }));
+      await apiInstance.delete(`specialist/deleteById/${id}`);
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: false,
+        error: "",
+      }));
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
+  },
 
   getBySpecialtyId: async (id: string) => {
     try {

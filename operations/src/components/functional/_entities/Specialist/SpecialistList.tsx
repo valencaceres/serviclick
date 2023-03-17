@@ -1,4 +1,4 @@
-import { useState, Fragment } from "react";
+import { useState, Fragment, useEffect } from "react";
 
 import {
   ContentCell,
@@ -28,6 +28,7 @@ const SpecialistList = ({
   deleteSpecialist,
   isSaving,
 }: any) => {
+  const [isDeleting, setIsDeleting] = useState(false);
   const {
     specialist,
     specialistList,
@@ -59,6 +60,18 @@ const SpecialistList = ({
       name: e.target.value,
     });
   };
+
+  const handleDeleteSpecialist = async (id: string) => {
+    setIsDeleting(true);
+    await deleteSpecialist(id);
+    setIsDeleting(false);
+  };
+
+  useEffect(() => {
+    if (isDeleting === false) {
+      getAllSpecialists();
+    }
+  }, [isDeleting]);
 
   const handleClickSearch = () => {
     if (search.family_id !== "") {
@@ -120,7 +133,7 @@ const SpecialistList = ({
                     />
                     <Icon
                       iconName="delete"
-                      onClick={() => deleteSpecialist(specialist.id)}
+                      onClick={() => handleDeleteSpecialist(specialist.id)}
                     />
                   </TableIcons>
                 </TableCell>

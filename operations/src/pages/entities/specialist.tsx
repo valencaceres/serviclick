@@ -27,6 +27,7 @@ const SpecialistPage = () => {
     setSpecialist,
     resetSpecialist,
     createSpecialist,
+    deleteSpecialist,
   } = useSpecialist();
 
   const [isSaving, setIsSaving] = useState(false);
@@ -116,7 +117,10 @@ const SpecialistPage = () => {
     </Fragment>
   ) : (
     <Fragment>
-      <SpecialistList editSpecialist={editSpecialist} />
+      <SpecialistList
+        editSpecialist={editSpecialist}
+        deleteSpecialist={deleteSpecialist}
+      />
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />
         <ButtonIcon iconName="refresh" onClick={handleClickRefresh} />

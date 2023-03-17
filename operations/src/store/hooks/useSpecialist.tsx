@@ -30,6 +30,7 @@ const useSpecialist = () => {
     reset: resetSpecialist,
     getBySpecialtyId: getSpecialistsBySpecialtyId,
     getByName: getSpecialistsByName,
+    delete: deleteSpecialist,
   } = specialistStore();
 
   return {
@@ -50,6 +51,7 @@ const useSpecialist = () => {
     resetSpecialist,
     getSpecialistsBySpecialtyId,
     getSpecialistsByName,
+    deleteSpecialist,
   };
 };
 
