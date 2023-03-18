@@ -5,7 +5,6 @@ import {
   ContentRow,
   ContentCellSummary,
 } from "../../../layout/Content";
-
 import ComboBox from "../../../ui/ComboBox";
 import {
   Table,
@@ -21,24 +20,27 @@ import Icon from "../../../ui/Icon";
 import { LoadingMessage } from "../../../ui/LoadingMessage";
 
 import { useQueryCompany, useQueryImport } from "../../../../hooks/query";
-import Loading from "../../../ui/Loading";
+import { months, years } from "../../../../data/masters";
+import { QueryClient } from "@tanstack/react-query";
 
 const ImportList = ({ viewImport }: any) => {
   const initialSearchForm = {
-    client_id: "",
+    company_id: "",
     year: "",
     month: "",
   };
 
   const [search, setSearch] = useState(initialSearchForm);
+  const [data, setData] = useState([]);
+  const queryClient = new QueryClient();
 
   const { data: companies } = useQueryCompany().useGetAll();
   const { data: imports, isLoading } = useQueryImport().useGetAll();
 
-  const handleChangeClient = (e: any) => {
+  const handleChangeCompany = async (e: any) => {
     setSearch({
       ...search,
-      client_id: e.target.value,
+      company_id: e.target.value,
     });
   };
 
@@ -63,8 +65,8 @@ const ImportList = ({ viewImport }: any) => {
           <ComboBox
             label="Cliente"
             width="298px"
-            value={search.client_id}
-            onChange={handleChangeClient}
+            value={search.company_id}
+            onChange={handleChangeCompany}
             placeHolder="Seleccione cliente"
             data={companies}
             dataValue="id"
@@ -76,7 +78,7 @@ const ImportList = ({ viewImport }: any) => {
             value={search.month}
             onChange={handleChangeMonth}
             placeHolder="Seleccione mes"
-            data={[]}
+            data={months}
             dataValue="id"
             dataText="name"
           />
@@ -86,7 +88,7 @@ const ImportList = ({ viewImport }: any) => {
             value={search.year}
             onChange={handleChangeYear}
             placeHolder="Seleccione año"
-            data={[]}
+            data={years}
             dataValue="id"
             dataText="name"
           />

@@ -1,6 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
+import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 
 import { apiInstance } from "../../utils/api";
+
+const queryClient = new QueryClient();
+
+const uploadFile = async (data: any) => {
+  const { data: response } = await apiInstance.post(`/import/uploadFile`, data);
+  return response;
+};
 
 const getAll = async () => {
   const { data } = await apiInstance.get(`/import/getAll`);
@@ -10,6 +17,17 @@ const getAll = async () => {
 const getById_BCI = async (id: string) => {
   const { data } = await apiInstance.get(`/import/getById_BCI/${id}`);
   return data;
+};
+
+const useUploadFile = () => {
+  const { mutate, isLoading, error } = useMutation({
+    mutationFn: uploadFile,
+    onSettled: () => {
+      queryClient.refetchQueries(["import"]);
+    },
+  });
+
+  return { mutate, isLoading, error };
 };
 
 const useGetAll = () => {
@@ -31,7 +49,7 @@ const useGetById_BCI = (id: string) => {
 };
 
 const useQueryImport = () => {
-  return { useGetAll, useGetById_BCI };
+  return { useUploadFile, useGetAll, useGetById_BCI };
 };
 
 export default useQueryImport;

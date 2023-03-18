@@ -1,5 +1,54 @@
 import pool from "../util/database";
 
+const uploadFile_BCI = async (
+  company_id: string,
+  year: number,
+  month: number,
+  file: any
+) => {
+  try {
+    const summaryResult = await pool.query(
+      `INSERT INTO integration.import_summary (company_id, year, month, file) VALUES ($1, $2, $3, $4) RETURNING id`,
+      [company_id, year, month, 1]
+    );
+
+    const bciResult = await pool.query(
+      `INSERT INTO integration.import_bci (import_summary_id, convenio, rut, dv, asegurado, sucursal, tipo_dcto, n_documento, direccion, comuna, telefono, fvigia_vig, fvigim_vig, fvigid_vig, fvigfa_vig, fvigfm_vig, fvigfd_vig, npolre_doc, ramo, cobertura) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)`,
+      [
+        summaryResult.rows[0].id,
+        file.CONVENIO,
+        file.RUT,
+        file.DV,
+        file.ASEGURADO,
+        file.SUCURSAL,
+        file.TIPO_DCTO,
+        file.N_DOCUMENTO,
+        file.DIRECCION,
+        file.COMUNA,
+        file.TELEFONO,
+        file.FVIGIA_VIG,
+        file.FVIGIM_VIG,
+        file.FVIGID_VIG,
+        file.FVIGFA_VIG,
+        file.FVIGFM_VIG,
+        file.FVIGFD_VIG,
+        file.NPOLRE_DOC,
+        file.RAMO,
+        file.COBERTURA,
+      ]
+    );
+
+    console.log(bciResult);
+    return {
+      success: true,
+      data: "Row inserted to database successfully",
+      error: null,
+    };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 const getAll: any = async () => {
   try {
     const result = await pool.query(`
@@ -78,4 +127,4 @@ const getById_BCI = async (id: string) => {
   }
 };
 
-export { getAll, getById_BCI };
+export { uploadFile_BCI, getAll, getById_BCI };
