@@ -1,6 +1,6 @@
 import pool from "../util/database";
 
-const createModel: any = async (
+const create: any = async (
   rut: string,
   companyName: string,
   legalRepresentative: string,
@@ -74,7 +74,7 @@ const createModel: any = async (
   }
 };
 
-const getByIdModel: any = async (id: string) => {
+const getById: any = async (id: string) => {
   try {
     const result = await pool.query(
       `
@@ -121,7 +121,7 @@ const getByIdModel: any = async (id: string) => {
   }
 };
 
-const getByRutModel: any = async (rut: string) => {
+const getByRut: any = async (rut: string) => {
   try {
     const result = await pool.query(
       `
@@ -177,7 +177,7 @@ const getByRutModel: any = async (rut: string) => {
   }
 };
 
-const getProductsAndInsuredByIdModel: any = async (id: string) => {
+const getProductsAndInsuredById: any = async (id: string) => {
   try {
     const result = await pool.query(`
       select
@@ -315,9 +315,42 @@ const getProductsAndInsuredByIdModel: any = async (id: string) => {
   }
 };
 
-export {
-  createModel,
-  getByIdModel,
-  getByRutModel,
-  getProductsAndInsuredByIdModel,
+const getAll: any = async () => {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM app.company ORDER BY companyname`
+    );
+
+    const data = result.rows.map((row: any) => {
+      const {
+        id,
+        rut,
+        companyname,
+        legalrepresentative,
+        line,
+        address,
+        district,
+        email,
+        phone,
+      } = row;
+
+      return {
+        id,
+        rut,
+        companyName: companyname,
+        legalRepresentative: legalrepresentative,
+        line,
+        address,
+        district,
+        email,
+        phone,
+      };
+    });
+
+    return { success: true, data, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
 };
+
+export { create, getAll, getById, getByRut, getProductsAndInsuredById };

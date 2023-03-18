@@ -2,19 +2,21 @@ import { Router } from "express";
 
 import auth from "../middlewares/auth";
 import {
-  getByRutController,
-  createController,
-  getProductsAndInsuredByIdController,
+  getByRut,
+  create,
+  getAll,
+  getProductsAndInsuredById,
 } from "../controllers/company";
 
 const CompanyRouter = Router();
 
-CompanyRouter.get("/getByRut/:rut", auth, getByRutController);
+CompanyRouter.get("/getByRut/:rut", auth, getByRut);
 CompanyRouter.get(
   "/getProductsAndInsuredById/:id",
   auth,
-  getProductsAndInsuredByIdController
+  getProductsAndInsuredById
 );
-CompanyRouter.post("/create", auth, createController);
+CompanyRouter.post("/create", auth, create);
+CompanyRouter.get("/getAll", auth, getAll);
 
 export default CompanyRouter;

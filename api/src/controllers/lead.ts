@@ -166,7 +166,7 @@ const createCustomer = async (customer: CustomerT) => {
 };
 
 const createCompany = async (company: CompanyT) => {
-  const companyResponse = await Company.createModel(
+  const companyResponse = await Company.create(
     company.rut,
     company.companyName,
     company.legalRepresentative,

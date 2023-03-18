@@ -1,14 +1,10 @@
 import createLogger from "../util/logger";
 
-import {
-  getByRutModel,
-  createModel,
-  getProductsAndInsuredByIdModel,
-} from "../models/company";
+import * as Company from "../models/company";
 
-const getByRutController = async (req: any, res: any) => {
+const getByRut = async (req: any, res: any) => {
   const { rut } = req.params;
-  const response = await getByRutModel(rut);
+  const response = await Company.getByRut(rut);
 
   if (!response.success) {
     createLogger.error({
@@ -26,7 +22,7 @@ const getByRutController = async (req: any, res: any) => {
   res.status(200).json(response.data);
 };
 
-const createController = async (req: any, res: any) => {
+const create = async (req: any, res: any) => {
   const { id } = req.params;
   const {
     rut,
@@ -38,7 +34,7 @@ const createController = async (req: any, res: any) => {
     email,
     phone,
   } = req.body;
-  const response = await createModel(
+  const response = await Company.create(
     rut,
     companyName,
     legalRepresentative,
@@ -65,9 +61,9 @@ const createController = async (req: any, res: any) => {
   res.status(200).json(response.data);
 };
 
-const getProductsAndInsuredByIdController = async (req: any, res: any) => {
+const getProductsAndInsuredById = async (req: any, res: any) => {
   const { id } = req.params;
-  const response = await getProductsAndInsuredByIdModel(id);
+  const response = await Company.getProductsAndInsuredById(id);
 
   if (!response.success) {
     createLogger.error({
@@ -79,14 +75,25 @@ const getProductsAndInsuredByIdController = async (req: any, res: any) => {
   }
 
   createLogger.info({
-    controller: "company/getProductsAndInsuredByIdController",
+    controller: "company/getProductsAndInsuredById",
     message: "OK",
   });
   res.status(200).json(response.data);
 };
 
-export {
-  getByRutController,
-  createController,
-  getProductsAndInsuredByIdController,
+const getAll = async (req: any, res: any) => {
+  const companyResponse = await Company.getAll();
+
+  if (!companyResponse.success) {
+    createLogger.error({
+      model: "company/getAll",
+      error: companyResponse.error,
+    });
+    res.status(500).json({ error: companyResponse.error });
+    return;
+  }
+
+  res.status(200).json(companyResponse.data);
 };
+
+export { getByRut, create, getProductsAndInsuredById, getAll };

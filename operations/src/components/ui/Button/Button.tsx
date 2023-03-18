@@ -7,12 +7,13 @@ const Button = ({
   onClick,
   iconName,
   width,
+  className,
   enabled = true,
   loading = false,
 }: any) => {
   return (
     <button
-      className={styles.button}
+      className={`${styles.button} ${className}`}
       onClick={onClick}
       disabled={!enabled || loading}
       style={{ width }}
