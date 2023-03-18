@@ -39,4 +39,43 @@ const getAll: any = async () => {
   }
 };
 
-export { getAll };
+const getById_BCI = async (id: string) => {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM integration.import_bci WHERE import_summary_id = $1`,
+      [id]
+    );
+
+    const data = result.rows.map((row: any) => {
+      return {
+        id: row.id,
+        import_summary_id: row.import_summary_id,
+        convenio: row.convenio,
+        rut: row.rut,
+        dv: row.dv,
+        asegurado: row.asegurado,
+        sucursal: row.sucursal,
+        tipo_dcto: row.tipo_dcto,
+        n_documento: row.n_documento,
+        direccion: row.direccion.toUpperCase(),
+        comuna: row.comuna,
+        telefono: row.telefono,
+        fvigia_vigencia: row.fvigia_vig,
+        fvigim_vigencia: row.fvigim_vig,
+        fvigid_vigencia: row.fvigid_vig,
+        fvigfa_vigencia: row.fvigfa_vig,
+        fvigfm_vigencia: row.fvigfm_vig,
+        fvigfd_vigencia: row.fvigfd_vig,
+        npolre_doc: row.npolre_doc,
+        ramo: row.ramo,
+        cobertura: row.cobertura,
+      };
+    });
+
+    return { success: true, data, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+export { getAll, getById_BCI };

@@ -44,7 +44,7 @@ const ComboBox = ({
         style={{ display: display ? "block" : "none" }}
       >
         {placeHolder && <option value="">{placeHolder}</option>}
-        {data.map((item: any, idx: number) => (
+        {data?.map((item: any, idx: number) => (
           <option key={idx} value={item[dataValue]}>
             {item[dataText]}
           </option>

@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { Fragment, useState } from "react";
 
 import {
@@ -7,6 +8,10 @@ import {
 } from "../../../layout/Content";
 
 import { LoadingMessage } from "../../../ui/LoadingMessage";
+
+import { formatRut } from "../../../../utils/format";
+
+import { useQueryImport } from "../../../../hooks/query";
 
 import {
   Table,
@@ -18,6 +23,15 @@ import {
 } from "../../../ui/Table";
 
 const ImportDetail = () => {
+  const router = useRouter();
+
+  const { id } = router.query;
+
+  const { data, isLoading } = useQueryImport().useGetById_BCI(id as string);
+
+  const handleFormatRut = (rut: string, dv: string) => {
+    return formatRut(rut + dv);
+  };
   return (
     <Fragment>
       <ContentCell gap="5px">
@@ -35,42 +49,46 @@ const ImportDetail = () => {
             <TableCellEnd />
           </TableHeader>
           <TableDetail>
-            {[{}].map((customer: any, idx: number) => (
+            {data?.map((customer: any, idx: number) => (
               <TableRow key={idx}>
                 <TableCell width="102px" align="center">
                   {idx + 1}
                 </TableCell>
-                <TableCell width="112px">rut</TableCell>
+                <TableCell width="112px">
+                  {handleFormatRut(customer.rut, customer.dv)}
+                </TableCell>
                 <TableCell width="238px" align="start">
-                  Asegurado
+                  {customer.asegurado}
                 </TableCell>
                 <TableCell width="94px" align="center">
-                  2023
+                  {customer.tipo_dcto}
                 </TableCell>
                 <TableCell width="94px" align="center">
-                  5
+                  {customer.n_documento}
                 </TableCell>
                 <TableCell width="272px" align="start">
-                  25000
+                  {customer.direccion}
                 </TableCell>
                 <TableCell width="238px" align="center">
-                  Comuna
+                  {customer.comuna}
                 </TableCell>
               </TableRow>
             ))}
           </TableDetail>
         </Table>
         <ContentRow align="flex-start">
-          <ContentCellSummary color={[].length > 0 ? "blue" : "#959595"}>
-            {[].length === 0
+          <ContentCellSummary color={data?.length > 0 ? "blue" : "#959595"}>
+            {data?.length === 0
               ? "No hay asegurados"
-              : [].length === 1
+              : data?.length === 1
               ? "1 asegurado"
-              : `${[].length} asegurados`}
+              : isLoading === true
+              ? "Cargando..."
+              : `${data?.length} asegurados`}
           </ContentCellSummary>
         </ContentRow>
       </ContentCell>
-      <LoadingMessage />
+      <LoadingMessage showModal={isLoading} />
     </Fragment>
   );
 };

@@ -18,8 +18,10 @@ import {
 } from "../../../ui/Table";
 import Icon from "../../../ui/Icon";
 
-import { useQueryCompany } from "../../../../hooks/query";
-import { useQueryImport } from "../../../../hooks/query";
+import { LoadingMessage } from "../../../ui/LoadingMessage";
+
+import { useQueryCompany, useQueryImport } from "../../../../hooks/query";
+import Loading from "../../../ui/Loading";
 
 const ImportList = ({ viewImport }: any) => {
   const initialSearchForm = {
@@ -30,8 +32,8 @@ const ImportList = ({ viewImport }: any) => {
 
   const [search, setSearch] = useState(initialSearchForm);
 
-  const companies = useQueryCompany().useGetAll().data;
-  const imports = useQueryImport().useGetAll().data;
+  const { data: companies } = useQueryCompany().useGetAll();
+  const { data: imports, isLoading } = useQueryImport().useGetAll();
 
   const handleChangeClient = (e: any) => {
     setSearch({
@@ -64,9 +66,9 @@ const ImportList = ({ viewImport }: any) => {
             value={search.client_id}
             onChange={handleChangeClient}
             placeHolder="Seleccione cliente"
-            data={[]}
+            data={companies}
             dataValue="id"
-            dataText="name"
+            dataText="companyName"
           />
           <ComboBox
             label="Mes"
@@ -133,15 +135,18 @@ const ImportList = ({ viewImport }: any) => {
           </TableDetail>
         </Table>
         <ContentRow align="flex-start">
-          <ContentCellSummary color={[].length > 0 ? "blue" : "#959595"}>
-            {[].length === 0
+          <ContentCellSummary color={imports?.length > 0 ? "blue" : "#959595"}>
+            {imports?.length === 0
               ? "No hay importaciones"
-              : [].length === 1
+              : imports?.length === 1
               ? "1 importación"
-              : `${[].length} importaciones`}
+              : isLoading === true
+              ? "Cargando..."
+              : `${imports?.length} importaciones`}
           </ContentCellSummary>
         </ContentRow>
       </ContentCell>
+      <LoadingMessage showModal={isLoading} />
     </Fragment>
   );
 };
