@@ -1,31 +1,11 @@
 import createLogger from "../util/logger";
 import fs from "fs";
 import path from "path";
-import csv from "csv-parser";
 
-import * as Import from "../models/import";
-import { resourceLimits } from "worker_threads";
+import * as ImportBCI from "../models/importBCI";
+import * as ImportSummary from "../models/importSummary";
 
-interface IFileData_BCI {
-  convenio: string;
-  rut: string;
-  dv: string;
-  asegurado: string;
-  sucursal: string;
-  tipo_dcto: string;
-  n_documento: string;
-  direccion: string;
-  comuna: string;
-  telefono: string;
-  fvigia_vig: string;
-  fvigim_vig: string;
-  fvigid_vig: string;
-  fvigfa_vig: string;
-  fvigfm_vig: string;
-  fvigfd_vig: string;
-  ramo: string;
-  cobertura: string;
-}
+import { IFileData_BCI } from "../interfaces/import";
 
 const fileHeader_BCI = [
   "CONVENIO",
@@ -65,42 +45,55 @@ const uploadFile_BCI = async (req: any, res: any, next: any) => {
     encoding: "utf-8",
   });
 
-  fs.createReadStream(filePathName)
-    .pipe(
-      csv({
-        headers: fileHeader_BCI,
-        separator: ";",
-      })
-    )
-    .on(
-      "data",
-      async (row) => await Import.uploadFile_BCI(company_id, year, month, row)
-    )
-    .on("end", () => {
-      const response = {
-        success: true,
-        data: "OK",
-        error: null,
-      };
+  const toString = file.buffer.toString();
+  const rows = toString.split("\n");
 
-      if (!response.success) {
-        createLogger.error({
-          model: "import/uploadFile_BCI",
-          error: response.error,
-        });
-        res.status(500).json({ error: response.error });
-      }
+  const responseImportSummary = await ImportSummary.create(
+    company_id,
+    year,
+    month,
+    rows.length - 1
+  );
 
-      createLogger.info({
-        model: "import/uploadFile_BCI",
-        message: "File uploaded successfully",
-      });
-      return res.status(200).json(response.data);
+  if (!responseImportSummary.success) {
+    createLogger.error({
+      model: "import/importSummary",
+      error: responseImportSummary.error,
     });
+    return res.status(500).json({ error: responseImportSummary.error });
+  }
+
+  const importSummary_id = responseImportSummary.data.id;
+
+  await Promise.all(
+    rows.slice(1).map(async (row: string) => {
+      const rowArray = row.split(";");
+
+      const responseImportBCI = await ImportBCI.create(
+        importSummary_id,
+        rowArray
+      );
+
+      if (!responseImportBCI.success) {
+        createLogger.error({
+          model: "import/importBCI",
+          error: responseImportBCI.error,
+        });
+        return res.status(500).json({ error: responseImportBCI.error });
+      }
+    })
+  );
+
+  createLogger.info({
+    model: "import/importBCI",
+    message: "File uploaded successfully",
+  });
+
+  res.status(200).json({ message: "File uploaded successfully" });
 };
 
 const getAll = async (req: any, res: any) => {
-  const response = await Import.getAll();
+  const response = await ImportSummary.getAll();
 
   if (!response.success) {
     createLogger.error({
@@ -121,7 +114,7 @@ const getAll = async (req: any, res: any) => {
 const getById_BCI = async (req: any, res: any) => {
   const { id } = req.params;
 
-  const response = await Import.getById_BCI(id);
+  const response = await ImportBCI.getById(id);
 
   if (!response.success) {
     createLogger.error({

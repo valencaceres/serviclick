@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { ContentCell, ContentRow } from "../../../layout/Content";
 import Button from "../../../ui/Button";
@@ -7,8 +7,12 @@ import InputFile from "../../../ui/InputFile";
 
 import { useQueryCompany, useQueryImport } from "../../../../hooks/query";
 import { months, years } from "../../../../data/masters";
+import { useRouter } from "next/router";
+import { LoadingMessage } from "../../../ui/LoadingMessage";
+import { toast } from "react-toastify";
 
 const ImportForm = () => {
+  const router = useRouter();
   const initialImportData = {
     company_id: "",
     year: "",
@@ -18,7 +22,8 @@ const ImportForm = () => {
   const [importData, setImportData] = useState(initialImportData);
 
   const { data: companies } = useQueryCompany().useGetAll();
-  const uploadFile = useQueryImport().useUploadFile();
+  const { mutate, isLoading, isError, isSuccess } =
+    useQueryImport().useUploadFile();
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -27,8 +32,17 @@ const ImportForm = () => {
     formData.append("company_id", importData.company_id);
     formData.append("year", importData.year);
     formData.append("month", importData.month);
-    uploadFile.mutate(formData);
+    mutate(formData);
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Archivo cargado con éxito");
+    }
+    if (isError) {
+      toast.error("Error al importar el archivo");
+    }
+  }, [isSuccess, isError]);
 
   return (
     <form
@@ -90,6 +104,7 @@ const ImportForm = () => {
           <Button width="200px" text="Procesar" className={"mt-5"} />
         </ContentRow>
       </ContentCell>
+      <LoadingMessage showModal={isLoading} />
     </form>
   );
 };

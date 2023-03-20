@@ -22,22 +22,12 @@ const ImportsPage = () => {
     router.push("/");
   };
 
-  const handleClickRefresh = () => {};
-
-  const handleClickNew = () => {};
-
-  const handleClickSave = () => {};
-
   const handleClickBack = () => {
     router.back();
   };
 
   useEffect(() => {
     setTitleUI("Importación de archivo");
-    // if (router.query?.id) {
-    //   if (router.query.id !== "" && router.query.id !== "new") {
-    //   }
-    // }
   }, [router]);
 
   return (
@@ -48,7 +38,6 @@ const ImportsPage = () => {
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />
         <ButtonIcon iconName="arrow_back" onClick={handleClickBack} />
-        <ButtonIcon iconName="add" onClick={handleClickNew} />
       </FloatMenu>
     </Fragment>
   );

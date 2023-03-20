@@ -20,14 +20,14 @@ const getById_BCI = async (id: string) => {
 };
 
 const useUploadFile = () => {
-  const { mutate, isLoading, error } = useMutation({
+  const { mutate, isLoading, error, isError, isSuccess } = useMutation({
     mutationFn: uploadFile,
     onSettled: () => {
       queryClient.refetchQueries(["import"]);
     },
   });
 
-  return { mutate, isLoading, error };
+  return { mutate, isLoading, error, isError, isSuccess };
 };
 
 const useGetAll = () => {
