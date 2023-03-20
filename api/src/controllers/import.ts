@@ -5,29 +5,6 @@ import path from "path";
 import * as ImportBCI from "../models/importBCI";
 import * as ImportSummary from "../models/importSummary";
 
-import { IFileData_BCI } from "../interfaces/import";
-
-const fileHeader_BCI = [
-  "CONVENIO",
-  "RUT",
-  "DV",
-  "ASEGURADO",
-  "SUCURSAL",
-  "TIPO_DCTO",
-  "N_DOCUMENTO",
-  "DIRECCION",
-  "COMUNA",
-  "TELEFONO",
-  "FVIGIA_VIG",
-  "FVIGIM_VIG",
-  "FVIGID_VIG",
-  "FVIGFA_VIG",
-  "FVIGFM_VIG",
-  "FVIGFD_VIG",
-  "RAMO",
-  "COBERTURA",
-];
-
 const uploadFile_BCI = async (req: any, res: any, next: any) => {
   const { company_id, year, month } = req.body;
   const file = req.file;
