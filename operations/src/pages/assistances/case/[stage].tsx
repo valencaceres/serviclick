@@ -13,7 +13,7 @@ const CaseStepPage = () => {
   const router = useRouter();
   const { setTitleUI, filters } = useUI();
 
-  const { step } = router.query;
+  const { step: stage } = router.query;
 
   const handleClickHome = () => {
     router.push("/");
@@ -25,11 +25,11 @@ const CaseStepPage = () => {
 
   useEffect(() => {
     setTitleUI(
-      step === "new"
+      stage === "new"
         ? `Nuevo caso`
-        : step === "support"
+        : stage === "support"
         ? `Contención`
-        : step === "recordReception"
+        : stage === "recordReception"
         ? "Recepción antecedentes"
         : ""
     );
@@ -38,9 +38,9 @@ const CaseStepPage = () => {
   return (
     <Fragment>
       <ContentHalfRow>
-        {step === "support" ? (
+        {stage === "support" ? (
           <CaseFormSupport />
-        ) : step === "recordReception" ? (
+        ) : stage === "recordReception" ? (
           <CaseFormSupport />
         ) : null}
         <CaseStageList />
