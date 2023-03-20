@@ -31,12 +31,12 @@ const useUploadFile = () => {
 };
 
 const useGetAll = () => {
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["import"],
     queryFn: getAll,
   });
 
-  return { data, isLoading, error };
+  return { data, isLoading, error, refetch };
 };
 
 const useGetById_BCI = (id: string) => {
