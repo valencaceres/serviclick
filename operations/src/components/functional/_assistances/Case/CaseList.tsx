@@ -1,0 +1,149 @@
+import { useState, Fragment, useEffect } from "react";
+
+import {
+  ContentCell,
+  ContentRow,
+  ContentCellSummary,
+} from "../../../layout/Content";
+import ComboBox from "../../../ui/ComboBox";
+import {
+  Table,
+  TableHeader,
+  TableDetail,
+  TableRow,
+  TableCell,
+  TableIcons,
+  TableCellEnd,
+} from "../../../ui/Table";
+import Icon from "../../../ui/Icon";
+
+import { LoadingMessage } from "../../../ui/LoadingMessage";
+
+import { useQueryCompany, useQueryImport } from "../../../../hooks/query";
+import InputText from "../../../ui/InputText";
+
+const CaseList = ({ viewImport }: any) => {
+  const initialSearchForm = {
+    company_id: "",
+    name: "",
+    state: "",
+  };
+
+  const [search, setSearch] = useState(initialSearchForm);
+
+  const { data: companies } = useQueryCompany().useGetAll();
+
+  const handleChangeCompany = async (e: any) => {
+    setSearch({
+      ...search,
+      company_id: e.target.value,
+    });
+  };
+
+  const handleChangeName = async (e: any) => {
+    setSearch({
+      ...search,
+      name: e.target.value,
+    });
+  };
+
+  const handleChangeState = async (e: any) => {
+    setSearch({
+      ...search,
+      state: e.target.value,
+    });
+  };
+
+  return (
+    <Fragment>
+      <ContentCell gap="5px" className="fade-in-fwd">
+        <ContentRow gap="5px" align="start">
+          <ComboBox
+            label="Cliente"
+            width="300px"
+            value={search.company_id}
+            onChange={handleChangeCompany}
+            placeHolder="Seleccione cliente"
+            data={companies}
+            dataValue="id"
+            dataText="companyName"
+          />
+          <InputText
+            label="Asegurado"
+            width="500px"
+            value={""}
+            onChange={handleChangeName}
+            type="text"
+            disabled={true}
+          />
+
+          <ComboBox
+            label="Estado del caso"
+            width="342px"
+            value={""}
+            onChange={handleChangeState}
+            placeHolder="Seleccione estado"
+            data={[]}
+            dataValue="id"
+            dataText="name"
+          />
+        </ContentRow>
+        <Table>
+          <TableHeader>
+            <TableCell width="70px" align="center">
+              #
+            </TableCell>
+            <TableCell width="99px">N° Caso</TableCell>
+            <TableCell width="189px">Cliente</TableCell>
+            <TableCell width="279px">Asegurado/Beneficiaro</TableCell>
+            <TableCell width="250px">Servicio</TableCell>
+            <TableCell width="150px">Estado</TableCell>
+            <TableCell width="90px">&nbsp;</TableCell>
+            <TableCellEnd />
+          </TableHeader>
+          <TableDetail>
+            {[]?.map((data: any, idx: number) => (
+              <TableRow key={idx}>
+                <TableCell width="70px" align="center">
+                  {idx + 1}
+                </TableCell>
+                <TableCell width="99px">{data.companyname}</TableCell>
+                <TableCell width="189px" align="center">
+                  {data.createddate}
+                </TableCell>
+                <TableCell width="279px" align="center">
+                  {data.year}
+                </TableCell>
+                <TableCell width="250px">{data.month}</TableCell>
+                <TableCell width="150px" align="center">
+                  {data.rows}
+                </TableCell>
+                <TableCell width="90px" align="center">
+                  <TableIcons>
+                    <Icon
+                      iconName="search"
+                      button={true}
+                      onClick={() => viewImport(data.id)}
+                    />
+                  </TableIcons>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableDetail>
+        </Table>
+        <ContentRow align="flex-start">
+          <ContentCellSummary color={[]?.length > 0 ? "blue" : "#959595"}>
+            {[]?.length === 0
+              ? "No hay casos"
+              : []?.length === 1
+              ? "1 caso"
+              : `${[]?.length} casos`}
+          </ContentCellSummary>
+        </ContentRow>
+      </ContentCell>
+      <LoadingMessage />
+    </Fragment>
+  );
+};
+
+export default CaseList;

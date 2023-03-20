@@ -13,7 +13,7 @@ const Button = ({
 }: any) => {
   return (
     <button
-      className={`${styles.button} ${className}`}
+      className={`${styles.button} hover:bg-secondary-500 hover:bg-opacity-90 ${className}`}
       onClick={onClick}
       disabled={!enabled || loading}
       style={{ width }}

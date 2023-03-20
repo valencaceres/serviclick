@@ -38,7 +38,7 @@ const menu = [
     text: "Asistencia",
     subOptions: [
       { text: "Dashboard" },
-      { text: "Apertura" },
+      { text: "Casos", route: "/assistances/case" },
       { text: "Importación", route: "/assistances/import" },
     ],
   },
