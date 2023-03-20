@@ -40,12 +40,12 @@ const useGetAll = () => {
 };
 
 const useGetById_BCI = (id: string) => {
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["importBCI", id],
     queryFn: () => getById_BCI(id),
   });
 
-  return { data, isLoading, error };
+  return { data, isLoading, error, refetch };
 };
 
 const useQueryImport = () => {

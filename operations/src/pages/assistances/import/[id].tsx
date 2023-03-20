@@ -8,33 +8,30 @@ import ModalWindow from "../../../components/ui/ModalWindow";
 import { ImportDetail } from "../../../components/functional/_assistances/Import";
 
 import { useUI, useDistrict } from "../../../hooks";
+import { useQueryImport } from "../../../hooks/query";
 
 const ImportDetailPage = () => {
   const router = useRouter();
+  const { id } = router.query;
 
   const { setTitleUI } = useUI();
+
+  const { refetch } = useQueryImport().useGetById_BCI(id as string);
 
   const handleClickHome = () => {
     router.push("/");
   };
 
-  const handleClickRefresh = () => {};
+  const handleClickRefresh = () => {
+    refetch();
+  };
 
   const handleClickBack = () => {
     router.back();
   };
 
   useEffect(() => {
-    setTitleUI("Importaciones");
-  }, []);
-
-  useEffect(() => {
     setTitleUI("Detalle de importación");
-    // if (router.query?.id) {
-    //   if (router.query.id !== "" && router.query.id !== "new") {
-    //     getPartnerById(router.query.id?.toString());
-    //   }
-    // }
   }, [router]);
 
   return (

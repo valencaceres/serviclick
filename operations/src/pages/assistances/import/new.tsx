@@ -15,9 +15,6 @@ const ImportsPage = () => {
 
   const { setTitleUI, filters } = useUI();
 
-  const [isSaving, setIsSaving] = useState(false);
-  const [enableSave, setEnableSave] = useState(false);
-
   const handleClickHome = () => {
     router.push("/");
   };
