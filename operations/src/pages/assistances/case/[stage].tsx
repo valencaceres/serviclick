@@ -7,13 +7,13 @@ import ButtonIcon from "../../../components/ui/ButtonIcon";
 import { useUI } from "../../../hooks";
 import CaseStageList from "../../../components/functional/_assistances/Case/CaseStageList";
 import { ContentHalfRow } from "../../../components/layout/ResponsiveContent";
-import CaseFormSupport from "../../../components/functional/_assistances/Case/CaseFormSupport";
+import CaseFormRecordReception from "../../../components/functional/_assistances/Case/CaseFormRecordReception";
 
 const CaseStepPage = () => {
   const router = useRouter();
   const { setTitleUI, filters } = useUI();
 
-  const { step: stage } = router.query;
+  const { stage } = router.query;
 
   const handleClickHome = () => {
     router.push("/");
@@ -27,8 +27,6 @@ const CaseStepPage = () => {
     setTitleUI(
       stage === "new"
         ? `Nuevo caso`
-        : stage === "support"
-        ? `Contención`
         : stage === "recordReception"
         ? "Recepción antecedentes"
         : ""
@@ -38,11 +36,7 @@ const CaseStepPage = () => {
   return (
     <Fragment>
       <ContentHalfRow>
-        {stage === "support" ? (
-          <CaseFormSupport />
-        ) : stage === "recordReception" ? (
-          <CaseFormSupport />
-        ) : null}
+        {stage === "recordReception" ? <CaseFormRecordReception /> : null}
         <CaseStageList />
       </ContentHalfRow>
       <FloatMenu>

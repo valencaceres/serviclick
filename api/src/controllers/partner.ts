@@ -40,14 +40,16 @@ const create = async (req: any, res: any) => {
     return;
   }
 
-  const deleteSpecialtys = await PartnerSpecialty.deleteByPartnerId(partner_id);
+  const deleteSpecialties = await PartnerSpecialty.deleteByPartnerId(
+    partner_id
+  );
 
-  if (!deleteSpecialtys.success) {
+  if (!deleteSpecialties.success) {
     createLogger.error({
       model: `partnerSpecialty/deleteByPartnerId`,
-      error: deleteSpecialtys.error,
+      error: deleteSpecialties.error,
     });
-    res.status(500).json({ error: deleteSpecialtys.error });
+    res.status(500).json({ error: deleteSpecialties.error });
     return;
   }
 

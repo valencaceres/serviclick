@@ -67,6 +67,7 @@ class App {
     this.server.use("/api/relationship", reqLogger, routes.RelationshipRouter);
     this.server.use("/api/partner", reqLogger, routes.PartnerRouter);
     this.server.use("/api/import", reqLogger, routes.ImportRouter);
+    this.server.use("/api/case", reqLogger, routes.CaseRouter);
   }
 }
 
