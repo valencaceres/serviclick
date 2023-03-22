@@ -34,7 +34,7 @@ const CaseFormNew = () => {
   const [stage, setStage] = useState("");
 
   const { data: stageData } = useQueryStage().useGetAll();
-  const { mutate: createCase, data: newCase } = useQueryCase().useCreate();
+  const { mutate: createCase } = useQueryCase().useCreate();
 
   const handleClickNext = () => {
     createCase(
@@ -57,11 +57,11 @@ const CaseFormNew = () => {
         user_id: "0a53d2b2-574d-4a64-995b-56fe056a7b5c",
       },
       {
-        onSettled: (data) => {
+        onSettled: (response) => {
           if (isNewBeneficiary) {
-            router.push(`/assistances/case/containment?case=${data.id}`);
+            router.push(`/case/${response.data.id}/apertura`);
           } else {
-            router.push(`/assistances/case/aperture?case=${data.id}`);
+            router.push(`/case/${response.data.id}/contención`);
           }
         },
       }

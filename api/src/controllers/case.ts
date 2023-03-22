@@ -76,7 +76,9 @@ const create = async (req: any, res: any) => {
     message: `Case created successfully`,
   });
 
-  return { success: true, data: caseResponse.data, error: null };
+  return res
+    .status(200)
+    .json({ success: true, data: caseResponse.data, error: null });
 };
 
 const getBeneficiaryByRut = async (req: any, res: any) => {
