@@ -42,6 +42,39 @@ const create: any = async (
   }
 };
 
+const getAll: any = async () => {
+  try {
+    const result = await pool.query(`
+      SELECT cst.case_id,
+      cas.number,
+      sta.name as stage,
+      prd.name as product,
+      CASE 
+        WHEN ins.name IS NOT NULL THEN ins.name 
+        WHEN ben.name IS NOT NULL THEN ben.name 
+        ELSE per.name 
+        END as name,
+        CASE 
+            WHEN ins.paternallastname IS NOT NULL THEN ins.paternallastname 
+            WHEN ben.paternallastname IS NOT NULL THEN ben.paternallastname 
+            ELSE per.paternallastname 
+        END as paternallastname
+      FROM app.casestage cst
+      INNER JOIN app.case cas ON cas.id = cst.case_id
+      INNER JOIN app.stage sta ON sta.id = cst.stage_id
+      left outer JOIN app.product prd ON prd.id = cas.product_id
+      left outer JOIN app.assistance asi ON asi.id = cas.assistance_id
+      LEFT OUTER JOIN app.beneficiary ben ON ben.id = cas.applicant_id
+      LEFT OUTER JOIN app.insured ins ON ins.id = cas.applicant_id
+      LEFT OUTER JOIN app.person per ON per.id = cas.applicant_id
+    `);
+
+    return { success: true, data: result.rows, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 const getBeneficiaryData: any = async (rut: string) => {
   try {
     const result = await pool.query(_getBeneficiaryData, [rut]);
@@ -64,16 +97,15 @@ const getBeneficiaryData: any = async (rut: string) => {
         products: result.rows.map((row: any) => ({
           id: row.product_id,
           name: row.product_name,
-          assistance: [
-            {
-              name: row.assistance_name,
-              amount: row.assistance_amount,
-              currency: row.assistance_currency,
-              maximum: row.assistance_maximum,
-              events: row.assistance_events,
-              lack: row.assistance_lack,
-            },
-          ],
+          assistance: {
+            id: row.assistance_id,
+            name: row.assistance_name,
+            amount: row.assistance_amount,
+            currency: row.assistance_currency,
+            maximum: row.assistance_maximum,
+            events: row.assistance_events,
+            lack: row.assistance_lack,
+          },
         })),
       };
       return { success: true, data, error: null };
@@ -89,4 +121,4 @@ const getBeneficiaryData: any = async (rut: string) => {
   }
 };
 
-export { create, getBeneficiaryData };
+export { create, getAll, getBeneficiaryData };

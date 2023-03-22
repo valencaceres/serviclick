@@ -30,16 +30,15 @@ const initialData: IData = {
     {
       id: "",
       name: "",
-      assistance: [
-        {
-          name: "",
-          amount: 0,
-          currency: "",
-          maximum: 0,
-          events: 0,
-          lack: 0,
-        },
-      ],
+      assistance: {
+        id: "",
+        name: "",
+        amount: 0,
+        currency: "",
+        maximum: 0,
+        events: 0,
+        lack: 0,
+      },
     },
   ],
 };

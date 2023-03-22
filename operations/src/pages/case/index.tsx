@@ -22,17 +22,13 @@ const CasePage = () => {
     router.push("/case/new");
   };
 
-  const handleViewCase = (id: string) => {
-    router.push(`/case/${id}`);
-  };
-
   useEffect(() => {
     setTitleUI("Casos");
   }, [router]);
 
   return (
     <Fragment>
-      <CaseList viewCase={handleViewCase} />
+      <CaseList />
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />
         <ButtonIcon iconName="refresh" onClick={handleClickRefresh} />

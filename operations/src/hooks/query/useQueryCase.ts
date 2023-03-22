@@ -9,12 +9,21 @@ const createCase = async (caseData: any) => {
   return data;
 };
 
+const getAll = async () => {
+  const { data } = await apiInstance.get(`/case/all`);
+  return data;
+};
+
 const getCaseById = async (id: string) => {
   const { data } = await apiInstance.get(`/case/getById/${id}`);
   return data;
 };
 
-const useCaseById = (id: string) => {
+const useGetAll = () => {
+  return useQuery(["cases"], getAll);
+};
+
+const useGetById = (id: string) => {
   return useQuery(["case", id], () => getCaseById(id));
 };
 
@@ -27,7 +36,7 @@ const useCreate = () => {
 };
 
 const useQueryCase = () => {
-  return { useCreate, useCaseById };
+  return { useCreate, useGetAll, useGetById };
 };
 
 export default useQueryCase;

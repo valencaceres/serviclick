@@ -19,10 +19,11 @@ export interface IBeneficiary {
 export interface IProduct {
   id: string;
   name: string;
-  assistance: IAssistance[];
+  assistance: IAssistance;
 }
 
 export interface IAssistance {
+  id: string;
   name: string;
   amount: number;
   currency: string;

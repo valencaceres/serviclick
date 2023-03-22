@@ -81,6 +81,25 @@ const create = async (req: any, res: any) => {
     .json({ success: true, data: caseResponse.data, error: null });
 };
 
+const getAll = async (req: any, res: any) => {
+  const caseResponse = await Case.getAll();
+
+  if (!caseResponse.success) {
+    createLogger.error({
+      model: `case/getAll`,
+      error: caseResponse.error,
+    });
+    return res.status(500).json({ error: caseResponse.error });
+  }
+
+  createLogger.info({
+    model: `case/getAll`,
+    message: `Cases retrieved successfully`,
+  });
+
+  return res.status(200).json(caseResponse.data);
+};
+
 const getBeneficiaryByRut = async (req: any, res: any) => {
   const { rut } = req.params;
 
@@ -138,4 +157,4 @@ const getCaseById = async (req: any, res: any) => {
   return res.status(200).json(caseResponse.data);
 };
 
-export { create, getBeneficiaryByRut, getCaseById };
+export { create, getAll, getBeneficiaryByRut, getCaseById };

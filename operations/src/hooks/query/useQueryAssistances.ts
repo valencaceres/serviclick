@@ -7,17 +7,27 @@ const getAll = async () => {
   return data;
 };
 
+const getValues = async (id: string) => {
+  const { data } = await apiInstance.get(`/assistance/getValues/${id}`);
+  return data;
+};
+
 const useGetAll = () => {
-  const { data, isLoading, error, refetch } = useQuery({
+  return useQuery({
     queryKey: ["assistance"],
     queryFn: getAll,
   });
+};
 
-  return { data, isLoading, error, refetch };
+const useGetValues = (id: string) => {
+  return useQuery({
+    queryKey: ["assistanceValue", id],
+    queryFn: () => getValues(id),
+  });
 };
 
 const useQueryAssistances = () => {
-  return { useGetAll };
+  return { useGetAll, useGetValues };
 };
 
 export default useQueryAssistances;

@@ -18,11 +18,13 @@ import {
 import Icon from "../../ui/Icon";
 
 import { LoadingMessage } from "../../ui/LoadingMessage";
-
-import { useQueryCompany, useQueryImport } from "../../../hooks/query";
 import InputText from "../../ui/InputText";
 
-const CaseList = ({ viewCase }: any) => {
+import { useQueryCompany, useQueryCase } from "../../../hooks/query";
+import { useRouter } from "next/router";
+
+const CaseList = () => {
+  const router = useRouter();
   const initialSearchForm = {
     company_id: "",
     name: "",
@@ -32,6 +34,7 @@ const CaseList = ({ viewCase }: any) => {
   const [search, setSearch] = useState(initialSearchForm);
 
   const { data: companies } = useQueryCompany().useGetAll();
+  const { data: cases } = useQueryCase().useGetAll();
 
   const handleChangeCompany = async (e: any) => {
     setSearch({
@@ -52,6 +55,10 @@ const CaseList = ({ viewCase }: any) => {
       ...search,
       state: e.target.value,
     });
+  };
+
+  const handleViewCase = (case_id: string, stage: string) => {
+    router.push(`/case/${case_id}/${stage}`);
   };
 
   return (
@@ -102,28 +109,34 @@ const CaseList = ({ viewCase }: any) => {
             <TableCellEnd />
           </TableHeader>
           <TableDetail>
-            {[]?.map((data: any, idx: number) => (
+            {cases?.map((data: any, idx: number) => (
               <TableRow key={idx}>
                 <TableCell width="70px" align="center">
                   {idx + 1}
                 </TableCell>
-                <TableCell width="99px">{data.companyname}</TableCell>
+                <TableCell width="99px" align="center">
+                  {data.number}
+                </TableCell>
                 <TableCell width="189px" align="center">
                   {data.createddate}
                 </TableCell>
                 <TableCell width="279px" align="center">
-                  {data.year}
+                  {data.name + " " + data.paternallastname}
                 </TableCell>
-                <TableCell width="250px">{data.month}</TableCell>
+                <TableCell width="250px" align="center">
+                  {data.product ? data.product : "Sin servicio asignado"}
+                </TableCell>
                 <TableCell width="150px" align="center">
-                  {data.rows}
+                  {data.stage}
                 </TableCell>
                 <TableCell width="90px" align="center">
                   <TableIcons>
                     <Icon
                       iconName="search"
                       button={true}
-                      onClick={() => viewCase(data.id)}
+                      onClick={() =>
+                        handleViewCase(data.case_id, data.stage.toLowerCase())
+                      }
                     />
                   </TableIcons>
                 </TableCell>

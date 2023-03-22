@@ -20,7 +20,7 @@ interface IBeneficiary {
 interface IProduct {
   id: string;
   name: string;
-  assistance: IAssistance[];
+  assistance: IAssistance;
 }
 
 interface IAssistance {

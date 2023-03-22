@@ -29,9 +29,12 @@ const getById = async (id: string) => {
               PRD.name AS product, 
               AST.name AS assistance, 
               CST.description, 
-              PSN.name AS operator_name, 
+              PSN.name AS operator_name,
+              CAS.applicant_id,
               PSN.paternallastname AS operator_lastname,
-              CASE WHEN INS.rut IS NOT NULL THEN INS.rut ELSE BEN.rut END AS rut
+              CASE WHEN INS.rut IS NOT NULL THEN INS.rut
+              WHEN BEN.rut IS NOT NULL THEN BEN.rut
+              ELSE PER.rut END AS rut
       FROM app.casestage CST
       INNER JOIN app.stage STA ON CST.stage_id = STA.id
       INNER JOIN app.case CAS ON CST.case_id = CAS.id
@@ -41,6 +44,7 @@ const getById = async (id: string) => {
       LEFT OUTER JOIN app.assistance AST ON CAS.assistance_id = AST.id
       LEFT OUTER JOIN app.beneficiary BEN ON CAS.applicant_id = BEN.id
       LEFT OUTER JOIN app.insured INS ON CAS.applicant_id = INS.id
+      LEFT OUTER JOIN app.person PER ON CAS.applicant_id = PER.id
       WHERE case_id = $1`,
       [id]
     );

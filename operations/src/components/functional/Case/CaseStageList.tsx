@@ -1,4 +1,5 @@
 import { useState, Fragment, useEffect } from "react";
+import { useRouter } from "next/router";
 
 import {
   ContentCell,
@@ -15,16 +16,15 @@ import {
   TableCellEnd,
 } from "../../ui/Table";
 import Icon from "../../ui/Icon";
-
 import { LoadingMessage } from "../../ui/LoadingMessage";
-import useQueryCase from "../../../hooks/query/useQueryCase";
-import { useRouter } from "next/router";
+
+import { useQueryCase } from "../../../hooks/query";
 
 const CaseStageList = ({ viewImport }: any) => {
   const router = useRouter();
   const { case_id } = router.query;
 
-  const { data } = useQueryCase().useCaseById((case_id as string) || "");
+  const { data } = useQueryCase().useGetById((case_id as string) || "");
 
   return (
     <Fragment>
@@ -62,9 +62,7 @@ const CaseStageList = ({ viewImport }: any) => {
                       button={true}
                       onClick={() => {
                         router.push(
-                          `/assistances/case/${
-                            data.case_id
-                          }/${data.stage.toLowerCase()}`
+                          `/case/${data.case_id}/${data.stage.toLowerCase()}`
                         );
                       }}
                     />

@@ -325,6 +325,28 @@ const getByFamilyId = async (req: any, res: any) => {
   res.status(200).json(assistanceResponse.data);
 };
 
+const getValues = async (req: any, res: any) => {
+  const { id } = req.params;
+
+  const assistanceResponse = await AssistanceValue.getByAssistanceId(id);
+
+  if (!assistanceResponse.success) {
+    createLogger.error({
+      model: "assistanceValue/getByAssistanceId",
+      error: assistanceResponse.error,
+    });
+    res.status(500).json({ error: assistanceResponse.error });
+    return;
+  }
+
+  createLogger.info({
+    controller: "assistance/getValues",
+    message: "OK",
+  });
+
+  res.status(200).json(assistanceResponse.data);
+};
+
 export {
   create,
   updateById,
@@ -333,6 +355,7 @@ export {
   getById,
   getFamilies,
   getByFamilyId,
+  getValues,
 };
 
 const functionGetById = async (id: string) => {

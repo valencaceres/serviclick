@@ -11,8 +11,7 @@ import { numberRegEx, rutRegEx, emailRegEx } from "../../../utils/regEx";
 import { rutValidate } from "../../../utils/validations";
 
 import { useCase } from "../../../store/hooks/useCase";
-import useQueryCase from "../../../hooks/query/useQueryCase";
-import useQueryStage from "../../../hooks/query/useQueryStage";
+import { useQueryCase, useQueryStage } from "../../../hooks/query";
 
 const CaseFormNew = () => {
   const router = useRouter();
@@ -59,9 +58,9 @@ const CaseFormNew = () => {
       {
         onSettled: (response) => {
           if (isNewBeneficiary) {
-            router.push(`/case/${response.data.id}/apertura`);
-          } else {
             router.push(`/case/${response.data.id}/contención`);
+          } else {
+            router.push(`/case/${response.data.id}/apertura`);
           }
         },
       }
