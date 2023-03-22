@@ -15,7 +15,7 @@ const create = async (req: any, res: any) => {
     user_id,
   } = req.body;
 
-  if (applicant.type === "C") {
+  if (applicant?.type === "C") {
     const applicantResponse = await Person.create(
       applicant.rut,
       applicant.name,
@@ -76,7 +76,6 @@ const create = async (req: any, res: any) => {
     message: `Case created successfully`,
   });
 
-  console.log(caseResponse.data);
   return { success: true, data: caseResponse.data, error: null };
 };
 

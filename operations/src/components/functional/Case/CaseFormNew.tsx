@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-import { ContentCell, ContentRow } from "../../../layout/Content";
-import { LoadingMessage } from "../../../ui/LoadingMessage";
-import Button from "../../../ui/Button";
-import InputText from "../../../ui/InputText";
+import { ContentCell, ContentRow } from "../../layout/Content";
+import { LoadingMessage } from "../../ui/LoadingMessage";
+import Button from "../../ui/Button";
+import InputText from "../../ui/InputText";
 
-import { unFormatRut, formatRut } from "../../../../utils/format";
-import { numberRegEx, rutRegEx, emailRegEx } from "../../../../utils/regEx";
-import { rutValidate } from "../../../../utils/validations";
+import { unFormatRut, formatRut } from "../../../utils/format";
+import { numberRegEx, rutRegEx, emailRegEx } from "../../../utils/regEx";
+import { rutValidate } from "../../../utils/validations";
 
-import { useCase } from "../../../../store/hooks/useCase";
-import useQueryCase from "../../../../hooks/query/useQueryCase";
-import useQueryStage from "../../../../hooks/query/useQueryStage";
+import { useCase } from "../../../store/hooks/useCase";
+import useQueryCase from "../../../hooks/query/useQueryCase";
+import useQueryStage from "../../../hooks/query/useQueryStage";
 
 const CaseFormNew = () => {
   const router = useRouter();

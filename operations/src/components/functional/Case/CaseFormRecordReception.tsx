@@ -1,20 +1,16 @@
-import { useEffect, useState } from "react";
-import { QueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 
-import { ContentCell, ContentRow } from "../../../layout/Content";
-import Button from "../../../ui/Button";
-import ComboBox from "../../../ui/ComboBox";
+import { ContentCell, ContentRow } from "../../layout/Content";
+import Button from "../../ui/Button";
+import ComboBox from "../../ui/ComboBox";
 
 import { useRouter } from "next/router";
-import { LoadingMessage } from "../../../ui/LoadingMessage";
-import InputText from "../../../ui/InputText";
+import { LoadingMessage } from "../../ui/LoadingMessage";
+import InputText from "../../ui/InputText";
 
-import { useCase } from "../../../../store/hooks/useCase";
-
-const CaseFormService = () => {
+const CaseFormRecordReception = () => {
   const router = useRouter();
   const [assistance, setAssistance] = useState<any>(null);
-  const { data, getBeneficiaryByRut } = useCase();
 
   const handleClickNext = () => {
     router.push(`/assistances/case/recordReception?id=${assistance}`);
@@ -23,16 +19,24 @@ const CaseFormService = () => {
   return (
     <div>
       <ContentCell gap="20px">
-        <ComboBox
-          label="Servicio"
-          placeHolder="Seleccione servicio"
-          width="525px"
-          value={""}
-          onChange={(e: any) => setAssistance(e.target.value)}
-          data={data.products}
-          dataText="name"
-          dataValue="id"
-        />
+        <ContentRow gap="5px">
+          <InputText
+            label="N° Caso"
+            value={"1"}
+            type="text"
+            disabled={true}
+            onChange={() => {}}
+            width="260px"
+          />
+          <InputText
+            label="Fecha/hora de apertura"
+            value={"2021-01-01 12:00:00"}
+            type="text"
+            disabled={true}
+            onChange={() => {}}
+            width="260px"
+          />
+        </ContentRow>
         <ContentCell gap="5px">
           <ContentRow gap="5px">
             <InputText
@@ -121,4 +125,4 @@ const CaseFormService = () => {
   );
 };
 
-export default CaseFormService;
+export default CaseFormRecordReception;

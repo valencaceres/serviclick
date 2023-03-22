@@ -1,16 +1,16 @@
 import { useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
 
-import FloatMenu from "../../../components/ui/FloatMenu";
-import ButtonIcon from "../../../components/ui/ButtonIcon";
+import FloatMenu from "../../components/ui/FloatMenu";
+import ButtonIcon from "../../components/ui/ButtonIcon";
 
-import { useUI } from "../../../hooks";
-import CaseStageList from "../../../components/functional/_assistances/Case/CaseStageList";
+import { useUI } from "../../hooks";
+import CaseStageList from "../../components/functional/Case/CaseStageList";
 import {
   Content,
   ContentHalfRow,
-} from "../../../components/layout/ResponsiveContent";
-import CaseFormNew from "../../../components/functional/_assistances/Case/CaseFormNew";
+} from "../../components/layout/ResponsiveContent";
+import CaseFormNew from "../../components/functional/Case/CaseFormNew";
 
 const NewCasePage = () => {
   const router = useRouter();
@@ -31,10 +31,7 @@ const NewCasePage = () => {
 
   return (
     <Fragment>
-      <ContentHalfRow>
-        <CaseFormNew />
-        <CaseStageList />
-      </ContentHalfRow>
+      <CaseFormNew />
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />
         <ButtonIcon iconName="arrow_back" onClick={handleClickBack} />

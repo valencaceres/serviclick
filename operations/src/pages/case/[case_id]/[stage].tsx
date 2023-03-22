@@ -1,15 +1,13 @@
 import { useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
 
+import { ContentHalfRow } from "../../../components/layout/ResponsiveContent";
+import CaseFormService from "../../../components/functional/Case/CaseFormService";
+import CaseStageList from "../../../components/functional/Case/CaseStageList";
 import FloatMenu from "../../../components/ui/FloatMenu";
 import ButtonIcon from "../../../components/ui/ButtonIcon";
 
 import { useUI } from "../../../hooks";
-import CaseStageList from "../../../components/functional/_assistances/Case/CaseStageList";
-import { ContentHalfRow } from "../../../components/layout/ResponsiveContent";
-import CaseFormRecordReception from "../../../components/functional/_assistances/Case/CaseFormRecordReception";
-import { useCase } from "../../../store/hooks/useCase";
-import CaseFormService from "../../../components/functional/_assistances/Case/CaseFormService";
 
 const CaseStepPage = () => {
   const router = useRouter();
@@ -29,9 +27,11 @@ const CaseStepPage = () => {
     setTitleUI(
       stage === "new"
         ? `Nuevo caso`
-        : stage === "recordReception"
-        ? "Recepción antecedentes"
-        : ""
+        : stage === "apertura"
+        ? "Apertura"
+        : stage === "contención"
+        ? "Contención"
+        : null
     );
   }, [router]);
 

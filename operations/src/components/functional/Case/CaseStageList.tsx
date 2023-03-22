@@ -4,7 +4,7 @@ import {
   ContentCell,
   ContentRow,
   ContentCellSummary,
-} from "../../../layout/Content";
+} from "../../layout/Content";
 import {
   Table,
   TableHeader,
@@ -13,11 +13,11 @@ import {
   TableCell,
   TableIcons,
   TableCellEnd,
-} from "../../../ui/Table";
-import Icon from "../../../ui/Icon";
+} from "../../ui/Table";
+import Icon from "../../ui/Icon";
 
-import { LoadingMessage } from "../../../ui/LoadingMessage";
-import useQueryCase from "../../../../hooks/query/useQueryCase";
+import { LoadingMessage } from "../../ui/LoadingMessage";
+import useQueryCase from "../../../hooks/query/useQueryCase";
 import { useRouter } from "next/router";
 
 const CaseStageList = ({ viewImport }: any) => {
@@ -62,9 +62,9 @@ const CaseStageList = ({ viewImport }: any) => {
                       button={true}
                       onClick={() => {
                         router.push(
-                          `/assistances/case/${data.stage.toLowerCase()}?case_id=${
+                          `/assistances/case/${
                             data.case_id
-                          }`
+                          }/${data.stage.toLowerCase()}`
                         );
                       }}
                     />
@@ -76,11 +76,11 @@ const CaseStageList = ({ viewImport }: any) => {
         </Table>
         <ContentRow align="flex-start">
           <ContentCellSummary color={[]?.length > 0 ? "blue" : "#959595"}>
-            {[]?.length === 0
+            {data?.length === 0
               ? "No hay acciones"
-              : []?.length === 1
+              : data?.length === 1
               ? "1 acción"
-              : `${[]?.length} acciones`}
+              : `${data?.length} acciones`}
           </ContentCellSummary>
         </ContentRow>
       </ContentCell>

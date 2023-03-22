@@ -4,8 +4,8 @@ import {
   ContentCell,
   ContentRow,
   ContentCellSummary,
-} from "../../../layout/Content";
-import ComboBox from "../../../ui/ComboBox";
+} from "../../layout/Content";
+import ComboBox from "../../ui/ComboBox";
 import {
   Table,
   TableHeader,
@@ -14,15 +14,15 @@ import {
   TableCell,
   TableIcons,
   TableCellEnd,
-} from "../../../ui/Table";
-import Icon from "../../../ui/Icon";
+} from "../../ui/Table";
+import Icon from "../../ui/Icon";
 
-import { LoadingMessage } from "../../../ui/LoadingMessage";
+import { LoadingMessage } from "../../ui/LoadingMessage";
 
-import { useQueryCompany, useQueryImport } from "../../../../hooks/query";
-import InputText from "../../../ui/InputText";
+import { useQueryCompany, useQueryImport } from "../../../hooks/query";
+import InputText from "../../ui/InputText";
 
-const CaseList = ({ viewImport }: any) => {
+const CaseList = ({ viewCase }: any) => {
   const initialSearchForm = {
     company_id: "",
     name: "",
@@ -123,7 +123,7 @@ const CaseList = ({ viewImport }: any) => {
                     <Icon
                       iconName="search"
                       button={true}
-                      onClick={() => viewImport(data.id)}
+                      onClick={() => viewCase(data.id)}
                     />
                   </TableIcons>
                 </TableCell>
