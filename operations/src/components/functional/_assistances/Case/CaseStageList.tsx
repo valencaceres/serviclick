@@ -17,8 +17,15 @@ import {
 import Icon from "../../../ui/Icon";
 
 import { LoadingMessage } from "../../../ui/LoadingMessage";
+import useQueryCase from "../../../../hooks/query/useQueryCase";
+import { useRouter } from "next/router";
 
 const CaseStageList = ({ viewImport }: any) => {
+  const router = useRouter();
+  const { case_id } = router.query;
+
+  const { data } = useQueryCase().useCaseById((case_id as string) || "");
+
   return (
     <Fragment>
       <ContentCell gap="5px">
@@ -34,24 +41,32 @@ const CaseStageList = ({ viewImport }: any) => {
             <TableCellEnd />
           </TableHeader>
           <TableDetail>
-            {[]?.map((data: any, idx: number) => (
+            {data?.map((data: any, idx: number) => (
               <TableRow key={idx}>
                 <TableCell width="95px" align="center">
-                  {idx + 1}
+                  {new Date(data.createddate).toISOString().substring(0, 10)}
                 </TableCell>
-                <TableCell width="57px">{data.companyname}</TableCell>
+                <TableCell width="57px">
+                  {new Date(data.createddate).toISOString().substring(11, 16)}
+                </TableCell>
                 <TableCell width="177px" align="center">
-                  {data.createddate}
+                  {data.operator_name + " " + data.operator_lastname}
                 </TableCell>
                 <TableCell width="208px" align="center">
-                  {data.year}
+                  {data.stage}
                 </TableCell>
                 <TableCell width="41px" align="center">
                   <TableIcons>
                     <Icon
                       iconName="search"
                       button={true}
-                      onClick={() => viewImport(data.id)}
+                      onClick={() => {
+                        router.push(
+                          `/assistances/case/${data.stage.toLowerCase()}?case_id=${
+                            data.case_id
+                          }`
+                        );
+                      }}
                     />
                   </TableIcons>
                 </TableCell>

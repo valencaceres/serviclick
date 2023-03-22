@@ -8,6 +8,8 @@ import { useUI } from "../../../hooks";
 import CaseStageList from "../../../components/functional/_assistances/Case/CaseStageList";
 import { ContentHalfRow } from "../../../components/layout/ResponsiveContent";
 import CaseFormRecordReception from "../../../components/functional/_assistances/Case/CaseFormRecordReception";
+import { useCase } from "../../../store/hooks/useCase";
+import CaseFormService from "../../../components/functional/_assistances/Case/CaseFormService";
 
 const CaseStepPage = () => {
   const router = useRouter();
@@ -36,7 +38,7 @@ const CaseStepPage = () => {
   return (
     <Fragment>
       <ContentHalfRow>
-        {stage === "recordReception" ? <CaseFormRecordReception /> : null}
+        {stage === "apertura" ? <CaseFormService /> : null}
         <CaseStageList />
       </ContentHalfRow>
       <FloatMenu>

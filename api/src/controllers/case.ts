@@ -21,11 +21,11 @@ const create = async (req: any, res: any) => {
       applicant.name,
       applicant.paternalLastName,
       applicant.maternalLastName,
-      applicant.birthDate,
       applicant.address,
       applicant.district,
       applicant.email,
-      applicant.phone
+      applicant.phone,
+      applicant.birthDate
     );
 
     if (!applicantResponse.success) {
@@ -76,6 +76,7 @@ const create = async (req: any, res: any) => {
     message: `Case created successfully`,
   });
 
+  console.log(caseResponse.data);
   return { success: true, data: caseResponse.data, error: null };
 };
 
@@ -107,4 +108,33 @@ const getBeneficiaryByRut = async (req: any, res: any) => {
   return res.status(200).json(beneficaryResponse.data);
 };
 
-export { create, getBeneficiaryByRut };
+const getCaseById = async (req: any, res: any) => {
+  const { id } = req.params;
+
+  const caseResponse = await CaseStage.getById(id);
+
+  if (!caseResponse.success) {
+    createLogger.error({
+      model: `case/getById`,
+      error: caseResponse.error,
+    });
+    return res.status(500).json({ error: caseResponse.error });
+  }
+
+  if (caseResponse.error === "Case not found") {
+    createLogger.info({
+      controller: `case/getById`,
+      message: `OK - Case not found`,
+    });
+    return res.status(200).json(caseResponse.data);
+  }
+
+  createLogger.info({
+    controller: `case/getById`,
+    message: `OK - Case found`,
+  });
+
+  return res.status(200).json(caseResponse.data);
+};
+
+export { create, getBeneficiaryByRut, getCaseById };

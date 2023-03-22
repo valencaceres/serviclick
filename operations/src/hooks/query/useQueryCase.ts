@@ -1,36 +1,33 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, QueryClient } from "@tanstack/react-query";
 
 import { apiInstance } from "../../utils/api";
 
-const createCase = async (data: any) => {
-  const { data: response } = await apiInstance.post(`/case/create`, data);
-  return response;
-};
+const queryClient = new QueryClient();
 
-const getBeneficiaryData = async (rut: string) => {
-  const { data } = await apiInstance.get(`/case/getBeneficiaryByRut/${rut}`);
+const createCase = async (caseData: any) => {
+  const { data } = await apiInstance.post(`/case/create`, caseData);
   return data;
 };
 
-const useCreate = () => {
-  const { mutate, isLoading, error, isError, isSuccess } = useMutation({
-    mutationFn: createCase,
-  });
-
-  return { mutate, isLoading, error, isError, isSuccess };
+const getCaseById = async (id: string) => {
+  const { data } = await apiInstance.get(`/case/getById/${id}`);
+  return data;
 };
 
-const useBeneficiaryData = (rut: string) => {
-  const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["case", rut],
-    queryFn: () => getBeneficiaryData(rut),
-  });
+const useCaseById = (id: string) => {
+  return useQuery(["case", id], () => getCaseById(id));
+};
 
-  return { data, isLoading, error, refetch };
+const useCreate = () => {
+  return useMutation(["case"], createCase, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["case"]);
+    },
+  });
 };
 
 const useQueryCase = () => {
-  return { useCreate, useBeneficiaryData };
+  return { useCreate, useCaseById };
 };
 
 export default useQueryCase;

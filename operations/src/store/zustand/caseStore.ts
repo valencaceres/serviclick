@@ -66,7 +66,13 @@ export const caseStore = create<caseState>((set) => ({
       }
       set((state) => ({
         ...state,
-        data: data,
+        data: {
+          ...state.data,
+          beneficiary: {
+            ...data.beneficiary,
+          },
+          products: data.products,
+        },
         isLoading: false,
         isError: false,
       }));

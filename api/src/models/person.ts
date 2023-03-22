@@ -81,4 +81,33 @@ const create: any = async (
   }
 };
 
-export { create };
+const getByRut: any = async (rut: string) => {
+  try {
+    const result = await pool.query("SELECT * FROM app.person WHERE rut = $1", [
+      rut,
+    ]);
+
+    if (result.rows.length > 0) {
+      const data = {
+        id: result.rows[0].id,
+        rut: result.rows[0].rut,
+        name: result.rows[0].name,
+        paternalLastName: result.rows[0].paternallastname,
+        maternalLastName: result.rows[0].maternallastname,
+        address: result.rows[0].address,
+        district: result.rows[0].district,
+        email: result.rows[0].email,
+        phone: result.rows[0].phone,
+        birthdate: result.rows[0].birthdate,
+      };
+
+      return { success: true, data: data, error: null };
+    }
+
+    return { success: false, data: null, error: "No se encontró la persona" };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+export { create, getByRut };

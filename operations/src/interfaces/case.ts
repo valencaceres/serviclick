@@ -2,7 +2,6 @@ export interface IData {
   beneficiary: IBeneficiary;
   products: IProduct[];
 }
-
 export interface IBeneficiary {
   type: string;
   id: string;
