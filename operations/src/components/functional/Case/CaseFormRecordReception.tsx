@@ -7,121 +7,70 @@ import ComboBox from "../../ui/ComboBox";
 import { useRouter } from "next/router";
 import { LoadingMessage } from "../../ui/LoadingMessage";
 import InputText from "../../ui/InputText";
+import CaseDocumentsTable from "./CaseDocumentsTable";
 
-const CaseFormRecordReception = () => {
+const CaseFormRecordReception = ({ thisCase }: any) => {
   const router = useRouter();
-  const [assistance, setAssistance] = useState<any>(null);
+  const initialImportData = {
+    company_id: "",
+    year: "",
+    month: "",
+    file: "",
+  };
+  const [importData, setImportData] = useState(initialImportData);
 
-  const handleClickNext = () => {
-    router.push(`/assistances/case/recordReception?id=${assistance}`);
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("file", importData.file);
+    formData.append("company_id", importData.company_id);
+    formData.append("year", importData.year);
+    formData.append("month", importData.month);
   };
 
   return (
-    <div>
+    <form
+      action=""
+      encType="multipart/form-data"
+      method="post"
+      onSubmit={handleSubmit}
+    >
       <ContentCell gap="20px">
-        <ContentRow gap="5px">
-          <InputText
-            label="N° Caso"
-            value={"1"}
-            type="text"
-            disabled={true}
-            onChange={() => {}}
-            width="260px"
-          />
-          <InputText
-            label="Fecha/hora de apertura"
-            value={"2021-01-01 12:00:00"}
-            type="text"
-            disabled={true}
-            onChange={() => {}}
-            width="260px"
-          />
-        </ContentRow>
         <ContentCell gap="5px">
-          <ContentRow gap="5px">
-            <InputText
-              label="Rut"
-              value={"12345678-9"}
-              type="text"
-              onChange={() => {}}
-              width="260px"
-            />
-            <InputText
-              label="Fecha de nacimiento"
-              value={"2021-01-01"}
-              type="text"
-              onChange={() => {}}
-              width="260px"
-            />
-          </ContentRow>
           <InputText
-            label="Nombres"
-            value={"Juan Alejandro"}
+            label="Cliente"
+            value={"Embotelladora Andina S.A."}
             type="text"
-            onChange={() => {}}
-            width="525px"
-          />
-          <ContentRow gap="5px">
-            <InputText
-              label="Apellido paterno"
-              value={"Perez"}
-              type="text"
-              onChange={() => {}}
-              width="260px"
-            />
-            <InputText
-              label="Apellido materno"
-              value={"Pereira"}
-              type="text"
-              onChange={() => {}}
-              width="260px"
-            />
-          </ContentRow>
-          <InputText
-            label="Dirección"
-            value={"Av. Siempre Viva 123"}
-            type="text"
-            onChange={() => {}}
+            disabled={true}
             width="525px"
           />
           <InputText
-            label="Comuna"
-            value={"Santiago"}
+            label="Asegurado"
+            value={
+              thisCase?.applicant_name + " " + thisCase?.applicant_lastname
+            }
             type="text"
-            onChange={() => {}}
+            disabled={true}
+            onChange={(e: any) =>
+              setImportData({ ...importData, company_id: e.target.value })
+            }
             width="525px"
           />
-          <ContentRow gap="5px">
-            <InputText
-              label="Correo electrónico"
-              value={"juan@gmail.com"}
-              type="email"
-              onChange={() => {}}
-              width="260px"
-            />
-            <InputText
-              label="Teléfono"
-              value={"+56912345678"}
-              type="text"
-              onChange={() => {}}
-              width="260px"
-            />
-          </ContentRow>
+          <InputText
+            label="Servicio"
+            value={thisCase?.assistance}
+            type="text"
+            disabled={true}
+            width="525px"
+          />
         </ContentCell>
-        <ComboBox
-          label="Asistencias disponibles"
-          width="100%"
-          value={""}
-          onChange={() => {}}
-          placeHolder="Seleccione asistencia"
-          data={[]}
-          dataValue="id"
-          dataText="name"
-        />
-        <Button text="Continuar" onClick={handleClickNext} />
+        <ContentCell gap="5px">
+          <CaseDocumentsTable thisCase={thisCase} />
+        </ContentCell>
+        <Button text="Continuar" type="submit" />
       </ContentCell>
       <LoadingMessage />
-    </div>
+    </form>
   );
 };
 

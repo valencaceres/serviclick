@@ -11,6 +11,7 @@ import {
   getByFamilyId,
   getValues,
   getValuesById,
+  getDocumentsById,
 } from "../controllers/assistance";
 
 const AssistanceRouter = Router();
@@ -28,5 +29,6 @@ AssistanceRouter.get(
   auth,
   getValuesById
 );
+AssistanceRouter.get("/getDocumentsById/:id", auth, getDocumentsById);
 
 export default AssistanceRouter;

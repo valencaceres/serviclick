@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { useQueryClient } from "@tanstack/react-query";
 
 import Button from "../../ui/Button";
 import ComboBox from "../../ui/ComboBox";
@@ -10,21 +11,58 @@ import TextArea from "../../ui/TextArea/TextArea";
 import CaseServiceTable from "./CaseServiceTable";
 
 import { useCase } from "../../../store/hooks/useCase";
+import { useQueryCase, useQueryStage } from "../../../hooks/query";
+import { setStage } from "../../../redux/slices/stageSlice";
 
-const CaseFormService = () => {
+const CaseFormService = ({ thisCase }: any) => {
   const router = useRouter();
   const [assistance, setAssistance] = useState<any>(null);
   const [product, setProduct] = useState<any>(null);
   const [description, setDescription] = useState("");
+  const [stage, setStage] = useState<string>("");
   const { data } = useCase();
+  const queryClient = useQueryClient();
 
   const assistances = data.products.map((item: any) => item.assistance);
 
+  const { data: stageData } = useQueryStage().useGetAll();
+  const { mutate: updateCase } = useQueryCase().useCreate();
   useEffect(() => {
     setProduct(
       data.products.find((item: any) => item.assistance.id === assistance)
     );
   }, [assistance]);
+
+  const handleAddService = () => {
+    if (assistance && product && description) {
+      return updateCase(
+        {
+          applicant: {
+            id: thisCase?.applicant_id,
+          },
+          number: thisCase?.case_number,
+          product_id: product?.id,
+          assistance_id: assistance,
+          stage_id: stage,
+          user_id: "0a53d2b2-574d-4a64-995b-56fe056a7b5c",
+          description,
+        },
+        {
+          onSuccess: () => {
+            router.push(`/case/${thisCase?.case_id}/registro de servicio`);
+            queryClient.invalidateQueries(["case", thisCase?.case_id]);
+          },
+        }
+      );
+    }
+    alert("Debe completar todos los campos");
+  };
+
+  useEffect(() => {
+    setStage(
+      stageData?.find((s: any) => s.name === "Registro de servicio")?.id || ""
+    );
+  }, [thisCase]);
 
   return (
     <div>
@@ -78,6 +116,9 @@ const CaseFormService = () => {
         </ContentCell>
         {assistance ? (
           <Fragment>
+            <h2 className="text-md font-semibold text-secondary-500">
+              {product?.name}
+            </h2>
             <CaseServiceTable product={product} />
             <TextArea
               value={description || ""}
@@ -88,7 +129,7 @@ const CaseFormService = () => {
             />
           </Fragment>
         ) : null}
-        <Button text="Continuar" onClick={() => {}} />
+        <Button text="Continuar" onClick={handleAddService} />
       </ContentCell>
       <LoadingMessage />
     </div>

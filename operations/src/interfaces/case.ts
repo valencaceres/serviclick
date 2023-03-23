@@ -30,4 +30,5 @@ export interface IAssistance {
   maximum: number;
   events: number;
   lack: number;
+  family_id: string;
 }

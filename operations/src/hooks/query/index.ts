@@ -3,6 +3,7 @@ import useQueryImport from "./useQueryImport";
 import useQueryCase from "./useQueryCase";
 import useQueryStage from "./useQueryStage";
 import useQueryAssistances from "./useQueryAssistances";
+import useQueryDocument from "./useQueryDocument";
 
 export {
   useQueryCompany,
@@ -10,4 +11,5 @@ export {
   useQueryCase,
   useQueryStage,
   useQueryAssistances,
+  useQueryDocument,
 };

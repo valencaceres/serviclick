@@ -20,7 +20,7 @@ import { LoadingMessage } from "../../ui/LoadingMessage";
 
 import { useQueryCase } from "../../../hooks/query";
 
-const CaseStageList = ({ viewImport }: any) => {
+const CaseStageList = () => {
   const router = useRouter();
   const { case_id } = router.query;
 
@@ -41,19 +41,19 @@ const CaseStageList = ({ viewImport }: any) => {
             <TableCellEnd />
           </TableHeader>
           <TableDetail>
-            {data?.map((data: any, idx: number) => (
+            {data?.stages.map((stage: any, idx: number) => (
               <TableRow key={idx}>
                 <TableCell width="95px" align="center">
-                  {new Date(data.createddate).toISOString().substring(0, 10)}
+                  {new Date(stage.createddate).toISOString().substring(0, 10)}
                 </TableCell>
                 <TableCell width="57px">
-                  {new Date(data.createddate).toISOString().substring(11, 16)}
+                  {new Date(stage.createddate).toISOString().substring(11, 16)}
                 </TableCell>
                 <TableCell width="177px" align="center">
-                  {data.operator_name + " " + data.operator_lastname}
+                  {stage.operator_name + " " + stage.operator_lastname}
                 </TableCell>
                 <TableCell width="208px" align="center">
-                  {data.stage}
+                  {stage.stage}
                 </TableCell>
                 <TableCell width="41px" align="center">
                   <TableIcons>
@@ -62,7 +62,7 @@ const CaseStageList = ({ viewImport }: any) => {
                       button={true}
                       onClick={() => {
                         router.push(
-                          `/case/${data.case_id}/${data.stage.toLowerCase()}`
+                          `/case/${data?.case_id}/${stage.stage.toLowerCase()}`
                         );
                       }}
                     />
@@ -73,12 +73,14 @@ const CaseStageList = ({ viewImport }: any) => {
           </TableDetail>
         </Table>
         <ContentRow align="flex-start">
-          <ContentCellSummary color={[]?.length > 0 ? "blue" : "#959595"}>
-            {data?.length === 0
+          <ContentCellSummary
+            color={data?.stages?.length > 0 ? "blue" : "#959595"}
+          >
+            {data?.stages?.length === 0
               ? "No hay acciones"
-              : data?.length === 1
+              : data?.stages?.length === 1
               ? "1 acción"
-              : `${data?.length} acciones`}
+              : `${data?.stages?.length} acciones`}
           </ContentCellSummary>
         </ContentRow>
       </ContentCell>

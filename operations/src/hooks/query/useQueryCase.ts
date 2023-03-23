@@ -19,6 +19,11 @@ const getCaseById = async (id: string) => {
   return data;
 };
 
+const uploadDocument = async (formData: any) => {
+  const { data } = await apiInstance.post(`/case/uploadDocument`, formData);
+  return data;
+};
+
 const useGetAll = () => {
   return useQuery(["cases"], getAll);
 };
@@ -35,8 +40,16 @@ const useCreate = () => {
   });
 };
 
+const useUploadDocument = () => {
+  return useMutation(["case"], uploadDocument, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["case"]);
+    },
+  });
+};
+
 const useQueryCase = () => {
-  return { useCreate, useGetAll, useGetById };
+  return { useCreate, useGetAll, useGetById, useUploadDocument };
 };
 
 export default useQueryCase;

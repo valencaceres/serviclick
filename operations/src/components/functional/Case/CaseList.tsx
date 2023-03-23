@@ -145,12 +145,12 @@ const CaseList = () => {
           </TableDetail>
         </Table>
         <ContentRow align="flex-start">
-          <ContentCellSummary color={[]?.length > 0 ? "blue" : "#959595"}>
-            {[]?.length === 0
+          <ContentCellSummary color={cases?.length > 0 ? "blue" : "#959595"}>
+            {cases?.length === 0
               ? "No hay casos"
-              : []?.length === 1
+              : cases?.length === 1
               ? "1 caso"
-              : `${[]?.length} casos`}
+              : `${cases?.length} casos`}
           </ContentCellSummary>
         </ContentRow>
       </ContentCell>

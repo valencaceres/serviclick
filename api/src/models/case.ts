@@ -5,7 +5,7 @@ import { IData } from "../interfaces/case";
 
 const create: any = async (
   applicant: any,
-  number?: string,
+  number?: number,
   product_id?: string,
   assistance_id?: string
 ) => {
@@ -21,15 +21,15 @@ const create: any = async (
 
     const resultCase = await pool.query(
       `SELECT * FROM app.case 
-      WHERE number = $1 AND applicant_id = $2
-      RETURNING *`,
+      WHERE number = $1 AND applicant_id = $2`,
       [number, applicant.id]
     );
 
     if (resultCase.rows.length > 0) {
       const result = await pool.query(
         `UPDATE app.case SET product_id = $1, assistance_id = $2
-        WHERE number = $3 AND applicant_id = $4 RETURNING *`,
+        WHERE number = $3 AND applicant_id = $4
+        RETURNING *`,
         [product_id, assistance_id, number, applicant.id]
       );
 
@@ -59,14 +59,20 @@ const getAll: any = async () => {
             WHEN ben.paternallastname IS NOT NULL THEN ben.paternallastname 
             ELSE per.paternallastname 
         END as paternallastname
-      FROM app.casestage cst
-      INNER JOIN app.case cas ON cas.id = cst.case_id
-      INNER JOIN app.stage sta ON sta.id = cst.stage_id
-      left outer JOIN app.product prd ON prd.id = cas.product_id
-      left outer JOIN app.assistance asi ON asi.id = cas.assistance_id
-      LEFT OUTER JOIN app.beneficiary ben ON ben.id = cas.applicant_id
-      LEFT OUTER JOIN app.insured ins ON ins.id = cas.applicant_id
-      LEFT OUTER JOIN app.person per ON per.id = cas.applicant_id
+        FROM app.casestage cst
+        INNER JOIN (
+          SELECT case_id, MAX(sta.number) AS max_number
+          FROM app.casestage cst
+          INNER JOIN app.stage sta ON cst.stage_id = sta.id
+          GROUP BY case_id
+        ) latest_stages ON cst.case_id = latest_stages.case_id
+        INNER JOIN app.stage sta ON cst.stage_id = sta.id AND sta.number = latest_stages.max_number
+        INNER JOIN app.case cas ON cas.id = cst.case_id
+        LEFT OUTER JOIN app.product prd ON prd.id = cas.product_id
+        LEFT OUTER JOIN app.assistance asi ON asi.id = cas.assistance_id
+        LEFT OUTER JOIN app.beneficiary ben ON ben.id = cas.applicant_id
+        LEFT OUTER JOIN app.insured ins ON ins.id = cas.applicant_id
+        LEFT OUTER JOIN app.person per ON per.id = cas.applicant_id
     `);
 
     return { success: true, data: result.rows, error: null };
@@ -105,6 +111,7 @@ const getBeneficiaryData: any = async (rut: string) => {
             maximum: row.assistance_maximum,
             events: row.assistance_events,
             lack: row.assistance_lack,
+            family_id: row.family_id,
           },
         })),
       };

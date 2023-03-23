@@ -23,6 +23,13 @@ const getValuesById = async (
   return data;
 };
 
+const getDocumentsById = async (assistance_id: string) => {
+  const { data } = await apiInstance.get(
+    `/assistance/getDocumentsById/${assistance_id}`
+  );
+  return data;
+};
+
 const useGetAll = () => {
   return useQuery({
     queryKey: ["assistance"],
@@ -50,8 +57,16 @@ const useGetValuesById = (
   });
 };
 
+const useGetDocumentsById = (assistance_id: string) => {
+  return useQuery({
+    queryKey: ["assistanceDocumentsById", assistance_id],
+    queryFn: () => getDocumentsById(assistance_id),
+    enabled: !!assistance_id,
+  });
+};
+
 const useQueryAssistances = () => {
-  return { useGetAll, useGetValues, useGetValuesById };
+  return { useGetAll, useGetValues, useGetValuesById, useGetDocumentsById };
 };
 
 export default useQueryAssistances;

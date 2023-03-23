@@ -14,6 +14,7 @@ export const _getBeneficiaryData = `
           pro.name as product_name,
           asi.name as assistance_name,
           asi.id as assistance_id,
+          fam.id as family_id,
           pra.number as assistance_number,
           pra.amount as assistance_amount,
           pra.currency as assistance_currency,
@@ -27,6 +28,7 @@ export const _getBeneficiaryData = `
       inner join app.product pro on lpr.product_id = pro.id
       inner join app.productassistance pra on pro.id = pra.product_id
       inner join app.assistance asi on pra.assistance_id = asi.id
+      inner join app.family fam on asi.family_id = fam.id
       left outer join app.leadbeneficiary lbe on lea.id = lbe.lead_id and lbe.insured_id = lin.insured_id 
       left outer join app.beneficiary ben on lbe.beneficiary_id = ben.id
       where not lea.policy_id is not null and (ins.rut = $1 or ben.rut = $1)

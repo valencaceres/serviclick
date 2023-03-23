@@ -67,7 +67,6 @@ const CaseFormNew = () => {
     );
   };
 
-  console.log(data);
   const isValidRut = (rut: string) => {
     return (
       (rutRegEx.test(unFormatRut(rut)) &&

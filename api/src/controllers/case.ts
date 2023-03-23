@@ -2,6 +2,7 @@ import createLogger from "../util/logger";
 
 import * as Case from "../models/case";
 import * as CaseStage from "../models/caseStage";
+import * as CaseStageAttach from "../models/caseStageAttach";
 import * as Person from "../models/person";
 
 const create = async (req: any, res: any) => {
@@ -43,7 +44,8 @@ const create = async (req: any, res: any) => {
     applicant,
     number,
     product_id,
-    assistance_id
+    assistance_id,
+    description
   );
 
   if (!caseResponse.success) {
@@ -54,10 +56,10 @@ const create = async (req: any, res: any) => {
     return res.status(500).json({ error: caseResponse.error });
   }
 
-  const { id: case_id } = caseResponse.data;
+  const { id } = caseResponse.data;
 
   const caseStageResponse = await CaseStage.create(
-    case_id,
+    id,
     stage_id,
     user_id,
     description
@@ -98,6 +100,44 @@ const getAll = async (req: any, res: any) => {
   });
 
   return res.status(200).json(caseResponse.data);
+};
+
+const uploadDocument = async (req: any, res: any) => {
+  const { case_id, casestage_id, document_id } = req.body;
+  const files = req.files;
+
+  if (!files) {
+    return res.status(400).json({ error: "No files were uploaded." });
+  }
+
+  for (const file of files) {
+    const { filename, buffer } = file;
+
+    const base64 = buffer.toString("base64");
+
+    const caseStageAttachResponse = await CaseStageAttach.uploadDocument(
+      case_id,
+      casestage_id,
+      document_id,
+      filename,
+      base64
+    );
+
+    if (!caseStageAttachResponse.success) {
+      createLogger.error({
+        model: `caseStage/uploadDocument`,
+        error: caseStageAttachResponse.error,
+      });
+      return res.status(500).json({ error: caseStageAttachResponse.error });
+    }
+
+    createLogger.info({
+      model: `caseStage/uploadDocument`,
+      message: `Document uploaded successfully`,
+    });
+
+    return res.status(200).json(caseStageAttachResponse.data);
+  }
 };
 
 const getBeneficiaryByRut = async (req: any, res: any) => {
@@ -157,4 +197,4 @@ const getCaseById = async (req: any, res: any) => {
   return res.status(200).json(caseResponse.data);
 };
 
-export { create, getAll, getBeneficiaryByRut, getCaseById };
+export { create, uploadDocument, getAll, getBeneficiaryByRut, getCaseById };

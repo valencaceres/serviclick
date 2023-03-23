@@ -38,6 +38,7 @@ const initialData: IData = {
         maximum: 0,
         events: 0,
         lack: 0,
+        family_id: "",
       },
     },
   ],

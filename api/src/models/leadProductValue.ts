@@ -117,7 +117,6 @@ const getById: any = async (
       [insured_id, product_id, assistance_id]
     );
 
-    console.log(result.rows);
     return { success: true, data: result.rows, error: null };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };

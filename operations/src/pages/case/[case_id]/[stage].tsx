@@ -10,6 +10,7 @@ import ButtonIcon from "../../../components/ui/ButtonIcon";
 
 import { useUI } from "../../../hooks";
 import { useCase } from "../../../store/hooks/useCase";
+import CaseFormRecordReception from "../../../components/functional/Case/CaseFormRecordReception";
 
 const CaseStepPage = () => {
   const router = useRouter();
@@ -17,9 +18,13 @@ const CaseStepPage = () => {
   const { data, getBeneficiaryByRut } = useCase();
   const { case_id, stage } = router.query;
 
-  const { data: thisCase }: any = useQuery(["case", `${case_id}`]);
+  const { data: thisCase }: any = useQuery(["case", `${case_id}`], {
+    enabled: !!case_id,
+  });
 
-  const rut = thisCase?.map((item: any) => item.rut);
+  const rut = thisCase?.rut;
+  const number = thisCase?.case_number;
+
   const handleClickHome = () => {
     router.push("/");
   };
@@ -37,20 +42,24 @@ const CaseStepPage = () => {
       stage === "new"
         ? `Nuevo caso`
         : stage === "apertura"
-        ? "Apertura"
+        ? `Registro de servicio | Caso ${number}`
         : stage === "contención"
-        ? "Contención"
+        ? `Registro de servicio | Caso ${number}`
+        : stage === "registro de servicio"
+        ? `Recepción de antecedentes | Caso ${number}`
         : null
     );
-  }, [router]);
+  }, [router, thisCase]);
 
   return (
     <Fragment>
       <ContentHalfRow>
         {stage === "apertura" ? (
-          <CaseFormService />
+          <CaseFormService thisCase={thisCase} />
         ) : stage === "contención" ? (
-          <CaseFormService />
+          <CaseFormService thisCase={thisCase} />
+        ) : stage === "registro de servicio" ? (
+          <CaseFormRecordReception thisCase={thisCase} />
         ) : null}
         <CaseStageList />
       </ContentHalfRow>
