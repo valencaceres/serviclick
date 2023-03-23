@@ -12,8 +12,16 @@ import Icon from "../../ui/Icon";
 
 import { useQueryAssistances, useQueryDocument } from "../../../hooks/query";
 import { useCase } from "../../../store/hooks/useCase";
+import InputFile from "../../ui/InputFile";
+import InputText from "../../ui/InputText";
 
-const CaseDocumentsTable = ({ thisCase }: any) => {
+const CaseDocumentsTable = ({
+  thisCase,
+  uploadData,
+  setData,
+  documentData,
+  setDocumentData,
+}: any) => {
   const { data } = useCase();
   const [assistance, setAssistance] = useState<any>(null);
 
@@ -26,7 +34,6 @@ const CaseDocumentsTable = ({ thisCase }: any) => {
   const { data: documents } =
     useQueryAssistances().useGetDocumentsById(assistance);
 
-  console.log(documents);
   return (
     <Table height="287px">
       <TableHeader>
@@ -42,11 +49,36 @@ const CaseDocumentsTable = ({ thisCase }: any) => {
             <TableRow key={item.id}>
               <TableCell width="390px" align="center">
                 {item.name}
+                <InputText
+                  label="Documento"
+                  value={item.id}
+                  type="text"
+                  disabled={true}
+                  width="525px"
+                  id={`document_id_${idx}`}
+                  className={"hidden"}
+                />
               </TableCell>
 
               <TableCell width="120px" align="center">
                 <TableIcons>
-                  <Icon iconName="upload" button={true} onClick={() => {}} />
+                  <label htmlFor={`file-[${idx}]`}>
+                    <input
+                      type={"file"}
+                      id={`file-[${idx}]`}
+                      onChange={(e) => {
+                        setData([...uploadData, e.target.files[0]]);
+                        setDocumentData([...documentData, item.id]);
+                      }}
+                      className={"hidden"}
+                      accept=".csv .jpg .png .pdf .jpeg"
+                    />
+                    {uploadData[idx] ? (
+                      <Icon iconName="check" />
+                    ) : (
+                      <Icon iconName="upload" button={true} />
+                    )}
+                  </label>
                 </TableIcons>
               </TableCell>
             </TableRow>

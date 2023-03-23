@@ -384,7 +384,6 @@ const getDocumentsById = async (req: any, res: any) => {
 
   const assistanceResponse = await AssistanceDocument.getByAssistanceId(id);
 
-  console.log(assistanceResponse);
   if (!assistanceResponse.success) {
     createLogger.error({
       model: "assistanceDocument/getByAssistanceId",

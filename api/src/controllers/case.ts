@@ -106,21 +106,24 @@ const uploadDocument = async (req: any, res: any) => {
   const { case_id, casestage_id, document_id } = req.body;
   const files = req.files;
 
+  console.log(files);
   if (!files) {
     return res.status(400).json({ error: "No files were uploaded." });
   }
 
-  for (const file of files) {
-    const { filename, buffer } = file;
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    const document = document_id[i];
 
-    const base64 = buffer.toString("base64");
+    const fileName = file.originalname;
+    const fileBase64 = file.buffer.toString("base64");
 
     const caseStageAttachResponse = await CaseStageAttach.uploadDocument(
       case_id,
       casestage_id,
-      document_id,
-      filename,
-      base64
+      document,
+      fileName,
+      fileBase64
     );
 
     if (!caseStageAttachResponse.success) {
@@ -135,9 +138,9 @@ const uploadDocument = async (req: any, res: any) => {
       model: `caseStage/uploadDocument`,
       message: `Document uploaded successfully`,
     });
-
-    return res.status(200).json(caseStageAttachResponse.data);
   }
+
+  return res.status(200).json({ success: true, data: null, error: null });
 };
 
 const getBeneficiaryByRut = async (req: any, res: any) => {

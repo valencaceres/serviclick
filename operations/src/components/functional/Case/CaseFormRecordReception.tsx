@@ -8,24 +8,34 @@ import { useRouter } from "next/router";
 import { LoadingMessage } from "../../ui/LoadingMessage";
 import InputText from "../../ui/InputText";
 import CaseDocumentsTable from "./CaseDocumentsTable";
+import { useQueryCase, useQueryStage } from "../../../hooks/query";
 
 const CaseFormRecordReception = ({ thisCase }: any) => {
   const router = useRouter();
-  const initialImportData = {
-    company_id: "",
-    year: "",
-    month: "",
-    file: "",
-  };
-  const [importData, setImportData] = useState(initialImportData);
+  const { stage } = router.query;
+
+  const [files, setFiles] = useState<any>([]);
+  const [documents, setDocuments] = useState<any>([]);
+
+  const { data: stages } = useQueryStage().useGetAll();
+  const { mutate: uploadDocuments, isLoading } =
+    useQueryCase().useUploadDocument();
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("file", importData.file);
-    formData.append("company_id", importData.company_id);
-    formData.append("year", importData.year);
-    formData.append("month", importData.month);
+    formData.append("case_id", thisCase?.case_id);
+    formData.append(
+      "casestage_id",
+      stages.find((s: any) => s.name.toLowerCase() === stage)?.id
+    );
+    documents.forEach((d: any, idx: number) => {
+      formData.append(`document_id[${idx}]`, d);
+    });
+    files.forEach((item: any, idx: number) => {
+      formData.append("files", item);
+    });
+    uploadDocuments(formData);
   };
 
   return (
@@ -51,9 +61,6 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
             }
             type="text"
             disabled={true}
-            onChange={(e: any) =>
-              setImportData({ ...importData, company_id: e.target.value })
-            }
             width="525px"
           />
           <InputText
@@ -65,11 +72,17 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
           />
         </ContentCell>
         <ContentCell gap="5px">
-          <CaseDocumentsTable thisCase={thisCase} />
+          <CaseDocumentsTable
+            thisCase={thisCase}
+            uploadData={files}
+            setData={setFiles}
+            documentData={documents}
+            setDocumentData={setDocuments}
+          />
         </ContentCell>
         <Button text="Continuar" type="submit" />
       </ContentCell>
-      <LoadingMessage />
+      <LoadingMessage showModal={isLoading} />
     </form>
   );
 };

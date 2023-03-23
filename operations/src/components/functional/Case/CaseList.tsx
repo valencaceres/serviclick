@@ -20,7 +20,11 @@ import Icon from "../../ui/Icon";
 import { LoadingMessage } from "../../ui/LoadingMessage";
 import InputText from "../../ui/InputText";
 
-import { useQueryCompany, useQueryCase } from "../../../hooks/query";
+import {
+  useQueryCompany,
+  useQueryCase,
+  useQueryStage,
+} from "../../../hooks/query";
 import { useRouter } from "next/router";
 
 const CaseList = () => {
@@ -35,6 +39,7 @@ const CaseList = () => {
 
   const { data: companies } = useQueryCompany().useGetAll();
   const { data: cases } = useQueryCase().useGetAll();
+  const { data: stages } = useQueryStage().useGetAll();
 
   const handleChangeCompany = async (e: any) => {
     setSearch({
@@ -87,10 +92,10 @@ const CaseList = () => {
           <ComboBox
             label="Estado del caso"
             width="342px"
-            value={""}
+            value={search.state}
             onChange={handleChangeState}
             placeHolder="Seleccione estado"
-            data={[]}
+            data={stages}
             dataValue="id"
             dataText="name"
           />
