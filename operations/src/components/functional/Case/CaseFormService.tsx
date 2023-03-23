@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 import Button from "../../ui/Button";
@@ -14,10 +14,17 @@ import { useCase } from "../../../store/hooks/useCase";
 const CaseFormService = () => {
   const router = useRouter();
   const [assistance, setAssistance] = useState<any>(null);
+  const [product, setProduct] = useState<any>(null);
   const [description, setDescription] = useState("");
   const { data } = useCase();
 
   const assistances = data.products.map((item: any) => item.assistance);
+
+  useEffect(() => {
+    setProduct(
+      data.products.find((item: any) => item.assistance.id === assistance)
+    );
+  }, [assistance]);
 
   return (
     <div>
@@ -38,17 +45,15 @@ const CaseFormService = () => {
               <InputText
                 label="Monto Disponible ($)"
                 value={
-                  assistances.find((item: any) => item.id === assistance)
-                    ?.currency === "P"
-                    ? parseInt(
-                        assistances.find((item: any) => item.id === assistance)
-                          ?.amount
-                      ).toLocaleString("es-CL", {
-                        style: "currency",
-                        currency: "CLP",
-                      })
-                    : assistances.find((item: any) => item.id === assistance)
-                        ?.amount + " UF"
+                  product?.assistance.currency === "P"
+                    ? parseInt(product?.assistance.amount).toLocaleString(
+                        "es-CL",
+                        {
+                          style: "currency",
+                          currency: "CLP",
+                        }
+                      )
+                    : product?.assistance.amount + " UF" || ""
                 }
                 type="text"
                 width="152px"
@@ -56,20 +61,14 @@ const CaseFormService = () => {
               />
               <InputText
                 label="Eventos restantes"
-                value={
-                  assistances.find((item: any) => item.id === assistance)
-                    ?.events
-                }
+                value={product?.assistance.events || ""}
                 type="number"
                 width="129px"
                 disabled
               />
               <InputText
                 label="Límite"
-                value={
-                  assistances.find((item: any) => item.id === assistance)
-                    ?.maximum
-                }
+                value={product?.assistance.maximum || ""}
                 type="text"
                 width="234px"
                 disabled
@@ -79,9 +78,9 @@ const CaseFormService = () => {
         </ContentCell>
         {assistance ? (
           <Fragment>
-            <CaseServiceTable assistance={assistance} />
+            <CaseServiceTable product={product} />
             <TextArea
-              value={description}
+              value={description || ""}
               onChange={(e: any) => setDescription(e.target.value)}
               label="Descripción del evento"
               width="525px"

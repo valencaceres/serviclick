@@ -9,10 +9,20 @@ import {
   TableCellEnd,
 } from "../../ui/Table";
 
-const CaseServiceTable = ({ assistance }: any) => {
-  const { data } = useQueryAssistances().useGetValues(assistance);
+import { useCase } from "../../../store/hooks/useCase";
 
-  console.log(data);
+const CaseServiceTable = ({ product }: any) => {
+  const { data } = useCase();
+  const { data: assistanceValues } = useQueryAssistances().useGetValues(
+    product?.assistance.id
+  );
+
+  const { data: insuredValues } = useQueryAssistances().useGetValuesById(
+    data?.beneficiary.id,
+    product?.assistance.id,
+    product?.id
+  );
+
   return (
     <Table height="287px">
       <TableHeader>
@@ -23,14 +33,27 @@ const CaseServiceTable = ({ assistance }: any) => {
         <TableCellEnd />
       </TableHeader>
       <TableDetail>
-        {data?.map((item: any) => (
-          <TableRow key={item.id}>
-            <TableCell width="250px" align="center">
-              {item.name}
+        {assistanceValues?.length > 0 ? (
+          assistanceValues?.map((item: any, idx: number) => (
+            <TableRow key={item.id}>
+              <TableCell width="250px" align="center">
+                {item.name}
+              </TableCell>
+
+              <TableCell width="260px" align="center">
+                {insuredValues &&
+                  insuredValues.length > idx &&
+                  insuredValues[idx].value}
+              </TableCell>
+            </TableRow>
+          ))
+        ) : (
+          <TableRow>
+            <TableCell width="510px" align="center">
+              No hay datos disponibles en este momento
             </TableCell>
-            <TableCell width="260px">Valor dinámico</TableCell>
           </TableRow>
-        ))}
+        )}
       </TableDetail>
     </Table>
   );

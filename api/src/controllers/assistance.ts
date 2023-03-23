@@ -5,6 +5,7 @@ import * as AssistanceSpecialty from "../models/assistanceSpecialty";
 import * as AssistanceDocument from "../models/assistanceDocument";
 import * as AssistanceBenefit from "../models/assistanceBenefit";
 import * as AssistanceExclusion from "../models/assistanceExclusion";
+import * as LeadProductValue from "../models/leadProductValue";
 
 import { IFamily } from "../interfaces/family";
 import { IValue } from "../interfaces/value";
@@ -328,6 +329,11 @@ const getByFamilyId = async (req: any, res: any) => {
 const getValues = async (req: any, res: any) => {
   const { id } = req.params;
 
+  if (!id) {
+    res.status(400).json({ error: "Id is required" });
+    return;
+  }
+
   const assistanceResponse = await AssistanceValue.getByAssistanceId(id);
 
   if (!assistanceResponse.success) {
@@ -347,6 +353,32 @@ const getValues = async (req: any, res: any) => {
   res.status(200).json(assistanceResponse.data);
 };
 
+const getValuesById = async (req: any, res: any) => {
+  const { insured_id, product_id, assistance_id } = req.params;
+
+  const assistanceResponse = await LeadProductValue.getById(
+    insured_id,
+    product_id,
+    assistance_id
+  );
+
+  if (!assistanceResponse.success) {
+    createLogger.error({
+      model: "assistanceValue/getByInsuredId",
+      error: assistanceResponse.error,
+    });
+    res.status(500).json({ error: assistanceResponse.error });
+    return;
+  }
+
+  createLogger.info({
+    controller: "assistance/getValuesById",
+    message: "OK - Values by Id",
+  });
+
+  return res.status(200).json(assistanceResponse.data);
+};
+
 export {
   create,
   updateById,
@@ -356,6 +388,7 @@ export {
   getFamilies,
   getByFamilyId,
   getValues,
+  getValuesById,
 };
 
 const functionGetById = async (id: string) => {
