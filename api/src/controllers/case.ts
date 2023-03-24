@@ -200,4 +200,49 @@ const getCaseById = async (req: any, res: any) => {
   return res.status(200).json(caseResponse.data);
 };
 
-export { create, uploadDocument, getAll, getBeneficiaryByRut, getCaseById };
+const getAttachById = async (req: any, res: any) => {
+  const { case_id, casestage_id } = req.params;
+
+  const caseStageAttachResponse = await CaseStageAttach.getById(
+    case_id,
+    casestage_id
+  );
+
+  if (!caseStageAttachResponse.success) {
+    createLogger.error({
+      model: `caseStage/getAttachById`,
+      error: caseStageAttachResponse.error,
+    });
+    return res.status(500).json({ error: caseStageAttachResponse.error });
+  }
+
+  const attachments: any = [];
+
+  for (let i = 0; i < caseStageAttachResponse.data.length; i++) {
+    const attachment = caseStageAttachResponse.data[i];
+
+    attachments.push({
+      document_id: attachment.document_id,
+      file: {
+        originalname: attachment.file_name,
+        base64: attachment.base64,
+      },
+    });
+  }
+
+  createLogger.info({
+    controller: `case/getAttachById`,
+    message: `OK - Attachments found`,
+  });
+
+  return res.status(200).json(attachments);
+};
+
+export {
+  create,
+  uploadDocument,
+  getAll,
+  getBeneficiaryByRut,
+  getCaseById,
+  getAttachById,
+};

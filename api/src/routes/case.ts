@@ -8,6 +8,7 @@ import {
   getAll,
   getBeneficiaryByRut,
   getCaseById,
+  getAttachById,
 } from "../controllers/case";
 
 const upload = multer();
@@ -19,5 +20,6 @@ CaseRouter.post("/uploadDocument", auth, upload.array("files"), uploadDocument);
 CaseRouter.get("/all", auth, getAll);
 CaseRouter.get("/getBeneficiaryByRut/:rut", auth, getBeneficiaryByRut);
 CaseRouter.get("/getById/:id", auth, getCaseById);
+CaseRouter.get("/getAttachById/:case_id/:casestage_id", auth, getAttachById);
 
 export default CaseRouter;

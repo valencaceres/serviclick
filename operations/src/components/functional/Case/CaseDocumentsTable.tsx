@@ -10,13 +10,13 @@ import {
 } from "../../ui/Table";
 import Icon from "../../ui/Icon";
 
-import { useQueryAssistances, useQueryDocument } from "../../../hooks/query";
+import { useQueryAssistances, useQueryCase } from "../../../hooks/query";
 import { useCase } from "../../../store/hooks/useCase";
-import InputFile from "../../ui/InputFile";
-import InputText from "../../ui/InputText";
+import Link from "next/link";
 
 const CaseDocumentsTable = ({
   thisCase,
+  thisStage,
   uploadData,
   setData,
   documentData,
@@ -34,33 +34,39 @@ const CaseDocumentsTable = ({
   const { data: documents } =
     useQueryAssistances().useGetDocumentsById(assistance);
 
+  const { data: attachments } = useQueryCase().useGetAttach(
+    thisCase?.case_id,
+    thisStage
+  );
+
+  const handleDownload = (fileData: string, fileName: string) => {
+    const blob = new Blob([fileData], { type: "application/pdf" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = fileName;
+    link.click();
+  };
+
   return (
     <Table height="287px">
       <TableHeader>
-        <TableCell width="390px" align="center">
+        <TableCell width="300px" align="center">
           Documento
         </TableCell>
-        <TableCell width="120px">Subir</TableCell>
+        <TableCell width="100px">Subir</TableCell>
+        <TableCell width="110px">Descargar</TableCell>
         <TableCellEnd />
       </TableHeader>
       <TableDetail>
         {documents?.length > 0 ? (
           documents?.map((item: any, idx: number) => (
             <TableRow key={item.id}>
-              <TableCell width="390px" align="center">
+              <TableCell width="300px" align="center">
                 {item.name}
-                <InputText
-                  label="Documento"
-                  value={item.id}
-                  type="text"
-                  disabled={true}
-                  width="525px"
-                  id={`document_id_${idx}`}
-                  className={"hidden"}
-                />
               </TableCell>
 
-              <TableCell width="120px" align="center">
+              <TableCell width="100px" align="center">
                 <TableIcons>
                   <label htmlFor={`file-[${idx}]`}>
                     <input
@@ -81,6 +87,23 @@ const CaseDocumentsTable = ({
                   </label>
                 </TableIcons>
               </TableCell>
+              <TableCell width="110px" align="center">
+                <TableIcons>
+                  {attachments?.find((a: any) => a.document_id === item.id) ? (
+                    <Icon
+                      iconName="download"
+                      button={true}
+                      onClick={() =>
+                        handleDownload(
+                          attachments[idx].file.base64,
+                          attachments[idx].file.originalname
+                        )
+                      }
+                    />
+                  ) : null}
+                </TableIcons>
+              </TableCell>
+              <TableCellEnd />
             </TableRow>
           ))
         ) : (

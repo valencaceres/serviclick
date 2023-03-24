@@ -24,6 +24,13 @@ const uploadDocument = async (formData: any) => {
   return data;
 };
 
+const getAttach = async (case_id: string, casestage_id: string) => {
+  const { data } = await apiInstance.get(
+    `/case/getAttachById/${case_id}/${casestage_id}`
+  );
+  return data;
+};
+
 const useGetAll = () => {
   return useQuery(["cases"], getAll);
 };
@@ -48,8 +55,18 @@ const useUploadDocument = () => {
   });
 };
 
+const useGetAttach = (case_id: string, casestage_id: string) => {
+  return useQuery(
+    ["case", case_id, casestage_id],
+    () => getAttach(case_id, casestage_id),
+    {
+      enabled: !!case_id && !!casestage_id,
+    }
+  );
+};
+
 const useQueryCase = () => {
-  return { useCreate, useGetAll, useGetById, useUploadDocument };
+  return { useCreate, useGetAll, useGetById, useUploadDocument, useGetAttach };
 };
 
 export default useQueryCase;

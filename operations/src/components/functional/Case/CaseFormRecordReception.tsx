@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { ContentCell, ContentRow } from "../../layout/Content";
 import Button from "../../ui/Button";
@@ -16,6 +16,7 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
 
   const [files, setFiles] = useState<any>([]);
   const [documents, setDocuments] = useState<any>([]);
+  const [thisStage, setThisStage] = useState<string>("");
 
   const { data: stages } = useQueryStage().useGetAll();
   const { mutate: uploadDocuments, isLoading } =
@@ -25,10 +26,7 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append("case_id", thisCase?.case_id);
-    formData.append(
-      "casestage_id",
-      stages.find((s: any) => s.name.toLowerCase() === stage)?.id
-    );
+    formData.append("casestage_id", thisStage);
     documents.forEach((d: any, idx: number) => {
       formData.append(`document_id[${idx}]`, d);
     });
@@ -37,6 +35,12 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
     });
     uploadDocuments(formData);
   };
+
+  useEffect(() => {
+    if (stages) {
+      setThisStage(stages.find((s: any) => s.name.toLowerCase() === stage)?.id);
+    }
+  }, [stages, stage]);
 
   return (
     <form
@@ -74,6 +78,7 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
         <ContentCell gap="5px">
           <CaseDocumentsTable
             thisCase={thisCase}
+            thisStage={thisStage}
             uploadData={files}
             setData={setFiles}
             documentData={documents}

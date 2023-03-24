@@ -33,4 +33,17 @@ const uploadDocument: any = async (
   }
 };
 
-export { uploadDocument };
+const getById: any = async (case_id: string, casestage_id: string) => {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM app.casestageattach WHERE case_id = $1 AND casestage_id = $2`,
+      [case_id, casestage_id]
+    );
+
+    return { success: true, data: result.rows, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+export { uploadDocument, getById };
