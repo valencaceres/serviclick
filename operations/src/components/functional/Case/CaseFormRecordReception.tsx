@@ -54,7 +54,7 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
           },
           {
             onSuccess: () => {
-              router.push(`/case/${thisCase?.case_id}/evaluación`);
+              router.push(`/case/${thisCase?.case_id}/evaluación del evento`);
               queryClient.invalidateQueries(["case", thisCase?.case_id]);
             },
           }
@@ -80,7 +80,7 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
       },
       {
         onSettled: () => {
-          router.push(`/case/${thisCase?.case_id}/evaluación`);
+          router.push(`/case/${thisCase?.case_id}/evaluación del evento`);
           queryClient.invalidateQueries(["case", thisCase?.case_id]);
         },
       }

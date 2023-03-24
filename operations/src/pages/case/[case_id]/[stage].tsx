@@ -51,7 +51,7 @@ const CaseStepPage = () => {
         ? `Registro de servicio | Caso ${number}`
         : stage === "recepción de antecedentes"
         ? `Recepción de antecedentes | Caso ${number}`
-        : stage === "evaluación"
+        : stage === "evaluación del evento"
         ? `Evaluación | Caso ${number}`
         : null
     );
@@ -68,7 +68,7 @@ const CaseStepPage = () => {
           <CaseFormService thisCase={thisCase} />
         ) : stage === "recepción de antecedentes" ? (
           <CaseFormRecordReception thisCase={thisCase} />
-        ) : stage === "evaluación" ? (
+        ) : stage === "evaluación del evento" ? (
           <CaseFormEvaluation thisCase={thisCase} />
         ) : null}
         <CaseStageList />

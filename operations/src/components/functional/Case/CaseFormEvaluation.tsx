@@ -4,37 +4,19 @@ import { useQueryClient } from "@tanstack/react-query";
 
 import { ContentCell, ContentRow } from "../../layout/Content";
 import Button from "../../ui/Button";
-import { LoadingMessage } from "../../ui/LoadingMessage";
 import InputText from "../../ui/InputText";
-import CaseDocumentsTable from "./CaseDocumentsTable";
 
 import { useQueryCase, useQueryStage } from "../../../hooks/query";
 import { useUser } from "../../../hooks";
 import TextArea from "../../ui/TextArea/TextArea";
 import ComboBox from "../../ui/ComboBox";
+import { decisions } from "../../../data/masters";
 
-const decisions = [
-  {
-    id: 1,
-    name: "Designación de convenio",
-  },
-  {
-    id: 2,
-    name: "Designación de especialista",
-  },
-  {
-    id: 3,
-    name: "Rechazar caso",
-  },
-];
-
-const CaseFormRecordReception = ({ thisCase }: any) => {
+const CaseFormEvaluation = ({ thisCase }: any) => {
   const router = useRouter();
   const { stage } = router.query;
   const queryClient = useQueryClient();
 
-  const [files, setFiles] = useState<any>([]);
-  const [documents, setDocuments] = useState<any>([]);
   const [thisStage, setThisStage] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [justification, setJustification] = useState<string>("");
@@ -42,47 +24,36 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
 
   const { id: user_id } = useUser().user;
   const { data: stages } = useQueryStage().useGetAll();
-  const { mutate: uploadDocuments, isLoading } =
-    useQueryCase().useUploadDocument();
   const { mutate: updateCase } = useQueryCase().useCreate();
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("case_id", thisCase?.case_id);
-    formData.append("casestage_id", thisStage);
-    documents.forEach((d: any, idx: number) => {
-      formData.append(`document_id[${idx}]`, d);
-    });
-    files.forEach((item: any, idx: number) => {
-      formData.append("files", item);
-    });
-    uploadDocuments(formData, {
-      onSuccess: () => {
-        updateCase(
-          {
-            applicant: {
-              id: thisCase?.applicant_id,
-            },
-            number: thisCase?.case_number,
-            product_id: thisCase?.product_id,
-            assistance_id: thisCase?.assistance_id,
-            stage_id:
-              stages?.find((s: any) => s.name === "Recepción de antecedentes")
-                ?.id || "",
-            user_id: user_id,
+    if (justification) {
+      return updateCase(
+        {
+          applicant: {
+            id: thisCase?.applicant_id,
           },
-          {
-            onSuccess: () => {
-              router.push(
-                `/case/${thisCase?.case_id}/recepción de antecedentes`
-              );
-              queryClient.invalidateQueries(["case", thisCase?.case_id]);
-            },
-          }
-        );
-      },
-    });
+          number: thisCase?.case_number,
+          product_id: thisCase?.product_id,
+          assistance_id: thisCase?.assistance_id,
+          stage_id:
+            stages?.find((s: any) => s.name === "Evaluación del evento")?.id ||
+            "",
+          user_id: user_id,
+          description: justification,
+        },
+        {
+          onSuccess: () => {
+            router.push(
+              `/case/${thisCase?.case_id}/${evaluation.toLowerCase()}`
+            );
+            queryClient.invalidateQueries(["case", thisCase?.case_id]);
+          },
+        }
+      );
+    }
+    alert("Debe completar todos los campos");
   };
 
   useEffect(() => {
@@ -95,6 +66,10 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
     if (thisCase) {
       setDescription(
         thisCase?.stages.find((s: any) => s.stage === "Registro de servicio")
+          ?.description
+      );
+      setJustification(
+        thisCase?.stages.find((s: any) => s.stage === "Evaluación del evento")
           ?.description
       );
     }
@@ -147,24 +122,23 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
             onChange={(e: any) => setJustification(e.target.value)}
             label="Justificación de la decisión"
             width="525px"
-            disabled={true}
             height="110px"
           />
           <ComboBox
             label="Decisión de evaluación"
+            placeHolder="Seleccione decisión"
             data={decisions}
             width="525px"
-            value={""}
-            onChange={(e: any) => console.log(e)}
+            value={evaluation}
+            onChange={(e: any) => setEvaluation(e.target.value)}
             dataText="name"
-            dataValue="id"
+            dataValue="name"
           />
         </ContentCell>
-        <Button text="Continuar" type="submit" />
+        <Button text="Registrar evaluación" type="submit" />
       </ContentCell>
-      <LoadingMessage showModal={isLoading} />
     </form>
   );
 };
 
-export default CaseFormRecordReception;
+export default CaseFormEvaluation;
