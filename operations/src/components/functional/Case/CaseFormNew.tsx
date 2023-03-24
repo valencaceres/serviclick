@@ -12,8 +12,9 @@ import { rutValidate } from "../../../utils/validations";
 
 import { useCase } from "../../../store/hooks/useCase";
 import { useQueryCase, useQueryStage } from "../../../hooks/query";
+import { useUser } from "../../../hooks";
 
-const CaseFormNew = () => {
+const CaseFormNew = ({ thisCase }: any) => {
   const router = useRouter();
   const { getBeneficiaryByRut, data, beneficiaryIsLoading } = useCase();
   const initialFormData = {
@@ -32,8 +33,12 @@ const CaseFormNew = () => {
   const [isNewBeneficiary, setIsNewBeneficiary] = useState(false);
   const [stage, setStage] = useState("");
 
+  const { id: user_id } = useUser().user;
   const { data: stageData } = useQueryStage().useGetAll();
   const { mutate: createCase } = useQueryCase().useCreate();
+  const { data: newCaseNumber } = useQueryCase().useGetNewCaseNumber();
+
+  const birthdate = new Date(thisCase?.birthdate);
 
   const handleClickNext = () => {
     createCase(
@@ -51,17 +56,13 @@ const CaseFormNew = () => {
           email: formData.email.value,
           phone: formData.phone.value,
         },
-        number: 1,
+        number: thisCase !== null ? thisCase?.case_number : newCaseNumber,
         stage_id: stage,
-        user_id: "0a53d2b2-574d-4a64-995b-56fe056a7b5c",
+        user_id: user_id,
       },
       {
-        onSettled: (response) => {
-          if (isNewBeneficiary) {
-            router.push(`/case/${response.data.id}/contención`);
-          } else {
-            router.push(`/case/${response.data.id}/apertura`);
-          }
+        onSuccess: (response) => {
+          router.push(`/case/${response.data.id}/registro de servicio`);
         },
       }
     );
@@ -120,31 +121,37 @@ const CaseFormNew = () => {
       phone: { value: data.beneficiary.phone, isValid: true },
     });
   };
+  console.log(thisCase);
 
   useEffect(() => {
-    if (isSearching === true && beneficiaryIsLoading === false) {
-      if (data.beneficiary.rut !== "") {
-        setIsSearching(false);
-        setIsNewBeneficiary(false);
-        setStage(stageData.find((s: any) => s.name === "Apertura")?.id || "");
-        return refreshFormData();
-      }
+    if (data.beneficiary.rut !== "") {
       setIsSearching(false);
-      setIsNewBeneficiary(true);
-      setStage(stageData.find((s: any) => s.name === "Contención")?.id || "");
-      return setFormData({
-        rut: { value: formData.rut.value, isValid: true },
-        birthDate: { value: "", isValid: true },
-        name: { value: "", isValid: true },
-        paternalLastName: { value: "", isValid: true },
-        maternalLastName: { value: "", isValid: true },
-        address: { value: "", isValid: true },
-        district: { value: "", isValid: true },
-        email: { value: "", isValid: true },
-        phone: { value: "", isValid: true },
-      });
+      setIsNewBeneficiary(false);
+      setStage(stageData?.find((s: any) => s.name === "Apertura")?.id || "");
+      return refreshFormData();
     }
-  }, [isSearching, beneficiaryIsLoading]);
+    setIsSearching(false);
+    setIsNewBeneficiary(true);
+    setStage(stageData?.find((s: any) => s.name === "Contención")?.id || "");
+    return setFormData({
+      rut: { value: formData.rut.value, isValid: true },
+      birthDate: { value: "", isValid: true },
+      name: { value: "", isValid: true },
+      paternalLastName: { value: "", isValid: true },
+      maternalLastName: { value: "", isValid: true },
+      address: { value: "", isValid: true },
+      district: { value: "", isValid: true },
+      email: { value: "", isValid: true },
+      phone: { value: "", isValid: true },
+    });
+  }, [isSearching, beneficiaryIsLoading, thisCase]);
+
+  useEffect(() => {
+    if (router.pathname === "/case/new") {
+      setIsNewBeneficiary(false);
+      setFormData(initialFormData);
+    }
+  }, [router]);
 
   return (
     <div>
@@ -152,10 +159,13 @@ const CaseFormNew = () => {
         <ContentRow gap="5px">
           <InputText
             label="N° Caso"
-            value={"1"}
+            value={
+              router.pathname === "/case/new"
+                ? newCaseNumber
+                : thisCase?.case_number
+            }
             type="text"
             disabled={true}
-            onChange={() => {}}
             width="260px"
           />
           <InputText
@@ -163,7 +173,6 @@ const CaseFormNew = () => {
             value={"2021-01-01 12:00:00"}
             type="text"
             disabled={true}
-            onChange={() => {}}
             width="260px"
           />
         </ContentRow>
@@ -184,7 +193,7 @@ const CaseFormNew = () => {
               onFocus={handleFocusRut}
               onBlur={handleBlurRut}
               maxLength={9}
-              value={formData?.rut.value}
+              value={thisCase !== null ? thisCase?.rut : formData?.rut.value}
               onChange={(e: any) => {
                 setFormData({
                   ...formData,
@@ -201,7 +210,11 @@ const CaseFormNew = () => {
               label="Fecha de nacimiento"
               width="260px"
               maxLength={10}
-              value={formData?.birthDate.value}
+              value={
+                thisCase !== null
+                  ? birthdate.toISOString().substring(0, 10)
+                  : formData?.birthDate.value
+              }
               onChange={(e: any) => {
                 setFormData({
                   ...formData,
@@ -213,7 +226,9 @@ const CaseFormNew = () => {
           </ContentRow>
           <InputText
             label="Nombres"
-            value={formData.name.value}
+            value={
+              thisCase !== null ? thisCase?.applicant_name : formData.name.value
+            }
             type="text"
             onChange={(e: any) => {
               setFormData({
@@ -226,7 +241,11 @@ const CaseFormNew = () => {
           <ContentRow gap="5px">
             <InputText
               label="Apellido paterno"
-              value={formData.paternalLastName.value}
+              value={
+                thisCase !== null
+                  ? thisCase?.applicant_lastname
+                  : formData.paternalLastName.value
+              }
               type="text"
               onChange={(e: any) => {
                 setFormData({
@@ -238,7 +257,11 @@ const CaseFormNew = () => {
             />
             <InputText
               label="Apellido materno"
-              value={formData.maternalLastName.value}
+              value={
+                thisCase !== null
+                  ? thisCase?.applicant_maternallastname
+                  : formData.maternalLastName.value
+              }
               type="text"
               onChange={(e: any) => {
                 setFormData({
@@ -251,7 +274,11 @@ const CaseFormNew = () => {
           </ContentRow>
           <InputText
             label="Dirección"
-            value={formData.address.value}
+            value={
+              thisCase !== null
+                ? thisCase?.applicant_address
+                : formData.address.value
+            }
             type="text"
             onChange={(e: any) => {
               setFormData({
@@ -263,7 +290,11 @@ const CaseFormNew = () => {
           />
           <InputText
             label="Comuna"
-            value={formData.district.value}
+            value={
+              thisCase !== null
+                ? thisCase?.applicant_district
+                : formData.district.value
+            }
             type="text"
             onChange={(e: any) => {
               setFormData({
@@ -276,7 +307,11 @@ const CaseFormNew = () => {
           <ContentRow gap="5px">
             <InputText
               label="Correo electrónico"
-              value={formData.email.value}
+              value={
+                thisCase !== null
+                  ? thisCase?.applicant_email
+                  : formData.email.value
+              }
               type="email"
               onChange={(e: any) => {
                 setFormData({
@@ -293,7 +328,11 @@ const CaseFormNew = () => {
             />
             <InputText
               label="Teléfono"
-              value={formData.phone.value}
+              value={
+                thisCase !== null
+                  ? thisCase?.applicant_phone
+                  : formData.phone.value
+              }
               type="text"
               onChange={(e: any) => {
                 setFormData({

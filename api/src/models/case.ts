@@ -11,6 +11,20 @@ const create: any = async (
 ) => {
   try {
     if (!product_id || !assistance_id) {
+      const exists = await pool.query(
+        `SELECT * FROM app.case WHERE applicant_id = $1 AND number = $2`,
+        [applicant.id, number]
+      );
+
+      if (exists.rows.length > 0) {
+        const result = await pool.query(
+          `UPDATE app.case SET type = $1, applicant_id = $2
+          WHERE applicant_id = $2 AND number = $3 RETURNING *`,
+          [applicant.type, applicant.id, number]
+        );
+
+        return { success: true, data: result.rows[0], error: null };
+      }
       const result = await pool.query(
         "INSERT INTO app.case(type, applicant_id) VALUES ($1, $2) RETURNING *",
         [applicant.type, applicant.id]
@@ -128,4 +142,14 @@ const getBeneficiaryData: any = async (rut: string) => {
   }
 };
 
-export { create, getAll, getBeneficiaryData };
+const getNewCaseNumber = async () => {
+  try {
+    const result = await pool.query(`SELECT MAX(number) FROM app.case`);
+
+    return { success: true, data: result.rows[0].max + 1, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+export { create, getAll, getBeneficiaryData, getNewCaseNumber };

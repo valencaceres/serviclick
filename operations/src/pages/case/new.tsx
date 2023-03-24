@@ -5,11 +5,7 @@ import FloatMenu from "../../components/ui/FloatMenu";
 import ButtonIcon from "../../components/ui/ButtonIcon";
 
 import { useUI } from "../../hooks";
-import CaseStageList from "../../components/functional/Case/CaseStageList";
-import {
-  Content,
-  ContentHalfRow,
-} from "../../components/layout/ResponsiveContent";
+
 import CaseFormNew from "../../components/functional/Case/CaseFormNew";
 
 const NewCasePage = () => {
@@ -31,7 +27,7 @@ const NewCasePage = () => {
 
   return (
     <Fragment>
-      <CaseFormNew />
+      <CaseFormNew thisCase={null} />
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />
         <ButtonIcon iconName="arrow_back" onClick={handleClickBack} />

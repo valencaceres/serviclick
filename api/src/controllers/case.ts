@@ -117,13 +117,15 @@ const uploadDocument = async (req: any, res: any) => {
 
     const fileName = file.originalname;
     const fileBase64 = file.buffer.toString("base64");
+    const mimeType = file.mimetype;
 
     const caseStageAttachResponse = await CaseStageAttach.uploadDocument(
       case_id,
       casestage_id,
       document,
       fileName,
-      fileBase64
+      fileBase64,
+      mimeType
     );
 
     if (!caseStageAttachResponse.success) {
@@ -226,6 +228,7 @@ const getAttachById = async (req: any, res: any) => {
       file: {
         originalname: attachment.file_name,
         base64: attachment.base64,
+        mimetype: attachment.mime_type,
       },
     });
   }
@@ -238,6 +241,25 @@ const getAttachById = async (req: any, res: any) => {
   return res.status(200).json(attachments);
 };
 
+const getNewCaseNumber = async (req: any, res: any) => {
+  const caseResponse = await Case.getNewCaseNumber();
+
+  if (!caseResponse.success) {
+    createLogger.error({
+      model: `case/getNewCaseNumber`,
+      error: caseResponse.error,
+    });
+    return res.status(500).json({ error: caseResponse.error });
+  }
+
+  createLogger.info({
+    controller: `case/getNewCaseNumber`,
+    message: `OK - New case number generated`,
+  });
+
+  return res.status(200).json(caseResponse.data);
+};
+
 export {
   create,
   uploadDocument,
@@ -245,4 +267,5 @@ export {
   getBeneficiaryByRut,
   getCaseById,
   getAttachById,
+  getNewCaseNumber,
 };

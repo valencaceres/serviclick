@@ -31,6 +31,11 @@ const getAttach = async (case_id: string, casestage_id: string) => {
   return data;
 };
 
+const getNewCaseNumber = async () => {
+  const { data } = await apiInstance.get(`/case/getNewCaseNumber`);
+  return data;
+};
+
 const useGetAll = () => {
   return useQuery(["cases"], getAll);
 };
@@ -65,8 +70,19 @@ const useGetAttach = (case_id: string, casestage_id: string) => {
   );
 };
 
+const useGetNewCaseNumber = () => {
+  return useQuery(["newCase"], getNewCaseNumber);
+};
+
 const useQueryCase = () => {
-  return { useCreate, useGetAll, useGetById, useUploadDocument, useGetAttach };
+  return {
+    useCreate,
+    useGetAll,
+    useGetById,
+    useUploadDocument,
+    useGetAttach,
+    useGetNewCaseNumber,
+  };
 };
 
 export default useQueryCase;

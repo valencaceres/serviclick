@@ -11,6 +11,8 @@ import ButtonIcon from "../../../components/ui/ButtonIcon";
 import { useUI } from "../../../hooks";
 import { useCase } from "../../../store/hooks/useCase";
 import CaseFormRecordReception from "../../../components/functional/Case/CaseFormRecordReception";
+import CaseFormEvaluation from "../../../components/functional/Case/CaseFormEvaluation";
+import CaseFormNew from "../../../components/functional/Case/CaseFormNew";
 
 const CaseStepPage = () => {
   const router = useRouter();
@@ -30,7 +32,7 @@ const CaseStepPage = () => {
   };
 
   const handleClickBack = () => {
-    router.back();
+    router.push("/case");
   };
 
   useEffect(() => {
@@ -42,11 +44,15 @@ const CaseStepPage = () => {
       stage === "new"
         ? `Nuevo caso`
         : stage === "apertura"
-        ? `Registro de servicio | Caso ${number}`
+        ? `Apertura | Caso ${number}`
         : stage === "contención"
-        ? `Registro de servicio | Caso ${number}`
+        ? `Contención | Caso ${number}`
         : stage === "registro de servicio"
+        ? `Registro de servicio | Caso ${number}`
+        : stage === "recepción de antecedentes"
         ? `Recepción de antecedentes | Caso ${number}`
+        : stage === "evaluación"
+        ? `Evaluación | Caso ${number}`
         : null
     );
   }, [router, thisCase]);
@@ -55,11 +61,15 @@ const CaseStepPage = () => {
     <Fragment>
       <ContentHalfRow>
         {stage === "apertura" ? (
-          <CaseFormService thisCase={thisCase} />
+          <CaseFormNew thisCase={thisCase} />
         ) : stage === "contención" ? (
-          <CaseFormService thisCase={thisCase} />
+          <CaseFormNew thisCase={thisCase} />
         ) : stage === "registro de servicio" ? (
+          <CaseFormService thisCase={thisCase} />
+        ) : stage === "recepción de antecedentes" ? (
           <CaseFormRecordReception thisCase={thisCase} />
+        ) : stage === "evaluación" ? (
+          <CaseFormEvaluation thisCase={thisCase} />
         ) : null}
         <CaseStageList />
       </ContentHalfRow>

@@ -39,8 +39,12 @@ const CaseDocumentsTable = ({
     thisStage
   );
 
-  const handleDownload = (fileData: string, fileName: string) => {
-    const blob = new Blob([fileData], { type: "application/pdf" });
+  const handleDownload = (
+    fileData: string,
+    fileName: string,
+    mimeType: string
+  ) => {
+    const blob = new Blob([fileData], { type: mimeType });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
@@ -96,7 +100,8 @@ const CaseDocumentsTable = ({
                       onClick={() =>
                         handleDownload(
                           attachments[idx].file.base64,
-                          attachments[idx].file.originalname
+                          attachments[idx].file.originalname,
+                          attachments[idx].file.mimetype
                         )
                       }
                     />

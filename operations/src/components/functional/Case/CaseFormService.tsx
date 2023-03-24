@@ -12,7 +12,7 @@ import CaseServiceTable from "./CaseServiceTable";
 
 import { useCase } from "../../../store/hooks/useCase";
 import { useQueryCase, useQueryStage } from "../../../hooks/query";
-import { setStage } from "../../../redux/slices/stageSlice";
+import { useUser } from "../../../hooks";
 
 const CaseFormService = ({ thisCase }: any) => {
   const router = useRouter();
@@ -25,8 +25,10 @@ const CaseFormService = ({ thisCase }: any) => {
 
   const assistances = data.products.map((item: any) => item.assistance);
 
+  const { id: user_id } = useUser().user;
   const { data: stageData } = useQueryStage().useGetAll();
   const { mutate: updateCase } = useQueryCase().useCreate();
+
   useEffect(() => {
     setProduct(
       data.products.find((item: any) => item.assistance.id === assistance)
@@ -44,12 +46,12 @@ const CaseFormService = ({ thisCase }: any) => {
           product_id: product?.id,
           assistance_id: assistance,
           stage_id: stage,
-          user_id: "0a53d2b2-574d-4a64-995b-56fe056a7b5c",
+          user_id: user_id,
           description,
         },
         {
           onSuccess: () => {
-            router.push(`/case/${thisCase?.case_id}/registro de servicio`);
+            router.push(`/case/${thisCase?.case_id}/recepción de antecedentes`);
             queryClient.invalidateQueries(["case", thisCase?.case_id]);
           },
         }
@@ -62,6 +64,13 @@ const CaseFormService = ({ thisCase }: any) => {
     setStage(
       stageData?.find((s: any) => s.name === "Registro de servicio")?.id || ""
     );
+    setAssistance(
+      assistances.find((a: any) => a.id === thisCase?.assistance_id)?.id
+    );
+    setDescription(
+      thisCase?.stages.find((s: any) => s.stage === "Registro de servicio")
+        ?.description
+    );
   }, [thisCase]);
 
   return (
@@ -72,7 +81,7 @@ const CaseFormService = ({ thisCase }: any) => {
             label="Servicio"
             placeHolder="Seleccione servicio"
             width="525px"
-            value={assistance?.name}
+            value={assistance}
             onChange={(e: any) => setAssistance(e.target.value)}
             data={assistances}
             dataText="name"
@@ -121,7 +130,7 @@ const CaseFormService = ({ thisCase }: any) => {
             </h2>
             <CaseServiceTable product={product} />
             <TextArea
-              value={description || ""}
+              value={description}
               onChange={(e: any) => setDescription(e.target.value)}
               label="Descripción del evento"
               width="525px"

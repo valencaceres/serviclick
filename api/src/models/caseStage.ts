@@ -48,6 +48,7 @@ const getById = async (id: string) => {
               CST.createddate AS createddate,
               CAS.number AS case_number, 
               PRD.name AS product, 
+              PRD.id AS product_id,
               AST.name AS assistance, 
               AST.id AS assistance_id,
               CST.description, 
@@ -61,9 +62,27 @@ const getById = async (id: string) => {
               CASE WHEN INS.paternallastname IS NOT NULL THEN INS.paternallastname
               WHEN BEN.paternallastname IS NOT NULL THEN BEN.paternallastname
               ELSE PER.paternallastname END AS applicant_lastname,
+              CASE WHEN INS.maternallastname IS NOT NULL THEN INS.maternallastname
+              WHEN BEN.maternallastname IS NOT NULL THEN BEN.maternallastname
+              ELSE PER.maternallastname END AS applicant_maternallastname,
               CASE WHEN INS.rut IS NOT NULL THEN INS.rut
               WHEN BEN.rut IS NOT NULL THEN BEN.rut
-              ELSE PER.rut END AS rut
+              ELSE PER.rut END AS rut,
+              CASE WHEN INS.birthdate IS NOT NULL THEN INS.birthdate
+              WHEN BEN.birthdate IS NOT NULL THEN BEN.birthdate
+              ELSE PER.birthdate END AS applicant_birthdate,
+              CASE WHEN INS.address IS NOT NULL THEN INS.address
+              WHEN BEN.address IS NOT NULL THEN BEN.address
+              ELSE PER.address END AS address,
+              CASE WHEN INS.phone IS NOT NULL THEN INS.phone
+              WHEN BEN.phone IS NOT NULL THEN BEN.phone
+              ELSE PER.phone END AS phone,
+              CASE WHEN INS.email IS NOT NULL THEN INS.email
+              WHEN BEN.email IS NOT NULL THEN BEN.email
+              ELSE PER.email END AS email,
+              CASE WHEN INS.district IS NOT NULL THEN INS.district
+              WHEN BEN.district IS NOT NULL THEN BEN.district
+              ELSE PER.district END AS district
       FROM app.casestage CST
       INNER JOIN app.stage STA ON CST.stage_id = STA.id
       INNER JOIN app.case CAS ON CST.case_id = CAS.id
@@ -84,13 +103,21 @@ const getById = async (id: string) => {
       case_id: result.rows[0].case_id,
       case_number: result.rows[0].case_number,
       product: result.rows[0].product,
+      product_id: result.rows[0].product_id,
       assistance: result.rows[0].assistance,
       assistance_id: result.rows[0].assistance_id,
       family_id: result.rows[0].family_id,
       rut: result.rows[0].rut,
+      description: result.rows[0].description,
+      birthdate: result.rows[0].applicant_birthdate,
       applicant_id: result.rows[0].applicant_id,
       applicant_name: result.rows[0].applicant_name,
       applicant_lastname: result.rows[0].applicant_lastname,
+      applicant_maternallastname: result.rows[0].applicant_maternallastname,
+      applicant_address: result.rows[0].address,
+      applicant_phone: result.rows[0].phone,
+      applicant_email: result.rows[0].email,
+      applicant_district: result.rows[0].district,
       stages: result.rows.map((row: any) => ({
         stage: row.stage,
         createddate: row.createddate,

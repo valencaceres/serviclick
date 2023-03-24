@@ -10,6 +10,23 @@ import CaseDocumentsTable from "./CaseDocumentsTable";
 
 import { useQueryCase, useQueryStage } from "../../../hooks/query";
 import { useUser } from "../../../hooks";
+import TextArea from "../../ui/TextArea/TextArea";
+import ComboBox from "../../ui/ComboBox";
+
+const decisions = [
+  {
+    id: 1,
+    name: "Designación de convenio",
+  },
+  {
+    id: 2,
+    name: "Designación de especialista",
+  },
+  {
+    id: 3,
+    name: "Rechazar caso",
+  },
+];
 
 const CaseFormRecordReception = ({ thisCase }: any) => {
   const router = useRouter();
@@ -19,6 +36,9 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
   const [files, setFiles] = useState<any>([]);
   const [documents, setDocuments] = useState<any>([]);
   const [thisStage, setThisStage] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [justification, setJustification] = useState<string>("");
+  const [evaluation, setEvaluation] = useState<string>("");
 
   const { id: user_id } = useUser().user;
   const { data: stages } = useQueryStage().useGetAll();
@@ -54,7 +74,9 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
           },
           {
             onSuccess: () => {
-              router.push(`/case/${thisCase?.case_id}/evaluación`);
+              router.push(
+                `/case/${thisCase?.case_id}/recepción de antecedentes`
+              );
               queryClient.invalidateQueries(["case", thisCase?.case_id]);
             },
           }
@@ -63,35 +85,20 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
     });
   };
 
-  const handleSkip = (e: any) => {
-    e.preventDefault();
-    updateCase(
-      {
-        applicant: {
-          id: thisCase?.applicant_id,
-        },
-        number: thisCase?.case_number,
-        product_id: thisCase?.product_id,
-        assistance_id: thisCase?.assistance_id,
-        stage_id:
-          stages?.find((s: any) => s.name === "Recepción de antecedentes")
-            ?.id || "",
-        user_id: user_id,
-      },
-      {
-        onSettled: () => {
-          router.push(`/case/${thisCase?.case_id}/evaluación`);
-          queryClient.invalidateQueries(["case", thisCase?.case_id]);
-        },
-      }
-    );
-  };
-
   useEffect(() => {
     if (stages) {
       setThisStage(stages.find((s: any) => s.name.toLowerCase() === stage)?.id);
     }
   }, [stages, stage]);
+
+  useEffect(() => {
+    if (thisCase) {
+      setDescription(
+        thisCase?.stages.find((s: any) => s.stage === "Registro de servicio")
+          ?.description
+      );
+    }
+  }, [router]);
 
   return (
     <form
@@ -126,25 +133,34 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
             width="525px"
           />
         </ContentCell>
-        <ContentCell gap="5px">
-          <CaseDocumentsTable
-            thisCase={thisCase}
-            thisStage={thisStage}
-            uploadData={files}
-            setData={setFiles}
-            documentData={documents}
-            setDocumentData={setDocuments}
+        <ContentCell gap="20px">
+          <TextArea
+            value={description}
+            onChange={(e: any) => setDescription(e.target.value)}
+            label="Descripción del evento"
+            width="525px"
+            disabled={true}
+            height="110px"
+          />
+          <TextArea
+            value={justification}
+            onChange={(e: any) => setJustification(e.target.value)}
+            label="Justificación de la decisión"
+            width="525px"
+            disabled={true}
+            height="110px"
+          />
+          <ComboBox
+            label="Decisión de evaluación"
+            data={decisions}
+            width="525px"
+            value={""}
+            onChange={(e: any) => console.log(e)}
+            dataText="name"
+            dataValue="id"
           />
         </ContentCell>
-        <ContentRow gap="5px">
-          <Button text="Subir archivos" width="50%" type="submit" />
-          <Button
-            text="Omitir"
-            type="button"
-            width="50%"
-            onClick={(e: any) => handleSkip(e)}
-          />
-        </ContentRow>
+        <Button text="Continuar" type="submit" />
       </ContentCell>
       <LoadingMessage showModal={isLoading} />
     </form>
