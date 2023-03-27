@@ -51,7 +51,7 @@ const CaseFormService = ({ thisCase }: any) => {
         },
         {
           onSuccess: () => {
-            router.push(`/case/${thisCase?.case_id}/recepción de antecedentes`);
+            router.push(`/case/${thisCase?.case_id}/evaluación del evento`);
             queryClient.invalidateQueries(["case", thisCase?.case_id]);
           },
         }

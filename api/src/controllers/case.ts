@@ -3,6 +3,7 @@ import createLogger from "../util/logger";
 import * as Case from "../models/case";
 import * as CaseStage from "../models/caseStage";
 import * as CaseStageAttach from "../models/caseStageAttach";
+import * as CaseStagePartner from "../models/caseStagePartner";
 import * as Person from "../models/person";
 
 const create = async (req: any, res: any) => {
@@ -260,6 +261,59 @@ const getNewCaseNumber = async (req: any, res: any) => {
   return res.status(200).json(caseResponse.data);
 };
 
+const assignPartner = async (req: any, res: any) => {
+  const { case_id, casestage_id, partner_id, scheduled_date, scheduled_time } =
+    req.body;
+
+  const caseStageResponse = await CaseStagePartner.create(
+    case_id,
+    casestage_id,
+    partner_id,
+    scheduled_date,
+    scheduled_time
+  );
+
+  if (!caseStageResponse.success) {
+    createLogger.error({
+      model: `caseStagePartner/assignPartner`,
+      error: caseStageResponse.error,
+    });
+    return res.status(500).json({ error: caseStageResponse.error });
+  }
+
+  createLogger.info({
+    controller: `case/assignPartner`,
+    message: `OK - Partner assigned`,
+  });
+
+  return res.status(200).json(caseStageResponse.data);
+};
+
+const getAssignedPartner = async (req: any, res: any) => {
+  const { case_id, casestage_id } = req.params;
+
+  const caseStageResponse = await CaseStagePartner.getById(
+    case_id,
+    casestage_id
+  );
+
+  if (!caseStageResponse.success) {
+    createLogger.error({
+      model: `caseStagePartner/getAssignedPartner`,
+      error: caseStageResponse.error,
+    });
+
+    return res.status(500).json({ error: caseStageResponse.error });
+  }
+
+  createLogger.info({
+    controller: `case/getAssignedPartner`,
+    message: `OK - Partner assigned`,
+  });
+
+  return res.status(200).json(caseStageResponse.data);
+};
+
 export {
   create,
   uploadDocument,
@@ -268,4 +322,6 @@ export {
   getCaseById,
   getAttachById,
   getNewCaseNumber,
+  assignPartner,
+  getAssignedPartner,
 };

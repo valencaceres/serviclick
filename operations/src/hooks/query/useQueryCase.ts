@@ -36,6 +36,18 @@ const getNewCaseNumber = async () => {
   return data;
 };
 
+const assignPartner = async (newPartner: any) => {
+  const { data } = await apiInstance.post(`/case/assignPartner`, newPartner);
+  return data;
+};
+
+const getAssignedPartner = async (case_id: string, casestage_id: string) => {
+  const { data } = await apiInstance.get(
+    `/case/getAssignedPartner/${case_id}/${casestage_id}`
+  );
+  return data;
+};
+
 const useGetAll = () => {
   return useQuery(["cases"], getAll);
 };
@@ -74,6 +86,24 @@ const useGetNewCaseNumber = () => {
   return useQuery(["newCase"], getNewCaseNumber);
 };
 
+const useAssignPartner = () => {
+  return useMutation(["case"], assignPartner, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["case"]);
+    },
+  });
+};
+
+const useGetAssignedPartner = (case_id: string, casestage_id: string) => {
+  return useQuery(
+    ["case", case_id, casestage_id],
+    () => getAssignedPartner(case_id, casestage_id),
+    {
+      enabled: !!case_id && !!casestage_id,
+    }
+  );
+};
+
 const useQueryCase = () => {
   return {
     useCreate,
@@ -82,6 +112,8 @@ const useQueryCase = () => {
     useUploadDocument,
     useGetAttach,
     useGetNewCaseNumber,
+    useAssignPartner,
+    useGetAssignedPartner,
   };
 };
 

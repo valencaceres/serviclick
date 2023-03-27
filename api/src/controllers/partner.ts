@@ -229,6 +229,27 @@ const getByName = async (req: any, res: any) => {
   res.status(200).json(partnerResponse.data);
 };
 
+const getByFamilyId = async (req: any, res: any) => {
+  const { id } = req.params;
+  const partnerResponse = await Partner.getByFamilyId(id);
+
+  if (!partnerResponse.success) {
+    createLogger.error({
+      model: `partner/getByFamilyId`,
+      error: partnerResponse.error,
+    });
+    res.status(500).json({ error: partnerResponse.error });
+    return;
+  }
+
+  createLogger.info({
+    controller: `partner/getByFamilyId`,
+    message: `OK - Get Partners by Family Id`,
+  });
+
+  res.status(200).json(partnerResponse.data);
+};
+
 export {
   create,
   getAll,
@@ -238,6 +259,7 @@ export {
   deletePartner,
   getBySpecialtyId,
   getByName,
+  getByFamilyId,
 };
 
 const functionGetById = async (id: string) => {

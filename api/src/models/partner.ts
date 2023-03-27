@@ -286,6 +286,60 @@ const getByName = async (name: string) => {
   }
 };
 
+const getByFamilyId = async (id: string) => {
+  try {
+    const result = await pool.query(
+      `SELECT 
+        P.id,
+        P.rut,
+        P.name,
+        P.legalrepresentative,
+        P.line,
+        P.address,
+        P.district,
+        P.email,
+        P.phone
+      FROM app.partner P
+      INNER JOIN app.partnerspecialty PS ON PS.partner_id = P.id
+      INNER JOIN app.specialty SPE ON SPE.id = PS.specialty_id
+      WHERE SPE.family_id = $1`,
+      [id]
+    );
+
+    const data =
+      result.rows.length > 0
+        ? result.rows.map((item: any) => {
+            const {
+              id,
+              rut,
+              name,
+              legalrepresentative,
+              line,
+              address,
+              district,
+              email,
+              phone,
+            } = item;
+            return {
+              id,
+              rut,
+              name,
+              legalrepresentative,
+              line,
+              address,
+              district,
+              email,
+              phone,
+            };
+          })
+        : [];
+
+    return { success: true, data: data, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 export {
   create,
   getAll,
@@ -295,4 +349,5 @@ export {
   deletePartner,
   getBySpecialtyId,
   getByName,
+  getByFamilyId,
 };

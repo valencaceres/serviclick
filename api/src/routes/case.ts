@@ -10,6 +10,8 @@ import {
   getCaseById,
   getAttachById,
   getNewCaseNumber,
+  assignPartner,
+  getAssignedPartner,
 } from "../controllers/case";
 
 const upload = multer();
@@ -23,5 +25,11 @@ CaseRouter.get("/getBeneficiaryByRut/:rut", auth, getBeneficiaryByRut);
 CaseRouter.get("/getById/:id", auth, getCaseById);
 CaseRouter.get("/getAttachById/:case_id/:casestage_id", auth, getAttachById);
 CaseRouter.get("/getNewCaseNumber", auth, getNewCaseNumber);
+CaseRouter.post("/assignPartner", auth, assignPartner);
+CaseRouter.get(
+  "/getAssignedPartner/:case_id/:casestage_id",
+  auth,
+  getAssignedPartner
+);
 
 export default CaseRouter;

@@ -10,6 +10,7 @@ import {
   deletePartner,
   getBySpecialtyId,
   getByName,
+  getByFamilyId,
 } from "../controllers/partner";
 
 const PartnerRouter = Router();
@@ -22,5 +23,6 @@ PartnerRouter.get("/getFamilies", auth, getFamilies);
 PartnerRouter.delete("/deletePartner/:id", auth, deletePartner);
 PartnerRouter.get("/getBySpecialtyId/:id", auth, getBySpecialtyId);
 PartnerRouter.get("/getByName/:name", auth, getByName);
+PartnerRouter.get("/getByFamilyId/:id", auth, getByFamilyId);
 
 export default PartnerRouter;

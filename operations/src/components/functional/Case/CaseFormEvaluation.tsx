@@ -73,7 +73,7 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
           ?.description
       );
     }
-  }, [router]);
+  }, [router, thisCase]);
 
   return (
     <form
