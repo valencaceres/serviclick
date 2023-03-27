@@ -5,6 +5,7 @@ import useQueryStage from "./useQueryStage";
 import useQueryAssistances from "./useQueryAssistances";
 import useQueryDocument from "./useQueryDocument";
 import useQueryPartner from "./useQueryPartner";
+import useQuerySpecialist from "./useQuerySpecialist";
 
 export {
   useQueryCompany,
@@ -14,4 +15,5 @@ export {
   useQueryAssistances,
   useQueryDocument,
   useQueryPartner,
+  useQuerySpecialist,
 };

@@ -4,6 +4,7 @@ import * as Case from "../models/case";
 import * as CaseStage from "../models/caseStage";
 import * as CaseStageAttach from "../models/caseStageAttach";
 import * as CaseStagePartner from "../models/caseStagePartner";
+import * as CaseStageSpecialist from "../models/caseStageSpecialist";
 import * as Person from "../models/person";
 
 const create = async (req: any, res: any) => {
@@ -314,6 +315,66 @@ const getAssignedPartner = async (req: any, res: any) => {
   return res.status(200).json(caseStageResponse.data);
 };
 
+const assignSpecialist = async (req: any, res: any) => {
+  const {
+    case_id,
+    casestage_id,
+    specialist_id,
+    district_id,
+    scheduled_date,
+    scheduled_time,
+  } = req.body;
+
+  console.log(req.body);
+
+  const caseStageResponse = await CaseStageSpecialist.create(
+    case_id,
+    casestage_id,
+    specialist_id,
+    district_id,
+    scheduled_date,
+    scheduled_time
+  );
+
+  if (!caseStageResponse.success) {
+    createLogger.error({
+      model: `caseStageSpecialist/assignSpecialist`,
+      error: caseStageResponse.error,
+    });
+    return res.status(500).json({ error: caseStageResponse.error });
+  }
+
+  createLogger.info({
+    controller: `case/assignSpecialist`,
+    message: `OK - Specialist assigned`,
+  });
+
+  return res.status(200).json(caseStageResponse.data);
+};
+
+const getAssignedSpecialist = async (req: any, res: any) => {
+  const { case_id, casestage_id } = req.params;
+
+  const caseStageResponse = await CaseStageSpecialist.getById(
+    case_id,
+    casestage_id
+  );
+
+  if (!caseStageResponse.success) {
+    createLogger.error({
+      model: `caseStageSpecialist/getAssignedSpecialist`,
+      error: caseStageResponse.error,
+    });
+  }
+
+  createLogger.info({
+    controller: `case/getAssignedSpecialist`,
+    message: `OK - Specialist assigned`,
+  });
+
+  return res.status(200).json(caseStageResponse.data);
+};
+
 export {
   create,
   uploadDocument,
@@ -324,4 +385,6 @@ export {
   getNewCaseNumber,
   assignPartner,
   getAssignedPartner,
+  assignSpecialist,
+  getAssignedSpecialist,
 };

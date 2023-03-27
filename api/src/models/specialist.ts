@@ -438,6 +438,71 @@ const getByName: any = async (name: string) => {
   }
 };
 
+const getByDistrict: any = async (district: string, assistance_id: string) => {
+  try {
+    const result = await pool.query(
+      `SELECT DISTINCT ON
+        (app.person.id)
+        app.person.id,
+        app.person.rut,
+        app.person.name,
+        app.person.paternallastname,
+        app.person.maternallastname,
+        app.person.address,
+        app.person.district,
+        app.person.email,
+        app.person.phone,
+        app.person.birthdate
+      FROM app.person
+      INNER JOIN app.specialist ON app.person.id = app.specialist.person_id
+      INNER JOIN app.specialistspecialty ON app.specialist.id = app.specialistspecialty.specialist_id
+      INNER JOIN app.specialistdistrict ON app.specialist.id = app.specialistdistrict.specialist_id
+      INNER JOIN app.assistancespecialty ON app.specialistspecialty.specialty_id = app.assistancespecialty.specialty_id
+      INNER JOIN app.assistance ON app.assistancespecialty.assistance_id = app.assistance.id
+      WHERE app.specialistdistrict.district_id = $1 AND app.assistance.id = $2;`,
+      [district, assistance_id]
+    );
+
+    const data =
+      result.rows.length > 0
+        ? result.rows.map((item: any) => {
+            const {
+              id,
+              rut,
+              email,
+              name,
+              paternallastname,
+              maternallastname,
+              address,
+              district,
+              phone,
+              birthdate,
+            } = item;
+            return {
+              id,
+              rut,
+              email,
+              name,
+              paternalLastName: paternallastname,
+              maternalLastName: maternallastname,
+              address,
+              district,
+              phone,
+              birthDate: birthdate,
+            };
+          })
+        : [];
+
+    return {
+      success: true,
+      data,
+      error: null,
+    };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 export {
   create,
   deleteSpecialistById,
@@ -449,4 +514,5 @@ export {
   getByFamilyAssistance,
   getBySpecialtyId,
   getByName,
+  getByDistrict,
 };

@@ -48,6 +48,21 @@ const getAssignedPartner = async (case_id: string, casestage_id: string) => {
   return data;
 };
 
+const assignSpecliast = async (newSpecialist: any) => {
+  const { data } = await apiInstance.post(
+    `/case/assignSpecialist`,
+    newSpecialist
+  );
+  return data;
+};
+
+const getAssignedSpecialist = async (case_id: string, casestage_id: string) => {
+  const { data } = await apiInstance.get(
+    `/case/getAssignedSpecialist/${case_id}/${casestage_id}`
+  );
+  return data;
+};
+
 const useGetAll = () => {
   return useQuery(["cases"], getAll);
 };
@@ -104,6 +119,24 @@ const useGetAssignedPartner = (case_id: string, casestage_id: string) => {
   );
 };
 
+const useAssignSpecialist = () => {
+  return useMutation(["case"], assignSpecliast, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["case"]);
+    },
+  });
+};
+
+const useGetAssignedSpecialist = (case_id: string, casestage_id: string) => {
+  return useQuery(
+    ["case", case_id, casestage_id],
+    () => getAssignedSpecialist(case_id, casestage_id),
+    {
+      enabled: !!case_id && !!casestage_id,
+    }
+  );
+};
+
 const useQueryCase = () => {
   return {
     useCreate,
@@ -113,7 +146,9 @@ const useQueryCase = () => {
     useGetAttach,
     useGetNewCaseNumber,
     useAssignPartner,
-    useGetAssignedPartner,
+    useGetAssignedSpecialist: useGetAssignedPartner,
+    useAssignSpecialist,
+    useGetAssignedSpecialist,
   };
 };
 

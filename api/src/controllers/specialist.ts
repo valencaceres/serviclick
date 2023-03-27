@@ -315,6 +315,32 @@ const getByName = async (req: any, res: any) => {
   res.status(200).json(specialistResponse.data);
 };
 
+const getByDistrict = async (req: any, res: any) => {
+  const { district, assistance_id } = req.params;
+
+  const specialistResponse = await Specialist.getByDistrict(
+    district,
+    assistance_id
+  );
+
+  if (!specialistResponse.success) {
+    createLogger.error({
+      model: "specialist/getByDistrict",
+      error: specialistResponse.error,
+    });
+    res.status(500).json({ error: specialistResponse.error });
+
+    return;
+  }
+
+  createLogger.info({
+    controller: "specialist/getByDistrict",
+    message: "OK",
+  });
+
+  res.status(200).json(specialistResponse.data);
+};
+
 export {
   create,
   deleteById,
@@ -326,6 +352,7 @@ export {
   getByFamilyAssistance,
   getBySpecialtyId,
   getByName,
+  getByDistrict,
 };
 
 const functionGetById = async (id: string) => {

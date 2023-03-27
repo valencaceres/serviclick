@@ -14,6 +14,7 @@ import CaseFormRecordReception from "../../../components/functional/Case/CaseFor
 import CaseFormEvaluation from "../../../components/functional/Case/CaseFormEvaluation";
 import CaseFormNew from "../../../components/functional/Case/CaseFormNew";
 import CaseFormPartner from "../../../components/functional/Case/CaseFormPartner";
+import CaseFormSpecialist from "../../../components/functional/Case/CaseFormSpecialist";
 
 const CaseStepPage = () => {
   const router = useRouter();
@@ -56,6 +57,8 @@ const CaseStepPage = () => {
         ? `Evaluación | Caso ${number}`
         : stage === "designación de convenio"
         ? `Designación de convenio | Caso ${number}`
+        : stage === "designación de especialista"
+        ? `Designación de especialista | Caso ${number}`
         : null
     );
   }, [router, thisCase]);
@@ -75,6 +78,8 @@ const CaseStepPage = () => {
           <CaseFormEvaluation thisCase={thisCase} />
         ) : stage === "designación de convenio" ? (
           <CaseFormPartner thisCase={thisCase} />
+        ) : stage === "designación de especialista" ? (
+          <CaseFormSpecialist thisCase={thisCase} />
         ) : null}
         <CaseStageList />
       </ContentHalfRow>

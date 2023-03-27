@@ -12,6 +12,8 @@ import {
   getNewCaseNumber,
   assignPartner,
   getAssignedPartner,
+  assignSpecialist,
+  getAssignedSpecialist,
 } from "../controllers/case";
 
 const upload = multer();
@@ -30,6 +32,12 @@ CaseRouter.get(
   "/getAssignedPartner/:case_id/:casestage_id",
   auth,
   getAssignedPartner
+);
+CaseRouter.post("/assignSpecialist", auth, assignSpecialist);
+CaseRouter.get(
+  "/getAssignedSpecialist/:case_id/:casestage_id",
+  auth,
+  getAssignedSpecialist
 );
 
 export default CaseRouter;
