@@ -79,7 +79,7 @@ const subscriptionActivated = async (req: any, res: any) => {
     }
 
     if (company_id) {
-      const companyResponse = await CompanyModel.getByIdModel(company_id);
+      const companyResponse = await CompanyModel.getById(company_id);
 
       if (!companyResponse.success) {
         createLogger.error({

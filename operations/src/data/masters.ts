@@ -22,3 +22,35 @@ export const channels = {
   },
   web: { id: "3e085593-ca72-404f-9013-c1cce7abd60d", name: "Internet" },
 };
+
+export const months = [
+  { id: "1", name: "Enero" },
+  { id: "2", name: "Febrero" },
+  { id: "3", name: "Marzo" },
+  { id: "4", name: "Abril" },
+  { id: "5", name: "Mayo" },
+  { id: "6", name: "Junio" },
+  { id: "7", name: "Julio" },
+  { id: "8", name: "Agosto" },
+  { id: "9", name: "Septiembre" },
+  { id: "10", name: "Octubre" },
+  { id: "11", name: "Noviembre" },
+  { id: "12", name: "Diciembre" },
+];
+
+export const years = [
+  { id: "2023", name: "2023" },
+  { id: "2022", name: "2022" },
+  { id: "2021", name: "2021" },
+  { id: "2020", name: "2020" },
+  { id: "2019", name: "2019" },
+  { id: "2018", name: "2018" },
+  { id: "2017", name: "2017" },
+  { id: "2016", name: "2016" },
+  { id: "2015", name: "2015" },
+  { id: "2014", name: "2014" },
+  { id: "2013", name: "2013" },
+  { id: "2012", name: "2012" },
+  { id: "2011", name: "2011" },
+  { id: "2010", name: "2010" },
+];

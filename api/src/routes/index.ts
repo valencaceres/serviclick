@@ -32,6 +32,7 @@ import StageRouter from "./stage";
 import SpecialistRouter from "./specialist";
 import RelationshipRouter from "./relationship";
 import PartnerRouter from "./partner";
+import ImportRouter from "./import";
 
 export {
   SlugRouter,
@@ -68,4 +69,5 @@ export {
   SpecialistRouter,
   RelationshipRouter,
   PartnerRouter,
+  ImportRouter,
 };

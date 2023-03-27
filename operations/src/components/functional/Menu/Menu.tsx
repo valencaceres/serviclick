@@ -36,7 +36,11 @@ const menu = [
   {
     icon: <Icon iconName="build_circle" />,
     text: "Asistencia",
-    subOptions: [{ text: "Dashboard" }, { text: "Apertura" }],
+    subOptions: [
+      { text: "Dashboard" },
+      { text: "Apertura" },
+      { text: "Importación", route: "/assistances/import" },
+    ],
   },
 ];
 

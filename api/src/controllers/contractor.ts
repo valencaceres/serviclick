@@ -33,7 +33,7 @@ const create = async (req: any, res: any) => {
           email,
           phone
         )
-      : await Company.createModel(
+      : await Company.create(
           rut,
           companyName,
           legalRepresentative,
@@ -87,7 +87,7 @@ const getByRut = async (req: any, res: any) => {
   const contractorResponse =
     type === "P"
       ? await Customer.getByRutModel(rut)
-      : await Company.getByRutModel(rut);
+      : await Company.getByRut(rut);
 
   if (!contractorResponse.success) {
     createLogger.error({
