@@ -179,9 +179,21 @@
   .freeMonth {
     position: absolute;
     top: -20px;
-    right: -30px;
-    height: 105px;
-    width: 114px;
+    left: 70px;
+    right: auto;
+    height: 52px;
+    width: 57px;
     background-image: url(/images/products/free-month.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+
+    @media screen and (min-width: 1200px) {
+      top: -20px;
+      left: auto;
+      right: -30px;
+      height: 105px;
+      width: 114px;
+    }
   }
 }

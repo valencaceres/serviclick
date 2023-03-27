@@ -86,9 +86,9 @@ const getByBrokerId: any = async (broker_id: string) => {
               pro.name,
               pro.beneficiaries,
               des.promotional,
-              brp.baseprice,
-              brp.customerprice,
-              brp.companyprice,
+              plp.baseprice,
+              plp.price,
+              plc.price,
               brp.commisiontype_code,
               brp.value,
               brp.currency,
@@ -110,6 +110,8 @@ const getByBrokerId: any = async (broker_id: string) => {
               pro.name`,
       [broker_id]
     );
+
+    console.log(broker_id);
 
     const data = result.rows.map((row) => {
       const {
