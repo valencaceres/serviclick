@@ -38,8 +38,6 @@ const CaseFormNew = ({ thisCase }: any) => {
   const { mutate: createCase } = useQueryCase().useCreate();
   const { data: newCaseNumber } = useQueryCase().useGetNewCaseNumber();
 
-  const birthdate = new Date(thisCase?.birthdate);
-
   const handleClickNext = () => {
     createCase(
       {
@@ -91,10 +89,13 @@ const CaseFormNew = ({ thisCase }: any) => {
           isValid: isValidRut(event.target.value),
         },
       });
-      getBeneficiaryByRut(event.target.value);
+      if (event.target.value !== null) {
+        getBeneficiaryByRut(event.target.value);
+      }
     }
   };
 
+  console.log(data);
   const handleFocusRut = (event: any) => {
     event.target.value = unFormatRut(event.target.value);
   };
@@ -121,7 +122,6 @@ const CaseFormNew = ({ thisCase }: any) => {
       phone: { value: data.beneficiary.phone, isValid: true },
     });
   };
-  console.log(thisCase);
 
   useEffect(() => {
     if (data.beneficiary.rut !== "") {
@@ -212,7 +212,7 @@ const CaseFormNew = ({ thisCase }: any) => {
               maxLength={10}
               value={
                 thisCase !== null
-                  ? birthdate.toISOString().substring(0, 10)
+                  ? thisCase?.birthdate?.split("T")[0]
                   : formData?.birthDate.value
               }
               onChange={(e: any) => {

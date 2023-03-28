@@ -66,10 +66,29 @@ export const decisions = [
   },
   {
     id: 4,
-    name: "Reembolso",
+    name: "Solución particular",
   },
   {
     id: 3,
+    name: "Rechazar caso",
+  },
+];
+
+export const summaryActions = [
+  {
+    id: 1,
+    name: "Confirmar visita",
+  },
+  {
+    id: 2,
+    name: "Reprogramar visita",
+  },
+  {
+    id: 3,
+    name: "Cancelar visita",
+  },
+  {
+    id: 4,
     name: "Rechazar caso",
   },
 ];

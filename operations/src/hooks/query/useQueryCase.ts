@@ -146,7 +146,7 @@ const useQueryCase = () => {
     useGetAttach,
     useGetNewCaseNumber,
     useAssignPartner,
-    useGetAssignedSpecialist: useGetAssignedPartner,
+    useGetAssignedPartner,
     useAssignSpecialist,
     useGetAssignedSpecialist,
   };

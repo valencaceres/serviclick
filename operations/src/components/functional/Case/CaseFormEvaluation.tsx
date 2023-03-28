@@ -45,6 +45,31 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
         },
         {
           onSuccess: () => {
+            if (evaluation.toLowerCase() === "solución particular") {
+              return updateCase(
+                {
+                  applicant: {
+                    id: thisCase?.applicant_id,
+                  },
+                  number: thisCase?.case_number,
+                  product_id: thisCase?.product_id,
+                  assistance_id: thisCase?.assistance_id,
+                  stage_id:
+                    stages?.find((s: any) => s.name === "Solución particular")
+                      ?.id || "",
+                  user_id: user_id,
+                  description: description,
+                },
+                {
+                  onSuccess: () => {
+                    router.push(
+                      `/case/${thisCase?.case_id}/recepción de antecedentes`
+                    );
+                    queryClient.invalidateQueries(["case", thisCase?.case_id]);
+                  },
+                }
+              );
+            }
             router.push(
               `/case/${thisCase?.case_id}/${evaluation.toLowerCase()}`
             );

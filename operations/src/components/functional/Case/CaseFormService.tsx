@@ -14,21 +14,33 @@ import { useCase } from "../../../store/hooks/useCase";
 import { useQueryCase, useQueryStage } from "../../../hooks/query";
 import { useUser } from "../../../hooks";
 
-const CaseFormService = ({ thisCase }: any) => {
+const CaseFormService = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
+
+  const { case_id } = router.query;
+
   const [assistance, setAssistance] = useState<any>(null);
+  const [assistances, setAssistances] = useState<any>(null);
   const [product, setProduct] = useState<any>(null);
   const [description, setDescription] = useState("");
   const [stage, setStage] = useState<string>("");
-  const { data } = useCase();
-  const queryClient = useQueryClient();
 
-  const assistances = data.products.map((item: any) => item.assistance);
-
+  const { getBeneficiaryByRut, data, beneficiaryIsLoading } = useCase();
   const { id: user_id } = useUser().user;
+
+  const { data: thisCase } = useQueryCase().useGetById(case_id as string);
   const { data: stageData } = useQueryStage().useGetAll();
   const { mutate: updateCase } = useQueryCase().useCreate();
 
+  useEffect(() => {
+    if (data?.products?.length > 0) {
+      setAssistances(data?.products.map((item: any) => item.assistance));
+    }
+  }, [data]);
+
+  console.log(data);
+  console.log(assistances);
   useEffect(() => {
     setProduct(
       data.products.find((item: any) => item.assistance.id === assistance)
@@ -61,11 +73,11 @@ const CaseFormService = ({ thisCase }: any) => {
   };
 
   useEffect(() => {
+    setAssistance(
+      assistances?.find((a: any) => a.id === thisCase?.assistance_id)?.id
+    );
     setStage(
       stageData?.find((s: any) => s.name === "Registro de servicio")?.id || ""
-    );
-    setAssistance(
-      assistances.find((a: any) => a.id === thisCase?.assistance_id)?.id
     );
     setDescription(
       thisCase?.stages.find((s: any) => s.stage === "Registro de servicio")

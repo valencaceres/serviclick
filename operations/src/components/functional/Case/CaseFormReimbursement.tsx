@@ -5,43 +5,47 @@ import { useQueryClient } from "@tanstack/react-query";
 import { ContentCell, ContentRow } from "../../layout/Content";
 import Button from "../../ui/Button";
 import InputText from "../../ui/InputText";
+import ComboBox from "../../ui/ComboBox";
 
 import {
   useQueryCase,
-  useQueryPartner,
+  useQuerySpecialist,
   useQueryStage,
 } from "../../../hooks/query";
 import { useUser } from "../../../hooks";
-import ComboBox from "../../ui/ComboBox";
+import { useDistrict } from "../../../hooks";
 
-const CaseFormPartner = ({ thisCase }: any) => {
+const CaseFormReimbursement = ({ thisCase }: any) => {
   const router = useRouter();
   const { stage } = router.query;
   const queryClient = useQueryClient();
 
   const [thisStage, setThisStage] = useState<string>("");
-  const [partner, setPartner] = useState<string>("");
+  const [specialist, setSpecialist] = useState<string>("");
   const [scheduledDate, setScheduledDate] = useState<string>("");
   const [scheduledTime, setScheduledTime] = useState<string>("");
-
-  const minDate = new Date();
+  const [district, setDistrict] = useState<string>("");
+  const { list: districtList } = useDistrict();
 
   const { id: user_id } = useUser().user;
   const { data: stages } = useQueryStage().useGetAll();
-  const { data: getAssignedPartner } = useQueryCase().useGetAssignedPartner(
+  const { data: getAssignedSpecialist } =
+    useQueryCase().useGetAssignedSpecialist(thisCase?.case_id, thisStage);
+
+  const { mutate: updateCase } = useQueryCase().useCreate();
+  const { data: specialists } = useQuerySpecialist().getByDistrict(
+    district,
+    thisCase?.assistance_id
+  );
+  const { mutate: assignSpecialist } = useQueryCase().useAssignSpecialist();
+  const { data: assignedSpecialist } = useQueryCase().useGetAssignedSpecialist(
     thisCase?.case_id,
     thisStage
   );
 
-  const { mutate: updateCase } = useQueryCase().useCreate();
-  const { data: partners } = useQueryPartner().useGetByFamilyId(
-    thisCase?.family_id
-  );
-  const { mutate: assignPartner } = useQueryCase().useAssignPartner();
-
   const handleAssign = (e: any) => {
     e.preventDefault();
-    if (partner) {
+    if (specialist) {
       return updateCase(
         {
           applicant: {
@@ -55,78 +59,25 @@ const CaseFormPartner = ({ thisCase }: any) => {
         },
         {
           onSuccess: () => {
-            return assignPartner(
+            assignSpecialist(
               {
                 case_id: thisCase?.case_id,
                 casestage_id: thisStage,
-                partner_id: partner,
+                specialist_id: specialist,
+                district_id: district,
                 scheduled_date: scheduledDate || null,
                 scheduled_time: scheduledTime || null,
               },
               {
                 onSuccess: () => {
+                  router.push(
+                    `/case/${thisCase?.case_id}/recepción de antecedentes`
+                  );
                   queryClient.invalidateQueries(["case", thisCase?.case_id]);
                 },
               }
             );
-          },
-        }
-      );
-    }
-  };
-
-  const handleSchedule = (e: any) => {
-    e.preventDefault();
-    if (partner) {
-      return updateCase(
-        {
-          applicant: {
-            id: thisCase?.applicant_id,
-          },
-          number: thisCase?.case_number,
-          product_id: thisCase?.product_id,
-          assistance_id: thisCase?.assistance_id,
-          stage_id: thisStage,
-          user_id: user_id,
-        },
-        {
-          onSuccess: () => {
-            assignPartner(
-              {
-                case_id: thisCase?.case_id,
-                casestage_id: thisStage,
-                partner_id: partner,
-                scheduled_date: scheduledDate || null,
-                scheduled_time: scheduledTime || null,
-              },
-              {
-                onSuccess: () => {
-                  return updateCase(
-                    {
-                      applicant: {
-                        id: thisCase?.applicant_id,
-                      },
-                      number: thisCase?.case_number,
-                      product_id: thisCase?.product_id,
-                      assistance_id: thisCase?.assistance_id,
-                      stage_id: stages?.find(
-                        (s: any) => s?.name === "Seguimiento"
-                      )?.id,
-                      user_id: user_id,
-                    },
-                    {
-                      onSuccess: () => {
-                        router.push(`/case/${thisCase?.case_id}/seguimiento`);
-                        queryClient.invalidateQueries([
-                          "case",
-                          thisCase?.case_id,
-                        ]);
-                      },
-                    }
-                  );
-                },
-              }
-            );
+            queryClient.invalidateQueries(["case", thisCase?.case_id]);
           },
         }
       );
@@ -137,12 +88,19 @@ const CaseFormPartner = ({ thisCase }: any) => {
     if (stages) {
       setThisStage(stages.find((s: any) => s.name.toLowerCase() === stage)?.id);
     }
-    if (getAssignedPartner) {
-      setPartner(getAssignedPartner?.partner_id);
-      setScheduledDate(getAssignedPartner?.scheduled_date?.split("T")[0]);
-      setScheduledTime(getAssignedPartner?.scheduled_time);
+    if (getAssignedSpecialist) {
+      setSpecialist(getAssignedSpecialist?.specialist_id);
+      setScheduledDate(getAssignedSpecialist?.scheduled_date?.split("T")[0]);
+      setScheduledTime(getAssignedSpecialist?.scheduled_time);
+      setDistrict(getAssignedSpecialist?.district_id);
     }
-  }, [stages, stage, getAssignedPartner]);
+  }, [stages, stage, getAssignedSpecialist]);
+
+  useEffect(() => {
+    if (specialists?.length === 0) {
+      setSpecialist("");
+    }
+  }, [district, specialists]);
 
   return (
     <div>
@@ -174,28 +132,44 @@ const CaseFormPartner = ({ thisCase }: any) => {
         </ContentCell>
         <ContentCell gap="20px">
           <ComboBox
-            label="Convenio"
-            placeHolder="Seleccione convenio"
-            data={partners}
+            label="Comuna de atención"
+            placeHolder="Seleccione comuna"
+            value={district}
+            data={districtList}
+            onChange={(e: any) => setDistrict(e.target.value)}
             width="525px"
-            value={partner}
-            onChange={(e: any) => setPartner(e.target.value)}
-            dataText="name"
+            dataText="district_name"
             dataValue="id"
           />
+          {specialists?.length > 0 && (
+            <ComboBox
+              label="Especialista"
+              placeHolder="Seleccione especialista"
+              data={specialists}
+              width="525px"
+              value={specialist}
+              onChange={(e: any) => setSpecialist(e.target.value)}
+              dataText="name"
+              dataValue="id"
+            />
+          )}
         </ContentCell>
-        {partner && (
+        {specialist && (
           <ContentCell gap="5px">
             <InputText
               label="Dirección"
-              value={partners?.find((p: any) => p.id === partner)?.address}
+              value={
+                specialists?.find((p: any) => p.id === specialist)?.address
+              }
               type="text"
               disabled={true}
               width="525px"
             />
             <InputText
               label="Comuna"
-              value={partners?.find((p: any) => p.id === partner)?.district}
+              value={
+                specialists?.find((p: any) => p.id === specialist)?.district
+              }
               type="text"
               disabled={true}
               width="525px"
@@ -203,27 +177,32 @@ const CaseFormPartner = ({ thisCase }: any) => {
             <ContentRow gap="5px">
               <InputText
                 label="Email"
-                value={partners?.find((p: any) => p.id === partner)?.email}
+                value={
+                  specialists?.find((p: any) => p.id === specialist)?.email
+                }
                 type="text"
                 disabled={true}
                 width="260px"
               />
               <InputText
                 label="Teléfono"
-                value={partners?.find((p: any) => p.id === partner)?.phone}
+                value={
+                  specialists?.find((p: any) => p.id === specialist)?.phone
+                }
                 type="text"
                 disabled={true}
                 width="260px"
               />
             </ContentRow>
-            {partner !== getAssignedPartner?.partner_id ? (
+            {specialist !== getAssignedSpecialist?.specialist_id ? (
               <Button
-                text="Asignar convenio"
+                text="Asignar especialista"
                 type="button"
+                className="w-full"
                 onClick={handleAssign}
               />
             ) : (
-              getAssignedPartner && (
+              getAssignedSpecialist && (
                 <div className="mt-5">
                   <ContentCell gap="5px">
                     <ContentRow gap="5px">
@@ -231,25 +210,37 @@ const CaseFormPartner = ({ thisCase }: any) => {
                         label="Fecha de visita"
                         type="date"
                         width="260px"
-                        minDate={minDate.toISOString().split("T")[0]}
-                        value={scheduledDate}
+                        value={
+                          thisCase?.stages.find(
+                            (s: any) => s.name === "Designación de convenio"
+                          )
+                            ? thisCase?.stages.find(
+                                (s: any) => s.name === "Designación de convenio"
+                              )?.scheduled_date
+                            : scheduledDate
+                        }
                         onChange={(e: any) => setScheduledDate(e.target.value)}
                       />
                       <InputText
                         label="Hora de visita"
                         type="time"
                         width="260px"
-                        value={scheduledTime}
+                        value={
+                          thisCase?.stages.find(
+                            (s: any) => s.name === "Designación de convenio"
+                          )
+                            ? thisCase?.stages.find(
+                                (s: any) => s.name === "Designación de convenio"
+                              )?.scheduled_time
+                            : scheduledTime
+                        }
                         onChange={(e: any) => setScheduledTime(e.target.value)}
-                        minTime="09:00"
-                        maxTime="18:00"
-                        step="3600"
                       />
                     </ContentRow>
                     <Button
                       text="Programar visita"
                       type="button"
-                      onClick={handleSchedule}
+                      onClick={handleAssign}
                     />
                   </ContentCell>
                 </div>
@@ -262,4 +253,4 @@ const CaseFormPartner = ({ thisCase }: any) => {
   );
 };
 
-export default CaseFormPartner;
+export default CaseFormReimbursement;

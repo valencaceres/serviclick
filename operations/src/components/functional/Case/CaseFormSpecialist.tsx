@@ -43,6 +43,8 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
     thisStage
   );
 
+  const minDate = new Date();
+
   const handleAssign = (e: any) => {
     e.preventDefault();
     if (specialist) {
@@ -74,7 +76,65 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
                 },
               }
             );
-            queryClient.invalidateQueries(["case", thisCase?.case_id]);
+          },
+        }
+      );
+    }
+  };
+
+  const handleSchedule = (e: any) => {
+    e.preventDefault();
+    if (specialist) {
+      return updateCase(
+        {
+          applicant: {
+            id: thisCase?.applicant_id,
+          },
+          number: thisCase?.case_number,
+          product_id: thisCase?.product_id,
+          assistance_id: thisCase?.assistance_id,
+          stage_id: thisStage,
+          user_id: user_id,
+        },
+        {
+          onSuccess: () => {
+            assignSpecialist(
+              {
+                case_id: thisCase?.case_id,
+                casestage_id: thisStage,
+                specialist_id: specialist,
+                district_id: district,
+                scheduled_date: scheduledDate || null,
+                scheduled_time: scheduledTime || null,
+              },
+              {
+                onSuccess: () => {
+                  return updateCase(
+                    {
+                      applicant: {
+                        id: thisCase?.applicant_id,
+                      },
+                      number: thisCase?.case_number,
+                      product_id: thisCase?.product_id,
+                      assistance_id: thisCase?.assistance_id,
+                      stage_id: stages?.find(
+                        (s: any) => s?.name === "Seguimiento"
+                      )?.id,
+                      user_id: user_id,
+                    },
+                    {
+                      onSuccess: () => {
+                        router.push(`/case/${thisCase?.case_id}/seguimiento`);
+                        queryClient.invalidateQueries([
+                          "case",
+                          thisCase?.case_id,
+                        ]);
+                      },
+                    }
+                  );
+                },
+              }
+            );
           },
         }
       );
@@ -207,37 +267,25 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
                         label="Fecha de visita"
                         type="date"
                         width="260px"
-                        value={
-                          thisCase?.stages.find(
-                            (s: any) => s.name === "Designación de convenio"
-                          )
-                            ? thisCase?.stages.find(
-                                (s: any) => s.name === "Designación de convenio"
-                              )?.scheduled_date
-                            : scheduledDate
-                        }
+                        minDate={minDate.toISOString().split("T")[0]}
+                        value={scheduledDate}
                         onChange={(e: any) => setScheduledDate(e.target.value)}
                       />
                       <InputText
                         label="Hora de visita"
                         type="time"
                         width="260px"
-                        value={
-                          thisCase?.stages.find(
-                            (s: any) => s.name === "Designación de convenio"
-                          )
-                            ? thisCase?.stages.find(
-                                (s: any) => s.name === "Designación de convenio"
-                              )?.scheduled_time
-                            : scheduledTime
-                        }
+                        value={scheduledTime}
                         onChange={(e: any) => setScheduledTime(e.target.value)}
+                        minTime="09:00"
+                        maxTime="18:00"
+                        step="3600"
                       />
                     </ContentRow>
                     <Button
                       text="Programar visita"
                       type="button"
-                      onClick={handleAssign}
+                      onClick={handleSchedule}
                     />
                   </ContentCell>
                 </div>

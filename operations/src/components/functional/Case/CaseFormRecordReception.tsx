@@ -54,8 +54,25 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
           },
           {
             onSuccess: () => {
-              router.push(`/case/${thisCase?.case_id}/evaluación del evento`);
-              queryClient.invalidateQueries(["case", thisCase?.case_id]);
+              return updateCase(
+                {
+                  applicant: {
+                    id: thisCase?.applicant_id,
+                  },
+                  number: thisCase?.case_number,
+                  product_id: thisCase?.product_id,
+                  assistance_id: thisCase?.assistance_id,
+                  stage_id: stages?.find((s: any) => s?.name === "Seguimiento")
+                    ?.id,
+                  user_id: user_id,
+                },
+                {
+                  onSuccess: () => {
+                    router.push(`/case/${thisCase?.case_id}/seguimiento`);
+                    queryClient.invalidateQueries(["case", thisCase?.case_id]);
+                  },
+                }
+              );
             },
           }
         );
