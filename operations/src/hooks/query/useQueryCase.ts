@@ -48,6 +48,11 @@ const getAssignedPartner = async (case_id: string, casestage_id: string) => {
   return data;
 };
 
+const reimburse = async (reimburseData: any) => {
+  const { data } = await apiInstance.post(`/case/reimburse`, reimburseData);
+  return data;
+};
+
 const assignSpecliast = async (newSpecialist: any) => {
   const { data } = await apiInstance.post(
     `/case/assignSpecialist`,
@@ -137,6 +142,14 @@ const useGetAssignedSpecialist = (case_id: string, casestage_id: string) => {
   );
 };
 
+const useReimburse = () => {
+  return useMutation(["case"], reimburse, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["case"]);
+    },
+  });
+};
+
 const useQueryCase = () => {
   return {
     useCreate,
@@ -149,6 +162,7 @@ const useQueryCase = () => {
     useGetAssignedPartner,
     useAssignSpecialist,
     useGetAssignedSpecialist,
+    useReimburse,
   };
 };
 

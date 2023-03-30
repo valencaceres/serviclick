@@ -39,8 +39,6 @@ const CaseFormService = () => {
     }
   }, [data]);
 
-  console.log(data);
-  console.log(assistances);
   useEffect(() => {
     setProduct(
       data.products.find((item: any) => item.assistance.id === assistance)

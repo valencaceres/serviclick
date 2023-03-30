@@ -45,6 +45,7 @@ const getById = async (case_id: string, stage_id: string) => {
   try {
     const result = await pool.query(
       `SELECT * FROM app.casestagepartner
+      INNER JOIN app.partner ON app.casestagepartner.partner_id = app.partner.id
       WHERE case_id = $1
       AND casestage_id = $2`,
       [case_id, stage_id]

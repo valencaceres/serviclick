@@ -10,7 +10,11 @@ import { useQueryCase, useQueryStage } from "../../../hooks/query";
 import { useUser } from "../../../hooks";
 import TextArea from "../../ui/TextArea/TextArea";
 import ComboBox from "../../ui/ComboBox";
-import { summaryActions } from "../../../data/masters";
+import {
+  summaryActions,
+  selfSolutionSummaryActions,
+} from "../../../data/masters";
+import { useCase } from "../../../store/hooks/useCase";
 
 const CaseTracking = ({ thisCase }: any) => {
   const router = useRouter();
@@ -19,24 +23,30 @@ const CaseTracking = ({ thisCase }: any) => {
 
   const [thisStage, setThisStage] = useState<string>("");
   const [justification, setJustification] = useState<string>("");
+  const [specialsit, setSpecialsit] = useState<string>("");
+  const [partner, setPartner] = useState<string>("");
   const [scheduledDate, setScheduledDate] = useState<string>("");
   const [scheduledTime, setScheduledTime] = useState<string>("");
   const [confirmDate, setConfirmDate] = useState<string>("");
   const [confirmTime, setConfirmTime] = useState<string>("");
   const [evaluation, setEvaluation] = useState<string>("");
+  const [assistance, setAssistance] = useState<any>(null);
+  const [refundAmount, setRefundAmount] = useState<string>("");
 
+  const { data: beneficiary, getBeneficiaryByRut } = useCase();
   const { id: user_id } = useUser().user;
   const { data: stages } = useQueryStage().useGetAll();
-  const { mutate: updateCase } = useQueryCase().useCreate();
+  const { mutate: updateCase, data: newStage } = useQueryCase().useCreate();
   const { data: getAssignedPartner } = useQueryCase().useGetAssignedPartner(
     thisCase?.case_id,
-    stages.find((s: any) => s?.name === "Designación de convenio")?.id
+    stages?.find((s: any) => s?.name === "Designación de convenio")?.id
   );
   const { data: getAssignedSpecialist } =
     useQueryCase().useGetAssignedSpecialist(
       thisCase?.case_id,
-      stages.find((s: any) => s?.name === "Designación de especialista")?.id
+      stages?.find((s: any) => s?.name === "Designación de especialista")?.id
     );
+  const { mutate: reimburse } = useQueryCase().useReimburse();
 
   const handleConfirm = (e: any) => {
     e.preventDefault();
@@ -60,15 +70,71 @@ const CaseTracking = ({ thisCase }: any) => {
     );
   };
 
+  const handleReimburse = (e: any) => {
+    e.preventDefault();
+    return updateCase(
+      {
+        applicant: {
+          id: thisCase?.applicant_id,
+        },
+        number: thisCase?.case_number,
+        product_id: thisCase?.product_id,
+        assistance_id: thisCase?.assistance_id,
+        stage_id: stages.find((s: any) => s?.name === "Resolución")?.id,
+        user_id: user_id,
+      },
+      {
+        onSuccess: () => {
+          reimburse(
+            {
+              case_id: thisCase?.case_id,
+              casestage_id: thisCase?.stages?.find(
+                (s: any) => s?.stage === "Seguimiento"
+              )?.id,
+              amount: refundAmount,
+              currency: assistance?.assistance.currency,
+            },
+            {
+              onSuccess: () => {
+                queryClient.invalidateQueries(["case", thisCase?.case_id]);
+                router.push(`/case/${thisCase?.case_id}/resolución`);
+              },
+            }
+          );
+        },
+      }
+    );
+  };
+
+  console.log(thisCase);
+
+  useEffect(() => {
+    if (thisCase) {
+      getBeneficiaryByRut(thisCase?.rut);
+    }
+  }, [thisCase, router]);
+
+  useEffect(() => {
+    if (thisCase) {
+      setAssistance(
+        beneficiary.products.find(
+          (p: any) => p.assistance.id === thisCase?.assistance_id
+        )
+      );
+    }
+  }, [beneficiary]);
+
   useEffect(() => {
     if (stages) {
       setThisStage(stages.find((s: any) => s.name.toLowerCase() === stage)?.id);
     }
     if (getAssignedPartner) {
+      setPartner(getAssignedPartner?.partner_id);
       setScheduledDate(getAssignedPartner?.scheduled_date?.split("T")[0]);
       setScheduledTime(getAssignedPartner?.scheduled_time);
     }
     if (getAssignedSpecialist) {
+      setSpecialsit(getAssignedSpecialist?.specialist_id);
       setScheduledDate(getAssignedSpecialist?.scheduled_date?.split("T")[0]);
       setScheduledTime(getAssignedSpecialist?.scheduled_time);
     }
@@ -108,8 +174,17 @@ const CaseTracking = ({ thisCase }: any) => {
               s.stage === "Designación de convenio" ||
               s.stage === "Designación de especialista"
           ) ? (
-            <ContentCell>
+            <ContentCell gap="5px">
               <h2 className="font-semibold">Hora programada</h2>
+              {getAssignedPartner && (
+                <InputText
+                  label="Convenio"
+                  value={getAssignedPartner?.name}
+                  type="text"
+                  disabled={true}
+                  width="525px"
+                />
+              )}
               <ContentRow gap="5px">
                 <InputText
                   label="Fecha de visita"
@@ -137,7 +212,13 @@ const CaseTracking = ({ thisCase }: any) => {
         <ContentCell gap="20px">
           <ComboBox
             label="Seleccione una acción"
-            data={summaryActions}
+            data={
+              thisCase?.stages.find(
+                (s: any) => s.stage === "Solución particular"
+              )
+                ? selfSolutionSummaryActions
+                : summaryActions
+            }
             placeHolder="Seleccione una acción"
             onChange={(e: any) => setEvaluation(e.target.value)}
             width="525px"
@@ -241,6 +322,68 @@ const CaseTracking = ({ thisCase }: any) => {
                   e.preventDefault();
                 }}
               />
+            </ContentCell>
+          ) : evaluation.toLowerCase() === "reembolsar" ? (
+            <ContentCell gap="5px">
+              <ContentCell gap="5px">
+                <h2 className="font-semibold">Disponible</h2>
+                <ContentRow gap="5px">
+                  <InputText
+                    label={
+                      assistance?.assistance?.currency === "P"
+                        ? "Monto Disponible ($)"
+                        : "Monto Disponible (UF)"
+                    }
+                    value={
+                      assistance?.assistance?.currency === "P"
+                        ? parseInt(
+                            assistance?.assistance?.amount
+                          ).toLocaleString("es-CL", {
+                            style: "currency",
+                            currency: "CLP",
+                          })
+                        : assistance?.assistance?.amount + " UF" || ""
+                    }
+                    type="text"
+                    width="152px"
+                    disabled
+                  />
+                  <InputText
+                    label="Eventos restantes"
+                    value={assistance?.assistance?.events || ""}
+                    type="number"
+                    width="129px"
+                    disabled
+                  />
+                  <InputText
+                    label="Límite"
+                    value={assistance?.assistance?.maximum || ""}
+                    type="text"
+                    width="234px"
+                    disabled
+                  />
+                </ContentRow>
+              </ContentCell>
+              <ContentCell gap="5px">
+                <h2 className="font-semibold">Reembolsar</h2>
+                <InputText
+                  label={
+                    assistance?.assistance?.currency === "P"
+                      ? "Monto ($)"
+                      : "Monto (UF)"
+                  }
+                  value={refundAmount}
+                  type="number"
+                  width="525px"
+                  step={assistance?.assistance?.currency === "P" ? "" : "0.01"}
+                  onChange={(e: any) => setRefundAmount(e.target.value)}
+                />
+                <Button
+                  text="Reembolsar"
+                  type="button"
+                  onClick={handleReimburse}
+                />
+              </ContentCell>
             </ContentCell>
           ) : null}
         </ContentCell>

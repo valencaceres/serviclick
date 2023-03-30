@@ -44,6 +44,7 @@ const getById = async (id: string) => {
   try {
     const result = await pool.query(
       `SELECT CST.case_id,
+              CST.id AS stage_id,
               STA.name AS stage, 
               CST.createddate AS createddate,
               CAS.number AS case_number, 
@@ -119,6 +120,7 @@ const getById = async (id: string) => {
       applicant_email: result.rows[0].email,
       applicant_district: result.rows[0].district,
       stages: result.rows.map((row: any) => ({
+        id: row.stage_id,
         stage: row.stage,
         createddate: row.createddate,
         description: row.description,

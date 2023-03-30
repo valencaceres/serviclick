@@ -5,6 +5,7 @@ import * as CaseStage from "../models/caseStage";
 import * as CaseStageAttach from "../models/caseStageAttach";
 import * as CaseStagePartner from "../models/caseStagePartner";
 import * as CaseStageSpecialist from "../models/caseStageSpecialist";
+import * as CaseStageResult from "../models/caseStageResult";
 import * as Person from "../models/person";
 
 const create = async (req: any, res: any) => {
@@ -375,6 +376,32 @@ const getAssignedSpecialist = async (req: any, res: any) => {
   return res.status(200).json(caseStageResponse.data);
 };
 
+const reimburse = async (req: any, res: any) => {
+  const { case_id, casestage_id, amount, currency } = req.body;
+
+  const caseStageResponse = await CaseStageResult.create(
+    case_id,
+    casestage_id,
+    amount,
+    currency
+  );
+
+  if (!caseStageResponse.success) {
+    createLogger.error({
+      model: `caseStageResult/reimburse`,
+      error: caseStageResponse.error,
+    });
+    return res.status(500).json({ error: caseStageResponse.error });
+  }
+
+  createLogger.info({
+    controller: `case/reimburse`,
+    message: `OK - Reimbursement created`,
+  });
+
+  return res.status(200).json(caseStageResponse.data);
+};
+
 export {
   create,
   uploadDocument,
@@ -387,4 +414,5 @@ export {
   getAssignedPartner,
   assignSpecialist,
   getAssignedSpecialist,
+  reimburse,
 };

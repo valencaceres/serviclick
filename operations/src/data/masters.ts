@@ -92,3 +92,14 @@ export const summaryActions = [
     name: "Rechazar caso",
   },
 ];
+
+export const selfSolutionSummaryActions = [
+  {
+    id: 1,
+    name: "Reembolsar",
+  },
+  {
+    id: 2,
+    name: "Rechazar caso",
+  },
+];

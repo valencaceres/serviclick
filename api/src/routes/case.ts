@@ -14,6 +14,7 @@ import {
   getAssignedPartner,
   assignSpecialist,
   getAssignedSpecialist,
+  reimburse,
 } from "../controllers/case";
 
 const upload = multer();
@@ -39,5 +40,6 @@ CaseRouter.get(
   auth,
   getAssignedSpecialist
 );
+CaseRouter.post("/reimburse", auth, reimburse);
 
 export default CaseRouter;
