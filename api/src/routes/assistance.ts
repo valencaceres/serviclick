@@ -9,6 +9,9 @@ import {
   getById,
   getFamilies,
   getByFamilyId,
+  getValues,
+  getValuesById,
+  getDocumentsById,
 } from "../controllers/assistance";
 
 const AssistanceRouter = Router();
@@ -20,5 +23,12 @@ AssistanceRouter.get("/getAll", auth, getAll);
 AssistanceRouter.get("/getById/:id", auth, getById);
 AssistanceRouter.get("/getFamilies", auth, getFamilies);
 AssistanceRouter.get("/getByFamilyId/:family_id", auth, getByFamilyId);
+AssistanceRouter.get("/getValues/:id", auth, getValues);
+AssistanceRouter.get(
+  "/getValuesById/:insured_id/:assistance_id/:product_id",
+  auth,
+  getValuesById
+);
+AssistanceRouter.get("/getDocumentsById/:id", auth, getDocumentsById);
 
 export default AssistanceRouter;

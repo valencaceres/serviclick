@@ -1,0 +1,273 @@
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { useQueryClient } from "@tanstack/react-query";
+
+import { ContentCell, ContentRow } from "../../layout/Content";
+import Button from "../../ui/Button";
+import InputText from "../../ui/InputText";
+
+import {
+  useQueryCase,
+  useQueryPartner,
+  useQueryStage,
+} from "../../../hooks/query";
+import { useUser } from "../../../hooks";
+import ComboBox from "../../ui/ComboBox";
+
+const CaseFormPartner = ({ thisCase }: any) => {
+  const router = useRouter();
+  const { stage } = router.query;
+  const queryClient = useQueryClient();
+
+  const [thisStage, setThisStage] = useState<string>("");
+  const [partner, setPartner] = useState<string>("");
+  const [scheduledDate, setScheduledDate] = useState<string>("");
+  const [scheduledTime, setScheduledTime] = useState<string>("");
+
+  const minDate = new Date();
+
+  const { id: user_id } = useUser().user;
+  const { data: stages } = useQueryStage().useGetAll();
+  const { data: getAssignedPartner } = useQueryCase().useGetAssignedPartner(
+    thisCase?.case_id,
+    thisStage
+  );
+
+  const { mutate: updateCase } = useQueryCase().useCreate();
+  const { data: partners } = useQueryPartner().useGetByFamilyId(
+    thisCase?.family_id
+  );
+  const { mutate: assignPartner } = useQueryCase().useAssignPartner();
+
+  const handleAssign = (e: any) => {
+    e.preventDefault();
+    if (partner) {
+      return updateCase(
+        {
+          applicant: {
+            id: thisCase?.applicant_id,
+          },
+          number: thisCase?.case_number,
+          product_id: thisCase?.product_id,
+          assistance_id: thisCase?.assistance_id,
+          stage_id: thisStage,
+          user_id: user_id,
+          isactive: true,
+        },
+        {
+          onSuccess: () => {
+            return assignPartner(
+              {
+                case_id: thisCase?.case_id,
+                casestage_id: thisStage,
+                partner_id: partner,
+                scheduled_date: scheduledDate || null,
+                scheduled_time: scheduledTime || null,
+              },
+              {
+                onSuccess: () => {
+                  queryClient.invalidateQueries(["case", thisCase?.case_id]);
+                },
+              }
+            );
+          },
+        }
+      );
+    }
+  };
+
+  const handleSchedule = (e: any) => {
+    e.preventDefault();
+    if (partner) {
+      return updateCase(
+        {
+          applicant: {
+            id: thisCase?.applicant_id,
+          },
+          number: thisCase?.case_number,
+          product_id: thisCase?.product_id,
+          assistance_id: thisCase?.assistance_id,
+          stage_id: thisStage,
+          user_id: user_id,
+          isactive: true,
+        },
+        {
+          onSuccess: () => {
+            assignPartner(
+              {
+                case_id: thisCase?.case_id,
+                casestage_id: thisStage,
+                partner_id: partner,
+                scheduled_date: scheduledDate || null,
+                scheduled_time: scheduledTime || null,
+              },
+              {
+                onSuccess: () => {
+                  return updateCase(
+                    {
+                      applicant: {
+                        id: thisCase?.applicant_id,
+                      },
+                      number: thisCase?.case_number,
+                      product_id: thisCase?.product_id,
+                      assistance_id: thisCase?.assistance_id,
+                      stage_id: stages?.find(
+                        (s: any) => s?.name === "Seguimiento"
+                      )?.id,
+                      user_id: user_id,
+                      isactive: true,
+                    },
+                    {
+                      onSuccess: () => {
+                        router.push(`/case/${thisCase?.case_id}/seguimiento`);
+                        queryClient.invalidateQueries([
+                          "case",
+                          thisCase?.case_id,
+                        ]);
+                      },
+                    }
+                  );
+                },
+              }
+            );
+          },
+        }
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (stages) {
+      setThisStage(stages.find((s: any) => s.name.toLowerCase() === stage)?.id);
+    }
+    if (getAssignedPartner) {
+      setPartner(getAssignedPartner?.partner_id);
+      setScheduledDate(getAssignedPartner?.scheduled_date?.split("T")[0]);
+      setScheduledTime(getAssignedPartner?.scheduled_time);
+    }
+  }, [stages, stage, getAssignedPartner]);
+
+  return (
+    <div>
+      <ContentCell gap="20px">
+        <ContentCell gap="5px">
+          <InputText
+            label="Cliente"
+            value={"Embotelladora Andina S.A."}
+            type="text"
+            disabled={true}
+            width="525px"
+          />
+          <InputText
+            label="Asegurado"
+            value={
+              thisCase?.applicant_name + " " + thisCase?.applicant_lastname
+            }
+            type="text"
+            disabled={true}
+            width="525px"
+          />
+          <InputText
+            label="Servicio"
+            value={thisCase?.assistance}
+            type="text"
+            disabled={true}
+            width="525px"
+          />
+        </ContentCell>
+        <ContentCell gap="20px">
+          <ComboBox
+            label="Convenio"
+            placeHolder="Seleccione convenio"
+            data={partners}
+            width="525px"
+            value={partner}
+            onChange={(e: any) => setPartner(e.target.value)}
+            dataText="name"
+            dataValue="id"
+            enabled={thisCase?.is_active === true ? true : false}
+          />
+        </ContentCell>
+        {partner && (
+          <ContentCell gap="5px">
+            <InputText
+              label="Dirección"
+              value={partners?.find((p: any) => p.id === partner)?.address}
+              type="text"
+              disabled={true}
+              width="525px"
+            />
+            <InputText
+              label="Comuna"
+              value={partners?.find((p: any) => p.id === partner)?.district}
+              type="text"
+              disabled={true}
+              width="525px"
+            />
+            <ContentRow gap="5px">
+              <InputText
+                label="Email"
+                value={partners?.find((p: any) => p.id === partner)?.email}
+                type="text"
+                disabled={true}
+                width="260px"
+              />
+              <InputText
+                label="Teléfono"
+                value={partners?.find((p: any) => p.id === partner)?.phone}
+                type="text"
+                disabled={true}
+                width="260px"
+              />
+            </ContentRow>
+            {partner !== getAssignedPartner?.partner_id ? (
+              <Button
+                text="Asignar convenio"
+                type="button"
+                enabled={thisCase?.is_active === true ? true : false}
+                onClick={handleAssign}
+              />
+            ) : (
+              getAssignedPartner && (
+                <div className="mt-5">
+                  <ContentCell gap="5px">
+                    <ContentRow gap="5px">
+                      <InputText
+                        label="Fecha de visita"
+                        type="date"
+                        width="260px"
+                        minDate={minDate.toISOString().split("T")[0]}
+                        value={scheduledDate}
+                        onChange={(e: any) => setScheduledDate(e.target.value)}
+                        disabled={thisCase?.is_active === true ? false : true}
+                      />
+                      <InputText
+                        label="Hora de visita"
+                        type="time"
+                        width="260px"
+                        value={scheduledTime}
+                        onChange={(e: any) => setScheduledTime(e.target.value)}
+                        minTime="09:00"
+                        maxTime="18:00"
+                        step="3600"
+                        disabled={thisCase?.is_active === true ? false : true}
+                      />
+                    </ContentRow>
+                    <Button
+                      text="Programar visita"
+                      type="button"
+                      enabled={thisCase?.is_active === true ? true : false}
+                      onClick={handleSchedule}
+                    />
+                  </ContentCell>
+                </div>
+              )
+            )}
+          </ContentCell>
+        )}
+      </ContentCell>
+    </div>
+  );
+};
+
+export default CaseFormPartner;

@@ -16,6 +16,11 @@ type InputTextT = {
   isValid?: boolean;
   disabled?: boolean;
   className?: any;
+  minDate?: string;
+  minTime?: string;
+  maxTime?: string;
+  step?: string;
+  timeFormat?: string;
 };
 
 const InputText = ({
@@ -34,6 +39,11 @@ const InputText = ({
   isValid = true,
   disabled = false,
   className,
+  minDate,
+  minTime,
+  maxTime,
+  step,
+  timeFormat,
 }: InputTextT) => {
   let iconName;
 
@@ -56,6 +66,9 @@ const InputText = ({
         style={{ display: display ? "block" : "none" }}
         maxLength={maxLength}
         disabled={disabled}
+        min={minDate ? minDate : minTime}
+        max={maxTime}
+        step={step}
       />
       {label && display && <label htmlFor={id}>{label}</label>}
       {icon && display && (

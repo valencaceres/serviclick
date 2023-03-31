@@ -79,14 +79,13 @@
 
       &:hover {
         .cell {
-          background-color: #959595;
-          color: white;
+          background-color: $ultra-light-gray-color;
 
           span {
-            color: white;
+            color: $gray-color;
 
             &:hover {
-              color: red;
+              color: $blue-color;
             }
           }
         }

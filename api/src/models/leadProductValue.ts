@@ -100,4 +100,27 @@ const getByInsuredId: any = async (
   }
 };
 
-export { deleteByInsuredId, create, getByInsuredId };
+const getById: any = async (
+  insured_id: string,
+  product_id: string,
+  assistance_id: string
+) => {
+  try {
+    const result = await pool.query(
+      `SELECT LPV.value
+      FROM app.leadproductvalue LPV
+      INNER JOIN app.assistancevalue ASV ON LPV.value_id = ASV.value_id
+      INNER JOIN app.value VAL on LPV.value_id = VAL.id
+      WHERE LPV.insured_id = $1 
+      AND LPV.product_id = $2 
+      AND ASV.assistance_id = $3`,
+      [insured_id, product_id, assistance_id]
+    );
+
+    return { success: true, data: result.rows, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+export { deleteByInsuredId, create, getByInsuredId, getById };

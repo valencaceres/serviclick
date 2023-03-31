@@ -54,3 +54,48 @@ export const years = [
   { id: "2011", name: "2011" },
   { id: "2010", name: "2010" },
 ];
+
+export const decisions = [
+  {
+    id: 1,
+    name: "Designación de convenio",
+  },
+  {
+    id: 2,
+    name: "Designación de especialista",
+  },
+  {
+    id: 4,
+    name: "Solución particular",
+  },
+  {
+    id: 3,
+    name: "Rechazar caso",
+  },
+];
+
+export const summaryActions = [
+  {
+    id: 1,
+    name: "Confirmar visita",
+  },
+  {
+    id: 2,
+    name: "Reprogramar visita",
+  },
+  {
+    id: 3,
+    name: "Rechazar caso",
+  },
+];
+
+export const selfSolutionSummaryActions = [
+  {
+    id: 1,
+    name: "Reembolsar",
+  },
+  {
+    id: 2,
+    name: "Rechazar caso",
+  },
+];

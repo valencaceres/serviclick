@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { apiInstance } from "../../utils/api";
 
 type UserT = {
+  id: string;
   rut: string;
   name: string;
   paternalLastName: string;
@@ -22,6 +23,7 @@ type StateT = {
 const initialState: StateT = {
   list: [],
   user: {
+    id: "",
     rut: "",
     name: "",
     paternalLastName: "",

@@ -17,6 +17,11 @@
 
   &:disabled {
     background-color: $light-gray-color;
+
+    &:hover {
+      transform: none;
+      background-color: $light-gray-color;
+    }
   }
 
   &:active {

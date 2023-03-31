@@ -8,7 +8,7 @@
   justify-content: center;
 
   .input {
-    width: 303px;
+    width: 100%;
     height: 50px;
     border: 1px solid $light-gray-color;
     background-color: $white-color;
@@ -20,7 +20,6 @@
     padding-top: 15px;
     text-align: left;
     font-size: pxToRem(16);
-    width: 100%;
     color: black;
 
     &::-webkit-inner-spin-button {

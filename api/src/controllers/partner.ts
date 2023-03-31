@@ -40,14 +40,16 @@ const create = async (req: any, res: any) => {
     return;
   }
 
-  const deleteSpecialtys = await PartnerSpecialty.deleteByPartnerId(partner_id);
+  const deleteSpecialties = await PartnerSpecialty.deleteByPartnerId(
+    partner_id
+  );
 
-  if (!deleteSpecialtys.success) {
+  if (!deleteSpecialties.success) {
     createLogger.error({
       model: `partnerSpecialty/deleteByPartnerId`,
-      error: deleteSpecialtys.error,
+      error: deleteSpecialties.error,
     });
-    res.status(500).json({ error: deleteSpecialtys.error });
+    res.status(500).json({ error: deleteSpecialties.error });
     return;
   }
 
@@ -227,6 +229,27 @@ const getByName = async (req: any, res: any) => {
   res.status(200).json(partnerResponse.data);
 };
 
+const getByFamilyId = async (req: any, res: any) => {
+  const { id } = req.params;
+  const partnerResponse = await Partner.getByFamilyId(id);
+
+  if (!partnerResponse.success) {
+    createLogger.error({
+      model: `partner/getByFamilyId`,
+      error: partnerResponse.error,
+    });
+    res.status(500).json({ error: partnerResponse.error });
+    return;
+  }
+
+  createLogger.info({
+    controller: `partner/getByFamilyId`,
+    message: `OK - Get Partners by Family Id`,
+  });
+
+  res.status(200).json(partnerResponse.data);
+};
+
 export {
   create,
   getAll,
@@ -236,6 +259,7 @@ export {
   deletePartner,
   getBySpecialtyId,
   getByName,
+  getByFamilyId,
 };
 
 const functionGetById = async (id: string) => {
