@@ -41,7 +41,7 @@ const CaseStageList = () => {
             <TableCellEnd />
           </TableHeader>
           <TableDetail>
-            {data?.stages.map((stage: any, idx: number) => (
+            {data?.stages?.map((stage: any, idx: number) => (
               <TableRow key={idx}>
                 <TableCell width="95px" align="center">
                   {new Date(stage.createddate).toISOString().substring(0, 10)}

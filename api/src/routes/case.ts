@@ -15,6 +15,8 @@ import {
   assignSpecialist,
   getAssignedSpecialist,
   reimburse,
+  getAssistanceData,
+  getReimbursment,
 } from "../controllers/case";
 
 const upload = multer();
@@ -41,5 +43,11 @@ CaseRouter.get(
   getAssignedSpecialist
 );
 CaseRouter.post("/reimburse", auth, reimburse);
+CaseRouter.get(
+  "/getAssistanceData/:applicant_id/:assistance_id/:product_id",
+  auth,
+  getAssistanceData
+);
+CaseRouter.get("/getReimbursment/:case_id", auth, getReimbursment);
 
 export default CaseRouter;

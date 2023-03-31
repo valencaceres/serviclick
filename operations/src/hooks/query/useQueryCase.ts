@@ -68,6 +68,22 @@ const getAssignedSpecialist = async (case_id: string, casestage_id: string) => {
   return data;
 };
 
+const getAssistanceData = async (
+  applicant_id: string,
+  assistance_id: string,
+  product_id: string
+) => {
+  const { data } = await apiInstance.get(
+    `/case/getAssistanceData/${applicant_id}/${assistance_id}/${product_id}`
+  );
+  return data;
+};
+
+const getReimbursment = async (case_id: string) => {
+  const { data } = await apiInstance.get(`/case/getReimbursment/${case_id}`);
+  return data;
+};
+
 const useGetAll = () => {
   return useQuery(["cases"], getAll);
 };
@@ -150,6 +166,26 @@ const useReimburse = () => {
   });
 };
 
+const useGetAssistanceData = (
+  applicant_id: string,
+  assistance_id: string,
+  product_id: string
+) => {
+  return useQuery(
+    ["case", applicant_id, assistance_id, product_id],
+    () => getAssistanceData(applicant_id, assistance_id, product_id),
+    {
+      enabled: !!applicant_id && !!assistance_id && !!product_id,
+    }
+  );
+};
+
+const useGetReimbursment = (case_id: string) => {
+  return useQuery(["caseReimburse", case_id], () => getReimbursment(case_id), {
+    enabled: !!case_id,
+  });
+};
+
 const useQueryCase = () => {
   return {
     useCreate,
@@ -163,6 +199,8 @@ const useQueryCase = () => {
     useAssignSpecialist,
     useGetAssignedSpecialist,
     useReimburse,
+    useGetAssistanceData,
+    useGetReimbursment,
   };
 };
 

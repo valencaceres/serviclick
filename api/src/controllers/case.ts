@@ -6,6 +6,7 @@ import * as CaseStageAttach from "../models/caseStageAttach";
 import * as CaseStagePartner from "../models/caseStagePartner";
 import * as CaseStageSpecialist from "../models/caseStageSpecialist";
 import * as CaseStageResult from "../models/caseStageResult";
+import * as CaseReimbursement from "../models/caseReimbursement";
 import * as Person from "../models/person";
 
 const create = async (req: any, res: any) => {
@@ -394,12 +395,73 @@ const reimburse = async (req: any, res: any) => {
     return res.status(500).json({ error: caseStageResponse.error });
   }
 
+  const caseReimburse = await CaseReimbursement.create(
+    case_id,
+    caseStageResponse.data.id,
+    null,
+    "Pendiente"
+  );
+
+  if (!caseReimburse.success) {
+    createLogger.error({
+      model: `caseReimbursement/reimburse`,
+      error: caseReimburse.error,
+    });
+    return res.status(500).json({ error: caseReimburse.error });
+  }
+
   createLogger.info({
     controller: `case/reimburse`,
     message: `OK - Reimbursement created`,
   });
 
   return res.status(200).json(caseStageResponse.data);
+};
+
+const getAssistanceData = async (req: any, res: any) => {
+  const { applicant_id, assistance_id, product_id } = req.params;
+
+  const response = await Case.getAssistanceData(
+    applicant_id,
+    assistance_id,
+    product_id
+  );
+
+  if (!response.success) {
+    createLogger.error({
+      model: `case/getAssistanceData`,
+      error: response.error,
+    });
+    return res.status(500).json({ error: response.error });
+  }
+
+  createLogger.info({
+    controller: `case/getAssistanceData`,
+    message: `OK - Assistance data found`,
+  });
+
+  return res.status(200).json(response.data);
+};
+
+const getReimbursment = async (req: any, res: any) => {
+  const { case_id } = req.params;
+
+  const response = await CaseStageResult.getByCase(case_id);
+
+  if (!response.success) {
+    createLogger.error({
+      model: `caseStageResult/getReimbursment`,
+      error: response.error,
+    });
+    return res.status(500).json({ error: response.error });
+  }
+
+  createLogger.info({
+    controller: `case/getReimbursment`,
+    message: `OK - Reimbursment found`,
+  });
+
+  return res.status(200).json(response.data);
 };
 
 export {
@@ -415,4 +477,6 @@ export {
   assignSpecialist,
   getAssignedSpecialist,
   reimburse,
+  getAssistanceData,
+  getReimbursment,
 };

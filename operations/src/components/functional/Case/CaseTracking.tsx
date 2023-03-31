@@ -14,7 +14,6 @@ import {
   summaryActions,
   selfSolutionSummaryActions,
 } from "../../../data/masters";
-import { useCase } from "../../../store/hooks/useCase";
 
 const CaseTracking = ({ thisCase }: any) => {
   const router = useRouter();
@@ -33,7 +32,6 @@ const CaseTracking = ({ thisCase }: any) => {
   const [assistance, setAssistance] = useState<any>(null);
   const [refundAmount, setRefundAmount] = useState<string>("");
 
-  const { data: beneficiary, getBeneficiaryByRut } = useCase();
   const { id: user_id } = useUser().user;
   const { data: stages } = useQueryStage().useGetAll();
   const { mutate: updateCase, data: newStage } = useQueryCase().useCreate();
@@ -46,6 +44,12 @@ const CaseTracking = ({ thisCase }: any) => {
       thisCase?.case_id,
       stages?.find((s: any) => s?.name === "Designación de especialista")?.id
     );
+
+  const { data: assistanceData } = useQueryCase().useGetAssistanceData(
+    thisCase?.applicant_id,
+    thisCase?.assistance_id,
+    thisCase?.product_id
+  );
   const { mutate: reimburse } = useQueryCase().useReimburse();
 
   const handleConfirm = (e: any) => {
@@ -92,7 +96,7 @@ const CaseTracking = ({ thisCase }: any) => {
                 (s: any) => s?.stage === "Seguimiento"
               )?.id,
               amount: refundAmount,
-              currency: assistance?.assistance.currency,
+              currency: assistanceData?.currency,
             },
             {
               onSuccess: () => {
@@ -106,23 +110,27 @@ const CaseTracking = ({ thisCase }: any) => {
     );
   };
 
-  console.log(thisCase);
-
-  useEffect(() => {
-    if (thisCase) {
-      getBeneficiaryByRut(thisCase?.rut);
-    }
-  }, [thisCase, router]);
-
-  useEffect(() => {
-    if (thisCase) {
-      setAssistance(
-        beneficiary.products.find(
-          (p: any) => p.assistance.id === thisCase?.assistance_id
-        )
-      );
-    }
-  }, [beneficiary]);
+  const handleReject = (e: any) => {
+    e.preventDefault();
+    return updateCase(
+      {
+        applicant: {
+          id: thisCase?.applicant_id,
+        },
+        number: thisCase?.case_number,
+        product_id: thisCase?.product_id,
+        assistance_id: thisCase?.assistance_id,
+        stage_id: stages.find((s: any) => s?.name === "Rechazado")?.id,
+        user_id: user_id,
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(["case", thisCase?.case_id]);
+          router.push(`/case`);
+        },
+      }
+    );
+  };
 
   useEffect(() => {
     if (stages) {
@@ -318,9 +326,7 @@ const CaseTracking = ({ thisCase }: any) => {
               <Button
                 text="Rechazar caso"
                 type="button"
-                onClick={(e: any) => {
-                  e.preventDefault();
-                }}
+                onClick={handleReject}
               />
             </ContentCell>
           ) : evaluation.toLowerCase() === "reembolsar" ? (
@@ -330,19 +336,19 @@ const CaseTracking = ({ thisCase }: any) => {
                 <ContentRow gap="5px">
                   <InputText
                     label={
-                      assistance?.assistance?.currency === "P"
+                      assistanceData?.currency === "P"
                         ? "Monto Disponible ($)"
                         : "Monto Disponible (UF)"
                     }
                     value={
-                      assistance?.assistance?.currency === "P"
+                      assistanceData?.currency === "P"
                         ? parseInt(
-                            assistance?.assistance?.amount
+                            assistanceData?.remaining_amount
                           ).toLocaleString("es-CL", {
                             style: "currency",
                             currency: "CLP",
                           })
-                        : assistance?.assistance?.amount + " UF" || ""
+                        : assistanceData?.remaining_amount + " UF"
                     }
                     type="text"
                     width="152px"
@@ -350,14 +356,14 @@ const CaseTracking = ({ thisCase }: any) => {
                   />
                   <InputText
                     label="Eventos restantes"
-                    value={assistance?.assistance?.events || ""}
+                    value={assistanceData?.remaining_events}
                     type="number"
                     width="129px"
                     disabled
                   />
                   <InputText
                     label="Límite"
-                    value={assistance?.assistance?.maximum || ""}
+                    value={assistanceData?.maximum}
                     type="text"
                     width="234px"
                     disabled
@@ -368,14 +374,14 @@ const CaseTracking = ({ thisCase }: any) => {
                 <h2 className="font-semibold">Reembolsar</h2>
                 <InputText
                   label={
-                    assistance?.assistance?.currency === "P"
+                    assistanceData?.currency === "P"
                       ? "Monto ($)"
                       : "Monto (UF)"
                   }
                   value={refundAmount}
                   type="number"
                   width="525px"
-                  step={assistance?.assistance?.currency === "P" ? "" : "0.01"}
+                  step={assistanceData?.currency === "P" ? "" : "0.01"}
                   onChange={(e: any) => setRefundAmount(e.target.value)}
                 />
                 <Button

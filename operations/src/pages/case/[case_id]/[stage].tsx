@@ -16,6 +16,7 @@ import CaseFormNew from "../../../components/functional/Case/CaseFormNew";
 import CaseFormPartner from "../../../components/functional/Case/CaseFormPartner";
 import CaseFormSpecialist from "../../../components/functional/Case/CaseFormSpecialist";
 import CaseTracking from "../../../components/functional/Case/CaseTracking";
+import CaseResolution from "../../../components/functional/Case/CaseResolution";
 
 const CaseStepPage = () => {
   const router = useRouter();
@@ -64,6 +65,8 @@ const CaseStepPage = () => {
         ? `Solución particular | Caso ${number}`
         : stage === "seguimiento"
         ? `Seguimiento | Caso ${number}`
+        : stage === "resolución"
+        ? `Resolución | Caso ${number}`
         : null
     );
   }, [router, thisCase]);
@@ -76,7 +79,7 @@ const CaseStepPage = () => {
         ) : stage === "contención" ? (
           <CaseFormNew thisCase={thisCase} />
         ) : stage === "registro de servicio" ? (
-          <CaseFormService thisCase={thisCase} />
+          <CaseFormService />
         ) : stage === "recepción de antecedentes" ? (
           <CaseFormRecordReception thisCase={thisCase} />
         ) : stage === "evaluación del evento" ? (
@@ -87,6 +90,8 @@ const CaseStepPage = () => {
           <CaseFormSpecialist thisCase={thisCase} />
         ) : stage === "seguimiento" ? (
           <CaseTracking thisCase={thisCase} />
+        ) : stage === "resolución" ? (
+          <CaseResolution thisCase={thisCase} />
         ) : null}
         <CaseStageList />
       </ContentHalfRow>
