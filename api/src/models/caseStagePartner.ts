@@ -5,7 +5,9 @@ const create: any = async (
   stage_id: string,
   partner_id: string,
   scheduled_date?: string,
-  scheduled_time?: string
+  scheduled_time?: string,
+  confirmed_date?: string,
+  confirmed_time?: string
 ) => {
   try {
     const caseStagePartner = await pool.query(
@@ -20,19 +22,29 @@ const create: any = async (
         `UPDATE app.casestagepartner
         SET scheduled_date = $1,
             scheduled_time = $2,
-            partner_id = $3
-        WHERE case_id = $4
-        AND casestage_id = $5`,
-        [scheduled_date, scheduled_time, partner_id, case_id, stage_id]
+            partner_id = $3,
+            confirmed_date = $4,
+            confirmed_time = $5
+        WHERE case_id = $6
+        AND casestage_id = $7`,
+        [
+          scheduled_date,
+          scheduled_time,
+          partner_id,
+          confirmed_date,
+          confirmed_time,
+          case_id,
+          stage_id,
+        ]
       );
 
       return { success: true, data: result.rows[0], error: null };
     }
 
     const result = await pool.query(
-      `INSERT INTO app.casestagepartner(case_id, casestage_id, partner_id, scheduled_date, scheduled_time)
-        VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-      [case_id, stage_id, partner_id, scheduled_date, scheduled_time]
+      `INSERT INTO app.casestagepartner(case_id, casestage_id, partner_id)
+        VALUES ($1, $2, $3) RETURNING *`,
+      [case_id, stage_id, partner_id]
     );
 
     return { success: true, data: result.rows[0], error: null };

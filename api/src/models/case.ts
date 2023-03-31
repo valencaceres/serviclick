@@ -7,7 +7,8 @@ const create: any = async (
   applicant: any,
   number?: number,
   product_id?: string,
-  assistance_id?: string
+  assistance_id?: string,
+  isactive?: boolean
 ) => {
   try {
     if (!product_id || !assistance_id) {
@@ -41,10 +42,10 @@ const create: any = async (
 
     if (resultCase.rows.length > 0) {
       const result = await pool.query(
-        `UPDATE app.case SET product_id = $1, assistance_id = $2
-        WHERE number = $3 AND applicant_id = $4
+        `UPDATE app.case SET product_id = $1, assistance_id = $2, isactive = $3
+        WHERE number = $4 AND applicant_id = $5
         RETURNING *`,
-        [product_id, assistance_id, number, applicant.id]
+        [product_id, assistance_id, isactive, number, applicant.id]
       );
 
       return { success: true, data: result.rows[0], error: null };

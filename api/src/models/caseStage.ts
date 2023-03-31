@@ -55,6 +55,7 @@ const getById = async (id: string) => {
               CST.description, 
               PSN.name AS operator_name,
               CAS.applicant_id,
+              CAS.isactive,
               FAM.id AS family_id,
               PSN.paternallastname AS operator_lastname,
               CASE WHEN INS.name IS NOT NULL THEN INS.name
@@ -119,6 +120,7 @@ const getById = async (id: string) => {
       applicant_phone: result.rows[0].phone,
       applicant_email: result.rows[0].email,
       applicant_district: result.rows[0].district,
+      is_active: result.rows[0].isactive,
       stages: result.rows.map((row: any) => ({
         id: row.stage_id,
         stage: row.stage,

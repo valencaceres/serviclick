@@ -26,24 +26,12 @@ const CaseFormService = () => {
   const [description, setDescription] = useState("");
   const [stage, setStage] = useState<string>("");
 
-  const { getBeneficiaryByRut, data, beneficiaryIsLoading } = useCase();
+  const { data } = useCase();
   const { id: user_id } = useUser().user;
 
   const { data: thisCase } = useQueryCase().useGetById(case_id as string);
   const { data: stageData } = useQueryStage().useGetAll();
   const { mutate: updateCase } = useQueryCase().useCreate();
-
-  useEffect(() => {
-    if (data?.products?.length > 0) {
-      setAssistances(data?.products.map((item: any) => item.assistance));
-    }
-  }, [data]);
-
-  useEffect(() => {
-    setProduct(
-      data.products.find((item: any) => item.assistance.id === assistance)
-    );
-  }, [assistance]);
 
   const handleAddService = () => {
     if (assistance && product && description) {
@@ -58,6 +46,7 @@ const CaseFormService = () => {
           stage_id: stage,
           user_id: user_id,
           description,
+          isactive: true,
         },
         {
           onSuccess: () => {
@@ -69,6 +58,18 @@ const CaseFormService = () => {
     }
     alert("Debe completar todos los campos");
   };
+
+  useEffect(() => {
+    if (data?.products?.length > 0) {
+      setAssistances(data?.products.map((item: any) => item.assistance));
+    }
+  }, [data]);
+
+  useEffect(() => {
+    setProduct(
+      data?.products?.find((item: any) => item.assistance.id === assistance)
+    );
+  }, [assistance]);
 
   useEffect(() => {
     setAssistance(
@@ -92,6 +93,7 @@ const CaseFormService = () => {
             placeHolder="Seleccione servicio"
             width="525px"
             value={assistance}
+            enabled={thisCase?.is_active || !thisCase ? true : false}
             onChange={(e: any) => setAssistance(e.target.value)}
             data={assistances}
             dataText="name"
@@ -141,6 +143,7 @@ const CaseFormService = () => {
             <CaseServiceTable product={product} />
             <TextArea
               value={description}
+              disabled={thisCase?.is_active ? false : true}
               onChange={(e: any) => setDescription(e.target.value)}
               label="Descripción del evento"
               width="525px"
@@ -148,7 +151,11 @@ const CaseFormService = () => {
             />
           </Fragment>
         ) : null}
-        <Button text="Continuar" onClick={handleAddService} />
+        <Button
+          text="Continuar"
+          enabled={thisCase?.is_active ? true : false}
+          onClick={handleAddService}
+        />
       </ContentCell>
       <LoadingMessage />
     </div>

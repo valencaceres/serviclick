@@ -56,6 +56,7 @@ const CaseFormReimbursement = ({ thisCase }: any) => {
           assistance_id: thisCase?.assistance_id,
           stage_id: thisStage,
           user_id: user_id,
+          isactive: true,
         },
         {
           onSuccess: () => {

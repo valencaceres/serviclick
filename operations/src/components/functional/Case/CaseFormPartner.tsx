@@ -52,6 +52,7 @@ const CaseFormPartner = ({ thisCase }: any) => {
           assistance_id: thisCase?.assistance_id,
           stage_id: thisStage,
           user_id: user_id,
+          isactive: true,
         },
         {
           onSuccess: () => {
@@ -88,6 +89,7 @@ const CaseFormPartner = ({ thisCase }: any) => {
           assistance_id: thisCase?.assistance_id,
           stage_id: thisStage,
           user_id: user_id,
+          isactive: true,
         },
         {
           onSuccess: () => {
@@ -113,6 +115,7 @@ const CaseFormPartner = ({ thisCase }: any) => {
                         (s: any) => s?.name === "Seguimiento"
                       )?.id,
                       user_id: user_id,
+                      isactive: true,
                     },
                     {
                       onSuccess: () => {
@@ -182,6 +185,7 @@ const CaseFormPartner = ({ thisCase }: any) => {
             onChange={(e: any) => setPartner(e.target.value)}
             dataText="name"
             dataValue="id"
+            enabled={thisCase?.is_active === true ? true : false}
           />
         </ContentCell>
         {partner && (
@@ -220,6 +224,7 @@ const CaseFormPartner = ({ thisCase }: any) => {
               <Button
                 text="Asignar convenio"
                 type="button"
+                enabled={thisCase?.is_active === true ? true : false}
                 onClick={handleAssign}
               />
             ) : (
@@ -234,6 +239,7 @@ const CaseFormPartner = ({ thisCase }: any) => {
                         minDate={minDate.toISOString().split("T")[0]}
                         value={scheduledDate}
                         onChange={(e: any) => setScheduledDate(e.target.value)}
+                        disabled={thisCase?.is_active === true ? false : true}
                       />
                       <InputText
                         label="Hora de visita"
@@ -244,11 +250,13 @@ const CaseFormPartner = ({ thisCase }: any) => {
                         minTime="09:00"
                         maxTime="18:00"
                         step="3600"
+                        disabled={thisCase?.is_active === true ? false : true}
                       />
                     </ContentRow>
                     <Button
                       text="Programar visita"
                       type="button"
+                      enabled={thisCase?.is_active === true ? true : false}
                       onClick={handleSchedule}
                     />
                   </ContentCell>

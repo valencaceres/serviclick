@@ -51,6 +51,7 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
               stages?.find((s: any) => s.name === "Recepción de antecedentes")
                 ?.id || "",
             user_id: user_id,
+            isactive: true,
           },
           {
             onSuccess: () => {
@@ -65,6 +66,7 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
                   stage_id: stages?.find((s: any) => s?.name === "Seguimiento")
                     ?.id,
                   user_id: user_id,
+                  isactive: true,
                 },
                 {
                   onSuccess: () => {
@@ -94,6 +96,7 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
           stages?.find((s: any) => s.name === "Recepción de antecedentes")
             ?.id || "",
         user_id: user_id,
+        isactive: true,
       },
       {
         onSuccess: () => {
@@ -107,6 +110,7 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
               assistance_id: thisCase?.assistance_id,
               stage_id: stages?.find((s: any) => s?.name === "Seguimiento")?.id,
               user_id: user_id,
+              isactive: true,
             },
             {
               onSuccess: () => {

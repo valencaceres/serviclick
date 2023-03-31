@@ -57,8 +57,8 @@ const ComboBox = ({
       label={label}
       width={width}
       value={
-        data.filter((item: any) => item[dataValue] === value).length > 0
-          ? data.filter((item: any) => item[dataValue] === value)[0][dataText]
+        data?.filter((item: any) => item[dataValue] === value).length > 0
+          ? data?.filter((item: any) => item[dataValue] === value)[0][dataText]
           : ""
       }
       disabled={!enabled}

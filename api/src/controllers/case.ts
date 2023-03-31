@@ -18,6 +18,7 @@ const create = async (req: any, res: any) => {
     description,
     stage_id,
     user_id,
+    isactive,
   } = req.body;
 
   if (applicant?.type === "C") {
@@ -49,7 +50,7 @@ const create = async (req: any, res: any) => {
     number,
     product_id,
     assistance_id,
-    description
+    isactive
   );
 
   if (!caseResponse.success) {
@@ -265,15 +266,24 @@ const getNewCaseNumber = async (req: any, res: any) => {
 };
 
 const assignPartner = async (req: any, res: any) => {
-  const { case_id, casestage_id, partner_id, scheduled_date, scheduled_time } =
-    req.body;
+  const {
+    case_id,
+    casestage_id,
+    partner_id,
+    scheduled_date,
+    scheduled_time,
+    confirmed_date,
+    confirmed_time,
+  } = req.body;
 
   const caseStageResponse = await CaseStagePartner.create(
     case_id,
     casestage_id,
     partner_id,
     scheduled_date,
-    scheduled_time
+    scheduled_time,
+    confirmed_date,
+    confirmed_time
   );
 
   if (!caseStageResponse.success) {
@@ -325,6 +335,8 @@ const assignSpecialist = async (req: any, res: any) => {
     district_id,
     scheduled_date,
     scheduled_time,
+    confirmed_date,
+    confirmed_time,
   } = req.body;
 
   console.log(req.body);
@@ -335,7 +347,9 @@ const assignSpecialist = async (req: any, res: any) => {
     specialist_id,
     district_id,
     scheduled_date,
-    scheduled_time
+    scheduled_time,
+    confirmed_date,
+    confirmed_time
   );
 
   if (!caseStageResponse.success) {

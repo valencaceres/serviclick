@@ -85,10 +85,6 @@ export const summaryActions = [
   },
   {
     id: 3,
-    name: "Cancelar visita",
-  },
-  {
-    id: 4,
     name: "Rechazar caso",
   },
 ];

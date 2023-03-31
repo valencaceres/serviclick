@@ -20,36 +20,33 @@ const CaseTracking = ({ thisCase }: any) => {
   const { stage } = router.query;
   const queryClient = useQueryClient();
 
-  const [thisStage, setThisStage] = useState<string>("");
   const [justification, setJustification] = useState<string>("");
-  const [specialsit, setSpecialsit] = useState<string>("");
-  const [partner, setPartner] = useState<string>("");
   const [scheduledDate, setScheduledDate] = useState<string>("");
   const [scheduledTime, setScheduledTime] = useState<string>("");
   const [confirmDate, setConfirmDate] = useState<string>("");
   const [confirmTime, setConfirmTime] = useState<string>("");
   const [evaluation, setEvaluation] = useState<string>("");
-  const [assistance, setAssistance] = useState<any>(null);
   const [refundAmount, setRefundAmount] = useState<string>("");
 
   const { id: user_id } = useUser().user;
   const { data: stages } = useQueryStage().useGetAll();
   const { mutate: updateCase, data: newStage } = useQueryCase().useCreate();
-  const { data: getAssignedPartner } = useQueryCase().useGetAssignedPartner(
+  const { data: assignedPartner } = useQueryCase().useGetAssignedPartner(
     thisCase?.case_id,
     stages?.find((s: any) => s?.name === "Designación de convenio")?.id
   );
-  const { data: getAssignedSpecialist } =
-    useQueryCase().useGetAssignedSpecialist(
-      thisCase?.case_id,
-      stages?.find((s: any) => s?.name === "Designación de especialista")?.id
-    );
+  const { data: assignedSpecialist } = useQueryCase().useGetAssignedSpecialist(
+    thisCase?.case_id,
+    stages?.find((s: any) => s?.name === "Designación de especialista")?.id
+  );
 
   const { data: assistanceData } = useQueryCase().useGetAssistanceData(
     thisCase?.applicant_id,
     thisCase?.assistance_id,
     thisCase?.product_id
   );
+  const { mutate: assignPartner } = useQueryCase().useAssignPartner();
+  const { mutate: assignSpecialist } = useQueryCase().useAssignSpecialist();
   const { mutate: reimburse } = useQueryCase().useReimburse();
 
   const handleConfirm = (e: any) => {
@@ -64,11 +61,108 @@ const CaseTracking = ({ thisCase }: any) => {
         assistance_id: thisCase?.assistance_id,
         stage_id: stages.find((s: any) => s?.name === "Resolución")?.id,
         user_id: user_id,
+        description: evaluation,
+        isactive: true,
       },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries(["case", thisCase?.case_id]);
-          router.push(`/case/${thisCase?.case_id}/resolución`);
+          if (assignedSpecialist) {
+            assignSpecialist(
+              {
+                case_id: thisCase?.case_id,
+                casestage_id: stages.find(
+                  (s: any) => s.name === "Designación de especialista"
+                )?.id,
+                specialist_id: assignedSpecialist?.specialist_id,
+                district_id: assignedSpecialist?.district_id,
+                scheduled_date: assignedSpecialist?.scheduled_date,
+                scheduled_time: assignedSpecialist?.scheduled_time,
+                confirmed_date: confirmDate,
+                confirmed_time: confirmTime,
+              },
+              {
+                onSuccess: () => {
+                  router.push(`/case/${thisCase?.case_id}/resolución`);
+                  queryClient.invalidateQueries(["case", thisCase?.case_id]);
+                },
+              }
+            );
+          }
+          if (assignedPartner) {
+            assignPartner(
+              {
+                case_id: thisCase?.case_id,
+                casestage_id: stages.find(
+                  (s: any) => s.name === "Designación de convenio"
+                )?.id,
+                partner_id: assignedPartner?.partner_id,
+                scheduled_date: assignedPartner?.scheduled_date,
+                scheduled_time: assignedPartner?.scheduled_time,
+                confirmed_date: confirmDate,
+                confirmed_time: confirmTime,
+              },
+              {
+                onSuccess: () => {
+                  router.push(`/case/${thisCase?.case_id}/resolución`);
+                  queryClient.invalidateQueries(["case", thisCase?.case_id]);
+                },
+              }
+            );
+          }
+        },
+      }
+    );
+  };
+
+  const handleReschedule = (e: any) => {
+    e.preventDefault();
+    return updateCase(
+      {
+        applicant: {
+          id: thisCase?.applicant_id,
+        },
+        number: thisCase?.case_number,
+        product_id: thisCase?.product_id,
+        assistance_id: thisCase?.assistance_id,
+        stage_id: stages.find(
+          (s: any) => s?.name === "Designación de especialista"
+        )?.id,
+        user_id: user_id,
+        isactive: true,
+      },
+      {
+        onSuccess: () => {
+          if (assignedSpecialist) {
+            assignSpecialist(
+              {
+                case_id: thisCase?.case_id,
+                casestage_id: stages.find(
+                  (s: any) => s.name === "Designación de especialista"
+                )?.id,
+                specialist_id: assignedSpecialist?.specialist_id,
+                district_id: assignedSpecialist?.district_id,
+                scheduled_date: confirmDate,
+                scheduled_time: confirmTime,
+              },
+              {
+                onSuccess: () => {
+                  queryClient.invalidateQueries(["case", thisCase?.case_id]);
+                  setEvaluation("");
+                },
+              }
+            );
+          }
+          if (assignedPartner) {
+            assignPartner({
+              case_id: thisCase?.case_id,
+              casestage_id: stages.find(
+                (s: any) => s.name === "Designación de convenio"
+              )?.id,
+              partner_id: assignedPartner?.partner_id,
+              scheduled_date: confirmDate,
+              scheduled_time: confirmTime,
+            });
+          }
         },
       }
     );
@@ -85,7 +179,9 @@ const CaseTracking = ({ thisCase }: any) => {
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
         stage_id: stages.find((s: any) => s?.name === "Resolución")?.id,
+        description: evaluation,
         user_id: user_id,
+        isactive: true,
       },
       {
         onSuccess: () => {
@@ -122,6 +218,8 @@ const CaseTracking = ({ thisCase }: any) => {
         assistance_id: thisCase?.assistance_id,
         stage_id: stages.find((s: any) => s?.name === "Rechazado")?.id,
         user_id: user_id,
+        description: justification,
+        isactive: false,
       },
       {
         onSuccess: () => {
@@ -133,20 +231,33 @@ const CaseTracking = ({ thisCase }: any) => {
   };
 
   useEffect(() => {
-    if (stages) {
-      setThisStage(stages.find((s: any) => s.name.toLowerCase() === stage)?.id);
+    const previousEvaluation = thisCase?.stages.find(
+      (s: any) => s?.stage === "Resolución"
+    )?.description;
+    if (thisCase?.stages.find((s: any) => s?.stage === "Rechazado")) {
+      setJustification(
+        thisCase?.stages.find((s: any) => s?.stage === "Rechazado")?.description
+      );
+      return setEvaluation("Rechazar caso");
     }
-    if (getAssignedPartner) {
-      setPartner(getAssignedPartner?.partner_id);
-      setScheduledDate(getAssignedPartner?.scheduled_date?.split("T")[0]);
-      setScheduledTime(getAssignedPartner?.scheduled_time);
+    if (thisCase?.stages.find((s: any) => s?.stage === "Resolución")) {
+      if (previousEvaluation !== "Reprogramar visita") {
+        setEvaluation(previousEvaluation);
+      }
     }
-    if (getAssignedSpecialist) {
-      setSpecialsit(getAssignedSpecialist?.specialist_id);
-      setScheduledDate(getAssignedSpecialist?.scheduled_date?.split("T")[0]);
-      setScheduledTime(getAssignedSpecialist?.scheduled_time);
+    if (assignedPartner) {
+      setScheduledDate(assignedPartner?.scheduled_date?.split("T")[0]);
+      setScheduledTime(assignedPartner?.scheduled_time);
+      setConfirmDate(assignedPartner?.confirmed_date?.split("T")[0]);
+      setConfirmTime(assignedPartner?.confirmed_time);
     }
-  }, [stages, stage, getAssignedPartner, getAssignedSpecialist]);
+    if (assignedSpecialist) {
+      setScheduledDate(assignedSpecialist?.scheduled_date?.split("T")[0]);
+      setScheduledTime(assignedSpecialist?.scheduled_time);
+      setConfirmDate(assignedSpecialist?.confirmed_date?.split("T")[0]);
+      setConfirmTime(assignedSpecialist?.confirmed_time);
+    }
+  }, [stages, stage, assignedPartner, assignedSpecialist]);
 
   return (
     <form>
@@ -184,10 +295,10 @@ const CaseTracking = ({ thisCase }: any) => {
           ) ? (
             <ContentCell gap="5px">
               <h2 className="font-semibold">Hora programada</h2>
-              {getAssignedPartner && (
+              {assignedPartner && (
                 <InputText
                   label="Convenio"
-                  value={getAssignedPartner?.name}
+                  value={assignedPartner?.name}
                   type="text"
                   disabled={true}
                   width="525px"
@@ -233,8 +344,9 @@ const CaseTracking = ({ thisCase }: any) => {
             value={evaluation}
             dataText="name"
             dataValue="name"
+            enabled={thisCase?.is_active === true ? true : false}
           />
-          {evaluation.toLowerCase() === "confirmar visita" ? (
+          {evaluation?.toLowerCase() === "confirmar visita" ? (
             <ContentCell gap="5px">
               <ContentRow gap="5px">
                 <InputText
@@ -242,6 +354,7 @@ const CaseTracking = ({ thisCase }: any) => {
                   type="date"
                   width="260px"
                   value={confirmDate}
+                  disabled={thisCase?.is_active === true ? false : true}
                   onChange={(e: any) => setConfirmDate(e.target.value)}
                 />
                 <InputText
@@ -252,16 +365,17 @@ const CaseTracking = ({ thisCase }: any) => {
                   onChange={(e: any) => setConfirmTime(e.target.value)}
                   minTime="09:00"
                   maxTime="18:00"
-                  step="3600"
+                  disabled={thisCase?.is_active === true ? false : true}
                 />
               </ContentRow>
               <Button
                 text="Confirmar visita"
                 type="button"
+                enabled={thisCase?.is_active === true ? true : false}
                 onClick={handleConfirm}
               />
             </ContentCell>
-          ) : evaluation.toLowerCase() === "reprogramar visita" ? (
+          ) : evaluation?.toLowerCase() === "reprogramar visita" ? (
             <ContentCell gap="5px">
               <ContentRow gap="5px">
                 <InputText
@@ -269,6 +383,7 @@ const CaseTracking = ({ thisCase }: any) => {
                   type="date"
                   width="260px"
                   value={confirmDate}
+                  disabled={thisCase?.is_active === true ? false : true}
                   onChange={(e: any) => setConfirmDate(e.target.value)}
                 />
                 <InputText
@@ -280,24 +395,17 @@ const CaseTracking = ({ thisCase }: any) => {
                   minTime="09:00"
                   maxTime="18:00"
                   step="3600"
+                  disabled={thisCase?.is_active === true ? false : true}
                 />
               </ContentRow>
-              <TextArea
-                value={justification}
-                onChange={(e: any) => setJustification(e.target.value)}
-                label="Justificación de la decisión"
-                width="525px"
-                height="110px"
-              />
               <Button
                 text="Reprogramar visita"
                 type="button"
-                onClick={(e: any) => {
-                  e.preventDefault();
-                }}
+                enabled={thisCase?.is_active === true ? true : false}
+                onClick={handleReschedule}
               />
             </ContentCell>
-          ) : evaluation.toLowerCase() === "cancelar visita" ? (
+          ) : evaluation?.toLowerCase() === "cancelar visita" ? (
             <ContentCell gap="5px">
               <TextArea
                 value={justification}
@@ -305,16 +413,18 @@ const CaseTracking = ({ thisCase }: any) => {
                 label="Justificación de la decisión"
                 width="525px"
                 height="110px"
+                disabled={thisCase?.is_active === true ? false : true}
               />
               <Button
                 text="Cancelar visita"
                 type="button"
+                enabled={thisCase?.is_active === true ? true : false}
                 onClick={(e: any) => {
                   e.preventDefault();
                 }}
               />
             </ContentCell>
-          ) : evaluation.toLowerCase() === "rechazar caso" ? (
+          ) : evaluation?.toLowerCase() === "rechazar caso" ? (
             <ContentCell gap="5px">
               <TextArea
                 value={justification}
@@ -322,14 +432,16 @@ const CaseTracking = ({ thisCase }: any) => {
                 label="Justificación de la decisión"
                 width="525px"
                 height="110px"
+                disabled={thisCase?.is_active === true ? false : true}
               />
               <Button
                 text="Rechazar caso"
                 type="button"
+                enabled={thisCase?.is_active === true ? true : false}
                 onClick={handleReject}
               />
             </ContentCell>
-          ) : evaluation.toLowerCase() === "reembolsar" ? (
+          ) : evaluation?.toLowerCase() === "reembolsar" ? (
             <ContentCell gap="5px">
               <ContentCell gap="5px">
                 <h2 className="font-semibold">Disponible</h2>
@@ -381,12 +493,14 @@ const CaseTracking = ({ thisCase }: any) => {
                   value={refundAmount}
                   type="number"
                   width="525px"
+                  disabled={thisCase?.is_active === true ? false : true}
                   step={assistanceData?.currency === "P" ? "" : "0.01"}
                   onChange={(e: any) => setRefundAmount(e.target.value)}
                 />
                 <Button
                   text="Reembolsar"
                   type="button"
+                  enabled={thisCase?.is_active === true ? true : false}
                   onClick={handleReimburse}
                 />
               </ContentCell>

@@ -193,6 +193,9 @@ const CaseFormNew = ({ thisCase }: any) => {
               onFocus={handleFocusRut}
               onBlur={handleBlurRut}
               maxLength={9}
+              disabled={
+                thisCase?.is_active || !thisCase === true ? false : true
+              }
               value={thisCase !== null ? thisCase?.rut : formData?.rut.value}
               onChange={(e: any) => {
                 setFormData({
@@ -210,6 +213,9 @@ const CaseFormNew = ({ thisCase }: any) => {
               label="Fecha de nacimiento"
               width="260px"
               maxLength={10}
+              disabled={
+                thisCase?.is_active || !thisCase === true ? false : true
+              }
               value={
                 thisCase !== null
                   ? thisCase?.birthdate?.split("T")[0]
@@ -230,6 +236,7 @@ const CaseFormNew = ({ thisCase }: any) => {
               thisCase !== null ? thisCase?.applicant_name : formData.name.value
             }
             type="text"
+            disabled={thisCase?.is_active || !thisCase === true ? false : true}
             onChange={(e: any) => {
               setFormData({
                 ...formData,
@@ -247,6 +254,9 @@ const CaseFormNew = ({ thisCase }: any) => {
                   : formData.paternalLastName.value
               }
               type="text"
+              disabled={
+                thisCase?.is_active || !thisCase === true ? false : true
+              }
               onChange={(e: any) => {
                 setFormData({
                   ...formData,
@@ -263,6 +273,9 @@ const CaseFormNew = ({ thisCase }: any) => {
                   : formData.maternalLastName.value
               }
               type="text"
+              disabled={
+                thisCase?.is_active || !thisCase === true ? false : true
+              }
               onChange={(e: any) => {
                 setFormData({
                   ...formData,
@@ -280,6 +293,7 @@ const CaseFormNew = ({ thisCase }: any) => {
                 : formData.address.value
             }
             type="text"
+            disabled={thisCase?.is_active || !thisCase === true ? false : true}
             onChange={(e: any) => {
               setFormData({
                 ...formData,
@@ -296,6 +310,7 @@ const CaseFormNew = ({ thisCase }: any) => {
                 : formData.district.value
             }
             type="text"
+            disabled={thisCase?.is_active || !thisCase === true ? false : true}
             onChange={(e: any) => {
               setFormData({
                 ...formData,
@@ -313,6 +328,9 @@ const CaseFormNew = ({ thisCase }: any) => {
                   : formData.email.value
               }
               type="email"
+              disabled={
+                thisCase?.is_active || !thisCase === true ? false : true
+              }
               onChange={(e: any) => {
                 setFormData({
                   ...formData,
@@ -334,6 +352,9 @@ const CaseFormNew = ({ thisCase }: any) => {
                   : formData.phone.value
               }
               type="text"
+              disabled={
+                thisCase?.is_active || !thisCase === true ? false : true
+              }
               onChange={(e: any) => {
                 setFormData({
                   ...formData,
@@ -348,7 +369,12 @@ const CaseFormNew = ({ thisCase }: any) => {
             />
           </ContentRow>
         </ContentCell>
-        <Button text="Continuar" type="button" onClick={handleClickNext} />
+        <Button
+          text="Continuar"
+          enabled={thisCase?.is_active === true || !thisCase ? true : false}
+          type="button"
+          onClick={handleClickNext}
+        />
       </ContentCell>
       <LoadingMessage />
     </div>

@@ -42,38 +42,33 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
             "",
           user_id: user_id,
           description: justification,
+          isactive: true,
         },
         {
           onSuccess: () => {
-            if (evaluation.toLowerCase() === "solución particular") {
-              return updateCase(
-                {
-                  applicant: {
-                    id: thisCase?.applicant_id,
-                  },
-                  number: thisCase?.case_number,
-                  product_id: thisCase?.product_id,
-                  assistance_id: thisCase?.assistance_id,
-                  stage_id:
-                    stages?.find((s: any) => s.name === "Solución particular")
-                      ?.id || "",
-                  user_id: user_id,
-                  description: description,
+            return updateCase(
+              {
+                applicant: {
+                  id: thisCase?.applicant_id,
                 },
-                {
-                  onSuccess: () => {
-                    router.push(
-                      `/case/${thisCase?.case_id}/recepción de antecedentes`
-                    );
-                    queryClient.invalidateQueries(["case", thisCase?.case_id]);
-                  },
-                }
-              );
-            }
-            router.push(
-              `/case/${thisCase?.case_id}/${evaluation.toLowerCase()}`
+                number: thisCase?.case_number,
+                product_id: thisCase?.product_id,
+                assistance_id: thisCase?.assistance_id,
+                stage_id:
+                  stages?.find((s: any) => s.name === evaluation)?.id || "",
+                user_id: user_id,
+                description: description,
+                isactive: true,
+              },
+              {
+                onSuccess: () => {
+                  router.push(
+                    `/case/${thisCase?.case_id}/${evaluation.toLowerCase()}`
+                  );
+                  queryClient.invalidateQueries(["case", thisCase?.case_id]);
+                },
+              }
             );
-            queryClient.invalidateQueries(["case", thisCase?.case_id]);
           },
         }
       );
@@ -97,9 +92,27 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
         thisCase?.stages.find((s: any) => s.stage === "Evaluación del evento")
           ?.description
       );
+      if (
+        thisCase?.stages?.find((s: any) => s.stage === "Solución particular")
+      ) {
+        setEvaluation("Solución particular");
+      }
+      if (
+        thisCase?.stages?.find(
+          (s: any) => s.stage === "Designación de convenio"
+        )
+      ) {
+        setEvaluation("Designación de convenio");
+      }
+      if (
+        thisCase?.stages?.find(
+          (s: any) => s.stage === "Designación de especialista"
+        )
+      ) {
+        setEvaluation("Designación de especialista");
+      }
     }
   }, [router, thisCase]);
-
   return (
     <form
       action=""
@@ -148,6 +161,7 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
             label="Justificación de la decisión"
             width="525px"
             height="110px"
+            disabled={thisCase?.is_active ? false : true}
           />
           <ComboBox
             label="Decisión de evaluación"
@@ -155,6 +169,7 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
             data={decisions}
             width="525px"
             value={evaluation}
+            enabled={thisCase?.is_active ? true : false}
             onChange={(e: any) => setEvaluation(e.target.value)}
             dataText="name"
             dataValue="name"

@@ -17,6 +17,9 @@ import CaseFormPartner from "../../../components/functional/Case/CaseFormPartner
 import CaseFormSpecialist from "../../../components/functional/Case/CaseFormSpecialist";
 import CaseTracking from "../../../components/functional/Case/CaseTracking";
 import CaseResolution from "../../../components/functional/Case/CaseResolution";
+import CaseFormSolution from "../../../components/functional/Case/CaseFormSolution";
+import CaseRating from "../../../components/functional/Case/CaseRating";
+import CaseFormRejected from "../../../components/functional/Case/CaseFormRejected";
 
 const CaseStepPage = () => {
   const router = useRouter();
@@ -57,6 +60,8 @@ const CaseStepPage = () => {
         ? `Recepción de antecedentes | Caso ${number}`
         : stage === "evaluación del evento"
         ? `Evaluación | Caso ${number}`
+        : stage === "solución particular"
+        ? `Solución particular | Caso ${number}`
         : stage === "designación de convenio"
         ? `Designación de convenio | Caso ${number}`
         : stage === "designación de especialista"
@@ -67,6 +72,10 @@ const CaseStepPage = () => {
         ? `Seguimiento | Caso ${number}`
         : stage === "resolución"
         ? `Resolución | Caso ${number}`
+        : stage === "calificación"
+        ? `Calificación | Caso ${number}`
+        : stage === "rechazado"
+        ? `Rechazado | Caso ${number}`
         : null
     );
   }, [router, thisCase]);
@@ -84,6 +93,8 @@ const CaseStepPage = () => {
           <CaseFormRecordReception thisCase={thisCase} />
         ) : stage === "evaluación del evento" ? (
           <CaseFormEvaluation thisCase={thisCase} />
+        ) : stage === "solución particular" ? (
+          <CaseFormSolution thisCase={thisCase} />
         ) : stage === "designación de convenio" ? (
           <CaseFormPartner thisCase={thisCase} />
         ) : stage === "designación de especialista" ? (
@@ -92,6 +103,10 @@ const CaseStepPage = () => {
           <CaseTracking thisCase={thisCase} />
         ) : stage === "resolución" ? (
           <CaseResolution thisCase={thisCase} />
+        ) : stage === "calificación" ? (
+          <CaseRating thisCase={thisCase} />
+        ) : stage === "rechazado" ? (
+          <CaseFormRejected thisCase={thisCase} />
         ) : null}
         <CaseStageList />
       </ContentHalfRow>

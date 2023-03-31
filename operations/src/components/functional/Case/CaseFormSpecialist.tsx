@@ -58,6 +58,7 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
           assistance_id: thisCase?.assistance_id,
           stage_id: thisStage,
           user_id: user_id,
+          isactive: true,
         },
         {
           onSuccess: () => {
@@ -95,6 +96,7 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
           assistance_id: thisCase?.assistance_id,
           stage_id: thisStage,
           user_id: user_id,
+          isactive: true,
         },
         {
           onSuccess: () => {
@@ -121,6 +123,7 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
                         (s: any) => s?.name === "Seguimiento"
                       )?.id,
                       user_id: user_id,
+                      isactive: true,
                     },
                     {
                       onSuccess: () => {
@@ -145,13 +148,13 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
     if (stages) {
       setThisStage(stages.find((s: any) => s.name.toLowerCase() === stage)?.id);
     }
-    if (getAssignedSpecialist) {
-      setSpecialist(getAssignedSpecialist?.specialist_id);
-      setScheduledDate(getAssignedSpecialist?.scheduled_date?.split("T")[0]);
-      setScheduledTime(getAssignedSpecialist?.scheduled_time);
-      setDistrict(getAssignedSpecialist?.district_id);
+    if (assignedSpecialist) {
+      setSpecialist(assignedSpecialist?.specialist_id);
+      setScheduledDate(assignedSpecialist?.scheduled_date?.split("T")[0]);
+      setScheduledTime(assignedSpecialist?.scheduled_time);
+      setDistrict(assignedSpecialist?.district_id);
     }
-  }, [stages, stage, getAssignedSpecialist]);
+  }, [stages, stage, assignedSpecialist]);
 
   useEffect(() => {
     if (specialists?.length === 0) {
@@ -197,6 +200,7 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
             width="525px"
             dataText="district_name"
             dataValue="id"
+            enabled={thisCase?.is_active === true ? true : false}
           />
           {specialists?.length > 0 && (
             <ComboBox
@@ -208,6 +212,7 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
               onChange={(e: any) => setSpecialist(e.target.value)}
               dataText="name"
               dataValue="id"
+              enabled={thisCase?.is_active === true ? true : false}
             />
           )}
         </ContentCell>
@@ -256,6 +261,7 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
                 text="Asignar especialista"
                 type="button"
                 className="w-full"
+                enabled={thisCase?.is_active === true ? true : false}
                 onClick={handleAssign}
               />
             ) : (
@@ -269,6 +275,7 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
                         width="260px"
                         minDate={minDate.toISOString().split("T")[0]}
                         value={scheduledDate}
+                        disabled={thisCase?.is_active === true ? false : true}
                         onChange={(e: any) => setScheduledDate(e.target.value)}
                       />
                       <InputText
@@ -280,11 +287,13 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
                         minTime="09:00"
                         maxTime="18:00"
                         step="3600"
+                        disabled={thisCase?.is_active === true ? false : true}
                       />
                     </ContentRow>
                     <Button
                       text="Programar visita"
                       type="button"
+                      enabled={thisCase?.is_active === true ? true : false}
                       onClick={handleSchedule}
                     />
                   </ContentCell>
