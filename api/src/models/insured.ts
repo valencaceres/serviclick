@@ -1,6 +1,6 @@
 import pool from "../util/database";
 
-const createModel: any = async (
+const create: any = async (
   rut: string,
   name: string,
   paternalLastName: string,
@@ -78,7 +78,7 @@ const createModel: any = async (
   }
 };
 
-const getByRutModel: any = async (rut: string) => {
+const getByRut: any = async (rut: string) => {
   try {
     const result = await pool.query(
       `
@@ -128,7 +128,7 @@ const getByRutModel: any = async (rut: string) => {
   }
 };
 
-const getByIdModel: any = async (id: string) => {
+const getById: any = async (id: string) => {
   try {
     const result = await pool.query(
       `
@@ -177,4 +177,17 @@ const getByIdModel: any = async (id: string) => {
   }
 };
 
-export { createModel, getByRutModel, getByIdModel };
+const getProfile: any = async (rut: string) => {
+  try {
+    const result = await pool.query(`SELECT app.spinsuredprofile($1)`, [rut]);
+    return {
+      success: true,
+      data: result.rows[0].spinsuredprofile,
+      error: null,
+    };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+export { create, getByRut, getById, getProfile };

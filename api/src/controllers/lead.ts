@@ -214,7 +214,7 @@ const deleteLeadInsured = async (id: string) => {
 };
 
 const createInsured = async (insured: InsuredT) => {
-  const insuredResponse = await Insured.createModel(
+  const insuredResponse = await Insured.create(
     insured.rut,
     insured.name,
     insured.paternalLastName,

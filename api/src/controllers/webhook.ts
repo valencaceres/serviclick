@@ -185,7 +185,7 @@ const subscriptionActivated = async (req: any, res: any) => {
     const attachmentInsured = [`anexo_${lead_id}.pdf`];
 
     if (!company_id) {
-      const insuredResponse = await InsuredModel.getByIdModel(
+      const insuredResponse = await InsuredModel.getById(
         leadInsuredResponse.data[0].id
       );
 
@@ -320,6 +320,104 @@ const subscriptionActivated = async (req: any, res: any) => {
   }
 };
 
+const generatePDF = async (req: any, res: any) => {
+  const { lead_id } = req.body;
+
+  const leadResponse = await LeadModel.getById(lead_id);
+
+  if (!leadResponse.success) {
+    createLogger.error({
+      model: "lead/getBySubscriptionId",
+      error: leadResponse.error,
+    });
+    res.status(500).json(leadResponse.error);
+    return;
+  }
+
+  const { policy_number, policy_createdate, policy_startdate } =
+    leadResponse.data;
+
+  const leadProductResponse = await LeadModel.getProductsById(
+    lead_id //leadResponse.data.id
+  );
+
+  if (!leadProductResponse.success) {
+    createLogger.error({
+      model: "lead/getProductsById",
+      error: leadProductResponse.error,
+    });
+    res.status(500).json(leadProductResponse.error);
+    return;
+  }
+
+  const { product_id, price } = leadProductResponse.data;
+
+  const leadInsuredResponse = await LeadModel.getInsuredById(lead_id);
+
+  if (!leadInsuredResponse.success) {
+    createLogger.error({
+      model: "lead/getInsuredById",
+      error: leadInsuredResponse.error,
+    });
+    res.status(500).json(leadInsuredResponse.error);
+    return;
+  }
+
+  const insuredResponse = await InsuredModel.getById(
+    leadInsuredResponse.data[0].id
+  );
+
+  if (!insuredResponse.success) {
+    createLogger.error({
+      model: "insured/getByIdModel",
+      error: insuredResponse.error,
+    });
+    res.status(500).json(insuredResponse.error);
+    return;
+  }
+
+  const productDescriptionResponse =
+    await ProductDescriptionModel.getByProductId(
+      lead_id,
+      product_id //leadResponse.data.id
+    );
+
+  if (!productDescriptionResponse.success) {
+    createLogger.error({
+      model: "productDescription/getByProductId",
+      error: productDescriptionResponse.error,
+    });
+    res.status(500).json(productDescriptionResponse.error);
+    return;
+  }
+
+  const responseDocuments = await generateDocuments(
+    lead_id,
+    insuredResponse.data,
+    null,
+    productDescriptionResponse.data,
+    price,
+    policy_number,
+    policy_createdate,
+    policy_startdate
+  );
+
+  if (!responseDocuments.success) {
+    createLogger.error({
+      model: responseDocuments.model,
+      error: responseDocuments.error,
+    });
+    res.status(500).json(responseDocuments.error);
+    return;
+  }
+
+  createLogger.info({
+    controller: "webhook/subscriptionActivated",
+    message: "OK",
+  });
+  res.status(200).json("OK");
+};
+
 const generateDocuments = async (
   lead_id: string,
   customer: any,
@@ -418,4 +516,4 @@ const generateDocuments = async (
   }
 };
 
-export { subscriptionActivated };
+export { generatePDF, subscriptionActivated };

@@ -1,48 +1,50 @@
 import { useState, useEffect } from "react";
 
-import { Component, Row, Cell } from "../../layout/Component";
+import { Row, Col } from "../../layout/Generic";
 
+import Button from "../../ui/Button";
+import Tooltip from "../../ui/Tooltip";
 import InputText from "../../ui/InputText";
 
-import { setInsured } from "../../../redux/slices/insuredSlice";
-import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { useInsured } from "../../../zustand/hooks";
 
 import { numberRegEx } from "../../../utils/regEx";
 
-const Insured = ({ setIsEnabled }: any) => {
-  const dispatch = useAppDispatch();
-
-  const { isDesktop } = useAppSelector((state) => state.uiSlice);
-  const { userInsured } = useAppSelector((state) => state.userInsuredSlice);
+const Insured = () => {
+  const { insuredProfile } = useInsured();
+  const { insured } = insuredProfile;
 
   const initialDataInsuredForm = {
-    rut: { value: userInsured.rut, isValid: userInsured.rut !== "" },
-    name: { value: userInsured.name, isValid: userInsured.name !== "" },
+    rut: { value: insured.rut, isValid: insured.rut !== "" },
+    name: { value: insured.name, isValid: insured.name !== "" },
     paternalLastName: {
-      value: userInsured.paternalLastName,
-      isValid: userInsured.paternalLastName !== "",
+      value: insured.paternallastname,
+      isValid: insured.paternallastname !== "",
     },
     maternalLastName: {
-      value: userInsured.maternalLastName,
-      isValid: userInsured.maternalLastName !== "",
+      value: insured.maternallastname,
+      isValid: insured.maternallastname !== "",
     },
     birthDate: {
-      value: userInsured.birthDate,
-      isValid: userInsured.birthDate !== "",
+      value: insured.birthdate,
+      isValid: insured.birthdate !== "",
     },
     address: {
-      value: userInsured.address,
-      isValid: userInsured.address !== "",
+      value: insured.address,
+      isValid: insured.address !== "",
     },
     district: {
-      value: userInsured.district,
-      isValid: userInsured.district !== "",
+      value: insured.district,
+      isValid: insured.district !== "",
     },
-    email: { value: userInsured.email, isValid: userInsured.email !== "" },
-    phone: { value: userInsured.phone, isValid: userInsured.phone !== "" },
+    email: { value: insured.email, isValid: insured.email !== "" },
+    phone: { value: insured.phone, isValid: insured.phone !== "" },
   };
 
   const [insuredForm, setInsuredForm] = useState(initialDataInsuredForm);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(true);
 
   const handleChangeName = (event: any) => {
     setInsuredForm({
@@ -118,41 +120,39 @@ const Insured = ({ setIsEnabled }: any) => {
     }
   };
 
+  const handleCloseTooltip = () => {
+    setShowTooltip(false);
+  };
+
+  const handleClickRegister = () => {};
+
   useEffect(() => {
-    setIsEnabled(false);
-    if (
+    setIsEnabled(
       insuredForm.rut.isValid &&
-      insuredForm.name.isValid &&
-      insuredForm.paternalLastName.isValid &&
-      insuredForm.maternalLastName.isValid &&
-      insuredForm.birthDate.isValid &&
-      insuredForm.address.isValid &&
-      insuredForm.district.isValid &&
-      insuredForm.email.isValid &&
-      insuredForm.phone.isValid
-    ) {
-      dispatch(
-        setInsured({
-          ...userInsured,
-          rut: insuredForm.rut.value,
-          name: insuredForm.name.value,
-          paternalLastName: insuredForm.paternalLastName.value,
-          maternalLastName: insuredForm.maternalLastName.value,
-          birthDate: insuredForm.birthDate.value,
-          address: insuredForm.address.value,
-          district: insuredForm.district.value,
-          email: insuredForm.email.value,
-          phone: insuredForm.phone.value,
-        })
-      );
-      setIsEnabled(true);
-    }
-  }, [insuredForm, dispatch]);
+        insuredForm.rut.value !== "" &&
+        insuredForm.name.isValid &&
+        insuredForm.name.value !== "" &&
+        insuredForm.paternalLastName.isValid &&
+        insuredForm.paternalLastName.value !== "" &&
+        insuredForm.maternalLastName.isValid &&
+        insuredForm.maternalLastName.value !== "" &&
+        insuredForm.address.isValid &&
+        insuredForm.address.value !== "" &&
+        insuredForm.district.isValid &&
+        insuredForm.district.value !== "" &&
+        insuredForm.email.isValid &&
+        insuredForm.email.value !== "" &&
+        insuredForm.phone.isValid &&
+        insuredForm.phone.value !== "" &&
+        insuredForm.birthDate.isValid &&
+        insuredForm.birthDate.value !== ""
+    );
+  }, [insuredForm]);
 
   return (
-    <Component width={isDesktop ? "560px" : "100%"}>
-      <Row>
-        <Cell>
+    <Col width="320px" gap="20px">
+      <Col gap="5px">
+        <Row gap="5px">
           <InputText
             label="Rut"
             width={"100%"}
@@ -161,8 +161,6 @@ const Insured = ({ setIsEnabled }: any) => {
             onChange={() => {}}
             disabled={true}
           />
-        </Cell>
-        <Cell>
           <InputText
             label="Fecha de nacimiento"
             type="date"
@@ -171,84 +169,77 @@ const Insured = ({ setIsEnabled }: any) => {
             value={insuredForm.birthDate.value}
             onChange={handleChangeBirthDate}
           />
-        </Cell>
-      </Row>
-      <Row>
-        <Cell>
-          <InputText
-            label="Nombres"
-            width="100%"
-            maxLength={50}
-            value={insuredForm.name.value}
-            onChange={handleChangeName}
-          />
-        </Cell>
-      </Row>
-      <Row>
-        <Cell>
-          <InputText
-            label="Apellido Paterno"
-            width="100%"
-            maxLength={50}
-            value={insuredForm.paternalLastName.value}
-            onChange={handleChangePaternalLastName}
-          />
-        </Cell>
-        <Cell>
-          <InputText
-            label="Apellido Materno"
-            width="100%"
-            maxLength={50}
-            value={insuredForm.maternalLastName.value}
-            onChange={handleChangeMaternalLastName}
-          />
-        </Cell>
-      </Row>
-      <Row>
-        <Cell>
-          <InputText
-            label="Dirección"
-            width="100%"
-            maxLength={250}
-            value={insuredForm.address.value}
-            onChange={handleChangeAddress}
-          />
-        </Cell>
-      </Row>
-      <Row>
-        <Cell>
-          <InputText
-            label="Comuna"
-            width="100%"
-            maxLength={250}
-            value={insuredForm.district.value}
-            onChange={handleChangeDistrict}
-          />
-        </Cell>
-      </Row>
-      <Row>
-        <Cell>
-          <InputText
-            label="Correo"
-            width="100%"
-            maxLength={250}
-            value={insuredForm.email.value}
-            onChange={() => {}}
-            disabled={true}
-          />
-        </Cell>
-        <Cell>
-          <InputText
-            label="Teléfono"
-            width="100%"
-            maxLength={9}
-            value={insuredForm.phone.value}
-            onChange={handleChangePhone}
-            isValid={insuredForm.phone.isValid}
-          />
-        </Cell>
-      </Row>
-    </Component>
+        </Row>
+        <InputText
+          label="Nombres"
+          width="100%"
+          maxLength={50}
+          value={insuredForm.name.value}
+          onChange={handleChangeName}
+        />
+        <InputText
+          label="Apellido Paterno"
+          width="100%"
+          maxLength={50}
+          value={insuredForm.paternalLastName.value}
+          onChange={handleChangePaternalLastName}
+        />
+        <InputText
+          label="Apellido Materno"
+          width="100%"
+          maxLength={50}
+          value={insuredForm.maternalLastName.value}
+          onChange={handleChangeMaternalLastName}
+        />
+        <InputText
+          label="Dirección"
+          width="100%"
+          maxLength={250}
+          value={insuredForm.address.value}
+          onChange={handleChangeAddress}
+        />
+        <InputText
+          label="Comuna"
+          width="100%"
+          maxLength={250}
+          value={insuredForm.district.value}
+          onChange={handleChangeDistrict}
+        />
+        <InputText
+          label="Correo"
+          width="100%"
+          maxLength={250}
+          value={insuredForm.email.value}
+          onChange={() => {}}
+          disabled={true}
+        />
+        <InputText
+          label="Teléfono"
+          width="100%"
+          maxLength={9}
+          value={insuredForm.phone.value}
+          onChange={handleChangePhone}
+          isValid={insuredForm.phone.isValid}
+        />
+      </Col>
+      <Button
+        onClick={handleClickRegister}
+        text="Registrar"
+        width="150px"
+        loading={isLoading}
+        enabled={isEnabled}
+      />
+      <Tooltip isShow={showTooltip} onClose={handleCloseTooltip}>
+        <div>
+          Mediante esta opción podrás modificar tus datos en caso que lo
+          requieras.
+          <br />
+          <br />
+          <b>Nota:</b>&nbsp;No podrás modificar tu rut ni tu correo ya que con
+          ellos podemos identificarte.
+        </div>
+      </Tooltip>
+    </Col>
   );
 };
 
