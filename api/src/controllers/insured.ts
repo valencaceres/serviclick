@@ -1,14 +1,14 @@
 import createLogger from "../util/logger";
 
-import { getByRutModel, createModel } from "../models/insured";
+import * as Insured from "../models/insured";
 
-const getByRutController = async (req: any, res: any) => {
+const getByRut = async (req: any, res: any) => {
   const { rut } = req.params;
-  const response = await getByRutModel(rut);
+  const response = await Insured.getByRut(rut);
 
   if (!response.success) {
     createLogger.error({
-      model: "insured/getByRutModel",
+      model: "insured/getByRut",
       error: response.error,
     });
     res.status(500).json({ error: response.error });
@@ -22,7 +22,27 @@ const getByRutController = async (req: any, res: any) => {
   res.status(200).json(response.data);
 };
 
-const createController = async (req: any, res: any) => {
+const getProfile = async (req: any, res: any) => {
+  const { rut } = req.params;
+  const response = await Insured.getProfile(rut);
+
+  if (!response.success) {
+    createLogger.error({
+      model: "insured/getProfile",
+      error: response.error,
+    });
+    res.status(500).json({ error: response.error });
+    return;
+  }
+
+  createLogger.info({
+    controller: "insured",
+    message: "OK",
+  });
+  res.status(200).json(response.data);
+};
+
+const create = async (req: any, res: any) => {
   const { id } = req.params;
   const {
     rut,
@@ -35,7 +55,7 @@ const createController = async (req: any, res: any) => {
     email,
     phone,
   } = req.body;
-  const response = await createModel(
+  const response = await Insured.create(
     rut,
     name,
     paternalLastName,
@@ -49,7 +69,7 @@ const createController = async (req: any, res: any) => {
 
   if (!response.success) {
     createLogger.error({
-      model: "insured/createModel",
+      model: "insured/create",
       error: response.error,
     });
     res.status(500).json({ error: response.error });
@@ -63,4 +83,4 @@ const createController = async (req: any, res: any) => {
   res.status(200).json(response.data);
 };
 
-export { getByRutController, createController };
+export { getByRut, getProfile, create };

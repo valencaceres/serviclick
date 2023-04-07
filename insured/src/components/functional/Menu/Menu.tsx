@@ -3,8 +3,7 @@ import { useRouter } from "next/router";
 
 import Icon from "../../ui/Icon";
 
-import { getByEmail } from "../../../redux/slices/userInsuredSlice";
-import { useAppSelector, useAppDispatch } from "../../../redux/hooks";
+import { useUI, useInsured } from "../../../zustand/hooks";
 
 import styles from "./Menu.module.scss";
 
@@ -25,25 +24,26 @@ const menuOptions = [
 
 const Menu = () => {
   const router = useRouter();
-  const dispatch = useAppDispatch();
 
-  const { userInsured } = useAppSelector((state) => state.userInsuredSlice);
+  const { insuredProfile } = useInsured();
+  const { setTitle, setShowButtonBack } = useUI();
+
+  const { insured } = insuredProfile;
 
   const handleOptionClick = (route: string) => {
     router.push(route);
   };
 
   useEffect(() => {
-    if (userInsured.email) {
-      dispatch(getByEmail(userInsured.email));
-    }
-  }, [dispatch, userInsured.email]);
+    setTitle("Menú principal");
+    setShowButtonBack(false);
+  }, []);
 
   return (
     <div className={styles.menu}>
       <div className={styles.welcome}>
-        Bienvenido(a) {userInsured.name} {userInsured.paternalLastName}{" "}
-        {userInsured.maternalLastName}
+        Bienvenido(a) {insured.name} {insured.paternallastname}{" "}
+        {insured.maternallastname}
       </div>
       <div className={styles.description}>Seleccione una opción de menú</div>
       <div className={styles.options}>

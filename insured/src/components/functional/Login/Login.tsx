@@ -1,15 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { Component, Row, Cell, CellSeparator } from "../../layout/Component";
 
 import InputText from "../../ui/InputText";
 import Button from "../../ui/Button";
 
-import { validateUserInsured } from "../../../redux/slices/userInsuredSlice";
-import { useAppDispatch } from "../../../redux/hooks";
+import { useUserInsured, useInsured } from "../../../zustand/hooks";
 
 const Login = () => {
-  const dispatch = useAppDispatch();
+  const { validate, userInsured } = useUserInsured();
+  const { getProfile, insuredProfile } = useInsured();
 
   const [loginForm, setLoginForm] = useState({
     email: "",
@@ -17,8 +17,14 @@ const Login = () => {
   });
 
   const handleClickEnter = () => {
-    dispatch(validateUserInsured(loginForm.email, loginForm.password));
+    validate(loginForm.email, loginForm.password);
   };
+
+  useEffect(() => {
+    if (userInsured.rut !== "") {
+      getProfile(userInsured.rut);
+    }
+  }, [userInsured]);
 
   return (
     <div
@@ -27,8 +33,7 @@ const Login = () => {
         justifyContent: "center",
         alignItems: "center",
         height: "calc(100% - 70px)",
-      }}
-    >
+      }}>
       <Component>
         <Row>
           <Cell align="center">

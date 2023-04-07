@@ -1,9 +1,10 @@
 import { Router } from "express";
 
-import { subscriptionActivated } from "../controllers/webhook";
+import { subscriptionActivated, generatePDF } from "../controllers/webhook";
 
 const WebHookRouter = Router();
 
 WebHookRouter.post("/subscriptionActivated", subscriptionActivated);
+WebHookRouter.post("/generatePDF", generatePDF);
 
 export default WebHookRouter;

@@ -198,7 +198,7 @@ const CustomerForm = ({ customerForm, setCustomerForm, disabled }: any) => {
           isValid: true,
         },
         birthDate: {
-          value: lead.customer.birthDate,
+          value: lead.insured[0].birthDate,
           isValid: true,
         },
         address: { value: lead.customer.address, isValid: true },

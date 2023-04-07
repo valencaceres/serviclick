@@ -1,17 +1,27 @@
 import { Fragment } from "react";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 import { PageHeader, Screen, Header } from "../../layout/Generic";
+
+import Navigate, { Back } from "../../ui/Navigate";
 
 import Main from "../Main";
 import Login from "../Login";
 
-import { useAppSelector } from "../../../redux/hooks";
+import { useUI, useInsured } from "../../../zustand/hooks";
 
 import styles from "../../layout/Generic/Generic.module.scss";
 
 const Switch = ({ children }: any) => {
-  const { userInsured } = useAppSelector((state) => state.userInsuredSlice);
+  const router = useRouter();
+
+  const { insuredProfile } = useInsured();
+  const { ui } = useUI();
+
+  const handleClickBack = () => {
+    router.push(ui.pathButtonBack);
+  };
 
   return (
     <Fragment>
@@ -19,11 +29,20 @@ const Switch = ({ children }: any) => {
       <Screen>
         <Header>
           <div className={styles.left}>
+            {ui.showButtonBack && (
+              <Navigate>
+                <Back onClick={handleClickBack} />
+              </Navigate>
+            )}
             <Image alt="Next.js logo" src="/logo.jpg" width={243} height={51} />
           </div>
-          <div className={styles.right}></div>
+          <div className={styles.right}>{ui.title}</div>
         </Header>
-        {userInsured.name ? <Main>{children}</Main> : <Login />}
+        {insuredProfile.insured.rut !== "" ? (
+          <Main>{children}</Main>
+        ) : (
+          <Login />
+        )}
       </Screen>
     </Fragment>
   );

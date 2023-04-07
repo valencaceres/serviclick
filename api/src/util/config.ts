@@ -59,8 +59,8 @@ const config = {
   },
   pdf: {
     URL: {
-      contract: "https://api-pdf.serviclick.cl/api/document/contract",
-      annex: "https://api-pdf.serviclick.cl/api/document/annex",
+      contract: "http://localhost:3007/api/document/contract",
+      annex: "http://localhost:3007/api/document/annex",
     },
     apiKey: { id: "97689458-b21c-4abf-9bb3-a05ac52b4791" },
   },

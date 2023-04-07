@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
 
-import { setSession } from "../../../redux/slices/userInsuredSlice";
-import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { useInsured } from "../../../zustand/hooks";
 
+import Tooltip from "../../ui/Tooltip";
 import Icon from "../../ui/Icon";
 
 import styles from "./Product.module.scss";
@@ -29,64 +29,42 @@ type LeadT = {
 
 const ProductList = () => {
   const router = useRouter();
-  const dispatch = useAppDispatch();
 
-  const { userInsured, session } = useAppSelector(
-    (state) => state.userInsuredSlice
-  );
+  const { insuredProfile } = useInsured();
+  const { products } = insuredProfile;
 
-  const [products, setProducts] = useState<ProductT[]>([]);
+  const [showTooltip, setShowTooltip] = useState(true);
 
-  useEffect(() => {
-    if (userInsured.id) {
-      const productArray: ProductT[] = [];
-      userInsured.leads.map((lead) =>
-        lead.products.map((item) =>
-          productArray.push({
-            id: item.id,
-            lead_id: lead.lead_id,
-            family_icon: item.family_icon,
-            family_name: item.family_name,
-            frequency_code: item.frequency_code,
-            name: item.name,
-            price: item.price,
-            numberBeneficiaries: item.numberBeneficiaries,
-          })
-        )
-      );
-      setProducts(productArray);
-    }
-  }, [userInsured]);
+  const handleCloseTooltip = () => {
+    setShowTooltip(false);
+  };
 
-  const handleClickOption = (product: ProductT) => {
-    dispatch(
-      setSession({
-        ...session,
-        lead_id: product.lead_id,
-        product_id: product.id,
-        numberBeneficiaries: product.numberBeneficiaries,
-        beneficiaries: userInsured.leads
-          .filter((lead) => lead.lead_id === product.lead_id)[0]
-          .products.filter((item) => item.id === product.id)[0].beneficiaries,
-      })
-    );
+  const handleClickOption = (product: any) => {
     router.push(`/product?id=${product.id}`);
   };
 
   return (
     <div className={styles.products}>
-      <div className={styles.title}></div>
       <div className={styles.menu}>
         {products.map((product, idx: number) => (
           <button
             className={styles.option}
             key={idx}
             onClick={() => handleClickOption(product)}>
-            <Icon iconName={product.family_icon} />
             {product.name}
           </button>
         ))}
       </div>
+      <Tooltip isShow={showTooltip} onClose={handleCloseTooltip}>
+        <div>
+          Mediante esta opción podrás revisar la información de los productos
+          que has contratado con nosotros, su cobertura, límites, cantidad de
+          eventos, etc.
+          <br />
+          <br />
+          Debes seleccionar el producto que quieres ver.
+        </div>
+      </Tooltip>
     </div>
   );
 };

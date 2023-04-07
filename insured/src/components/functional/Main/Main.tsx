@@ -3,18 +3,16 @@ import { useMediaQuery } from "react-responsive";
 
 import { Body } from "../../layout/Generic";
 
-import { useAppDispatch } from "../../../redux/hooks";
-
-import { setDevice } from "../../../redux/slices/uiSlice";
+import { useUI } from "../../../zustand/hooks";
 
 const Main = ({ children }: any) => {
-  const dispatch = useAppDispatch();
+  const { setIsDesktop } = useUI();
 
   const isDesktop = useMediaQuery({ minWidth: 1200 });
 
   useEffect(() => {
-    dispatch(setDevice(isDesktop));
-  }, [dispatch, isDesktop]);
+    setIsDesktop(isDesktop);
+  }, [isDesktop]);
 
   return <Body>{children}</Body>;
 };

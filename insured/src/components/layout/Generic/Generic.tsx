@@ -30,4 +30,39 @@ const Body = ({ children }: any) => {
   return <div className={styles.body}>{children}</div>;
 };
 
-export { Screen, Header, Body, PageHeader };
+interface IContent {
+  children: any;
+}
+
+const Content = ({ children }: IContent) => {
+  return <div className={styles.content}>{children}</div>;
+};
+
+interface ICol {
+  children: any;
+  width?: string;
+  gap: string;
+}
+
+const Col = ({ children, width, gap }: ICol) => {
+  return (
+    <div className={styles.col} style={{ width, gap }}>
+      {children}
+    </div>
+  );
+};
+
+interface IRow {
+  children: any;
+  gap: string;
+}
+
+const Row = ({ children, gap }: IRow) => {
+  return (
+    <div className={styles.row} style={{ gap }}>
+      {children}
+    </div>
+  );
+};
+
+export { Screen, Header, Body, PageHeader, Content, Col, Row };
