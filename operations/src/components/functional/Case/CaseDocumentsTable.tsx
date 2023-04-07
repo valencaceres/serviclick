@@ -39,6 +39,13 @@ const CaseDocumentsTable = ({
     thisStage
   );
 
+  const handleChangeInput = (e: any, item: any) => {
+    if (!e.target.files || e.target.files.length === 0) {
+      setData([...uploadData, e.target.files[0]]);
+      setDocumentData([...documentData, item.id]);
+    }
+  };
+
   const handleDownload = (
     fileData: string,
     fileName: string,
@@ -76,10 +83,7 @@ const CaseDocumentsTable = ({
                     <input
                       type={"file"}
                       id={`file-[${idx}]`}
-                      onChange={(e) => {
-                        setData([...uploadData, e.target.files[0]]);
-                        setDocumentData([...documentData, item.id]);
-                      }}
+                      onChange={(e) => handleChangeInput(e, item)}
                       className={"hidden"}
                       accept=".csv .jpg .png .pdf .jpeg"
                     />

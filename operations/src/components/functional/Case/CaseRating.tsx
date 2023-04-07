@@ -119,7 +119,7 @@ const CaseRating = ({ thisCase }: any) => {
           <TextArea
             label="Comentario"
             value={comment}
-            onChange={(e) => setComment(e.target.value)}
+            onChange={(e: any) => setComment(e.target.value)}
             width="525px"
             disabled
             height="100px"
