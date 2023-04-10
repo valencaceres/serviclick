@@ -277,7 +277,8 @@ const getFamiliesByBrokerId: any = async (id: string) => {
         from	  app.product pro
                   inner join app.family fam on pro.family_id = fam.id
                   inner join app.brokerproduct bpr on pro.id = bpr.product_id
-        where	  bpr.broker_id = $1`,
+        where	  bpr.broker_id = $1 and
+                bpr.isActive is true`,
       [id]
     );
 
@@ -312,7 +313,8 @@ const getProductsByBrokerIdAndFamilyId: any = async (
                   inner join app.family fam on pro.family_id = fam.id
                   inner join app.brokerproduct bpr on pro.id = bpr.product_id
         where   bpr.broker_id = $1 and
-                fam.id = $2`,
+                fam.id = $2 and
+                bpr.isActive is true`,
       [id, family_id]
     );
 
