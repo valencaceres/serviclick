@@ -95,7 +95,6 @@ const CaseFormNew = ({ thisCase }: any) => {
     }
   };
 
-  console.log(data);
   const handleFocusRut = (event: any) => {
     event.target.value = unFormatRut(event.target.value);
   };
@@ -124,6 +123,7 @@ const CaseFormNew = ({ thisCase }: any) => {
   };
 
   useEffect(() => {
+    console.log("data", data);
     if (data.beneficiary.rut !== "") {
       setIsSearching(false);
       setIsNewBeneficiary(false);

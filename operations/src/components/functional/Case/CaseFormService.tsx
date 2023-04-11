@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -21,7 +21,6 @@ const CaseFormService = () => {
   const { case_id } = router.query;
 
   const [assistance, setAssistance] = useState<any>(null);
-  const [assistances, setAssistances] = useState<any>(null);
   const [product, setProduct] = useState<any>(null);
   const [description, setDescription] = useState("");
   const [stage, setStage] = useState<string>("");
@@ -32,6 +31,53 @@ const CaseFormService = () => {
   const { data: thisCase } = useQueryCase().useGetById(case_id as string);
   const { data: stageData } = useQueryStage().useGetAll();
   const { mutate: updateCase } = useQueryCase().useCreate();
+
+  const assistances = useMemo(() => {
+    return data?.products?.map((item: any) => item.assistance);
+  }, [data]);
+
+  const productCandidate = useMemo(() => {
+    return data?.products?.find(
+      (item: any) => item.assistance.id === assistance
+    );
+  }, [data, assistance]);
+
+  useEffect(() => {
+    if (thisCase) {
+      setAssistance(
+        assistances?.find((a: any) => a.id === thisCase.assistance_id)?.id
+      );
+    }
+  }, [thisCase, assistances]);
+
+  useEffect(() => {
+    if (productCandidate) {
+      setProduct(productCandidate);
+    }
+  }, [productCandidate]);
+
+  const currentStage = useMemo(() => {
+    return (
+      stageData?.find((s: any) => s.name === "Registro de servicio")?.id || ""
+    );
+  }, [stageData]);
+
+  const currentDescription = useMemo(() => {
+    return thisCase?.stages.find((s: any) => s.stage === "Registro de servicio")
+      ?.description;
+  }, [thisCase]);
+
+  useEffect(() => {
+    if (currentStage) {
+      setStage(currentStage);
+    }
+  }, [currentStage]);
+
+  useEffect(() => {
+    if (currentDescription) {
+      setDescription(currentDescription);
+    }
+  }, [currentDescription]);
 
   const handleAddService = () => {
     if (assistance && product && description) {
@@ -58,31 +104,6 @@ const CaseFormService = () => {
     }
     alert("Debe completar todos los campos");
   };
-
-  useEffect(() => {
-    if (data?.products?.length > 0) {
-      setAssistances(data?.products.map((item: any) => item.assistance));
-    }
-  }, [data]);
-
-  useEffect(() => {
-    setProduct(
-      data?.products?.find((item: any) => item.assistance.id === assistance)
-    );
-  }, [assistance]);
-
-  useEffect(() => {
-    setAssistance(
-      assistances?.find((a: any) => a.id === thisCase?.assistance_id)?.id
-    );
-    setStage(
-      stageData?.find((s: any) => s.name === "Registro de servicio")?.id || ""
-    );
-    setDescription(
-      thisCase?.stages.find((s: any) => s.stage === "Registro de servicio")
-        ?.description
-    );
-  }, [thisCase]);
 
   return (
     <div>

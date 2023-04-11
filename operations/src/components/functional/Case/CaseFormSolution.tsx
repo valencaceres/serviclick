@@ -109,7 +109,11 @@ const CaseFormSolution = ({ thisCase }: any) => {
             disabled={thisCase?.is_active === true ? false : true}
           />
         </ContentCell>
-        <Button text="Registrar solución" type="submit" />
+        <Button
+          enabled={thisCase?.is_active ? true : false}
+          text="Registrar solución"
+          type="submit"
+        />
       </ContentCell>
     </form>
   );

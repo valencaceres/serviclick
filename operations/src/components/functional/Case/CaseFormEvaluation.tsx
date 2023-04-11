@@ -175,7 +175,11 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
             dataValue="name"
           />
         </ContentCell>
-        <Button text="Registrar evaluación" type="submit" />
+        <Button
+          enabled={thisCase?.is_active ? true : false}
+          text="Registrar evaluación"
+          type="submit"
+        />
       </ContentCell>
     </form>
   );

@@ -174,8 +174,14 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
           />
         </ContentCell>
         <ContentRow gap="5px">
-          <Button text="Subir archivos" width="50%" type="submit" />
           <Button
+            enabled={thisCase?.is_active ? true : false}
+            text="Subir archivos"
+            width="50%"
+            type="submit"
+          />
+          <Button
+            enabled={thisCase?.is_active ? true : false}
             text="Omitir"
             type="button"
             width="50%"
