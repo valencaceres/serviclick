@@ -25,9 +25,11 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
   const { mutate: updateCase } = useQueryCase().useCreate();
 
   const findStageByName = (name: string) =>
-    stages?.find((s: any) => s.name === name);
+    stages?.find((s: any) => s.name.toLowerCase() === name.toLowerCase());
   const findStageByStage = (stage: string) =>
-    thisCase?.stages.find((s: any) => s.stage === stage);
+    thisCase?.stages.find(
+      (s: any) => s.stage.toLowerCase() === stage.toLowerCase()
+    );
 
   const updateCaseData = (stageName: string, description: string) => ({
     applicant: { id: thisCase?.applicant_id },

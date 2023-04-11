@@ -16,9 +16,11 @@ import ComboBox from "../../ui/ComboBox";
 
 const CaseFormPartner = ({ thisCase }: any) => {
   const router = useRouter();
-  const { stage } = router.query;
+  const { stage: stageFromQuery } = router.query;
+  const stage = (stageFromQuery as string) || "default_stage";
   const queryClient = useQueryClient();
 
+  console.log(stage);
   const [thisStage, setThisStage] = useState<string>("");
   const [partner, setPartner] = useState<string>("");
   const [scheduledDate, setScheduledDate] = useState<string>("");
@@ -32,113 +34,71 @@ const CaseFormPartner = ({ thisCase }: any) => {
     thisCase?.case_id,
     thisStage
   );
-
   const { mutate: updateCase } = useQueryCase().useCreate();
   const { data: partners } = useQueryPartner().useGetByFamilyId(
     thisCase?.family_id
   );
   const { mutate: assignPartner } = useQueryCase().useAssignPartner();
 
+  const findStageByName = (name: string) =>
+    stages?.find((s: any) => s.name.toLowerCase() === name.toLowerCase());
+
+  const updateCaseData = (stageName: string) => ({
+    applicant: { id: thisCase?.applicant_id },
+    number: thisCase?.case_number,
+    product_id: thisCase?.product_id,
+    assistance_id: thisCase?.assistance_id,
+    stage_id: findStageByName(stageName)?.id || "",
+    user_id,
+    isactive: true,
+  });
+
+  const assignPartnerData = () => ({
+    case_id: thisCase?.case_id,
+    casestage_id: thisStage,
+    partner_id: partner,
+    scheduled_date: scheduledDate || null,
+    scheduled_time: scheduledTime || null,
+  });
+
   const handleAssign = (e: any) => {
     e.preventDefault();
     if (partner) {
-      return updateCase(
-        {
-          applicant: {
-            id: thisCase?.applicant_id,
-          },
-          number: thisCase?.case_number,
-          product_id: thisCase?.product_id,
-          assistance_id: thisCase?.assistance_id,
-          stage_id: thisStage,
-          user_id: user_id,
-          isactive: true,
+      return updateCase(updateCaseData(stage), {
+        onSuccess: () => {
+          assignPartner(assignPartnerData(), {
+            onSuccess: () => {
+              queryClient.invalidateQueries(["case", thisCase?.case_id]);
+            },
+          });
         },
-        {
-          onSuccess: () => {
-            return assignPartner(
-              {
-                case_id: thisCase?.case_id,
-                casestage_id: thisStage,
-                partner_id: partner,
-                scheduled_date: scheduledDate || null,
-                scheduled_time: scheduledTime || null,
-              },
-              {
-                onSuccess: () => {
-                  queryClient.invalidateQueries(["case", thisCase?.case_id]);
-                },
-              }
-            );
-          },
-        }
-      );
+      });
     }
   };
 
   const handleSchedule = (e: any) => {
     e.preventDefault();
     if (partner) {
-      return updateCase(
-        {
-          applicant: {
-            id: thisCase?.applicant_id,
-          },
-          number: thisCase?.case_number,
-          product_id: thisCase?.product_id,
-          assistance_id: thisCase?.assistance_id,
-          stage_id: thisStage,
-          user_id: user_id,
-          isactive: true,
-        },
-        {
-          onSuccess: () => {
-            assignPartner(
-              {
-                case_id: thisCase?.case_id,
-                casestage_id: thisStage,
-                partner_id: partner,
-                scheduled_date: scheduledDate || null,
-                scheduled_time: scheduledTime || null,
-              },
-              {
+      return updateCase(updateCaseData(stage), {
+        onSuccess: () => {
+          assignPartner(assignPartnerData(), {
+            onSuccess: () => {
+              updateCase(updateCaseData("Seguimiento"), {
                 onSuccess: () => {
-                  return updateCase(
-                    {
-                      applicant: {
-                        id: thisCase?.applicant_id,
-                      },
-                      number: thisCase?.case_number,
-                      product_id: thisCase?.product_id,
-                      assistance_id: thisCase?.assistance_id,
-                      stage_id: stages?.find(
-                        (s: any) => s?.name === "Seguimiento"
-                      )?.id,
-                      user_id: user_id,
-                      isactive: true,
-                    },
-                    {
-                      onSuccess: () => {
-                        router.push(`/case/${thisCase?.case_id}/seguimiento`);
-                        queryClient.invalidateQueries([
-                          "case",
-                          thisCase?.case_id,
-                        ]);
-                      },
-                    }
-                  );
+                  router.push(`/case/${thisCase?.case_id}/seguimiento`);
+                  queryClient.invalidateQueries(["case", thisCase?.case_id]);
                 },
-              }
-            );
-          },
-        }
-      );
+              });
+            },
+          });
+        },
+      });
     }
   };
 
   useEffect(() => {
     if (stages) {
-      setThisStage(stages.find((s: any) => s.name.toLowerCase() === stage)?.id);
+      setThisStage(findStageByName(stage.toLowerCase())?.id);
     }
     if (getAssignedPartner) {
       setPartner(getAssignedPartner?.partner_id);
