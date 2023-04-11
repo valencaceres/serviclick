@@ -20,7 +20,6 @@ const CaseFormPartner = ({ thisCase }: any) => {
   const stage = (stageFromQuery as string) || "default_stage";
   const queryClient = useQueryClient();
 
-  console.log(stage);
   const [thisStage, setThisStage] = useState<string>("");
   const [partner, setPartner] = useState<string>("");
   const [scheduledDate, setScheduledDate] = useState<string>("");

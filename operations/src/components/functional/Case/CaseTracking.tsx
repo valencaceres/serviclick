@@ -124,9 +124,7 @@ const CaseTracking = ({ thisCase }: any) => {
         number: thisCase?.case_number,
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
-        stage_id: stages.find(
-          (s: any) => s?.name === "Designación de especialista"
-        )?.id,
+        stage_id: stages.find((s: any) => s?.name === "Seguimiento")?.id,
         user_id: user_id,
         isactive: true,
       },
@@ -153,15 +151,23 @@ const CaseTracking = ({ thisCase }: any) => {
             );
           }
           if (assignedPartner) {
-            assignPartner({
-              case_id: thisCase?.case_id,
-              casestage_id: stages.find(
-                (s: any) => s.name === "Designación de convenio"
-              )?.id,
-              partner_id: assignedPartner?.partner_id,
-              scheduled_date: confirmDate,
-              scheduled_time: confirmTime,
-            });
+            assignPartner(
+              {
+                case_id: thisCase?.case_id,
+                casestage_id: stages.find(
+                  (s: any) => s.name === "Designación de convenio"
+                )?.id,
+                partner_id: assignedPartner?.partner_id,
+                scheduled_date: confirmDate,
+                scheduled_time: confirmTime,
+              },
+              {
+                onSuccess: () => {
+                  queryClient.invalidateQueries(["case", thisCase?.case_id]);
+                  setEvaluation("");
+                },
+              }
+            );
           }
         },
       }
