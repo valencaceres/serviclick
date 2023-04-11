@@ -10,9 +10,8 @@ const create: any = async (
     const caseStage = await pool.query(
       `SELECT * FROM app.casestage 
       WHERE case_id = $1 
-      AND stage_id = $2 
-      AND user_id = $3`,
-      [case_id, stage_id, user_id]
+      AND stage_id = $2`,
+      [case_id, stage_id]
     );
 
     if (caseStage.rowCount > 0) {
