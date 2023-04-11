@@ -232,7 +232,7 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
                 width="260px"
               />
             </ContentRow>
-            {specialist !== getAssignedSpecialist?.specialist_id ? (
+            {specialist !== assignedSpecialist?.specialist_id ? (
               <Button
                 text="Asignar especialista"
                 type="button"
@@ -241,7 +241,7 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
                 onClick={handleAssign}
               />
             ) : (
-              getAssignedSpecialist && (
+              assignedSpecialist && (
                 <div className="mt-5">
                   <ContentCell gap="5px">
                     <ContentRow gap="5px">
