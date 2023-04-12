@@ -41,4 +41,53 @@ const create: any = async (
   }
 };
 
-export { create };
+const getAll: any = async () => {
+  try {
+    const result = await pool.query(`SELECT
+                                        sub.id,
+                                        sub.status,
+                                        sub.amount,
+                                        sub.currency,
+                                        sub.name,
+                                        sub.paternallastname,
+                                        sub.maternallastname,
+                                        sub.assistance,
+                                        sub.max_amount,
+                                        sub.case_id,
+                                        sub.case_number,
+                                        sub.stage_name
+                                    FROM (
+                                        SELECT
+                                            CR.id,
+                                            CR.status,
+                                            CSR.amount,
+                                            CSR.currency,
+                                            I.name,
+                                            I.paternallastname,
+                                            I.maternallastname,
+                                            A.name AS assistance,
+                                            PA.amount AS max_amount,
+                                            C.id AS case_id,
+                                            C.number AS case_number,
+                                            S.name AS stage_name,
+                                            ROW_NUMBER() OVER (PARTITION BY C.id ORDER BY S.number DESC) AS row_number
+                                        FROM app.casereimbursment AS CR
+                                        INNER JOIN app.casestageresult AS CSR ON CR.casestageresult_id = CSR.id
+                                        INNER JOIN app.casestage AS CS ON CSR.casestage_id = CS.id
+                                        INNER JOIN app.case AS C ON CS.case_id = C.id
+                                        INNER JOIN app.product AS P ON C.product_id = P.id
+                                        INNER JOIN app.assistance AS A ON C.assistance_id = A.id
+                                        INNER JOIN app.productassistance AS PA ON P.id = PA.product_id AND A.id = PA.assistance_id
+                                        INNER JOIN app.insured AS I ON C.applicant_id = I.id
+                                        INNER JOIN app.stage AS S ON CS.stage_id = S.id
+                                    ) sub
+                                    WHERE sub.row_number = 1
+                                  `);
+
+    return { success: true, data: result.rows, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+export { create, getAll };

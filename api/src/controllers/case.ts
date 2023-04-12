@@ -478,6 +478,25 @@ const getReimbursment = async (req: any, res: any) => {
   return res.status(200).json(response.data);
 };
 
+const getAllReimbursements = async (req: any, res: any) => {
+  const response = await CaseReimbursement.getAll();
+
+  if (!response.success) {
+    createLogger.error({
+      model: `caseStageResult/getAllReimbursements`,
+      error: response.error,
+    });
+    return res.status(500).json({ error: response.error });
+  }
+
+  createLogger.info({
+    controller: `case/getAllReimbursements`,
+    message: `OK - Reimbursments found`,
+  });
+
+  return res.status(200).json(response.data);
+};
+
 export {
   create,
   uploadDocument,
@@ -493,4 +512,5 @@ export {
   reimburse,
   getAssistanceData,
   getReimbursment,
+  getAllReimbursements,
 };

@@ -84,6 +84,11 @@ const getReimbursment = async (case_id: string) => {
   return data;
 };
 
+const getAllReimbursements = async () => {
+  const { data } = await apiInstance.get(`/case/getAllReimbursements`);
+  return data;
+};
+
 const useGetAll = () => {
   return useQuery(["cases"], getAll);
 };
@@ -186,6 +191,10 @@ const useGetReimbursment = (case_id: string) => {
   });
 };
 
+const useGetAllReimbursements = () => {
+  return useQuery(["allReimbursements"], getAllReimbursements);
+};
+
 const useQueryCase = () => {
   return {
     useCreate,
@@ -201,6 +210,7 @@ const useQueryCase = () => {
     useReimburse,
     useGetAssistanceData,
     useGetReimbursment,
+    useGetAllReimbursements,
   };
 };
 

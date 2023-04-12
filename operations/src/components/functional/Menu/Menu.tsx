@@ -40,6 +40,7 @@ const menu = [
       { text: "Dashboard" },
       { text: "Casos", route: "/case" },
       { text: "Importación", route: "/assistances/import" },
+      { text: "Reembolsos", route: "/assistances/reimbursement" },
     ],
   },
 ];
