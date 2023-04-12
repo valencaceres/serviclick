@@ -45,6 +45,10 @@ const CaseTracking = ({ thisCase }: any) => {
     thisCase?.assistance_id,
     thisCase?.product_id
   );
+  const { data: thisReimbursement } = useQueryCase().useGetReimbursment(
+    thisCase?.case_id
+  );
+
   const { mutate: assignPartner } = useQueryCase().useAssignPartner();
   const { mutate: assignSpecialist } = useQueryCase().useAssignSpecialist();
   const { mutate: reimburse } = useQueryCase().useReimburse();
@@ -264,6 +268,8 @@ const CaseTracking = ({ thisCase }: any) => {
       setConfirmTime(assignedSpecialist?.confirmed_time);
     }
   }, [stages, stage, assignedPartner, assignedSpecialist]);
+
+  console.log(thisReimbursement);
 
   return (
     <form>
@@ -496,7 +502,11 @@ const CaseTracking = ({ thisCase }: any) => {
                       ? "Monto ($)"
                       : "Monto (UF)"
                   }
-                  value={refundAmount}
+                  value={
+                    thisReimbursement?.amount
+                      ? thisReimbursement.amount
+                      : refundAmount
+                  }
                   type="number"
                   width="525px"
                   disabled={thisCase?.is_active === true ? false : true}

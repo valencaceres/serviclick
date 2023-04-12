@@ -13,7 +13,6 @@ import { useRouter } from "next/router";
 
 const CaseResolution = ({ thisCase }: any) => {
   const router = useRouter();
-  const [stage, setStage] = useState<string>("");
   const [action, setAction] = useState<string>("");
   const [comment, setComment] = useState<string>("");
   const { data: stages } = useQueryStage().useGetAll();
@@ -147,32 +146,54 @@ const CaseResolution = ({ thisCase }: any) => {
         </ContentCell>
         <ContentCell gap="5px">
           {thisReimbursement && (
-            <ContentRow gap="5px">
-              <InputText
-                label="Monto a reembolsar"
-                value={
-                  thisReimbursement?.currency === "P"
-                    ? parseInt(thisReimbursement?.amount).toLocaleString(
-                        "es-CL",
-                        {
-                          style: "currency",
-                          currency: "CLP",
-                        }
-                      )
-                    : thisReimbursement?.amount + " UF"
-                }
-                type="text"
-                disabled={true}
-                width="260px"
-              />
-              <InputText
-                label="Estado"
-                value={"Pendiente"}
-                type="text"
-                disabled={true}
-                width="260px"
-              />
-            </ContentRow>
+            <ContentCell gap="20px">
+              <ContentRow gap="5px">
+                <InputText
+                  label="Monto a reembolsar"
+                  value={
+                    thisReimbursement?.currency === "P"
+                      ? parseInt(thisReimbursement?.amount).toLocaleString(
+                          "es-CL",
+                          {
+                            style: "currency",
+                            currency: "CLP",
+                          }
+                        )
+                      : thisReimbursement?.amount + " UF"
+                  }
+                  type="text"
+                  disabled={true}
+                  width="260px"
+                />
+                <InputText
+                  label="Estado"
+                  value={thisReimbursement?.status}
+                  type="text"
+                  disabled={true}
+                  width="260px"
+                />
+              </ContentRow>
+              {["Aprobado", "Rechazado"].includes(
+                thisReimbursement?.status
+              ) && (
+                <ContentCell gap="5px">
+                  <TextArea
+                    label="Comentarios"
+                    width="525px"
+                    height="100px"
+                    value={comment}
+                    disabled={thisCase?.is_active === true ? false : true}
+                    onChange={(e: any) => setComment(e.target.value)}
+                  />
+                  <Button
+                    text="Cerrar caso"
+                    onClick={handleClose}
+                    width="525px"
+                    enabled={thisCase?.is_active === true ? true : false}
+                  />
+                </ContentCell>
+              )}
+            </ContentCell>
           )}
           {(assignedSpecialist || assignedPartner) && (
             <ContentCell gap="20px">

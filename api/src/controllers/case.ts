@@ -497,6 +497,31 @@ const getAllReimbursements = async (req: any, res: any) => {
   return res.status(200).json(response.data);
 };
 
+const updateReimbursementStatus = async (req: any, res: any) => {
+  const { case_id, casestageresult_id, status } = req.body;
+
+  const response = await CaseReimbursement.updateStatus(
+    case_id,
+    casestageresult_id,
+    status
+  );
+
+  if (!response.success) {
+    createLogger.error({
+      model: `caseStageResult/updateReimbursementStatus`,
+      error: response.error,
+    });
+    return res.status(500).json({ error: response.error });
+  }
+
+  createLogger.info({
+    controller: `case/updateReimbursementStatus`,
+    message: `OK - Reimbursment status updated`,
+  });
+
+  return res.status(200).json(response.data);
+};
+
 export {
   create,
   uploadDocument,
@@ -513,4 +538,5 @@ export {
   getAssistanceData,
   getReimbursment,
   getAllReimbursements,
+  updateReimbursementStatus,
 };

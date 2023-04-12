@@ -55,13 +55,15 @@ const getAll: any = async () => {
                                         sub.max_amount,
                                         sub.case_id,
                                         sub.case_number,
-                                        sub.stage_name
+                                        sub.stage_name,
+                                        sub.casestageresult_id
                                     FROM (
                                         SELECT
                                             CR.id,
                                             CR.status,
                                             CSR.amount,
                                             CSR.currency,
+                                            CSR.id AS casestageresult_id,
                                             I.name,
                                             I.paternallastname,
                                             I.maternallastname,
@@ -90,4 +92,25 @@ const getAll: any = async () => {
   }
 };
 
-export { create, getAll };
+const updateStatus: any = async (
+  case_id: string,
+  casestageresult_id: string,
+  status: "Pendiente" | "Aprobado" | "Rechazado"
+) => {
+  try {
+    const result = await pool.query(
+      `UPDATE app.casereimbursment
+      SET status = $1
+      WHERE case_id = $2
+      AND casestageresult_id = $3
+      RETURNING *`,
+      [status, case_id, casestageresult_id]
+    );
+
+    return { success: true, data: result.rows[0], error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+export { create, getAll, updateStatus };

@@ -89,6 +89,14 @@ const getAllReimbursements = async () => {
   return data;
 };
 
+const updateReimbursementStatus = async (reimbursementData: any) => {
+  const { data } = await apiInstance.put(
+    `/case/updateReimbursementStatus`,
+    reimbursementData
+  );
+  return data;
+};
+
 const useGetAll = () => {
   return useQuery(["cases"], getAll);
 };
@@ -195,6 +203,10 @@ const useGetAllReimbursements = () => {
   return useQuery(["allReimbursements"], getAllReimbursements);
 };
 
+const useUpdateReimbursementStatus = () => {
+  return useMutation(["caseReimburse"], updateReimbursementStatus);
+};
+
 const useQueryCase = () => {
   return {
     useCreate,
@@ -211,6 +223,7 @@ const useQueryCase = () => {
     useGetAssistanceData,
     useGetReimbursment,
     useGetAllReimbursements,
+    useUpdateReimbursementStatus,
   };
 };
 

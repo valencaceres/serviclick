@@ -18,6 +18,7 @@ import {
   getAssistanceData,
   getReimbursment,
   getAllReimbursements,
+  updateReimbursementStatus,
 } from "../controllers/case";
 
 const upload = multer();
@@ -51,5 +52,6 @@ CaseRouter.get(
 );
 CaseRouter.get("/getReimbursment/:case_id", auth, getReimbursment);
 CaseRouter.get("/getAllReimbursements", auth, getAllReimbursements);
+CaseRouter.put("/updateReimbursementStatus", auth, updateReimbursementStatus);
 
 export default CaseRouter;

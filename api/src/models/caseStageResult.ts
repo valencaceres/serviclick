@@ -43,8 +43,16 @@ const create: any = async (
 const getByCase: any = async (case_id: string) => {
   try {
     const result = await pool.query(
-      `SELECT * FROM app.casestageresult
-      WHERE case_id = $1`,
+      `SELECT 
+        csr.id,
+        csr.amount,
+        csr.currency,
+        csr.case_id,
+        csr.casestage_id,
+        cr.status
+      FROM app.casestageresult AS csr
+      INNER JOIN app.casereimbursment AS cr ON cr.casestageresult_id = csr.id
+      WHERE csr.case_id = $1`,
       [case_id]
     );
 
