@@ -126,7 +126,7 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
 
     if (assignedSpecialist) {
       setSpecialist(assignedSpecialist.specialist_id);
-      setScheduledDate(assignedSpecialist.scheduled_date.split("T")[0]);
+      setScheduledDate(assignedSpecialist.scheduled_date?.split("T")[0]);
       setScheduledTime(assignedSpecialist.scheduled_time);
       setDistrict(assignedSpecialist.district_id);
     }

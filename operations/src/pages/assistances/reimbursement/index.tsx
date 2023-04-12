@@ -7,7 +7,7 @@ import ButtonIcon from "../../../components/ui/ButtonIcon";
 import { ImportList } from "../../../components/functional/_assistances/Import";
 
 import { useUI, useDistrict } from "../../../hooks";
-import { useQueryImport } from "../../../hooks/query";
+import { useQueryCase, useQueryImport } from "../../../hooks/query";
 import { ReimbursementList } from "../../../components/functional/_assistances/Reimbursement";
 
 const ReimbursementPage = () => {
@@ -18,7 +18,7 @@ const ReimbursementPage = () => {
   const { setTitleUI, filters } = useUI();
   const { listAllDistrict } = useDistrict();
 
-  const { refetch } = useQueryImport().useGetAll();
+  const { refetch } = useQueryCase().useGetAllReimbursements();
 
   const handleClickHome = () => {
     router.push("/");
@@ -26,10 +26,6 @@ const ReimbursementPage = () => {
 
   const handleClickRefresh = () => {
     refetch();
-  };
-
-  const handleClickNew = () => {
-    router.push("/assistances/reimbursement/new");
   };
 
   useEffect(() => {
@@ -47,7 +43,6 @@ const ReimbursementPage = () => {
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />
         <ButtonIcon iconName="refresh" onClick={handleClickRefresh} />
-        <ButtonIcon iconName="add" onClick={handleClickNew} />
       </FloatMenu>
     </Fragment>
   );

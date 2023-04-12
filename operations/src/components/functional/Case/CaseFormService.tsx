@@ -140,7 +140,7 @@ const CaseFormService = () => {
   };
 
   useEffect(() => {
-    if (thisCase) {
+    if (thisCase?.assistance_id && thisCase?.product_id) {
       const assistance = uniqueAssistances.find(
         (a: any) => a.id === thisCase.assistance_id
       );
