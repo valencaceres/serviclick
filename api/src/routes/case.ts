@@ -19,6 +19,8 @@ import {
   getReimbursment,
   getAllReimbursements,
   updateReimbursementStatus,
+  createChatMessage,
+  getChatByCase,
 } from "../controllers/case";
 
 const upload = multer();
@@ -53,5 +55,7 @@ CaseRouter.get(
 CaseRouter.get("/getReimbursment/:case_id", auth, getReimbursment);
 CaseRouter.get("/getAllReimbursements", auth, getAllReimbursements);
 CaseRouter.put("/updateReimbursementStatus", auth, updateReimbursementStatus);
+CaseRouter.post("/createChatMessage", auth, createChatMessage);
+CaseRouter.get("/getChatByCase/:case_id", auth, getChatByCase);
 
 export default CaseRouter;

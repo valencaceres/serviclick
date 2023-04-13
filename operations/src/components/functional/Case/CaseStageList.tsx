@@ -19,8 +19,9 @@ import Icon from "../../ui/Icon";
 import { LoadingMessage } from "../../ui/LoadingMessage";
 
 import { useQueryCase } from "../../../hooks/query";
+import Button from "../../ui/Button";
 
-const CaseStageList = () => {
+const CaseStageList = ({ showModal, setShowModal }: any) => {
   const router = useRouter();
   const { case_id } = router.query;
 
@@ -29,7 +30,7 @@ const CaseStageList = () => {
   return (
     <Fragment>
       <ContentCell gap="5px">
-        <Table height="600px">
+        <Table height="400px">
           <TableHeader>
             <TableCell width="95px" align="center">
               Fecha
@@ -72,7 +73,7 @@ const CaseStageList = () => {
             ))}
           </TableDetail>
         </Table>
-        <ContentRow align="flex-start">
+        <ContentRow className="justify-between">
           <ContentCellSummary
             color={data?.stages?.length > 0 ? "blue" : "#959595"}
           >
@@ -82,6 +83,11 @@ const CaseStageList = () => {
               ? "1 acción"
               : `${data?.stages?.length} acciones`}
           </ContentCellSummary>
+          <Button
+            text="Chat"
+            iconName="chat"
+            onClick={() => setShowModal(true)}
+          />
         </ContentRow>
       </ContentCell>
       <LoadingMessage />

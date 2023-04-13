@@ -1,4 +1,4 @@
-import { useEffect, Fragment } from "react";
+import { useEffect, Fragment, useState } from "react";
 import { useRouter } from "next/router";
 import { useQuery } from "@tanstack/react-query";
 
@@ -20,9 +20,19 @@ import CaseResolution from "../../../components/functional/Case/CaseResolution";
 import CaseFormSolution from "../../../components/functional/Case/CaseFormSolution";
 import CaseRating from "../../../components/functional/Case/CaseRating";
 import CaseFormRejected from "../../../components/functional/Case/CaseFormRejected";
+import { ContentCell } from "../../../components/layout/Content";
+import CaseNotes from "../../../components/functional/Case/CaseChat";
+import { Modal, Window } from "../../../components/ui/Modal";
+import InputText from "../../../components/ui/InputText";
+import Button from "../../../components/ui/Button";
 
 const CaseStepPage = () => {
   const router = useRouter();
+
+  const [showModal, setShowModal] = useState(false);
+  const [type, setType] = useState("");
+  const [message, setMessage] = useState("");
+
   const { setTitleUI, filters } = useUI();
   const { data, getBeneficiaryByRut } = useCase();
   const { case_id, stage } = router.query;
@@ -40,6 +50,10 @@ const CaseStepPage = () => {
 
   const handleClickBack = () => {
     router.push("/case");
+  };
+
+  const setClosed = () => {
+    setShowModal(false);
   };
 
   useEffect(() => {
@@ -108,12 +122,19 @@ const CaseStepPage = () => {
         ) : stage === "rechazado" ? (
           <CaseFormRejected thisCase={thisCase} />
         ) : null}
-        <CaseStageList />
+        <ContentCell gap="20px">
+          <CaseStageList setShowModal={setShowModal} showModal={showModal} />
+        </ContentCell>
       </ContentHalfRow>
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />
         <ButtonIcon iconName="arrow_back" onClick={handleClickBack} />
       </FloatMenu>
+      <Modal showModal={showModal}>
+        <Window setClosed={setClosed}>
+          <CaseNotes />
+        </Window>
+      </Modal>
     </Fragment>
   );
 };

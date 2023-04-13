@@ -97,6 +97,19 @@ const updateReimbursementStatus = async (reimbursementData: any) => {
   return data;
 };
 
+const createChatMessage = async (messageData: any) => {
+  const { data } = await apiInstance.post(
+    `/case/createChatMessage`,
+    messageData
+  );
+  return data;
+};
+
+const getChatByCase = async (case_id: string) => {
+  const { data } = await apiInstance.get(`/case/getChatByCase/${case_id}`);
+  return data;
+};
+
 const useGetAll = () => {
   return useQuery(["cases"], getAll);
 };
@@ -207,6 +220,16 @@ const useUpdateReimbursementStatus = () => {
   return useMutation(["caseReimburse"], updateReimbursementStatus);
 };
 
+const useCreateChatMessage = () => {
+  return useMutation(["caseMessage"], createChatMessage);
+};
+
+const useGetChatByCase = (case_id: string) => {
+  return useQuery(["caseMessages", case_id], () => getChatByCase(case_id), {
+    enabled: !!case_id,
+  });
+};
+
 const useQueryCase = () => {
   return {
     useCreate,
@@ -224,6 +247,8 @@ const useQueryCase = () => {
     useGetReimbursment,
     useGetAllReimbursements,
     useUpdateReimbursementStatus,
+    useCreateChatMessage,
+    useGetChatByCase,
   };
 };
 

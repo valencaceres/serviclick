@@ -12,50 +12,46 @@ import TextArea from "../../ui/TextArea/TextArea";
 
 const CaseFormSolution = ({ thisCase }: any) => {
   const router = useRouter();
-  const { stage } = router.query;
   const queryClient = useQueryClient();
 
-  const [thisStage, setThisStage] = useState<string>("");
   const [description, setDescription] = useState<string>("");
 
   const { id: user_id } = useUser().user;
   const { data: stages } = useQueryStage().useGetAll();
   const { mutate: updateCase } = useQueryCase().useCreate();
 
+  const findStageByName = (name: string) =>
+    stages?.find((s: any) => s.name.toLowerCase() === name.toLowerCase());
+
+  const updateCaseData = (stageName: string, description?: string) => ({
+    applicant: { id: thisCase?.applicant_id },
+    number: thisCase?.case_number,
+    product_id: thisCase?.product_id,
+    assistance_id: thisCase?.assistance_id,
+    stage_id: findStageByName(stageName)?.id || "",
+    user_id,
+    description,
+    isactive: true,
+  });
+
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (description) {
-      return updateCase(
-        {
-          applicant: {
-            id: thisCase?.applicant_id,
-          },
-          number: thisCase?.case_number,
-          product_id: thisCase?.product_id,
-          assistance_id: thisCase?.assistance_id,
-          stage_id:
-            stages?.find((s: any) => s.name === "Recepción de antecedentes")
-              ?.id || "",
-          user_id: user_id,
-          description,
-          isactive: true,
+      return updateCase(updateCaseData("Solución particular", description), {
+        onSuccess: () => {
+          updateCase(updateCaseData("Recepción de antecedentes"), {
+            onSuccess: () => {
+              router.push(
+                `/case/${thisCase?.case_id}/recepción de antecedentes`
+              );
+              queryClient.invalidateQueries(["case", thisCase?.case_id]);
+            },
+          });
         },
-        {
-          onSuccess: () => {
-            router.push(`/case/${thisCase?.case_id}/recepción de antecedentes`);
-            queryClient.invalidateQueries(["case", thisCase?.case_id]);
-          },
-        }
-      );
+      });
     }
     alert("Debe completar todos los campos");
   };
-
-  useEffect(() => {
-    if (stages) {
-      setThisStage(stages.find((s: any) => s.name.toLowerCase() === stage)?.id);
-    }
-  }, [stages, stage]);
 
   useEffect(() => {
     if (thisCase) {
@@ -67,12 +63,7 @@ const CaseFormSolution = ({ thisCase }: any) => {
   }, [router, thisCase]);
 
   return (
-    <form
-      action=""
-      encType="multipart/form-data"
-      method="post"
-      onSubmit={handleSubmit}
-    >
+    <form onSubmit={handleSubmit}>
       <ContentCell gap="20px">
         <ContentCell gap="5px">
           <InputText

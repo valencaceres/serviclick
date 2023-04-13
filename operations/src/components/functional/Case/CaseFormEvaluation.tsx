@@ -31,7 +31,7 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
       (s: any) => s.stage.toLowerCase() === stage.toLowerCase()
     );
 
-  const updateCaseData = (stageName: string, description: string) => ({
+  const updateCaseData = (stageName: string, description?: string) => ({
     applicant: { id: thisCase?.applicant_id },
     number: thisCase?.case_number,
     product_id: thisCase?.product_id,
@@ -49,7 +49,7 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
         updateCaseData("Evaluación del evento", justification),
         {
           onSuccess: () => {
-            return updateCase(updateCaseData(evaluation, description), {
+            return updateCase(updateCaseData(evaluation), {
               onSuccess: () => {
                 router.push(
                   `/case/${thisCase?.case_id}/${evaluation.toLowerCase()}`

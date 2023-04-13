@@ -131,7 +131,7 @@ const CaseList = () => {
                 <TableCell width="250px" align="center">
                   {data.product ? data.product : "Sin servicio asignado"}
                 </TableCell>
-                <TableCell width="150px" align="left">
+                <TableCell width="150px" align="center">
                   {data.stage}
                 </TableCell>
                 <TableCell width="90px" align="center">

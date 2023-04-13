@@ -7,6 +7,7 @@ import * as CaseStagePartner from "../models/caseStagePartner";
 import * as CaseStageSpecialist from "../models/caseStageSpecialist";
 import * as CaseStageResult from "../models/caseStageResult";
 import * as CaseReimbursement from "../models/caseReimbursement";
+import * as CaseChat from "../models/caseChat";
 import * as Person from "../models/person";
 
 const create = async (req: any, res: any) => {
@@ -522,6 +523,54 @@ const updateReimbursementStatus = async (req: any, res: any) => {
   return res.status(200).json(response.data);
 };
 
+const createChatMessage = async (req: any, res: any) => {
+  const { case_id, casestage_id, message, user_id, type } = req.body;
+
+  const response = await CaseChat.create(
+    case_id,
+    casestage_id,
+    user_id,
+    message,
+    type
+  );
+
+  if (!response.success) {
+    createLogger.error({
+      model: `caseChat/createChatMessage`,
+      error: response.error,
+    });
+    return res.status(500).json({ error: response.error });
+  }
+
+  createLogger.info({
+    controller: `case/createChatMessage`,
+    message: `OK - Chat message created`,
+  });
+
+  return res.status(200).json(response.data);
+};
+
+const getChatByCase = async (req: any, res: any) => {
+  const { case_id } = req.params;
+
+  const response = await CaseChat.getByCase(case_id);
+
+  if (!response.success) {
+    createLogger.error({
+      model: `caseChat/getChatByCase`,
+      error: response.error,
+    });
+    return res.status(500).json({ error: response.error });
+  }
+
+  createLogger.info({
+    controller: `case/getChatByCase`,
+    message: `OK - Chat messages found`,
+  });
+
+  return res.status(200).json(response.data);
+};
+
 export {
   create,
   uploadDocument,
@@ -539,4 +588,6 @@ export {
   getReimbursment,
   getAllReimbursements,
   updateReimbursementStatus,
+  createChatMessage,
+  getChatByCase,
 };
