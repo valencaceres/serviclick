@@ -111,7 +111,8 @@ const CaseResolution = ({ thisCase }: any) => {
     if (thisCase?.stages?.find((c: any) => c?.stage === "Cerrado")) {
       setAction("Cerrar caso");
       setComment(
-        thisCase?.stages?.find((c: any) => c?.stage === "Cerrado")?.description
+        thisCase?.stages?.find((c: any) => c?.stage === "Calificación")
+          ?.description
       );
     }
   }, [thisCase]);
