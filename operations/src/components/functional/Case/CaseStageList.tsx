@@ -18,7 +18,7 @@ import {
 import Icon from "../../ui/Icon";
 import { LoadingMessage } from "../../ui/LoadingMessage";
 
-import { useQueryCase } from "../../../hooks/query";
+import { useQueryCase, useQueryStage } from "../../../hooks/query";
 import Button from "../../ui/Button";
 
 const CaseStageList = ({ showModal, setShowModal }: any) => {
@@ -26,6 +26,7 @@ const CaseStageList = ({ showModal, setShowModal }: any) => {
   const { case_id } = router.query;
 
   const { data } = useQueryCase().useGetById((case_id as string) || "");
+  const { data: stages } = useQueryStage().useGetAll();
 
   return (
     <Fragment>

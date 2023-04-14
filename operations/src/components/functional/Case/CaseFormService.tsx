@@ -170,7 +170,6 @@ const CaseFormService = () => {
     }
   }, [thisCase, uniqueAssistances, relatedProducts]);
 
-  console.log(assistanceData);
   return (
     <div>
       <ContentCell gap="20px">

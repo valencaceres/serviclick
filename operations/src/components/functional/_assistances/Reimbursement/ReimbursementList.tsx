@@ -130,9 +130,7 @@ const ReimbursementList = ({ setShowModal, showModal }: any) => {
                 </TableCell>
                 <TableCell width="130px" align="center">
                   {data?.currency === "P"
-                    ? (
-                        parseInt(data?.available) - parseInt(data?.amount)
-                      ).toLocaleString("es-CL", {
+                    ? parseInt(data?.available).toLocaleString("es-CL", {
                         style: "currency",
                         currency: "CLP",
                       })

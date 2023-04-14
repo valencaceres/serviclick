@@ -63,6 +63,9 @@ const CaseList = () => {
   };
 
   const handleViewCase = (case_id: string, stage: string) => {
+    if (stage === "apertura") {
+      return router.push(`/case/${case_id}/registro de servicio`);
+    }
     router.push(`/case/${case_id}/${stage}`);
   };
 
