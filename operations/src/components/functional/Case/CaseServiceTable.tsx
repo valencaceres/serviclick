@@ -18,8 +18,6 @@ import { useQueryAssistances } from "../../../hooks/query";
 const CaseServiceTable = ({ product }: any) => {
   const queryClient = useQueryClient();
 
-  const [lead, setLead] = React.useState<string | null>(null);
-
   const { data } = useCase();
   const { data: assistanceValues } = useQueryAssistances().useGetValues(
     product?.assistance.id
@@ -52,8 +50,6 @@ const CaseServiceTable = ({ product }: any) => {
       }
     );
   };
-
-  console.log(insuredValues);
 
   return (
     <Table height="287px">

@@ -393,13 +393,16 @@ const getAssignedSpecialist = async (req: any, res: any) => {
 };
 
 const reimburse = async (req: any, res: any) => {
-  const { case_id, casestage_id, amount, currency } = req.body;
+  const { case_id, casestage_id, amount, currency, uf_value, available } =
+    req.body;
 
   const caseStageResponse = await CaseStageResult.create(
     case_id,
     casestage_id,
     amount,
-    currency
+    currency,
+    uf_value,
+    available
   );
 
   if (!caseStageResponse.success) {

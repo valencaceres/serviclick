@@ -13,7 +13,6 @@ const create: any = async (
       AND casestageresult_id = $2`,
       [case_id, casestageresult_id]
     );
-    console.log(caseStageReimbursment.rows);
 
     if (caseStageReimbursment.rowCount > 0) {
       const result = await pool.query(
@@ -48,6 +47,8 @@ const getAll: any = async () => {
                                         sub.status,
                                         sub.amount,
                                         sub.currency,
+                                        sub.uf_value,
+                                        sub.available,
                                         sub.name,
                                         sub.paternallastname,
                                         sub.maternallastname,
@@ -63,6 +64,8 @@ const getAll: any = async () => {
                                             CR.status,
                                             CSR.amount,
                                             CSR.currency,
+                                            CSR.uf_value,
+                                            CSR.available,
                                             CSR.id AS casestageresult_id,
                                             I.name,
                                             I.paternallastname,

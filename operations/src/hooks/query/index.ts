@@ -6,6 +6,7 @@ import useQueryAssistances from "./useQueryAssistances";
 import useQueryDocument from "./useQueryDocument";
 import useQueryPartner from "./useQueryPartner";
 import useQuerySpecialist from "./useQuerySpecialist";
+import useQueryUF from "./useQueryUF";
 
 export {
   useQueryCompany,
@@ -16,4 +17,5 @@ export {
   useQueryDocument,
   useQueryPartner,
   useQuerySpecialist,
+  useQueryUF,
 };

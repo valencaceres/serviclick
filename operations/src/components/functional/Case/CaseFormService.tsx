@@ -11,8 +11,9 @@ import TextArea from "../../ui/TextArea/TextArea";
 import CaseServiceTable from "./CaseServiceTable";
 
 import { useCase } from "../../../store/hooks/useCase";
-import { useQueryCase, useQueryStage } from "../../../hooks/query";
+import { useQueryCase, useQueryStage, useQueryUF } from "../../../hooks/query";
 import { useUser } from "../../../hooks";
+import axios from "axios";
 
 interface IAssistance {
   id: string;
@@ -47,9 +48,16 @@ const CaseFormService = () => {
   const { data } = useCase();
   const { id: user_id } = useUser().user;
 
+  const { data: ufValue } = useQueryUF().useGetUFValue();
   const { data: thisCase } = useQueryCase().useGetById(case_id as string);
   const { data: stageData } = useQueryStage().useGetAll();
   const { mutate: updateCase } = useQueryCase().useCreate();
+
+  const { data: assistanceData } = useQueryCase().useGetAssistanceData(
+    thisCase?.applicant_id,
+    selectedAssistance?.id as string,
+    selectedProduct?.id as string
+  );
 
   useEffect(() => {
     const assistancesMap = new Map(
@@ -70,6 +78,9 @@ const CaseFormService = () => {
       );
       setRelatedProducts(Array.from(productsMap.values()));
     } else {
+      if (selectedAssistance === null) {
+        setSelectedProduct(null);
+      }
       setRelatedProducts([]);
     }
   }, [selectedAssistance]);
@@ -159,6 +170,7 @@ const CaseFormService = () => {
     }
   }, [thisCase, uniqueAssistances, relatedProducts]);
 
+  console.log(assistanceData);
   return (
     <div>
       <ContentCell gap="20px">
@@ -191,9 +203,29 @@ const CaseFormService = () => {
             <>
               <ContentRow gap="5px">
                 <InputText
-                  label="Monto Disponible ($)"
+                  label={
+                    selectedAssistance?.currency === "U"
+                      ? "Monto Disponible (UF)"
+                      : "Monto Disponible ($)"
+                  }
                   value={
-                    selectedAssistance?.currency === "P"
+                    assistanceData
+                      ? selectedAssistance?.currency === "P"
+                        ? assistanceData?.remaining_amount.toLocaleString(
+                            "es-CL",
+                            {
+                              style: "currency",
+                              currency: "CLP",
+                            }
+                          )
+                        : (
+                            assistanceData?.remaining_amount *
+                            ufValue.serie[0].valor
+                          ).toLocaleString("es-CL", {
+                            style: "currency",
+                            currency: "CLP",
+                          })
+                      : selectedAssistance?.currency === "P"
                       ? parseInt(selectedAssistance?.amount).toLocaleString(
                           "es-CL",
                           {
@@ -201,7 +233,13 @@ const CaseFormService = () => {
                             currency: "CLP",
                           }
                         )
-                      : selectedAssistance?.amount + " UF" || ""
+                      : (
+                          parseInt(selectedAssistance?.amount!) *
+                          ufValue.serie[0].valor
+                        ).toLocaleString("es-CL", {
+                          style: "currency",
+                          currency: "CLP",
+                        })
                   }
                   type="text"
                   width="152px"
@@ -209,7 +247,7 @@ const CaseFormService = () => {
                 />
                 <InputText
                   label="Eventos restantes"
-                  value={selectedAssistance?.events || ""}
+                  value={assistanceData?.remaining_events || ""}
                   type="number"
                   width="129px"
                   disabled

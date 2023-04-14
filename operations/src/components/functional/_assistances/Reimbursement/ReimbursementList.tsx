@@ -20,7 +20,7 @@ import Icon from "../../../ui/Icon";
 
 import { LoadingMessage } from "../../../ui/LoadingMessage";
 
-import { useQueryCase } from "../../../../hooks/query";
+import { useQueryCase, useQueryUF } from "../../../../hooks/query";
 import { Modal, Window } from "../../../ui/Modal";
 import InputText from "../../../ui/InputText";
 import ComboBox from "../../../ui/ComboBox";
@@ -34,12 +34,14 @@ const ReimbursementList = ({ setShowModal, showModal }: any) => {
   const [action, setAction] = useState("");
   const [reimbursement, setReimbursement] = useState<any | null>(null);
 
+  const { data: ufValue } = useQueryUF().useGetUFValue();
   const { data: reimbursements, isLoading } =
     useQueryCase().useGetAllReimbursements();
 
   const { mutate: updateReimbursement } =
     useQueryCase().useUpdateReimbursementStatus();
 
+  console.log(reimbursements);
   const handleViewCase = (case_id: string, stage_id: string) => {
     router.push(`/case/${case_id}/${stage_id}`);
   };
@@ -84,7 +86,7 @@ const ReimbursementList = ({ setShowModal, showModal }: any) => {
     setShowModal(false);
   };
 
-  console.log(reimbursement);
+  console.log(reimbursements);
 
   return (
     <Fragment>
@@ -96,7 +98,8 @@ const ReimbursementList = ({ setShowModal, showModal }: any) => {
             </TableCell>
             <TableCell width="190px">Cliente</TableCell>
             <TableCell width="250px">Servicio</TableCell>
-            <TableCell width="100px">Disponible</TableCell>
+            <TableCell width="130px">Monto Total</TableCell>
+            <TableCell width="130px">Disponible</TableCell>
             <TableCell width="100px">Reembolso</TableCell>
             <TableCell width="100px">Estado</TableCell>
             <TableCell width="80px">&nbsp;</TableCell>
@@ -114,17 +117,43 @@ const ReimbursementList = ({ setShowModal, showModal }: any) => {
                 <TableCell width="250px" align="center">
                   {data.assistance}
                 </TableCell>
-                <TableCell width="100px" align="center">
-                  {parseInt(data?.max_amount).toLocaleString("es-CL", {
-                    style: "currency",
-                    currency: "CLP",
-                  })}
+                <TableCell width="130px" align="center">
+                  {data?.currency === "P"
+                    ? parseInt(data?.max_amount).toLocaleString("es-CL", {
+                        style: "currency",
+                        currency: "CLP",
+                      })
+                    : (data?.max_amount).toLocaleString("es-CL", {
+                        style: "currency",
+                        currency: "CLF",
+                      }) + " UF"}
+                </TableCell>
+                <TableCell width="130px" align="center">
+                  {data?.currency === "P"
+                    ? (
+                        parseInt(data?.available) - parseInt(data?.amount)
+                      ).toLocaleString("es-CL", {
+                        style: "currency",
+                        currency: "CLP",
+                      })
+                    : (data?.available * ufValue.serie[0].valor).toLocaleString(
+                        "es-CL",
+                        {
+                          style: "currency",
+                          currency: "CLP",
+                        }
+                      )}
                 </TableCell>
                 <TableCell width="100px" align="center">
-                  {parseInt(data?.amount).toLocaleString("es-CL", {
-                    style: "currency",
-                    currency: "CLP",
-                  })}
+                  {data?.currency === "P"
+                    ? parseInt(data?.amount).toLocaleString("es-CL", {
+                        style: "currency",
+                        currency: "CLP",
+                      })
+                    : (data?.amount * data?.uf_value).toLocaleString("es-CL", {
+                        style: "currency",
+                        currency: "CLP",
+                      })}
                 </TableCell>
                 <TableCell width="100px" align="center">
                   {data.status}

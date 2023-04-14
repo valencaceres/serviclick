@@ -6,7 +6,7 @@ import { ContentCell, ContentRow } from "../../layout/Content";
 import Button from "../../ui/Button";
 import InputText from "../../ui/InputText";
 
-import { useQueryCase, useQueryStage } from "../../../hooks/query";
+import { useQueryCase, useQueryStage, useQueryUF } from "../../../hooks/query";
 import { useUser } from "../../../hooks";
 import TextArea from "../../ui/TextArea/TextArea";
 import ComboBox from "../../ui/ComboBox";
@@ -14,6 +14,7 @@ import {
   summaryActions,
   selfSolutionSummaryActions,
 } from "../../../data/masters";
+import { isNull } from "util";
 
 const CaseTracking = ({ thisCase }: any) => {
   const router = useRouter();
@@ -26,11 +27,12 @@ const CaseTracking = ({ thisCase }: any) => {
   const [confirmDate, setConfirmDate] = useState<string>("");
   const [confirmTime, setConfirmTime] = useState<string>("");
   const [evaluation, setEvaluation] = useState<string>("");
-  const [refundAmount, setRefundAmount] = useState<string>("");
+  const [refundAmount, setRefundAmount] = useState<number | null>(null);
 
   const { id: user_id } = useUser().user;
+  const { data: ufValue } = useQueryUF().useGetUFValue();
   const { data: stages } = useQueryStage().useGetAll();
-  const { mutate: updateCase, data: newStage } = useQueryCase().useCreate();
+  const { mutate: updateCase } = useQueryCase().useCreate();
   const { data: assignedPartner } = useQueryCase().useGetAssignedPartner(
     thisCase?.case_id,
     stages?.find((s: any) => s?.name === "Designación de convenio")?.id
@@ -201,8 +203,13 @@ const CaseTracking = ({ thisCase }: any) => {
               casestage_id: thisCase?.stages?.find(
                 (s: any) => s?.stage === "Seguimiento"
               )?.id,
-              amount: refundAmount,
+              amount:
+                assistanceData?.currency === "U"
+                  ? refundAmount! / ufValue.serie[0].valor
+                  : refundAmount,
               currency: assistanceData?.currency,
+              uf_value: ufValue.serie[0].valor,
+              available: assistanceData?.remaining_amount,
             },
             {
               onSuccess: () => {
@@ -459,11 +466,7 @@ const CaseTracking = ({ thisCase }: any) => {
                 <h2 className="font-semibold">Disponible</h2>
                 <ContentRow gap="5px">
                   <InputText
-                    label={
-                      assistanceData?.currency === "P"
-                        ? "Monto Disponible ($)"
-                        : "Monto Disponible (UF)"
-                    }
+                    label={"Monto Disponible"}
                     value={
                       assistanceData?.currency === "P"
                         ? parseInt(
@@ -472,7 +475,13 @@ const CaseTracking = ({ thisCase }: any) => {
                             style: "currency",
                             currency: "CLP",
                           })
-                        : assistanceData?.remaining_amount + " UF"
+                        : (
+                            assistanceData?.remaining_amount! *
+                            ufValue?.serie[0].valor
+                          ).toLocaleString("es-CL", {
+                            style: "currency",
+                            currency: "CLP",
+                          })
                     }
                     type="text"
                     width="152px"
@@ -497,20 +506,18 @@ const CaseTracking = ({ thisCase }: any) => {
               <ContentCell gap="5px">
                 <h2 className="font-semibold">Reembolsar</h2>
                 <InputText
-                  label={
-                    assistanceData?.currency === "P"
-                      ? "Monto ($)"
-                      : "Monto (UF)"
-                  }
+                  label={"Monto ($)"}
                   value={
                     thisReimbursement?.amount
-                      ? thisReimbursement.amount
+                      ? thisReimbursement?.currency === "P"
+                        ? thisReimbursement?.amount
+                        : thisReimbursement?.amount *
+                          thisReimbursement?.uf_value
                       : refundAmount
                   }
                   type="number"
                   width="525px"
                   disabled={thisCase?.is_active === true ? false : true}
-                  step={assistanceData?.currency === "P" ? "" : "0.01"}
                   onChange={(e: any) => setRefundAmount(e.target.value)}
                 />
                 <Button

@@ -6,7 +6,7 @@ import ComboBox from "../../ui/ComboBox";
 import TextArea from "../../ui/TextArea/TextArea";
 import Button from "../../ui/Button";
 
-import { useQueryCase, useQueryStage } from "../../../hooks/query";
+import { useQueryCase, useQueryStage, useQueryUF } from "../../../hooks/query";
 import { useUser } from "../../../hooks";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
@@ -20,6 +20,7 @@ const CaseResolution = ({ thisCase }: any) => {
   const queryClient = useQueryClient();
 
   const { id: user_id } = useUser().user;
+  const { data: ufValue } = useQueryUF().useGetUFValue();
   const { data: thisReimbursement } = useQueryCase().useGetReimbursment(
     thisCase?.case_id
   );
@@ -160,7 +161,13 @@ const CaseResolution = ({ thisCase }: any) => {
                             currency: "CLP",
                           }
                         )
-                      : thisReimbursement?.amount + " UF"
+                      : (
+                          thisReimbursement?.amount *
+                          thisReimbursement?.uf_value
+                        ).toLocaleString("es-CL", {
+                          style: "currency",
+                          currency: "CLP",
+                        })
                   }
                   type="text"
                   disabled={true}
