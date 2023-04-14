@@ -5,6 +5,43 @@ import createLogger from "../util/logger";
 import * as UserBroker from "../models/userBroker";
 import * as Broker from "./broker";
 
+const create = async (req: any, res: any) => {
+  const {
+    broker_id,
+    rut,
+    name,
+    paternalLastName,
+    maternalLastName,
+    email,
+    profileCode,
+  } = req.body;
+
+  const result = await UserBroker.create(
+    broker_id,
+    rut,
+    name,
+    paternalLastName,
+    maternalLastName,
+    email,
+    profileCode
+  );
+
+  if (!result.success) {
+    createLogger.error({
+      model: "userBroker/create",
+      error: result.error,
+    });
+    res.status(500).json({ error: result.error });
+    return;
+  }
+
+  createLogger.info({
+    controller: "userBroker/create",
+    message: "OK",
+  });
+  res.status(200).json(result);
+};
+
 const assignPassword = async (req: any, res: any) => {
   const { id, password } = req.body;
 
@@ -183,6 +220,7 @@ const updatePassword = async (req: any, res: any) => {
 };
 
 export {
+  create,
   assignPassword,
   validate,
   getByEmail,

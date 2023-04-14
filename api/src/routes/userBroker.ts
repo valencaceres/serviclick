@@ -2,6 +2,7 @@ import { Router } from "express";
 
 import auth from "../middlewares/auth";
 import {
+  create,
   assignPassword,
   validate,
   getByEmail,
@@ -11,6 +12,7 @@ import {
 
 const UserBrokerRouter = Router();
 
+UserBrokerRouter.post("/create", auth, create);
 UserBrokerRouter.post("/assignPassword", auth, assignPassword);
 UserBrokerRouter.post("/validate", auth, validate);
 UserBrokerRouter.post("/sendCredentials", auth, sendCredentials);

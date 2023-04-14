@@ -9,6 +9,7 @@ const useBroker = () => {
     list: brokerList,
     familyList,
     productList,
+    collect,
     loading,
   } = useAppSelector((state) => state.brokerSlice);
 
@@ -40,6 +41,11 @@ const useBroker = () => {
   const getProductsByBrokerIdAndFamilyId = (id: string, family_id: string) => {
     dispatch(Broker.setLoading(true));
     dispatch(Broker.getProductsByBrokerIdAndFamilyId(id, family_id));
+  };
+
+  const getCollectById = (id: string) => {
+    dispatch(Broker.setLoading(true));
+    dispatch(Broker.getCollectById(id));
   };
 
   const uploadLogo = (logo: any) => {
@@ -83,6 +89,7 @@ const useBroker = () => {
     getBrokerByRut,
     getFamiliesByBrokerId,
     getProductsByBrokerIdAndFamilyId,
+    getCollectById,
     uploadLogo,
     deleteBrokerById,
     setBrokerList,
@@ -95,6 +102,7 @@ const useBroker = () => {
     brokerList,
     familyList,
     productList,
+    collect,
     loading,
   };
 };

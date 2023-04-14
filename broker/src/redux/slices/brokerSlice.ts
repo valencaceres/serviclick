@@ -45,11 +45,27 @@ export type FamilyT = {
   name: string;
 };
 
+export type CollectT = {
+  customer_name: string;
+  customer_email: string;
+  customer_phone: string;
+  executive_name: string;
+  product_name: string;
+  incorporation: string;
+  fee_value: number;
+  free_months: number;
+  fees_charged: number;
+  charged: number;
+  paid: number;
+  balance: number;
+};
+
 export type StateT = {
   list: BrokerT[];
   broker: BrokerT;
   familyList: FamilyT[];
   productList: ProductT[];
+  collect: CollectT[];
   loading: boolean;
 };
 
@@ -71,6 +87,7 @@ const initialState: StateT = {
   },
   familyList: [],
   productList: [],
+  collect: [],
   loading: false,
 };
 
@@ -96,6 +113,9 @@ export const brokerSlice = createSlice({
     setProductList: (state: StateT, action: PayloadAction<ProductT[]>) => {
       state.productList = action.payload;
     },
+    setCollect: (state: StateT, action: PayloadAction<CollectT>) => {
+      state.collect = action.payload;
+    },
     resetBroker: (state: StateT) => {
       state.broker = initialState.broker;
     },
@@ -115,6 +135,7 @@ export const {
   setLogo,
   setFamilyList,
   setProductList,
+  setCollect,
   resetLogo,
   resetBroker,
   reset,
@@ -230,3 +251,16 @@ export const getProductsByBrokerIdAndFamilyId =
     dispatch(setLoading(false));
     return true;
   };
+
+export const getCollectById = (id: string) => async (dispatch: any) => {
+  const { success, data, error } = await get(`broker/getCollectByid/${id}`);
+
+  if (!success) {
+    console.log(error);
+    return false;
+  }
+
+  dispatch(setCollect(data));
+  dispatch(setLoading(false));
+  return true;
+};

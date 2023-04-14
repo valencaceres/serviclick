@@ -37,9 +37,12 @@ const Menu = () => {
     router.push("/contract/company");
   };
 
-  const handleCustomers = () => {};
+  // const handleCustomers = () => {};
 
-  const handleReports = () => {};
+  const handleCollect = () => {
+    setCustomerTypeUI("P");
+    router.push("/collect");
+  };
 
   return (
     <Fragment>
@@ -48,13 +51,13 @@ const Menu = () => {
           <Icon iconName="real_estate_agent" size="40px" />
           Productos
         </div>
-        <div className={styles.menuOption} onClick={handleCustomers}>
+        {/* <div className={styles.menuOption} onClick={handleCustomers}>
           <Icon iconName="groups" size="40px" />
           Clientes
-        </div>
-        <div className={styles.menuOption} onClick={handleReports}>
+        </div> */}
+        <div className={styles.menuOption} onClick={handleCollect}>
           <Icon iconName="monitoring" size="40px" />
-          Reportes
+          Cobranza
         </div>
       </div>
       <ModalWindow

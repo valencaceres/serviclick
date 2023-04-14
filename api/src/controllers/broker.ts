@@ -412,6 +412,36 @@ const getProductsByBrokerIdAndFamilyId = async (req: any, res: any) => {
   }
 };
 
+const getCollectById = async (req: any, res: any) => {
+  try {
+    const { id } = req.params;
+
+    const brokerResponse = await Broker.getCollectById(id);
+
+    if (!brokerResponse.success) {
+      createLogger.error({
+        model: "broker/getCollectById",
+        error: brokerResponse.error,
+      });
+      res.status(500).json({ error: brokerResponse.error });
+      return;
+    }
+
+    createLogger.info({
+      controller: "broker/getCollectById",
+      message: "OK",
+    });
+    res.status(200).json(brokerResponse.data);
+  } catch (error) {
+    createLogger.error({
+      controller: "broker/getCollectById",
+      error: (error as Error).message,
+    });
+    res.status(500).json({ error });
+    return;
+  }
+};
+
 export {
   create,
   getById,
@@ -421,6 +451,7 @@ export {
   deleteById,
   getFamiliesByBrokerId,
   getProductsByBrokerIdAndFamilyId,
+  getCollectById,
 };
 
 export const getBrokerDataById = async (id: string) => {

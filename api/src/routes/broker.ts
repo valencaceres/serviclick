@@ -10,6 +10,7 @@ import {
   deleteById,
   getFamiliesByBrokerId,
   getProductsByBrokerIdAndFamilyId,
+  getCollectById,
 } from "../controllers/broker";
 
 const BrokerRouter = Router();
@@ -24,6 +25,7 @@ BrokerRouter.get(
   auth,
   getProductsByBrokerIdAndFamilyId
 );
+BrokerRouter.get("/getCollectById/:id", auth, getCollectById);
 BrokerRouter.put("/updateLogo/:id", updateLogo);
 BrokerRouter.delete("/deleteById/:id", auth, deleteById);
 
