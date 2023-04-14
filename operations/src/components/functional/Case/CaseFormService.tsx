@@ -86,9 +86,7 @@ const CaseFormService = () => {
   }, [selectedAssistance]);
 
   useEffect(() => {
-    if (relatedProducts.length === 1) {
-      setSelectedProduct(relatedProducts[0]);
-    }
+    setSelectedProduct(relatedProducts[0]);
   }, [relatedProducts]);
 
   const handleAssistanceChange = (
