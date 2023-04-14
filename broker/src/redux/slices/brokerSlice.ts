@@ -113,7 +113,7 @@ export const brokerSlice = createSlice({
     setProductList: (state: StateT, action: PayloadAction<ProductT[]>) => {
       state.productList = action.payload;
     },
-    setCollect: (state: StateT, action: PayloadAction<CollectT>) => {
+    setCollect: (state: StateT, action: PayloadAction<CollectT[]>) => {
       state.collect = action.payload;
     },
     resetBroker: (state: StateT) => {
