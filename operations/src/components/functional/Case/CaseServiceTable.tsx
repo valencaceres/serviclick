@@ -1,4 +1,6 @@
-import { useQueryAssistances } from "../../../hooks/query";
+import React, { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+
 import {
   Table,
   TableHeader,
@@ -8,10 +10,16 @@ import {
   TableIcons,
   TableCellEnd,
 } from "../../ui/Table";
+import Icon from "../../ui/Icon";
 
 import { useCase } from "../../../store/hooks/useCase";
+import { useQueryAssistances } from "../../../hooks/query";
 
 const CaseServiceTable = ({ product }: any) => {
+  const queryClient = useQueryClient();
+
+  const [lead, setLead] = React.useState<string | null>(null);
+
   const { data } = useCase();
   const { data: assistanceValues } = useQueryAssistances().useGetValues(
     product?.assistance.id
@@ -22,6 +30,30 @@ const CaseServiceTable = ({ product }: any) => {
     product?.assistance.id,
     product?.id
   );
+
+  const { mutate: assignValue } = useQueryAssistances().useAssignValue();
+
+  const handleSubmit = (e: any, data: any) => {
+    e.preventDefault();
+    const newValueInput = e.target.elements.newValue;
+    console.log(data?.value_id);
+    assignValue(
+      {
+        lead_id: data?.lead_id,
+        product_id: data?.product_id,
+        insured_id: data?.insured_id,
+        value_id: data?.value_id,
+        value: newValueInput.value,
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(["assistanceValueById"]);
+        },
+      }
+    );
+  };
+
+  console.log(insuredValues);
 
   return (
     <Table height="287px">
@@ -42,8 +74,32 @@ const CaseServiceTable = ({ product }: any) => {
 
               <TableCell width="260px" align="center">
                 {insuredValues &&
-                  insuredValues.length > idx &&
-                  insuredValues[idx].value}
+                insuredValues.find((i: any) => i.value_name === item.name) ? (
+                  insuredValues.find((i: any) => i.value_name === item.name)
+                    ?.value
+                ) : (
+                  <form
+                    onSubmit={(e: any) =>
+                      handleSubmit(e, {
+                        lead_id: product?.lead_id,
+                        product_id: product?.id,
+                        insured_id: data?.beneficiary.id,
+                        value_id: item.id,
+                      })
+                    }
+                    className="flex items-center gap-2"
+                  >
+                    <input
+                      type="text"
+                      className="rounded-md bg-transparent px-2 font-medium text-secondary-500 focus:bg-white"
+                      placeholder="Ingrese valor"
+                      id="newValue"
+                    />
+                    <button>
+                      <Icon iconName="check" button={true} />
+                    </button>
+                  </form>
+                )}
               </TableCell>
             </TableRow>
           ))

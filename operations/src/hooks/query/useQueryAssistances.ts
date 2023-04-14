@@ -1,6 +1,14 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { apiInstance } from "../../utils/api";
+
+const assignValue = async (data: any) => {
+  const { data: result } = await apiInstance.post(
+    "/assistance/assignValue",
+    data
+  );
+  return result;
+};
 
 const getAll = async () => {
   const { data } = await apiInstance.get(`/assistance/getAll`);
@@ -65,8 +73,18 @@ const useGetDocumentsById = (assistance_id: string) => {
   });
 };
 
+const useAssignValue = () => {
+  return useMutation(["productValue"], assignValue);
+};
+
 const useQueryAssistances = () => {
-  return { useGetAll, useGetValues, useGetValuesById, useGetDocumentsById };
+  return {
+    useGetAll,
+    useGetValues,
+    useGetValuesById,
+    useGetDocumentsById,
+    useAssignValue,
+  };
 };
 
 export default useQueryAssistances;

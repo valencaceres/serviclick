@@ -107,7 +107,8 @@ const getById: any = async (
 ) => {
   try {
     const result = await pool.query(
-      `SELECT LPV.value
+      `SELECT LPV.value,
+              VAL.name as value_name
       FROM app.leadproductvalue LPV
       INNER JOIN app.assistancevalue ASV ON LPV.value_id = ASV.value_id
       INNER JOIN app.value VAL on LPV.value_id = VAL.id

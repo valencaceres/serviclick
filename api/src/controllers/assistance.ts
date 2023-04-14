@@ -401,6 +401,34 @@ const getDocumentsById = async (req: any, res: any) => {
   return res.status(200).json(assistanceResponse.data);
 };
 
+const assignValue = async (req: any, res: any) => {
+  const { lead_id, product_id, insured_id, value_id, value } = req.body;
+
+  const response = await LeadProductValue.create(
+    lead_id,
+    product_id,
+    insured_id,
+    value_id,
+    value
+  );
+
+  if (!response.success) {
+    createLogger.error({
+      model: "assistanceValue/assignValue",
+      error: response.error,
+    });
+    res.status(500).json({ error: response.error });
+    return;
+  }
+
+  createLogger.info({
+    controller: "assistance/assignValue",
+    message: "OK - Value assigned",
+  });
+
+  return res.status(200).json(response.data);
+};
+
 export {
   create,
   updateById,
@@ -412,6 +440,7 @@ export {
   getValues,
   getValuesById,
   getDocumentsById,
+  assignValue,
 };
 
 const functionGetById = async (id: string) => {

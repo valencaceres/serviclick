@@ -116,6 +116,7 @@ const getBeneficiaryData: any = async (rut: string) => {
           birthdate: result.rows[0].birthdate,
         },
         products: result.rows.map((row: any) => ({
+          lead_id: row.lead_id,
           id: row.product_id,
           name: row.product_name,
           assistance: {

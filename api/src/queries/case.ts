@@ -20,7 +20,8 @@ export const _getBeneficiaryData = `
           pra.currency as assistance_currency,
           pra.maximum as assistance_maximum,
           pra.events as assistance_events,
-          pra.lack as assistance_lack
+          pra.lack as assistance_lack,
+          lea.id as lead_id
       from app.lead lea
       inner join app.leadinsured lin on lea.id = lin.lead_id 
       inner join app.insured ins on lin.insured_id = ins.id

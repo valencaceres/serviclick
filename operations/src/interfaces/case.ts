@@ -17,6 +17,7 @@ export interface IBeneficiary {
 }
 
 export interface IProduct {
+  lead_id: string;
   id: string;
   name: string;
   assistance: IAssistance;
