@@ -128,12 +128,15 @@ model casemodel {
   type             String             @db.VarChar(1)
   number           Int                @default(autoincrement())
   applicant_id     String             @db.Uuid
-  applicant        insured            @relation(fields: [applicant_id], references: [id])
   product_id       String?            @db.Uuid
   assistance_id    String?            @db.Uuid
-  assistance       assistance?        @relation(fields: [assistance_id], references: [id])
   isactive         Boolean            @default(true)
+  applicant        insured            @relation(fields: [applicant_id], references: [id])
+  product          product?           @relation(fields: [product_id], references: [id])
+  assistance       assistance?        @relation(fields: [assistance_id], references: [id])
   casereimbursment casereimbursment[]
+  casestage        casestage[]
+  casechat         casechat[]
 
   @@map("case")
 }
@@ -142,7 +145,9 @@ model casechat {
   id           String   @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
   created_at   DateTime @default(now()) @db.Timestamp(6)
   case_id      String   @db.Uuid
+  casemodel    casemodel @relation(fields: [case_id], references: [id])
   casestage_id String   @db.Uuid
+  casestage    casestage @relation(fields: [casestage_id], references: [id])
   user_id      String   @db.Uuid
   message      String
   type         String   @default("") @db.VarChar(50)
@@ -151,21 +156,26 @@ model casechat {
 model casereimbursment {
   id                 String          @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
   case_id            String          @db.Uuid
-  casemodel          casemodel       @relation(fields: [case_id], references: [id])
   casestageresult_id String          @db.Uuid
-  casestageresult    casestageresult @relation(fields: [casestageresult_id], references: [id])
   user_id            String?         @db.Uuid
-  user               user?           @relation(fields: [user_id], references: [id])
   status             String          @default("Pendiente") @db.VarChar
+  comment            String?         @db.VarChar(255)
+  casemodel          casemodel       @relation(fields: [case_id], references: [id])
+  casestageresult    casestageresult @relation(fields: [casestageresult_id], references: [id])
+  user               user?           @relation(fields: [user_id], references: [id])
 }
 
 model casestage {
   id          String   @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
   case_id     String   @db.Uuid
+  case        casemodel @relation(fields: [case_id], references: [id])
   createddate DateTime @default(now()) @db.Timestamp(6)
   stage_id    String   @db.Uuid
+  stage       stage    @relation(fields: [stage_id], references: [id])
   user_id     String   @db.Uuid
+  user        user     @relation(fields: [user_id], references: [id])
   description String?
+  casechat    casechat[]
 }
 
 model casestageattach {
@@ -462,6 +472,7 @@ model product {
   currency               String  @default("P") @db.VarChar(1)
   mininsuredcompanyprice Int?
   dueday                 Int?
+  casemodels             casemodel[]
 }
 
 model productagentprice {
@@ -480,13 +491,13 @@ model productassistance {
   id            String     @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
   product_id    String     @db.Uuid
   assistance_id String     @db.Uuid
-  assistance    assistance @relation(fields: [assistance_id], references: [id])
   number        Int
   amount        Decimal?   @db.Decimal
   maximum       String?    @db.VarChar
   events        Int?
   lack          Int?
   currency      String?    @default("P") @db.VarChar
+  assistance    assistance @relation(fields: [assistance_id], references: [id])
 
   @@unique([product_id, assistance_id], map: "productassistance_idx")
 }
@@ -634,6 +645,7 @@ model stage {
   number   Int     @default(autoincrement())
   name     String  @unique(map: "stage_name_idx") @db.VarChar
   isactive Boolean @default(true)
+  casestages casestage[]
 }
 
 model status {
@@ -669,13 +681,14 @@ model subscription_history {
 model user {
   id               String             @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
   person_id        String             @db.Uuid
-  person           person             @relation(fields: [person_id], references: [id])
   login            String             @unique(map: "user_email_idx") @db.VarChar
   hash             String?            @db.VarChar
   isactive         Boolean            @default(true)
   type             String             @default("U") @db.VarChar(1)
   isvalid          Boolean            @default(true)
   casereimbursment casereimbursment[]
+  person           person             @relation(fields: [person_id], references: [id])
+  casestages       casestage[]
 }
 
 model userbroker {

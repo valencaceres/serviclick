@@ -9,6 +9,7 @@ export const reimbursementRouter = createTRPCRouter({
         casemodel: {
           include: {
             applicant: true,
+            product: true,
             assistance: {
               include: {
                 productassistances: true,
@@ -32,6 +33,7 @@ export const reimbursementRouter = createTRPCRouter({
       z.object({
         id: z.string().uuid(),
         status: z.string(),
+        comment: z.string().optional(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -41,6 +43,36 @@ export const reimbursementRouter = createTRPCRouter({
         },
         data: {
           status: input.status,
+          comment: input.comment,
+        },
+      });
+
+      return reimbursement;
+    }),
+  get: publicProcedure
+    .input(
+      z.object({
+        id: z.string().uuid(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const reimbursement = await ctx.prisma.casereimbursment.findUnique({
+        where: {
+          id: input.id,
+        },
+        include: {
+          casemodel: {
+            include: {
+              applicant: true,
+              product: true,
+              assistance: {
+                include: {
+                  productassistances: true,
+                },
+              },
+            },
+          },
+          casestageresult: true,
         },
       });
 

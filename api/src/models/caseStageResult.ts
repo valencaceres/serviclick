@@ -52,6 +52,7 @@ const getByCase: any = async (case_id: string) => {
         csr.uf_value,
         csr.case_id,
         csr.casestage_id,
+        cr.comment,
         cr.status
       FROM app.casestageresult AS csr
       INNER JOIN app.casereimbursment AS cr ON cr.casestageresult_id = csr.id

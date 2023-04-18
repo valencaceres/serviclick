@@ -132,7 +132,7 @@ const CaseStepPage = () => {
       </FloatMenu>
       <Modal showModal={showModal}>
         <Window setClosed={setClosed}>
-          <CaseNotes />
+          <CaseNotes thisCase={thisCase} />
         </Window>
       </Modal>
     </Fragment>

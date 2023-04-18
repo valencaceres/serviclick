@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 
-import { ReimbursementComponent } from "~/components/functional/_operations/Reimbursement/Reimbursement";
+import { Reimbursement } from "~/components/functional/_operations/Reimbursement/Reimbursement";
 
 const ReimbursementPage: NextPage = () => {
   return (
@@ -11,7 +11,7 @@ const ReimbursementPage: NextPage = () => {
         <meta name="description" content="Serviclick Admin Module" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <ReimbursementComponent />
+      <Reimbursement />
     </>
   );
 };

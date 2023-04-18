@@ -118,6 +118,8 @@ const CaseResolution = ({ thisCase }: any) => {
     }
   }, [thisCase]);
 
+  console.log(thisReimbursement);
+
   return (
     <form>
       <ContentCell gap="20px">
@@ -181,6 +183,17 @@ const CaseResolution = ({ thisCase }: any) => {
                   width="260px"
                 />
               </ContentRow>
+              {thisReimbursement?.comment && (
+                <ContentRow gap="5px">
+                  <TextArea
+                    label="Observaciones del reembolso"
+                    width="525px"
+                    height="100px"
+                    value={thisReimbursement?.comment}
+                    disabled={true}
+                  />
+                </ContentRow>
+              )}
               {["Aprobado", "Rechazado"].includes(
                 thisReimbursement?.status
               ) && (

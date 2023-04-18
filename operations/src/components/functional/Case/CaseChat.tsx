@@ -26,7 +26,7 @@ import { useQueryCase, useQueryStage } from "../../../hooks/query";
 import { useQueryClient } from "@tanstack/react-query";
 import { useUser } from "../../../hooks";
 
-const CaseNotes = () => {
+const CaseNotes = ({ thisCase }: any) => {
   const router = useRouter();
   const { case_id, stage } = router.query;
   const queryClient = useQueryClient();
@@ -36,17 +36,18 @@ const CaseNotes = () => {
 
   const { user } = useUser();
 
-  const { data: stageData } = useQueryStage().useGetAll();
   const { data: messages } = useQueryCase().useGetChatByCase(case_id as string);
   const { mutate: createMessage } = useQueryCase().useCreateChatMessage();
 
-  const thisStage = stageData?.find((s: any) => s.name.toLowerCase() === stage);
+  const thisCaseStage = thisCase?.stages.find(
+    (s: any) => s.stage.toLowerCase() === stage
+  );
 
   const handleCreate = () => {
     createMessage(
       {
         case_id: case_id as string,
-        casestage_id: thisStage?.id,
+        casestage_id: thisCaseStage?.id,
         user_id: user?.id,
         message,
         type,
