@@ -18,7 +18,7 @@ import { useQueryAssistances } from "../../../hooks/query";
 const CaseServiceTable = ({ product }: any) => {
   const queryClient = useQueryClient();
 
-  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const { data } = useCase();
   const { data: assistanceValues } = useQueryAssistances().useGetValues(
@@ -47,7 +47,7 @@ const CaseServiceTable = ({ product }: any) => {
       {
         onSuccess: () => {
           queryClient.invalidateQueries(["assistanceValueById"]);
-          if (isEditing) setIsEditing(false);
+          setEditingId(null);
         },
       }
     );
@@ -74,7 +74,7 @@ const CaseServiceTable = ({ product }: any) => {
                 {insuredValues &&
                 insuredValues.find((i: any) => i.value_name === item.name) ? (
                   <>
-                    {isEditing ? (
+                    {editingId === item.id ? (
                       <form
                         onSubmit={(e: any) =>
                           handleSubmit(e, {
@@ -112,7 +112,7 @@ const CaseServiceTable = ({ product }: any) => {
                         </p>
                         <button
                           className="absolute right-0 top-0"
-                          onClick={() => setIsEditing(true)}
+                          onClick={() => setEditingId(item.id)}
                         >
                           <Icon iconName="edit" button={true} />
                         </button>
