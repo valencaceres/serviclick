@@ -103,26 +103,27 @@ const ReimbursementRow = ({
       <td className="p-2 text-center font-oswald">
         {casestageresult.currency === "U"
           ? (
-              casestageresult.available * casestageresult.uf_value
+              Number(String(casestageresult.available)) *
+              Number(casestageresult.uf_value)
             ).toLocaleString("es-CL", {
               style: "currency",
               currency: "CLP",
             })
-          : parseInt(casestageresult.available).toLocaleString("es-CL", {
+          : Number(String(casestageresult.available)).toLocaleString("es-CL", {
               style: "currency",
               currency: "CLP",
             })}
       </td>
       <td className="p-2 text-center font-oswald font-medium">
         {casestageresult.currency === "U"
-          ? (casestageresult.amount * casestageresult.uf_value).toLocaleString(
-              "es-CL",
-              {
-                style: "currency",
-                currency: "CLP",
-              }
-            )
-          : parseInt(casestageresult.amount).toLocaleString("es-CL", {
+          ? (
+              Number(String(casestageresult.amount)) *
+              Number(casestageresult.uf_value)
+            ).toLocaleString("es-CL", {
+              style: "currency",
+              currency: "CLP",
+            })
+          : Number(String(casestageresult.amount)).toLocaleString("es-CL", {
               style: "currency",
               currency: "CLP",
             })}
