@@ -88,6 +88,7 @@ const ReimbursementRow = ({
   const [comment, setComment] = useState<string>("");
   const [updatingRow, setUpdatingRow] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isSummaryOpen, setIsSummaryOpen] = useState<boolean>(false);
 
   const ctx = api.useContext();
   const {
@@ -96,6 +97,16 @@ const ReimbursementRow = ({
     isError,
     error,
   } = api.reimbursement.update.useMutation();
+
+  const { data: caseStage } = api.caseStage.get.useQuery(
+    {
+      case_id: casemodel?.id,
+      stage: "Registro de servicio",
+    },
+    {
+      enabled: !!isSummaryOpen,
+    }
+  );
 
   const handleUpdate = async (id: string, status: string) => {
     setUpdatingRow(true);
@@ -228,8 +239,12 @@ const ReimbursementRow = ({
           </DropdownMenu>
         </Dialog>
 
-        <Dialog>
-          <DialogTrigger asChild>
+        <Dialog
+          open={isSummaryOpen}
+          defaultOpen={false}
+          onOpenChange={setIsSummaryOpen}
+        >
+          <DialogTrigger onClick={() => setIsSummaryOpen(true)} asChild>
             <SearchIcon
               size={24}
               className="cursor-pointer text-teal-blue hover:text-teal-blue-100"
@@ -241,13 +256,24 @@ const ReimbursementRow = ({
                 Resumen del caso
               </DialogTitle>
               <DialogDescription className="flex flex-col gap-4 text-lg text-dusty-gray-800">
-                <Accordion type="single" collapsible>
-                  <AccordionItem value="applicant">
-                    <AccordionTrigger>Cliente</AccordionTrigger>
-                    <AccordionContent>
+                <Accordion
+                  type="single"
+                  collapsible
+                  className="flex flex-col gap-2"
+                >
+                  <AccordionItem
+                    value="applicant"
+                    className="rounded-md border border-dusty-gray-100 p-2 shadow-sm hover:border-teal-blue-100"
+                  >
+                    <AccordionTrigger className="px-2 text-teal-blue-100">
+                      Cliente
+                    </AccordionTrigger>
+                    <AccordionContent className="p-2">
                       <div className="flex flex-col gap-2">
                         <div className="flex items-center gap-2">
-                          <span className="font-semibold">Nombre:</span>
+                          <span className="font-semibold text-teal-blue">
+                            Nombre:
+                          </span>
                           <span className="text-lg">
                             {casemodel?.applicant.name +
                               " " +
@@ -255,19 +281,25 @@ const ReimbursementRow = ({
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="font-semibold">Rut:</span>
+                          <span className="font-semibold text-teal-blue">
+                            Rut:
+                          </span>
                           <span className="text-lg">
                             {casemodel?.applicant.rut}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="font-semibold">Teléfono:</span>
+                          <span className="font-semibold text-teal-blue">
+                            Teléfono:
+                          </span>
                           <span className="text-lg">
                             {casemodel?.applicant.phone}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="font-semibold">Correo:</span>
+                          <span className="font-semibold text-teal-blue">
+                            Correo:
+                          </span>
                           <span className="text-lg">
                             {casemodel?.applicant.email}
                           </span>
@@ -275,31 +307,17 @@ const ReimbursementRow = ({
                       </div>
                     </AccordionContent>
                   </AccordionItem>
-                  <AccordionItem value="service">
-                    <AccordionTrigger>Servicio</AccordionTrigger>
-                    <AccordionContent>
+                  <AccordionItem
+                    value="case"
+                    className="rounded-md border border-dusty-gray-100 p-2 shadow-sm hover:border-teal-blue-100"
+                  >
+                    <AccordionTrigger className="px-2 text-teal-blue-100">
+                      Caso
+                    </AccordionTrigger>
+                    <AccordionContent className="p-2">
                       <div className="flex flex-col gap-2">
                         <div className="flex items-center gap-2">
-                          <span className="font-semibold">Producto:</span>
-                          <span className="text-lg">
-                            {casemodel?.product?.name}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-semibold">Servicio:</span>
-                          <span className="text-lg">
-                            {casemodel?.assistance?.name}
-                          </span>
-                        </div>
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                  <AccordionItem value="case">
-                    <AccordionTrigger>Caso</AccordionTrigger>
-                    <AccordionContent>
-                      <div className="flex flex-col gap-2">
-                        <div className="flex items-center gap-2">
-                          <span className="font-semibold">
+                          <span className="font-semibold text-teal-blue">
                             Fecha de creación:
                           </span>
                           <span className="text-lg">
@@ -310,17 +328,50 @@ const ReimbursementRow = ({
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="font-semibold">Estado:</span>
+                          <span className="font-semibold text-teal-blue">
+                            Estado:
+                          </span>
                           <span className="text-lg">
                             {casemodel?.isactive ? "Activo" : "Inactivo"}
                           </span>
                         </div>
+                        <div className="flex flex-col gap-2">
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-teal-blue">
+                              Producto:
+                            </span>
+                            <span className="text-lg">
+                              {casemodel?.product?.name}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-teal-blue">
+                              Servicio:
+                            </span>
+                            <span className="text-lg">
+                              {casemodel?.assistance?.name}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-teal-blue">
+                              Descripción:
+                            </span>
+                            <span className="text-lg">
+                              {caseStage?.description}
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </AccordionContent>
                   </AccordionItem>
-                  <AccordionItem value="files">
-                    <AccordionTrigger>Archivos</AccordionTrigger>
-                    <AccordionContent>
+                  <AccordionItem
+                    value="files"
+                    className="rounded-md border border-dusty-gray-100 p-2 shadow-sm hover:border-teal-blue-100"
+                  >
+                    <AccordionTrigger className="px-2 text-teal-blue-100">
+                      Archivos
+                    </AccordionTrigger>
+                    <AccordionContent className="p-2">
                       <div className="flex flex-col gap-2">
                         <div className="flex flex-col gap-2">
                           {[

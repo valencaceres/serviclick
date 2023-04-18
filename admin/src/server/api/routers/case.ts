@@ -27,3 +27,28 @@ export const caseRouter = createTRPCRouter({
       return casemodel;
     }),
 });
+
+export const caseStageRouter = createTRPCRouter({
+  get: publicProcedure
+    .input(
+      z.object({
+        case_id: z.string().uuid(),
+        stage: z.string(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const casestage = await ctx.prisma.casestage.findFirst({
+        where: {
+          case_id: input.case_id,
+          stage: {
+            name: input.stage,
+          },
+        },
+        include: {
+          stage: true,
+        },
+      });
+
+      return casestage;
+    }),
+});
