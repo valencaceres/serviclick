@@ -25,6 +25,20 @@ const create: any = async (
   value: string
 ) => {
   try {
+    const resultExists = await pool.query(
+      `SELECT * FROM app.leadproductvalue WHERE lead_id = $1 and product_id = $2 and insured_id = $3 and value_id = $4`,
+      [lead_id, product_id, insured_id, value_id]
+    );
+
+    if (resultExists.rowCount > 0) {
+      const result = await pool.query(
+        `UPDATE app.leadproductvalue SET value = $1 WHERE lead_id = $2 and product_id = $3 and insured_id = $4 and value_id = $5`,
+        [value, lead_id, product_id, insured_id, value_id]
+      );
+
+      return { success: true, data: result.rows[0], error: null };
+    }
+
     const result = await pool.query(
       `
         INSERT  INTO app.leadproductvalue(

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import {
@@ -17,6 +17,8 @@ import { useQueryAssistances } from "../../../hooks/query";
 
 const CaseServiceTable = ({ product }: any) => {
   const queryClient = useQueryClient();
+
+  const [isEditing, setIsEditing] = useState<boolean>(false);
 
   const { data } = useCase();
   const { data: assistanceValues } = useQueryAssistances().useGetValues(
@@ -46,6 +48,7 @@ const CaseServiceTable = ({ product }: any) => {
       {
         onSuccess: () => {
           queryClient.invalidateQueries(["assistanceValueById"]);
+          if (isEditing) setIsEditing(false);
         },
       }
     );
@@ -71,8 +74,52 @@ const CaseServiceTable = ({ product }: any) => {
               <TableCell width="260px" align="center">
                 {insuredValues &&
                 insuredValues.find((i: any) => i.value_name === item.name) ? (
-                  insuredValues.find((i: any) => i.value_name === item.name)
-                    ?.value
+                  <>
+                    {isEditing ? (
+                      <form
+                        onSubmit={(e: any) =>
+                          handleSubmit(e, {
+                            lead_id: product?.lead_id,
+                            product_id: product?.id,
+                            insured_id: data?.beneficiary.id,
+                            value_id: item.id,
+                          })
+                        }
+                        className="flex items-center gap-2"
+                      >
+                        <input
+                          type="text"
+                          className="rounded-md bg-transparent px-2 font-medium text-secondary-500 focus:bg-white"
+                          placeholder="Ingrese valor"
+                          id="newValue"
+                          defaultValue={
+                            insuredValues.find(
+                              (i: any) => i.value_name === item.name
+                            )?.value
+                          }
+                        />
+                        <button>
+                          <Icon iconName="check" button={true} />
+                        </button>
+                      </form>
+                    ) : (
+                      <div className="relative flex w-full justify-center">
+                        <p className="font-semibold">
+                          {
+                            insuredValues.find(
+                              (i: any) => i.value_name === item.name
+                            )?.value
+                          }
+                        </p>
+                        <button
+                          className="absolute right-0 top-0"
+                          onClick={() => setIsEditing(true)}
+                        >
+                          <Icon iconName="edit" button={true} />
+                        </button>
+                      </div>
+                    )}
+                  </>
                 ) : (
                   <form
                     onSubmit={(e: any) =>

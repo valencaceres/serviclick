@@ -25,7 +25,7 @@ const ReimbursementTable: React.FC = () => {
 
   console.log(reimbursements);
   return (
-    <table className="w-full max-w-7xl table-fixed overflow-x-auto rounded-md pl-12">
+    <table className="w-full max-w-7xl table-fixed overflow-x-auto border pl-12">
       <thead className="text-dusty-gray-700">
         <tr>
           <th className="p-2">Caso</th>
