@@ -36,7 +36,6 @@ const CaseServiceTable = ({ product }: any) => {
   const handleSubmit = (e: any, data: any) => {
     e.preventDefault();
     const newValueInput = e.target.elements.newValue;
-    console.log(data?.value_id);
     assignValue(
       {
         lead_id: data?.lead_id,
