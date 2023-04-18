@@ -54,43 +54,51 @@ interface MenuProps {
 export function Menu({ isOpen, setIsOpen }: MenuProps) {
   const user = useUser();
   return (
-    <nav
-      className={`border-grayDark-6 absolute left-0 top-0 z-20 flex h-screen flex-col justify-between border-r bg-white duration-75 ${
-        isOpen ? "w-60" : "w-12"
-      }`}
-    >
-      <div className="w-full">
-        <div
-          className={`flex w-full px-2 py-4 ${
-            !isOpen ? "justify-center" : "justify-end"
-          }`}
-        >
-          <MenuButton isOpen={isOpen} setIsOpen={setIsOpen} />
-        </div>
-        <div className={`flex flex-col gap-2 p-1 ${!isOpen ? "hidden" : ""}`}>
-          {routes.map((route, key) => (
-            <MenuItem
-              key={key}
-              route={route}
-              setIsOpen={setIsOpen}
-              isOpen={isOpen}
-            />
-          ))}
-        </div>
-      </div>
-      <div>
-        <div className={`flex items-center justify-start gap-2 p-2`}>
-          <UserButton />
-          <p
-            className={`${
-              !isOpen ? "hidden" : ""
-            } whitespace-nowrap text-sm text-black`}
+    <>
+      <nav
+        className={`border-grayDark-6 absolute left-0 top-0 z-20 flex h-screen flex-col justify-between border-r bg-white duration-75 ${
+          isOpen ? "w-60" : "w-12"
+        }`}
+      >
+        <div className="w-full">
+          <div
+            className={`flex w-full px-2 py-4 ${
+              !isOpen ? "justify-center" : "justify-end"
+            }`}
           >
-            {user.user?.fullName}
-          </p>
+            <MenuButton isOpen={isOpen} setIsOpen={setIsOpen} />
+          </div>
+          <div className={`flex flex-col gap-2 p-1 ${!isOpen ? "hidden" : ""}`}>
+            {routes.map((route, key) => (
+              <MenuItem
+                key={key}
+                route={route}
+                setIsOpen={setIsOpen}
+                isOpen={isOpen}
+              />
+            ))}
+          </div>
         </div>
-      </div>
-    </nav>
+        <div>
+          <div className={`flex items-center justify-start gap-2 p-2`}>
+            <UserButton />
+            <p
+              className={`${
+                !isOpen ? "hidden" : ""
+              } whitespace-nowrap text-sm text-black`}
+            >
+              {user.user?.fullName}
+            </p>
+          </div>
+        </div>
+      </nav>
+      <div
+        className={`absolute left-0 top-0 z-10 h-screen w-screen bg-black bg-opacity-20 ${
+          isOpen ? "" : "hidden"
+        }`}
+        onClick={() => setIsOpen(false)}
+      ></div>
+    </>
   );
 }
 
@@ -127,7 +135,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ route, isOpen, setIsOpen }) => {
     return (
       <Accordion type="multiple">
         <AccordionItem
-          className="list-none rounded-md border border-dusty-gray-100 px-2 text-teal-blue-100 hover:border-teal-blue-100"
+          className="list-none rounded-md border border-dusty-gray-100 px-2 text-teal-blue-100 shadow-sm hover:border-teal-blue-100"
           value={route.text}
         >
           <AccordionTrigger>{route.text}</AccordionTrigger>
@@ -147,12 +155,12 @@ const MenuItem: React.FC<MenuItemProps> = ({ route, isOpen, setIsOpen }) => {
 
   return (
     <li
-      className={`w-full list-none p-2 font-medium text-teal-blue-100 ${
-        pathname === route.route ? "font-extrabold" : ""
+      className={`flex w-full list-none p-2  text-teal-blue-100 ${
+        pathname === route.route ? "font-extrabold" : "font-medium"
       }`}
       onClick={() => setIsOpen && setIsOpen(false)}
     >
-      <Link className="w-full hover:underline" href={route.route}>
+      <Link className="w-full py-2 hover:underline" href={route.route}>
         {route.text}
       </Link>
     </li>

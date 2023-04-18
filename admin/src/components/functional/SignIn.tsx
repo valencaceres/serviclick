@@ -27,7 +27,7 @@ export const SignIn: React.FC = () => {
     clearErrors,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<{ email: string; password: string }>({ mode: "onChange" });
+  } = useForm<{ email: string; password: string }>({ mode: "all" });
 
   if (!isLoaded) {
     return null;
@@ -42,7 +42,6 @@ export const SignIn: React.FC = () => {
       });
       if (signInResponse.status === "complete") {
         await setSession(signInResponse.createdSessionId);
-        await router.push("/");
       } else {
         console.log(signInResponse);
       }

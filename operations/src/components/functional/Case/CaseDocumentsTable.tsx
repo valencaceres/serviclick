@@ -59,6 +59,7 @@ const CaseDocumentsTable = ({
     link.click();
   };
 
+  console.log(attachments);
   return (
     <Table height="287px">
       <TableHeader>

@@ -134,13 +134,12 @@ const ReimbursementList = ({ setShowModal, showModal }: any) => {
                         style: "currency",
                         currency: "CLP",
                       })
-                    : (data?.available * ufValue.serie[0].valor).toLocaleString(
-                        "es-CL",
-                        {
-                          style: "currency",
-                          currency: "CLP",
-                        }
-                      )}
+                    : (
+                        data?.available * ufValue?.serie[0].valor
+                      ).toLocaleString("es-CL", {
+                        style: "currency",
+                        currency: "CLP",
+                      })}
                 </TableCell>
                 <TableCell width="100px" align="center">
                   {data?.currency === "P"

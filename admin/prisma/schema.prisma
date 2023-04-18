@@ -15,10 +15,12 @@ model agent {
 }
 
 model assistance {
-  id          String @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
-  family_id   String @db.Uuid
-  name        String @unique(map: "assistance_name_idx") @db.VarChar
-  description String
+  id                 String              @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
+  family_id          String              @db.Uuid
+  name               String              @unique(map: "assistance_name_idx") @db.VarChar
+  description        String
+  cases              casemodel[]
+  productassistances productassistance[]
 }
 
 model assistancebenefit {
@@ -120,15 +122,18 @@ model brokerproduct {
   @@unique([broker_id, product_id], map: "brokerproduct_idx")
 }
 
-model Case {
-  id            String   @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
-  createddate   DateTime @default(now()) @db.Timestamp(6)
-  type          String   @db.VarChar(1)
-  number        Int      @default(autoincrement())
-  applicant_id  String   @db.Uuid
-  product_id    String?  @db.Uuid
-  assistance_id String?  @db.Uuid
-  isactive      Boolean  @default(true)
+model casemodel {
+  id               String             @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
+  createddate      DateTime           @default(now()) @db.Timestamp(6)
+  type             String             @db.VarChar(1)
+  number           Int                @default(autoincrement())
+  applicant_id     String             @db.Uuid
+  applicant        insured            @relation(fields: [applicant_id], references: [id])
+  product_id       String?            @db.Uuid
+  assistance_id    String?            @db.Uuid
+  assistance       assistance?        @relation(fields: [assistance_id], references: [id])
+  isactive         Boolean            @default(true)
+  casereimbursment casereimbursment[]
 
   @@map("case")
 }
@@ -144,11 +149,14 @@ model casechat {
 }
 
 model casereimbursment {
-  id                 String  @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
-  case_id            String  @db.Uuid
-  casestageresult_id String  @db.Uuid
-  user_id            String? @db.Uuid
-  status             String  @default("Pendiente") @db.VarChar
+  id                 String          @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
+  case_id            String          @db.Uuid
+  casemodel          casemodel       @relation(fields: [case_id], references: [id])
+  casestageresult_id String          @db.Uuid
+  casestageresult    casestageresult @relation(fields: [casestageresult_id], references: [id])
+  user_id            String?         @db.Uuid
+  user               user?           @relation(fields: [user_id], references: [id])
+  status             String          @default("Pendiente") @db.VarChar
 }
 
 model casestage {
@@ -183,11 +191,15 @@ model casestagepartner {
 }
 
 model casestageresult {
-  id           String   @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
-  case_id      String   @db.Uuid
-  casestage_id String   @db.Uuid
-  amount       Decimal? @db.Decimal
-  currency     String?  @default("P") @db.VarChar
+  id               String             @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
+  case_id          String             @db.Uuid
+  casestage_id     String             @db.Uuid
+  amount           Decimal?           @db.Decimal
+  currency         String?            @default("P") @db.VarChar
+  created_at       DateTime?          @default(now()) @db.Timestamp(6)
+  uf_value         Decimal?           @db.Decimal(10, 2)
+  available        Decimal?           @db.Decimal(20, 10)
+  casereimbursment casereimbursment[]
 }
 
 model casestagespecialist {
@@ -313,16 +325,17 @@ model frequency {
 }
 
 model insured {
-  id               String    @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
-  rut              String    @unique(map: "insured_rut_idx") @db.VarChar
-  name             String    @db.VarChar
-  paternallastname String    @db.VarChar
-  maternallastname String    @db.VarChar
-  address          String    @db.VarChar
-  district         String    @db.VarChar
-  email            String    @db.VarChar
-  phone            String    @db.VarChar
-  birthdate        DateTime? @db.Date
+  id               String      @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
+  rut              String      @unique(map: "insured_rut_idx") @db.VarChar
+  name             String      @db.VarChar
+  paternallastname String      @db.VarChar
+  maternallastname String      @db.VarChar
+  address          String      @db.VarChar
+  district         String      @db.VarChar
+  email            String      @db.VarChar
+  phone            String      @db.VarChar
+  birthdate        DateTime?   @db.Date
+  cases            casemodel[]
 }
 
 model lead {
@@ -423,6 +436,7 @@ model person {
   address          String?   @db.VarChar
   district         String?   @db.VarChar
   birthdate        DateTime? @db.Date
+  user             user[]
 }
 
 model policy {
@@ -463,15 +477,16 @@ model productagentprice {
 }
 
 model productassistance {
-  id            String   @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
-  product_id    String   @db.Uuid
-  assistance_id String   @db.Uuid
+  id            String     @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
+  product_id    String     @db.Uuid
+  assistance_id String     @db.Uuid
+  assistance    assistance @relation(fields: [assistance_id], references: [id])
   number        Int
-  amount        Decimal? @db.Decimal
-  maximum       String?  @db.VarChar
+  amount        Decimal?   @db.Decimal
+  maximum       String?    @db.VarChar
   events        Int?
   lack          Int?
-  currency      String?  @default("P") @db.VarChar
+  currency      String?    @default("P") @db.VarChar
 
   @@unique([product_id, assistance_id], map: "productassistance_idx")
 }
@@ -652,13 +667,15 @@ model subscription_history {
 }
 
 model user {
-  id        String  @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
-  person_id String  @db.Uuid
-  login     String  @unique(map: "user_email_idx") @db.VarChar
-  hash      String? @db.VarChar
-  isactive  Boolean @default(true)
-  type      String  @default("U") @db.VarChar(1)
-  isvalid   Boolean @default(true)
+  id               String             @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
+  person_id        String             @db.Uuid
+  person           person             @relation(fields: [person_id], references: [id])
+  login            String             @unique(map: "user_email_idx") @db.VarChar
+  hash             String?            @db.VarChar
+  isactive         Boolean            @default(true)
+  type             String             @default("U") @db.VarChar(1)
+  isvalid          Boolean            @default(true)
+  casereimbursment casereimbursment[]
 }
 
 model userbroker {
