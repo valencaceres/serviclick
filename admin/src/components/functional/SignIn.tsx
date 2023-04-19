@@ -23,11 +23,15 @@ export const SignIn: React.FC = () => {
   const {
     register,
     getValues,
+    watch,
     setError,
     clearErrors,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<{ email: string; password: string }>({ mode: "all" });
+
+  const email = watch("email");
+  const password = watch("password");
 
   if (!isLoaded) {
     return null;
@@ -98,8 +102,8 @@ export const SignIn: React.FC = () => {
       <Button
         disabled={
           isSubmitting ||
-          !getValues("email") ||
-          !getValues("password") ||
+          !email ||
+          !password ||
           Boolean(errors.email) ||
           Boolean(errors.password)
         }
