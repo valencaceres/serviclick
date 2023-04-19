@@ -22,7 +22,7 @@ const Switch = ({ children }: any) => {
         <Header />
       </LayoutHeader>
       <LayoutBody>
-        {user.rut !== "" ? <Main>{children}</Main> : <Login />}
+        <Main>{children}</Main>
       </LayoutBody>
     </LayoutScreen>
   );

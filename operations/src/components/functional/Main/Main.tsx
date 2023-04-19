@@ -1,14 +1,18 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 
 import { Content } from "../../layout/Content";
 
-import Menu from "../../functional/Menu";
+import { Menu } from "../Menu/Menu";
 
 import { useDistrict } from "../../../hooks";
+import { useSession } from "@clerk/nextjs";
 
 const Main = ({ children }: any) => {
   const { listAllDistrict } = useDistrict();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const { isSignedIn } = useSession();
 
   useEffect(() => {
     listAllDistrict();
@@ -16,7 +20,7 @@ const Main = ({ children }: any) => {
 
   return (
     <Content>
-      <Menu />
+      {isSignedIn && <Menu isOpen={isOpen} setIsOpen={setIsOpen} />}
       {children}
     </Content>
   );

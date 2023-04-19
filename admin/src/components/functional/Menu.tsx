@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useRouter } from "next/router";
 import { UserButton, useUser } from "@clerk/nextjs";
 import { MenuIcon, XIcon } from "lucide-react";
@@ -57,7 +57,7 @@ export function Menu({ isOpen, setIsOpen }: MenuProps) {
     <>
       <nav
         className={`border-grayDark-6 absolute left-0 top-0 z-20 flex h-screen flex-col justify-between border-r bg-white duration-75 ${
-          isOpen ? "w-60" : "w-12"
+          isOpen ? "w-64" : "w-12"
         }`}
       >
         <div className="w-full">

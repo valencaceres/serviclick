@@ -10,6 +10,7 @@ import * as CaseStageResult from "../models/caseStageResult";
 import * as CaseReimbursement from "../models/caseReimbursement";
 import * as CaseChat from "../models/caseChat";
 import * as Person from "../models/person";
+import { fetchClerkUser } from "../util/clerkUserData";
 
 const create = async (req: any, res: any) => {
   const {
@@ -202,6 +203,29 @@ const getCaseById = async (req: any, res: any) => {
     return res.status(200).json(caseResponse.data);
   }
 
+  if (!caseResponse.data) {
+    createLogger.info({
+      controller: `case/getById`,
+      message: `OK - Case not found`,
+    });
+    return res.status(200).json(caseResponse.data);
+  }
+
+  // Fetch user data for each stage
+  const stagesWithUserDataPromises = caseResponse?.data?.stages.map(
+    async (stage: any) => {
+      const user = await fetchClerkUser(stage.user_id);
+
+      return {
+        ...stage,
+        user,
+      };
+    }
+  );
+
+  caseResponse.data.stages = await Promise.all(
+    stagesWithUserDataPromises ?? []
+  );
   createLogger.info({
     controller: `case/getById`,
     message: `OK - Case found`,

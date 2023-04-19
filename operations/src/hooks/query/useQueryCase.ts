@@ -9,6 +9,12 @@ const createCase = async (caseData: any) => {
   return data;
 };
 
+const getBeneficiaryByRut = async (rut: string) => {
+  const { data } = await apiInstance.get(`/case/getBeneficiaryByRut/${rut}`);
+
+  return data;
+};
+
 const getAll = async () => {
   const { data } = await apiInstance.get(`/case/all`);
   return data;
@@ -16,6 +22,7 @@ const getAll = async () => {
 
 const getCaseById = async (id: string) => {
   const { data } = await apiInstance.get(`/case/getById/${id}`);
+
   return data;
 };
 
@@ -37,6 +44,7 @@ const getAttach = async (case_id: string, casestage_id: string) => {
 
 const getNewCaseNumber = async () => {
   const { data } = await apiInstance.get(`/case/getNewCaseNumber`);
+
   return data;
 };
 
@@ -234,6 +242,12 @@ const useGetChatByCase = (case_id: string) => {
   });
 };
 
+const useGetBeneficiaryByRut = (rut: string) => {
+  return useQuery(["beneficiary", rut], () => getBeneficiaryByRut(rut), {
+    enabled: rut?.length > 10,
+  });
+};
+
 const useQueryCase = () => {
   return {
     useCreate,
@@ -253,6 +267,7 @@ const useQueryCase = () => {
     useUpdateReimbursementStatus,
     useCreateChatMessage,
     useGetChatByCase,
+    useGetBeneficiaryByRut,
   };
 };
 

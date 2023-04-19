@@ -31,13 +31,10 @@ const getByCase: any = async (case_id: string) => {
         cc.message,
         cc.created_at,
         cc.type,
-        p.name AS operator_name,
-        p.paternallastname AS operator_lastname,
+        cc.user_id,
         i.name AS applicant_name,
         i.paternallastname AS applicant_lastname
       FROM app.casechat AS cc
-      INNER JOIN app.user AS u ON u.id = cc.user_id
-      INNER JOIN app.person AS p ON p.id = u.person_id
       INNER JOIN app.case AS c ON c.id = cc.case_id
       INNER JOIN app.insured AS i ON i.id = c.applicant_id
       WHERE cc.case_id = $1`,

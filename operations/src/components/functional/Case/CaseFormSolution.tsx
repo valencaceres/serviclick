@@ -7,8 +7,8 @@ import Button from "../../ui/Button";
 import InputText from "../../ui/InputText";
 
 import { useQueryCase, useQueryStage } from "../../../hooks/query";
-import { useUser } from "../../../hooks";
 import TextArea from "../../ui/TextArea/TextArea";
+import { useUser } from "@clerk/nextjs";
 
 const CaseFormSolution = ({ thisCase }: any) => {
   const router = useRouter();
@@ -16,7 +16,7 @@ const CaseFormSolution = ({ thisCase }: any) => {
 
   const [description, setDescription] = useState<string>("");
 
-  const { id: user_id } = useUser().user;
+  const { user } = useUser();
   const { data: stages } = useQueryStage().useGetAll();
   const { mutate: updateCase } = useQueryCase().useCreate();
 
@@ -29,7 +29,7 @@ const CaseFormSolution = ({ thisCase }: any) => {
     product_id: thisCase?.product_id,
     assistance_id: thisCase?.assistance_id,
     stage_id: findStageByName(stageName)?.id || "",
-    user_id,
+    user_id: user?.id,
     description,
     isactive: true,
   });

@@ -9,7 +9,7 @@ import InputText from "../../ui/InputText";
 import CaseDocumentsTable from "./CaseDocumentsTable";
 
 import { useQueryCase, useQueryStage } from "../../../hooks/query";
-import { useUser } from "../../../hooks";
+import { useUser } from "@clerk/nextjs";
 
 const CaseFormRecordReception = ({ thisCase }: any) => {
   const router = useRouter();
@@ -21,7 +21,7 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
   >([]);
   const [thisStage, setThisStage] = useState<string>("");
 
-  const { id: user_id } = useUser().user;
+  const { user } = useUser();
   const { data: stages } = useQueryStage().useGetAll();
   const { mutate: uploadDocuments, isLoading } =
     useQueryCase().useUploadDocument();
@@ -52,7 +52,7 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
             stage_id:
               stages?.find((s: any) => s.name === "Recepción de antecedentes")
                 ?.id || "",
-            user_id: user_id,
+            user_id: user?.id,
             isactive: true,
           },
           {
@@ -67,7 +67,7 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
                   assistance_id: thisCase?.assistance_id,
                   stage_id: stages?.find((s: any) => s?.name === "Seguimiento")
                     ?.id,
-                  user_id: user_id,
+                  user_id: user?.id,
                   isactive: true,
                 },
                 {
@@ -97,7 +97,7 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
         stage_id:
           stages?.find((s: any) => s.name === "Recepción de antecedentes")
             ?.id || "",
-        user_id: user_id,
+        user_id: user?.id,
         isactive: true,
       },
       {
@@ -111,7 +111,7 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
               product_id: thisCase?.product_id,
               assistance_id: thisCase?.assistance_id,
               stage_id: stages?.find((s: any) => s?.name === "Seguimiento")?.id,
-              user_id: user_id,
+              user_id: user?.id,
               isactive: true,
             },
             {

@@ -20,13 +20,15 @@ import { LoadingMessage } from "../../ui/LoadingMessage";
 
 import { useQueryCase, useQueryStage } from "../../../hooks/query";
 import Button from "../../ui/Button";
+import { useUser } from "@clerk/nextjs";
 
 const CaseStageList = ({ showModal, setShowModal }: any) => {
   const router = useRouter();
   const { case_id } = router.query;
 
   const { data } = useQueryCase().useGetById((case_id as string) || "");
-  const { data: stages } = useQueryStage().useGetAll();
+
+  console.log(data);
 
   return (
     <Fragment>
@@ -52,7 +54,7 @@ const CaseStageList = ({ showModal, setShowModal }: any) => {
                   {new Date(stage.createddate).toISOString().substring(11, 16)}
                 </TableCell>
                 <TableCell width="177px" align="center">
-                  {stage.operator_name + " " + stage.operator_lastname}
+                  {stage.user.first_name + " " + stage.user.last_name}
                 </TableCell>
                 <TableCell width="208px" align="center">
                   {stage.stage}

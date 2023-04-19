@@ -11,8 +11,8 @@ import {
   useQueryPartner,
   useQueryStage,
 } from "../../../hooks/query";
-import { useUser } from "../../../hooks";
 import ComboBox from "../../ui/ComboBox";
+import { useUser } from "@clerk/nextjs";
 
 const CaseFormPartner = ({ thisCase }: any) => {
   const router = useRouter();
@@ -27,7 +27,7 @@ const CaseFormPartner = ({ thisCase }: any) => {
 
   const minDate = new Date();
 
-  const { id: user_id } = useUser().user;
+  const { user } = useUser();
   const { data: stages } = useQueryStage().useGetAll();
   const { data: getAssignedPartner } = useQueryCase().useGetAssignedPartner(
     thisCase?.case_id,
@@ -48,7 +48,7 @@ const CaseFormPartner = ({ thisCase }: any) => {
     product_id: thisCase?.product_id,
     assistance_id: thisCase?.assistance_id,
     stage_id: findStageByName(stageName)?.id || "",
-    user_id,
+    user_id: user?.id,
     isactive: true,
   });
 

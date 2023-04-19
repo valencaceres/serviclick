@@ -7,16 +7,15 @@ import Button from "../../ui/Button";
 import InputText from "../../ui/InputText";
 
 import { unFormatRut, formatRut } from "../../../utils/format";
-import { numberRegEx, rutRegEx, emailRegEx } from "../../../utils/regEx";
+import { rutRegEx, emailRegEx } from "../../../utils/regEx";
 import { rutValidate } from "../../../utils/validations";
 
-import { useCase } from "../../../store/hooks/useCase";
 import { useQueryCase, useQueryStage } from "../../../hooks/query";
-import { useUser } from "../../../hooks";
+import { useUser } from "@clerk/nextjs";
 
 const CaseFormNew = ({ thisCase }: any) => {
   const router = useRouter();
-  const { getBeneficiaryByRut, data, beneficiaryIsLoading } = useCase();
+
   const initialFormData = {
     rut: { value: "", isValid: true },
     birthDate: { value: "", isValid: true },
@@ -28,22 +27,27 @@ const CaseFormNew = ({ thisCase }: any) => {
     email: { value: "", isValid: true },
     phone: { value: "", isValid: true },
   };
+
   const [formData, setFormData] = useState(initialFormData);
   const [isSearching, setIsSearching] = useState(false);
   const [isNewBeneficiary, setIsNewBeneficiary] = useState(false);
   const [stage, setStage] = useState("");
 
-  const { id: user_id } = useUser().user;
+  const { user } = useUser();
   const { data: stageData } = useQueryStage().useGetAll();
   const { mutate: createCase } = useQueryCase().useCreate();
   const { data: newCaseNumber } = useQueryCase().useGetNewCaseNumber();
+
+  const { data, isLoading } = useQueryCase().useGetBeneficiaryByRut(
+    formData.rut.value
+  );
 
   const handleClickNext = () => {
     createCase(
       {
         applicant: {
-          type: isNewBeneficiary ? "C" : data.beneficiary.type,
-          id: isNewBeneficiary ? null : data.beneficiary.id,
+          type: isNewBeneficiary ? "C" : data?.beneficiary.type,
+          id: isNewBeneficiary ? null : data?.beneficiary.id,
           rut: formData.rut.value,
           name: formData.name.value,
           paternalLastName: formData.paternalLastName.value,
@@ -56,7 +60,7 @@ const CaseFormNew = ({ thisCase }: any) => {
         },
         number: thisCase !== null ? thisCase?.case_number : newCaseNumber,
         stage_id: stage,
-        user_id: user_id,
+        user_id: user?.id,
       },
       {
         onSuccess: (response) => {
@@ -89,9 +93,6 @@ const CaseFormNew = ({ thisCase }: any) => {
           isValid: isValidRut(event.target.value),
         },
       });
-      if (event.target.value !== null) {
-        getBeneficiaryByRut(event.target.value);
-      }
     }
   };
 
@@ -100,31 +101,27 @@ const CaseFormNew = ({ thisCase }: any) => {
   };
 
   const refreshFormData = () => {
-    const dateString = new Date(data.beneficiary.birthdate)
-      .toISOString()
-      .substring(0, 10);
     setFormData({
-      rut: { value: data.beneficiary.rut, isValid: true },
-      birthDate: { value: dateString, isValid: true },
-      name: { value: data.beneficiary.name, isValid: true },
+      rut: { value: data?.beneficiary.rut, isValid: true },
+      birthDate: { value: data?.beneficiary.birthdate, isValid: true },
+      name: { value: data?.beneficiary.name, isValid: true },
       paternalLastName: {
-        value: data.beneficiary.paternallastname,
+        value: data?.beneficiary.paternallastname,
         isValid: true,
       },
       maternalLastName: {
-        value: data.beneficiary.maternallastname,
+        value: data?.beneficiary.maternallastname,
         isValid: true,
       },
-      address: { value: data.beneficiary.address, isValid: true },
-      district: { value: data.beneficiary.district, isValid: true },
-      email: { value: data.beneficiary.email, isValid: true },
-      phone: { value: data.beneficiary.phone, isValid: true },
+      address: { value: data?.beneficiary.address, isValid: true },
+      district: { value: data?.beneficiary.district, isValid: true },
+      email: { value: data?.beneficiary.email, isValid: true },
+      phone: { value: data?.beneficiary.phone, isValid: true },
     });
   };
 
   useEffect(() => {
-    console.log("data", data);
-    if (data.beneficiary.rut !== "") {
+    if (data?.beneficiary) {
       setIsSearching(false);
       setIsNewBeneficiary(false);
       setStage(stageData?.find((s: any) => s.name === "Apertura")?.id || "");
@@ -144,7 +141,7 @@ const CaseFormNew = ({ thisCase }: any) => {
       email: { value: "", isValid: true },
       phone: { value: "", isValid: true },
     });
-  }, [isSearching, beneficiaryIsLoading, thisCase]);
+  }, [isSearching, isLoading, thisCase]);
 
   useEffect(() => {
     if (router.pathname === "/case/new") {
@@ -219,7 +216,7 @@ const CaseFormNew = ({ thisCase }: any) => {
               value={
                 thisCase !== null
                   ? thisCase?.birthdate?.split("T")[0]
-                  : formData?.birthDate.value
+                  : formData?.birthDate.value?.split("T")[0]
               }
               onChange={(e: any) => {
                 setFormData({

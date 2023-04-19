@@ -24,7 +24,7 @@ import TextArea from "../../ui/TextArea/TextArea";
 import ChatMessage from "../../ui/ChatMessage/ChatMessage";
 import { useQueryCase, useQueryStage } from "../../../hooks/query";
 import { useQueryClient } from "@tanstack/react-query";
-import { useUser } from "../../../hooks";
+import { useUser } from "@clerk/nextjs";
 
 const CaseNotes = ({ thisCase }: any) => {
   const router = useRouter();
