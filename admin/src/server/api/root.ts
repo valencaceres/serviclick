@@ -1,6 +1,10 @@
 import { createTRPCRouter } from "~/server/api/trpc";
 import { reimbursementRouter } from "./routers/reimbursement";
-import { caseRouter, caseStageRouter } from "./routers/case";
+import {
+  caseRouter,
+  caseStageRouter,
+  caseStageAttachRouter,
+} from "./routers/case";
 
 /**
  * This is the primary router for your server.
@@ -11,6 +15,7 @@ export const appRouter = createTRPCRouter({
   reimbursement: reimbursementRouter,
   case: caseRouter,
   caseStage: caseStageRouter,
+  caseStageAttach: caseStageAttachRouter,
 });
 
 // export type definition of API

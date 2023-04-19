@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "../trpc";
+import { getFileViewLink } from "~/utils/s3";
 
 export const caseRouter = createTRPCRouter({
   get: publicProcedure
@@ -50,5 +51,43 @@ export const caseStageRouter = createTRPCRouter({
       });
 
       return casestage;
+    }),
+});
+
+export const caseStageAttachRouter = createTRPCRouter({
+  get: publicProcedure
+    .input(
+      z.object({
+        case_id: z.string().uuid(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const attachments = await ctx.prisma.casestageattach.findMany({
+        where: {
+          case_id: input.case_id,
+        },
+        include: {
+          document: true,
+        },
+      });
+
+      const attachmentsWithSignedUrl = await Promise.all(
+        attachments.map(async (attachment) => {
+          if (attachment.file_tag === null) {
+            return {
+              ...attachment,
+              viewLink: null,
+            };
+          }
+
+          const signedUrl = await getFileViewLink(attachment.file_tag);
+          return {
+            ...attachment,
+            viewLink: signedUrl,
+          };
+        })
+      );
+
+      return attachmentsWithSignedUrl;
     }),
 });

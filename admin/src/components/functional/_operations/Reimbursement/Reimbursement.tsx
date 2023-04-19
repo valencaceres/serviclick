@@ -1,4 +1,4 @@
-import { BanknoteIcon, DownloadCloudIcon, SearchIcon } from "lucide-react";
+import { BanknoteIcon, ExternalLinkIcon, SearchIcon } from "lucide-react";
 import React, { useState } from "react";
 import SyncLoader from "react-spinners/SyncLoader";
 
@@ -29,6 +29,8 @@ import {
   AccordionTrigger,
 } from "~/components/ui/Accordion";
 import { PaperclipIcon } from "lucide-react";
+import Link from "next/link";
+import { useUser } from "@clerk/nextjs";
 
 export const Reimbursement: React.FC = () => {
   return <ReimbursementTable />;
@@ -248,7 +250,7 @@ const ReimbursementRow = ({
               className="cursor-pointer text-teal-blue hover:text-teal-blue-100"
             />
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="bg-white">
             <DialogHeader>
               <DialogTitle className="text-dusty-gray-800">
                 Resumen del caso
@@ -371,30 +373,7 @@ const ReimbursementRow = ({
                     </AccordionTrigger>
                     <AccordionContent className="p-2">
                       <div className="flex flex-col gap-2">
-                        <div className="flex flex-col gap-2">
-                          {[
-                            {
-                              name: "Adjunto 1",
-                            },
-                            {
-                              name: "Adjunto 2",
-                            },
-                          ]?.map((file, idx) => (
-                            <div
-                              key={idx}
-                              className="flex items-center justify-between gap-2"
-                            >
-                              <div className="flex items-center gap-2">
-                                <PaperclipIcon size={16} />
-                                <span className="text-lg">{file.name}</span>
-                              </div>
-                              <DownloadCloudIcon
-                                size={24}
-                                className="cursor-pointer"
-                              />
-                            </div>
-                          ))}
-                        </div>
+                        <Attachments caseId={casemodel.id} />
                       </div>
                     </AccordionContent>
                   </AccordionItem>
@@ -405,6 +384,38 @@ const ReimbursementRow = ({
         </Dialog>
       </td>
     </tr>
+  );
+};
+
+const Attachments = ({ caseId }: { caseId: string }) => {
+  const { data, isLoading } = api.caseStageAttach.get.useQuery({
+    case_id: caseId,
+  });
+
+  return (
+    <div className="flex flex-col gap-2">
+      {isLoading ? (
+        <div className="flex items-center justify-center gap-2">
+          <SyncLoader size={4} color={"#03495C"} loading={true} />
+          <h2 className="text-lg font-semibold text-teal-blue">Cargando...</h2>
+        </div>
+      ) : data?.length ? (
+        data?.map((file, idx) => (
+          <div key={idx} className="flex items-center justify-between gap-2">
+            <Link href={file.viewLink || ""} target="_blank">
+              <div className="flex items-center gap-2 text-teal-blue hover:text-teal-blue-100 hover:underline">
+                <PaperclipIcon size={16} />
+                <span className="text-lg">{file.document?.name}</span>
+              </div>
+            </Link>
+          </div>
+        ))
+      ) : (
+        <div className="flex items-center justify-center gap-2">
+          <p className="text-lg">No hay archivos adjuntos</p>
+        </div>
+      )}
+    </div>
   );
 };
 
@@ -427,7 +438,7 @@ const CustomDialog = ({
 }) => {
   return (
     <>
-      <DialogContent>
+      <DialogContent className="bg-white">
         <DialogHeader>
           <DialogTitle>
             {action === "Aprobado" ? "Aceptar" : "Rechazar"} el reembolso

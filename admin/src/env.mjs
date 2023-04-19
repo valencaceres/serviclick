@@ -7,6 +7,10 @@ import { z } from "zod";
 const server = z.object({
   DATABASE_URL: z.string().url(),
   NODE_ENV: z.enum(["development", "test", "production"]),
+  AWS_BUCKET_NAME: z.string(),
+  AWS_BUCKET_REGION: z.string(),
+  AWS_PUBLIC_KEY: z.string(),
+  AWS_SECRET_KEY: z.string(),
 });
 
 /**
@@ -26,6 +30,10 @@ const client = z.object({
 const processEnv = {
   DATABASE_URL: process.env.DATABASE_URL,
   NODE_ENV: process.env.NODE_ENV,
+  AWS_BUCKET_NAME: process.env.AWS_BUCKET_NAME,
+  AWS_BUCKET_REGION: process.env.AWS_BUCKET_REGION,
+  AWS_PUBLIC_KEY: process.env.AWS_PUBLIC_KEY,
+  AWS_SECRET_KEY: process.env.AWS_SECRET_KEY,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 };
 

@@ -16,8 +16,9 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
   const { stage } = router.query;
   const queryClient = useQueryClient();
 
-  const [files, setFiles] = useState<any>([]);
-  const [documents, setDocuments] = useState<any>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<
+    { file: any; documentId: any }[]
+  >([]);
   const [thisStage, setThisStage] = useState<string>("");
 
   const { id: user_id } = useUser().user;
@@ -30,13 +31,14 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append("case_id", thisCase?.case_id);
-    formData.append("casestage_id", thisStage);
-    documents.forEach((d: any, idx: number) => {
-      formData.append(`document_id[${idx}]`, d);
+    const documentIds = uploadedFiles.map(({ documentId }) =>
+      documentId.toString()
+    );
+    formData.append("document_id", JSON.stringify(documentIds));
+    uploadedFiles.forEach(({ file }) => {
+      formData.append("files", file);
     });
-    files.forEach((item: any, idx: number) => {
-      formData.append("files", item);
-    });
+
     uploadDocuments(formData, {
       onSuccess: () => {
         updateCase(
@@ -167,10 +169,8 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
           <CaseDocumentsTable
             thisCase={thisCase}
             thisStage={thisStage}
-            uploadData={files}
-            setData={setFiles}
-            documentData={documents}
-            setDocumentData={setDocuments}
+            uploadedFiles={uploadedFiles}
+            setUploadedFiles={setUploadedFiles}
           />
         </ContentCell>
         <ContentRow gap="5px">

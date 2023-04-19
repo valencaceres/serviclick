@@ -166,7 +166,7 @@ const CaseFormService = () => {
       );
       setSelectedProduct(product || null);
     }
-  }, [thisCase, uniqueAssistances, relatedProducts]);
+  }, [thisCase]);
 
   return (
     <div>

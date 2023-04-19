@@ -10,6 +10,8 @@
     "start": "next start"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.315.0",
+    "@aws-sdk/s3-request-presigner": "^3.315.0",
     "@clerk/localizations": "^1.11.1",
     "@clerk/nextjs": "^4.16.2",
     "@prisma/client": "^4.11.0",

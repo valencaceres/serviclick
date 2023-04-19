@@ -20,7 +20,11 @@ const getCaseById = async (id: string) => {
 };
 
 const uploadDocument = async (formData: any) => {
-  const { data } = await apiInstance.post(`/case/uploadDocument`, formData);
+  const { data } = await apiInstance.post(`/case/uploadDocument`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return data;
 };
 

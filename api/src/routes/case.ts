@@ -1,4 +1,6 @@
 import { Router } from "express";
+import fileUpload from "express-fileupload";
+
 import multer from "multer";
 
 import auth from "../middlewares/auth";
@@ -28,7 +30,15 @@ const upload = multer();
 const CaseRouter = Router();
 
 CaseRouter.post("/create", auth, create);
-CaseRouter.post("/uploadDocument", auth, upload.array("files"), uploadDocument);
+CaseRouter.post(
+  "/uploadDocument",
+  auth,
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: "./uploads",
+  }),
+  uploadDocument
+);
 CaseRouter.get("/all", auth, getAll);
 CaseRouter.get("/getBeneficiaryByRut/:rut", auth, getBeneficiaryByRut);
 CaseRouter.get("/getById/:id", auth, getCaseById);

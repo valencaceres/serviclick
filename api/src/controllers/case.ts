@@ -1,4 +1,5 @@
 import createLogger from "../util/logger";
+import { getFileViewLink, uploadFile } from "../util/s3";
 
 import * as Case from "../models/case";
 import * as CaseStage from "../models/caseStage";
@@ -109,29 +110,30 @@ const getAll = async (req: any, res: any) => {
 };
 
 const uploadDocument = async (req: any, res: any) => {
-  const { case_id, casestage_id, document_id } = req.body;
-  const files = req.files;
+  const { case_id } = req.body;
+  const document_id = JSON.parse(req.body.document_id);
+  let files = req.files["files"];
 
-  console.log(files);
-  if (!files) {
-    return res.status(400).json({ error: "No files were uploaded." });
+  if (!Array.isArray(files)) {
+    files = [files];
   }
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     const document = document_id[i];
 
-    const fileName = file.originalname;
-    const fileBase64 = file.buffer.toString("base64");
-    const mimeType = file.mimetype;
+    console.log(file, document);
+
+    const result = await uploadFile(file);
+
+    if (!result) {
+      return res.status(400).json({ error: "No files were uploaded." });
+    }
 
     const caseStageAttachResponse = await CaseStageAttach.uploadDocument(
       case_id,
-      casestage_id,
       document,
-      fileName,
-      fileBase64,
-      mimeType
+      file.name
     );
 
     if (!caseStageAttachResponse.success) {
@@ -209,12 +211,9 @@ const getCaseById = async (req: any, res: any) => {
 };
 
 const getAttachById = async (req: any, res: any) => {
-  const { case_id, casestage_id } = req.params;
+  const { case_id } = req.params;
 
-  const caseStageAttachResponse = await CaseStageAttach.getById(
-    case_id,
-    casestage_id
-  );
+  const caseStageAttachResponse = await CaseStageAttach.getById(case_id);
 
   if (!caseStageAttachResponse.success) {
     createLogger.error({
@@ -229,13 +228,11 @@ const getAttachById = async (req: any, res: any) => {
   for (let i = 0; i < caseStageAttachResponse.data.length; i++) {
     const attachment = caseStageAttachResponse.data[i];
 
+    const viewLink = await getFileViewLink(attachment.file_tag);
+
     attachments.push({
       document_id: attachment.document_id,
-      file: {
-        originalname: attachment.file_name,
-        base64: attachment.base64,
-        mimetype: attachment.mime_type,
-      },
+      viewLink,
     });
   }
 
