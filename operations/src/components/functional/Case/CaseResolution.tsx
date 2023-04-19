@@ -7,9 +7,9 @@ import TextArea from "../../ui/TextArea/TextArea";
 import Button from "../../ui/Button";
 
 import { useQueryCase, useQueryStage, useQueryUF } from "../../../hooks/query";
-import { useUser } from "../../../hooks";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
+import { useUser } from "@clerk/nextjs";
 
 const CaseResolution = ({ thisCase }: any) => {
   const router = useRouter();
@@ -19,7 +19,7 @@ const CaseResolution = ({ thisCase }: any) => {
 
   const queryClient = useQueryClient();
 
-  const { id: user_id } = useUser().user;
+  const { user } = useUser();
   const { data: ufValue } = useQueryUF().useGetUFValue();
   const { data: thisReimbursement } = useQueryCase().useGetReimbursment(
     thisCase?.case_id
@@ -47,7 +47,7 @@ const CaseResolution = ({ thisCase }: any) => {
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
         stage_id: stages.find((s: any) => s?.name === "Calificación")?.id,
-        user_id: user_id,
+        user_id: user?.id,
         description: comment,
         isactive: true,
       },
@@ -62,7 +62,7 @@ const CaseResolution = ({ thisCase }: any) => {
               product_id: thisCase?.product_id,
               assistance_id: thisCase?.assistance_id,
               stage_id: stages.find((s: any) => s?.name === "Cerrado")?.id,
-              user_id: user_id,
+              user_id: user?.id,
               isactive: false,
             },
             {
@@ -88,7 +88,7 @@ const CaseResolution = ({ thisCase }: any) => {
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
         stage_id: stages.find((s: any) => s?.name === "Cerrado")?.id,
-        user_id: user_id,
+        user_id: user?.id,
         description: comment,
         isactive: false,
       },
@@ -117,8 +117,6 @@ const CaseResolution = ({ thisCase }: any) => {
       );
     }
   }, [thisCase]);
-
-  console.log(thisReimbursement);
 
   return (
     <form>

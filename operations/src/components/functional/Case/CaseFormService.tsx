@@ -12,9 +12,7 @@ import CaseServiceTable from "./CaseServiceTable";
 
 import { useCase } from "../../../store/hooks/useCase";
 import { useQueryCase, useQueryStage, useQueryUF } from "../../../hooks/query";
-import { useUser } from "../../../hooks";
-import axios from "axios";
-
+import { useUser } from "@clerk/nextjs";
 interface IAssistance {
   id: string;
   name: string;
@@ -45,8 +43,7 @@ const CaseFormService = () => {
   const [description, setDescription] = useState("");
   const [stage, setStage] = useState<string>("");
 
-  const { data } = useCase();
-  const { id: user_id } = useUser().user;
+  const { user } = useUser();
 
   const { data: ufValue } = useQueryUF().useGetUFValue();
   const { data: thisCase } = useQueryCase().useGetById(case_id as string);
@@ -59,9 +56,11 @@ const CaseFormService = () => {
     selectedProduct?.id as string
   );
 
+  const { data } = useQueryCase().useGetBeneficiaryByRut(thisCase?.rut);
+
   useEffect(() => {
     const assistancesMap = new Map(
-      data?.products.map((product) => [
+      data?.products.map((product: any) => [
         product.assistance.id,
         { ...product.assistance },
       ])
@@ -73,8 +72,10 @@ const CaseFormService = () => {
     if (selectedAssistance) {
       const productsMap = new Map(
         data?.products
-          .filter((product) => product.assistance.id === selectedAssistance?.id)
-          .map((product) => [product.id, product])
+          .filter(
+            (product: any) => product.assistance.id === selectedAssistance?.id
+          )
+          .map((product: any) => [product.id, product])
       );
       setRelatedProducts(Array.from(productsMap.values()));
     } else {
@@ -139,7 +140,7 @@ const CaseFormService = () => {
           product_id: selectedProduct?.id,
           assistance_id: selectedAssistance?.id,
           stage_id: stage,
-          user_id: user_id,
+          user_id: user?.id,
           description,
           isactive: true,
         },

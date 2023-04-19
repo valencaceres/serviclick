@@ -12,8 +12,8 @@ import {
   useQuerySpecialist,
   useQueryStage,
 } from "../../../hooks/query";
-import { useUser } from "../../../hooks";
 import { useDistrict } from "../../../hooks";
+import { useUser } from "@clerk/nextjs";
 
 const CaseFormSpecialist = ({ thisCase }: any) => {
   const router = useRouter();
@@ -28,7 +28,7 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
   const [district, setDistrict] = useState<string>("");
   const { list: districtList } = useDistrict();
 
-  const { id: user_id } = useUser().user;
+  const { user } = useUser();
   const { data: stages } = useQueryStage().useGetAll();
   const { data: assignedSpecialist } = useQueryCase().useGetAssignedSpecialist(
     thisCase?.case_id,
@@ -52,7 +52,7 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
     product_id: thisCase?.product_id,
     assistance_id: thisCase?.assistance_id,
     stage_id: stageId,
-    user_id: user_id,
+    user_id: user?.id,
     isactive: true,
   });
 

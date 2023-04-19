@@ -14,12 +14,10 @@
   box-sizing: border-box;
   font-family: "Quicksand";
   font-size: 16px;
-  color: #959595;
   outline: none;
 }
 
 a {
-  color: blue;
   font-weight: 600;
   transition: transform 0.3s;
 }

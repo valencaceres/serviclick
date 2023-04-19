@@ -1,8 +1,13 @@
-import Head from "next/head";
 import { Provider } from "react-redux";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ToastContainer } from "react-toastify";
+import {
+  ClerkProvider,
+  RedirectToSignIn,
+  SignedIn,
+  SignedOut,
+} from "@clerk/nextjs";
 
 import store from "../redux/store";
 
@@ -12,31 +17,48 @@ import "../styles/app.css";
 import "react-toastify/dist/ReactToastify.css";
 
 import type { AppProps } from "next/app";
+import { useRouter } from "next/router";
+
+const publicPages: Array<string> = ["/sign-in/[[...index]]"];
 
 const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const { pathname } = useRouter();
+
+  const isPublicPage = publicPages.includes(pathname);
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <Provider store={store}>
-        <Head>
-          <title>
-            Serviclick.cl - Todas las soluciones para tu hogar, en la palma de
-            tu mano
-          </title>
-          <meta
-            name="description"
-            content="Serviclick.cl - Todas las soluciones para tu hogar, en la palma de tu mano"
-          />
-          <link rel="icon" href="/favicon.png" />
-        </Head>
-        <Switch>
-          <Component {...pageProps} />
-        </Switch>
-        <ToastContainer />
-        <ReactQueryDevtools initialIsOpen={false} />
-      </Provider>
-    </QueryClientProvider>
+    <ClerkProvider {...pageProps}>
+      {isPublicPage ? (
+        <QueryClientProvider client={queryClient}>
+          <Provider store={store}>
+            <Switch>
+              <Component {...pageProps} />
+            </Switch>
+            <ToastContainer />
+            {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+          </Provider>
+        </QueryClientProvider>
+      ) : (
+        <>
+          <SignedIn>
+            <QueryClientProvider client={queryClient}>
+              <Provider store={store}>
+                <Switch>
+                  <Component {...pageProps} />
+                </Switch>
+                <ToastContainer />
+                {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+              </Provider>
+            </QueryClientProvider>
+          </SignedIn>
+          <SignedOut>
+            <RedirectToSignIn />
+          </SignedOut>
+        </>
+      )}
+    </ClerkProvider>
   );
 }
 

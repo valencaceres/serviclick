@@ -7,14 +7,13 @@ import Button from "../../ui/Button";
 import InputText from "../../ui/InputText";
 
 import { useQueryCase, useQueryStage, useQueryUF } from "../../../hooks/query";
-import { useUser } from "../../../hooks";
 import TextArea from "../../ui/TextArea/TextArea";
 import ComboBox from "../../ui/ComboBox";
 import {
   summaryActions,
   selfSolutionSummaryActions,
 } from "../../../data/masters";
-import { isNull } from "util";
+import { useUser } from "@clerk/nextjs";
 
 const CaseTracking = ({ thisCase }: any) => {
   const router = useRouter();
@@ -29,7 +28,7 @@ const CaseTracking = ({ thisCase }: any) => {
   const [evaluation, setEvaluation] = useState<string>("");
   const [refundAmount, setRefundAmount] = useState<number | null>(null);
 
-  const { id: user_id } = useUser().user;
+  const { user } = useUser();
   const { data: ufValue } = useQueryUF().useGetUFValue();
   const { data: stages } = useQueryStage().useGetAll();
   const { mutate: updateCase } = useQueryCase().useCreate();
@@ -66,7 +65,7 @@ const CaseTracking = ({ thisCase }: any) => {
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
         stage_id: stages.find((s: any) => s?.name === "Resolución")?.id,
-        user_id: user_id,
+        user_id: user?.id,
         description: evaluation,
         isactive: true,
       },
@@ -131,7 +130,7 @@ const CaseTracking = ({ thisCase }: any) => {
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
         stage_id: stages.find((s: any) => s?.name === "Seguimiento")?.id,
-        user_id: user_id,
+        user_id: user?.id,
         isactive: true,
       },
       {
@@ -192,7 +191,7 @@ const CaseTracking = ({ thisCase }: any) => {
         assistance_id: thisCase?.assistance_id,
         stage_id: stages.find((s: any) => s?.name === "Resolución")?.id,
         description: evaluation,
-        user_id: user_id,
+        user_id: user?.id,
         isactive: true,
       },
       {
@@ -234,7 +233,7 @@ const CaseTracking = ({ thisCase }: any) => {
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
         stage_id: stages.find((s: any) => s?.name === "Rechazado")?.id,
-        user_id: user_id,
+        user_id: user?.id,
         description: justification,
         isactive: false,
       },

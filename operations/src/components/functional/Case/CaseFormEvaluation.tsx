@@ -7,10 +7,10 @@ import Button from "../../ui/Button";
 import InputText from "../../ui/InputText";
 
 import { useQueryCase, useQueryStage } from "../../../hooks/query";
-import { useUser } from "../../../hooks";
 import TextArea from "../../ui/TextArea/TextArea";
 import ComboBox from "../../ui/ComboBox";
 import { decisions } from "../../../data/masters";
+import { useUser } from "@clerk/nextjs";
 
 const CaseFormEvaluation = ({ thisCase }: any) => {
   const router = useRouter();
@@ -20,7 +20,7 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
   const [justification, setJustification] = useState<string>("");
   const [evaluation, setEvaluation] = useState<string>("");
 
-  const { id: user_id } = useUser().user;
+  const { user } = useUser();
   const { data: stages } = useQueryStage().useGetAll();
   const { mutate: updateCase } = useQueryCase().useCreate();
 
@@ -37,7 +37,7 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
     product_id: thisCase?.product_id,
     assistance_id: thisCase?.assistance_id,
     stage_id: findStageByName(stageName)?.id || "",
-    user_id,
+    user_id: user?.id,
     description,
     isactive: true,
   });
