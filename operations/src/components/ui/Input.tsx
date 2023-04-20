@@ -16,7 +16,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     ref
   ) => {
     return (
-      <>
+      <div className="flex flex-col">
         {helperText && (
           <span className="whitespace-pre-wrap text-dusty-gray">
             {helperText}
@@ -31,11 +31,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
         {errorText && (
-          <span className="block self-center text-sm text-red-700">
-            {errorText}
-          </span>
+          <span className="block text-sm text-red-700">{errorText}</span>
         )}
-      </>
+      </div>
     );
   }
 );

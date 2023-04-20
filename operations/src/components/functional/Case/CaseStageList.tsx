@@ -1,4 +1,4 @@
-import { useState, Fragment, useEffect } from "react";
+import { Fragment } from "react";
 import { useRouter } from "next/router";
 
 import {
@@ -18,17 +18,14 @@ import {
 import Icon from "../../ui/Icon";
 import { LoadingMessage } from "../../ui/LoadingMessage";
 
-import { useQueryCase, useQueryStage } from "../../../hooks/query";
+import { useQueryCase } from "../../../hooks/query";
 import Button from "../../ui/Button";
-import { useUser } from "@clerk/nextjs";
 
 const CaseStageList = ({ showModal, setShowModal }: any) => {
   const router = useRouter();
   const { case_id } = router.query;
 
   const { data } = useQueryCase().useGetById((case_id as string) || "");
-
-  console.log(data);
 
   return (
     <Fragment>

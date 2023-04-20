@@ -222,7 +222,10 @@ const ContractorCompanyForm = ({ enabled, setEnableSave }: any) => {
   useEffect(() => {
     if (isSearching === true && contractorLoading === false) {
       setCompanyForm({
-        rut: { value: contractor.rut, isValid: true },
+        rut: {
+          value: contractor.rut ? contractor.rut : companyForm?.rut.value,
+          isValid: true,
+        },
         companyName: { value: contractor.companyName, isValid: true },
         legalRepresentative: {
           value: contractor.legalRepresentative,

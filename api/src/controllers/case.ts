@@ -9,7 +9,7 @@ import * as CaseStageSpecialist from "../models/caseStageSpecialist";
 import * as CaseStageResult from "../models/caseStageResult";
 import * as CaseReimbursement from "../models/caseReimbursement";
 import * as CaseChat from "../models/caseChat";
-import * as Person from "../models/person";
+import * as Insured from "../models/insured";
 import { fetchClerkUser } from "../util/clerkUserData";
 
 const create = async (req: any, res: any) => {
@@ -25,16 +25,16 @@ const create = async (req: any, res: any) => {
   } = req.body;
 
   if (applicant?.type === "C") {
-    const applicantResponse = await Person.create(
+    const applicantResponse = await Insured.create(
       applicant.rut,
       applicant.name,
       applicant.paternalLastName,
       applicant.maternalLastName,
+      applicant.birthDate,
       applicant.address,
       applicant.district,
       applicant.email,
-      applicant.phone,
-      applicant.birthDate
+      applicant.phone
     );
 
     if (!applicantResponse.success) {
