@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useUser } from "@clerk/nextjs";
 
 import { ContentCell, ContentRow } from "../../layout/Content";
 import { LoadingMessage } from "../../ui/LoadingMessage";
-import Button from "../../ui/Button";
+import { Button } from "~/components/ui/ButtonC";
 import InputText from "../../ui/InputText";
 import { Label } from "~/components/ui/Label";
 import {
@@ -29,6 +29,7 @@ import {
 } from "../../../hooks/query";
 import { useForm } from "react-hook-form";
 import { Input } from "~/components/ui/Input";
+import { getDateTime } from "~/utils/dateAndTime";
 
 const CaseFormNew = ({ thisCase }: any) => {
   const [isNewBeneficiary, setIsNewBeneficiary] = useState<boolean>(false);
@@ -115,7 +116,7 @@ const BeneficiaryForm = ({
     handleSubmit,
   } = useForm<{
     rut: string;
-    birthdate: Date;
+    birthdate: string;
     name: string;
     paternalLastName: string;
     maternalLastName: string;
@@ -138,6 +139,7 @@ const BeneficiaryForm = ({
   const phone = watch("phone");
 
   const [stage, setStage] = useState("");
+  const [dateTime, setDateTime] = useState("");
 
   const { user } = useUser();
   const { data: stageData } = useQueryStage().useGetAll();
@@ -145,34 +147,6 @@ const BeneficiaryForm = ({
   const { data: newCaseNumber } = useQueryCase().useGetNewCaseNumber();
 
   const { data, isLoading } = useQueryCase().useGetBeneficiaryByRut(rut);
-
-  const handleClickNext = () => {
-    createCase(
-      {
-        applicant: {
-          type: isNewBeneficiary ? "C" : data?.beneficiary.type,
-          id: isNewBeneficiary ? null : data?.beneficiary.id,
-          rut: getValues("rut"),
-          name: getValues("name"),
-          paternalLastName: getValues("paternalLastName"),
-          maternalLastName: getValues("maternalLastName"),
-          birthDate: getValues("birthdate"),
-          address: getValues("address"),
-          district: getValues("district"),
-          email: getValues("email"),
-          phone: getValues("phone"),
-        },
-        number: thisCase !== null ? thisCase?.case_number : newCaseNumber,
-        stage_id: stage,
-        user_id: user?.id,
-      },
-      {
-        onSuccess: (response) => {
-          router.push(`/case/${response.data.id}/registro de servicio`);
-        },
-      }
-    );
-  };
 
   const isValidRut = (rut: string) => {
     if (
@@ -218,10 +192,41 @@ const BeneficiaryForm = ({
     }
   };
 
+  const send = async () => {
+    createCase(
+      {
+        applicant: {
+          type: isNewBeneficiary ? "C" : data?.beneficiary.type,
+          id: isNewBeneficiary ? null : data?.beneficiary.id,
+          rut: getValues("rut"),
+          name: getValues("name"),
+          paternalLastName: getValues("paternalLastName"),
+          maternalLastName: getValues("maternalLastName"),
+          birthDate: getValues("birthdate"),
+          address: getValues("address"),
+          district: getValues("district"),
+          email: getValues("email"),
+          phone: getValues("phone"),
+        },
+        number: thisCase !== null ? thisCase?.case_number : newCaseNumber,
+        stage_id: stage,
+        user_id: user?.id,
+      },
+      {
+        onSuccess: (response) => {
+          router.push(`/case/${response.data.id}/registro de servicio`);
+        },
+      }
+    );
+  };
+
   useEffect(() => {
     if (data?.beneficiary) {
       setIsNewBeneficiary(false);
-      setValue("birthdate", data?.beneficiary.birthDate?.split("T")[0]);
+      setValue(
+        "birthdate",
+        new Date(data?.beneficiary.birthdate)?.toISOString().split("T")[0]
+      );
       setValue("name", data?.beneficiary.name);
       setValue("paternalLastName", data?.beneficiary.paternallastname);
       setValue("maternalLastName", data?.beneficiary.maternallastname);
@@ -256,6 +261,10 @@ const BeneficiaryForm = ({
     }
   }, [router]);
 
+  useEffect(() => {
+    setDateTime(getDateTime());
+  });
+
   return (
     <div>
       <ContentCell gap="20px">
@@ -273,7 +282,7 @@ const BeneficiaryForm = ({
           />
           <InputText
             label="Fecha/hora de apertura"
-            value={"2021-01-01 12:00:00"}
+            value={dateTime}
             type="text"
             disabled={true}
             width="260px"
@@ -287,252 +296,266 @@ const BeneficiaryForm = ({
             </p>
           </ContentCell>
         ) : null}
-        <ContentCell gap="5px">
-          <div className="flex gap-2">
-            <div className="flex w-full flex-col">
-              <Label htmlFor="Rut" className="text-xs text-dusty-gray">
-                Rut
-              </Label>
-              <Input
-                errorText={errors.rut?.message}
-                {...register("rut", {
-                  required: true,
-                  onChange: (event) => {
-                    isValidRut(event.target.value);
-                  },
-                  onBlur: (event) => {
-                    setValue("rut", formatRut(event.target.value));
-                  },
-                })}
-                onFocus={(event) => {
-                  setValue("rut", unFormatRut(event.target.value));
-                }}
-                type="text"
-                id="Rut"
-                placeholder="Rut"
-                maxLength={9}
-                disabled={
-                  isLoading || thisCase?.is_active || !thisCase === true
-                    ? false
-                    : true
-                }
-                className={`w-full ${errors.rut ? "border-red-500" : ""}`}
-                value={thisCase !== null ? thisCase?.rut : rut}
-              />
+        <form onSubmit={handleSubmit(send)}>
+          <ContentCell gap="5px">
+            <div className="flex gap-2">
+              <div className="flex w-full flex-col">
+                <Label htmlFor="Rut" className="text-xs text-dusty-gray">
+                  Rut
+                </Label>
+                <Input
+                  errorText={errors.rut?.message}
+                  {...register("rut", {
+                    required: "Este campo es requerido",
+                    onChange: (event) => {
+                      isValidRut(event.target.value);
+                    },
+                    onBlur: (event) => {
+                      setValue("rut", formatRut(event.target.value));
+                    },
+                  })}
+                  onFocus={(event) => {
+                    setValue("rut", unFormatRut(event.target.value));
+                  }}
+                  type="text"
+                  id="Rut"
+                  placeholder="Rut"
+                  maxLength={9}
+                  disabled={
+                    isLoading || thisCase?.is_active || !thisCase === true
+                      ? false
+                      : true
+                  }
+                  className={`w-full ${errors.rut ? "border-red-500" : ""}`}
+                  value={thisCase !== null ? thisCase?.rut : rut}
+                />
+              </div>
+              <div className="flex w-full flex-col">
+                <Label htmlFor="birthDate" className="text-xs text-dusty-gray">
+                  Fecha de nacimiento
+                </Label>
+                <Input
+                  errorText={errors.birthdate?.message}
+                  {...register("birthdate", {
+                    required: "Este campo es requerido",
+                  })}
+                  type="date"
+                  id="birthDate"
+                  placeholder="Fecha de nacimiento"
+                  disabled={
+                    isLoading || thisCase?.is_active || !thisCase === true
+                      ? false
+                      : true
+                  }
+                  className={`w-full ${
+                    errors.birthdate?.message?.length ? "border-red-500" : ""
+                  }`}
+                  value={
+                    thisCase !== null
+                      ? thisCase?.birthdate?.split("T")[0]
+                      : birthdate
+                  }
+                />
+              </div>
             </div>
-            <div className="flex w-full flex-col">
-              <Label htmlFor="birthDate" className="text-xs text-dusty-gray">
-                Fecha de nacimiento
+            <div>
+              <Label htmlFor="name" className="text-xs text-dusty-gray">
+                Nombres
               </Label>
               <Input
-                errorText={errors.birthdate?.message}
-                {...register("birthdate", {
-                  required: true,
-                })}
-                type="date"
-                id="birthDate"
-                placeholder="Fecha de nacimiento"
-                disabled={
-                  isLoading || thisCase?.is_active || !thisCase === true
-                    ? false
-                    : true
-                }
-                className="w-full"
-                value={
-                  thisCase !== null
-                    ? thisCase?.birthdate?.split("T")[0]
-                    : birthdate
-                }
-              />
-            </div>
-          </div>
-          <div>
-            <Label htmlFor="names" className="text-xs text-dusty-gray">
-              Nombres
-            </Label>
-            <Input
-              errorText={errors.name?.message}
-              {...register("name", {
-                required: true,
-              })}
-              type="text"
-              id="names"
-              placeholder="Nombres"
-              disabled={
-                isLoading || thisCase?.is_active || !thisCase === true
-                  ? false
-                  : true
-              }
-              className="w-full"
-              value={thisCase !== null ? thisCase?.name : name}
-            />
-          </div>
-          <div className="flex gap-2">
-            <div className="flex w-full flex-col">
-              <Label
-                htmlFor="paternalLastName"
-                className="text-xs text-dusty-gray"
-              >
-                Apellido paterno
-              </Label>
-              <Input
-                errorText={errors.paternalLastName?.message}
-                {...register("paternalLastName", {
-                  required: true,
+                errorText={errors.name?.message}
+                {...register("name", {
+                  required: "Este campo es requerido",
                 })}
                 type="text"
-                id="paternalLastName"
-                placeholder="Apellido paterno"
+                id="name"
+                placeholder="Nombres"
                 disabled={
                   isLoading || thisCase?.is_active || !thisCase === true
                     ? false
                     : true
                 }
-                className="w-full"
-                value={
-                  thisCase !== null
-                    ? thisCase?.paternal_last_name
-                    : paternalLastName
-                }
+                className={`w-full ${
+                  errors.name?.message?.length ? "border-red-500" : ""
+                }`}
+                value={thisCase !== null ? thisCase?.name : name}
               />
             </div>
-            <div className="flex w-full flex-col">
-              <Label
-                htmlFor="maternalLastName"
-                className="text-xs text-dusty-gray"
-              >
-                Apellido materno
-              </Label>
-              <Input
-                errorText={errors.maternalLastName?.message}
-                {...register("maternalLastName", {
-                  required: true,
-                })}
-                type="text"
-                id="maternalLastName"
-                placeholder="Apellido materno"
-                disabled={
-                  isLoading || thisCase?.is_active || !thisCase === true
-                    ? false
-                    : true
-                }
-                className="w-full"
-                value={
-                  thisCase !== null
-                    ? thisCase?.maternal_last_name
-                    : maternalLastName
-                }
-              />
+            <div className="flex gap-2">
+              <div className="flex w-full flex-col">
+                <Label
+                  htmlFor="paternalLastName"
+                  className="text-xs text-dusty-gray"
+                >
+                  Apellido paterno
+                </Label>
+                <Input
+                  errorText={errors.paternalLastName?.message}
+                  {...register("paternalLastName", {
+                    required: "Este campo es requerido",
+                  })}
+                  type="text"
+                  id="paternalLastName"
+                  placeholder="Apellido paterno"
+                  disabled={
+                    isLoading || thisCase?.is_active || !thisCase === true
+                      ? false
+                      : true
+                  }
+                  className={`w-full ${
+                    errors.paternalLastName?.message?.length
+                      ? "border-red-500"
+                      : ""
+                  }`}
+                  value={
+                    thisCase !== null
+                      ? thisCase?.paternal_last_name
+                      : paternalLastName
+                  }
+                />
+              </div>
+              <div className="flex w-full flex-col">
+                <Label
+                  htmlFor="maternalLastName"
+                  className="text-xs text-dusty-gray"
+                >
+                  Apellido materno
+                </Label>
+                <Input
+                  errorText={errors.maternalLastName?.message}
+                  {...register("maternalLastName", {
+                    required: "Este campo es requerido",
+                  })}
+                  type="text"
+                  id="maternalLastName"
+                  placeholder="Apellido materno"
+                  disabled={
+                    isLoading || thisCase?.is_active || !thisCase === true
+                      ? false
+                      : true
+                  }
+                  className={`w-full ${
+                    errors.maternalLastName?.message?.length
+                      ? "border-red-500"
+                      : ""
+                  }`}
+                  value={
+                    thisCase !== null
+                      ? thisCase?.maternal_last_name
+                      : maternalLastName
+                  }
+                />
+              </div>
             </div>
-          </div>
-          <div className="flex w-full flex-col">
-            <Label htmlFor="email" className="text-xs text-dusty-gray">
-              Dirección
-            </Label>
-            <Input
-              errorText={errors.address?.message}
-              {...register("address", {
-                required: true,
-              })}
-              type="text"
-              id="address"
-              placeholder="Dirección"
-              disabled={
-                isLoading || thisCase?.is_active || !thisCase === true
-                  ? false
-                  : true
-              }
-              className="w-full"
-              value={thisCase !== null ? thisCase?.address : address}
-            />
-          </div>
-          <div className="flex w-full flex-col">
-            <Label htmlFor="email" className="text-xs text-dusty-gray">
-              Comuna
-            </Label>
-            <Input
-              errorText={errors.district?.message}
-              {...register("district", {
-                required: true,
-              })}
-              type="text"
-              id="district"
-              placeholder="Comuna"
-              disabled={
-                isLoading || thisCase?.is_active || !thisCase === true
-                  ? false
-                  : true
-              }
-              className="w-full"
-              value={thisCase !== null ? thisCase?.district : district}
-            />
-          </div>
-          <div className="flex gap-2">
             <div className="flex w-full flex-col">
               <Label htmlFor="email" className="text-xs text-dusty-gray">
-                Correo electrónico
+                Dirección
               </Label>
               <Input
-                errorText={errors.email?.message}
-                {...register("email", {
-                  required: true,
-                  pattern: emailRegEx,
-                  onChange: (e: any) => {
-                    isValidEmail(e.target.value);
-                  },
+                errorText={errors.address?.message}
+                {...register("address", {
+                  required: "Este campo es requerido",
                 })}
-                type="email"
-                id="email"
-                placeholder="Correo electrónico"
+                type="text"
+                id="address"
+                placeholder="Dirección"
                 disabled={
                   isLoading || thisCase?.is_active || !thisCase === true
                     ? false
                     : true
                 }
                 className={`w-full ${
-                  errors.email?.message?.length ? "border-red-500" : ""
+                  errors.address?.message?.length ? "border-red-500" : ""
                 }`}
-                value={thisCase !== null ? thisCase?.email : email}
+                value={thisCase !== null ? thisCase?.address : address}
               />
             </div>
             <div className="flex w-full flex-col">
-              <Label htmlFor="phone" className="text-xs text-dusty-gray">
-                Teléfono
+              <Label htmlFor="email" className="text-xs text-dusty-gray">
+                Comuna
               </Label>
               <Input
-                errorText={errors.phone?.message}
-                {...register("phone", {
-                  required: true,
-                  onChange: (e: any) => {
-                    isValidPhone(e.target.value);
-                  },
+                errorText={errors.district?.message}
+                {...register("district", {
+                  required: "Este campo es requerido",
                 })}
                 type="text"
-                id="phone"
-                placeholder="Teléfono"
+                id="district"
+                placeholder="Comuna"
                 disabled={
                   isLoading || thisCase?.is_active || !thisCase === true
                     ? false
                     : true
                 }
-                maxLength={9}
                 className={`w-full ${
-                  errors?.phone?.message?.length ? "border-red-500" : ""
+                  errors.district?.message?.length ? "border-red-500" : ""
                 }`}
-                value={thisCase !== null ? thisCase?.phone : phone}
+                value={thisCase !== null ? thisCase?.district : district}
               />
             </div>
-          </div>
-        </ContentCell>
-        {!isNewBeneficiary ? (
-          <Button
-            text="Continuar"
-            enabled={thisCase?.is_active === true || !thisCase ? true : false}
-            type="button"
-            onClick={handleClickNext}
-          />
-        ) : null}
+            <div className="flex gap-2">
+              <div className="flex w-full flex-col">
+                <Label htmlFor="email" className="text-xs text-dusty-gray">
+                  Correo electrónico
+                </Label>
+                <Input
+                  errorText={errors.email?.message}
+                  {...register("email", {
+                    required: "Este campo es requerido",
+                    pattern: emailRegEx,
+                    onChange: (e: any) => {
+                      isValidEmail(e.target.value);
+                    },
+                  })}
+                  type="email"
+                  id="email"
+                  placeholder="Correo electrónico"
+                  disabled={
+                    isLoading || thisCase?.is_active || !thisCase === true
+                      ? false
+                      : true
+                  }
+                  className={`w-full ${
+                    errors.email?.message?.length ? "border-red-500" : ""
+                  }`}
+                  value={thisCase !== null ? thisCase?.email : email}
+                />
+              </div>
+              <div className="flex w-full flex-col">
+                <Label htmlFor="phone" className="text-xs text-dusty-gray">
+                  Teléfono
+                </Label>
+                <Input
+                  errorText={errors.phone?.message}
+                  {...register("phone", {
+                    required: "Este campo es requerido",
+                    onChange: (e: any) => {
+                      isValidPhone(e.target.value);
+                    },
+                  })}
+                  type="text"
+                  id="phone"
+                  placeholder="Teléfono"
+                  disabled={
+                    isLoading || thisCase?.is_active || !thisCase === true
+                      ? false
+                      : true
+                  }
+                  maxLength={9}
+                  className={`w-full ${
+                    errors?.phone?.message?.length ? "border-red-500" : ""
+                  }`}
+                  value={thisCase !== null ? thisCase?.phone : phone}
+                />
+              </div>
+            </div>
+          </ContentCell>
+          {!isNewBeneficiary ? (
+            <Button className="my-6 w-full">Continuar</Button>
+          ) : null}
+        </form>
       </ContentCell>
+
       <LoadingMessage />
     </div>
   );
