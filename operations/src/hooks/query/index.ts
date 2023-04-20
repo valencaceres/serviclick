@@ -7,6 +7,7 @@ import useQueryDocument from "./useQueryDocument";
 import useQueryPartner from "./useQueryPartner";
 import useQuerySpecialist from "./useQuerySpecialist";
 import useQueryUF from "./useQueryUF";
+import useQueryContractor from "./useQueryContractor";
 
 export {
   useQueryCompany,
@@ -18,4 +19,5 @@ export {
   useQueryPartner,
   useQuerySpecialist,
   useQueryUF,
+  useQueryContractor,
 };

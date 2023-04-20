@@ -184,36 +184,35 @@ const getAssistanceData: any = async (
       [applicant_id, assistance_id, product_id]
     );
 
-    const remainingAmount =
-      result.rows[0].max_amount > 0
+    if (result.rows.length > 0) {
+      const remainingAmount = result.rows[0].max_amount
         ? result.rows[0].max_amount - result.rows[0].used_amount
         : 0;
-    const remainingEvents =
-      result.rows[0].max_events > 0
-        ? result.rows[0].max_events - result.rows[0].used_events
-        : 0;
+      const remainingEvents =
+        result.rows[0].max_events > 0
+          ? result.rows[0].max_events - result.rows[0].used_events
+          : 0;
 
-    if (result.rows.length > 0) {
       const data = {
         id: result.rows[0].id,
         name: result.rows[0].assistance_name,
-        max_amount: result.rows[0].amount,
+        max_amount: result.rows[0].max_amount,
         currency: result.rows[0].currency,
         maximum: result.rows[0].maximum,
-        max_events: result.rows[0].events,
+        max_events: result.rows[0].max_events,
         remaining_amount: remainingAmount,
         remaining_events: remainingEvents,
         used_amount: result.rows[0].used_amount,
         used_events: result.rows[0].used_events,
       };
       return { success: true, data, error: null };
+    } else {
+      return {
+        success: true,
+        data: null,
+        error: "Assistance not found",
+      };
     }
-
-    return {
-      success: true,
-      data: null,
-      error: "Assistance not found",
-    };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
   }

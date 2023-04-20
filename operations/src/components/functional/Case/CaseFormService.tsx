@@ -10,7 +10,6 @@ import InputText from "../../ui/InputText";
 import TextArea from "../../ui/TextArea/TextArea";
 import CaseServiceTable from "./CaseServiceTable";
 
-import { useCase } from "../../../store/hooks/useCase";
 import { useQueryCase, useQueryStage, useQueryUF } from "../../../hooks/query";
 import { useUser } from "@clerk/nextjs";
 interface IAssistance {
@@ -29,11 +28,9 @@ interface IProduct {
   assistance: IAssistance;
 }
 
-const CaseFormService = () => {
+const CaseFormService = ({ thisCase }: any) => {
   const router = useRouter();
   const queryClient = useQueryClient();
-
-  const { case_id } = router.query;
 
   const [uniqueAssistances, setUniqueAssistances] = useState<any>([]);
   const [selectedAssistance, setSelectedAssistance] =
@@ -46,7 +43,6 @@ const CaseFormService = () => {
   const { user } = useUser();
 
   const { data: ufValue } = useQueryUF().useGetUFValue();
-  const { data: thisCase } = useQueryCase().useGetById(case_id as string);
   const { data: stageData } = useQueryStage().useGetAll();
   const { mutate: updateCase } = useQueryCase().useCreate();
 
@@ -66,7 +62,7 @@ const CaseFormService = () => {
       ])
     );
     setUniqueAssistances(Array.from(assistancesMap.values()));
-  }, []);
+  }, [data]);
 
   useEffect(() => {
     if (selectedAssistance) {
@@ -240,19 +236,27 @@ const CaseFormService = () => {
                         })
                   }
                   type="text"
-                  width="152px"
+                  width={`${
+                    Number(selectedAssistance?.events) !== 0 ? "152px" : "286px"
+                  }`}
                   disabled
                 />
-                <InputText
-                  label="Eventos restantes"
-                  value={assistanceData?.remaining_events || ""}
-                  type="number"
-                  width="129px"
-                  disabled
-                />
+                {Number(selectedAssistance?.events) !== 0 && (
+                  <InputText
+                    label="Eventos restantes"
+                    value={
+                      assistanceData
+                        ? assistanceData?.remaining_events
+                        : selectedAssistance?.events
+                    }
+                    type="number"
+                    width="129px"
+                    disabled
+                  />
+                )}
                 <InputText
                   label="Límite"
-                  value={selectedAssistance?.maximum || ""}
+                  value={selectedAssistance?.maximum || "No hay información"}
                   type="text"
                   width="234px"
                   disabled
@@ -279,7 +283,7 @@ const CaseFormService = () => {
         ) : null}
         <Button
           text="Continuar"
-          enabled={thisCase?.is_active ? true : false}
+          enabled={thisCase?.is_active && selectedProduct ? true : false}
           onClick={handleAddService}
         />
       </ContentCell>

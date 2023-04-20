@@ -11,7 +11,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useUser } from "@clerk/nextjs";
 
-const CaseResolution = ({ thisCase }: any) => {
+const CaseFormResolution = ({ thisCase }: any) => {
   const router = useRouter();
   const [action, setAction] = useState<string>("");
   const [comment, setComment] = useState<string>("");
@@ -316,4 +316,4 @@ const CaseResolution = ({ thisCase }: any) => {
   );
 };
 
-export default CaseResolution;
+export default CaseFormResolution;

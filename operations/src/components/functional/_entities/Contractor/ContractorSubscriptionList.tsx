@@ -24,11 +24,12 @@ const ContractorSubscriptionList = ({ contractor, subscriptionClick }: any) => {
           <TableCellEnd />
         </TableHeader>
         <TableDetail>
-          {contractor.subscriptions.map((item: any, idx: number) => (
+          {contractor.subscriptions?.map((item: any, idx: number) => (
             <TableRow
               key={idx}
               link={true}
-              onClick={() => subscriptionClick(item)}>
+              onClick={() => subscriptionClick(item)}
+            >
               <TableCell width="360px">{item.product_name}</TableCell>
               <TableCell width="110px" align="center">
                 {dbDateToText(item.createDate)}
@@ -39,7 +40,8 @@ const ContractorSubscriptionList = ({ contractor, subscriptionClick }: any) => {
       </Table>
       <ContentRow align="space-between">
         <ContentCellSummary
-          color={contractor.subscriptions.length > 0 ? "blue" : "#959595"}>
+          color={contractor.subscriptions?.length > 0 ? "blue" : "#959595"}
+        >
           {contractor.subscriptions.length > 0
             ? contractor.subscriptions.length === 1
               ? `${contractor.subscriptions.length} suscripción`
