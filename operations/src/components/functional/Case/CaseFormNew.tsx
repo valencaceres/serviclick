@@ -232,8 +232,17 @@ const BeneficiaryForm = ({
       return setStage(
         stageData?.find((s: any) => s.name === "Apertura")?.id || ""
       );
-    } else {
+    } else if (!data?.beneficiary && rut?.length === 12) {
       setIsNewBeneficiary(true);
+      setValue("birthdate", "");
+      setValue("name", "");
+      setValue("paternalLastName", "");
+      setValue("maternalLastName", "");
+      setValue("address", "");
+      setValue("district", "");
+      setValue("email", "");
+      setValue("phone", "");
+
       return setStage(
         stageData?.find((s: any) => s.name === "Contención")?.id || ""
       );
