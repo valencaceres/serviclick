@@ -53,6 +53,7 @@ const getById = async (id: string) => {
               AST.id AS assistance_id,
               CST.description, 
               CAS.applicant_id,
+              CAS.beneficiary_id,
               CAS.isactive,
               FAM.id AS family_id,
               CST.user_id,
@@ -89,7 +90,7 @@ const getById = async (id: string) => {
       LEFT OUTER JOIN app.product PRD ON CAS.product_id = PRD.id
       LEFT OUTER JOIN app.assistance AST ON CAS.assistance_id = AST.id
       LEFT OUTER JOIN app.family FAM ON AST.family_id = FAM.id
-      LEFT OUTER JOIN app.beneficiary BEN ON CAS.applicant_id = BEN.id
+      LEFT OUTER JOIN app.beneficiary BEN ON CAS.beneficiary_id = BEN.id
       LEFT OUTER JOIN app.insured INS ON CAS.applicant_id = INS.id
       LEFT OUTER JOIN app.person PER ON CAS.applicant_id = PER.id
       WHERE case_id = $1
@@ -116,6 +117,7 @@ const getById = async (id: string) => {
       applicant_phone: result.rows[0].phone,
       applicant_email: result.rows[0].email,
       applicant_district: result.rows[0].district,
+      beneficiary_id: result.rows[0].beneficiary_id,
       is_active: result.rows[0].isactive,
       stages: result.rows.map((row: any) => ({
         id: row.stage_id,

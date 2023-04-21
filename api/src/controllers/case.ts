@@ -10,11 +10,14 @@ import * as CaseStageResult from "../models/caseStageResult";
 import * as CaseReimbursement from "../models/caseReimbursement";
 import * as CaseChat from "../models/caseChat";
 import * as Insured from "../models/insured";
+import * as Beneficiary from "../models/beneficiary";
 import { fetchClerkUser } from "../util/clerkUserData";
 
 const create = async (req: any, res: any) => {
   const {
     applicant,
+    client,
+    isInsured,
     number,
     product_id,
     assistance_id,
@@ -24,8 +27,32 @@ const create = async (req: any, res: any) => {
     isactive,
   } = req.body;
 
-  if (applicant?.type === "C") {
+  if (applicant?.type === "C" && isInsured) {
     const applicantResponse = await Insured.create(
+      applicant.rut,
+      applicant.name,
+      applicant.paternalLastName,
+      applicant.maternalLastName,
+      applicant.birthDate,
+      applicant.address,
+      applicant.district,
+      applicant.email,
+      applicant.phone
+    );
+
+    if (!applicantResponse.success) {
+      createLogger.error({
+        model: `person/create`,
+        error: applicantResponse.error,
+      });
+      return res.status(500).json({ error: applicantResponse.error });
+    }
+
+    applicant.id = applicantResponse.data.id;
+  }
+
+  if (applicant?.type === "C" && !isInsured) {
+    const applicantResponse = await Beneficiary.createModel(
       applicant.rut,
       applicant.name,
       applicant.paternalLastName,
@@ -53,7 +80,8 @@ const create = async (req: any, res: any) => {
     number,
     product_id,
     assistance_id,
-    isactive
+    isactive,
+    isInsured
   );
 
   if (!caseResponse.success) {

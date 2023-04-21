@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { useUser } from "@clerk/nextjs";
 
@@ -32,76 +32,16 @@ import { Input } from "~/components/ui/Input";
 import { getDateTime } from "~/utils/dateAndTime";
 
 const CaseFormNew = ({ thisCase }: any) => {
-  const [isNewBeneficiary, setIsNewBeneficiary] = useState<boolean>(false);
-  const [isInsured, setIsInsured] = useState<string>();
-
   return (
     <div>
-      <BeneficiaryForm
-        thisCase={thisCase}
-        isNewBeneficiary={isNewBeneficiary}
-        setIsNewBeneficiary={setIsNewBeneficiary}
-      />
-      {isNewBeneficiary && (
-        <>
-          <RadioGroup
-            value={isInsured}
-            onValueChange={setIsInsured}
-            className="flex w-full items-center gap-2 py-4"
-            defaultValue=""
-          >
-            <Label
-              className={`w-full cursor-pointer rounded-md bg-dusty-gray-50 px-4 py-2 text-center text-lg  ${
-                isInsured === "isInsured"
-                  ? "bg-teal-blue text-dusty-gray-50"
-                  : "text-dusty-gray-800 hover:bg-dusty-gray-100"
-              }`}
-              htmlFor="isInsured"
-            >
-              <RadioGroupItem
-                className="hidden"
-                id="isInsured"
-                value="isInsured"
-              />
-              Titular
-            </Label>
-            <Label
-              className={`w-full cursor-pointer rounded-md bg-dusty-gray-50 px-4 py-2 text-center text-lg ${
-                isInsured === "isBeneficiary"
-                  ? "bg-teal-blue text-dusty-gray-50"
-                  : "text-dusty-gray-800 hover:bg-dusty-gray-100"
-              }`}
-              htmlFor="isBeneficiary"
-            >
-              <RadioGroupItem
-                className="hidden"
-                id="isBeneficiary"
-                value="isBeneficiary"
-              />
-              Carga
-            </Label>
-          </RadioGroup>
-          {isInsured === "isInsured" ? (
-            <ClientSelect />
-          ) : isInsured === "isBeneficiary" ? (
-            <>
-              <p>formulario</p>
-              <ClientSelect />
-            </>
-          ) : null}
-        </>
-      )}
+      <BeneficiaryForm thisCase={thisCase} />
     </div>
   );
 };
 
 export default CaseFormNew;
 
-const BeneficiaryForm = ({
-  thisCase,
-  isNewBeneficiary,
-  setIsNewBeneficiary,
-}: any) => {
+const BeneficiaryForm = ({ thisCase }: any) => {
   const router = useRouter();
 
   const {
@@ -140,6 +80,11 @@ const BeneficiaryForm = ({
 
   const [stage, setStage] = useState("");
   const [dateTime, setDateTime] = useState("");
+  const [isNewBeneficiary, setIsNewBeneficiary] = useState<boolean>(false);
+  const [isInsured, setIsInsured] = useState<string>("isInsured");
+  const [client, setClient] = useState<string>("");
+  const [prevRut, setPrevRut] = useState<string>("");
+  const prevDataRef = useRef();
 
   const { user } = useUser();
   const { data: stageData } = useQueryStage().useGetAll();
@@ -198,63 +143,69 @@ const BeneficiaryForm = ({
         applicant: {
           type: isNewBeneficiary ? "C" : data?.beneficiary.type,
           id: isNewBeneficiary ? null : data?.beneficiary.id,
-          rut: getValues("rut"),
-          name: getValues("name"),
-          paternalLastName: getValues("paternalLastName"),
-          maternalLastName: getValues("maternalLastName"),
-          birthDate: getValues("birthdate"),
-          address: getValues("address"),
-          district: getValues("district"),
-          email: getValues("email"),
-          phone: getValues("phone"),
+          rut,
+          name,
+          paternalLastName,
+          maternalLastName,
+          birthDate: birthdate,
+          address,
+          district,
+          email,
+          phone,
         },
+        client: client,
+        isInsured: isInsured === "isInsured",
         number: thisCase !== null ? thisCase?.case_number : newCaseNumber,
         stage_id: stage,
         user_id: user?.id,
       },
       {
         onSuccess: (response) => {
-          router.push(`/case/${response.data.id}/registro de servicio`);
+          const route =
+            isInsured === "isBeneficiary"
+              ? `/case/${response.data.id}/datos titular`
+              : `/case/${response.data.id}/registro de servicio`;
+          router.push(route);
         },
       }
     );
   };
 
-  useEffect(() => {
-    if (data?.beneficiary) {
-      setIsNewBeneficiary(false);
-      setValue(
-        "birthdate",
-        new Date(data?.beneficiary.birthdate)?.toISOString().split("T")[0]
-      );
-      setValue("name", data?.beneficiary.name);
-      setValue("paternalLastName", data?.beneficiary.paternallastname);
-      setValue("maternalLastName", data?.beneficiary.maternallastname);
-      setValue("address", data?.beneficiary.address);
-      setValue("district", data?.beneficiary.district);
-      setValue("email", data?.beneficiary.email);
-      setValue("phone", data?.beneficiary.phone);
-      return setStage(
-        stageData?.find((s: any) => s.name === "Apertura")?.id || ""
-      );
-    } else if (!data?.beneficiary && rut?.length === 12) {
-      setIsNewBeneficiary(true);
-      setValue("birthdate", "");
-      setValue("name", "");
-      setValue("paternalLastName", "");
-      setValue("maternalLastName", "");
-      setValue("address", "");
-      setValue("district", "");
-      setValue("email", "");
-      setValue("phone", "");
+  const setInitialValues = (newData: any, isThisCase: any) => {
+    const initialValues = isThisCase
+      ? {
+          rut: newData.rut,
+          birthdate: newData.birthdate?.split("T")[0],
+          name: newData.applicant_name,
+          paternalLastName: newData.applicant_lastname,
+          maternalLastName: newData.applicant_maternallastname,
+          address: newData.applicant_address,
+          district: newData.applicant_district,
+          email: newData.applicant_email,
+          phone: newData.applicant_phone,
+        }
+      : {
+          rut: newData?.rut,
+          birthdate: new Date(newData.birthdate).toISOString().split("T")[0],
+          name: newData.name,
+          paternalLastName: newData.paternallastname,
+          maternalLastName: newData.maternallastname,
+          address: newData.address,
+          district: newData.district,
+          email: newData.email,
+          phone: newData.phone,
+        };
 
-      return setStage(
-        stageData?.find((s: any) => s.name === "Contención")?.id || ""
-      );
-    }
-  }, [data, isLoading, thisCase]);
+    Object.entries(initialValues).forEach(([key, value]) =>
+      setValue(key as keyof typeof initialValues, value)
+    );
+
+    setIsNewBeneficiary(isThisCase);
+  };
 
   useEffect(() => {
+    setDateTime(getDateTime());
+
     if (router.pathname === "/case/new") {
       setIsNewBeneficiary(false);
       reset();
@@ -262,8 +213,55 @@ const BeneficiaryForm = ({
   }, [router]);
 
   useEffect(() => {
-    setDateTime(getDateTime());
-  });
+    prevDataRef.current = data;
+
+    if (thisCase) {
+      setInitialValues(thisCase, true);
+      if (thisCase?.beneficiary_id) {
+        setIsInsured("isBeneficiary");
+      }
+    } else if (data?.beneficiary) {
+      setPrevRut(rut);
+      setInitialValues(data.beneficiary, false);
+    } else if (
+      !data?.beneficiary &&
+      rut?.length === 12 &&
+      (prevDataRef.current !== data || rut !== prevRut)
+    ) {
+      setIsNewBeneficiary(true);
+      setPrevRut(rut);
+      reset({
+        birthdate: "",
+        name: "",
+        paternalLastName: "",
+        maternalLastName: "",
+        address: "",
+        district: "",
+        email: "",
+        phone: "",
+      });
+    }
+  }, [data, thisCase]);
+
+  useEffect(() => {
+    if (thisCase) {
+      const stageName = thisCase?.stages?.find(
+        (s: any) => s.stage === "Contención"
+      )
+        ? "Contención"
+        : "Apertura";
+      const stageId = stageData.find((s: any) => s.name === stageName)?.id;
+      setStage(stageId || "");
+    } else {
+      if (isNewBeneficiary) {
+        const stageId = stageData.find((s: any) => s.name === "Contención")?.id;
+        setStage(stageId || "");
+      } else if (data?.beneficiary) {
+        const stageId = stageData.find((s: any) => s.name === "Apertura")?.id;
+        setStage(stageId || "");
+      }
+    }
+  }, [stageData, thisCase, data, isNewBeneficiary]);
 
   return (
     <div>
@@ -288,7 +286,7 @@ const BeneficiaryForm = ({
             width="260px"
           />
         </ContentRow>
-        {isNewBeneficiary && rut?.length === 12 ? (
+        {isNewBeneficiary ? (
           <ContentCell gap="2px">
             <h2 className="font-semibold text-red-500">Contención</h2>
             <p className="text-sm text-secondary-500">
@@ -327,7 +325,7 @@ const BeneficiaryForm = ({
                       : true
                   }
                   className={`w-full ${errors.rut ? "border-red-500" : ""}`}
-                  value={thisCase !== null ? thisCase?.rut : rut}
+                  value={rut}
                 />
               </div>
               <div className="flex w-full flex-col">
@@ -350,11 +348,7 @@ const BeneficiaryForm = ({
                   className={`w-full ${
                     errors.birthdate?.message?.length ? "border-red-500" : ""
                   }`}
-                  value={
-                    thisCase !== null
-                      ? thisCase?.birthdate?.split("T")[0]
-                      : birthdate
-                  }
+                  value={birthdate}
                 />
               </div>
             </div>
@@ -378,7 +372,7 @@ const BeneficiaryForm = ({
                 className={`w-full ${
                   errors.name?.message?.length ? "border-red-500" : ""
                 }`}
-                value={thisCase !== null ? thisCase?.name : name}
+                value={name}
               />
             </div>
             <div className="flex gap-2">
@@ -407,11 +401,7 @@ const BeneficiaryForm = ({
                       ? "border-red-500"
                       : ""
                   }`}
-                  value={
-                    thisCase !== null
-                      ? thisCase?.paternal_last_name
-                      : paternalLastName
-                  }
+                  value={paternalLastName}
                 />
               </div>
               <div className="flex w-full flex-col">
@@ -439,11 +429,7 @@ const BeneficiaryForm = ({
                       ? "border-red-500"
                       : ""
                   }`}
-                  value={
-                    thisCase !== null
-                      ? thisCase?.maternal_last_name
-                      : maternalLastName
-                  }
+                  value={maternalLastName}
                 />
               </div>
             </div>
@@ -467,7 +453,7 @@ const BeneficiaryForm = ({
                 className={`w-full ${
                   errors.address?.message?.length ? "border-red-500" : ""
                 }`}
-                value={thisCase !== null ? thisCase?.address : address}
+                value={address}
               />
             </div>
             <div className="flex w-full flex-col">
@@ -490,7 +476,7 @@ const BeneficiaryForm = ({
                 className={`w-full ${
                   errors.district?.message?.length ? "border-red-500" : ""
                 }`}
-                value={thisCase !== null ? thisCase?.district : district}
+                value={district}
               />
             </div>
             <div className="flex gap-2">
@@ -518,7 +504,7 @@ const BeneficiaryForm = ({
                   className={`w-full ${
                     errors.email?.message?.length ? "border-red-500" : ""
                   }`}
-                  value={thisCase !== null ? thisCase?.email : email}
+                  value={email}
                 />
               </div>
               <div className="flex w-full flex-col">
@@ -545,13 +531,66 @@ const BeneficiaryForm = ({
                   className={`w-full ${
                     errors?.phone?.message?.length ? "border-red-500" : ""
                   }`}
-                  value={thisCase !== null ? thisCase?.phone : phone}
+                  value={phone}
                 />
               </div>
             </div>
           </ContentCell>
+          {isNewBeneficiary && (
+            <>
+              <RadioGroup
+                value={isInsured}
+                onValueChange={setIsInsured}
+                className="flex w-full items-center gap-2 py-4"
+                defaultValue=""
+                disabled={thisCase}
+              >
+                <Label
+                  className={`w-full cursor-pointer rounded-md bg-dusty-gray-50 px-4 py-2 text-center text-lg  ${
+                    isInsured === "isInsured"
+                      ? "bg-teal-blue text-dusty-gray-50"
+                      : "text-dusty-gray-800 hover:bg-dusty-gray-100"
+                  }`}
+                  htmlFor="isInsured"
+                >
+                  <RadioGroupItem
+                    className="hidden"
+                    id="isInsured"
+                    value="isInsured"
+                  />
+                  Titular
+                </Label>
+                <Label
+                  className={`w-full cursor-pointer rounded-md bg-dusty-gray-50 px-4 py-2 text-center text-lg ${
+                    isInsured === "isBeneficiary"
+                      ? "bg-teal-blue text-dusty-gray-50"
+                      : "text-dusty-gray-800 hover:bg-dusty-gray-100"
+                  }`}
+                  htmlFor="isBeneficiary"
+                >
+                  <RadioGroupItem
+                    className="hidden"
+                    id="isBeneficiary"
+                    value="isBeneficiary"
+                  />
+                  Carga
+                </Label>
+              </RadioGroup>
+              {isInsured === "isInsured" && (
+                <>
+                  <ClientSelect value={client} setValue={setClient} />
+                  {client && <Button className="mt-4 w-full">Continuar</Button>}
+                </>
+              )}
+              {isInsured === "isBeneficiary" && (
+                <Button className="mt-4 w-full">Continuar</Button>
+              )}
+            </>
+          )}
           {!isNewBeneficiary ? (
-            <Button className="my-6 w-full">Continuar</Button>
+            <Button className="my-6 w-full" disabled={isSubmitting}>
+              {isSubmitting ? "Enviando..." : "Continuar"}
+            </Button>
           ) : null}
         </form>
       </ContentCell>
@@ -561,19 +600,28 @@ const BeneficiaryForm = ({
   );
 };
 
-const ClientSelect = () => {
+const ClientSelect = ({
+  value,
+  setValue,
+}: {
+  value: string;
+  setValue: React.Dispatch<React.SetStateAction<string>>;
+}) => {
   const { data } = useQueryContractor().useGetAll({
     contractorType: "P",
     active: true,
   });
 
   return (
-    <Select>
+    <Select value={value} onValueChange={setValue} defaultValue="">
       <SelectTrigger>
         <SelectValue placeholder="Seleccione un cliente" />
       </SelectTrigger>
       <SelectContent className="h-64 bg-white">
         <SelectGroup>
+          <SelectItem value="" className="text-gray-500">
+            Seleccione un cliente
+          </SelectItem>
           <SelectLabel>Clientes</SelectLabel>
           {data?.map((client: any) => (
             <SelectItem key={client.id} value={client.id}>

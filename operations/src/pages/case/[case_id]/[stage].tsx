@@ -9,7 +9,6 @@ import FloatMenu from "~/components/ui/FloatMenu";
 import ButtonIcon from "~/components/ui/ButtonIcon";
 
 import { useUI } from "~/hooks";
-import { useCase } from "~/store/hooks/useCase";
 import CaseFormRecordReception from "~/components/functional/Case/CaseFormRecordReception";
 import CaseFormEvaluation from "~/components/functional/Case/CaseFormEvaluation";
 import CaseFormNew from "~/components/functional/Case/CaseFormNew";
@@ -33,9 +32,7 @@ const CaseStepPage = () => {
   const { setTitleUI } = useUI();
   const { case_id, stage } = router.query;
 
-  const { data: thisCase }: any = useQuery(["case", `${case_id}`], {
-    enabled: !!case_id,
-  });
+  const { data: thisCase } = useQueryCase().useGetById(case_id as string);
 
   const number = thisCase?.case_number;
 

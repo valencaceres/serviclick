@@ -8,26 +8,43 @@ const create: any = async (
   number?: number,
   product_id?: string,
   assistance_id?: string,
-  isactive?: boolean
+  isactive?: boolean,
+  isInsured?: boolean
 ) => {
   try {
     if (!product_id || !assistance_id) {
       const exists = await pool.query(
-        `SELECT * FROM app.case WHERE applicant_id = $1 AND number = $2`,
+        `SELECT * FROM app.case WHERE ${
+          applicant.type === "B" || !isInsured
+            ? "beneficiary_id"
+            : "applicant_id"
+        } = $1 AND number = $2`,
         [applicant.id, number]
       );
 
       if (exists.rows.length > 0) {
         const result = await pool.query(
-          `UPDATE app.case SET type = $1, applicant_id = $2
-          WHERE applicant_id = $2 AND number = $3 RETURNING *`,
+          `UPDATE app.case SET type = $1, ${
+            applicant.type === "B" || !isInsured
+              ? "beneficiary_id"
+              : "applicant_id"
+          } = $2
+          WHERE ${
+            applicant.type === "B" || !isInsured
+              ? "beneficiary_id"
+              : "applicant_id"
+          } = $2 AND number = $3 RETURNING *`,
           [applicant.type, applicant.id, number]
         );
 
         return { success: true, data: result.rows[0], error: null };
       }
       const result = await pool.query(
-        "INSERT INTO app.case(type, applicant_id) VALUES ($1, $2) RETURNING *",
+        `INSERT INTO app.case(type, ${
+          applicant.type === "B" || !isInsured
+            ? "beneficiary_id"
+            : "applicant_id"
+        }) VALUES ($1, $2) RETURNING *`,
         [applicant.type, applicant.id]
       );
 
@@ -36,14 +53,20 @@ const create: any = async (
 
     const resultCase = await pool.query(
       `SELECT * FROM app.case 
-      WHERE number = $1 AND applicant_id = $2`,
+      WHERE number = $1 AND ${
+        applicant.type === "B" || !isInsured ? "beneficiary_id" : "applicant_id"
+      } = $2`,
       [number, applicant.id]
     );
 
     if (resultCase.rows.length > 0) {
       const result = await pool.query(
         `UPDATE app.case SET product_id = $1, assistance_id = $2, isactive = $3
-        WHERE number = $4 AND applicant_id = $5
+        WHERE number = $4 AND ${
+          applicant.type === "B" || !isInsured
+            ? "beneficiary_id"
+            : "applicant_id"
+        } = $5
         RETURNING *`,
         [product_id, assistance_id, isactive, number, applicant.id]
       );
@@ -85,7 +108,7 @@ const getAll: any = async () => {
         INNER JOIN app.case cas ON cas.id = cst.case_id
         LEFT OUTER JOIN app.product prd ON prd.id = cas.product_id
         LEFT OUTER JOIN app.assistance asi ON asi.id = cas.assistance_id
-        LEFT OUTER JOIN app.beneficiary ben ON ben.id = cas.applicant_id
+        LEFT OUTER JOIN app.beneficiary ben ON ben.id = cas.beneficiary_id
         LEFT OUTER JOIN app.insured ins ON ins.id = cas.applicant_id
         LEFT OUTER JOIN app.person per ON per.id = cas.applicant_id
     `);
