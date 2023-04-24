@@ -9,7 +9,6 @@ import FloatMenu from "~/components/ui/FloatMenu";
 import ButtonIcon from "~/components/ui/ButtonIcon";
 
 import { useUI } from "~/hooks";
-import { useCase } from "~/store/hooks/useCase";
 import CaseFormRecordReception from "~/components/functional/Case/CaseFormRecordReception";
 import CaseFormEvaluation from "~/components/functional/Case/CaseFormEvaluation";
 import CaseFormNew from "~/components/functional/Case/CaseFormNew";
@@ -24,6 +23,7 @@ import { ContentCell } from "~/components/layout/Content";
 import CaseNotes from "~/components/functional/Case/CaseChat";
 import { Modal, Window } from "~/components/ui/Modal";
 import { useQueryCase } from "~/hooks/query";
+import CaseFormInsuredData from "~/components/functional/Case/CaseFormInsuredData";
 
 const CaseStepPage = () => {
   const router = useRouter();
@@ -33,9 +33,7 @@ const CaseStepPage = () => {
   const { setTitleUI } = useUI();
   const { case_id, stage } = router.query;
 
-  const { data: thisCase }: any = useQuery(["case", `${case_id}`], {
-    enabled: !!case_id,
-  });
+  const { data: thisCase } = useQueryCase().useGetById(case_id as string);
 
   const number = thisCase?.case_number;
 
@@ -59,6 +57,8 @@ const CaseStepPage = () => {
         ? `Apertura | Caso ${number}`
         : stage === "contención"
         ? `Contención | Caso ${number}`
+        : stage === "datos titular"
+        ? `Datos titular | Caso ${number}`
         : stage === "registro de servicio"
         ? `Registro de servicio | Caso ${number}`
         : stage === "recepción de antecedentes"
@@ -92,6 +92,8 @@ const CaseStepPage = () => {
           <CaseFormNew thisCase={thisCase} />
         ) : stage === "contención" ? (
           <CaseFormNew thisCase={thisCase} />
+        ) : stage === "datos titular" ? (
+          <CaseFormInsuredData thisCase={thisCase} />
         ) : stage === "registro de servicio" ? (
           <CaseFormService thisCase={thisCase} />
         ) : stage === "recepción de antecedentes" ? (

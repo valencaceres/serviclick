@@ -36,11 +36,9 @@ const routes = [
     subRoutes: [
       {
         text: "Reporte de ventas",
-        route: "/reports/sales",
       },
       {
         text: "Reporte de reembolsos",
-        route: "reports/reimbursement",
       },
     ],
   },
@@ -56,7 +54,7 @@ export function Menu({ isOpen, setIsOpen }: MenuProps) {
   return (
     <>
       <nav
-        className={`border-grayDark-6 absolute left-0 top-0 z-20 flex h-screen flex-col justify-between border-r bg-white duration-75 ${
+        className={`border-grayDark-6 absolute left-0 top-0 z-20 flex h-screen flex-col justify-between overflow-y-auto border-r bg-white duration-75 ${
           isOpen ? "w-64" : "w-12"
         }`}
       >
@@ -130,6 +128,18 @@ interface MenuItemProps {
 
 const MenuItem: React.FC<MenuItemProps> = ({ route, isOpen, setIsOpen }) => {
   const { pathname } = useRouter();
+
+  if (!route.route && !route.subRoutes) {
+    return (
+      <li
+        className={`flex w-full list-none p-2  text-dusty-gray-200 line-through ${
+          pathname === route.route ? "font-extrabold" : "font-medium"
+        }`}
+      >
+        {route.text}
+      </li>
+    );
+  }
 
   if (!route.route)
     return (

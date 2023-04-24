@@ -16,7 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/Select";
-import { RadioGroup, RadioGroupItem } from "~/components/ui/RadioGroup";
 
 import { unFormatRut, formatRut } from "../../../utils/format";
 import { rutRegEx, emailRegEx } from "../../../utils/regEx";
@@ -31,7 +30,7 @@ import { useForm } from "react-hook-form";
 import { Input } from "~/components/ui/Input";
 import { getDateTime } from "~/utils/dateAndTime";
 
-const CaseFormNew = ({ thisCase }: any) => {
+const CaseFormInsuredData = ({ thisCase }: any) => {
   return (
     <div>
       <BeneficiaryForm thisCase={thisCase} />
@@ -39,7 +38,7 @@ const CaseFormNew = ({ thisCase }: any) => {
   );
 };
 
-export default CaseFormNew;
+export default CaseFormInsuredData;
 
 const BeneficiaryForm = ({ thisCase }: any) => {
   const router = useRouter();
@@ -250,14 +249,16 @@ const BeneficiaryForm = ({ thisCase }: any) => {
       )
         ? "Contención"
         : "Apertura";
-      const stageId = stageData.find((s: any) => s.name === stageName)?.id;
+      const stageId = stageData?.find((s: any) => s.name === stageName)?.id;
       setStage(stageId || "");
     } else {
       if (isNewBeneficiary) {
-        const stageId = stageData.find((s: any) => s.name === "Contención")?.id;
+        const stageId = stageData?.find(
+          (s: any) => s.name === "Contención"
+        )?.id;
         setStage(stageId || "");
       } else if (data?.beneficiary) {
-        const stageId = stageData.find((s: any) => s.name === "Apertura")?.id;
+        const stageId = stageData?.find((s: any) => s.name === "Apertura")?.id;
         setStage(stageId || "");
       }
     }
@@ -286,14 +287,6 @@ const BeneficiaryForm = ({ thisCase }: any) => {
             width="260px"
           />
         </ContentRow>
-        {isNewBeneficiary ? (
-          <ContentCell gap="2px">
-            <h2 className="font-semibold text-red-500">Contención</h2>
-            <p className="text-sm text-secondary-500">
-              El beneficiario no existe, por favor ingrese los datos
-            </p>
-          </ContentCell>
-        ) : null}
         <form onSubmit={handleSubmit(send)}>
           <ContentCell gap="5px">
             <div className="flex gap-2">
@@ -536,65 +529,24 @@ const BeneficiaryForm = ({ thisCase }: any) => {
               </div>
             </div>
           </ContentCell>
-          {isNewBeneficiary && (
-            <>
-              <RadioGroup
-                value={isInsured}
-                onValueChange={setIsInsured}
-                className="flex w-full items-center gap-2 py-4"
-                defaultValue=""
-                disabled={thisCase}
+          <div className="mt-4">
+            <ClientSelect value={client} setValue={setClient} />
+            <div className="mt-6 flex gap-2">
+              <Button className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? "Enviando..." : "Continuar"}
+              </Button>
+              <Button
+                className="w-full"
+                onClick={() => {
+                  return null;
+                }}
               >
-                <Label
-                  className={`w-full cursor-pointer rounded-md bg-dusty-gray-50 px-4 py-2 text-center text-lg  ${
-                    isInsured === "isInsured"
-                      ? "bg-teal-blue text-dusty-gray-50"
-                      : "text-dusty-gray-800 hover:bg-dusty-gray-100"
-                  }`}
-                  htmlFor="isInsured"
-                >
-                  <RadioGroupItem
-                    className="hidden"
-                    id="isInsured"
-                    value="isInsured"
-                  />
-                  Titular
-                </Label>
-                <Label
-                  className={`w-full cursor-pointer rounded-md bg-dusty-gray-50 px-4 py-2 text-center text-lg ${
-                    isInsured === "isBeneficiary"
-                      ? "bg-teal-blue text-dusty-gray-50"
-                      : "text-dusty-gray-800 hover:bg-dusty-gray-100"
-                  }`}
-                  htmlFor="isBeneficiary"
-                >
-                  <RadioGroupItem
-                    className="hidden"
-                    id="isBeneficiary"
-                    value="isBeneficiary"
-                  />
-                  Carga
-                </Label>
-              </RadioGroup>
-              {isInsured === "isInsured" && (
-                <>
-                  <ClientSelect value={client} setValue={setClient} />
-                  {client && <Button className="mt-4 w-full">Continuar</Button>}
-                </>
-              )}
-              {isInsured === "isBeneficiary" && (
-                <Button className="mt-4 w-full">Continuar</Button>
-              )}
-            </>
-          )}
-          {!isNewBeneficiary ? (
-            <Button className="my-6 w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Enviando..." : "Continuar"}
-            </Button>
-          ) : null}
+                Omitir
+              </Button>
+            </div>
+          </div>
         </form>
       </ContentCell>
-
       <LoadingMessage />
     </div>
   );
