@@ -3,6 +3,7 @@ import { Router } from "express";
 import auth from "../middlewares/auth";
 import {
   create,
+  addProduct,
   getAll,
   getById,
   getByRut,
@@ -16,6 +17,7 @@ import {
 const BrokerRouter = Router();
 
 BrokerRouter.post("/create", auth, create);
+BrokerRouter.post("/addProduct", auth, addProduct);
 BrokerRouter.get("/getAll", auth, getAll);
 BrokerRouter.get("/getById/:id", auth, getById);
 BrokerRouter.get("/getByRut/:rut", auth, getByRut);

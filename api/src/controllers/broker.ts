@@ -442,8 +442,59 @@ const getCollectById = async (req: any, res: any) => {
   }
 };
 
+const addProduct = async (req: any, res: any) => {
+  const {
+    broker_id,
+    product_id,
+    price,
+    commisionTypeCode,
+    value,
+    currency,
+    discount,
+  } = req.body;
+
+  const responsePlans = await Product.createProductPlans(
+    product_id,
+    broker_id,
+    price.base || null,
+    price.customer,
+    price.company,
+    discount
+  );
+
+  if (!responsePlans.success) {
+    createLogger.error({
+      controller: "product/createProductPlans",
+      error: responsePlans.error,
+    });
+    res.status(500).json({ error: responsePlans.error });
+    return;
+  }
+
+  const brokerProductResponse = await BrokerProduct.create(
+    broker_id,
+    product_id,
+    responsePlans.data?.customer.id | 0,
+    responsePlans.data?.company.id | 0,
+    price,
+    commisionTypeCode,
+    value,
+    currency
+  );
+
+  if (!brokerProductResponse.success) {
+    createLogger.error({
+      model: "brokerProduct/create",
+      error: brokerProductResponse.error,
+    });
+    res.status(500).json({ error: brokerProductResponse.error });
+    return;
+  }
+};
+
 export {
   create,
+  addProduct,
   getById,
   getByRut,
   getAll,
