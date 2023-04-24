@@ -15,7 +15,7 @@ const create: any = async (
     if (!product_id || !assistance_id) {
       const exists = await pool.query(
         `SELECT * FROM app.case WHERE ${
-          applicant.type === "B" || !isInsured
+          applicant.type === "B" || isInsured === false
             ? "beneficiary_id"
             : "applicant_id"
         } = $1 AND number = $2`,
@@ -25,12 +25,12 @@ const create: any = async (
       if (exists.rows.length > 0) {
         const result = await pool.query(
           `UPDATE app.case SET type = $1, ${
-            applicant.type === "B" || !isInsured
+            applicant.type === "B" || isInsured === false
               ? "beneficiary_id"
               : "applicant_id"
           } = $2
           WHERE ${
-            applicant.type === "B" || !isInsured
+            applicant.type === "B" || isInsured === false
               ? "beneficiary_id"
               : "applicant_id"
           } = $2 AND number = $3 RETURNING *`,
@@ -41,7 +41,7 @@ const create: any = async (
       }
       const result = await pool.query(
         `INSERT INTO app.case(type, ${
-          applicant.type === "B" || !isInsured
+          applicant.type === "B" || isInsured === false
             ? "beneficiary_id"
             : "applicant_id"
         }) VALUES ($1, $2) RETURNING *`,
@@ -54,7 +54,9 @@ const create: any = async (
     const resultCase = await pool.query(
       `SELECT * FROM app.case 
       WHERE number = $1 AND ${
-        applicant.type === "B" || !isInsured ? "beneficiary_id" : "applicant_id"
+        applicant.type === "B" || isInsured === false
+          ? "beneficiary_id"
+          : "applicant_id"
       } = $2`,
       [number, applicant.id]
     );
@@ -63,7 +65,7 @@ const create: any = async (
       const result = await pool.query(
         `UPDATE app.case SET product_id = $1, assistance_id = $2, isactive = $3
         WHERE number = $4 AND ${
-          applicant.type === "B" || !isInsured
+          applicant.type === "B" || isInsured === false
             ? "beneficiary_id"
             : "applicant_id"
         } = $5

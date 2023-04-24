@@ -23,6 +23,7 @@ import { ContentCell } from "~/components/layout/Content";
 import CaseNotes from "~/components/functional/Case/CaseChat";
 import { Modal, Window } from "~/components/ui/Modal";
 import { useQueryCase } from "~/hooks/query";
+import CaseFormInsuredData from "~/components/functional/Case/CaseFormInsuredData";
 
 const CaseStepPage = () => {
   const router = useRouter();
@@ -56,6 +57,8 @@ const CaseStepPage = () => {
         ? `Apertura | Caso ${number}`
         : stage === "contención"
         ? `Contención | Caso ${number}`
+        : stage === "datos titular"
+        ? `Datos titular | Caso ${number}`
         : stage === "registro de servicio"
         ? `Registro de servicio | Caso ${number}`
         : stage === "recepción de antecedentes"
@@ -89,6 +92,8 @@ const CaseStepPage = () => {
           <CaseFormNew thisCase={thisCase} />
         ) : stage === "contención" ? (
           <CaseFormNew thisCase={thisCase} />
+        ) : stage === "datos titular" ? (
+          <CaseFormInsuredData thisCase={thisCase} />
         ) : stage === "registro de servicio" ? (
           <CaseFormService thisCase={thisCase} />
         ) : stage === "recepción de antecedentes" ? (
