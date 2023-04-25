@@ -8,6 +8,8 @@ import useQueryPartner from "./useQueryPartner";
 import useQuerySpecialist from "./useQuerySpecialist";
 import useQueryUF from "./useQueryUF";
 import useQueryContractor from "./useQueryContractor";
+import useQueryProduct from "./useQueryProduct";
+import useQueryLead from "./useQueryLead";
 
 export {
   useQueryCompany,
@@ -20,4 +22,6 @@ export {
   useQuerySpecialist,
   useQueryUF,
   useQueryContractor,
+  useQueryProduct,
+  useQueryLead
 };

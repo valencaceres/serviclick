@@ -211,11 +211,17 @@ const ContractorList = ({
         title="Tipo de cliente"
       >
         <MenuButtons>
-          <MenuItem key={1} onClick={() => handleClickContractorType("P")}>
+          <MenuItem
+            key={1}
+            onClick={() => router.push("/entities/contractor/new/person")}
+          >
             <Icon iconName="accessibility_new" />
             Persona natural
           </MenuItem>
-          <MenuItem key={2} onClick={() => handleClickContractorType("C")}>
+          <MenuItem
+            key={2}
+            onClick={() => router.push("/entities/contractor/new/company")}
+          >
             <Icon iconName="apartment" />
             Empresa
           </MenuItem>
