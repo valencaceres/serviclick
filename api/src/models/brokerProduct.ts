@@ -107,6 +107,7 @@ const getByBrokerId: any = async (broker_id: string) => {
         WHERE brp.broker_id = $1 and
               brp.isactive is true
         ORDER BY
+              brp.number,
               pro.name`,
       [broker_id]
     );
