@@ -53,7 +53,15 @@ const create = async (req: any, res: any) => {
     return;
   }
 
-  await getById(req, res);
+  createLogger.info({
+    model: "contractor/create",
+    message: "Contractor created successfully",
+  });
+
+  res.status(200).json({
+    message: "Contractor created successfully",
+    data: contractorResponse.data,
+  });
 };
 
 const getAll = async (req: any, res: any) => {

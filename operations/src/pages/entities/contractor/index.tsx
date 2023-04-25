@@ -1,15 +1,15 @@
 import { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
 
-import FloatMenu from "../../components/ui/FloatMenu";
-import ButtonIcon from "../../components/ui/ButtonIcon";
+import FloatMenu from "../../../components/ui/FloatMenu";
+import ButtonIcon from "../../../components/ui/ButtonIcon";
 
 import {
   ContractorList,
   ContractorDetail,
-} from "../../components/functional/_entities/Contractor";
+} from "../../../components/functional/_entities/Contractor";
 
-import { useUI, useContractor, useDistrict } from "../../hooks";
+import { useUI, useContractor, useDistrict } from "../../../hooks";
 
 const ContractorPage = () => {
   const router = useRouter();
@@ -18,7 +18,6 @@ const ContractorPage = () => {
   const { listAllDistrict } = useDistrict();
   const {
     getAllContractors,
-    getContractorById,
     setContractor,
     resetContractor,
     resetContractorAll,
@@ -46,42 +45,9 @@ const ContractorPage = () => {
     setShowModalType(true);
   };
 
-  const handleClickClear = () => {
-    setContractor({
-      type: contractor.type,
-      id: "",
-      rut: "",
-      fullName: "",
-      name: "",
-      companyName: "",
-      legalRepresentative: "",
-      line: "",
-      paternalLastName: "",
-      maternalLastName: "",
-      birthDate: "",
-      address: "",
-      district: "",
-      email: "",
-      phone: "",
-      quantity: 0,
-      subscriptions: [],
-      payment: [],
-    });
-  };
-
   const handleClickEdit = (id: string) => {
     resetContractor();
-    router.push(`/entities/contractor?id=${id}`);
-  };
-
-  const handleClickBack = () => {
-    resetContractorAll();
-    getAllContractors(
-      filters?.type || "",
-      filters?.name || "",
-      filters?.status || "A"
-    );
-    router.push("/entities/contractor");
+    router.push(`/entities/contractor/${id}`);
   };
 
   useEffect(() => {
@@ -95,32 +61,13 @@ const ContractorPage = () => {
   }, []);
 
   useEffect(() => {
-    resetContractorAll();
-    setTitleUI(router.query?.id ? "Cliente" : "Clientes");
-    if (router.query?.id) {
-      if (router.query.id !== "" && router.query.id !== "new") {
-        getContractorById(router.query.id?.toString());
-      }
-    }
-  }, [router.query]);
-
-  useEffect(() => {
     if (isSaving === true && contractorLoading === false) {
       getAllContractors(filters.type, filters.name, filters.status);
       setIsSaving(false);
     }
   }, [isSaving, contractorLoading]);
 
-  return router.isReady && router.query.id ? (
-    <Fragment>
-      <ContractorDetail />
-      <FloatMenu>
-        <ButtonIcon iconName="home" onClick={handleClickHome} />
-        <ButtonIcon iconName="arrow_back" onClick={handleClickBack} />
-        <ButtonIcon iconName="add" onClick={handleClickClear} />
-      </FloatMenu>
-    </Fragment>
-  ) : (
+  return (
     <Fragment>
       <ContractorList
         editContractor={handleClickEdit}

@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { useState, useEffect, Fragment } from "react";
 
 import ContractorForm from "./ContractorForm";
@@ -23,9 +24,9 @@ import { useContractor } from "../../../../hooks";
 
 import { contractor } from "../../../../interfaces";
 
-const ContractorDetail = () => {
-  const { contractor, contractorLoading, getSubscriptionById } =
-    useContractor();
+const ContractorDetail = ({ contractor }: any) => {
+  const { pathname } = useRouter();
+  const { contractorLoading, getSubscriptionById } = useContractor();
 
   const [showContractorModal, setShowContractorModal] = useState(false);
 
@@ -39,13 +40,15 @@ const ContractorDetail = () => {
         <ContentRow gap="20px">
           <ContentCell gap="5px">
             <Section title="Datos del Contratante" width="350px" />
-            <ContractorForm enabled={false} />
-            <ContentRow align="right">
-              <ButtonIcon
-                iconName="edit"
-                color="gray"
-                onClick={() => setShowContractorModal(true)}
-              />
+            <ContractorForm contractor={contractor} />
+            <ContentRow align="right" gap="5px">
+              {pathname !== "entities/contractor/new" && (
+                <ButtonIcon
+                  iconName="edit"
+                  color="gray"
+                  onClick={() => setShowContractorModal(true)}
+                />
+              )}
             </ContentRow>
           </ContentCell>
           <ContentCell gap="5px">

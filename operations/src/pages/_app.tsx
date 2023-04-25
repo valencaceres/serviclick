@@ -37,7 +37,7 @@ function MyApp({ Component, pageProps }: AppProps) {
               <Component {...pageProps} />
             </Switch>
             <ToastContainer />
-            {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+            <ReactQueryDevtools initialIsOpen={false} />
           </Provider>
         </QueryClientProvider>
       ) : (
@@ -49,7 +49,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                   <Component {...pageProps} />
                 </Switch>
                 <ToastContainer />
-                {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+                <ReactQueryDevtools initialIsOpen={false} />
               </Provider>
             </QueryClientProvider>
           </SignedIn>

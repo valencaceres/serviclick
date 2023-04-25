@@ -14,6 +14,7 @@ type ComboBoxT = {
   dataValue: string;
   dataText: string;
   enabled?: boolean;
+  currency?: string;
 };
 
 const ComboBox = ({
@@ -28,6 +29,7 @@ const ComboBox = ({
   dataValue,
   dataText,
   enabled = true,
+  currency,
 }: ComboBoxT) => {
   return enabled ? (
     <div

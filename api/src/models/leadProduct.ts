@@ -20,8 +20,10 @@ const createModel: any = async (
               frequency_code,
               productplan_id
       FROM    app.leadproduct
-      WHERE   lead_id = $1`,
-      [lead_id]
+      WHERE   lead_id = $1
+      AND     product_id = $2
+      AND     productplan_id = $3`,
+      [lead_id, product_id, productPlan_id]
     );
     data = resultCustomer.rows[0];
 
@@ -46,9 +48,30 @@ const createModel: any = async (
         ]
       );
       data = resulInsert.rows[0];
+
+      return { success: true, data, error: null };
     }
 
-    return { success: true, data, error: null };
+    const resultUpdate = await pool.query(
+      `
+      UPDATE  app.leadproduct 
+      SET     product_id = $1,
+              price = $2,
+              currency_code = $3,
+              frequency_code = $4,
+              productplan_id = $5
+      WHERE   lead_id = $6 RETURNING *`,
+      [
+        product_id,
+        price,
+        currency_code,
+        frequency_code,
+        productPlan_id,
+        lead_id,
+      ]
+    );
+
+    return { success: true, data: resultUpdate.rows[0], error: null };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
   }

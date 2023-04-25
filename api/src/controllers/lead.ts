@@ -15,6 +15,8 @@ import * as Company from "../models/company";
 import * as Insured from "../models/insured";
 import * as Beneficiary from "../models/beneficiary";
 import * as Product from "../models/product";
+import * as ProductPlan from "../models/productPlan";
+import * as Policy from "../models/policy";
 import * as LeadProductValues from "../models/leadProductValue";
 
 export type CustomerT = {
@@ -1091,6 +1093,81 @@ const addBeneficiariesData = async (
   };
 };
 
+const addProduct = async (req: any, res: any) => {
+  const {
+    product_id,
+    productPlan_id,
+    agent_id,
+    company_id,
+    customer_id,
+    subscription_id,
+    link,
+    paymenttype_code,
+  } = req.body;
+
+  const policyResponse = await Policy.create();
+
+  if (!policyResponse.success) {
+    createLogger.error({
+      model: "policy/create",
+      error: policyResponse.error,
+    });
+    res.status(500).json(policyResponse.error);
+    return;
+  }
+
+  const { id: policy_id } = policyResponse.data;
+
+  const leadResponse = await Lead.create(
+    agent_id,
+    customer_id,
+    company_id,
+    subscription_id,
+    policy_id,
+    link,
+    paymenttype_code
+  );
+
+  if (!leadResponse.success) {
+    createLogger.error({
+      model: "lead/create",
+      error: leadResponse.error,
+    });
+    res.status(500).json(leadResponse.error);
+    return;
+  }
+
+  const { id: lead_id } = leadResponse.data;
+
+  const productPlanResponse = await ProductPlan.getById(productPlan_id);
+  const productResponse = await Product.getById(product_id);
+
+  const leadProductResponse = await LeadProduct.createModel(
+    lead_id,
+    product_id,
+    productPlanResponse.data.price,
+    productResponse.data.currency,
+    productPlanResponse.data.frequency,
+    productPlanResponse.data.plan_id
+  );
+
+  if (!leadProductResponse.success) {
+    createLogger.error({
+      model: "leadProduct/createModel",
+      error: leadProductResponse.error,
+    });
+    res.status(500).json(leadProductResponse.error);
+    return;
+  }
+
+  createLogger.info({
+    controller: "lead/addProduct",
+    message: "OK",
+  });
+
+  res.status(200).json(leadProductResponse.data);
+};
+
 export {
   createController,
   addBeneficiariesController,
@@ -1098,4 +1175,5 @@ export {
   getBySubscriptionIdController,
   getProductByInsuredIdController,
   getProductValuesByInsuredId,
+  addProduct,
 };

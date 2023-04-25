@@ -84,6 +84,76 @@ const createProduct: any = async (
   }
 };
 
+const getAll: any = async () => {
+  try {
+    const result = await pool.query(
+      `SELECT DISTINCT ON (pro.id, prp.price)
+          pro.id,
+          pro.name,
+          pro.currency,
+          prp.type,
+          prp.id as productplan_id,
+          prp.price,
+          CASE
+              WHEN age.name IS NULL THEN
+                  CASE
+                      WHEN bro.name IS NULL THEN 'Retail'
+                      ELSE 'Broker'
+                  END
+              ELSE 'Canal'
+          END AS agent,
+          CASE
+              WHEN age.id IS NULL THEN
+                  CASE
+                      WHEN bro.id IS NULL THEN ret.id
+                      ELSE bro.id
+                  END
+              ELSE age.id
+          END AS agent_id,
+          CASE
+              WHEN age.name IS NULL THEN
+                  CASE
+                      WHEN bro.name IS NULL THEN ret.name
+                      ELSE bro.name
+                  END
+              ELSE age.name
+          END AS agent_name
+      FROM app.product pro
+      INNER JOIN app.productplan prp ON pro.id = prp.product_id
+      LEFT OUTER JOIN app.agent age ON prp.agent_id = age.id
+      LEFT OUTER JOIN app.broker bro ON prp.agent_id = bro.id
+      LEFT OUTER JOIN app.retail ret ON prp.agent_id = ret.id
+      WHERE pro.isactive IS TRUE
+      ORDER BY pro.id, prp.price, pro.name;`
+    );
+
+    const groupedData = result.rows.reduce((acc: any, row: any) => {
+      if (!acc[row.name]) {
+        acc[row.name] = {
+          name: row.name,
+          id: row.id,
+          product_plans: [],
+        };
+      }
+
+      acc[row.name].product_plans.push({
+        type: row.type,
+        id: row.productplan_id,
+        agent_id: row.agent_id,
+        price: "$ " + row.price,
+      });
+
+      return acc;
+    }, {});
+
+    const groupedArray = Object.values(groupedData);
+
+    return { success: true, data: groupedArray, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 const updateProduct: any = async (
   id: string,
   family_id: string,
@@ -391,6 +461,7 @@ const getFamilies = async () => {
 export {
   createProduct,
   updateProduct,
+  getAll,
   deleteProduct,
   deletePlans,
   getById,

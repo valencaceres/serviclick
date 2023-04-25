@@ -1,7 +1,9 @@
+import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 
 import InputText from "../../../ui/InputText";
 import ComboBox from "../../../ui/ComboBox";
+import { Button } from "~/components/ui/ButtonC";
 
 import { ContentCell, ContentRow } from "../../../layout/Content";
 
@@ -14,7 +16,9 @@ import { useDistrict, useContractor } from "../../../../hooks";
 import styles from "./Contractor.module.scss";
 import ContractorProduct from "./ContractorProduct";
 
-const ContractorPersonForm = ({ enabled, setEnableSave }: any) => {
+const ContractorPersonForm = () => {
+  const { pathname } = useRouter();
+
   const { list: districtList } = useDistrict();
   const {
     getContractorByRut,
@@ -214,7 +218,6 @@ const ContractorPersonForm = ({ enabled, setEnableSave }: any) => {
   };
 
   useEffect(() => {
-    setEnableSave(false);
     if (
       personForm.rut.isValid &&
       personForm.email.isValid &&
@@ -230,7 +233,6 @@ const ContractorPersonForm = ({ enabled, setEnableSave }: any) => {
       personForm.phone.value !== ""
     ) {
       refreshContractorState();
-      setEnableSave(true);
     }
   }, [personForm]);
 
@@ -265,84 +267,82 @@ const ContractorPersonForm = ({ enabled, setEnableSave }: any) => {
   }, [isSearching, contractorLoading]);
 
   return (
-    <ContentCell gap="5px" className={styles.contentCell}>
-      <ContentRow gap="5px">
+    <form>
+      <ContentCell gap="5px" className={styles.contentCell}>
+        <ContentRow gap="5px">
+          <InputText
+            label="Rut"
+            width={"50%"}
+            onFocus={handleFocusRut}
+            onBlur={handleBlurRut}
+            maxLength={9}
+            value={personForm?.rut.value}
+            onChange={handleChangeRut}
+            isValid={personForm?.rut.isValid}
+          />
+        </ContentRow>
         <InputText
-          label="Rut"
-          width={"50%"}
-          onFocus={handleFocusRut}
-          onBlur={handleBlurRut}
-          maxLength={9}
-          disabled={true}
-          value={personForm?.rut.value}
-          onChange={handleChangeRut}
-          isValid={personForm?.rut.isValid}
+          label="Nombres"
+          width="100%"
+          maxLength={50}
+          value={personForm?.name.value}
+          onChange={handleChangeName}
         />
-      </ContentRow>
-      <InputText
-        label="Nombres"
-        width="100%"
-        maxLength={50}
-        value={personForm?.name.value}
-        disabled={!enabled}
-        onChange={handleChangeName}
-      />
-      <InputText
-        label="Apellido Paterno"
-        width="100%"
-        maxLength={50}
-        value={personForm?.paternalLastName.value}
-        disabled={!enabled}
-        onChange={handleChangePaternalLastName}
-      />
-      <InputText
-        label="Apellido Materno"
-        width="100%"
-        maxLength={50}
-        value={personForm?.maternalLastName.value}
-        disabled={!enabled}
-        onChange={handleChangeMaternalLastName}
-      />
-      <InputText
-        label="Dirección"
-        width="100%"
-        maxLength={250}
-        value={personForm?.address.value}
-        disabled={!enabled}
-        onChange={handleChangeAddress}
-      />
-      <ComboBox
-        label="Comuna"
-        width="100%"
-        value={personForm?.district.value}
-        enabled={enabled}
-        onChange={handleChangeDistrict}
-        placeHolder=":: Seleccione comuna ::"
-        data={districtList}
-        dataValue="district_name"
-        dataText="district_name"
-      />
-      <InputText
-        label="Correo"
-        width="100%"
-        type="email"
-        maxLength={250}
-        value={personForm?.email.value}
-        disabled={true}
-        onChange={handleChangeEmail}
-        isValid={personForm?.email.isValid}
-      />
-      <InputText
-        label="Teléfono"
-        width="100%"
-        type="tel"
-        maxLength={9}
-        value={personForm?.phone.value}
-        disabled={!enabled}
-        onChange={handleChangePhone}
-        isValid={personForm?.phone.isValid}
-      />
-    </ContentCell>
+        <InputText
+          label="Apellido Paterno"
+          width="100%"
+          maxLength={50}
+          value={personForm?.paternalLastName.value}
+          onChange={handleChangePaternalLastName}
+        />
+        <InputText
+          label="Apellido Materno"
+          width="100%"
+          maxLength={50}
+          value={personForm?.maternalLastName.value}
+          onChange={handleChangeMaternalLastName}
+        />
+        <InputText
+          label="Dirección"
+          width="100%"
+          maxLength={250}
+          value={personForm?.address.value}
+          onChange={handleChangeAddress}
+        />
+        <ComboBox
+          label="Comuna"
+          width="100%"
+          value={personForm?.district.value}
+          onChange={handleChangeDistrict}
+          placeHolder=":: Seleccione comuna ::"
+          data={districtList}
+          dataValue="district_name"
+          dataText="district_name"
+        />
+        <InputText
+          label="Correo"
+          width="100%"
+          type="email"
+          maxLength={250}
+          value={personForm?.email.value}
+          disabled={true}
+          onChange={handleChangeEmail}
+          isValid={personForm?.email.isValid}
+        />
+        <InputText
+          label="Teléfono"
+          width="100%"
+          type="tel"
+          maxLength={9}
+          value={personForm?.phone.value}
+          onChange={handleChangePhone}
+          isValid={personForm?.phone.isValid}
+        />
+        {pathname === "/entities/contractor/new/person" && (
+          <Button>Crear</Button>
+        )}
+      </ContentCell>
+    </form>
   );
 };
 

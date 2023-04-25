@@ -247,6 +247,63 @@ const updateSubscription: any = async (
   }
 };
 
+const create = async (
+  agent_id: string,
+  customer_id?: string,
+  company_id?: string,
+  subscription_id?: string,
+  policy_id?: string,
+  link?: string,
+  paymenttype_code?: string
+) => {
+  try {
+    const createdate = format(new Date(), "yyyy-MM-dd HH:mm:ss");
+    
+    if (company_id) {
+      const result = await pool.query(
+        `INSERT INTO app.lead
+                    (company_id, agent_id, policy_id, link, paymenttype_code, subscription_id, createdate)
+                VALUES
+                    ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+        [
+          company_id,
+          agent_id,
+          policy_id,
+          link,
+          paymenttype_code,
+          subscription_id,
+          createdate,
+        ]
+      );
+
+      return { success: true, data: result.rows[0], error: null };
+    }
+
+    if (customer_id) {
+      const result = await pool.query(
+        `INSERT INTO app.lead
+                    (customer_id, agent_id, policy_id, link, paymenttype_code, subscription_id, createdate)
+                VALUES
+                    ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+        [
+          customer_id,
+          agent_id,
+          policy_id,
+          link,
+          paymenttype_code,
+          subscription_id,
+          createdate,
+        ]
+      );
+
+      return { success: true, data: result.rows[0], error: null };
+    }
+
+    return { success: false, data: null, error: "No se pudo crear el lead" };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
 export {
   createModel,
   updatePaymentTypeCode,
@@ -256,4 +313,5 @@ export {
   getInsuredById,
   getProductsById,
   updateSubscription,
+  create,
 };
