@@ -20,18 +20,12 @@ import { formatAmount } from "../../../../utils/format";
 
 import { useContractor } from "../../../../hooks";
 
-const ContractorProduct = () => {
-  const { contractor, subscriptionItem, getSubscriptionById } = useContractor();
+const ContractorProduct = ({ contractor }: any) => {
+  const { subscriptionItem, getSubscriptionById } = useContractor();
 
   const handleChangeProduct = (e: any) => {
     getSubscriptionById(e.target.value);
   };
-
-  useEffect(() => {
-    if (contractor.subscriptions && contractor.subscriptions.length > 0) {
-      getSubscriptionById(contractor.subscriptions[0].subscription_id);
-    }
-  }, [contractor.subscriptions]);
 
   return (
     <Fragment>
@@ -41,7 +35,7 @@ const ContractorProduct = () => {
           width="100%"
           value={subscriptionItem.subscription_id.toString()}
           onChange={handleChangeProduct}
-          data={contractor.subscriptions}
+          data={contractor?.subscriptions}
           dataValue="subscription_id"
           dataText="product_name"
         />
@@ -97,7 +91,8 @@ const ContractorProduct = () => {
       </Table>
       <ContentRow align="space-between">
         <ContentCellSummary
-          color={subscriptionItem.assistances.length > 0 ? "blue" : "#959595"}>
+          color={subscriptionItem.assistances.length > 0 ? "blue" : "#959595"}
+        >
           {subscriptionItem.assistances.length > 0
             ? subscriptionItem.assistances.length === 1
               ? `${subscriptionItem.assistances.length} servicio`

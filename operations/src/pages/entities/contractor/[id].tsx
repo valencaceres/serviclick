@@ -19,7 +19,7 @@ const ContractorDetailPage = () => {
   );
 
   const handleClickHome = () => {
-    router.push("/");
+    router.push("/entities/contractor");
   };
 
   const handleClickBack = () => {

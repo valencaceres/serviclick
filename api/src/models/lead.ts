@@ -180,6 +180,7 @@ const getBySubscriptionId: any = async (subscription_id: string) => {
         WHERE   LEA.subscription_id = $1`,
       [subscription_id]
     );
+
     return { success: true, data: result.rows[0], error: null };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };

@@ -33,7 +33,6 @@ import { useQueryLead, useQueryProduct } from "~/hooks/query";
 import { useQueryClient } from "@tanstack/react-query";
 
 const ContractorSubscriptionList = ({ contractor, subscriptionClick }: any) => {
-  console.log(contractor)
   return (
     <ContentCell gap="5px">
       <Table width="485px" height="563px">
@@ -120,9 +119,6 @@ const AddSubscription = () => {
     );
   }, [plan]);
 
-  console.log(subscription);
-  console.log(plan);
-
   return (
     <Dialog>
       <DialogTrigger>
@@ -172,7 +168,6 @@ const AddSubscription = () => {
             )}
           </div>
           <DialogFooter>
-            <Button variant="outline">Cancelar</Button>
             <Button>Agregar</Button>
           </DialogFooter>
         </form>
