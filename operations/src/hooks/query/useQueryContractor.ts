@@ -34,7 +34,7 @@ const getByRut = async (rut: string, type: "P" | "C") => {
 
 const useGetByRut = (rut: string, type: "P" | "C") => {
   return useQuery(["contractor", rut, type], () => getByRut(rut, type), {
-    enabled: rut?.length >= 10
+    enabled: rut?.length >= 10,
   });
 };
 
@@ -49,8 +49,27 @@ const useGetById = (id: string) => {
   });
 };
 
+const getSubscriptionById = async (id: string) => {
+  const { data } = await apiInstance.get(
+    `/contractor/getSubscriptionById/${id}`
+  );
+  return data;
+};
+
+const useGetSubscriptionById = (id: string) => {
+  return useQuery(["subscription", id], () => getSubscriptionById(id), {
+    enabled: !!id && id !== "",
+  });
+};
+
 const useQueryContractor = () => {
-  return { useCreate, useGetAll, useGetByRut, useGetById };
+  return {
+    useCreate,
+    useGetAll,
+    useGetByRut,
+    useGetById,
+    useGetSubscriptionById,
+  };
 };
 
 export default useQueryContractor;

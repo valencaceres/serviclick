@@ -108,4 +108,36 @@ const createModel: any = async (
   }
 };
 
-export { createModel };
+const create: any = async (plan_amount: number, plan_id: number) => {
+  try {
+    const generateId = await pool.query(
+      `SELECT MAX(subscription_id)
+        FROM app.subscription
+        WHERE subscription_id < 74000`
+    );
+
+    const subscription_id = generateId.rows[0].max + 1;
+
+    const date = format(new Date(), "yyyy-MM-dd HH:mm:ss");
+
+    const result = await pool.query(
+      `
+        INSERT  INTO app.subscription(
+                date,
+                interval_id,
+                status_id,
+                subscription_id,
+                plan_id,
+                plan_amount)
+        VALUES  ($1, $2, $3, $4, $5, $6)
+        RETURNING *`,
+      [date, 0, 0, subscription_id, plan_id, plan_amount]
+    );
+
+    return { success: true, data: result.rows[0], error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+export { createModel, create };

@@ -8,7 +8,9 @@ import {
   getBySubscriptionIdController,
   getProductByInsuredIdController,
   getProductValuesByInsuredId,
-  addProduct
+  addProduct,
+  addInsured,
+  addBeneficiary
 } from "../controllers/lead";
 
 const LeadRouter = Router();
@@ -32,5 +34,7 @@ LeadRouter.get(
   getProductValuesByInsuredId
 );
 LeadRouter.post("/addProduct", auth, addProduct);
+LeadRouter.post("/addInsured", auth, addInsured);
+LeadRouter.post("/addBeneficiary", auth, addBeneficiary);
 
 export default LeadRouter;

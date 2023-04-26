@@ -5,339 +5,306 @@ import InputText from "../../../ui/InputText";
 import ComboBox from "../../../ui/ComboBox";
 import { Button } from "~/components/ui/ButtonC";
 
-import { ContentCell, ContentRow } from "../../../layout/Content";
+import { ContentCell } from "../../../layout/Content";
 
 import { unFormatRut, formatRut } from "../../../../utils/format";
 import { numberRegEx, rutRegEx, emailRegEx } from "../../../../utils/regEx";
 import { rutValidate } from "../../../../utils/validations";
 
-import { useDistrict, useContractor } from "../../../../hooks";
+import { useDistrict } from "../../../../hooks";
 
 import styles from "./Contractor.module.scss";
-import ContractorProduct from "./ContractorProduct";
+import { Label } from "~/components/ui/Label";
+import { Input } from "~/components/ui/Input";
+import { useQueryContractor } from "~/hooks/query";
+import { useForm } from "react-hook-form";
 
-const ContractorPersonForm = () => {
-  const { pathname } = useRouter();
+const ContractorPersonForm = ({ contractor }: any) => {
+  const { pathname, push } = useRouter();
+
+  const {
+    reset,
+    register,
+    getValues,
+    setValue,
+    watch,
+    clearErrors,
+    setError,
+    formState: { errors, isSubmitting },
+    handleSubmit,
+  } = useForm<{
+    rut: string;
+    name: string;
+    paternalLastName: string;
+    maternalLastName: string;
+    address: string;
+    district: string;
+    email: string;
+    phone: string;
+  }>({
+    mode: "onBlur",
+  });
+
+  const rut = watch("rut");
+  const name = watch("name");
+  const paternalLastName = watch("paternalLastName");
+  const maternalLastName = watch("maternalLastName");
+  const address = watch("address");
+  const district = watch("district");
+  const email = watch("email");
+  const phone = watch("phone");
 
   const { list: districtList } = useDistrict();
-  const {
-    getContractorByRut,
-    setContractor,
-    setContractorProcessing,
-    contractor,
-    contractorLoading,
-    contractorProcessing,
-  } = useContractor();
 
-  const initialDataPersonForm = {
-    rut: { value: contractor.rut, isValid: true },
-    name: { value: contractor.name, isValid: true },
-    paternalLastName: {
-      value: contractor.paternalLastName,
-      isValid: true,
-    },
-    maternalLastName: {
-      value: contractor.maternalLastName,
-      isValid: true,
-    },
-    birthDate: { value: contractor.birthDate, isValid: true },
-    address: { value: contractor.address, isValid: true },
-    district: { value: contractor.district, isValid: true },
-    email: { value: contractor.email, isValid: true },
-    phone: { value: contractor.phone, isValid: true },
-  };
+  const { mutate: createPerson } = useQueryContractor().useCreate();
 
-  const [personForm, setPersonForm] = useState(initialDataPersonForm);
-  const [isSearching, setIsSearching] = useState(false);
-
-  const handleBlurRut = (event: any) => {
+  const isValidRut = (rut: string) => {
     if (
-      event.target.value !== "" &&
-      rutValidate(unFormatRut(event.target.value))
+      (rutRegEx.test(unFormatRut(rut)) &&
+        unFormatRut(rut).length > 7 &&
+        rutValidate(unFormatRut(rut))) ||
+      rut === ""
     ) {
-      event.target.value = formatRut(event.target.value);
-      setIsSearching(true);
-      getContractorByRut(event.target.value, contractor.type);
-      setPersonForm({
-        ...personForm,
-        rut: {
-          value: event.target.value,
-          isValid:
-            (rutRegEx.test(unFormatRut(event.target.value)) &&
-              unFormatRut(event.target.value).length > 7 &&
-              rutValidate(unFormatRut(event.target.value))) ||
-            event.target.value === "",
-        },
-      });
-    }
-  };
-
-  const handleFocusRut = (event: any) => {
-    event.target.value = unFormatRut(event.target.value);
-  };
-
-  const handleChangeRut = (event: any) => {
-    setPersonForm({
-      name: { value: "", isValid: true },
-      paternalLastName: { value: "", isValid: true },
-      maternalLastName: { value: "", isValid: true },
-      birthDate: { value: "", isValid: true },
-      address: { value: "", isValid: true },
-      district: { value: "", isValid: true },
-      email: { value: "", isValid: true },
-      phone: { value: "", isValid: true },
-      rut: {
-        value: event.target.value,
-        isValid:
-          (rutRegEx.test(event.target.value) &&
-            event.target.value.length > 7 &&
-            rutValidate(event.target.value)) ||
-          event.target.value === "",
-      },
-    });
-  };
-
-  const handleChangeName = (event: any) => {
-    setPersonForm({
-      ...personForm,
-      name: {
-        value: event.target.value,
-        isValid: true,
-      },
-    });
-  };
-
-  const handleChangePaternalLastName = (event: any) => {
-    setPersonForm({
-      ...personForm,
-      paternalLastName: {
-        value: event.target.value,
-        isValid: true,
-      },
-    });
-  };
-
-  const handleChangeMaternalLastName = (event: any) => {
-    setPersonForm({
-      ...personForm,
-      maternalLastName: {
-        value: event.target.value,
-        isValid: true,
-      },
-    });
-  };
-
-  const handleChangeBirthDate = (event: any) => {
-    setPersonForm({
-      ...personForm,
-      birthDate: {
-        value: event.target.value,
-        isValid: true,
-      },
-    });
-  };
-
-  const handleChangeAddress = (event: any) => {
-    setPersonForm({
-      ...personForm,
-      address: {
-        value: event.target.value,
-        isValid: true,
-      },
-    });
-  };
-
-  const handleChangeDistrict = (event: any) => {
-    setPersonForm({
-      ...personForm,
-      district: {
-        value: event.target.value,
-        isValid: true,
-      },
-    });
-  };
-
-  const handleChangeEmail = (event: any) => {
-    setPersonForm({
-      ...personForm,
-      email: {
-        value: event.target.value,
-        isValid:
-          emailRegEx.test(event.target.value) || event.target.value === "",
-      },
-    });
-  };
-
-  const handleChangePhone = (event: any) => {
-    if (numberRegEx.test(event.target.value) || event.target.value === "") {
-      setPersonForm({
-        ...personForm,
-        phone: {
-          value: event.target.value,
-          isValid: event.target.value.length === 9,
-        },
-      });
+      clearErrors("rut");
+      return true;
     } else {
-      return;
-    }
-  };
-
-  const refreshContractorState = () => {
-    setContractor({
-      ...contractor,
-      rut: personForm.rut.value,
-      name: personForm.name.value,
-      paternalLastName: personForm.paternalLastName.value,
-      maternalLastName: personForm.maternalLastName.value,
-      birthDate: personForm.birthDate.value,
-      address: personForm.address.value,
-      district: personForm.district.value,
-      email: personForm.email.value,
-      phone: personForm.phone.value,
-    });
-  };
-
-  const refreshContractorFormData = () => {
-    setPersonForm({
-      rut: { value: contractor.rut, isValid: true },
-      name: { value: contractor.name, isValid: true },
-      paternalLastName: {
-        value: contractor.paternalLastName,
-        isValid: true,
-      },
-      maternalLastName: {
-        value: contractor.maternalLastName,
-        isValid: true,
-      },
-      birthDate: { value: contractor.birthDate, isValid: true },
-      address: { value: contractor.address, isValid: true },
-      district: { value: contractor.district, isValid: true },
-      email: { value: contractor.email, isValid: true },
-      phone: { value: contractor.phone, isValid: true },
-    });
-  };
-
-  useEffect(() => {
-    if (
-      personForm.rut.isValid &&
-      personForm.email.isValid &&
-      personForm.phone.isValid &&
-      personForm.rut.value !== "" &&
-      personForm.name.value !== "" &&
-      personForm.paternalLastName.value !== "" &&
-      personForm.maternalLastName.value !== "" &&
-      personForm.birthDate.value !== "" &&
-      personForm.address.value !== "" &&
-      personForm.district.value !== "" &&
-      personForm.email.value !== "" &&
-      personForm.phone.value !== ""
-    ) {
-      refreshContractorState();
-    }
-  }, [personForm]);
-
-  useEffect(() => {
-    if (contractorLoading === false && contractorProcessing === true) {
-      refreshContractorFormData();
-      setContractorProcessing(false);
-    }
-  }, [contractorLoading, contractorProcessing]);
-
-  useEffect(() => {
-    if (isSearching === true && contractorLoading === false) {
-      setPersonForm({
-        rut: { value: contractor.rut, isValid: true },
-        name: { value: contractor.name, isValid: true },
-        paternalLastName: {
-          value: contractor.paternalLastName,
-          isValid: true,
-        },
-        maternalLastName: {
-          value: contractor.maternalLastName,
-          isValid: true,
-        },
-        birthDate: { value: contractor.birthDate, isValid: true },
-        address: { value: contractor.address, isValid: true },
-        district: { value: contractor.district, isValid: true },
-        email: { value: contractor.email, isValid: true },
-        phone: { value: contractor.phone, isValid: true },
+      setError("rut", {
+        type: "manual",
+        message: "Rut inválido",
       });
-      setIsSearching(false);
+      return false;
     }
-  }, [isSearching, contractorLoading]);
+  };
+
+  const isValidEmail = (email: string) => {
+    if (emailRegEx.test(email) || email === "") {
+      clearErrors("email");
+      return true;
+    } else {
+      setError("email", {
+        type: "manual",
+        message: "Email inválido",
+      });
+      return false;
+    }
+  };
+
+  const isValidPhone = (phone: string) => {
+    if (numberRegEx.test(phone) || phone === "") {
+      clearErrors("phone");
+      return true;
+    } else {
+      setError("phone", {
+        type: "manual",
+        message: "Teléfono inválido",
+      });
+      return false;
+    }
+  };
+
+  const send = () => {
+    const data = {
+      rut,
+      name,
+      paternalLastName,
+      maternalLastName,
+      address,
+      district,
+      email,
+      phone,
+      type: "P",
+    };
+
+    createPerson(data, {
+      onSuccess: (data) => {
+        push(`/entities/contractor/${data.data?.id}`);
+      },
+    });
+  };
+
+  useEffect(() => {
+    if (contractor?.type !== "") {
+      setValue("rut", contractor?.rut);
+      setValue("name", contractor?.name);
+      setValue("paternalLastName", contractor?.paternalLastName);
+      setValue("maternalLastName", contractor?.maternalLastName);
+      setValue("address", contractor?.address);
+      setValue("district", contractor?.district);
+      setValue("email", contractor?.email);
+      setValue("phone", contractor?.phone);
+    }
+  }, [contractor]);
 
   return (
-    <form>
+    <form onSubmit={handleSubmit(send)}>
       <ContentCell gap="5px" className={styles.contentCell}>
-        <ContentRow gap="5px">
-          <InputText
-            label="Rut"
-            width={"50%"}
-            onFocus={handleFocusRut}
-            onBlur={handleBlurRut}
+        <div className="flex w-full flex-col">
+          <Label htmlFor="Rut" className="text-xs text-dusty-gray">
+            Rut
+          </Label>
+          <Input
+            errorText={errors.rut?.message}
+            {...register("rut", {
+              required: "Este campo es requerido",
+              onChange: (event) => {
+                isValidRut(event.target.value);
+              },
+              onBlur: (event) => {
+                setValue("rut", formatRut(event.target.value));
+              },
+            })}
+            onFocus={(event) => {
+              setValue("rut", unFormatRut(event.target.value));
+            }}
+            type="text"
+            placeholder="Rut"
+            id="Rut"
+            disabled={!pathname.includes("/new")}
             maxLength={9}
-            value={personForm?.rut.value}
-            onChange={handleChangeRut}
-            isValid={personForm?.rut.isValid}
+            className={`w-full ${errors.rut ? "border-red-500" : ""}`}
+            value={rut || ""}
           />
-        </ContentRow>
-        <InputText
-          label="Nombres"
-          width="100%"
-          maxLength={50}
-          value={personForm?.name.value}
-          onChange={handleChangeName}
-        />
-        <InputText
-          label="Apellido Paterno"
-          width="100%"
-          maxLength={50}
-          value={personForm?.paternalLastName.value}
-          onChange={handleChangePaternalLastName}
-        />
-        <InputText
-          label="Apellido Materno"
-          width="100%"
-          maxLength={50}
-          value={personForm?.maternalLastName.value}
-          onChange={handleChangeMaternalLastName}
-        />
-        <InputText
-          label="Dirección"
-          width="100%"
-          maxLength={250}
-          value={personForm?.address.value}
-          onChange={handleChangeAddress}
-        />
-        <ComboBox
-          label="Comuna"
-          width="100%"
-          value={personForm?.district.value}
-          onChange={handleChangeDistrict}
-          placeHolder=":: Seleccione comuna ::"
-          data={districtList}
-          dataValue="district_name"
-          dataText="district_name"
-        />
-        <InputText
-          label="Correo"
-          width="100%"
-          type="email"
-          maxLength={250}
-          value={personForm?.email.value}
-          disabled={true}
-          onChange={handleChangeEmail}
-          isValid={personForm?.email.isValid}
-        />
-        <InputText
-          label="Teléfono"
-          width="100%"
-          type="tel"
-          maxLength={9}
-          value={personForm?.phone.value}
-          onChange={handleChangePhone}
-          isValid={personForm?.phone.isValid}
-        />
+        </div>
+        <div className="flex w-full flex-col">
+          <Label htmlFor="name" className="text-xs text-dusty-gray">
+            Nombre
+          </Label>
+          <Input
+            errorText={errors.name?.message}
+            {...register("name", {
+              required: "Este campo es requerido",
+            })}
+            type="text"
+            id="name"
+            disabled={!pathname.includes("/new")}
+            placeholder="Nombre"
+            className={`w-full ${
+              errors.name?.message?.length ? "border-red-500" : ""
+            }`}
+            value={name}
+          />
+        </div>
+        <div className="flex w-full flex-col">
+          <Label htmlFor="paternalLastName" className="text-xs text-dusty-gray">
+            Apellido Paterno
+          </Label>
+          <Input
+            errorText={errors.paternalLastName?.message}
+            {...register("paternalLastName", {
+              required: "Este campo es requerido",
+            })}
+            type="text"
+            id="paternalLastName"
+            disabled={!pathname.includes("/new")}
+            placeholder="Apellido Paterno"
+            className={`w-full ${
+              errors.paternalLastName?.message?.length ? "border-red-500" : ""
+            }`}
+            value={paternalLastName}
+          />
+        </div>
+        <div className="flex w-full flex-col">
+          <Label htmlFor="maternalLastName" className="text-xs text-dusty-gray">
+            Apellido Materno
+          </Label>
+          <Input
+            errorText={errors.maternalLastName?.message}
+            {...register("maternalLastName", {
+              required: "Este campo es requerido",
+            })}
+            type="text"
+            id="maternalLastName"
+            placeholder="Apellido Materno"
+            disabled={!pathname.includes("/new")}
+            className={`w-full ${
+              errors.maternalLastName?.message?.length ? "border-red-500" : ""
+            }`}
+            value={maternalLastName}
+          />
+        </div>
+        <div className="flex w-full flex-col">
+          <Label htmlFor="address" className="text-xs text-dusty-gray">
+            Dirección
+          </Label>
+          <Input
+            errorText={errors.address?.message}
+            {...register("address", {
+              required: "Este campo es requerido",
+            })}
+            type="text"
+            id="address"
+            disabled={!pathname.includes("/new")}
+            placeholder="Dirección"
+            className={`w-full ${
+              errors.address?.message?.length ? "border-red-500" : ""
+            }`}
+            value={address}
+          />
+        </div>
+        <div className="flex w-full flex-col">
+          <Label htmlFor="email" className="text-xs text-dusty-gray">
+            Comuna
+          </Label>
+          <ComboBox
+            label="Comuna"
+            width="100%"
+            value={district}
+            onChange={(e: any) => {
+              setValue("district", e.target.value);
+            }}
+            placeHolder="Seleccione comuna"
+            data={districtList}
+            dataValue="district_name"
+            dataText="district_name"
+            enabled={pathname.includes("/new")}
+          />
+        </div>
+        <div className="flex w-full flex-col">
+          <Label htmlFor="email" className="text-xs text-dusty-gray">
+            Correo electrónico
+          </Label>
+          <Input
+            errorText={errors.email?.message}
+            {...register("email", {
+              required: "Este campo es requerido",
+              pattern: emailRegEx,
+              onChange: (e: any) => {
+                isValidEmail(e.target.value);
+              },
+            })}
+            type="email"
+            id="email"
+            disabled={!pathname.includes("/new")}
+            placeholder="Correo electrónico"
+            className={`w-full ${
+              errors.email?.message?.length ? "border-red-500" : ""
+            }`}
+            value={email}
+          />
+        </div>
+        <div className="flex w-full flex-col">
+          <Label htmlFor="phone" className="text-xs text-dusty-gray">
+            Teléfono
+          </Label>
+          <Input
+            errorText={errors.phone?.message}
+            {...register("phone", {
+              required: "Este campo es requerido",
+              onChange: (e: any) => {
+                isValidPhone(e.target.value);
+              },
+            })}
+            type="text"
+            id="phone"
+            disabled={!pathname.includes("/new")}
+            placeholder="Teléfono"
+            maxLength={9}
+            className={`w-full ${
+              errors?.phone?.message?.length ? "border-red-500" : ""
+            }`}
+            value={phone}
+          />
+        </div>
         {pathname === "/entities/contractor/new/person" && (
           <Button>Crear</Button>
         )}

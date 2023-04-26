@@ -61,15 +61,15 @@ const ContractorDetail = ({ contractor }: any) => {
         </ContentRow>
         <ContentCell gap="5px">
           <Section title="Detalle del producto" width="855px" />
-          <ContractorProduct />
+          <ContractorProduct contractor={contractor} />
         </ContentCell>
         <ContentCell gap="5px">
           <Section title="Beneficiarios" width="855px" />
-          <ContractorInsured />
+          <ContractorInsured contractor={contractor} />
         </ContentCell>
         <ContentCell gap="5px">
           <Section title="Cargas" width="855px" />
-          <ContractorBeneficiaries />
+          <ContractorBeneficiaries contractor={contractor} />
         </ContentCell>
         <ContentCell gap="5px">
           <Section title="Detalle de la suscripción" width="855px" />

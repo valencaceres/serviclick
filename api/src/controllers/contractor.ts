@@ -27,7 +27,6 @@ const create = async (req: any, res: any) => {
           name,
           paternalLastName,
           maternalLastName,
-          birthDate,
           address,
           district,
           email,

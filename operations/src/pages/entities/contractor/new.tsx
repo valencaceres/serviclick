@@ -13,7 +13,7 @@ const ContractorNewPage = () => {
   const { setTitleUI } = useUI();
 
   const handleClickHome = () => {
-    router.push("/");
+    router.push("/entities/contractor");
   };
 
   const handleClickBack = () => {

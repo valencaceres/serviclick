@@ -8,7 +8,7 @@ const ContractorForm = ({ contractor }: any) => {
   const { query } = useRouter();
 
   return contractor?.type === "P" && query.id ? (
-    <ContractorPersonForm />
+    <ContractorPersonForm contractor={contractor} />
   ) : (
     <ContractorCompanyForm contractor={contractor} />
   );
