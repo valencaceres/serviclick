@@ -26,8 +26,7 @@ interface IPayment {
   due: number;
 }
 
-const ContractorSubscription = () => {
-  const { contractor } = useContractor();
+const ContractorSubscription = ({ contractor }: any) => {
 
   const [payment, setPayment] = useState<IPayment>({
     collected: 0,
@@ -36,18 +35,18 @@ const ContractorSubscription = () => {
   });
 
   useEffect(() => {
-    if (contractor.payment.length > 0) {
+    if (contractor?.payment.length > 0) {
       setPayment({
         collected: contractor.payment.reduce(
-          (acum: number, item) => acum + item.collected_amount,
+          (acum: number, item: any) => acum + item.collected_amount,
           0
         ),
         paid: contractor.payment.reduce(
-          (acum: number, item) => acum + +item.paid_amount,
+          (acum: number, item: any) => acum + +item.paid_amount,
           0
         ),
         due: contractor.payment.reduce(
-          (acum: number, item) =>
+          (acum: number, item: any) =>
             acum + (item.collected_amount - item.paid_amount),
           0
         ),
@@ -68,7 +67,7 @@ const ContractorSubscription = () => {
             <TableCellEnd />
           </TableHeader>
           <TableDetail>
-            {contractor.payment.map((item, idx: number) => (
+            {contractor?.payment.map((item: any, idx: number) => (
               <TableRow key={idx}>
                 <TableCell width="434px">{item.product_name}</TableCell>
                 <TableCell width="100px" align="center">

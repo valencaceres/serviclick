@@ -58,6 +58,8 @@ const ContractorPersonForm = ({ contractor }: any) => {
 
   const { mutate: createPerson } = useQueryContractor().useCreate();
 
+  const { data: contractorData } = useQueryContractor().useGetByRut(rut, "P");
+
   const isValidRut = (rut: string) => {
     if (
       (rutRegEx.test(unFormatRut(rut)) &&
@@ -133,7 +135,17 @@ const ContractorPersonForm = ({ contractor }: any) => {
       setValue("email", contractor?.email);
       setValue("phone", contractor?.phone);
     }
-  }, [contractor]);
+    if (contractorData) {
+      setValue("rut", contractorData?.rut);
+      setValue("name", contractorData?.name);
+      setValue("paternalLastName", contractorData?.paternalLastName);
+      setValue("maternalLastName", contractorData?.maternalLastName);
+      setValue("address", contractorData?.address);
+      setValue("district", contractorData?.district);
+      setValue("email", contractorData?.email);
+      setValue("phone", contractorData?.phone);
+    }
+  }, [contractor, contractorData]);
 
   return (
     <form onSubmit={handleSubmit(send)}>

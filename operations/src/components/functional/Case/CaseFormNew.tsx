@@ -82,7 +82,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
   const [dateTime, setDateTime] = useState("");
   const [isNewBeneficiary, setIsNewBeneficiary] = useState<boolean>(false);
   const [isInsured, setIsInsured] = useState<string>("isInsured");
-  const [client, setClient] = useState<string>("");
+  const [client, setClient] = useState<any>("");
   const [prevRut, setPrevRut] = useState<string>("");
   const prevDataRef = useRef();
 
@@ -93,6 +93,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
 
   const { data, isLoading } = useQueryCase().useGetBeneficiaryByRut(rut);
 
+  console.log(data);
   const isValidRut = (rut: string) => {
     if (
       (rutRegEx.test(unFormatRut(rut)) &&
@@ -153,7 +154,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
           email,
           phone,
         },
-        client: client,
+        company_id: client,
         isInsured: isInsured === "isInsured",
         number: thisCase !== null ? thisCase?.case_number : newCaseNumber,
         stage_id: stage,
@@ -200,7 +201,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
       setValue(key as keyof typeof initialValues, value)
     );
 
-    setIsNewBeneficiary(isThisCase);
+    setClient(newData.contractor_id);
   };
 
   useEffect(() => {
@@ -212,34 +213,48 @@ const BeneficiaryForm = ({ thisCase }: any) => {
     }
   }, [router]);
 
+  console.log(thisCase);
+
   useEffect(() => {
     prevDataRef.current = data;
 
     if (thisCase) {
-      setInitialValues(thisCase, true);
-      if (thisCase?.beneficiary_id) {
-        setIsInsured("isBeneficiary");
+      if (thisCase) {
+        if (thisCase?.type === "C") {
+          setIsNewBeneficiary(true);
+        } else {
+          setIsNewBeneficiary(false);
+        }
+        if (thisCase?.applicant_id) {
+          setIsInsured("isInsured");
+        } else {
+          setIsInsured("isBeneficiary");
+        }
+        setInitialValues(thisCase, true);
       }
-    } else if (data?.beneficiary) {
-      setPrevRut(rut);
-      setInitialValues(data.beneficiary, false);
-    } else if (
-      !data?.beneficiary &&
-      rut?.length === 12 &&
-      (prevDataRef.current !== data || rut !== prevRut)
-    ) {
-      setIsNewBeneficiary(true);
-      setPrevRut(rut);
-      reset({
-        birthdate: "",
-        name: "",
-        paternalLastName: "",
-        maternalLastName: "",
-        address: "",
-        district: "",
-        email: "",
-        phone: "",
-      });
+    } else {
+      if (data?.beneficiary) {
+        setPrevRut(rut);
+        setInitialValues(data.beneficiary, false);
+        setIsNewBeneficiary(false);
+      } else if (
+        !data?.beneficiary &&
+        rut?.length >= 10 &&
+        (prevDataRef.current !== data || rut !== prevRut)
+      ) {
+        setIsNewBeneficiary(true);
+        setPrevRut(rut);
+        reset({
+          birthdate: "",
+          name: "",
+          paternalLastName: "",
+          maternalLastName: "",
+          address: "",
+          district: "",
+          email: "",
+          phone: "",
+        });
+      }
     }
   }, [data, thisCase]);
 
@@ -578,7 +593,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
               </RadioGroup>
               {isInsured === "isInsured" && (
                 <>
-                  <ClientSelect value={client} setValue={setClient} />
+                  <ClientSelect value={client} setValue={setClient} thisCase={thisCase} />
                   {client && <Button className="mt-4 w-full">Continuar</Button>}
                 </>
               )}
@@ -594,7 +609,6 @@ const BeneficiaryForm = ({ thisCase }: any) => {
           ) : null}
         </form>
       </ContentCell>
-
       <LoadingMessage />
     </div>
   );
@@ -603,21 +617,23 @@ const BeneficiaryForm = ({ thisCase }: any) => {
 const ClientSelect = ({
   value,
   setValue,
+  thisCase
 }: {
   value: string;
   setValue: React.Dispatch<React.SetStateAction<string>>;
+  thisCase: any;
 }) => {
   const { data } = useQueryContractor().useGetAll({
-    contractorType: "P",
+    contractorType: "C",
     active: true,
   });
 
   return (
-    <Select value={value} onValueChange={setValue} defaultValue="">
+    <Select value={value} onValueChange={setValue} defaultValue="" disabled={thisCase}>
       <SelectTrigger>
         <SelectValue placeholder="Seleccione un cliente" />
       </SelectTrigger>
-      <SelectContent className="h-64 bg-white">
+      <SelectContent className="max-h-64 bg-white">
         <SelectGroup>
           <SelectItem value="" className="text-gray-500">
             Seleccione un cliente

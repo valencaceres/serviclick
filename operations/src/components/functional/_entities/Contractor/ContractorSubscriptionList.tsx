@@ -31,8 +31,19 @@ import ComboBox from "~/components/ui/ComboBox";
 
 import { useQueryLead, useQueryProduct } from "~/hooks/query";
 import { useQueryClient } from "@tanstack/react-query";
+import { useContractor } from "~/hooks";
 
 const ContractorSubscriptionList = ({ contractor, subscriptionClick }: any) => {
+  const { getSubscriptionById } = useContractor();
+
+  useEffect(() => {
+    if (contractor) {
+      if (contractor?.subscriptions?.length > 0) {
+        getSubscriptionById(contractor?.subscriptions[0]?.subscription_id);
+      }
+    }
+  }, [contractor]);
+
   return (
     <ContentCell gap="5px">
       <Table width="485px" height="563px">

@@ -9,7 +9,9 @@ const create: any = async (
   product_id?: string,
   assistance_id?: string,
   isactive?: boolean,
-  isInsured?: boolean
+  isInsured?: boolean,
+  company_id?: string,
+  customer_id?: string,
 ) => {
   try {
     if (!product_id || !assistance_id) {
@@ -28,13 +30,15 @@ const create: any = async (
             applicant.type === "B" || isInsured === false
               ? "beneficiary_id"
               : "applicant_id"
-          } = $2
+          } = $2,
+          company_id = $3,
+          customer_id = $4
           WHERE ${
             applicant.type === "B" || isInsured === false
               ? "beneficiary_id"
               : "applicant_id"
-          } = $2 AND number = $3 RETURNING *`,
-          [applicant.type, applicant.id, number]
+          } = $2 AND number = $5 RETURNING *`,
+          [applicant.type, applicant.id, company_id, customer_id, number]
         );
 
         return { success: true, data: result.rows[0], error: null };
@@ -44,8 +48,8 @@ const create: any = async (
           applicant.type === "B" || isInsured === false
             ? "beneficiary_id"
             : "applicant_id"
-        }) VALUES ($1, $2) RETURNING *`,
-        [applicant.type, applicant.id]
+        }, company_id, customer_id) VALUES ($1, $2, $3, $4) RETURNING *`,
+        [applicant.type, applicant.id, company_id, customer_id]
       );
 
       return { success: true, data: result.rows[0], error: null };
@@ -63,14 +67,14 @@ const create: any = async (
 
     if (resultCase.rows.length > 0) {
       const result = await pool.query(
-        `UPDATE app.case SET product_id = $1, assistance_id = $2, isactive = $3
-        WHERE number = $4 AND ${
+        `UPDATE app.case SET product_id = $1, assistance_id = $2, isactive = $3, company_id = $4, customer_id = $5
+        WHERE number = $6 AND ${
           applicant.type === "B" || isInsured === false
             ? "beneficiary_id"
             : "applicant_id"
-        } = $5
+        } = $7
         RETURNING *`,
-        [product_id, assistance_id, isactive, number, applicant.id]
+        [product_id, assistance_id, isactive, company_id, customer_id, number, applicant.id]
       );
 
       return { success: true, data: result.rows[0], error: null };

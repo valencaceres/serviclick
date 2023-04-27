@@ -21,6 +21,7 @@ interface IBeneficiary {
   district: string;
   email: string;
   phone: string;
+  relationship: string;
 }
 
 interface IInsured {
@@ -348,6 +349,7 @@ const getInsuredBySubscriptionId: any = async (id: string) => {
           district: item.beneficiary_district,
           email: item.beneficiary_email,
           phone: item.beneficiary_phone,
+          relationship: item.beneficiary_relationship,
         });
       }
       previous = item;

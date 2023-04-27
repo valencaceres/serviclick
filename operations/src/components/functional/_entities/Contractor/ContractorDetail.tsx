@@ -73,7 +73,7 @@ const ContractorDetail = ({ contractor }: any) => {
         </ContentCell>
         <ContentCell gap="5px">
           <Section title="Detalle de la suscripción" width="855px" />
-          <ContractorSubscription />
+          <ContractorSubscription contractor={contractor} />
         </ContentCell>
       </ContentCell>
       <LoadingMessage showModal={contractorLoading} />
