@@ -1,11 +1,16 @@
 import { useState, useEffect, Fragment } from "react";
+import { useForm } from "react-hook-form";
 
+import InputText from "../../../ui/InputText/InputText";
+import { PlusIcon } from "lucide-react";
+import { Label } from "~/components/ui/Label";
+import { Button } from "~/components/ui/ButtonC";
+import { Input } from "~/components/ui/Input";
 import {
   ContentCell,
   ContentCellSummary,
   ContentRow,
 } from "../../../layout/Content";
-import InputText from "../../../ui/InputText/InputText";
 import {
   Table,
   TableCell,
@@ -14,12 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from "../../../ui/Table";
-import ButtonIcon from "../../../ui/ButtonIcon/ButtonIcon";
 import ComboBox from "../../../ui/ComboBox";
-
-import { useContractor, useDistrict } from "../../../../hooks";
-import { useRouter } from "next/router";
-import { useQueryClient } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
@@ -29,25 +29,23 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/Dialog";
-import { Button } from "~/components/ui/ButtonC";
-import { PlusIcon } from "lucide-react";
-import { useForm } from "react-hook-form";
+
 import { emailRegEx, numberRegEx, rutRegEx } from "~/utils/regEx";
-import { useQueryLead } from "~/hooks/query";
-import { formatRut, unFormatRut } from "~/utils/format";
 import { rutValidate } from "~/utils/validations";
-import { Label } from "~/components/ui/Label";
-import { Input } from "~/components/ui/Input";
+import { formatRut, unFormatRut } from "~/utils/format";
+
+import { useContractor, useDistrict } from "../../../../hooks";
+import { useQueryLead } from "~/hooks/query";
 
 import { IContractorInsured } from "~/interfaces/contractor";
 
 const ContractorBeneficiaries = ({ contractor }: any) => {
   const { subscriptionItem, getSubscriptionById } = useContractor();
-
+  
   const [rutInsured, setRutInsured] = useState("");
   const [insured, setInsured] = useState<IContractorInsured | undefined>(
     undefined
-  );
+    );
 
   const handleChangeProduct = (e: any) => {
     getSubscriptionById(e.target.value);
@@ -59,8 +57,7 @@ const ContractorBeneficiaries = ({ contractor }: any) => {
         (item: any) => item.rut === e.target.value
       );
       if (!selectedInsured) {
-        setInsured(undefined);
-        return;
+        return setInsured(undefined);
       }
       setInsured(selectedInsured);
       setRutInsured(selectedInsured.rut);
@@ -68,7 +65,14 @@ const ContractorBeneficiaries = ({ contractor }: any) => {
       setInsured(undefined);
       setRutInsured("");
     }
-  }
+  };
+
+  useEffect(() => {
+    setInsured(subscriptionItem.insured[0]);
+    setRutInsured(subscriptionItem.insured[0]?.rut);
+  }, [subscriptionItem]);
+
+  console.log(subscriptionItem)
 
   return (
     <Fragment>
@@ -105,7 +109,6 @@ const ContractorBeneficiaries = ({ contractor }: any) => {
             label="Nombre completo titular"
             width="650px"
             value={insured?.rut || ""}
-            placeHolder="Seleccione un titular"
             onChange={handleChangeInsured}
             data={subscriptionItem.insured.map((item) => ({
               rut: item.rut,
@@ -147,7 +150,7 @@ const ContractorBeneficiaries = ({ contractor }: any) => {
                     " " +
                     item.maternalLastName}
                 </TableCell>
-                <TableCell width="150px">&nbsp;</TableCell>
+                <TableCell width="150px">{item.relationship}</TableCell>
               </TableRow>
             ))}
         </TableDetail>
@@ -315,6 +318,7 @@ const NewBeneficiaryForm = ({ insured }: any) => {
             district,
             email,
             phone,
+            relationship,
           },
         },
         {

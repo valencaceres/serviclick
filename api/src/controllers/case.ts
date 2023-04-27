@@ -16,7 +16,8 @@ import { fetchClerkUser } from "../util/clerkUserData";
 const create = async (req: any, res: any) => {
   const {
     applicant,
-    client,
+    company_id,
+    customer_id,
     isInsured,
     number,
     product_id,
@@ -27,7 +28,7 @@ const create = async (req: any, res: any) => {
     isactive,
   } = req.body;
 
-  if (applicant?.type === "C" && isInsured) {
+  if (applicant?.type === "C" && isInsured === true) {
     const applicantResponse = await Insured.create(
       applicant.rut,
       applicant.name,
@@ -51,7 +52,7 @@ const create = async (req: any, res: any) => {
     applicant.id = applicantResponse.data.id;
   }
 
-  if (applicant?.type === "C" && !isInsured) {
+  if (applicant?.type === "C" && isInsured === false) {
     const applicantResponse = await Beneficiary.createModel(
       applicant.rut,
       applicant.name,
@@ -81,7 +82,9 @@ const create = async (req: any, res: any) => {
     product_id,
     assistance_id,
     isactive,
-    isInsured
+    isInsured,
+    company_id,
+    customer_id,
   );
 
   if (!caseResponse.success) {
@@ -150,8 +153,6 @@ const uploadDocument = async (req: any, res: any) => {
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     const document = document_id[i];
-
-    console.log(file, document);
 
     const result = await uploadFile(file);
 

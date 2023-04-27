@@ -21,7 +21,8 @@ export const _getBeneficiaryData = `
           pra.maximum as assistance_maximum,
           pra.events as assistance_events,
           pra.lack as assistance_lack,
-          lea.id as lead_id
+          lea.id as lead_id,
+          coalesce(lea.customer_id, lea.company_id) as contractor_id
       from app.lead lea
       inner join app.leadinsured lin on lea.id = lin.lead_id 
       inner join app.insured ins on lin.insured_id = ins.id
@@ -32,7 +33,6 @@ export const _getBeneficiaryData = `
       inner join app.family fam on asi.family_id = fam.id
       left outer join app.leadbeneficiary lbe on lea.id = lbe.lead_id and lbe.insured_id = lin.insured_id 
       left outer join app.beneficiary ben on lbe.beneficiary_id = ben.id
-      where not lea.policy_id is not null and (ins.rut = $1 or ben.rut = $1)
+      where lea.policy_id is not null and (ins.rut = $1 or ben.rut = $1)
       order by  pro.name,
-                pra.number
-  `;
+                pra.number`;

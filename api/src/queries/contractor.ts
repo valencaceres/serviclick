@@ -221,7 +221,8 @@ export const _selectInsured = `
                 case when not ben.address is null then ben.address else '' end as beneficiary_address,
                 case when not ben.district is null then ben.district else '' end as beneficiary_district,
                 case when not ben.email is null then ben.email else '' end as beneficiary_email,
-                case when not ben.phone is null then ben.phone else '' end as beneficiary_phone
+                case when not ben.phone is null then ben.phone else '' end as beneficiary_phone,
+                case when not ben.relationship is null then ben.relationship else '' end as beneficiary_relationship
         from	app.lead lea 
                         inner join app.leadproduct lpr on lea.id = lpr.lead_id
                         inner join app.leadinsured lin on lea.id = lin.lead_id

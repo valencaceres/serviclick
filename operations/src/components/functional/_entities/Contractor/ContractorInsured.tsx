@@ -1,4 +1,7 @@
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
+import { PlusIcon } from "lucide-react";
+import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
 
 import {
   ContentCell,
@@ -29,16 +32,13 @@ import {
   DialogTrigger,
 } from "~/components/ui/Dialog";
 import { Button } from "~/components/ui/ButtonC";
-import { PlusIcon } from "lucide-react";
-import { useRouter } from "next/router";
-import { useQueryClient } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
+
 import { Label } from "~/components/ui/Label";
 import { Input } from "~/components/ui/Input";
 import { formatRut, unFormatRut } from "~/utils/format";
 import { emailRegEx, numberRegEx, rutRegEx } from "~/utils/regEx";
 import { rutValidate } from "~/utils/validations";
-import { useQueryLead } from "~/hooks/query";
+import { useQueryContractor, useQueryInsured, useQueryLead } from "~/hooks/query";
 
 const ContractorInsured = ({ contractor }: any) => {
   const { subscriptionItem, getSubscriptionById } = useContractor();
@@ -190,6 +190,8 @@ const NewInsuredForm = () => {
 
   const { mutate: addInsured } = useQueryLead().useAddInsured();
 
+  const { data: person } = useQueryInsured().useGetByRut(rut);
+
   const isValidRut = (rut: string) => {
     if (
       (rutRegEx.test(unFormatRut(rut)) &&
@@ -234,7 +236,7 @@ const NewInsuredForm = () => {
     }
   };
 
-  const send = async (data: any) => {
+  const send = async () => {
     try {
       addInsured(
         {
@@ -262,6 +264,19 @@ const NewInsuredForm = () => {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (person) {
+      setValue("name", person.name);
+      setValue("paternalLastName", person.paternalLastName);
+      setValue("maternalLastName", person.maternalLastName);
+      setValue("birthDate", person.birthDate);
+      setValue("address", person.address);
+      setValue("district", person.district);
+      setValue("email", person.email);
+      setValue("phone", person.phone);
+    }
+  }, [person]);
 
   return (
     <form onSubmit={handleSubmit(send)} className="flex flex-col gap-2 py-2">
