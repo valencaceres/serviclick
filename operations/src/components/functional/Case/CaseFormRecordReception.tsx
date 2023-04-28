@@ -8,7 +8,7 @@ import { LoadingMessage } from "../../ui/LoadingMessage";
 import InputText from "../../ui/InputText";
 import CaseDocumentsTable from "./CaseDocumentsTable";
 
-import { useQueryCase, useQueryStage } from "../../../hooks/query";
+import { useQueryCase, useQueryContractor, useQueryStage } from "../../../hooks/query";
 import { useUser } from "@clerk/nextjs";
 
 const CaseFormRecordReception = ({ thisCase }: any) => {
@@ -27,6 +27,10 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
     useQueryCase().useUploadDocument();
   const { mutate: updateCase } = useQueryCase().useCreate();
 
+  const { data: contractor } = useQueryContractor().useGetById(
+    thisCase?.contractor_id
+  );
+
   const handleSubmit = (e: any) => {
     e.preventDefault();
     const formData = new FormData();
@@ -44,7 +48,7 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
         updateCase(
           {
             applicant: {
-              id: thisCase?.applicant_id,
+              id: thisCase?.insured_id,
             },
             number: thisCase?.case_number,
             product_id: thisCase?.product_id,
@@ -60,7 +64,7 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
               return updateCase(
                 {
                   applicant: {
-                    id: thisCase?.applicant_id,
+                    id: thisCase?.insured_id,
                   },
                   number: thisCase?.case_number,
                   product_id: thisCase?.product_id,
@@ -89,7 +93,7 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
     updateCase(
       {
         applicant: {
-          id: thisCase?.applicant_id,
+          id: thisCase?.insured_id,
         },
         number: thisCase?.case_number,
         product_id: thisCase?.product_id,
@@ -105,11 +109,12 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
           return updateCase(
             {
               applicant: {
-                id: thisCase?.applicant_id,
+                id: thisCase?.insured_id,
               },
               number: thisCase?.case_number,
               product_id: thisCase?.product_id,
               assistance_id: thisCase?.assistance_id,
+              company_id: thisCase?.contractor_id,
               stage_id: stages?.find((s: any) => s?.name === "Seguimiento")?.id,
               user_id: user?.id,
               isactive: true,
@@ -143,7 +148,10 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
         <ContentCell gap="5px">
           <InputText
             label="Cliente"
-            value={"Embotelladora Andina S.A."}
+            value={
+              contractor?.companyName ||
+              contractor?.name + " " + contractor?.paternalLastName
+            }
             type="text"
             disabled={true}
             width="525px"

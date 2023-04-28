@@ -35,17 +35,17 @@ import { rutValidate } from "~/utils/validations";
 import { formatRut, unFormatRut } from "~/utils/format";
 
 import { useContractor, useDistrict } from "../../../../hooks";
-import { useQueryLead } from "~/hooks/query";
+import { useQueryBeneficiary, useQueryLead } from "~/hooks/query";
 
 import { IContractorInsured } from "~/interfaces/contractor";
 
 const ContractorBeneficiaries = ({ contractor }: any) => {
   const { subscriptionItem, getSubscriptionById } = useContractor();
-  
+
   const [rutInsured, setRutInsured] = useState("");
   const [insured, setInsured] = useState<IContractorInsured | undefined>(
     undefined
-    );
+  );
 
   const handleChangeProduct = (e: any) => {
     getSubscriptionById(e.target.value);
@@ -72,7 +72,7 @@ const ContractorBeneficiaries = ({ contractor }: any) => {
     setRutInsured(subscriptionItem.insured[0]?.rut);
   }, [subscriptionItem]);
 
-  console.log(subscriptionItem)
+  console.log(subscriptionItem);
 
   return (
     <Fragment>
@@ -258,6 +258,8 @@ const NewBeneficiaryForm = ({ insured }: any) => {
 
   const { mutate: addBeneficiary } = useQueryLead().useAddBeneficiary();
 
+  const { data: person } = useQueryBeneficiary().useGetByRut(rut);
+
   const isValidRut = (rut: string) => {
     if (
       (rutRegEx.test(unFormatRut(rut)) &&
@@ -332,6 +334,19 @@ const NewBeneficiaryForm = ({ insured }: any) => {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (person) {
+      setValue("name", person.name);
+      setValue("paternalLastName", person.paternalLastName);
+      setValue("maternalLastName", person.maternalLastName);
+      setValue("birthDate", person.birthDate);
+      setValue("address", person.address);
+      setValue("district", person.district);
+      setValue("email", person.email);
+      setValue("phone", person.phone);
+    }
+  }, [person]);
 
   return (
     <form onSubmit={handleSubmit(send)} className="flex flex-col gap-2 py-2">

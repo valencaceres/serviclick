@@ -9,6 +9,7 @@ import ComboBox from "../../ui/ComboBox";
 
 import {
   useQueryCase,
+  useQueryContractor,
   useQuerySpecialist,
   useQueryStage,
 } from "../../../hooks/query";
@@ -42,6 +43,10 @@ const CaseFormReimbursement = ({ thisCase }: any) => {
     thisCase?.case_id,
     thisStage
   );
+  const { data: contractor } = useQueryContractor().useGetById(
+    thisCase?.contractor_id
+  );
+
 
   const handleAssign = (e: any) => {
     e.preventDefault();
@@ -49,12 +54,13 @@ const CaseFormReimbursement = ({ thisCase }: any) => {
       return updateCase(
         {
           applicant: {
-            id: thisCase?.applicant_id,
+            id: thisCase?.insured_id,
           },
           number: thisCase?.case_number,
           product_id: thisCase?.product_id,
           assistance_id: thisCase?.assistance_id,
           stage_id: thisStage,
+          company_id: thisCase?.contractor_id,
           user_id: user?.id,
           isactive: true,
         },
@@ -109,7 +115,7 @@ const CaseFormReimbursement = ({ thisCase }: any) => {
         <ContentCell gap="5px">
           <InputText
             label="Cliente"
-            value={"Embotelladora Andina S.A."}
+            value={contractor?.companyName}
             type="text"
             disabled={true}
             width="525px"

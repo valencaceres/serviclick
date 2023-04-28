@@ -24,11 +24,12 @@ const CaseFormSolution = ({ thisCase }: any) => {
     stages?.find((s: any) => s.name.toLowerCase() === name.toLowerCase());
 
   const updateCaseData = (stageName: string, description?: string) => ({
-    applicant: { id: thisCase?.applicant_id },
+    applicant: { id: thisCase?.insured_id },
     number: thisCase?.case_number,
     product_id: thisCase?.product_id,
     assistance_id: thisCase?.assistance_id,
     stage_id: findStageByName(stageName)?.id || "",
+    company_id: thisCase?.contractor_id,
     user_id: user?.id,
     description,
     isactive: true,

@@ -1,6 +1,23 @@
 export interface IData {
+  customer_id: string;
+  company_id: string;
+  insured: IInsured;
   beneficiary: IBeneficiary;
   products: IProduct[];
+}
+
+interface IInsured {
+  type: string;
+  id: string;
+  rut: string;
+  name: string;
+  paternallastname: string;
+  maternallastname: string;
+  address: string;
+  district: string;
+  email: string;
+  phone: string;
+  birthdate: string;
 }
 
 interface IBeneficiary {

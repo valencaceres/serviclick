@@ -1,38 +1,51 @@
 export const _getBeneficiaryData = `
-      select case when ins.rut = $1 then 'I' else 'B' end as type,
-          case when ins.rut = $1 then ins.id else ben.id end as id,
-          case when ins.rut = $1 then ins.rut else ben.rut end as rut,
-          case when ins.rut = $1 then ins.name else ben.name end as name,
-          case when ins.rut = $1 then ins.paternallastname else ben.paternallastname end as paternallastname,
-          case when ins.rut = $1 then ins.maternallastname  else ben.maternallastname  end as maternallastname,
-          case when ins.rut = $1 then ins.address  else ben.address end as address,
-          case when ins.rut = $1 then ins.district  else ben.district end as district,
-          case when ins.rut = $1 then ins.email else ben.email end as email,
-          case when ins.rut = $1 then ins.phone  else ben.phone  end as phone,
-          case when ins.rut = $1 then ins.birthdate  else ben.birthdate  end as birthdate,
-          pro.id as product_id,
-          pro.name as product_name,
-          asi.name as assistance_name,
-          asi.id as assistance_id,
-          fam.id as family_id,
-          pra.number as assistance_number,
-          pra.amount as assistance_amount,
-          pra.currency as assistance_currency,
-          pra.maximum as assistance_maximum,
-          pra.events as assistance_events,
-          pra.lack as assistance_lack,
-          lea.id as lead_id,
-          coalesce(lea.customer_id, lea.company_id) as contractor_id
-      from app.lead lea
-      inner join app.leadinsured lin on lea.id = lin.lead_id 
-      inner join app.insured ins on lin.insured_id = ins.id
-      inner join app.leadproduct lpr on lea.id = lpr.lead_id
-      inner join app.product pro on lpr.product_id = pro.id
-      inner join app.productassistance pra on pro.id = pra.product_id
-      inner join app.assistance asi on pra.assistance_id = asi.id
-      inner join app.family fam on asi.family_id = fam.id
-      left outer join app.leadbeneficiary lbe on lea.id = lbe.lead_id and lbe.insured_id = lin.insured_id 
-      left outer join app.beneficiary ben on lbe.beneficiary_id = ben.id
-      where lea.policy_id is not null and (ins.rut = $1 or ben.rut = $1)
-      order by  pro.name,
-                pra.number`;
+                    SELECT ins.id AS insured_id,
+                    ins.rut AS insured_rut,
+                    ins.name AS insured_name,
+                    ins.paternallastname AS insured_paternallastname,
+                    ins.maternallastname AS insured_maternallastname,
+                    ins.address AS insured_address,
+                    ins.district AS insured_district,
+                    ins.email AS insured_email,
+                    ins.phone AS insured_phone,
+                    ins.birthdate AS insured_birthdate,
+                    ben.id AS beneficiary_id,
+                    ben.rut AS beneficiary_rut,
+                    ben.name AS beneficiary_name,
+                    ben.paternallastname AS beneficiary_paternallastname,
+                    ben.maternallastname AS beneficiary_maternallastname,
+                    ben.address AS beneficiary_address,
+                    ben.district AS beneficiary_district,
+                    ben.email AS beneficiary_email,
+                    ben.phone AS beneficiary_phone,
+                    ben.birthdate AS beneficiary_birthdate,
+                    pro.id AS product_id,
+                    pro.name AS product_name,
+                    asi.name AS assistance_name,
+                    asi.id AS assistance_id,
+                    fam.id AS family_id,
+                    pra.number AS assistance_number,
+                    pra.amount AS assistance_amount,
+                    pra.currency AS assistance_currency,
+                    pra.maximum AS assistance_maximum,
+                    pra.events AS assistance_events,
+                    pra.lack AS assistance_lack,
+                    lea.id AS lead_id,
+                    lin.insured_id,
+                    lea.customer_id,
+                    lea.company_id,
+                    COALESCE(lea.customer_id, lea.company_id) AS contractor_id
+                    FROM app.lead lea
+                    INNER JOIN app.leadinsured lin ON lea.id = lin.lead_id 
+                    INNER JOIN app.insured ins ON lin.insured_id = ins.id
+                    INNER JOIN app.leadproduct lpr ON lea.id = lpr.lead_id
+                    INNER JOIN app.product pro ON lpr.product_id = pro.id
+                    INNER JOIN app.productassistance pra ON pro.id = pra.product_id
+                    INNER JOIN app.assistance asi ON pra.assistance_id = asi.id
+                    INNER JOIN app.family fam ON asi.family_id = fam.id
+                    LEFT OUTER JOIN app.leadbeneficiary lbe ON lea.id = lbe.lead_id AND lbe.insured_id = lin.insured_id 
+                    LEFT OUTER JOIN app.beneficiary ben ON lbe.beneficiary_id = ben.id
+                    WHERE lea.policy_id IS NOT NULL AND (ins.rut = $1 OR ben.rut = $1)
+                    ORDER BY pro.name,
+                    pra.number
+                    `;

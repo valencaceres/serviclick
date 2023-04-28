@@ -128,11 +128,11 @@ model casemodel {
   createddate      DateTime           @default(now()) @db.Timestamp(6)
   type             String             @db.VarChar(1)
   number           Int                @default(autoincrement())
-  applicant_id     String?            @db.Uuid
+  insured_id     String?            @db.Uuid
   product_id       String?            @db.Uuid
   assistance_id    String?            @db.Uuid
   isactive         Boolean            @default(true)
-  applicant        insured?           @relation(fields: [applicant_id], references: [id])
+  applicant        insured?           @relation(fields: [insured_id], references: [id])
   assistance       assistance?        @relation(fields: [assistance_id], references: [id])
   product          product?           @relation(fields: [product_id], references: [id])
   casechat         casechat[]

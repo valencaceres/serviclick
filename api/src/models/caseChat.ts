@@ -36,7 +36,7 @@ const getByCase: any = async (case_id: string) => {
         i.paternallastname AS applicant_lastname
       FROM app.casechat AS cc
       INNER JOIN app.case AS c ON c.id = cc.case_id
-      INNER JOIN app.insured AS i ON i.id = c.applicant_id
+      INNER JOIN app.insured AS i ON i.id = c.insured_id
       WHERE cc.case_id = $1`,
       [case_id]
     );

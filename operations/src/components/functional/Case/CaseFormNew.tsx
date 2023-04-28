@@ -31,6 +31,18 @@ import { useForm } from "react-hook-form";
 import { Input } from "~/components/ui/Input";
 import { getDateTime } from "~/utils/dateAndTime";
 
+interface IInitialValues {
+  rut: string;
+  birthdate: string;
+  name: string;
+  paternalLastName: string;
+  maternalLastName: string;
+  address: string;
+  district: string;
+  email: string;
+  phone: string;
+}
+
 const CaseFormNew = ({ thisCase }: any) => {
   return (
     <div>
@@ -93,7 +105,6 @@ const BeneficiaryForm = ({ thisCase }: any) => {
 
   const { data, isLoading } = useQueryCase().useGetBeneficiaryByRut(rut);
 
-  console.log(data);
   const isValidRut = (rut: string) => {
     if (
       (rutRegEx.test(unFormatRut(rut)) &&
@@ -142,8 +153,8 @@ const BeneficiaryForm = ({ thisCase }: any) => {
     createCase(
       {
         applicant: {
-          type: isNewBeneficiary ? "C" : data?.beneficiary.type,
-          id: isNewBeneficiary ? null : data?.beneficiary.id,
+          type: isNewBeneficiary ? "C" : isInsured === "isInsured" ? "I" : "B",
+          id: isNewBeneficiary ? null : isInsured === "isInsured" ? data?.insured.id : null,
           rut,
           name,
           paternalLastName,
@@ -154,8 +165,10 @@ const BeneficiaryForm = ({ thisCase }: any) => {
           email,
           phone,
         },
-        company_id: client,
+        company_id: client !== "" ? client : null,
+        customer_id: data?.customer_id,
         isInsured: isInsured === "isInsured",
+        beneficiary_id: isNewBeneficiary ? null : isInsured === "isInsured" ? null : data?.beneficiary.id,
         number: thisCase !== null ? thisCase?.case_number : newCaseNumber,
         stage_id: stage,
         user_id: user?.id,
@@ -173,36 +186,74 @@ const BeneficiaryForm = ({ thisCase }: any) => {
   };
 
   const setInitialValues = (newData: any, isThisCase: any) => {
-    const initialValues = isThisCase
-      ? {
-          rut: newData.rut,
-          birthdate: newData.birthdate?.split("T")[0],
-          name: newData.applicant_name,
-          paternalLastName: newData.applicant_lastname,
-          maternalLastName: newData.applicant_maternallastname,
-          address: newData.applicant_address,
-          district: newData.applicant_district,
-          email: newData.applicant_email,
-          phone: newData.applicant_phone,
-        }
-      : {
-          rut: newData?.rut,
-          birthdate: new Date(newData.birthdate).toISOString().split("T")[0],
-          name: newData.name,
-          paternalLastName: newData.paternallastname,
-          maternalLastName: newData.maternallastname,
-          address: newData.address,
-          district: newData.district,
-          email: newData.email,
-          phone: newData.phone,
+    let initialValues: IInitialValues = {
+      rut: rut,
+      birthdate: "",
+      name: "",
+      paternalLastName: "",
+      maternalLastName: "",
+      address: "",
+      district: "",
+      email: "",
+      phone: "",
+    };
+
+    if (isThisCase) {
+      initialValues = {
+        rut: newData.rut,
+        birthdate: newData.birthdate?.split("T")[0],
+        name: newData.applicant_name,
+        paternalLastName: newData.applicant_lastname,
+        maternalLastName: newData.applicant_maternallastname,
+        address: newData.applicant_address,
+        district: newData.applicant_district,
+        email: newData.applicant_email,
+        phone: newData.applicant_phone,
+      };
+    } else {
+      if (rut === newData.insured?.rut) {
+        setIsInsured("isInsured");
+        initialValues = {
+          rut: newData.insured?.rut,
+          birthdate: new Date(newData.insured?.birthdate)
+            .toISOString()
+            .split("T")[0],
+          name: newData.insured?.name,
+          paternalLastName: newData.insured?.paternallastname,
+          maternalLastName: newData.insured?.maternallastname,
+          address: newData.insured?.address,
+          district: newData.insured?.district,
+          email: newData.insured?.email,
+          phone: newData.insured?.phone,
         };
+      } else if (rut === newData.beneficiary?.rut) {
+        setIsInsured("isBeneficiary");
+        initialValues = {
+          rut: newData.beneficiary?.rut,
+          birthdate: new Date(newData.beneficiary?.birthdate)
+            .toISOString()
+            .split("T")[0],
+          name: newData.beneficiary?.name,
+          paternalLastName: newData.beneficiary?.paternallastname,
+          maternalLastName: newData.beneficiary?.maternallastname,
+          address: newData.beneficiary?.address,
+          district: newData.beneficiary?.district,
+          email: newData.beneficiary?.email,
+          phone: newData.beneficiary?.phone,
+        };
+      }
+    }
 
     Object.entries(initialValues).forEach(([key, value]) =>
-      setValue(key as keyof typeof initialValues, value)
+      setValue(
+        key as keyof IInitialValues,
+        value as IInitialValues[keyof IInitialValues]
+      )
     );
 
     setClient(newData.contractor_id);
   };
+
 
   useEffect(() => {
     setDateTime(getDateTime());
@@ -213,32 +264,28 @@ const BeneficiaryForm = ({ thisCase }: any) => {
     }
   }, [router]);
 
-  console.log(thisCase);
-
   useEffect(() => {
     prevDataRef.current = data;
 
     if (thisCase) {
-      if (thisCase) {
-        if (thisCase?.type === "C") {
-          setIsNewBeneficiary(true);
-        } else {
-          setIsNewBeneficiary(false);
-        }
-        if (thisCase?.applicant_id) {
-          setIsInsured("isInsured");
-        } else {
-          setIsInsured("isBeneficiary");
-        }
-        setInitialValues(thisCase, true);
+      if (thisCase?.type === "C") {
+        setIsNewBeneficiary(true);
+      } else {
+        setIsNewBeneficiary(false);
       }
+      if (thisCase?.insured_id && !thisCase?.beneficiary_id) {
+        setIsInsured("isInsured");
+      } else {
+        setIsInsured("isBeneficiary");
+      }
+      setInitialValues(thisCase, true);
     } else {
-      if (data?.beneficiary) {
+      if (data) {
         setPrevRut(rut);
-        setInitialValues(data.beneficiary, false);
+        setInitialValues(data, false);
         setIsNewBeneficiary(false);
       } else if (
-        !data?.beneficiary &&
+        !data &&
         rut?.length >= 10 &&
         (prevDataRef.current !== data || rut !== prevRut)
       ) {
@@ -593,7 +640,11 @@ const BeneficiaryForm = ({ thisCase }: any) => {
               </RadioGroup>
               {isInsured === "isInsured" && (
                 <>
-                  <ClientSelect value={client} setValue={setClient} thisCase={thisCase} />
+                  <ClientSelect
+                    value={client}
+                    setValue={setClient}
+                    thisCase={thisCase}
+                  />
                   {client && <Button className="mt-4 w-full">Continuar</Button>}
                 </>
               )}
@@ -617,7 +668,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
 const ClientSelect = ({
   value,
   setValue,
-  thisCase
+  thisCase,
 }: {
   value: string;
   setValue: React.Dispatch<React.SetStateAction<string>>;
@@ -629,7 +680,12 @@ const ClientSelect = ({
   });
 
   return (
-    <Select value={value} onValueChange={setValue} defaultValue="" disabled={thisCase}>
+    <Select
+      value={value}
+      onValueChange={setValue}
+      defaultValue=""
+      disabled={thisCase}
+    >
       <SelectTrigger>
         <SelectValue placeholder="Seleccione un cliente" />
       </SelectTrigger>

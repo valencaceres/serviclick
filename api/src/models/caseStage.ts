@@ -52,39 +52,39 @@ const getById = async (id: string) => {
               AST.name AS assistance, 
               AST.id AS assistance_id,
               CST.description, 
-              CAS.applicant_id,
+              CAS.insured_id,
               CAS.beneficiary_id,
               CAS.isactive,
               CAS.type,
               FAM.id AS family_id,
               CST.user_id,
               COALESCE(CAS.customer_id, CAS.company_id) AS contractor_id,
-              CASE WHEN INS.name IS NOT NULL THEN INS.name
-              WHEN BEN.name IS NOT NULL THEN BEN.name
+              CASE WHEN BEN.name IS NOT NULL THEN BEN.name
+              WHEN INS.name IS NOT NULL THEN INS.name
               ELSE PER.name END AS applicant_name,
-              CASE WHEN INS.paternallastname IS NOT NULL THEN INS.paternallastname
-              WHEN BEN.paternallastname IS NOT NULL THEN BEN.paternallastname
+              CASE WHEN BEN.paternallastname IS NOT NULL THEN BEN.paternallastname
+              WHEN INS.paternallastname IS NOT NULL THEN INS.paternallastname
               ELSE PER.paternallastname END AS applicant_lastname,
-              CASE WHEN INS.maternallastname IS NOT NULL THEN INS.maternallastname
-              WHEN BEN.maternallastname IS NOT NULL THEN BEN.maternallastname
+              CASE WHEN BEN.maternallastname IS NOT NULL THEN BEN.maternallastname
+              WHEN INS.maternallastname IS NOT NULL THEN INS.maternallastname
               ELSE PER.maternallastname END AS applicant_maternallastname,
-              CASE WHEN INS.rut IS NOT NULL THEN INS.rut
-              WHEN BEN.rut IS NOT NULL THEN BEN.rut
+              CASE WHEN BEN.rut IS NOT NULL THEN BEN.rut
+              WHEN INS.rut IS NOT NULL THEN INS.rut
               ELSE PER.rut END AS rut,
-              CASE WHEN INS.birthdate IS NOT NULL THEN INS.birthdate
-              WHEN BEN.birthdate IS NOT NULL THEN BEN.birthdate
+              CASE WHEN BEN.birthdate IS NOT NULL THEN BEN.birthdate
+              WHEN INS.birthdate IS NOT NULL THEN INS.birthdate
               ELSE PER.birthdate END AS applicant_birthdate,
-              CASE WHEN INS.address IS NOT NULL THEN INS.address
-              WHEN BEN.address IS NOT NULL THEN BEN.address
+              CASE WHEN BEN.address IS NOT NULL THEN BEN.address
+              WHEN INS.address IS NOT NULL THEN INS.address
               ELSE PER.address END AS address,
-              CASE WHEN INS.phone IS NOT NULL THEN INS.phone
-              WHEN BEN.phone IS NOT NULL THEN BEN.phone
+              CASE WHEN BEN.phone IS NOT NULL THEN BEN.phone
+              WHEN INS.phone IS NOT NULL THEN INS.phone
               ELSE PER.phone END AS phone,
-              CASE WHEN INS.email IS NOT NULL THEN INS.email
-              WHEN BEN.email IS NOT NULL THEN BEN.email
+              CASE WHEN BEN.email IS NOT NULL THEN BEN.email
+              WHEN INS.email IS NOT NULL THEN INS.email
               ELSE PER.email END AS email,
-              CASE WHEN INS.district IS NOT NULL THEN INS.district
-              WHEN BEN.district IS NOT NULL THEN BEN.district
+              CASE WHEN BEN.district IS NOT NULL THEN BEN.district
+              WHEN INS.district IS NOT NULL THEN INS.district
               ELSE PER.district END AS district
       FROM app.casestage CST
       INNER JOIN app.stage STA ON CST.stage_id = STA.id
@@ -93,8 +93,8 @@ const getById = async (id: string) => {
       LEFT OUTER JOIN app.assistance AST ON CAS.assistance_id = AST.id
       LEFT OUTER JOIN app.family FAM ON AST.family_id = FAM.id
       LEFT OUTER JOIN app.beneficiary BEN ON CAS.beneficiary_id = BEN.id
-      LEFT OUTER JOIN app.insured INS ON CAS.applicant_id = INS.id
-      LEFT OUTER JOIN app.person PER ON CAS.applicant_id = PER.id
+      LEFT OUTER JOIN app.insured INS ON CAS.insured_id = INS.id
+      LEFT OUTER JOIN app.person PER ON CAS.insured_id = PER.id
       WHERE case_id = $1
       ORDER BY CST.createddate DESC`,
       [id]
@@ -111,7 +111,7 @@ const getById = async (id: string) => {
       rut: result.rows[0].rut,
       description: result.rows[0].description,
       birthdate: result.rows[0].applicant_birthdate,
-      applicant_id: result.rows[0].applicant_id,
+      insured_id: result.rows[0].insured_id,
       applicant_name: result.rows[0].applicant_name,
       applicant_lastname: result.rows[0].applicant_lastname,
       applicant_maternallastname: result.rows[0].applicant_maternallastname,
