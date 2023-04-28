@@ -10,8 +10,14 @@ import InputText from "../../ui/InputText";
 import TextArea from "../../ui/TextArea/TextArea";
 import CaseServiceTable from "./CaseServiceTable";
 
-import { useQueryCase, useQueryStage, useQueryUF } from "../../../hooks/query";
+import {
+  useQueryCase,
+  useQueryContractor,
+  useQueryStage,
+  useQueryUF,
+} from "../../../hooks/query";
 import { useUser } from "@clerk/nextjs";
+import Link from "next/link";
 interface IAssistance {
   id: string;
   name: string;
@@ -47,12 +53,17 @@ const CaseFormService = ({ thisCase }: any) => {
   const { mutate: updateCase } = useQueryCase().useCreate();
 
   const { data: assistanceData } = useQueryCase().useGetAssistanceData(
-    thisCase?.applicant_id,
+    thisCase?.insured_id,
     selectedAssistance?.id as string,
     selectedProduct?.id as string
   );
 
   const { data } = useQueryCase().useGetBeneficiaryByRut(thisCase?.rut);
+  const { data: contractor } = useQueryContractor().useGetById(
+    thisCase?.contractor_id
+  );
+
+  console.log(contractor);
 
   useEffect(() => {
     const assistancesMap = new Map(
@@ -130,11 +141,13 @@ const CaseFormService = ({ thisCase }: any) => {
       return updateCase(
         {
           applicant: {
-            id: thisCase?.applicant_id,
+            id: thisCase?.insured_id ? thisCase?.insured_id : thisCase?.beneficiary_id,
           },
           number: thisCase?.case_number,
           product_id: selectedProduct?.id,
           assistance_id: selectedAssistance?.id,
+          beneficiary_id: thisCase?.beneficiary_id,
+          company_id: thisCase?.contractor_id,
           stage_id: stage,
           user_id: user?.id,
           description,
@@ -165,10 +178,21 @@ const CaseFormService = ({ thisCase }: any) => {
     }
   }, [thisCase]);
 
+  console.log(contractor)
+
   return (
     <div>
       <ContentCell gap="20px">
         <ContentCell gap="5px">
+          {thisCase?.contractor_id && (
+            <Link href={`/entities/contractor/${contractor?.id}`}>
+              <InputText
+                label="Cliente"
+                value={contractor?.companyName || (contractor?.name + " " + contractor?.paternalLastName)}
+                disabled
+              />
+            </Link>
+          )}
           <ComboBox
             label="Servicio"
             placeHolder="Seleccione servicio"

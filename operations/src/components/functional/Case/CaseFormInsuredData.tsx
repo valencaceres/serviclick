@@ -25,10 +25,12 @@ import {
   useQueryCase,
   useQueryStage,
   useQueryContractor,
+  useQueryInsured,
 } from "../../../hooks/query";
 import { useForm } from "react-hook-form";
 import { Input } from "~/components/ui/Input";
 import { getDateTime } from "~/utils/dateAndTime";
+import { useQueryClient } from "@tanstack/react-query";
 
 const CaseFormInsuredData = ({ thisCase }: any) => {
   return (
@@ -42,6 +44,8 @@ export default CaseFormInsuredData;
 
 const BeneficiaryForm = ({ thisCase }: any) => {
   const router = useRouter();
+
+  const queryClient = useQueryClient();
 
   const {
     reset,
@@ -83,14 +87,20 @@ const BeneficiaryForm = ({ thisCase }: any) => {
   const [isInsured, setIsInsured] = useState<string>("isInsured");
   const [client, setClient] = useState<string>("");
   const [prevRut, setPrevRut] = useState<string>("");
+
   const prevDataRef = useRef();
 
   const { user } = useUser();
-  const { data: stageData } = useQueryStage().useGetAll();
-  const { mutate: createCase } = useQueryCase().useCreate();
+  const { data: stages } = useQueryStage().useGetAll();
+  const { mutate: updateCase } = useQueryCase().useCreate();
   const { data: newCaseNumber } = useQueryCase().useGetNewCaseNumber();
 
-  const { data, isLoading } = useQueryCase().useGetBeneficiaryByRut(rut);
+  const { data: insured, isLoading } = useQueryInsured().useGetById(
+    thisCase?.insured_id
+  );
+
+  const { data: insuredByRut, isLoading: isLoadingRut } =
+    useQueryInsured().useGetByRut(rut);
 
   const isValidRut = (rut: string) => {
     if (
@@ -137,11 +147,11 @@ const BeneficiaryForm = ({ thisCase }: any) => {
   };
 
   const send = async () => {
-    createCase(
+    updateCase(
       {
         applicant: {
-          type: isNewBeneficiary ? "C" : data?.beneficiary.type,
-          id: isNewBeneficiary ? null : data?.beneficiary.id,
+          type: "C",
+          id: isNewBeneficiary ? null : insured?.id,
           rut,
           name,
           paternalLastName,
@@ -152,54 +162,73 @@ const BeneficiaryForm = ({ thisCase }: any) => {
           email,
           phone,
         },
-        client: client,
+        company_id: client !== "" ? client : null,
         isInsured: isInsured === "isInsured",
+        beneficiary_id: thisCase?.beneficiary_id,
         number: thisCase !== null ? thisCase?.case_number : newCaseNumber,
         stage_id: stage,
         user_id: user?.id,
       },
       {
         onSuccess: (response) => {
-          const route =
-            isInsured === "isBeneficiary"
-              ? `/case/${response.data.id}/datos titular`
-              : `/case/${response.data.id}/registro de servicio`;
-          router.push(route);
+          router.push(`/case/${response.data.id}/registro de servicio`);
+          queryClient.invalidateQueries(["case", thisCase?.case_id]);
         },
       }
     );
   };
 
-  const setInitialValues = (newData: any, isThisCase: any) => {
-    const initialValues = isThisCase
-      ? {
-          rut: newData.rut,
-          birthdate: newData.birthdate?.split("T")[0],
-          name: newData.applicant_name,
-          paternalLastName: newData.applicant_lastname,
-          maternalLastName: newData.applicant_maternallastname,
-          address: newData.applicant_address,
-          district: newData.applicant_district,
-          email: newData.applicant_email,
-          phone: newData.applicant_phone,
-        }
-      : {
-          rut: newData?.rut,
-          birthdate: new Date(newData.birthdate).toISOString().split("T")[0],
-          name: newData.name,
-          paternalLastName: newData.paternallastname,
-          maternalLastName: newData.maternallastname,
-          address: newData.address,
-          district: newData.district,
-          email: newData.email,
-          phone: newData.phone,
-        };
+  const skip = (e: any) => {
+    e.preventDefault();
+    updateCase(
+      {
+        applicant: {
+          type: "C",
+          id: thisCase?.insured_id,
+        },
+        number: thisCase?.case_number,
+        company_id: client !== "" ? client : null,
+        product_id: thisCase?.product_id,
+        assistance_id: thisCase?.assistance_id,
+        stage_id: stage,
+        user_id: user?.id,
+        isactive: true,
+      },
+      {
+        onSuccess: () => {
+          router.push(`/case/${thisCase?.case_id}/registro de servicio`);
+          queryClient.invalidateQueries(["case", thisCase?.case_id]);
+        },
+      }
+    );
+  };
+
+  const setInitialValues = (newData: any) => {
+    const formatDate = (dateString: string) => {
+      const date = new Date(dateString);
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+        2,
+        "0"
+      )}-${String(date.getDate()).padStart(2, "0")}`;
+    };
+
+    const initialValues = {
+      rut: newData?.rut,
+      birthdate: formatDate(newData?.birthDate),
+      name: newData?.name,
+      paternalLastName: newData?.paternalLastName,
+      maternalLastName: newData?.maternalLastName,
+      address: newData?.address,
+      district: newData?.district,
+      email: newData?.email,
+      phone: newData?.phone,
+    };
 
     Object.entries(initialValues).forEach(([key, value]) =>
       setValue(key as keyof typeof initialValues, value)
     );
 
-    setIsNewBeneficiary(isThisCase);
+    setClient(thisCase?.contractor_id);
   };
 
   useEffect(() => {
@@ -211,58 +240,58 @@ const BeneficiaryForm = ({ thisCase }: any) => {
     }
   }, [router]);
 
-  useEffect(() => {
-    prevDataRef.current = data;
-
-    if (thisCase) {
-      setInitialValues(thisCase, true);
-      if (thisCase?.beneficiary_id) {
-        setIsInsured("isBeneficiary");
-      }
-    } else if (data?.beneficiary) {
-      setPrevRut(rut);
-      setInitialValues(data.beneficiary, false);
-    } else if (
-      !data?.beneficiary &&
-      rut?.length === 12 &&
-      (prevDataRef.current !== data || rut !== prevRut)
-    ) {
-      setIsNewBeneficiary(true);
-      setPrevRut(rut);
-      reset({
-        birthdate: "",
-        name: "",
-        paternalLastName: "",
-        maternalLastName: "",
-        address: "",
-        district: "",
-        email: "",
-        phone: "",
-      });
-    }
-  }, [data, thisCase]);
+  const resetForm = () => {
+    reset({
+      birthdate: "",
+      name: "",
+      paternalLastName: "",
+      maternalLastName: "",
+      address: "",
+      district: "",
+      email: "",
+      phone: "",
+    });
+  };
 
   useEffect(() => {
-    if (thisCase) {
-      const stageName = thisCase?.stages?.find(
-        (s: any) => s.stage === "Contención"
-      )
-        ? "Contención"
-        : "Apertura";
-      const stageId = stageData?.find((s: any) => s.name === stageName)?.id;
-      setStage(stageId || "");
-    } else {
-      if (isNewBeneficiary) {
-        const stageId = stageData?.find(
-          (s: any) => s.name === "Contención"
-        )?.id;
-        setStage(stageId || "");
-      } else if (data?.beneficiary) {
-        const stageId = stageData?.find((s: any) => s.name === "Apertura")?.id;
-        setStage(stageId || "");
+    if (thisCase?.insured_id) {
+      if (insured) {
+        setIsNewBeneficiary(false);
+        setInitialValues(insured);
       }
     }
-  }, [stageData, thisCase, data, isNewBeneficiary]);
+  }, [insured, thisCase]);
+
+  // Update the form state when there is no insured_id and insuredByRut changes
+  useEffect(() => {
+    if (!thisCase?.insured_id) {
+      if (insuredByRut && rut?.length >= 10) {
+        prevDataRef.current = insuredByRut;
+        setPrevRut(rut);
+        setIsNewBeneficiary(false);
+        setInitialValues(insuredByRut);
+      }
+    }
+  }, [insuredByRut, isLoadingRut, thisCase]);
+
+  // Update the form state when there is no insured_id and rut changes
+  useEffect(() => {
+    if (!thisCase?.insured_id) {
+      if (!insuredByRut && rut?.length >= 10 && rut !== prevRut) {
+        setPrevRut(rut);
+        setIsNewBeneficiary(true);
+        resetForm();
+      }
+    }
+  }, [rut, thisCase]);
+
+  useEffect(() => {
+    if (stages) {
+      setStage(
+        stages.find((s: any) => s.name.toLowerCase() === router.query.stage)?.id
+      );
+    }
+  }, [stages, stage]);
 
   return (
     <div>
@@ -287,6 +316,14 @@ const BeneficiaryForm = ({ thisCase }: any) => {
             width="260px"
           />
         </ContentRow>
+        {isNewBeneficiary ? (
+          <ContentCell gap="2px">
+            <h2 className="font-semibold text-red-500">Contención</h2>
+            <p className="text-sm text-secondary-500">
+              El titular no existe, por favor ingrese los datos
+            </p>
+          </ContentCell>
+        ) : null}
         <form onSubmit={handleSubmit(send)}>
           <ContentCell gap="5px">
             <div className="flex gap-2">
@@ -530,17 +567,12 @@ const BeneficiaryForm = ({ thisCase }: any) => {
             </div>
           </ContentCell>
           <div className="mt-4">
-            <ClientSelect value={client} setValue={setClient} />
+            <ClientSelect value={client} setValue={setClient} thisCase={thisCase} />
             <div className="mt-6 flex gap-2">
               <Button className="w-full" disabled={isSubmitting}>
                 {isSubmitting ? "Enviando..." : "Continuar"}
               </Button>
-              <Button
-                className="w-full"
-                onClick={() => {
-                  return null;
-                }}
-              >
+              <Button className="w-full" onClick={skip}>
                 Omitir
               </Button>
             </div>
@@ -555,21 +587,28 @@ const BeneficiaryForm = ({ thisCase }: any) => {
 const ClientSelect = ({
   value,
   setValue,
+  thisCase,
 }: {
   value: string;
   setValue: React.Dispatch<React.SetStateAction<string>>;
+  thisCase: any;
 }) => {
   const { data } = useQueryContractor().useGetAll({
-    contractorType: "P",
+    contractorType: "C",
     active: true,
   });
 
   return (
-    <Select value={value} onValueChange={setValue} defaultValue="">
+    <Select
+      value={value}
+      onValueChange={setValue}
+      defaultValue=""
+      disabled={thisCase?.contractor_id}
+    >
       <SelectTrigger>
         <SelectValue placeholder="Seleccione un cliente" />
       </SelectTrigger>
-      <SelectContent className="h-64 bg-white">
+      <SelectContent className="max-h-64 bg-white">
         <SelectGroup>
           <SelectItem value="" className="text-gray-500">
             Seleccione un cliente

@@ -6,7 +6,7 @@ import ComboBox from "../../ui/ComboBox";
 import TextArea from "../../ui/TextArea/TextArea";
 import Button from "../../ui/Button";
 
-import { useQueryCase, useQueryStage, useQueryUF } from "../../../hooks/query";
+import { useQueryCase, useQueryContractor, useQueryStage, useQueryUF } from "../../../hooks/query";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useUser } from "@clerk/nextjs";
@@ -33,6 +33,9 @@ const CaseFormResolution = ({ thisCase }: any) => {
     thisCase?.case_id,
     stages?.find((s: any) => s?.name === "Designación de especialista")?.id
   );
+  const { data: contractor } = useQueryContractor().useGetById(
+    thisCase?.contractor_id
+  );
 
   const { mutate: updateCase } = useQueryCase().useCreate();
 
@@ -41,11 +44,12 @@ const CaseFormResolution = ({ thisCase }: any) => {
     return updateCase(
       {
         applicant: {
-          id: thisCase?.applicant_id,
+          id: thisCase?.insured_id,
         },
         number: thisCase?.case_number,
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
+        company_id: thisCase?.contractor_id,
         stage_id: stages.find((s: any) => s?.name === "Calificación")?.id,
         user_id: user?.id,
         description: comment,
@@ -56,7 +60,7 @@ const CaseFormResolution = ({ thisCase }: any) => {
           return updateCase(
             {
               applicant: {
-                id: thisCase?.applicant_id,
+                id: thisCase?.insured_id,
               },
               number: thisCase?.case_number,
               product_id: thisCase?.product_id,
@@ -82,7 +86,7 @@ const CaseFormResolution = ({ thisCase }: any) => {
     return updateCase(
       {
         applicant: {
-          id: thisCase?.applicant_id,
+          id: thisCase?.insured_id,
         },
         number: thisCase?.case_number,
         product_id: thisCase?.product_id,
@@ -124,7 +128,7 @@ const CaseFormResolution = ({ thisCase }: any) => {
         <ContentCell gap="5px">
           <InputText
             label="Cliente"
-            value={"Embotelladora Andina S.A."}
+            value={contractor?.companyName}
             type="text"
             disabled={true}
             width="525px"

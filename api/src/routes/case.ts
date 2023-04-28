@@ -58,7 +58,7 @@ CaseRouter.get(
 );
 CaseRouter.post("/reimburse", auth, reimburse);
 CaseRouter.get(
-  "/getAssistanceData/:applicant_id/:assistance_id/:product_id",
+  "/getAssistanceData/:insured_id/:assistance_id/:product_id",
   auth,
   getAssistanceData
 );

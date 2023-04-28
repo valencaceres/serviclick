@@ -12,13 +12,27 @@ const useGetByRut = (rut: string) => {
     ["insured", rut],
     () => getByRut(rut), {
       enabled: rut?.length >= 10,
+      retry: false,
+    }
+  );
+}
 
+const getById = async (id: string) => {
+  const { data } = await apiInstance.get(`/insured/getById/${id}`);
+  return data;
+}
+
+const useGetById = (id: string) => {
+  return useQuery(
+    ["insured", id],
+    () => getById(id), {
+      enabled: !!id,
     }
   );
 }
 
 const useQueryInsured = () => {
-  return { useGetByRut };
+  return { useGetByRut, useGetById };
 }
 
 export default useQueryInsured;

@@ -6,7 +6,11 @@ import { ContentCell, ContentRow } from "../../layout/Content";
 import Button from "../../ui/Button";
 import InputText from "../../ui/InputText";
 
-import { useQueryCase, useQueryStage } from "../../../hooks/query";
+import {
+  useQueryCase,
+  useQueryContractor,
+  useQueryStage,
+} from "../../../hooks/query";
 import TextArea from "../../ui/TextArea/TextArea";
 import ComboBox from "../../ui/ComboBox";
 import { decisions } from "../../../data/masters";
@@ -20,6 +24,10 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
   const [justification, setJustification] = useState<string>("");
   const [evaluation, setEvaluation] = useState<string>("");
 
+  const { data: contractor } = useQueryContractor().useGetById(
+    thisCase?.contractor_id
+  );
+
   const { user } = useUser();
   const { data: stages } = useQueryStage().useGetAll();
   const { mutate: updateCase } = useQueryCase().useCreate();
@@ -32,11 +40,12 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
     );
 
   const updateCaseData = (stageName: string, description?: string) => ({
-    applicant: { id: thisCase?.applicant_id },
+    applicant: { id: thisCase?.insured_id },
     number: thisCase?.case_number,
     product_id: thisCase?.product_id,
     assistance_id: thisCase?.assistance_id,
     stage_id: findStageByName(stageName)?.id || "",
+    company_id: thisCase?.contractor_id,
     user_id: user?.id,
     description,
     isactive: true,
@@ -68,7 +77,6 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
     if (thisCase) {
       setDescription(findStageByStage("Registro de servicio")?.description);
       setJustification(findStageByStage("Evaluación del evento")?.description);
-
       const evaluationStages = [
         "Solución particular",
         "Designación de convenio",
@@ -95,7 +103,10 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
         <ContentCell gap="5px">
           <InputText
             label="Cliente"
-            value={"Embotelladora Andina S.A."}
+            value={
+              contractor?.companyName ||
+              thisCase?.applicant_name + " " + thisCase?.applicant_lastname
+            }
             type="text"
             disabled={true}
             width="525px"

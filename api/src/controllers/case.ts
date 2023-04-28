@@ -25,6 +25,7 @@ const create = async (req: any, res: any) => {
     description,
     stage_id,
     user_id,
+    beneficiary_id,
     isactive,
   } = req.body;
 
@@ -85,6 +86,7 @@ const create = async (req: any, res: any) => {
     isInsured,
     company_id,
     customer_id,
+    beneficiary_id,
   );
 
   if (!caseResponse.success) {
@@ -487,10 +489,10 @@ const reimburse = async (req: any, res: any) => {
 };
 
 const getAssistanceData = async (req: any, res: any) => {
-  const { applicant_id, assistance_id, product_id } = req.params;
+  const { insured_id, assistance_id, product_id } = req.params;
 
   const response = await Case.getAssistanceData(
-    applicant_id,
+    insured_id,
     assistance_id,
     product_id
   );

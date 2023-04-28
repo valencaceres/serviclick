@@ -83,7 +83,7 @@ const getAll: any = async () => {
                                         INNER JOIN app.product AS P ON C.product_id = P.id
                                         INNER JOIN app.assistance AS A ON C.assistance_id = A.id
                                         INNER JOIN app.productassistance AS PA ON P.id = PA.product_id AND A.id = PA.assistance_id
-                                        INNER JOIN app.insured AS I ON C.applicant_id = I.id
+                                        INNER JOIN app.insured AS I ON C.insured_id = I.id
                                         INNER JOIN app.stage AS S ON CS.stage_id = S.id
                                     ) sub
                                     WHERE sub.row_number = 1

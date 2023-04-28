@@ -81,12 +81,12 @@ const getAssignedSpecialist = async (case_id: string, casestage_id: string) => {
 };
 
 const getAssistanceData = async (
-  applicant_id: string,
+  insured_id: string,
   assistance_id: string,
   product_id: string
 ) => {
   const { data } = await apiInstance.get(
-    `/case/getAssistanceData/${applicant_id}/${assistance_id}/${product_id}`
+    `/case/getAssistanceData/${insured_id}/${assistance_id}/${product_id}`
   );
   return data;
 };
@@ -205,15 +205,15 @@ const useReimburse = () => {
 };
 
 const useGetAssistanceData = (
-  applicant_id: string,
+  insured_id: string,
   assistance_id: string,
   product_id: string
 ) => {
   return useQuery(
-    ["case", applicant_id, assistance_id, product_id],
-    () => getAssistanceData(applicant_id, assistance_id, product_id),
+    ["case", insured_id, assistance_id, product_id],
+    () => getAssistanceData(insured_id, assistance_id, product_id),
     {
-      enabled: !!applicant_id && !!assistance_id && !!product_id,
+      enabled: !!insured_id && !!assistance_id && !!product_id,
     }
   );
 };

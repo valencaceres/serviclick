@@ -12,14 +12,37 @@ const create: any = async (
   isInsured?: boolean,
   company_id?: string,
   customer_id?: string,
+  beneficiary_id?: string
 ) => {
   try {
     if (!product_id || !assistance_id) {
+      if (beneficiary_id) {
+        const exists = await pool.query(
+          `SELECT * FROM app.case WHERE beneficiary_id = $1 AND number = $2`,
+          [beneficiary_id, number]
+        );
+
+        if (exists.rows.length > 0) {
+          const result = await pool.query(
+            `UPDATE app.case SET insured_id = $1, company_id = $2, customer_id = $3 WHERE beneficiary_id = $4 AND number = $5 RETURNING *`,
+            [applicant.id, company_id, customer_id, beneficiary_id, number]
+          );
+
+          return { success: true, data: result.rows[0], error: null };
+        }
+
+        const result = await pool.query(
+          `INSERT INTO app.case (number, insured_id, beneficiary_id, company_id, customer_id) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+          [number, applicant.id, beneficiary_id, company_id, customer_id]
+        );
+
+        return { success: true, data: result.rows[0], error: null };
+      }
       const exists = await pool.query(
         `SELECT * FROM app.case WHERE ${
           applicant.type === "B" || isInsured === false
             ? "beneficiary_id"
-            : "applicant_id"
+            : "insured_id"
         } = $1 AND number = $2`,
         [applicant.id, number]
       );
@@ -29,14 +52,14 @@ const create: any = async (
           `UPDATE app.case SET type = $1, ${
             applicant.type === "B" || isInsured === false
               ? "beneficiary_id"
-              : "applicant_id"
+              : "insured_id"
           } = $2,
           company_id = $3,
           customer_id = $4
           WHERE ${
             applicant.type === "B" || isInsured === false
               ? "beneficiary_id"
-              : "applicant_id"
+              : "insured_id"
           } = $2 AND number = $5 RETURNING *`,
           [applicant.type, applicant.id, company_id, customer_id, number]
         );
@@ -47,7 +70,7 @@ const create: any = async (
         `INSERT INTO app.case(type, ${
           applicant.type === "B" || isInsured === false
             ? "beneficiary_id"
-            : "applicant_id"
+            : "insured_id"
         }, company_id, customer_id) VALUES ($1, $2, $3, $4) RETURNING *`,
         [applicant.type, applicant.id, company_id, customer_id]
       );
@@ -60,7 +83,7 @@ const create: any = async (
       WHERE number = $1 AND ${
         applicant.type === "B" || isInsured === false
           ? "beneficiary_id"
-          : "applicant_id"
+          : "insured_id"
       } = $2`,
       [number, applicant.id]
     );
@@ -71,10 +94,18 @@ const create: any = async (
         WHERE number = $6 AND ${
           applicant.type === "B" || isInsured === false
             ? "beneficiary_id"
-            : "applicant_id"
+            : "insured_id"
         } = $7
         RETURNING *`,
-        [product_id, assistance_id, isactive, company_id, customer_id, number, applicant.id]
+        [
+          product_id,
+          assistance_id,
+          isactive,
+          company_id,
+          customer_id,
+          number,
+          applicant.id,
+        ]
       );
 
       return { success: true, data: result.rows[0], error: null };
@@ -94,13 +125,13 @@ const getAll: any = async () => {
       sta.name as stage,
       prd.name as product,
       CASE 
-        WHEN ins.name IS NOT NULL THEN ins.name 
         WHEN ben.name IS NOT NULL THEN ben.name 
+        WHEN ins.name IS NOT NULL THEN ins.name 
         ELSE per.name 
         END as name,
         CASE 
-            WHEN ins.paternallastname IS NOT NULL THEN ins.paternallastname 
             WHEN ben.paternallastname IS NOT NULL THEN ben.paternallastname 
+            WHEN ins.paternallastname IS NOT NULL THEN ins.paternallastname 
             ELSE per.paternallastname 
         END as paternallastname
         FROM app.casestage cst
@@ -115,8 +146,8 @@ const getAll: any = async () => {
         LEFT OUTER JOIN app.product prd ON prd.id = cas.product_id
         LEFT OUTER JOIN app.assistance asi ON asi.id = cas.assistance_id
         LEFT OUTER JOIN app.beneficiary ben ON ben.id = cas.beneficiary_id
-        LEFT OUTER JOIN app.insured ins ON ins.id = cas.applicant_id
-        LEFT OUTER JOIN app.person per ON per.id = cas.applicant_id
+        LEFT OUTER JOIN app.insured ins ON ins.id = cas.insured_id
+        LEFT OUTER JOIN app.person per ON per.id = cas.insured_id
     `);
 
     return { success: true, data: result.rows, error: null };
@@ -131,18 +162,33 @@ const getBeneficiaryData: any = async (rut: string) => {
 
     if (result.rows.length > 0) {
       const data: IData = {
+        customer_id: result.rows[0].customer_id,
+        company_id: result.rows[0].company_id,
+        insured: {
+          type: "I",
+          id: result.rows[0].insured_id,
+          rut: result.rows[0].insured_rut,
+          name: result.rows[0].insured_name,
+          paternallastname: result.rows[0].insured_paternallastname,
+          maternallastname: result.rows[0].insured_maternallastname,
+          address: result.rows[0].insured_address,
+          district: result.rows[0].insured_district,
+          email: result.rows[0].insured_email,
+          phone: result.rows[0].insured_phone,
+          birthdate: result.rows[0].insured_birthdate,
+        },
         beneficiary: {
-          type: result.rows[0].type,
-          id: result.rows[0].id,
-          rut: result.rows[0].rut,
-          name: result.rows[0].name,
-          paternallastname: result.rows[0].paternallastname,
-          maternallastname: result.rows[0].maternallastname,
-          address: result.rows[0].address,
-          district: result.rows[0].district,
-          email: result.rows[0].email,
-          phone: result.rows[0].phone,
-          birthdate: result.rows[0].birthdate,
+          type: "B",
+          id: result.rows[0].beneficiary_id,
+          rut: result.rows[0].beneficiary_rut,
+          name: result.rows[0].beneficiary_name,
+          paternallastname: result.rows[0].beneficiary_paternallastname,
+          maternallastname: result.rows[0].beneficiary_maternallastname,
+          address: result.rows[0].beneficiary_address,
+          district: result.rows[0].beneficiary_district,
+          email: result.rows[0].beneficiary_email,
+          phone: result.rows[0].beneficiary_phone,
+          birthdate: result.rows[0].beneficiary_birthdate,
         },
         products: result.rows.map((row: any) => ({
           lead_id: row.lead_id,
@@ -184,7 +230,7 @@ const getNewCaseNumber = async () => {
 };
 
 const getAssistanceData: any = async (
-  applicant_id: string,
+  insured_id: string,
   assistance_id: string,
   product_id: string
 ) => {
@@ -205,12 +251,12 @@ const getAssistanceData: any = async (
                 inner join app.assistance asi ON cas.assistance_id = asi.id
                 inner join app.productassistance pas ON asi.id = pas.assistance_id
                 inner join app.product pro on pas.product_id = pro.id and cas.product_id = pro.id
-      where     cas.applicant_id = $1
+      where     cas.insured_id = $1
             and cas.assistance_id = $2
             and cas.product_id = $3
       group     by
             asi.id`,
-      [applicant_id, assistance_id, product_id]
+      [insured_id, assistance_id, product_id]
     );
 
     if (result.rows.length > 0) {

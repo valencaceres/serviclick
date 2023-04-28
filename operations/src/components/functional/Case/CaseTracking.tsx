@@ -42,7 +42,7 @@ const CaseTracking = ({ thisCase }: any) => {
   );
 
   const { data: assistanceData } = useQueryCase().useGetAssistanceData(
-    thisCase?.applicant_id,
+    thisCase?.insured_id,
     thisCase?.assistance_id,
     thisCase?.product_id
   );
@@ -59,11 +59,12 @@ const CaseTracking = ({ thisCase }: any) => {
     return updateCase(
       {
         applicant: {
-          id: thisCase?.applicant_id,
+          id: thisCase?.insured_id,
         },
         number: thisCase?.case_number,
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
+        company_id: thisCase?.contractor_id,
         stage_id: stages.find((s: any) => s?.name === "Resolución")?.id,
         user_id: user?.id,
         description: evaluation,
@@ -124,11 +125,12 @@ const CaseTracking = ({ thisCase }: any) => {
     return updateCase(
       {
         applicant: {
-          id: thisCase?.applicant_id,
+          id: thisCase?.insured_id,
         },
         number: thisCase?.case_number,
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
+        company_id: thisCase?.contractor_id,
         stage_id: stages.find((s: any) => s?.name === "Seguimiento")?.id,
         user_id: user?.id,
         isactive: true,
@@ -184,11 +186,12 @@ const CaseTracking = ({ thisCase }: any) => {
     return updateCase(
       {
         applicant: {
-          id: thisCase?.applicant_id,
+          id: thisCase?.insured_id,
         },
         number: thisCase?.case_number,
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
+        company_id: thisCase?.contractor_id,
         stage_id: stages.find((s: any) => s?.name === "Resolución")?.id,
         description: evaluation,
         user_id: user?.id,
@@ -227,11 +230,12 @@ const CaseTracking = ({ thisCase }: any) => {
     return updateCase(
       {
         applicant: {
-          id: thisCase?.applicant_id,
+          id: thisCase?.insured_id,
         },
         number: thisCase?.case_number,
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
+        company_id: thisCase?.contractor_id,
         stage_id: stages.find((s: any) => s?.name === "Rechazado")?.id,
         user_id: user?.id,
         description: justification,
