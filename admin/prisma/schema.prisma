@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["jsonProtocol"]
 }
 
@@ -62,17 +62,18 @@ model assistancevalue {
 }
 
 model beneficiary {
-  id               String    @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
-  rut              String    @unique(map: "beneficiary_rut_idx") @db.VarChar
-  name             String    @db.VarChar
-  paternallastname String    @db.VarChar
-  maternallastname String    @db.VarChar
-  email            String    @db.VarChar
-  phone            String    @db.VarChar
-  address          String?   @db.VarChar
-  district         String?   @db.VarChar
-  birthdate        DateTime? @db.Date
-  relationship     String?   @db.VarChar
+  id               String      @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
+  rut              String      @unique(map: "beneficiary_rut_idx") @db.VarChar
+  name             String      @db.VarChar
+  paternallastname String      @db.VarChar
+  maternallastname String      @db.VarChar
+  email            String      @db.VarChar
+  phone            String      @db.VarChar
+  address          String?     @db.VarChar
+  district         String?     @db.VarChar
+  birthdate        DateTime?   @db.Date
+  relationship     String?     @db.VarChar
+  Renamedcase      casemodel[]
 }
 
 model broker {
@@ -128,12 +129,16 @@ model casemodel {
   createddate      DateTime           @default(now()) @db.Timestamp(6)
   type             String             @db.VarChar(1)
   number           Int                @default(autoincrement())
-  insured_id     String?            @db.Uuid
+  insured_id       String?            @db.Uuid
   product_id       String?            @db.Uuid
   assistance_id    String?            @db.Uuid
   isactive         Boolean            @default(true)
-  applicant        insured?           @relation(fields: [insured_id], references: [id])
+  beneficiary_id   String?            @db.Uuid
+  customer_id      String?            @db.Uuid
+  company_id       String?            @db.Uuid
+  insured          insured?           @relation(fields: [insured_id], references: [id], map: "case_applicant_id_fkey")
   assistance       assistance?        @relation(fields: [assistance_id], references: [id])
+  beneficiary      beneficiary?       @relation(fields: [beneficiary_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   product          product?           @relation(fields: [product_id], references: [id])
   casechat         casechat[]
   casereimbursment casereimbursment[]

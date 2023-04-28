@@ -50,6 +50,7 @@ const ReimbursementTable: React.FC = () => {
           <th className="p-2">Servicio</th>
           <th className="p-2">Disponible</th>
           <th className="p-2">Reembolso</th>
+          <th className="p-2">Tipo</th>
           <th className="p-2">Estado</th>
           <th className="p-2">Acciones</th>
         </tr>
@@ -109,6 +110,13 @@ const ReimbursementRow = ({
     }
   );
 
+  const { data: resolutionStage } = api.caseStage.get.useQuery(
+    {
+      case_id: casemodel?.id,
+      stage: "Resolución",
+    }
+  );
+
   const handleUpdate = async (id: string, status: string) => {
     setUpdatingRow(true);
     await updateStatus(
@@ -129,6 +137,9 @@ const ReimbursementRow = ({
     );
   };
 
+  const applicant =
+    casemodel?.type === "I" ? casemodel?.insured : casemodel?.beneficiary;
+
   return (
     <tr className="border-y border-dusty-gray-100 text-lg font-light text-dusty-gray-900 odd:bg-slate-50 hover:border-dusty-gray-200 hover:bg-slate-100">
       <td className="p-2 text-center font-oswald">{casemodel.number}</td>
@@ -136,9 +147,7 @@ const ReimbursementRow = ({
         {casestageresult.created_at?.toLocaleDateString("es-CL")}
       </td>
       <td className="truncate p-2 font-oswald">
-        {casemodel?.applicant.name +
-          " " +
-          casemodel?.applicant.paternallastname}
+        {`${applicant?.name || ""}  ${applicant?.paternallastname || ""}`}
       </td>
       <td className="truncate p-2 font-oswald">
         {casemodel?.assistance?.name}
@@ -170,6 +179,9 @@ const ReimbursementRow = ({
               style: "currency",
               currency: "CLP",
             })}
+      </td>
+      <td className="p-2 text-center font-oswald font-medium">
+        {resolutionStage?.description === "Reembolsar IMED" ? "IMED" : "Normal"}
       </td>
       <td
         className={`p-2 text-center font-oswald font-medium ${
@@ -262,7 +274,7 @@ const ReimbursementRow = ({
                   className="flex flex-col gap-2"
                 >
                   <AccordionItem
-                    value="applicant"
+                    value="insured"
                     className="rounded-md border border-dusty-gray-100 p-2 shadow-sm hover:border-teal-blue-100"
                   >
                     <AccordionTrigger className="px-2 text-teal-blue-100">
@@ -275,9 +287,9 @@ const ReimbursementRow = ({
                             Nombre:
                           </span>
                           <span className="text-lg">
-                            {casemodel?.applicant.name +
-                              " " +
-                              casemodel?.applicant.paternallastname}
+                            {`${applicant?.name || ""}  ${
+                              applicant?.paternallastname || ""
+                            }`}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
@@ -285,7 +297,7 @@ const ReimbursementRow = ({
                             Rut:
                           </span>
                           <span className="text-lg">
-                            {casemodel?.applicant.rut}
+                            {applicant?.rut || ""}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
@@ -293,7 +305,7 @@ const ReimbursementRow = ({
                             Teléfono:
                           </span>
                           <span className="text-lg">
-                            {casemodel?.applicant.phone}
+                            {applicant?.phone || ""}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
@@ -301,7 +313,7 @@ const ReimbursementRow = ({
                             Correo:
                           </span>
                           <span className="text-lg">
-                            {casemodel?.applicant.email}
+                            {applicant?.email || ""}
                           </span>
                         </div>
                       </div>

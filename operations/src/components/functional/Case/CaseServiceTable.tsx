@@ -13,20 +13,21 @@ import {
 import Icon from "../../ui/Icon";
 
 import { useCase } from "../../../store/hooks/useCase";
-import { useQueryAssistances } from "../../../hooks/query";
+import { useQueryAssistances, useQueryCase } from "../../../hooks/query";
+import { useRouter } from "next/router";
 
 const CaseServiceTable = ({ product }: any) => {
+  const router = useRouter();
   const queryClient = useQueryClient();
 
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  const { data } = useCase();
+  const { data: thisCase } = useQueryCase().useGetById(router.query.case_id as string);
   const { data: assistanceValues } = useQueryAssistances().useGetValues(
     product?.assistance.id
   );
-
   const { data: insuredValues } = useQueryAssistances().useGetValuesById(
-    data?.beneficiary.id,
+    thisCase?.insured_id,
     product?.assistance.id,
     product?.id
   );
@@ -80,7 +81,7 @@ const CaseServiceTable = ({ product }: any) => {
                           handleSubmit(e, {
                             lead_id: product?.lead_id,
                             product_id: product?.id,
-                            insured_id: data?.beneficiary.id,
+                            insured_id: thisCase?.insured_id,
                             value_id: item.id,
                           })
                         }
@@ -125,7 +126,7 @@ const CaseServiceTable = ({ product }: any) => {
                       handleSubmit(e, {
                         lead_id: product?.lead_id,
                         product_id: product?.id,
-                        insured_id: data?.beneficiary.id,
+                        insured_id: thisCase?.insured_id,
                         value_id: item.id,
                       })
                     }
