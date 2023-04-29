@@ -6,7 +6,7 @@ import { ContentCell, ContentRow } from "../../layout/Content";
 import Button from "../../ui/Button";
 import InputText from "../../ui/InputText";
 
-import { useQueryCase, useQueryStage, useQueryUF } from "../../../hooks/query";
+import { useQueryCase, useQueryContractor, useQueryStage, useQueryUF } from "../../../hooks/query";
 import TextArea from "../../ui/TextArea/TextArea";
 import ComboBox from "../../ui/ComboBox";
 import {
@@ -48,6 +48,9 @@ const CaseTracking = ({ thisCase }: any) => {
   );
   const { data: thisReimbursement } = useQueryCase().useGetReimbursment(
     thisCase?.case_id
+  );
+  const { data: contractor } = useQueryContractor().useGetById(
+    thisCase?.contractor_id
   );
 
   const { mutate: assignPartner } = useQueryCase().useAssignPartner();
@@ -287,7 +290,10 @@ const CaseTracking = ({ thisCase }: any) => {
         <ContentCell gap="5px">
           <InputText
             label="Cliente"
-            value={"Embotelladora Andina S.A."}
+            value={
+              contractor?.companyName ||
+              contractor?.name + " " + contractor?.paternalLastName
+            }
             type="text"
             disabled={true}
             width="525px"
@@ -463,7 +469,8 @@ const CaseTracking = ({ thisCase }: any) => {
                 onClick={handleReject}
               />
             </ContentCell>
-          ) : evaluation?.toLowerCase() === "reembolsar" ? (
+          ) : evaluation?.toLowerCase() === "reembolsar" ||
+            evaluation?.toLowerCase() === "reembolsar imed" ? (
             <ContentCell gap="5px">
               <ContentCell gap="5px">
                 <h2 className="font-semibold">Disponible</h2>

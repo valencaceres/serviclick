@@ -16,7 +16,8 @@ export const caseRouter = createTRPCRouter({
           id: input.id,
         },
         include: {
-          applicant: true,
+          insured: true,
+          beneficiary: true,
           assistance: {
             include: {
               productassistances: true,

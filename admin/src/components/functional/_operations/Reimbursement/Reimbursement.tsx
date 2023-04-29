@@ -31,6 +31,8 @@ import {
 import { PaperclipIcon } from "lucide-react";
 import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
+import { Input } from "~/components/ui/Input";
+import { Label } from "~/components/ui/Label";
 
 export const Reimbursement: React.FC = () => {
   return <ReimbursementTable />;
@@ -50,6 +52,7 @@ const ReimbursementTable: React.FC = () => {
           <th className="p-2">Servicio</th>
           <th className="p-2">Disponible</th>
           <th className="p-2">Reembolso</th>
+          <th className="p-2">Tipo</th>
           <th className="p-2">Estado</th>
           <th className="p-2">Acciones</th>
         </tr>
@@ -90,6 +93,8 @@ const ReimbursementRow = ({
   const [updatingRow, setUpdatingRow] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isSummaryOpen, setIsSummaryOpen] = useState<boolean>(false);
+  const [imedReimbursement, setImedReimbursement] = useState<string>("");
+  const [reimbursement, setReimbursement] = useState<string>("");
 
   const ctx = api.useContext();
   const {
@@ -108,6 +113,11 @@ const ReimbursementRow = ({
       enabled: !!isSummaryOpen,
     }
   );
+
+  const { data: resolutionStage } = api.caseStage.get.useQuery({
+    case_id: casemodel?.id,
+    stage: "Resolución",
+  });
 
   const handleUpdate = async (id: string, status: string) => {
     setUpdatingRow(true);
@@ -129,6 +139,9 @@ const ReimbursementRow = ({
     );
   };
 
+  const applicant =
+    casemodel?.type === "I" ? casemodel?.insured : casemodel?.beneficiary;
+
   return (
     <tr className="border-y border-dusty-gray-100 text-lg font-light text-dusty-gray-900 odd:bg-slate-50 hover:border-dusty-gray-200 hover:bg-slate-100">
       <td className="p-2 text-center font-oswald">{casemodel.number}</td>
@@ -136,9 +149,7 @@ const ReimbursementRow = ({
         {casestageresult.created_at?.toLocaleDateString("es-CL")}
       </td>
       <td className="truncate p-2 font-oswald">
-        {casemodel?.applicant.name +
-          " " +
-          casemodel?.applicant.paternallastname}
+        {`${applicant?.name || ""}  ${applicant?.paternallastname || ""}`}
       </td>
       <td className="truncate p-2 font-oswald">
         {casemodel?.assistance?.name}
@@ -170,6 +181,9 @@ const ReimbursementRow = ({
               style: "currency",
               currency: "CLP",
             })}
+      </td>
+      <td className="p-2 text-center font-oswald font-medium">
+        {resolutionStage?.description === "Reembolsar IMED" ? "IMED" : "Normal"}
       </td>
       <td
         className={`p-2 text-center font-oswald font-medium ${
@@ -228,14 +242,17 @@ const ReimbursementRow = ({
                 isLoading={isLoading}
                 comment={comment}
                 setComment={setComment}
+                type={resolutionStage?.description}
               />
               <DropdownMenuSeparator className="bg-slate-100" />
-              <DropdownMenuLabel
-                className="z-20 cursor-pointer select-none text-teal-blue-100 hover:bg-slate-50 active:bg-slate-100"
-                onClick={() => void handleUpdate(id, "Pendiente")}
-              >
-                Pendiente
-              </DropdownMenuLabel>
+              <DialogTrigger onClick={() => setIsOpen(true)} asChild>
+                <DropdownMenuLabel
+                  className="z-20 cursor-pointer select-none text-teal-blue-100 hover:bg-slate-50 active:bg-slate-100"
+                  onClick={() => setAction("Pendiente")}
+                >
+                  Pendiente
+                </DropdownMenuLabel>
+              </DialogTrigger>
             </DropdownMenuContent>
           </DropdownMenu>
         </Dialog>
@@ -262,7 +279,7 @@ const ReimbursementRow = ({
                   className="flex flex-col gap-2"
                 >
                   <AccordionItem
-                    value="applicant"
+                    value="insured"
                     className="rounded-md border border-dusty-gray-100 p-2 shadow-sm hover:border-teal-blue-100"
                   >
                     <AccordionTrigger className="px-2 text-teal-blue-100">
@@ -275,9 +292,9 @@ const ReimbursementRow = ({
                             Nombre:
                           </span>
                           <span className="text-lg">
-                            {casemodel?.applicant.name +
-                              " " +
-                              casemodel?.applicant.paternallastname}
+                            {`${applicant?.name || ""}  ${
+                              applicant?.paternallastname || ""
+                            }`}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
@@ -285,7 +302,7 @@ const ReimbursementRow = ({
                             Rut:
                           </span>
                           <span className="text-lg">
-                            {casemodel?.applicant.rut}
+                            {applicant?.rut || ""}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
@@ -293,7 +310,7 @@ const ReimbursementRow = ({
                             Teléfono:
                           </span>
                           <span className="text-lg">
-                            {casemodel?.applicant.phone}
+                            {applicant?.phone || ""}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
@@ -301,7 +318,7 @@ const ReimbursementRow = ({
                             Correo:
                           </span>
                           <span className="text-lg">
-                            {casemodel?.applicant.email}
+                            {applicant?.email || ""}
                           </span>
                         </div>
                       </div>
@@ -427,6 +444,7 @@ const CustomDialog = ({
   isLoading,
   comment,
   setComment,
+  type,
 }: {
   action: string;
   onClick?: () => void;
@@ -435,40 +453,85 @@ const CustomDialog = ({
   isLoading?: boolean;
   comment: string;
   setComment: (value: string) => void;
+  type: string;
 }) => {
   return (
     <>
-      <DialogContent className="bg-white">
-        <DialogHeader>
-          <DialogTitle>
-            {action === "Aprobado" ? "Aceptar" : "Rechazar"} el reembolso
-          </DialogTitle>
-          <DialogDescription>
-            <p className="py-2">
-              Ingresa un comentario sobre el reembolso para el operador.
-            </p>
-            <Textarea
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder="Ingresa un comentario"
-            />
-            {isError && <p>{error}</p>}
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <Button
-            onClick={onClick}
-            className={`${
-              action === "Aprobado"
-                ? "bg-green-600 hover:bg-green-700"
-                : "bg-red-500 hover:bg-red-600"
-            }`}
-            disabled={isLoading}
-          >
-            {isLoading ? "Cargando..." : "Aceptar"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
+      {action !== "Pendiente" ? (
+        <DialogContent className="bg-white">
+          <DialogHeader>
+            <DialogTitle>
+              {action === "Aprobado" ? "Aceptar" : "Rechazar"} el rembolso
+            </DialogTitle>
+            {type === "Reembolsar IMED" && action === "Aprobado" && (
+              <div className="flex gap-2 pt-4">
+                <div>
+                  <Label className="text-dusty-gray-500">Reembolso IMED</Label>
+                  <Input
+                    type="text"
+                    value={""}
+                    onChange={() => {}}
+                    placeholder="Ingrese el monto"
+                  />
+                </div>
+                <div>
+                  <Label className="text-dusty-gray-500">
+                    Reembolso ServiClick
+                  </Label>
+                  <Input
+                    type="text"
+                    value={""}
+                    onChange={() => {}}
+                    placeholder="Ingrese el monto"
+                  />
+                </div>
+              </div>
+            )}
+            <DialogDescription>
+              <p className="py-2">
+                Ingresa un comentario sobre el reembolso para el operador.
+              </p>
+              <Textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder="Ingresa un comentario"
+              />
+              {isError && <p>{error}</p>}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              onClick={onClick}
+              className={`${
+                action === "Aprobado"
+                  ? "bg-green-600 hover:bg-green-700"
+                  : "bg-red-500 hover:bg-red-600"
+              }`}
+              disabled={isLoading}
+            >
+              {isLoading ? "Cargando..." : "Aceptar"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      ) : (
+        <DialogContent className="bg-white">
+          <DialogHeader>
+            <DialogTitle>¿Estás seguro?</DialogTitle>
+            <DialogDescription>
+              Al aceptar cambiarás el estado a pendiente.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              onClick={onClick}
+              className={"bg-green-600 hover:bg-green-700"}
+              disabled={isLoading}
+            >
+              {isLoading ? "Cargando..." : "Aceptar"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      )}
     </>
   );
 };

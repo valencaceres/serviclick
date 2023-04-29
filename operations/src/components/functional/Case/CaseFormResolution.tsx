@@ -128,7 +128,10 @@ const CaseFormResolution = ({ thisCase }: any) => {
         <ContentCell gap="5px">
           <InputText
             label="Cliente"
-            value={contractor?.companyName}
+            value={
+              contractor?.companyName ||
+              contractor?.name + " " + contractor?.paternalLastName
+            }
             type="text"
             disabled={true}
             width="525px"

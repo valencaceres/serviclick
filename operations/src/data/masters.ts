@@ -96,6 +96,10 @@ export const selfSolutionSummaryActions = [
   },
   {
     id: 2,
+    name: "Reembolsar IMED",
+  },
+  {
+    id: 3,
     name: "Rechazar caso",
   },
 ];

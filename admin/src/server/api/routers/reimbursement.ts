@@ -8,7 +8,8 @@ export const reimbursementRouter = createTRPCRouter({
       include: {
         casemodel: {
           include: {
-            applicant: true,
+            insured: true,
+            beneficiary: true,
             product: true,
             assistance: {
               include: {
@@ -63,7 +64,8 @@ export const reimbursementRouter = createTRPCRouter({
         include: {
           casemodel: {
             include: {
-              applicant: true,
+              insured: true,
+              beneficiary: true,
               product: true,
               assistance: {
                 include: {
