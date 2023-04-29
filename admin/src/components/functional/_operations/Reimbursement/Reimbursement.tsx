@@ -31,6 +31,8 @@ import {
 import { PaperclipIcon } from "lucide-react";
 import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
+import { Input } from "~/components/ui/Input";
+import { Label } from "~/components/ui/Label";
 
 export const Reimbursement: React.FC = () => {
   return <ReimbursementTable />;
@@ -91,6 +93,8 @@ const ReimbursementRow = ({
   const [updatingRow, setUpdatingRow] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isSummaryOpen, setIsSummaryOpen] = useState<boolean>(false);
+  const [imedReimbursement, setImedReimbursement] = useState<string>("");
+  const [reimbursement, setReimbursement] = useState<string>("");
 
   const ctx = api.useContext();
   const {
@@ -110,12 +114,10 @@ const ReimbursementRow = ({
     }
   );
 
-  const { data: resolutionStage } = api.caseStage.get.useQuery(
-    {
-      case_id: casemodel?.id,
-      stage: "Resolución",
-    }
-  );
+  const { data: resolutionStage } = api.caseStage.get.useQuery({
+    case_id: casemodel?.id,
+    stage: "Resolución",
+  });
 
   const handleUpdate = async (id: string, status: string) => {
     setUpdatingRow(true);
@@ -240,14 +242,17 @@ const ReimbursementRow = ({
                 isLoading={isLoading}
                 comment={comment}
                 setComment={setComment}
+                type={resolutionStage?.description}
               />
               <DropdownMenuSeparator className="bg-slate-100" />
-              <DropdownMenuLabel
-                className="z-20 cursor-pointer select-none text-teal-blue-100 hover:bg-slate-50 active:bg-slate-100"
-                onClick={() => void handleUpdate(id, "Pendiente")}
-              >
-                Pendiente
-              </DropdownMenuLabel>
+              <DialogTrigger onClick={() => setIsOpen(true)} asChild>
+                <DropdownMenuLabel
+                  className="z-20 cursor-pointer select-none text-teal-blue-100 hover:bg-slate-50 active:bg-slate-100"
+                  onClick={() => setAction("Pendiente")}
+                >
+                  Pendiente
+                </DropdownMenuLabel>
+              </DialogTrigger>
             </DropdownMenuContent>
           </DropdownMenu>
         </Dialog>
@@ -439,6 +444,7 @@ const CustomDialog = ({
   isLoading,
   comment,
   setComment,
+  type,
 }: {
   action: string;
   onClick?: () => void;
@@ -447,40 +453,85 @@ const CustomDialog = ({
   isLoading?: boolean;
   comment: string;
   setComment: (value: string) => void;
+  type: string;
 }) => {
   return (
     <>
-      <DialogContent className="bg-white">
-        <DialogHeader>
-          <DialogTitle>
-            {action === "Aprobado" ? "Aceptar" : "Rechazar"} el reembolso
-          </DialogTitle>
-          <DialogDescription>
-            <p className="py-2">
-              Ingresa un comentario sobre el reembolso para el operador.
-            </p>
-            <Textarea
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder="Ingresa un comentario"
-            />
-            {isError && <p>{error}</p>}
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <Button
-            onClick={onClick}
-            className={`${
-              action === "Aprobado"
-                ? "bg-green-600 hover:bg-green-700"
-                : "bg-red-500 hover:bg-red-600"
-            }`}
-            disabled={isLoading}
-          >
-            {isLoading ? "Cargando..." : "Aceptar"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
+      {action !== "Pendiente" ? (
+        <DialogContent className="bg-white">
+          <DialogHeader>
+            <DialogTitle>
+              {action === "Aprobado" ? "Aceptar" : "Rechazar"} el rembolso
+            </DialogTitle>
+            {type === "Reembolsar IMED" && action === "Aprobado" && (
+              <div className="flex gap-2 pt-4">
+                <div>
+                  <Label className="text-dusty-gray-500">Reembolso IMED</Label>
+                  <Input
+                    type="text"
+                    value={""}
+                    onChange={() => {}}
+                    placeholder="Ingrese el monto"
+                  />
+                </div>
+                <div>
+                  <Label className="text-dusty-gray-500">
+                    Reembolso ServiClick
+                  </Label>
+                  <Input
+                    type="text"
+                    value={""}
+                    onChange={() => {}}
+                    placeholder="Ingrese el monto"
+                  />
+                </div>
+              </div>
+            )}
+            <DialogDescription>
+              <p className="py-2">
+                Ingresa un comentario sobre el reembolso para el operador.
+              </p>
+              <Textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder="Ingresa un comentario"
+              />
+              {isError && <p>{error}</p>}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              onClick={onClick}
+              className={`${
+                action === "Aprobado"
+                  ? "bg-green-600 hover:bg-green-700"
+                  : "bg-red-500 hover:bg-red-600"
+              }`}
+              disabled={isLoading}
+            >
+              {isLoading ? "Cargando..." : "Aceptar"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      ) : (
+        <DialogContent className="bg-white">
+          <DialogHeader>
+            <DialogTitle>¿Estás seguro?</DialogTitle>
+            <DialogDescription>
+              Al aceptar cambiarás el estado a pendiente.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              onClick={onClick}
+              className={"bg-green-600 hover:bg-green-700"}
+              disabled={isLoading}
+            >
+              {isLoading ? "Cargando..." : "Aceptar"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      )}
     </>
   );
 };
