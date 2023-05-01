@@ -93,16 +93,14 @@ const ReimbursementRow = ({
   const [updatingRow, setUpdatingRow] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isSummaryOpen, setIsSummaryOpen] = useState<boolean>(false);
-  const [imedReimbursement, setImedReimbursement] = useState<string>("");
-  const [reimbursement, setReimbursement] = useState<string>("");
+  const [imedReimbursement, setImedReimbursement] = useState<string>();
+  const [reimbursement, setReimbursement] = useState<string>();
+
+  const { user } = useUser();
 
   const ctx = api.useContext();
-  const {
-    mutateAsync: updateStatus,
-    isLoading,
-    isError,
-    error,
-  } = api.reimbursement.update.useMutation();
+  const { mutateAsync: updateStatus, isLoading } =
+    api.reimbursement.update.useMutation();
 
   const { data: caseStage } = api.caseStage.get.useQuery(
     {
@@ -125,6 +123,10 @@ const ReimbursementRow = ({
       {
         id,
         status,
+        user_id: user?.id || "",
+        imed_amount:
+          status === "Aprobado" ? Number(imedReimbursement || "") : null,
+        amount: status === "Aprobado" ? Number(reimbursement || "") : null,
         comment: status === "Pendiente" ? "" : comment,
       },
       {
@@ -237,12 +239,14 @@ const ReimbursementRow = ({
               <CustomDialog
                 action={action}
                 onClick={() => void handleUpdate(id, action)}
-                error={error?.message}
-                isError={isError}
                 isLoading={isLoading}
                 comment={comment}
                 setComment={setComment}
                 type={resolutionStage?.description}
+                reimbursement={reimbursement}
+                setReimbursement={setReimbursement}
+                imedReimbursement={imedReimbursement}
+                setImedReimbursement={setImedReimbursement}
               />
               <DropdownMenuSeparator className="bg-slate-100" />
               <DialogTrigger onClick={() => setIsOpen(true)} asChild>
@@ -439,21 +443,25 @@ const Attachments = ({ caseId }: { caseId: string }) => {
 const CustomDialog = ({
   action,
   onClick,
-  error,
-  isError,
   isLoading,
   comment,
   setComment,
   type,
+  reimbursement,
+  setReimbursement,
+  imedReimbursement,
+  setImedReimbursement,
 }: {
   action: string;
   onClick?: () => void;
-  error?: string;
-  isError?: boolean;
   isLoading?: boolean;
   comment: string;
   setComment: (value: string) => void;
-  type: string;
+  type: string | null | undefined;
+  reimbursement: string | undefined;
+  setReimbursement: (value: string) => void;
+  imedReimbursement: string | undefined;
+  setImedReimbursement: (value: string) => void;
 }) => {
   return (
     <>
@@ -463,30 +471,32 @@ const CustomDialog = ({
             <DialogTitle>
               {action === "Aprobado" ? "Aceptar" : "Rechazar"} el rembolso
             </DialogTitle>
-            {type === "Reembolsar IMED" && action === "Aprobado" && (
-              <div className="flex gap-2 pt-4">
+            <div className="flex gap-2 pt-4">
+              {type === "Reembolsar IMED" && action === "Aprobado" && (
                 <div>
                   <Label className="text-dusty-gray-500">Reembolso IMED</Label>
                   <Input
                     type="text"
-                    value={""}
-                    onChange={() => {}}
+                    value={imedReimbursement}
+                    onChange={(e) => setImedReimbursement(e.target.value)}
                     placeholder="Ingrese el monto"
                   />
                 </div>
+              )}
+              {action === "Aprobado" && (
                 <div>
                   <Label className="text-dusty-gray-500">
                     Reembolso ServiClick
                   </Label>
                   <Input
                     type="text"
-                    value={""}
-                    onChange={() => {}}
+                    value={reimbursement}
+                    onChange={(e) => setReimbursement(e.target.value)}
                     placeholder="Ingrese el monto"
                   />
                 </div>
-              </div>
-            )}
+              )}
+            </div>
             <DialogDescription>
               <p className="py-2">
                 Ingresa un comentario sobre el reembolso para el operador.
@@ -496,7 +506,6 @@ const CustomDialog = ({
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="Ingresa un comentario"
               />
-              {isError && <p>{error}</p>}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

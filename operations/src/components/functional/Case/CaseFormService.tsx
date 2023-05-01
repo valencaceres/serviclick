@@ -63,6 +63,8 @@ const CaseFormService = ({ thisCase }: any) => {
     thisCase?.contractor_id
   );
 
+
+  console.log(assistanceData)
   useEffect(() => {
     const assistancesMap = new Map(
       data?.products.map((product: any) => [
@@ -175,8 +177,6 @@ const CaseFormService = ({ thisCase }: any) => {
       setSelectedProduct(product || null);
     }
   }, [thisCase]);
-
-  console.log(contractor)
 
   return (
     <div>

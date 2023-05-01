@@ -52,6 +52,8 @@ const getByCase: any = async (case_id: string) => {
         csr.uf_value,
         csr.case_id,
         csr.casestage_id,
+        cr.imed_amount,
+        cr.amount as serviclick_amount,
         cr.comment,
         cr.status
       FROM app.casestageresult AS csr
