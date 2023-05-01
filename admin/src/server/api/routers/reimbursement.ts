@@ -34,7 +34,10 @@ export const reimbursementRouter = createTRPCRouter({
       z.object({
         id: z.string().uuid(),
         status: z.string(),
-        comment: z.string().optional(),
+        user_id: z.string(),
+        imed_amount: z.number().nullable(),
+        amount: z.number().nullable(),
+        comment: z.string().nullable(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -44,6 +47,9 @@ export const reimbursementRouter = createTRPCRouter({
         },
         data: {
           status: input.status,
+          user_id: input.user_id,
+          imed_amount: input.imed_amount,
+          amount: input.amount,
           comment: input.comment,
         },
       });

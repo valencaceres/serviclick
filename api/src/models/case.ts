@@ -242,7 +242,8 @@ const getAssistanceData: any = async (
             max(pas.currency) as currency,
             max(pas.maximum) as maximum,
             max(pas.events) as max_events,
-            sum(case when csr.amount is null or (crm.status <> 'Pendiente' and crm.status <> 'Aprobado') then 0 else csr.amount end) as used_amount,
+            sum(case when csr.amount is null or (crm.status <> 'Pendiente' and crm.status <> 'Aprobado') then 0 else csr.amount end) as requested_amount,
+            sum(case when crm.amount is null or (crm.status <> 'Pendiente' and crm.status <> 'Aprobado') then 0 else crm.amount end) as used_amount,
             sum(case when csr.amount > 0 and (crm.status = 'Pendiente' or crm.status = 'Aprobado') then 1 else 0 end) as used_events
       from     app.case cas
                 left outer join app.casestage cst ON cst.case_id = cas.id

@@ -6,7 +6,12 @@ import ComboBox from "../../ui/ComboBox";
 import TextArea from "../../ui/TextArea/TextArea";
 import Button from "../../ui/Button";
 
-import { useQueryCase, useQueryContractor, useQueryStage, useQueryUF } from "../../../hooks/query";
+import {
+  useQueryCase,
+  useQueryContractor,
+  useQueryStage,
+  useQueryUF,
+} from "../../../hooks/query";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useUser } from "@clerk/nextjs";
@@ -156,6 +161,10 @@ const CaseFormResolution = ({ thisCase }: any) => {
         <ContentCell gap="5px">
           {thisReimbursement && (
             <ContentCell gap="20px">
+              {thisCase?.stages.find((c: any) => c?.stage === "Resolución")
+                ?.description === "Reembolsar IMED" && (
+                <p className="font-semibold text-teal-blue">Reembolso IMED</p>
+              )}
               <ContentRow gap="5px">
                 <InputText
                   label="Monto a reembolsar"
@@ -188,6 +197,55 @@ const CaseFormResolution = ({ thisCase }: any) => {
                   width="260px"
                 />
               </ContentRow>
+              {thisReimbursement?.status === "Aprobado" && (
+                <ContentRow gap="5px">
+                  {thisCase?.stages.find((c: any) => c?.stage === "Resolución")
+                    ?.description === "Reembolsar IMED" ? (
+                    <>
+                      <InputText
+                        label="Reembolso IMED"
+                        value={thisReimbursement?.imed_amount.toLocaleString(
+                          "es-CL",
+                          {
+                            style: "currency",
+                            currency: "CLP",
+                          }
+                        )}
+                        type="text"
+                        disabled={true}
+                        width="260px"
+                      />
+                      <InputText
+                        label="Reembolso ServiClick"
+                        value={thisReimbursement?.serviclick_amount.toLocaleString(
+                          "es-CL",
+                          {
+                            style: "currency",
+                            currency: "CLP",
+                          }
+                        )}
+                        type="text"
+                        disabled={true}
+                        width="260px"
+                      />
+                    </>
+                  ) : (
+                    <InputText
+                      label="Reembolso ServiClick"
+                      value={thisReimbursement?.serviclick_amount.toLocaleString(
+                        "es-CL",
+                        {
+                          style: "currency",
+                          currency: "CLP",
+                        }
+                      )}
+                      type="text"
+                      disabled={true}
+                      width="525px"
+                    />
+                  )}
+                </ContentRow>
+              )}
               {thisReimbursement?.comment && (
                 <ContentRow gap="5px">
                   <TextArea

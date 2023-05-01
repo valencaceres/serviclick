@@ -167,6 +167,8 @@ model casereimbursment {
   user_id            String?         @db.VarChar(255)
   status             String          @default("Pendiente") @db.VarChar
   comment            String?         @db.VarChar(255)
+  imed_amount        Int?
+  amount             Int?
   casemodel          casemodel       @relation(fields: [case_id], references: [id])
   casestageresult    casestageresult @relation(fields: [casestageresult_id], references: [id])
 }
