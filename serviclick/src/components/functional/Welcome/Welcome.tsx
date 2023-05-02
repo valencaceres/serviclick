@@ -1,161 +1,39 @@
-import { useState, useEffect, Fragment } from "react";
+import { useEffect, Fragment } from "react";
+import { useUser } from "@clerk/nextjs";
 
 import { Content, ContentCell } from "../../layout/Content";
 
-import Icon from "../../ui/Icon";
-import ButtonLink from "../../ui/ButtonLink";
-import ModalWindow from "../../ui/ModalWindow";
-import InputText from "../../ui/InputText";
-import Button from "../../ui/Button";
-
-import styles from "./Welcome.module.scss";
-
-import { useUI, useUser } from "../../../hooks";
+import { useUI } from "../../../hooks";
+import Image from "next/image";
 
 const Welcome = () => {
-  const { user, setTitleUI } = useUI();
-  const { userLoading, updatePassword } = useUser();
+    const { user } = useUser();
+    const { setTitleUI } = useUI();
 
-  const initialPasswordData = {
-    password: { value: "", isValid: false },
-    newPassword1: { value: "", isValid: false },
-    newPassword2: { value: "", isValid: false },
-  };
+    useEffect(() => {
+        setTitleUI("Inicio");
+    }, []);
 
-  const [passwordForm, setPasswordForm] = useState(initialPasswordData);
-  const [showPasswordChange, setShowPasswordChange] = useState(false);
-  const [enabledButton, setEnabledButton] = useState(false);
-  const [updatePasswordTextButton, setUpdatePasswordTextButton] =
-    useState("Cambiar contraseña");
-  const [success, setSuccess] = useState<boolean | null>(null);
-
-  const handleChangePassword = (e: any) => {
-    setPasswordForm({
-      ...passwordForm,
-      password: { value: e.target.value, isValid: e.target.value !== "" },
-    });
-  };
-
-  const handleChangeNewPassword1 = (e: any) => {
-    setPasswordForm({
-      ...passwordForm,
-      newPassword1: { value: e.target.value, isValid: e.target.value !== "" },
-    });
-  };
-
-  const handleChangeNewPassword2 = (e: any) => {
-    setPasswordForm({
-      ...passwordForm,
-      newPassword2: { value: e.target.value, isValid: e.target.value !== "" },
-    });
-  };
-
-  const handleClickChangePassword = () => {
-    setSuccess(null);
-    setUpdatePasswordTextButton("Cambiar contraseña");
-    setPasswordForm(initialPasswordData);
-    setShowPasswordChange(true);
-  };
-
-  const handleClickUpdatePassword = () => {
-    if (updatePasswordTextButton === "Cambiar contraseña") {
-      updatePassword(
-        user.email,
-        passwordForm.password.value,
-        passwordForm.newPassword1.value
-      );
-    } else {
-      setShowPasswordChange(false);
-    }
-  };
-
-  const handleClickClosePasswordChange = () => {
-    setShowPasswordChange(false);
-  };
-
-  useEffect(() => {
-    setTitleUI("Inicio");
-  }, []);
-
-  useEffect(() => {
-    setEnabledButton(
-      passwordForm.password.isValid &&
-        passwordForm.newPassword1.isValid &&
-        passwordForm.newPassword2.isValid &&
-        passwordForm.newPassword1.value === passwordForm.newPassword2.value
+    return (
+        <Fragment>
+            <Content align="center">
+                <ContentCell align="center" gap="20px">
+                    <div className="h-48 w-48">
+                        <Image
+                            alt="User profile picture"
+                            src={user?.profileImageUrl!}
+                            width={200}
+                            height={200}
+                            className={"h-48 w-48 rounded-full object-cover"}
+                        />
+                    </div>
+                    <div className="text-2xl font-bold text-teal-blue">
+                        Bienvenido {user?.firstName ? user?.firstName : ""}
+                    </div>
+                </ContentCell>
+            </Content>
+        </Fragment>
     );
-  }, [passwordForm]);
-
-  useEffect(() => {
-    if (userLoading === false) {
-      setUpdatePasswordTextButton("Cerrar");
-      setSuccess(true);
-    }
-  }, [userLoading]);
-
-  return (
-    <Fragment>
-      <Content align="center">
-        <ContentCell align="center" gap="20px">
-          <div className={styles.photo}>
-            <Icon iconName="face" size="120px" />
-          </div>
-          <div className={styles.name}>
-            Bienvenido {user.name} {user.paternalLastName}{" "}
-            {user.maternalLastName}
-          </div>
-          <div className={styles.link}>
-            <ButtonLink onClick={handleClickChangePassword}>
-              Cambiar contraseña
-            </ButtonLink>
-          </div>
-        </ContentCell>
-      </Content>
-      <ModalWindow
-        showModal={showPasswordChange}
-        setClosed={handleClickClosePasswordChange}
-        title="Modificación de contraseña">
-        <ContentCell align="center" gap="30px">
-          {success === null ? (
-            <Fragment>
-              <InputText
-                label="Contraseña actual"
-                type="password"
-                width="250px"
-                value={passwordForm.password.value}
-                onChange={handleChangePassword}
-              />
-              <ContentCell gap="5px">
-                <InputText
-                  label="Nueva contraseña"
-                  type="password"
-                  width="250px"
-                  value={passwordForm.newPassword1.value}
-                  onChange={handleChangeNewPassword1}
-                />
-                <InputText
-                  label="Repita nueva contraseña"
-                  type="password"
-                  width="250px"
-                  value={passwordForm.newPassword2.value}
-                  onChange={handleChangeNewPassword2}
-                />
-              </ContentCell>
-            </Fragment>
-          ) : (
-            <p style={{ fontWeight: 600 }}>Contraseña modificada</p>
-          )}
-          <Button
-            text={updatePasswordTextButton}
-            width="200px"
-            onClick={handleClickUpdatePassword}
-            enabled={enabledButton}
-            loading={userLoading}
-          />
-        </ContentCell>
-      </ModalWindow>
-    </Fragment>
-  );
 };
 
 export default Welcome;

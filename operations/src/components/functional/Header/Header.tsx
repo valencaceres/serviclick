@@ -1,19 +1,11 @@
 import Image from "next/image";
 
-import ButtonIcon from "../../ui/ButtonIcon";
-
 import useUI from "../../../hooks/useUI";
 import { useSession } from "@clerk/nextjs";
 
-// import styles from './Header.module.scss';
-
 const Header = () => {
-  const { setShowMenuUI, showMenu, title, user } = useUI();
+  const { title } = useUI();
   const { isSignedIn } = useSession();
-
-  const handleToggleMenu = () => {
-    setShowMenuUI(!showMenu);
-  };
 
   return (
     <div className={"flex h-[70px] w-full border-b border-ultraLightGrey"}>

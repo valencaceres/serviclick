@@ -88,13 +88,13 @@ const FamilyList = ({ setShowModal, showModal }: any) => {
             <TableCell width="350px">Nombre</TableCell>
           </TableHeader>
           <TableDetail>
-            {list.map((family: any, idx: number) => (
+            {list?.map((family: any, idx: number) => (
               <TableRow key={idx} className={"deleted"}>
                 <TableCell width="70px" align="center">
                   {idx + 1}
                 </TableCell>
                 <TableCell width="350px">
-                  {family.name}
+                  {family?.name}
                   <TableIcons>
                     <Icon iconName="edit" onClick={() => editFamily(family)} />
                     <Icon

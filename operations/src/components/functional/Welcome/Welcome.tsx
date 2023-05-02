@@ -1,15 +1,8 @@
-import { useState, useEffect, Fragment } from "react";
+import { useEffect, Fragment } from "react";
 import { useUser } from "@clerk/nextjs";
 
 import { Content, ContentCell } from "../../layout/Content";
 
-import Icon from "../../ui/Icon";
-import ButtonLink from "../../ui/ButtonLink";
-import ModalWindow from "../../ui/ModalWindow";
-import InputText from "../../ui/InputText";
-import Button from "../../ui/Button";
-
-import styles from "./Welcome.module.scss";
 
 import { useUI } from "../../../hooks";
 import Image from "next/image";
