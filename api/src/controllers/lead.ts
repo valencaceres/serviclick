@@ -1125,13 +1125,14 @@ const addProduct = async (req: any, res: any) => {
     productPlanResponse.data.plan_id
   );
 
-  const leadResponse = await Lead.create(
-    agent_id,
+  const leadResponse = await Lead.createModel(
+    "",
     customer_id,
     company_id,
+    agent_id,
+    link,
     subscriptionResponse.data.subscription_id,
     policy_id,
-    link,
     paymenttype_code
   );
 

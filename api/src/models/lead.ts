@@ -7,7 +7,10 @@ const createModel: any = async (
   customer_id: string,
   company_id: string,
   agent_id: string,
-  link: string = ""
+  link: string = "",
+  subscription_id?: string,
+  policy_id?: string,
+  paymenttype_code?: string
 ) => {
   try {
     const createDate = format(new Date(), "yyyy-MM-dd HH:mm:ss");
@@ -21,14 +24,20 @@ const createModel: any = async (
                   customer_id,
                   company_id,
                   agent_id,
-                  link) 
-          VALUES( $1, $2, $3, $4, $5) RETURNING *`,
+                  link,
+                  subscription_id,
+                  policy_id,
+                  paymenttype_code)
+          VALUES( $1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
         [
           createDate,
           customer_id === "" ? null : customer_id,
           company_id === "" ? null : company_id,
           agent_id,
           link,
+          subscription_id,
+          policy_id,
+          paymenttype_code
         ]
       );
     } else {
@@ -38,7 +47,10 @@ const createModel: any = async (
           SET     createdate = $1,
                   customer_id = $2,
                   company_id = $3,
-                  link = $5
+                  link = $5,
+                  subscription_id = $6,
+                  policy_id = $7,
+                  paymenttype_code = $8
           WHERE   id = $4 RETURNING *`,
         [
           createDate,
@@ -46,6 +58,9 @@ const createModel: any = async (
           company_id === "" ? null : company_id,
           id,
           link,
+          subscription_id,
+          policy_id,
+          paymenttype_code
         ]
       );
     }
@@ -55,6 +70,7 @@ const createModel: any = async (
     return { success: false, data: null, error: (e as Error).message };
   }
 };
+
 
 const updatePaymentTypeCode: any = async (
   id: string,
@@ -248,63 +264,6 @@ const updateSubscription: any = async (
   }
 };
 
-const create = async (
-  agent_id: string,
-  customer_id?: string,
-  company_id?: string,
-  subscription_id?: string,
-  policy_id?: string,
-  link?: string,
-  paymenttype_code?: string
-) => {
-  try {
-    const createdate = format(new Date(), "yyyy-MM-dd HH:mm:ss");
-    
-    if (company_id) {
-      const result = await pool.query(
-        `INSERT INTO app.lead
-                    (company_id, agent_id, policy_id, link, paymenttype_code, subscription_id, createdate)
-                VALUES
-                    ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-        [
-          company_id,
-          agent_id,
-          policy_id,
-          link,
-          paymenttype_code,
-          subscription_id,
-          createdate,
-        ]
-      );
-
-      return { success: true, data: result.rows[0], error: null };
-    }
-
-    if (customer_id) {
-      const result = await pool.query(
-        `INSERT INTO app.lead
-                    (customer_id, agent_id, policy_id, link, paymenttype_code, subscription_id, createdate)
-                VALUES
-                    ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-        [
-          customer_id,
-          agent_id,
-          policy_id,
-          link,
-          paymenttype_code,
-          subscription_id,
-          createdate,
-        ]
-      );
-
-      return { success: true, data: result.rows[0], error: null };
-    }
-
-    return { success: false, data: null, error: "No se pudo crear el lead" };
-  } catch (e) {
-    return { success: false, data: null, error: (e as Error).message };
-  }
-};
 export {
   createModel,
   updatePaymentTypeCode,
@@ -314,5 +273,4 @@ export {
   getInsuredById,
   getProductsById,
   updateSubscription,
-  create,
 };
