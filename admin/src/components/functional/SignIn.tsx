@@ -22,7 +22,6 @@ export const SignIn: React.FC = () => {
 
   const {
     register,
-    getValues,
     watch,
     setError,
     clearErrors,
