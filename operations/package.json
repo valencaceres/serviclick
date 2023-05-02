@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/localizations": "^1.11.3",
     "@clerk/nextjs": "^4.16.4",
     "@clerk/types": "^3.35.3",
     "@headlessui/react": "^1.7.13",
