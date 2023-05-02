@@ -7,7 +7,7 @@
     "dev": "next dev -p 3014",
     "postinstall": "prisma generate",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start -p 3014"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.315.0",
