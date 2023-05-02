@@ -5,7 +5,7 @@ import InputText from "../../../ui/InputText";
 import ComboBox from "../../../ui/ComboBox";
 import { Button } from "~/components/ui/ButtonC";
 
-import { ContentCell } from "../../../layout/Content";
+import { ContentCell, ContentRow } from "../../../layout/Content";
 
 import { unFormatRut, formatRut } from "../../../../utils/format";
 import { numberRegEx, rutRegEx, emailRegEx } from "../../../../utils/regEx";
@@ -18,9 +18,12 @@ import { Label } from "~/components/ui/Label";
 import { Input } from "~/components/ui/Input";
 import { useQueryContractor } from "~/hooks/query";
 import { useForm } from "react-hook-form";
+import { useQueryClient } from "@tanstack/react-query";
+import ButtonIcon from "~/components/ui/ButtonIcon";
 
-const ContractorPersonForm = ({ contractor }: any) => {
+const ContractorPersonForm = ({ contractor, isEditing, setIsEditing }: any) => {
   const { pathname, push } = useRouter();
+  const queryClient = useQueryClient();
 
   const {
     reset,
@@ -119,6 +122,8 @@ const ContractorPersonForm = ({ contractor }: any) => {
 
     createPerson(data, {
       onSuccess: (data) => {
+        setIsEditing(false);
+        queryClient.invalidateQueries(["contractor", data.data?.rut, "P"]);
         push(`/entities/contractor/${data.data?.id}`);
       },
     });
@@ -171,7 +176,7 @@ const ContractorPersonForm = ({ contractor }: any) => {
             type="text"
             placeholder="Rut"
             id="Rut"
-            disabled={!pathname.includes("/new")}
+            disabled={!pathname.includes("/new") && !isEditing}
             maxLength={9}
             className={`w-full ${errors.rut ? "border-red-500" : ""}`}
             value={rut || ""}
@@ -188,7 +193,7 @@ const ContractorPersonForm = ({ contractor }: any) => {
             })}
             type="text"
             id="name"
-            disabled={!pathname.includes("/new")}
+            disabled={!pathname.includes("/new") && !isEditing}
             placeholder="Nombre"
             className={`w-full ${
               errors.name?.message?.length ? "border-red-500" : ""
@@ -207,7 +212,7 @@ const ContractorPersonForm = ({ contractor }: any) => {
             })}
             type="text"
             id="paternalLastName"
-            disabled={!pathname.includes("/new")}
+            disabled={!pathname.includes("/new") && !isEditing}
             placeholder="Apellido Paterno"
             className={`w-full ${
               errors.paternalLastName?.message?.length ? "border-red-500" : ""
@@ -227,7 +232,7 @@ const ContractorPersonForm = ({ contractor }: any) => {
             type="text"
             id="maternalLastName"
             placeholder="Apellido Materno"
-            disabled={!pathname.includes("/new")}
+            disabled={!pathname.includes("/new") && !isEditing}
             className={`w-full ${
               errors.maternalLastName?.message?.length ? "border-red-500" : ""
             }`}
@@ -245,7 +250,7 @@ const ContractorPersonForm = ({ contractor }: any) => {
             })}
             type="text"
             id="address"
-            disabled={!pathname.includes("/new")}
+            disabled={!pathname.includes("/new") && !isEditing}
             placeholder="Dirección"
             className={`w-full ${
               errors.address?.message?.length ? "border-red-500" : ""
@@ -268,7 +273,7 @@ const ContractorPersonForm = ({ contractor }: any) => {
             data={districtList}
             dataValue="district_name"
             dataText="district_name"
-            enabled={pathname.includes("/new")}
+            enabled={pathname.includes("/new") || isEditing}
           />
         </div>
         <div className="flex w-full flex-col">
@@ -286,7 +291,7 @@ const ContractorPersonForm = ({ contractor }: any) => {
             })}
             type="email"
             id="email"
-            disabled={!pathname.includes("/new")}
+            disabled={!pathname.includes("/new") && !isEditing}
             placeholder="Correo electrónico"
             className={`w-full ${
               errors.email?.message?.length ? "border-red-500" : ""
@@ -308,7 +313,7 @@ const ContractorPersonForm = ({ contractor }: any) => {
             })}
             type="text"
             id="phone"
-            disabled={!pathname.includes("/new")}
+            disabled={!pathname.includes("/new") && !isEditing}
             placeholder="Teléfono"
             maxLength={9}
             className={`w-full ${
@@ -319,6 +324,16 @@ const ContractorPersonForm = ({ contractor }: any) => {
         </div>
         {pathname === "/entities/contractor/new/person" && (
           <Button>Crear</Button>
+        )}
+        {isEditing && (
+          <ContentRow gap="5px">
+            <Button className="w-[305px] rounded-full">Guardar</Button>{" "}
+            <ButtonIcon
+              iconName="edit"
+              color={"gray"}
+              onClick={() => setIsEditing(!isEditing)}
+            />
+          </ContentRow>
         )}
       </ContentCell>
     </form>

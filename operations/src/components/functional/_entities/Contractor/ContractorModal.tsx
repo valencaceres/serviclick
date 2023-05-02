@@ -11,8 +11,9 @@ import { ContentCell } from "../../../layout/Content";
 const ContractorModal = ({
   showContractorModal,
   setShowContractorModal,
+  contractor
 }: any) => {
-  const { contractor, createContractor } = useContractor();
+  const { createContractor } = useContractor();
 
   const [enableSave, setEnableSave] = useState(false);
 
@@ -27,10 +28,10 @@ const ContractorModal = ({
       setClosed={() => setShowContractorModal(false)}
       title="Modificar cliente">
       <ContentCell gap="20px" align="center">
-        {contractor.type === "P" ? (
-          <ContractorPersonForm enabled={true} setEnableSave={setEnableSave} />
+        {contractor?.type === "P" ? (
+          <ContractorPersonForm contractor={contractor} />
         ) : (
-          <ContractorCompanyForm enabled={true} setEnableSave={setEnableSave} />
+          <ContractorCompanyForm contractor={contractor} />
         )}
         <Button
           text="Registrar"
