@@ -8,7 +8,9 @@ const Content = ({ children, align }: any) => {
 
 const ContentHalfRow = ({ children, align }: any) => {
   return (
-    <div className="flex w-full flex-wrap justify-center gap-5">{children}</div>
+    <div className="flex w-full flex-wrap items-start justify-center gap-5">
+      {children}
+    </div>
   );
 };
 

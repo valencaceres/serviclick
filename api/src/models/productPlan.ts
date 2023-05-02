@@ -97,4 +97,20 @@ const getProductById: any = async (id: string) => {
   }
 };
 
-export { createModel, getByProductIdModel, getProductById };
+const getById: any = async (id: string) => {
+  try {
+    const result = await pool.query(
+      `
+      SELECT *
+      FROM app.productplan
+      WHERE id = $1`,
+      [id]
+    );
+
+    return { success: true, data: result.rows[0], error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+export { createModel, getByProductIdModel, getProductById, getById };

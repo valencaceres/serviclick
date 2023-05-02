@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -10,41 +10,144 @@ import InputText from "../../ui/InputText";
 import TextArea from "../../ui/TextArea/TextArea";
 import CaseServiceTable from "./CaseServiceTable";
 
-import { useCase } from "../../../store/hooks/useCase";
-import { useQueryCase, useQueryStage } from "../../../hooks/query";
-import { useUser } from "../../../hooks";
+import {
+  useQueryCase,
+  useQueryContractor,
+  useQueryStage,
+  useQueryUF,
+} from "../../../hooks/query";
+import { useUser } from "@clerk/nextjs";
+import Link from "next/link";
+interface IAssistance {
+  id: string;
+  name: string;
+  amount: string;
+  currency: string;
+  maximum: string;
+  lack: string;
+  events: string;
+}
 
-const CaseFormService = () => {
+interface IProduct {
+  id: string;
+  name: string;
+  assistance: IAssistance;
+}
+
+const CaseFormService = ({ thisCase }: any) => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const { case_id } = router.query;
-
-  const [assistance, setAssistance] = useState<any>(null);
-  const [assistances, setAssistances] = useState<any>(null);
-  const [product, setProduct] = useState<any>(null);
+  const [uniqueAssistances, setUniqueAssistances] = useState<any>([]);
+  const [selectedAssistance, setSelectedAssistance] =
+    useState<IAssistance | null>(null);
+  const [relatedProducts, setRelatedProducts] = useState<any>([]);
+  const [selectedProduct, setSelectedProduct] = useState<IProduct | null>(null);
   const [description, setDescription] = useState("");
   const [stage, setStage] = useState<string>("");
 
-  const { data } = useCase();
-  const { id: user_id } = useUser().user;
+  const { user } = useUser();
 
-  const { data: thisCase } = useQueryCase().useGetById(case_id as string);
+  const { data: ufValue } = useQueryUF().useGetUFValue();
   const { data: stageData } = useQueryStage().useGetAll();
   const { mutate: updateCase } = useQueryCase().useCreate();
 
+  const { data: assistanceData } = useQueryCase().useGetAssistanceData(
+    thisCase?.insured_id,
+    selectedAssistance?.id as string,
+    selectedProduct?.id as string
+  );
+
+  const { data } = useQueryCase().useGetBeneficiaryByRut(thisCase?.rut);
+  const { data: contractor } = useQueryContractor().useGetById(
+    thisCase?.contractor_id
+  );
+
+  useEffect(() => {
+    const assistancesMap = new Map(
+      data?.products.map((product: any) => [
+        product.assistance.id,
+        { ...product.assistance },
+      ])
+    );
+    setUniqueAssistances(Array.from(assistancesMap.values()));
+  }, [data]);
+
+  useEffect(() => {
+    if (selectedAssistance) {
+      const productsMap = new Map(
+        data?.products
+          .filter(
+            (product: any) => product.assistance.id === selectedAssistance?.id
+          )
+          .map((product: any) => [product.id, product])
+      );
+      setRelatedProducts(Array.from(productsMap.values()));
+    } else {
+      if (selectedAssistance === null) {
+        setSelectedProduct(null);
+      }
+      setRelatedProducts([]);
+    }
+  }, [selectedAssistance]);
+
+  useEffect(() => {
+    setSelectedProduct(relatedProducts[0]);
+  }, [relatedProducts]);
+
+  const handleAssistanceChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const assistanceId = event.target.value;
+    const assistance =
+      uniqueAssistances.find((a: any) => a.id === assistanceId) || null;
+    setSelectedAssistance(assistance);
+  };
+
+  const handleProductChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const productId = event.target.value;
+    const product =
+      relatedProducts.find((p: any) => p.id === productId) || null;
+    setSelectedProduct(product);
+  };
+
+  const currentStage = useMemo(() => {
+    return (
+      stageData?.find((s: any) => s.name === "Registro de servicio")?.id || ""
+    );
+  }, [stageData]);
+
+  const currentDescription = useMemo(() => {
+    return thisCase?.stages.find((s: any) => s.stage === "Registro de servicio")
+      ?.description;
+  }, [thisCase]);
+
+  useEffect(() => {
+    if (currentStage) {
+      setStage(currentStage);
+    }
+  }, [currentStage]);
+
+  useEffect(() => {
+    if (currentDescription) {
+      setDescription(currentDescription);
+    }
+  }, [currentDescription]);
+
   const handleAddService = () => {
-    if (assistance && product && description) {
+    if (selectedAssistance && selectedProduct && description) {
       return updateCase(
         {
           applicant: {
-            id: thisCase?.applicant_id,
+            id: thisCase?.insured_id ? thisCase?.insured_id : thisCase?.beneficiary_id,
           },
           number: thisCase?.case_number,
-          product_id: product?.id,
-          assistance_id: assistance,
+          product_id: selectedProduct?.id,
+          assistance_id: selectedAssistance?.id,
+          beneficiary_id: thisCase?.beneficiary_id,
+          company_id: thisCase?.contractor_id,
           stage_id: stage,
-          user_id: user_id,
+          user_id: user?.id,
           description,
           isactive: true,
         },
@@ -60,87 +163,134 @@ const CaseFormService = () => {
   };
 
   useEffect(() => {
-    if (data?.products?.length > 0) {
-      setAssistances(data?.products.map((item: any) => item.assistance));
+    if (thisCase?.assistance_id && thisCase?.product_id) {
+      const assistance = uniqueAssistances.find(
+        (a: any) => a.id === thisCase.assistance_id
+      );
+      setSelectedAssistance(assistance || null);
+
+      const product = relatedProducts.find(
+        (p: any) => p.id === thisCase.product_id
+      );
+      setSelectedProduct(product || null);
     }
-  }, [data]);
-
-  useEffect(() => {
-    setProduct(
-      data?.products?.find((item: any) => item.assistance.id === assistance)
-    );
-  }, [assistance]);
-
-  useEffect(() => {
-    setAssistance(
-      assistances?.find((a: any) => a.id === thisCase?.assistance_id)?.id
-    );
-    setStage(
-      stageData?.find((s: any) => s.name === "Registro de servicio")?.id || ""
-    );
-    setDescription(
-      thisCase?.stages.find((s: any) => s.stage === "Registro de servicio")
-        ?.description
-    );
   }, [thisCase]);
 
   return (
     <div>
       <ContentCell gap="20px">
         <ContentCell gap="5px">
+          {thisCase?.contractor_id && (
+            <Link href={`/entities/contractor/${contractor?.id}`}>
+              <InputText
+                label="Cliente"
+                value={contractor?.companyName || (contractor?.name + " " + contractor?.paternalLastName)}
+                disabled
+              />
+            </Link>
+          )}
           <ComboBox
             label="Servicio"
             placeHolder="Seleccione servicio"
             width="525px"
-            value={assistance}
+            value={selectedAssistance?.id || ""}
             enabled={thisCase?.is_active || !thisCase ? true : false}
-            onChange={(e: any) => setAssistance(e.target.value)}
-            data={assistances}
+            onChange={handleAssistanceChange}
+            data={uniqueAssistances}
             dataText="name"
             dataValue="id"
           />
-          {assistance ? (
-            <ContentRow gap="5px">
-              <InputText
-                label="Monto Disponible ($)"
-                value={
-                  product?.assistance.currency === "P"
-                    ? parseInt(product?.assistance.amount).toLocaleString(
-                        "es-CL",
-                        {
+          {selectedAssistance && (
+            <ComboBox
+              label="Producto"
+              placeHolder="Seleccione producto"
+              width="525px"
+              value={selectedProduct?.id || ""}
+              enabled={thisCase?.is_active || !thisCase ? true : false}
+              onChange={handleProductChange}
+              data={relatedProducts}
+              dataText="name"
+              dataValue="id"
+            />
+          )}
+          {selectedProduct ? (
+            <>
+              <ContentRow gap="5px">
+                <InputText
+                  label={
+                    selectedAssistance?.currency === "U"
+                      ? "Monto Disponible (UF)"
+                      : "Monto Disponible ($)"
+                  }
+                  value={
+                    assistanceData
+                      ? selectedAssistance?.currency === "P"
+                        ? assistanceData?.remaining_amount.toLocaleString(
+                            "es-CL",
+                            {
+                              style: "currency",
+                              currency: "CLP",
+                            }
+                          )
+                        : (
+                            assistanceData?.remaining_amount *
+                            ufValue.serie[0].valor
+                          ).toLocaleString("es-CL", {
+                            style: "currency",
+                            currency: "CLP",
+                          })
+                      : selectedAssistance?.currency === "P"
+                      ? parseInt(selectedAssistance?.amount).toLocaleString(
+                          "es-CL",
+                          {
+                            style: "currency",
+                            currency: "CLP",
+                          }
+                        )
+                      : (
+                          parseInt(selectedAssistance?.amount!) *
+                          ufValue.serie[0].valor
+                        ).toLocaleString("es-CL", {
                           style: "currency",
                           currency: "CLP",
-                        }
-                      )
-                    : product?.assistance.amount + " UF" || ""
-                }
-                type="text"
-                width="152px"
-                disabled
-              />
-              <InputText
-                label="Eventos restantes"
-                value={product?.assistance.events || ""}
-                type="number"
-                width="129px"
-                disabled
-              />
-              <InputText
-                label="Límite"
-                value={product?.assistance.maximum || ""}
-                type="text"
-                width="234px"
-                disabled
-              />
-            </ContentRow>
+                        })
+                  }
+                  type="text"
+                  width={`${
+                    Number(selectedAssistance?.events) !== 0 ? "152px" : "286px"
+                  }`}
+                  disabled
+                />
+                {Number(selectedAssistance?.events) !== 0 && (
+                  <InputText
+                    label="Eventos restantes"
+                    value={
+                      assistanceData
+                        ? assistanceData?.remaining_events
+                        : selectedAssistance?.events
+                    }
+                    type="number"
+                    width="129px"
+                    disabled
+                  />
+                )}
+                <InputText
+                  label="Límite"
+                  value={selectedAssistance?.maximum || "No hay información"}
+                  type="text"
+                  width="234px"
+                  disabled
+                />
+              </ContentRow>
+            </>
           ) : null}
         </ContentCell>
-        {assistance ? (
+        {selectedProduct ? (
           <Fragment>
             <h2 className="text-md font-semibold text-secondary-500">
-              {product?.name}
+              {selectedProduct?.name}
             </h2>
-            <CaseServiceTable product={product} />
+            <CaseServiceTable product={selectedProduct} />
             <TextArea
               value={description}
               disabled={thisCase?.is_active ? false : true}
@@ -153,7 +303,7 @@ const CaseFormService = () => {
         ) : null}
         <Button
           text="Continuar"
-          enabled={thisCase?.is_active ? true : false}
+          enabled={thisCase?.is_active && selectedProduct ? true : false}
           onClick={handleAddService}
         />
       </ContentCell>

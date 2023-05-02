@@ -6,69 +6,63 @@ import { ContentCell, ContentRow } from "../../layout/Content";
 import Button from "../../ui/Button";
 import InputText from "../../ui/InputText";
 
-import { useQueryCase, useQueryStage } from "../../../hooks/query";
-import { useUser } from "../../../hooks";
+import {
+  useQueryCase,
+  useQueryContractor,
+  useQueryStage,
+} from "../../../hooks/query";
 import TextArea from "../../ui/TextArea/TextArea";
 import ComboBox from "../../ui/ComboBox";
 import { decisions } from "../../../data/masters";
+import { useUser } from "@clerk/nextjs";
+import { CaseDescription } from "./CaseDescription";
 
 const CaseFormEvaluation = ({ thisCase }: any) => {
   const router = useRouter();
-  const { stage } = router.query;
   const queryClient = useQueryClient();
 
-  const [thisStage, setThisStage] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [justification, setJustification] = useState<string>("");
   const [evaluation, setEvaluation] = useState<string>("");
 
-  const { id: user_id } = useUser().user;
+  const { user } = useUser();
   const { data: stages } = useQueryStage().useGetAll();
   const { mutate: updateCase } = useQueryCase().useCreate();
+
+  const findStageByName = (name: string) =>
+    stages?.find((s: any) => s.name.toLowerCase() === name.toLowerCase());
+  const findStageByStage = (stage: string) =>
+    thisCase?.stages.find(
+      (s: any) => s.stage.toLowerCase() === stage.toLowerCase()
+    );
+
+  const updateCaseData = (stageName: string, description?: string) => ({
+    applicant: { id: thisCase?.insured_id },
+    number: thisCase?.case_number,
+    product_id: thisCase?.product_id,
+    assistance_id: thisCase?.assistance_id,
+    stage_id: findStageByName(stageName)?.id || "",
+    company_id: thisCase?.contractor_id,
+    user_id: user?.id,
+    description,
+    isactive: true,
+  });
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (justification) {
       return updateCase(
-        {
-          applicant: {
-            id: thisCase?.applicant_id,
-          },
-          number: thisCase?.case_number,
-          product_id: thisCase?.product_id,
-          assistance_id: thisCase?.assistance_id,
-          stage_id:
-            stages?.find((s: any) => s.name === "Evaluación del evento")?.id ||
-            "",
-          user_id: user_id,
-          description: justification,
-          isactive: true,
-        },
+        updateCaseData("Evaluación del evento", justification),
         {
           onSuccess: () => {
-            return updateCase(
-              {
-                applicant: {
-                  id: thisCase?.applicant_id,
-                },
-                number: thisCase?.case_number,
-                product_id: thisCase?.product_id,
-                assistance_id: thisCase?.assistance_id,
-                stage_id:
-                  stages?.find((s: any) => s.name === evaluation)?.id || "",
-                user_id: user_id,
-                description: description,
-                isactive: true,
+            return updateCase(updateCaseData(evaluation), {
+              onSuccess: () => {
+                router.push(
+                  `/case/${thisCase?.case_id}/${evaluation.toLowerCase()}`
+                );
+                queryClient.invalidateQueries(["case", thisCase?.case_id]);
               },
-              {
-                onSuccess: () => {
-                  router.push(
-                    `/case/${thisCase?.case_id}/${evaluation.toLowerCase()}`
-                  );
-                  queryClient.invalidateQueries(["case", thisCase?.case_id]);
-                },
-              }
-            );
+            });
           },
         }
       );
@@ -77,42 +71,24 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
   };
 
   useEffect(() => {
-    if (stages) {
-      setThisStage(stages.find((s: any) => s.name.toLowerCase() === stage)?.id);
-    }
-  }, [stages, stage]);
-
-  useEffect(() => {
     if (thisCase) {
-      setDescription(
-        thisCase?.stages.find((s: any) => s.stage === "Registro de servicio")
-          ?.description
-      );
-      setJustification(
-        thisCase?.stages.find((s: any) => s.stage === "Evaluación del evento")
-          ?.description
-      );
-      if (
-        thisCase?.stages?.find((s: any) => s.stage === "Solución particular")
-      ) {
-        setEvaluation("Solución particular");
-      }
-      if (
-        thisCase?.stages?.find(
-          (s: any) => s.stage === "Designación de convenio"
-        )
-      ) {
-        setEvaluation("Designación de convenio");
-      }
-      if (
-        thisCase?.stages?.find(
-          (s: any) => s.stage === "Designación de especialista"
-        )
-      ) {
-        setEvaluation("Designación de especialista");
+      setDescription(findStageByStage("Registro de servicio")?.description);
+      setJustification(findStageByStage("Evaluación del evento")?.description);
+      const evaluationStages = [
+        "Solución particular",
+        "Designación de convenio",
+        "Designación de especialista",
+      ];
+
+      for (const stageName of evaluationStages) {
+        if (findStageByStage(stageName)) {
+          setEvaluation(stageName);
+          break;
+        }
       }
     }
   }, [router, thisCase]);
+
   return (
     <form
       action=""
@@ -121,31 +97,7 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
       onSubmit={handleSubmit}
     >
       <ContentCell gap="20px">
-        <ContentCell gap="5px">
-          <InputText
-            label="Cliente"
-            value={"Embotelladora Andina S.A."}
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-          <InputText
-            label="Asegurado"
-            value={
-              thisCase?.applicant_name + " " + thisCase?.applicant_lastname
-            }
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-          <InputText
-            label="Servicio"
-            value={thisCase?.assistance}
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-        </ContentCell>
+        <CaseDescription thisCase={thisCase} />
         <ContentCell gap="20px">
           <TextArea
             value={description}
@@ -175,7 +127,11 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
             dataValue="name"
           />
         </ContentCell>
-        <Button text="Registrar evaluación" type="submit" />
+        <Button
+          enabled={thisCase?.is_active ? true : false}
+          text="Registrar evaluación"
+          type="submit"
+        />
       </ContentCell>
     </form>
   );

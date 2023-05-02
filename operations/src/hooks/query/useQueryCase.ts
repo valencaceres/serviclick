@@ -9,6 +9,12 @@ const createCase = async (caseData: any) => {
   return data;
 };
 
+const getBeneficiaryByRut = async (rut: string) => {
+  const { data } = await apiInstance.get(`/case/getBeneficiaryByRut/${rut}`);
+
+  return data;
+};
+
 const getAll = async () => {
   const { data } = await apiInstance.get(`/case/all`);
   return data;
@@ -16,11 +22,16 @@ const getAll = async () => {
 
 const getCaseById = async (id: string) => {
   const { data } = await apiInstance.get(`/case/getById/${id}`);
+
   return data;
 };
 
 const uploadDocument = async (formData: any) => {
-  const { data } = await apiInstance.post(`/case/uploadDocument`, formData);
+  const { data } = await apiInstance.post(`/case/uploadDocument`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return data;
 };
 
@@ -33,6 +44,7 @@ const getAttach = async (case_id: string, casestage_id: string) => {
 
 const getNewCaseNumber = async () => {
   const { data } = await apiInstance.get(`/case/getNewCaseNumber`);
+
   return data;
 };
 
@@ -69,18 +81,44 @@ const getAssignedSpecialist = async (case_id: string, casestage_id: string) => {
 };
 
 const getAssistanceData = async (
-  applicant_id: string,
+  insured_id: string,
   assistance_id: string,
   product_id: string
 ) => {
   const { data } = await apiInstance.get(
-    `/case/getAssistanceData/${applicant_id}/${assistance_id}/${product_id}`
+    `/case/getAssistanceData/${insured_id}/${assistance_id}/${product_id}`
   );
   return data;
 };
 
 const getReimbursment = async (case_id: string) => {
   const { data } = await apiInstance.get(`/case/getReimbursment/${case_id}`);
+  return data;
+};
+
+const getAllReimbursements = async () => {
+  const { data } = await apiInstance.get(`/case/getAllReimbursements`);
+  return data;
+};
+
+const updateReimbursementStatus = async (reimbursementData: any) => {
+  const { data } = await apiInstance.put(
+    `/case/updateReimbursementStatus`,
+    reimbursementData
+  );
+  return data;
+};
+
+const createChatMessage = async (messageData: any) => {
+  const { data } = await apiInstance.post(
+    `/case/createChatMessage`,
+    messageData
+  );
+  return data;
+};
+
+const getChatByCase = async (case_id: string) => {
+  const { data } = await apiInstance.get(`/case/getChatByCase/${case_id}`);
   return data;
 };
 
@@ -167,15 +205,15 @@ const useReimburse = () => {
 };
 
 const useGetAssistanceData = (
-  applicant_id: string,
+  insured_id: string,
   assistance_id: string,
   product_id: string
 ) => {
   return useQuery(
-    ["case", applicant_id, assistance_id, product_id],
-    () => getAssistanceData(applicant_id, assistance_id, product_id),
+    ["case", insured_id, assistance_id, product_id],
+    () => getAssistanceData(insured_id, assistance_id, product_id),
     {
-      enabled: !!applicant_id && !!assistance_id && !!product_id,
+      enabled: !!insured_id && !!assistance_id && !!product_id,
     }
   );
 };
@@ -183,6 +221,30 @@ const useGetAssistanceData = (
 const useGetReimbursment = (case_id: string) => {
   return useQuery(["caseReimburse", case_id], () => getReimbursment(case_id), {
     enabled: !!case_id,
+  });
+};
+
+const useGetAllReimbursements = () => {
+  return useQuery(["allReimbursements"], getAllReimbursements);
+};
+
+const useUpdateReimbursementStatus = () => {
+  return useMutation(["caseReimburse"], updateReimbursementStatus);
+};
+
+const useCreateChatMessage = () => {
+  return useMutation(["caseMessage"], createChatMessage);
+};
+
+const useGetChatByCase = (case_id: string) => {
+  return useQuery(["caseMessages", case_id], () => getChatByCase(case_id), {
+    enabled: !!case_id,
+  });
+};
+
+const useGetBeneficiaryByRut = (rut: string) => {
+  return useQuery(["beneficiary", rut], () => getBeneficiaryByRut(rut), {
+    enabled: rut?.length > 10,
   });
 };
 
@@ -201,6 +263,11 @@ const useQueryCase = () => {
     useReimburse,
     useGetAssistanceData,
     useGetReimbursment,
+    useGetAllReimbursements,
+    useUpdateReimbursementStatus,
+    useCreateChatMessage,
+    useGetChatByCase,
+    useGetBeneficiaryByRut,
   };
 };
 

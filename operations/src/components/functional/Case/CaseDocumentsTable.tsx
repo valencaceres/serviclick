@@ -17,10 +17,8 @@ import Link from "next/link";
 const CaseDocumentsTable = ({
   thisCase,
   thisStage,
-  uploadData,
-  setData,
-  documentData,
-  setDocumentData,
+  uploadedFiles,
+  setUploadedFiles,
 }: any) => {
   const { data } = useCase();
   const [assistance, setAssistance] = useState<any>(null);
@@ -40,23 +38,12 @@ const CaseDocumentsTable = ({
   );
 
   const handleChangeInput = (e: any, item: any) => {
-    if (!e.target.files || e.target.files.length === 0) {
-      setData([...uploadData, e.target.files[0]]);
-      setDocumentData([...documentData, item.id]);
+    if (e.target.files && e.target.files.length > 0) {
+      setUploadedFiles([
+        ...uploadedFiles,
+        { file: e.target.files[0], documentId: item.id },
+      ]);
     }
-  };
-
-  const handleDownload = (
-    fileData: string,
-    fileName: string,
-    mimeType: string
-  ) => {
-    const blob = new Blob([fileData], { type: mimeType });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = fileName;
-    link.click();
   };
 
   return (
@@ -66,7 +53,7 @@ const CaseDocumentsTable = ({
           Documento
         </TableCell>
         <TableCell width="100px">Subir</TableCell>
-        <TableCell width="110px">Descargar</TableCell>
+        <TableCell width="110px">Visualizar</TableCell>
         <TableCellEnd />
       </TableHeader>
       <TableDetail>
@@ -87,7 +74,7 @@ const CaseDocumentsTable = ({
                       className={"hidden"}
                       accept=".csv .jpg .png .pdf .jpeg"
                     />
-                    {uploadData[idx] ? (
+                    {uploadedFiles[idx] ? (
                       <Icon iconName="check" />
                     ) : (
                       <Icon iconName="upload" button={true} />
@@ -98,17 +85,13 @@ const CaseDocumentsTable = ({
               <TableCell width="110px" align="center">
                 <TableIcons>
                   {attachments?.find((a: any) => a.document_id === item.id) ? (
-                    <Icon
-                      iconName="download"
-                      button={true}
-                      onClick={() =>
-                        handleDownload(
-                          attachments[idx].file.base64,
-                          attachments[idx].file.originalname,
-                          attachments[idx].file.mimetype
-                        )
-                      }
-                    />
+                    <Link
+                      className="flex items-center"
+                      href={attachments[idx].viewLink}
+                      target="_blank"
+                    >
+                      <Icon iconName="open_in_new" button={true} />
+                    </Link>
                   ) : null}
                 </TableIcons>
               </TableCell>

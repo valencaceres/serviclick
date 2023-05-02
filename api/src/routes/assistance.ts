@@ -12,6 +12,7 @@ import {
   getValues,
   getValuesById,
   getDocumentsById,
+  assignValue,
 } from "../controllers/assistance";
 
 const AssistanceRouter = Router();
@@ -30,5 +31,6 @@ AssistanceRouter.get(
   getValuesById
 );
 AssistanceRouter.get("/getDocumentsById/:id", auth, getDocumentsById);
+AssistanceRouter.post("/assignValue", auth, assignValue);
 
 export default AssistanceRouter;

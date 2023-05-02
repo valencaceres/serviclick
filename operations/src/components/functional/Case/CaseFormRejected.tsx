@@ -2,12 +2,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 import { ContentCell } from "../../layout/Content";
-import InputText from "../../ui/InputText";
 import TextArea from "../../ui/TextArea/TextArea";
+import { CaseDescription } from "./CaseDescription";
 
 const CaseFormRejected = ({ thisCase }: any) => {
   const router = useRouter();
-  const { stage } = router.query;
   const [justification, setJustification] = useState<string>("");
 
   useEffect(() => {
@@ -17,34 +16,11 @@ const CaseFormRejected = ({ thisCase }: any) => {
       );
     }
   }, [thisCase]);
+
   return (
     <form>
       <ContentCell gap="20px">
-        <ContentCell gap="5px">
-          <InputText
-            label="Cliente"
-            value={"Embotelladora Andina S.A."}
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-          <InputText
-            label="Asegurado"
-            value={
-              thisCase?.applicant_name + " " + thisCase?.applicant_lastname
-            }
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-          <InputText
-            label="Servicio"
-            value={thisCase?.assistance}
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-        </ContentCell>
+      <CaseDescription thisCase={thisCase} />
         <ContentCell gap="20px">
           <TextArea
             label="Justificación"

@@ -1,37 +1,40 @@
-import { useEffect, Fragment } from "react";
+import { useEffect, Fragment, useState } from "react";
 import { useRouter } from "next/router";
 import { useQuery } from "@tanstack/react-query";
 
-import { ContentHalfRow } from "../../../components/layout/ResponsiveContent";
-import CaseFormService from "../../../components/functional/Case/CaseFormService";
-import CaseStageList from "../../../components/functional/Case/CaseStageList";
-import FloatMenu from "../../../components/ui/FloatMenu";
-import ButtonIcon from "../../../components/ui/ButtonIcon";
+import { ContentHalfRow } from "~/components/layout/ResponsiveContent";
+import CaseFormService from "~/components/functional/Case/CaseFormService";
+import CaseStageList from "~/components/functional/Case/CaseStageList";
+import FloatMenu from "~/components/ui/FloatMenu";
+import ButtonIcon from "~/components/ui/ButtonIcon";
 
-import { useUI } from "../../../hooks";
-import { useCase } from "../../../store/hooks/useCase";
-import CaseFormRecordReception from "../../../components/functional/Case/CaseFormRecordReception";
-import CaseFormEvaluation from "../../../components/functional/Case/CaseFormEvaluation";
-import CaseFormNew from "../../../components/functional/Case/CaseFormNew";
-import CaseFormPartner from "../../../components/functional/Case/CaseFormPartner";
-import CaseFormSpecialist from "../../../components/functional/Case/CaseFormSpecialist";
-import CaseTracking from "../../../components/functional/Case/CaseTracking";
-import CaseResolution from "../../../components/functional/Case/CaseResolution";
-import CaseFormSolution from "../../../components/functional/Case/CaseFormSolution";
-import CaseRating from "../../../components/functional/Case/CaseRating";
-import CaseFormRejected from "../../../components/functional/Case/CaseFormRejected";
+import { useUI } from "~/hooks";
+import CaseFormRecordReception from "~/components/functional/Case/CaseFormRecordReception";
+import CaseFormEvaluation from "~/components/functional/Case/CaseFormEvaluation";
+import CaseFormNew from "~/components/functional/Case/CaseFormNew";
+import CaseFormPartner from "~/components/functional/Case/CaseFormPartner";
+import CaseFormSpecialist from "~/components/functional/Case/CaseFormSpecialist";
+import CaseTracking from "~/components/functional/Case/CaseTracking";
+import CaseFormResolution from "~/components/functional/Case/CaseFormResolution";
+import CaseFormSolution from "~/components/functional/Case/CaseFormSolution";
+import CaseRating from "~/components/functional/Case/CaseRating";
+import CaseFormRejected from "~/components/functional/Case/CaseFormRejected";
+import { ContentCell } from "~/components/layout/Content";
+import CaseNotes from "~/components/functional/Case/CaseChat";
+import { Modal, Window } from "~/components/ui/Modal";
+import { useQueryCase } from "~/hooks/query";
+import CaseFormInsuredData from "~/components/functional/Case/CaseFormInsuredData";
 
 const CaseStepPage = () => {
   const router = useRouter();
-  const { setTitleUI, filters } = useUI();
-  const { data, getBeneficiaryByRut } = useCase();
+
+  const [showModal, setShowModal] = useState(false);
+
+  const { setTitleUI } = useUI();
   const { case_id, stage } = router.query;
 
-  const { data: thisCase }: any = useQuery(["case", `${case_id}`], {
-    enabled: !!case_id,
-  });
+  const { data: thisCase } = useQueryCase().useGetById(case_id as string);
 
-  const rut = thisCase?.rut;
   const number = thisCase?.case_number;
 
   const handleClickHome = () => {
@@ -42,9 +45,9 @@ const CaseStepPage = () => {
     router.push("/case");
   };
 
-  useEffect(() => {
-    getBeneficiaryByRut(rut);
-  }, [thisCase]);
+  const setClosed = () => {
+    setShowModal(false);
+  };
 
   useEffect(() => {
     setTitleUI(
@@ -54,6 +57,8 @@ const CaseStepPage = () => {
         ? `Apertura | Caso ${number}`
         : stage === "contención"
         ? `Contención | Caso ${number}`
+        : stage === "datos titular"
+        ? `Datos titular | Caso ${number}`
         : stage === "registro de servicio"
         ? `Registro de servicio | Caso ${number}`
         : stage === "recepción de antecedentes"
@@ -87,8 +92,10 @@ const CaseStepPage = () => {
           <CaseFormNew thisCase={thisCase} />
         ) : stage === "contención" ? (
           <CaseFormNew thisCase={thisCase} />
+        ) : stage === "datos titular" ? (
+          <CaseFormInsuredData thisCase={thisCase} />
         ) : stage === "registro de servicio" ? (
-          <CaseFormService />
+          <CaseFormService thisCase={thisCase} />
         ) : stage === "recepción de antecedentes" ? (
           <CaseFormRecordReception thisCase={thisCase} />
         ) : stage === "evaluación del evento" ? (
@@ -102,18 +109,25 @@ const CaseStepPage = () => {
         ) : stage === "seguimiento" ? (
           <CaseTracking thisCase={thisCase} />
         ) : stage === "resolución" ? (
-          <CaseResolution thisCase={thisCase} />
+          <CaseFormResolution thisCase={thisCase} />
         ) : stage === "calificación" ? (
           <CaseRating thisCase={thisCase} />
         ) : stage === "rechazado" ? (
           <CaseFormRejected thisCase={thisCase} />
         ) : null}
-        <CaseStageList />
+        <ContentCell gap="20px">
+          <CaseStageList setShowModal={setShowModal} showModal={showModal} />
+        </ContentCell>
       </ContentHalfRow>
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />
         <ButtonIcon iconName="arrow_back" onClick={handleClickBack} />
       </FloatMenu>
+      <Modal showModal={showModal}>
+        <Window setClosed={setClosed}>
+          <CaseNotes thisCase={thisCase} />
+        </Window>
+      </Modal>
     </Fragment>
   );
 };

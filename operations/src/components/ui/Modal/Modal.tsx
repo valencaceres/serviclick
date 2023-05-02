@@ -14,7 +14,8 @@ const Modal = ({ showModal, children }: any) => {
   return (
     <div
       className={styles.modal}
-      style={{ display: isShowModal ? "flex" : "none" }}>
+      style={{ display: isShowModal ? "flex" : "none" }}
+    >
       {children}
     </div>
   );
@@ -27,7 +28,7 @@ const Window = ({ title, children, setClosed }: any) => {
         <div className={styles.left}></div>
         <div className={styles.title}>{title}</div>
         <div className={styles.closeButton} onClick={setClosed}>
-          <span className="material-icons md-36">close</span>
+          <span className="material-icons select-none">close</span>
         </div>
       </div>
       <div className={styles.content}>{children}</div>

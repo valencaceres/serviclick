@@ -28,6 +28,7 @@ const initialData: IData = {
   },
   products: [
     {
+      lead_id: "",
       id: "",
       name: "",
       assistance: {

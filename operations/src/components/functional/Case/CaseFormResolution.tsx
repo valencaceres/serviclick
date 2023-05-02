@@ -6,25 +6,29 @@ import ComboBox from "../../ui/ComboBox";
 import TextArea from "../../ui/TextArea/TextArea";
 import Button from "../../ui/Button";
 
-import { useQueryCase, useQueryStage } from "../../../hooks/query";
-import { useUser } from "../../../hooks";
+import {
+  useQueryCase,
+  useQueryContractor,
+  useQueryStage,
+  useQueryUF,
+} from "../../../hooks/query";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
+import { useUser } from "@clerk/nextjs";
+import { CaseDescription } from "./CaseDescription";
 
-const CaseResolution = ({ thisCase }: any) => {
+const CaseFormResolution = ({ thisCase }: any) => {
   const router = useRouter();
-  const [stage, setStage] = useState<string>("");
   const [action, setAction] = useState<string>("");
   const [comment, setComment] = useState<string>("");
   const { data: stages } = useQueryStage().useGetAll();
 
   const queryClient = useQueryClient();
 
-  const { id: user_id } = useUser().user;
+  const { user } = useUser();
   const { data: thisReimbursement } = useQueryCase().useGetReimbursment(
     thisCase?.case_id
   );
-
   const { data: assignedPartner } = useQueryCase().useGetAssignedPartner(
     thisCase?.case_id,
     stages?.find((s: any) => s?.name === "Designación de convenio")?.id
@@ -41,13 +45,14 @@ const CaseResolution = ({ thisCase }: any) => {
     return updateCase(
       {
         applicant: {
-          id: thisCase?.applicant_id,
+          id: thisCase?.insured_id,
         },
         number: thisCase?.case_number,
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
+        company_id: thisCase?.contractor_id,
         stage_id: stages.find((s: any) => s?.name === "Calificación")?.id,
-        user_id: user_id,
+        user_id: user?.id,
         description: comment,
         isactive: true,
       },
@@ -56,13 +61,13 @@ const CaseResolution = ({ thisCase }: any) => {
           return updateCase(
             {
               applicant: {
-                id: thisCase?.applicant_id,
+                id: thisCase?.insured_id,
               },
               number: thisCase?.case_number,
               product_id: thisCase?.product_id,
               assistance_id: thisCase?.assistance_id,
               stage_id: stages.find((s: any) => s?.name === "Cerrado")?.id,
-              user_id: user_id,
+              user_id: user?.id,
               isactive: false,
             },
             {
@@ -82,13 +87,13 @@ const CaseResolution = ({ thisCase }: any) => {
     return updateCase(
       {
         applicant: {
-          id: thisCase?.applicant_id,
+          id: thisCase?.insured_id,
         },
         number: thisCase?.case_number,
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
         stage_id: stages.find((s: any) => s?.name === "Cerrado")?.id,
-        user_id: user_id,
+        user_id: user?.id,
         description: comment,
         isactive: false,
       },
@@ -112,7 +117,8 @@ const CaseResolution = ({ thisCase }: any) => {
     if (thisCase?.stages?.find((c: any) => c?.stage === "Cerrado")) {
       setAction("Cerrar caso");
       setComment(
-        thisCase?.stages?.find((c: any) => c?.stage === "Cerrado")?.description
+        thisCase?.stages?.find((c: any) => c?.stage === "Calificación")
+          ?.description
       );
     }
   }, [thisCase]);
@@ -120,59 +126,127 @@ const CaseResolution = ({ thisCase }: any) => {
   return (
     <form>
       <ContentCell gap="20px">
-        <ContentCell gap="5px">
-          <InputText
-            label="Cliente"
-            value={"Embotelladora Andina S.A."}
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-          <InputText
-            label="Asegurado"
-            value={
-              thisCase?.applicant_name + " " + thisCase?.applicant_lastname
-            }
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-          <InputText
-            label="Servicio"
-            value={thisCase?.assistance}
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-        </ContentCell>
+      <CaseDescription thisCase={thisCase} />
         <ContentCell gap="5px">
           {thisReimbursement && (
-            <ContentRow gap="5px">
-              <InputText
-                label="Monto a reembolsar"
-                value={
-                  thisReimbursement?.currency === "P"
-                    ? parseInt(thisReimbursement?.amount).toLocaleString(
+            <ContentCell gap="20px">
+              {thisCase?.stages.find((c: any) => c?.stage === "Resolución")
+                ?.description === "Reembolsar IMED" && (
+                <p className="font-semibold text-teal-blue">Reembolso IMED</p>
+              )}
+              <ContentRow gap="5px">
+                <InputText
+                  label="Monto a reembolsar"
+                  value={
+                    thisReimbursement?.currency === "P"
+                      ? parseInt(thisReimbursement?.amount).toLocaleString(
+                          "es-CL",
+                          {
+                            style: "currency",
+                            currency: "CLP",
+                          }
+                        )
+                      : (
+                          thisReimbursement?.amount *
+                          thisReimbursement?.uf_value
+                        ).toLocaleString("es-CL", {
+                          style: "currency",
+                          currency: "CLP",
+                        })
+                  }
+                  type="text"
+                  disabled={true}
+                  width="260px"
+                />
+                <InputText
+                  label="Estado"
+                  value={thisReimbursement?.status}
+                  type="text"
+                  disabled={true}
+                  width="260px"
+                />
+              </ContentRow>
+              {thisReimbursement?.status === "Aprobado" && (
+                <ContentRow gap="5px">
+                  {thisCase?.stages.find((c: any) => c?.stage === "Resolución")
+                    ?.description === "Reembolsar IMED" ? (
+                    <>
+                      <InputText
+                        label="Reembolso IMED"
+                        value={thisReimbursement?.imed_amount.toLocaleString(
+                          "es-CL",
+                          {
+                            style: "currency",
+                            currency: "CLP",
+                          }
+                        )}
+                        type="text"
+                        disabled={true}
+                        width="260px"
+                      />
+                      <InputText
+                        label="Reembolso ServiClick"
+                        value={thisReimbursement?.serviclick_amount.toLocaleString(
+                          "es-CL",
+                          {
+                            style: "currency",
+                            currency: "CLP",
+                          }
+                        )}
+                        type="text"
+                        disabled={true}
+                        width="260px"
+                      />
+                    </>
+                  ) : (
+                    <InputText
+                      label="Reembolso ServiClick"
+                      value={thisReimbursement?.serviclick_amount.toLocaleString(
                         "es-CL",
                         {
                           style: "currency",
                           currency: "CLP",
                         }
-                      )
-                    : thisReimbursement?.amount + " UF"
-                }
-                type="text"
-                disabled={true}
-                width="260px"
-              />
-              <InputText
-                label="Estado"
-                value={"Pendiente"}
-                type="text"
-                disabled={true}
-                width="260px"
-              />
-            </ContentRow>
+                      )}
+                      type="text"
+                      disabled={true}
+                      width="525px"
+                    />
+                  )}
+                </ContentRow>
+              )}
+              {thisReimbursement?.comment && (
+                <ContentRow gap="5px">
+                  <TextArea
+                    label="Observaciones del reembolso"
+                    width="525px"
+                    height="100px"
+                    value={thisReimbursement?.comment}
+                    disabled={true}
+                  />
+                </ContentRow>
+              )}
+              {["Aprobado", "Rechazado"].includes(
+                thisReimbursement?.status
+              ) && (
+                <ContentCell gap="5px">
+                  <TextArea
+                    label="Comentarios"
+                    width="525px"
+                    height="100px"
+                    value={comment}
+                    disabled={thisCase?.is_active === true ? false : true}
+                    onChange={(e: any) => setComment(e.target.value)}
+                  />
+                  <Button
+                    text="Cerrar caso"
+                    onClick={handleClose}
+                    width="525px"
+                    enabled={thisCase?.is_active === true ? true : false}
+                  />
+                </ContentCell>
+              )}
+            </ContentCell>
           )}
           {(assignedSpecialist || assignedPartner) && (
             <ContentCell gap="20px">
@@ -276,4 +350,4 @@ const CaseResolution = ({ thisCase }: any) => {
   );
 };
 
-export default CaseResolution;
+export default CaseFormResolution;

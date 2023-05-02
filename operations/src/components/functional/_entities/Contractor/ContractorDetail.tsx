@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { useState, useEffect, Fragment } from "react";
 
 import ContractorForm from "./ContractorForm";
@@ -22,12 +23,13 @@ import ButtonIcon from "../../../ui/ButtonIcon";
 import { useContractor } from "../../../../hooks";
 
 import { contractor } from "../../../../interfaces";
+import { Button } from "~/components/ui/ButtonC";
 
-const ContractorDetail = () => {
-  const { contractor, contractorLoading, getSubscriptionById } =
-    useContractor();
+const ContractorDetail = ({ contractor }: any) => {
+  const { pathname } = useRouter();
+  const { contractorLoading, getSubscriptionById } = useContractor();
 
-  const [showContractorModal, setShowContractorModal] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   const handleSuscriptionRowClick = (item: contractor.ISubscription) => {
     getSubscriptionById(item.subscription_id);
@@ -39,14 +41,20 @@ const ContractorDetail = () => {
         <ContentRow gap="20px">
           <ContentCell gap="5px">
             <Section title="Datos del Contratante" width="350px" />
-            <ContractorForm enabled={false} />
-            <ContentRow align="right">
-              <ButtonIcon
-                iconName="edit"
-                color="gray"
-                onClick={() => setShowContractorModal(true)}
-              />
-            </ContentRow>
+            <ContractorForm
+              contractor={contractor}
+              isEditing={isEditing}
+              setIsEditing={setIsEditing}
+            />
+            {pathname !== "entities/contractor/new" && !isEditing && (
+              <ContentRow align="right" gap="5px">
+                <ButtonIcon
+                  iconName="edit"
+                  color="gray"
+                  onClick={() => setIsEditing(!isEditing)}
+                />
+              </ContentRow>
+            )}
           </ContentCell>
           <ContentCell gap="5px">
             <Section title="Suscripciones" width="485px" />
@@ -58,26 +66,22 @@ const ContractorDetail = () => {
         </ContentRow>
         <ContentCell gap="5px">
           <Section title="Detalle del producto" width="855px" />
-          <ContractorProduct />
+          <ContractorProduct contractor={contractor} />
         </ContentCell>
         <ContentCell gap="5px">
           <Section title="Beneficiarios" width="855px" />
-          <ContractorInsured />
+          <ContractorInsured contractor={contractor} />
         </ContentCell>
         <ContentCell gap="5px">
           <Section title="Cargas" width="855px" />
-          <ContractorBeneficiaries />
+          <ContractorBeneficiaries contractor={contractor} />
         </ContentCell>
         <ContentCell gap="5px">
           <Section title="Detalle de la suscripción" width="855px" />
-          <ContractorSubscription />
+          <ContractorSubscription contractor={contractor} />
         </ContentCell>
       </ContentCell>
       <LoadingMessage showModal={contractorLoading} />
-      <ContractorModal
-        showContractorModal={showContractorModal}
-        setShowContractorModal={setShowContractorModal}
-      />
     </Fragment>
   );
 };

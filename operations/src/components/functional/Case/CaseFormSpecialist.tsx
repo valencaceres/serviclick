@@ -9,15 +9,18 @@ import ComboBox from "../../ui/ComboBox";
 
 import {
   useQueryCase,
+  useQueryContractor,
   useQuerySpecialist,
   useQueryStage,
 } from "../../../hooks/query";
-import { useUser } from "../../../hooks";
 import { useDistrict } from "../../../hooks";
+import { useUser } from "@clerk/nextjs";
+import { CaseDescription } from "./CaseDescription";
 
 const CaseFormSpecialist = ({ thisCase }: any) => {
   const router = useRouter();
-  const { stage } = router.query;
+  const { stage: stageFromQuery } = router.query;
+  const stage = stageFromQuery || "default_stage";
   const queryClient = useQueryClient();
 
   const [thisStage, setThisStage] = useState<string>("");
@@ -27,137 +30,113 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
   const [district, setDistrict] = useState<string>("");
   const { list: districtList } = useDistrict();
 
-  const { id: user_id } = useUser().user;
+  const { user } = useUser();
   const { data: stages } = useQueryStage().useGetAll();
-  const { data: getAssignedSpecialist } =
-    useQueryCase().useGetAssignedSpecialist(thisCase?.case_id, thisStage);
-
-  const { mutate: updateCase } = useQueryCase().useCreate();
-  const { data: specialists } = useQuerySpecialist().getByDistrict(
-    district,
-    thisCase?.assistance_id
-  );
-  const { mutate: assignSpecialist } = useQueryCase().useAssignSpecialist();
   const { data: assignedSpecialist } = useQueryCase().useGetAssignedSpecialist(
     thisCase?.case_id,
     thisStage
   );
+  const { data: specialists } = useQuerySpecialist().getByDistrict(
+    district,
+    thisCase?.assistance_id
+  );
+
+  const { mutate: updateCase } = useQueryCase().useCreate();
+  const { mutate: assignSpecialist } = useQueryCase().useAssignSpecialist();
 
   const minDate = new Date();
+
+  const createUpdateCaseData = (stageId: string) => ({
+    applicant: {
+      id: thisCase?.insured_id,
+    },
+    number: thisCase?.case_number,
+    product_id: thisCase?.product_id,
+    assistance_id: thisCase?.assistance_id,
+    company_id: thisCase?.contractor_id,
+    stage_id: stageId,
+    user_id: user?.id,
+    isactive: true,
+  });
 
   const handleAssign = (e: any) => {
     e.preventDefault();
     if (specialist) {
-      return updateCase(
-        {
-          applicant: {
-            id: thisCase?.applicant_id,
-          },
-          number: thisCase?.case_number,
-          product_id: thisCase?.product_id,
-          assistance_id: thisCase?.assistance_id,
-          stage_id: thisStage,
-          user_id: user_id,
-          isactive: true,
-        },
-        {
-          onSuccess: () => {
-            assignSpecialist(
-              {
-                case_id: thisCase?.case_id,
-                casestage_id: thisStage,
-                specialist_id: specialist,
-                district_id: district,
-                scheduled_date: scheduledDate || null,
-                scheduled_time: scheduledTime || null,
+      updateCase(createUpdateCaseData(thisStage), {
+        onSuccess: () => {
+          assignSpecialist(
+            {
+              case_id: thisCase?.case_id,
+              casestage_id: thisStage,
+              specialist_id: specialist,
+              district_id: district,
+              scheduled_date: scheduledDate || null,
+              scheduled_time: scheduledTime || null,
+            },
+            {
+              onSuccess: () => {
+                queryClient.invalidateQueries(["case", thisCase?.case_id]);
               },
-              {
-                onSuccess: () => {
-                  queryClient.invalidateQueries(["case", thisCase?.case_id]);
-                },
-              }
-            );
-          },
-        }
-      );
+            }
+          );
+        },
+      });
     }
   };
 
   const handleSchedule = (e: any) => {
     e.preventDefault();
     if (specialist) {
-      return updateCase(
-        {
-          applicant: {
-            id: thisCase?.applicant_id,
-          },
-          number: thisCase?.case_number,
-          product_id: thisCase?.product_id,
-          assistance_id: thisCase?.assistance_id,
-          stage_id: thisStage,
-          user_id: user_id,
-          isactive: true,
-        },
-        {
-          onSuccess: () => {
-            assignSpecialist(
-              {
-                case_id: thisCase?.case_id,
-                casestage_id: thisStage,
-                specialist_id: specialist,
-                district_id: district,
-                scheduled_date: scheduledDate || null,
-                scheduled_time: scheduledTime || null,
+      updateCase(createUpdateCaseData(thisStage), {
+        onSuccess: () => {
+          assignSpecialist(
+            {
+              case_id: thisCase?.case_id,
+              casestage_id: thisStage,
+              specialist_id: specialist,
+              district_id: district,
+              scheduled_date: scheduledDate || null,
+              scheduled_time: scheduledTime || null,
+            },
+            {
+              onSuccess: () => {
+                const nextStageId = stages?.find(
+                  (s: any) => s?.name === "Seguimiento"
+                )?.id;
+                updateCase(createUpdateCaseData(nextStageId), {
+                  onSuccess: () => {
+                    router.push(`/case/${thisCase?.case_id}/seguimiento`);
+                    queryClient.invalidateQueries(["case", thisCase?.case_id]);
+                  },
+                });
               },
-              {
-                onSuccess: () => {
-                  return updateCase(
-                    {
-                      applicant: {
-                        id: thisCase?.applicant_id,
-                      },
-                      number: thisCase?.case_number,
-                      product_id: thisCase?.product_id,
-                      assistance_id: thisCase?.assistance_id,
-                      stage_id: stages?.find(
-                        (s: any) => s?.name === "Seguimiento"
-                      )?.id,
-                      user_id: user_id,
-                      isactive: true,
-                    },
-                    {
-                      onSuccess: () => {
-                        router.push(`/case/${thisCase?.case_id}/seguimiento`);
-                        queryClient.invalidateQueries([
-                          "case",
-                          thisCase?.case_id,
-                        ]);
-                      },
-                    }
-                  );
-                },
-              }
-            );
-          },
-        }
-      );
+            }
+          );
+        },
+      });
     }
   };
 
   useEffect(() => {
-    if (stages) {
-      setThisStage(stages.find((s: any) => s.name.toLowerCase() === stage)?.id);
+    const stageStr = typeof stage === "string" ? stage : stage[0];
+
+    if (stages && stageStr) {
+      const foundStage = stages.find(
+        (s: any) => s.name.toLowerCase() === stageStr.toLowerCase()
+      );
+      if (foundStage) setThisStage(foundStage.id);
     }
+
     if (assignedSpecialist) {
-      setSpecialist(assignedSpecialist?.specialist_id);
-      setScheduledDate(assignedSpecialist?.scheduled_date?.split("T")[0]);
-      setScheduledTime(assignedSpecialist?.scheduled_time);
-      setDistrict(assignedSpecialist?.district_id);
+      setSpecialist(assignedSpecialist.specialist_id);
+      setScheduledDate(assignedSpecialist.scheduled_date?.split("T")[0]);
+      setScheduledTime(assignedSpecialist.scheduled_time);
+      setDistrict(assignedSpecialist.district_id);
     }
   }, [stages, stage, assignedSpecialist]);
 
   useEffect(() => {
-    if (specialists?.length === 0) {
+    if (!specialists?.length) {
       setSpecialist("");
     }
   }, [district, specialists]);
@@ -165,31 +144,7 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
   return (
     <div>
       <ContentCell gap="20px">
-        <ContentCell gap="5px">
-          <InputText
-            label="Cliente"
-            value={"Embotelladora Andina S.A."}
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-          <InputText
-            label="Asegurado"
-            value={
-              thisCase?.applicant_name + " " + thisCase?.applicant_lastname
-            }
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-          <InputText
-            label="Servicio"
-            value={thisCase?.assistance}
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-        </ContentCell>
+      <CaseDescription thisCase={thisCase} />
         <ContentCell gap="20px">
           <ComboBox
             label="Comuna de atención"
@@ -256,7 +211,7 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
                 width="260px"
               />
             </ContentRow>
-            {specialist !== getAssignedSpecialist?.specialist_id ? (
+            {specialist !== assignedSpecialist?.specialist_id ? (
               <Button
                 text="Asignar especialista"
                 type="button"
@@ -265,7 +220,7 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
                 onClick={handleAssign}
               />
             ) : (
-              getAssignedSpecialist && (
+              assignedSpecialist && (
                 <div className="mt-5">
                   <ContentCell gap="5px">
                     <ContentRow gap="5px">

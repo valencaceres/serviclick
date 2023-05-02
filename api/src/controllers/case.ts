@@ -1,4 +1,5 @@
 import createLogger from "../util/logger";
+import { getFileViewLink, uploadFile } from "../util/s3";
 
 import * as Case from "../models/case";
 import * as CaseStage from "../models/caseStage";
@@ -7,31 +8,62 @@ import * as CaseStagePartner from "../models/caseStagePartner";
 import * as CaseStageSpecialist from "../models/caseStageSpecialist";
 import * as CaseStageResult from "../models/caseStageResult";
 import * as CaseReimbursement from "../models/caseReimbursement";
-import * as Person from "../models/person";
+import * as CaseChat from "../models/caseChat";
+import * as Insured from "../models/insured";
+import * as Beneficiary from "../models/beneficiary";
+import { fetchClerkUser } from "../util/clerkUserData";
 
 const create = async (req: any, res: any) => {
   const {
     applicant,
+    company_id,
+    customer_id,
+    isInsured,
     number,
     product_id,
     assistance_id,
     description,
     stage_id,
     user_id,
+    beneficiary_id,
     isactive,
   } = req.body;
 
-  if (applicant?.type === "C") {
-    const applicantResponse = await Person.create(
+  if (applicant?.type === "C" && isInsured === true) {
+    const applicantResponse = await Insured.create(
       applicant.rut,
       applicant.name,
       applicant.paternalLastName,
       applicant.maternalLastName,
+      applicant.birthDate,
       applicant.address,
       applicant.district,
       applicant.email,
-      applicant.phone,
-      applicant.birthDate
+      applicant.phone
+    );
+
+    if (!applicantResponse.success) {
+      createLogger.error({
+        model: `person/create`,
+        error: applicantResponse.error,
+      });
+      return res.status(500).json({ error: applicantResponse.error });
+    }
+
+    applicant.id = applicantResponse.data.id;
+  }
+
+  if (applicant?.type === "C" && isInsured === false) {
+    const applicantResponse = await Beneficiary.createModel(
+      applicant.rut,
+      applicant.name,
+      applicant.paternalLastName,
+      applicant.maternalLastName,
+      applicant.birthDate,
+      applicant.address,
+      applicant.district,
+      applicant.email,
+      applicant.phone
     );
 
     if (!applicantResponse.success) {
@@ -50,7 +82,11 @@ const create = async (req: any, res: any) => {
     number,
     product_id,
     assistance_id,
-    isactive
+    isactive,
+    isInsured,
+    company_id,
+    customer_id,
+    beneficiary_id,
   );
 
   if (!caseResponse.success) {
@@ -108,29 +144,28 @@ const getAll = async (req: any, res: any) => {
 };
 
 const uploadDocument = async (req: any, res: any) => {
-  const { case_id, casestage_id, document_id } = req.body;
-  const files = req.files;
+  const { case_id } = req.body;
+  const document_id = JSON.parse(req.body.document_id);
+  let files = req.files["files"];
 
-  console.log(files);
-  if (!files) {
-    return res.status(400).json({ error: "No files were uploaded." });
+  if (!Array.isArray(files)) {
+    files = [files];
   }
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     const document = document_id[i];
 
-    const fileName = file.originalname;
-    const fileBase64 = file.buffer.toString("base64");
-    const mimeType = file.mimetype;
+    const result = await uploadFile(file);
+
+    if (!result) {
+      return res.status(400).json({ error: "No files were uploaded." });
+    }
 
     const caseStageAttachResponse = await CaseStageAttach.uploadDocument(
       case_id,
-      casestage_id,
       document,
-      fileName,
-      fileBase64,
-      mimeType
+      file.name
     );
 
     if (!caseStageAttachResponse.success) {
@@ -199,6 +234,29 @@ const getCaseById = async (req: any, res: any) => {
     return res.status(200).json(caseResponse.data);
   }
 
+  if (!caseResponse.data) {
+    createLogger.info({
+      controller: `case/getById`,
+      message: `OK - Case not found`,
+    });
+    return res.status(200).json(caseResponse.data);
+  }
+
+  // Fetch user data for each stage
+  const stagesWithUserDataPromises = caseResponse?.data?.stages.map(
+    async (stage: any) => {
+      const user = await fetchClerkUser(stage.user_id);
+
+      return {
+        ...stage,
+        user,
+      };
+    }
+  );
+
+  caseResponse.data.stages = await Promise.all(
+    stagesWithUserDataPromises ?? []
+  );
   createLogger.info({
     controller: `case/getById`,
     message: `OK - Case found`,
@@ -208,12 +266,9 @@ const getCaseById = async (req: any, res: any) => {
 };
 
 const getAttachById = async (req: any, res: any) => {
-  const { case_id, casestage_id } = req.params;
+  const { case_id } = req.params;
 
-  const caseStageAttachResponse = await CaseStageAttach.getById(
-    case_id,
-    casestage_id
-  );
+  const caseStageAttachResponse = await CaseStageAttach.getById(case_id);
 
   if (!caseStageAttachResponse.success) {
     createLogger.error({
@@ -228,13 +283,11 @@ const getAttachById = async (req: any, res: any) => {
   for (let i = 0; i < caseStageAttachResponse.data.length; i++) {
     const attachment = caseStageAttachResponse.data[i];
 
+    const viewLink = await getFileViewLink(attachment.file_tag);
+
     attachments.push({
       document_id: attachment.document_id,
-      file: {
-        originalname: attachment.file_name,
-        base64: attachment.base64,
-        mimetype: attachment.mime_type,
-      },
+      viewLink,
     });
   }
 
@@ -392,13 +445,16 @@ const getAssignedSpecialist = async (req: any, res: any) => {
 };
 
 const reimburse = async (req: any, res: any) => {
-  const { case_id, casestage_id, amount, currency } = req.body;
+  const { case_id, casestage_id, amount, currency, uf_value, available } =
+    req.body;
 
   const caseStageResponse = await CaseStageResult.create(
     case_id,
     casestage_id,
     amount,
-    currency
+    currency,
+    uf_value,
+    available
   );
 
   if (!caseStageResponse.success) {
@@ -433,10 +489,10 @@ const reimburse = async (req: any, res: any) => {
 };
 
 const getAssistanceData = async (req: any, res: any) => {
-  const { applicant_id, assistance_id, product_id } = req.params;
+  const { insured_id, assistance_id, product_id } = req.params;
 
   const response = await Case.getAssistanceData(
-    applicant_id,
+    insured_id,
     assistance_id,
     product_id
   );
@@ -478,6 +534,98 @@ const getReimbursment = async (req: any, res: any) => {
   return res.status(200).json(response.data);
 };
 
+const getAllReimbursements = async (req: any, res: any) => {
+  const response = await CaseReimbursement.getAll();
+
+  if (!response.success) {
+    createLogger.error({
+      model: `caseStageResult/getAllReimbursements`,
+      error: response.error,
+    });
+    return res.status(500).json({ error: response.error });
+  }
+
+  createLogger.info({
+    controller: `case/getAllReimbursements`,
+    message: `OK - Reimbursments found`,
+  });
+
+  return res.status(200).json(response.data);
+};
+
+const updateReimbursementStatus = async (req: any, res: any) => {
+  const { case_id, casestageresult_id, status } = req.body;
+
+  const response = await CaseReimbursement.updateStatus(
+    case_id,
+    casestageresult_id,
+    status
+  );
+
+  if (!response.success) {
+    createLogger.error({
+      model: `caseStageResult/updateReimbursementStatus`,
+      error: response.error,
+    });
+    return res.status(500).json({ error: response.error });
+  }
+
+  createLogger.info({
+    controller: `case/updateReimbursementStatus`,
+    message: `OK - Reimbursment status updated`,
+  });
+
+  return res.status(200).json(response.data);
+};
+
+const createChatMessage = async (req: any, res: any) => {
+  const { case_id, casestage_id, message, user_id, type } = req.body;
+
+  const response = await CaseChat.create(
+    case_id,
+    casestage_id,
+    user_id,
+    message,
+    type
+  );
+
+  if (!response.success) {
+    createLogger.error({
+      model: `caseChat/createChatMessage`,
+      error: response.error,
+    });
+    return res.status(500).json({ error: response.error });
+  }
+
+  createLogger.info({
+    controller: `case/createChatMessage`,
+    message: `OK - Chat message created`,
+  });
+
+  return res.status(200).json(response.data);
+};
+
+const getChatByCase = async (req: any, res: any) => {
+  const { case_id } = req.params;
+
+  const response = await CaseChat.getByCase(case_id);
+
+  if (!response.success) {
+    createLogger.error({
+      model: `caseChat/getChatByCase`,
+      error: response.error,
+    });
+    return res.status(500).json({ error: response.error });
+  }
+
+  createLogger.info({
+    controller: `case/getChatByCase`,
+    message: `OK - Chat messages found`,
+  });
+
+  return res.status(200).json(response.data);
+};
+
 export {
   create,
   uploadDocument,
@@ -493,4 +641,8 @@ export {
   reimburse,
   getAssistanceData,
   getReimbursment,
+  getAllReimbursements,
+  updateReimbursementStatus,
+  createChatMessage,
+  getChatByCase,
 };

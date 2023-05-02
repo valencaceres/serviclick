@@ -8,15 +8,18 @@ import InputText from "../../ui/InputText";
 
 import {
   useQueryCase,
+  useQueryContractor,
   useQueryPartner,
   useQueryStage,
 } from "../../../hooks/query";
-import { useUser } from "../../../hooks";
 import ComboBox from "../../ui/ComboBox";
+import { useUser } from "@clerk/nextjs";
+import { CaseDescription } from "./CaseDescription";
 
 const CaseFormPartner = ({ thisCase }: any) => {
   const router = useRouter();
-  const { stage } = router.query;
+  const { stage: stageFromQuery } = router.query;
+  const stage = (stageFromQuery as string) || "default_stage";
   const queryClient = useQueryClient();
 
   const [thisStage, setThisStage] = useState<string>("");
@@ -26,119 +29,79 @@ const CaseFormPartner = ({ thisCase }: any) => {
 
   const minDate = new Date();
 
-  const { id: user_id } = useUser().user;
+  const { user } = useUser();
   const { data: stages } = useQueryStage().useGetAll();
   const { data: getAssignedPartner } = useQueryCase().useGetAssignedPartner(
     thisCase?.case_id,
     thisStage
   );
-
-  const { mutate: updateCase } = useQueryCase().useCreate();
   const { data: partners } = useQueryPartner().useGetByFamilyId(
     thisCase?.family_id
   );
+  
+  const { mutate: updateCase } = useQueryCase().useCreate();
   const { mutate: assignPartner } = useQueryCase().useAssignPartner();
+
+  const findStageByName = (name: string) =>
+    stages?.find((s: any) => s.name.toLowerCase() === name.toLowerCase());
+
+  const updateCaseData = (stageName: string) => ({
+    applicant: { id: thisCase?.insured_id },
+    number: thisCase?.case_number,
+    product_id: thisCase?.product_id,
+    assistance_id: thisCase?.assistance_id,
+    stage_id: findStageByName(stageName)?.id || "",
+    company_id: thisCase?.contractor_id,
+    user_id: user?.id,
+    isactive: true,
+  });
+
+  const assignPartnerData = () => ({
+    case_id: thisCase?.case_id,
+    casestage_id: thisStage,
+    partner_id: partner,
+    scheduled_date: scheduledDate || null,
+    scheduled_time: scheduledTime || null,
+  });
 
   const handleAssign = (e: any) => {
     e.preventDefault();
     if (partner) {
-      return updateCase(
-        {
-          applicant: {
-            id: thisCase?.applicant_id,
-          },
-          number: thisCase?.case_number,
-          product_id: thisCase?.product_id,
-          assistance_id: thisCase?.assistance_id,
-          stage_id: thisStage,
-          user_id: user_id,
-          isactive: true,
+      return updateCase(updateCaseData(stage), {
+        onSuccess: () => {
+          assignPartner(assignPartnerData(), {
+            onSuccess: () => {
+              queryClient.invalidateQueries(["case", thisCase?.case_id]);
+            },
+          });
         },
-        {
-          onSuccess: () => {
-            return assignPartner(
-              {
-                case_id: thisCase?.case_id,
-                casestage_id: thisStage,
-                partner_id: partner,
-                scheduled_date: scheduledDate || null,
-                scheduled_time: scheduledTime || null,
-              },
-              {
-                onSuccess: () => {
-                  queryClient.invalidateQueries(["case", thisCase?.case_id]);
-                },
-              }
-            );
-          },
-        }
-      );
+      });
     }
   };
 
   const handleSchedule = (e: any) => {
     e.preventDefault();
     if (partner) {
-      return updateCase(
-        {
-          applicant: {
-            id: thisCase?.applicant_id,
-          },
-          number: thisCase?.case_number,
-          product_id: thisCase?.product_id,
-          assistance_id: thisCase?.assistance_id,
-          stage_id: thisStage,
-          user_id: user_id,
-          isactive: true,
-        },
-        {
-          onSuccess: () => {
-            assignPartner(
-              {
-                case_id: thisCase?.case_id,
-                casestage_id: thisStage,
-                partner_id: partner,
-                scheduled_date: scheduledDate || null,
-                scheduled_time: scheduledTime || null,
-              },
-              {
+      return updateCase(updateCaseData(stage), {
+        onSuccess: () => {
+          assignPartner(assignPartnerData(), {
+            onSuccess: () => {
+              updateCase(updateCaseData("Seguimiento"), {
                 onSuccess: () => {
-                  return updateCase(
-                    {
-                      applicant: {
-                        id: thisCase?.applicant_id,
-                      },
-                      number: thisCase?.case_number,
-                      product_id: thisCase?.product_id,
-                      assistance_id: thisCase?.assistance_id,
-                      stage_id: stages?.find(
-                        (s: any) => s?.name === "Seguimiento"
-                      )?.id,
-                      user_id: user_id,
-                      isactive: true,
-                    },
-                    {
-                      onSuccess: () => {
-                        router.push(`/case/${thisCase?.case_id}/seguimiento`);
-                        queryClient.invalidateQueries([
-                          "case",
-                          thisCase?.case_id,
-                        ]);
-                      },
-                    }
-                  );
+                  router.push(`/case/${thisCase?.case_id}/seguimiento`);
+                  queryClient.invalidateQueries(["case", thisCase?.case_id]);
                 },
-              }
-            );
-          },
-        }
-      );
+              });
+            },
+          });
+        },
+      });
     }
   };
 
   useEffect(() => {
     if (stages) {
-      setThisStage(stages.find((s: any) => s.name.toLowerCase() === stage)?.id);
+      setThisStage(findStageByName(stage.toLowerCase())?.id);
     }
     if (getAssignedPartner) {
       setPartner(getAssignedPartner?.partner_id);
@@ -150,31 +113,7 @@ const CaseFormPartner = ({ thisCase }: any) => {
   return (
     <div>
       <ContentCell gap="20px">
-        <ContentCell gap="5px">
-          <InputText
-            label="Cliente"
-            value={"Embotelladora Andina S.A."}
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-          <InputText
-            label="Asegurado"
-            value={
-              thisCase?.applicant_name + " " + thisCase?.applicant_lastname
-            }
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-          <InputText
-            label="Servicio"
-            value={thisCase?.assistance}
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-        </ContentCell>
+      <CaseDescription thisCase={thisCase} />
         <ContentCell gap="20px">
           <ComboBox
             label="Convenio"

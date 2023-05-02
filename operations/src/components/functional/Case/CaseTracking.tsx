@@ -6,14 +6,20 @@ import { ContentCell, ContentRow } from "../../layout/Content";
 import Button from "../../ui/Button";
 import InputText from "../../ui/InputText";
 
-import { useQueryCase, useQueryStage } from "../../../hooks/query";
-import { useUser } from "../../../hooks";
+import {
+  useQueryCase,
+  useQueryContractor,
+  useQueryStage,
+  useQueryUF,
+} from "../../../hooks/query";
 import TextArea from "../../ui/TextArea/TextArea";
 import ComboBox from "../../ui/ComboBox";
 import {
   summaryActions,
   selfSolutionSummaryActions,
 } from "../../../data/masters";
+import { useUser } from "@clerk/nextjs";
+import { CaseDescription } from "./CaseDescription";
 
 const CaseTracking = ({ thisCase }: any) => {
   const router = useRouter();
@@ -26,11 +32,11 @@ const CaseTracking = ({ thisCase }: any) => {
   const [confirmDate, setConfirmDate] = useState<string>("");
   const [confirmTime, setConfirmTime] = useState<string>("");
   const [evaluation, setEvaluation] = useState<string>("");
-  const [refundAmount, setRefundAmount] = useState<string>("");
+  const [refundAmount, setRefundAmount] = useState<number | null>(null);
 
-  const { id: user_id } = useUser().user;
+  const { user } = useUser();
+  const { data: ufValue } = useQueryUF().useGetUFValue();
   const { data: stages } = useQueryStage().useGetAll();
-  const { mutate: updateCase, data: newStage } = useQueryCase().useCreate();
   const { data: assignedPartner } = useQueryCase().useGetAssignedPartner(
     thisCase?.case_id,
     stages?.find((s: any) => s?.name === "Designación de convenio")?.id
@@ -41,10 +47,15 @@ const CaseTracking = ({ thisCase }: any) => {
   );
 
   const { data: assistanceData } = useQueryCase().useGetAssistanceData(
-    thisCase?.applicant_id,
+    thisCase?.insured_id,
     thisCase?.assistance_id,
     thisCase?.product_id
   );
+  const { data: thisReimbursement } = useQueryCase().useGetReimbursment(
+    thisCase?.case_id
+  );
+
+  const { mutate: updateCase } = useQueryCase().useCreate();
   const { mutate: assignPartner } = useQueryCase().useAssignPartner();
   const { mutate: assignSpecialist } = useQueryCase().useAssignSpecialist();
   const { mutate: reimburse } = useQueryCase().useReimburse();
@@ -54,13 +65,14 @@ const CaseTracking = ({ thisCase }: any) => {
     return updateCase(
       {
         applicant: {
-          id: thisCase?.applicant_id,
+          id: thisCase?.insured_id,
         },
         number: thisCase?.case_number,
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
+        company_id: thisCase?.contractor_id,
         stage_id: stages.find((s: any) => s?.name === "Resolución")?.id,
-        user_id: user_id,
+        user_id: user?.id,
         description: evaluation,
         isactive: true,
       },
@@ -119,15 +131,14 @@ const CaseTracking = ({ thisCase }: any) => {
     return updateCase(
       {
         applicant: {
-          id: thisCase?.applicant_id,
+          id: thisCase?.insured_id,
         },
         number: thisCase?.case_number,
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
-        stage_id: stages.find(
-          (s: any) => s?.name === "Designación de especialista"
-        )?.id,
-        user_id: user_id,
+        company_id: thisCase?.contractor_id,
+        stage_id: stages.find((s: any) => s?.name === "Seguimiento")?.id,
+        user_id: user?.id,
         isactive: true,
       },
       {
@@ -153,15 +164,23 @@ const CaseTracking = ({ thisCase }: any) => {
             );
           }
           if (assignedPartner) {
-            assignPartner({
-              case_id: thisCase?.case_id,
-              casestage_id: stages.find(
-                (s: any) => s.name === "Designación de convenio"
-              )?.id,
-              partner_id: assignedPartner?.partner_id,
-              scheduled_date: confirmDate,
-              scheduled_time: confirmTime,
-            });
+            assignPartner(
+              {
+                case_id: thisCase?.case_id,
+                casestage_id: stages.find(
+                  (s: any) => s.name === "Designación de convenio"
+                )?.id,
+                partner_id: assignedPartner?.partner_id,
+                scheduled_date: confirmDate,
+                scheduled_time: confirmTime,
+              },
+              {
+                onSuccess: () => {
+                  queryClient.invalidateQueries(["case", thisCase?.case_id]);
+                  setEvaluation("");
+                },
+              }
+            );
           }
         },
       }
@@ -173,14 +192,15 @@ const CaseTracking = ({ thisCase }: any) => {
     return updateCase(
       {
         applicant: {
-          id: thisCase?.applicant_id,
+          id: thisCase?.insured_id,
         },
         number: thisCase?.case_number,
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
+        company_id: thisCase?.contractor_id,
         stage_id: stages.find((s: any) => s?.name === "Resolución")?.id,
         description: evaluation,
-        user_id: user_id,
+        user_id: user?.id,
         isactive: true,
       },
       {
@@ -191,8 +211,13 @@ const CaseTracking = ({ thisCase }: any) => {
               casestage_id: thisCase?.stages?.find(
                 (s: any) => s?.stage === "Seguimiento"
               )?.id,
-              amount: refundAmount,
+              amount:
+                assistanceData?.currency === "U"
+                  ? refundAmount! / ufValue.serie[0].valor
+                  : refundAmount,
               currency: assistanceData?.currency,
+              uf_value: ufValue.serie[0].valor,
+              available: assistanceData?.remaining_amount,
             },
             {
               onSuccess: () => {
@@ -211,13 +236,14 @@ const CaseTracking = ({ thisCase }: any) => {
     return updateCase(
       {
         applicant: {
-          id: thisCase?.applicant_id,
+          id: thisCase?.insured_id,
         },
         number: thisCase?.case_number,
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
+        company_id: thisCase?.contractor_id,
         stage_id: stages.find((s: any) => s?.name === "Rechazado")?.id,
-        user_id: user_id,
+        user_id: user?.id,
         description: justification,
         isactive: false,
       },
@@ -259,34 +285,12 @@ const CaseTracking = ({ thisCase }: any) => {
     }
   }, [stages, stage, assignedPartner, assignedSpecialist]);
 
+  console.log(thisReimbursement);
+
   return (
     <form>
       <ContentCell gap="20px">
-        <ContentCell gap="5px">
-          <InputText
-            label="Cliente"
-            value={"Embotelladora Andina S.A."}
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-          <InputText
-            label="Asegurado"
-            value={
-              thisCase?.applicant_name + " " + thisCase?.applicant_lastname
-            }
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-          <InputText
-            label="Servicio"
-            value={thisCase?.assistance}
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-        </ContentCell>
+        <CaseDescription thisCase={thisCase} />
         <ContentCell gap="5px">
           {thisCase?.stages?.find(
             (s: any) =>
@@ -441,17 +445,14 @@ const CaseTracking = ({ thisCase }: any) => {
                 onClick={handleReject}
               />
             </ContentCell>
-          ) : evaluation?.toLowerCase() === "reembolsar" ? (
+          ) : evaluation?.toLowerCase() === "reembolsar" ||
+            evaluation?.toLowerCase() === "reembolsar imed" ? (
             <ContentCell gap="5px">
               <ContentCell gap="5px">
                 <h2 className="font-semibold">Disponible</h2>
                 <ContentRow gap="5px">
                   <InputText
-                    label={
-                      assistanceData?.currency === "P"
-                        ? "Monto Disponible ($)"
-                        : "Monto Disponible (UF)"
-                    }
+                    label={"Monto Disponible"}
                     value={
                       assistanceData?.currency === "P"
                         ? parseInt(
@@ -460,7 +461,13 @@ const CaseTracking = ({ thisCase }: any) => {
                             style: "currency",
                             currency: "CLP",
                           })
-                        : assistanceData?.remaining_amount + " UF"
+                        : (
+                            assistanceData?.remaining_amount! *
+                            ufValue?.serie[0].valor
+                          ).toLocaleString("es-CL", {
+                            style: "currency",
+                            currency: "CLP",
+                          })
                     }
                     type="text"
                     width="152px"
@@ -485,16 +492,18 @@ const CaseTracking = ({ thisCase }: any) => {
               <ContentCell gap="5px">
                 <h2 className="font-semibold">Reembolsar</h2>
                 <InputText
-                  label={
-                    assistanceData?.currency === "P"
-                      ? "Monto ($)"
-                      : "Monto (UF)"
+                  label={"Monto ($)"}
+                  value={
+                    thisReimbursement?.amount
+                      ? thisReimbursement?.currency === "P"
+                        ? thisReimbursement?.amount
+                        : thisReimbursement?.amount *
+                          thisReimbursement?.uf_value
+                      : refundAmount
                   }
-                  value={refundAmount}
                   type="number"
                   width="525px"
                   disabled={thisCase?.is_active === true ? false : true}
-                  step={assistanceData?.currency === "P" ? "" : "0.01"}
                   onChange={(e: any) => setRefundAmount(e.target.value)}
                 />
                 <Button

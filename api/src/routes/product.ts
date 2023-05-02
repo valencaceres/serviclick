@@ -13,6 +13,7 @@ import {
   getById,
   getFamilies,
   getByProductPlanId,
+  getAll,
 } from "../controllers/product";
 
 const ProductRouter = Router();
@@ -36,5 +37,6 @@ ProductRouter.get(
   auth,
   getByProductPlanId
 );
+ProductRouter.get("/getAll", auth, getAll);
 
 export default ProductRouter;

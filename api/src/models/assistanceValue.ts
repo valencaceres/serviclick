@@ -33,9 +33,9 @@ const getByAssistanceId: any = async (assistance_id: string) => {
     const result = await pool.query(
       `select val.id,
               val.name
-       from   app.assistancevalue asi inner join app.value val on asi.value_id = val.id
-       where  asi.assistance_id = $1
-       order  by
+        from   app.assistancevalue asi inner join app.value val on asi.value_id = val.id
+        where  asi.assistance_id = $1
+        order  by
               asi.line_order`,
       [assistance_id]
     );

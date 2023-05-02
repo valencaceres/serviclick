@@ -97,32 +97,23 @@ const getByRut: any = async (rut: string) => {
       [rut]
     );
 
-    const {
-      id,
-      name,
-      paternallastname,
-      maternallastname,
-      birthdate,
-      address,
-      district,
-      email,
-      phone,
-    } = result.rows[0];
-
-    const data = {
-      id,
-      rut,
-      name,
-      paternalLastName: paternallastname,
-      maternalLastName: maternallastname,
-      birthDate: birthdate,
-      address,
-      district,
-      email,
-      phone,
-    };
-
-    return { success: true, data, error: null };
+    if (result.rows.length > 0) {
+      const data = {
+        id: result.rows[0].id,
+        rut: result.rows[0].rut,
+        name: result.rows[0].name,
+        paternalLastName: result.rows[0].paternallastname,
+        maternalLastName: result.rows[0].maternallastname,
+        birthDate: result.rows[0].birthdate,
+        address: result.rows[0].address,
+        district: result.rows[0].district,
+        email: result.rows[0].email,
+        phone: result.rows[0].phone,
+      };
+      return { success: true, data, error: null };
+    } else {
+      return { success: false, data: null, error: "No data found" };
+    }
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
   }

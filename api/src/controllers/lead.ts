@@ -15,6 +15,8 @@ import * as Company from "../models/company";
 import * as Insured from "../models/insured";
 import * as Beneficiary from "../models/beneficiary";
 import * as Product from "../models/product";
+import * as ProductPlan from "../models/productPlan";
+import * as Policy from "../models/policy";
 import * as LeadProductValues from "../models/leadProductValue";
 
 export type CustomerT = {
@@ -1091,6 +1093,212 @@ const addBeneficiariesData = async (
   };
 };
 
+const addProduct = async (req: any, res: any) => {
+  const {
+    product_id,
+    productPlan_id,
+    agent_id,
+    company_id,
+    customer_id,
+    link,
+    paymenttype_code,
+  } = req.body;
+
+  const policyResponse = await Policy.create();
+
+  if (!policyResponse.success) {
+    createLogger.error({
+      model: "policy/create",
+      error: policyResponse.error,
+    });
+    res.status(500).json(policyResponse.error);
+    return;
+  }
+
+  const { id: policy_id } = policyResponse.data;
+
+  const productPlanResponse = await ProductPlan.getById(productPlan_id);
+  const productResponse = await Product.getById(product_id);
+
+  const subscriptionResponse = await Subscription.create(
+    productPlanResponse.data.price,
+    productPlanResponse.data.plan_id
+  );
+
+  const leadResponse = await Lead.createModel(
+    "",
+    customer_id,
+    company_id,
+    agent_id,
+    link,
+    subscriptionResponse.data.subscription_id,
+    policy_id,
+    paymenttype_code
+  );
+
+  if (!leadResponse.success) {
+    createLogger.error({
+      model: "lead/create",
+      error: leadResponse.error,
+    });
+    res.status(500).json(leadResponse.error);
+    return;
+  }
+
+  const { id: lead_id } = leadResponse.data;
+
+  const leadProductResponse = await LeadProduct.createModel(
+    lead_id,
+    product_id,
+    productPlanResponse.data.price,
+    productResponse.data.currency,
+    productPlanResponse.data.frequency,
+    productPlanResponse.data.plan_id
+  );
+
+  if (!leadProductResponse.success) {
+    createLogger.error({
+      model: "leadProduct/createModel",
+      error: leadProductResponse.error,
+    });
+    res.status(500).json(leadProductResponse.error);
+    return;
+  }
+
+  createLogger.info({
+    controller: "lead/addProduct",
+    message: "OK",
+  });
+
+  res.status(200).json(leadProductResponse.data);
+};
+
+const addInsured = async (req: any, res: any) => {
+  const { subscription_id, beneficiary_data } = req.body;
+
+  const insuredResponse = await Insured.create(
+    beneficiary_data.rut,
+    beneficiary_data.name,
+    beneficiary_data.paternalLastName,
+    beneficiary_data.maternalLastName,
+    beneficiary_data.birthDate,
+    beneficiary_data.address,
+    beneficiary_data.district,
+    beneficiary_data.email,
+    beneficiary_data.phone
+  );
+
+  if (!insuredResponse.success) {
+    createLogger.error({
+      model: "insured/create",
+      error: insuredResponse.error,
+    });
+    res.status(500).json(insuredResponse.error);
+    return;
+  }
+
+  const { id: insured_id } = insuredResponse.data;
+
+  const leadResponse = await Lead.getBySubscriptionId(subscription_id);
+
+  if (!leadResponse.success) {
+    createLogger.error({
+      model: "lead/getBySubscriptionId",
+      error: leadResponse.error,
+    });
+
+    res.status(500).json(leadResponse.error);
+    return;
+  }
+
+  const { id: lead_id } = leadResponse.data;
+
+  const leadInsuredResponse = await LeadInsured.createModel(
+    lead_id,
+    insured_id
+  );
+
+  if (!leadInsuredResponse.success) {
+    createLogger.error({
+      model: "leadInsured/createModel",
+      error: leadInsuredResponse.error,
+    });
+    res.status(500).json(leadInsuredResponse.error);
+    return;
+  }
+
+  createLogger.info({
+    controller: "lead/addInsured",
+    message: "Lead Insured created",
+  });
+
+  return res.status(200).json(leadInsuredResponse.data);
+};
+
+const addBeneficiary = async (req: any, res: any) => {
+  const { insured_id, beneficiary_data, subscription_id } = req.body;
+
+  const beneficiaryResponse = await Beneficiary.createModel(
+    beneficiary_data.rut,
+    beneficiary_data.name,
+    beneficiary_data.paternalLastName,
+    beneficiary_data.maternalLastName,
+    beneficiary_data.birthDate,
+    beneficiary_data.address,
+    beneficiary_data.district,
+    beneficiary_data.email,
+    beneficiary_data.phone,
+    beneficiary_data.relationship
+  );
+
+  if (!beneficiaryResponse.success) {
+    createLogger.error({
+      model: "beneficiary/createModel",
+      error: beneficiaryResponse.error,
+    });
+    res.status(500).json(beneficiaryResponse.error);
+    return;
+  }
+
+  const { id: beneficiary_id } = beneficiaryResponse.data;
+
+  const leadResponse = await Lead.getBySubscriptionId(subscription_id);
+
+  if (!leadResponse.success) {
+    createLogger.error({
+      model: "lead/getBySubscriptionId",
+      error: leadResponse.error,
+    });
+
+    res.status(500).json(leadResponse.error);
+    return;
+  }
+
+  const { id: lead_id } = leadResponse.data;
+
+  const leadBeneficiaryResponse = await LeadBeneficiary.createModel(
+    lead_id,
+    insured_id,
+    beneficiary_id
+  );
+
+  if (!leadBeneficiaryResponse.success) {
+    createLogger.error({
+      model: "leadBeneficiary/createModel",
+      error: leadBeneficiaryResponse.error,
+    });
+    res.status(500).json(leadBeneficiaryResponse.error);
+    return;
+  }
+
+  createLogger.info({
+    controller: "lead/addBeneficiary",
+    message: "Lead Beneficiary created",
+  });
+
+  return res.status(200).json(leadBeneficiaryResponse.data);
+};
+
 export {
   createController,
   addBeneficiariesController,
@@ -1098,4 +1306,7 @@ export {
   getBySubscriptionIdController,
   getProductByInsuredIdController,
   getProductValuesByInsuredId,
+  addProduct,
+  addInsured,
+  addBeneficiary,
 };

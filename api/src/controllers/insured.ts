@@ -83,4 +83,24 @@ const create = async (req: any, res: any) => {
   res.status(200).json(response.data);
 };
 
-export { getByRut, getProfile, create };
+const getById = async (req: any, res: any) => {
+  const { id } = req.params;
+  const response = await Insured.getById(id);
+  
+  if (!response.success) {
+    createLogger.error({
+      model: "insured/getById",
+      error: response.error,
+    });
+    res.status(500).json({ error: response.error });
+    return;
+  }
+
+  createLogger.info({
+    controller: "insured/getById",
+    message: "Insured found",
+  });
+  res.status(200).json(response.data);
+};
+
+export { getByRut, getProfile, create, getById };

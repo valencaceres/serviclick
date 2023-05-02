@@ -4,7 +4,7 @@ import { apiInstance } from "../../utils/api";
 
 export type DistrictT = {
   id: string;
-  name: string;
+  district_name: string;
 };
 
 type StateT = {
@@ -16,7 +16,7 @@ type StateT = {
 
 const initialState: StateT = {
   list: [],
-  district: { id: "", name: "" },
+  district: { id: "", district_name: "" },
   loading: false,
   error: false,
 };

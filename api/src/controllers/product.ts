@@ -900,10 +900,32 @@ const getByProductPlanId = async (req: any, res: any) => {
   res.status(200).json(data);
 };
 
+const getAll = async (req: any, res: any) => {
+  const result = await Product.getAll();
+
+  if (!result.success) {
+    createLogger.error({
+      model: "product/getAll",
+      error: result.error,
+    });
+
+    res.status(500).json({ error: result.error });
+    return;
+  }
+
+  createLogger.info({
+    controller: "products/getAll",
+    message: "OK",
+  });
+
+  return res.status(200).json(result.data);
+};
+
 export {
   createProduct,
   createPlans,
   updateProduct,
+  getAll,
   deleteProduct,
   getById,
   getByIdWithPrices,

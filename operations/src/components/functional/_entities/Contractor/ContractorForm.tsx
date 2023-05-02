@@ -1,20 +1,24 @@
-import React, { FC } from "react";
+import { useRouter } from "next/router";
+import React from "react";
 
 import ContractorPersonForm from "./ContractorPersonForm";
 import ContractorCompanyForm from "./ContractorCompanyForm";
 
-import { useContractor } from "../../../../hooks";
+const ContractorForm = ({ contractor, isEditing, setIsEditing }: any) => {
+  const { query } = useRouter();
 
-interface IContractorForm {
-  enabled: boolean;
-}
-
-const ContractorForm = ({ enabled }: IContractorForm) => {
-  const { contractor } = useContractor();
-  return contractor.type === "P" ? (
-    <ContractorPersonForm enabled={enabled} setEnableSave={() => {}} />
+  return contractor?.type === "P" && query.id ? (
+    <ContractorPersonForm
+      contractor={contractor}
+      isEditing={isEditing}
+      setIsEditing={setIsEditing}
+    />
   ) : (
-    <ContractorCompanyForm enabled={enabled} setEnableSave={() => {}} />
+    <ContractorCompanyForm
+      contractor={contractor}
+      isEditing={isEditing}
+      setIsEditing={setIsEditing}
+    />
   );
 };
 

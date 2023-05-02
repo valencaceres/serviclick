@@ -19,7 +19,9 @@ const Button = ({
       style={{ width }}
     >
       <Fragment>
-        {iconName && <span className="material-icons md-36">{iconName}</span>}
+        {iconName && (
+          <span className="material-icons text-white">{iconName}</span>
+        )}
         {loading ? (
           <Fragment>
             <div className={styles.spin}>
