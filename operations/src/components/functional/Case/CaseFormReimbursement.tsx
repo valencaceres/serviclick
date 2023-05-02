@@ -15,6 +15,7 @@ import {
 } from "../../../hooks/query";
 import { useDistrict } from "../../../hooks";
 import { useUser } from "@clerk/nextjs";
+import { CaseDescription } from "./CaseDescription";
 
 const CaseFormReimbursement = ({ thisCase }: any) => {
   const router = useRouter();
@@ -32,21 +33,13 @@ const CaseFormReimbursement = ({ thisCase }: any) => {
   const { data: stages } = useQueryStage().useGetAll();
   const { data: getAssignedSpecialist } =
     useQueryCase().useGetAssignedSpecialist(thisCase?.case_id, thisStage);
+    const { data: specialists } = useQuerySpecialist().getByDistrict(
+      district,
+      thisCase?.assistance_id
+    );
 
   const { mutate: updateCase } = useQueryCase().useCreate();
-  const { data: specialists } = useQuerySpecialist().getByDistrict(
-    district,
-    thisCase?.assistance_id
-  );
   const { mutate: assignSpecialist } = useQueryCase().useAssignSpecialist();
-  const { data: assignedSpecialist } = useQueryCase().useGetAssignedSpecialist(
-    thisCase?.case_id,
-    thisStage
-  );
-  const { data: contractor } = useQueryContractor().useGetById(
-    thisCase?.contractor_id
-  );
-
 
   const handleAssign = (e: any) => {
     e.preventDefault();
@@ -112,31 +105,7 @@ const CaseFormReimbursement = ({ thisCase }: any) => {
   return (
     <div>
       <ContentCell gap="20px">
-        <ContentCell gap="5px">
-          <InputText
-            label="Cliente"
-            value={contractor?.companyName}
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-          <InputText
-            label="Asegurado"
-            value={
-              thisCase?.applicant_name + " " + thisCase?.applicant_lastname
-            }
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-          <InputText
-            label="Servicio"
-            value={thisCase?.assistance}
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-        </ContentCell>
+      <CaseDescription thisCase={thisCase} />
         <ContentCell gap="20px">
           <ComboBox
             label="Comuna de atención"

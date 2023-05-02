@@ -63,8 +63,6 @@ const CaseFormService = ({ thisCase }: any) => {
     thisCase?.contractor_id
   );
 
-
-  console.log(assistanceData)
   useEffect(() => {
     const assistancesMap = new Map(
       data?.products.map((product: any) => [
