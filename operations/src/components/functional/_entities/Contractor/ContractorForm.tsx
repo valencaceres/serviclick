@@ -4,13 +4,21 @@ import React from "react";
 import ContractorPersonForm from "./ContractorPersonForm";
 import ContractorCompanyForm from "./ContractorCompanyForm";
 
-const ContractorForm = ({ contractor }: any) => {
+const ContractorForm = ({ contractor, isEditing, setIsEditing }: any) => {
   const { query } = useRouter();
 
   return contractor?.type === "P" && query.id ? (
-    <ContractorPersonForm contractor={contractor} />
+    <ContractorPersonForm
+      contractor={contractor}
+      isEditing={isEditing}
+      setIsEditing={setIsEditing}
+    />
   ) : (
-    <ContractorCompanyForm contractor={contractor} />
+    <ContractorCompanyForm
+      contractor={contractor}
+      isEditing={isEditing}
+      setIsEditing={setIsEditing}
+    />
   );
 };
 

@@ -56,11 +56,6 @@ const ContractorList = ({
     { id: "C", name: "Empresa" },
   ];
 
-  const dataContractorStatus = [
-    { id: "A", name: "Activo" },
-    { id: "T", name: "Todos" },
-  ];
-
   const [search, setSearch] = useState(initialDataSearch);
   const [showWarningDelete, setShowWarningDelete] = useState(false);
 
@@ -86,19 +81,8 @@ const ContractorList = ({
     setSearch({ ...search, name: e.target.value });
   };
 
-  const handleChangeStatus = (e: any) => {
-    setSearch({ ...search, status: e.target.value });
-  };
-
   const handleClickSearch = () => {
     getAllContractors(search.type, search.name, search.status === "A");
-  };
-
-  const handleClickContractorType = (type: string) => {
-    setShowModalType(false);
-    resetContractor();
-    setContractor({ ...contractor, type });
-    router.push("/entities/contractor?id=new");
   };
 
   useEffect(() => {
@@ -123,18 +107,9 @@ const ContractorList = ({
           />
           <InputText
             label="Texto a buscar"
-            width="430px"
+            width="585px"
             value={search.name}
             onChange={handleChangeName}
-          />
-          <ComboBox
-            label="Estado"
-            width="150px"
-            value={search.status}
-            onChange={handleChangeStatus}
-            data={dataContractorStatus}
-            dataValue="id"
-            dataText="name"
           />
           <ButtonIcon
             iconName="search"

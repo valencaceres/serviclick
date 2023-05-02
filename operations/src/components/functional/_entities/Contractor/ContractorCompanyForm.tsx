@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 
 import ComboBox from "../../../ui/ComboBox";
 
-import { ContentCell } from "../../../layout/Content";
+import { ContentCell, ContentRow } from "../../../layout/Content";
 
 import { unFormatRut, formatRut } from "../../../../utils/format";
 import { numberRegEx, rutRegEx, emailRegEx } from "../../../../utils/regEx";
@@ -17,9 +17,16 @@ import { useForm } from "react-hook-form";
 import { Input } from "~/components/ui/Input";
 import { Label } from "~/components/ui/Label";
 import { useEffect } from "react";
+import ButtonIcon from "~/components/ui/ButtonIcon";
+import { useQueryClient } from "@tanstack/react-query";
 
-const ContractorCompanyForm = ({ contractor }: any) => {
+const ContractorCompanyForm = ({
+  contractor,
+  isEditing,
+  setIsEditing,
+}: any) => {
   const { pathname, push } = useRouter();
+  const queryClient = useQueryClient();
 
   const {
     reset,
@@ -50,8 +57,9 @@ const ContractorCompanyForm = ({ contractor }: any) => {
   const line = watch("line");
   const address = watch("address");
   const district = watch("district");
-  const email = watch("email"); {
-    enabled: !pathname.includes("/new")
+  const email = watch("email");
+  {
+    enabled: !pathname.includes("/new");
   }
   const phone = watch("phone");
 
@@ -118,6 +126,8 @@ const ContractorCompanyForm = ({ contractor }: any) => {
 
     createCompany(data, {
       onSuccess: (data) => {
+        setIsEditing(false);
+        queryClient.invalidateQueries(["contractor", data.data?.id]);
         push(`/entities/contractor/${data.data?.id}`);
       },
     });
@@ -160,7 +170,7 @@ const ContractorCompanyForm = ({ contractor }: any) => {
             type="text"
             placeholder="Rut"
             id="Rut"
-            disabled={!pathname.includes("/new")}
+            disabled={!pathname.includes("/new") && !isEditing}
             maxLength={9}
             className={`w-full ${errors.rut ? "border-red-500" : ""}`}
             value={rut || ""}
@@ -177,7 +187,7 @@ const ContractorCompanyForm = ({ contractor }: any) => {
             })}
             type="text"
             id="name"
-            disabled={!pathname.includes("/new")}
+            disabled={!pathname.includes("/new") && !isEditing}
             placeholder="Razón Social"
             className={`w-full ${
               errors.name?.message?.length ? "border-red-500" : ""
@@ -199,7 +209,7 @@ const ContractorCompanyForm = ({ contractor }: any) => {
             })}
             type="text"
             id="legalRepresentative"
-            disabled={!pathname.includes("/new")}
+            disabled={!pathname.includes("/new") && !isEditing}
             placeholder="Representante Legal"
             className={`w-full ${
               errors.legalRepresentative?.message?.length
@@ -221,7 +231,7 @@ const ContractorCompanyForm = ({ contractor }: any) => {
             type="text"
             id="line"
             placeholder="Giro"
-            disabled={!pathname.includes("/new")}
+            disabled={!pathname.includes("/new") && !isEditing}
             className={`w-full ${
               errors.line?.message?.length ? "border-red-500" : ""
             }`}
@@ -239,7 +249,7 @@ const ContractorCompanyForm = ({ contractor }: any) => {
             })}
             type="text"
             id="address"
-            disabled={!pathname.includes("/new")}
+            disabled={!pathname.includes("/new") && !isEditing}
             placeholder="Dirección"
             className={`w-full ${
               errors.address?.message?.length ? "border-red-500" : ""
@@ -262,7 +272,7 @@ const ContractorCompanyForm = ({ contractor }: any) => {
             data={districtList}
             dataValue="district_name"
             dataText="district_name"
-            enabled={pathname.includes("/new")}
+            enabled={pathname.includes("/new") || isEditing}
           />
         </div>
         <div className="flex w-full flex-col">
@@ -280,7 +290,7 @@ const ContractorCompanyForm = ({ contractor }: any) => {
             })}
             type="email"
             id="email"
-            disabled={!pathname.includes("/new")}
+            disabled={!pathname.includes("/new") && !isEditing}
             placeholder="Correo electrónico"
             className={`w-full ${
               errors.email?.message?.length ? "border-red-500" : ""
@@ -302,7 +312,7 @@ const ContractorCompanyForm = ({ contractor }: any) => {
             })}
             type="text"
             id="phone"
-            disabled={!pathname.includes("/new")}
+            disabled={!pathname.includes("/new") && !isEditing}
             placeholder="Teléfono"
             maxLength={9}
             className={`w-full ${
@@ -313,6 +323,16 @@ const ContractorCompanyForm = ({ contractor }: any) => {
         </div>
         {pathname === "/entities/contractor/new/company" && (
           <Button>Crear</Button>
+        )}
+        {isEditing && (
+          <ContentRow gap="5px">
+            <Button className="w-[305px] rounded-full">Guardar</Button>{" "}
+            <ButtonIcon
+              iconName="edit"
+              color={"gray"}
+              onClick={() => setIsEditing(!isEditing)}
+            />
+          </ContentRow>
         )}
       </ContentCell>
     </form>

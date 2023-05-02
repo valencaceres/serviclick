@@ -23,12 +23,13 @@ import ButtonIcon from "../../../ui/ButtonIcon";
 import { useContractor } from "../../../../hooks";
 
 import { contractor } from "../../../../interfaces";
+import { Button } from "~/components/ui/ButtonC";
 
 const ContractorDetail = ({ contractor }: any) => {
   const { pathname } = useRouter();
   const { contractorLoading, getSubscriptionById } = useContractor();
 
-  const [showContractorModal, setShowContractorModal] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   const handleSuscriptionRowClick = (item: contractor.ISubscription) => {
     getSubscriptionById(item.subscription_id);
@@ -40,16 +41,20 @@ const ContractorDetail = ({ contractor }: any) => {
         <ContentRow gap="20px">
           <ContentCell gap="5px">
             <Section title="Datos del Contratante" width="350px" />
-            <ContractorForm contractor={contractor} />
-            <ContentRow align="right" gap="5px">
-              {pathname !== "entities/contractor/new" && (
+            <ContractorForm
+              contractor={contractor}
+              isEditing={isEditing}
+              setIsEditing={setIsEditing}
+            />
+            {pathname !== "entities/contractor/new" && !isEditing && (
+              <ContentRow align="right" gap="5px">
                 <ButtonIcon
                   iconName="edit"
                   color="gray"
-                  onClick={() => setShowContractorModal(true)}
+                  onClick={() => setIsEditing(!isEditing)}
                 />
-              )}
-            </ContentRow>
+              </ContentRow>
+            )}
           </ContentCell>
           <ContentCell gap="5px">
             <Section title="Suscripciones" width="485px" />
@@ -77,10 +82,6 @@ const ContractorDetail = ({ contractor }: any) => {
         </ContentCell>
       </ContentCell>
       <LoadingMessage showModal={contractorLoading} />
-      <ContractorModal
-        showContractorModal={showContractorModal}
-        setShowContractorModal={setShowContractorModal}
-      />
     </Fragment>
   );
 };
