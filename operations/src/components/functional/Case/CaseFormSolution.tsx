@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useQueryClient } from "@tanstack/react-query";
+import { useUser } from "@clerk/nextjs";
 
 import { ContentCell, ContentRow } from "../../layout/Content";
 import Button from "../../ui/Button";
 import InputText from "../../ui/InputText";
-
-import { useQueryCase, useQueryStage } from "../../../hooks/query";
 import TextArea from "../../ui/TextArea/TextArea";
-import { useUser } from "@clerk/nextjs";
+
+import {
+  useQueryCase,
+  useQueryContractor,
+  useQueryStage,
+} from "../../../hooks/query";
+import { CaseDescription } from "./CaseDescription";
 
 const CaseFormSolution = ({ thisCase }: any) => {
   const router = useRouter();
@@ -66,31 +71,7 @@ const CaseFormSolution = ({ thisCase }: any) => {
   return (
     <form onSubmit={handleSubmit}>
       <ContentCell gap="20px">
-        <ContentCell gap="5px">
-          <InputText
-            label="Cliente"
-            value={"Embotelladora Andina S.A."}
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-          <InputText
-            label="Asegurado"
-            value={
-              thisCase?.applicant_name + " " + thisCase?.applicant_lastname
-            }
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-          <InputText
-            label="Servicio"
-            value={thisCase?.assistance}
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-        </ContentCell>
+        <CaseDescription thisCase={thisCase} />
         <ContentCell gap="20px">
           <TextArea
             value={description}

@@ -15,6 +15,7 @@ import {
 } from "../../../hooks/query";
 import { useDistrict } from "../../../hooks";
 import { useUser } from "@clerk/nextjs";
+import { CaseDescription } from "./CaseDescription";
 
 const CaseFormSpecialist = ({ thisCase }: any) => {
   const router = useRouter();
@@ -35,15 +36,12 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
     thisCase?.case_id,
     thisStage
   );
-
-  const { mutate: updateCase } = useQueryCase().useCreate();
   const { data: specialists } = useQuerySpecialist().getByDistrict(
     district,
     thisCase?.assistance_id
   );
-  const { data: contractor } = useQueryContractor().useGetById(
-    thisCase?.contractor_id
-  );
+
+  const { mutate: updateCase } = useQueryCase().useCreate();
   const { mutate: assignSpecialist } = useQueryCase().useAssignSpecialist();
 
   const minDate = new Date();
@@ -146,34 +144,7 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
   return (
     <div>
       <ContentCell gap="20px">
-        <ContentCell gap="5px">
-          <InputText
-            label="Cliente"
-            value={
-              contractor?.companyName ||
-              contractor?.name + " " + contractor?.paternalLastName
-            }
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-          <InputText
-            label="Asegurado"
-            value={
-              thisCase?.applicant_name + " " + thisCase?.applicant_lastname
-            }
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-          <InputText
-            label="Servicio"
-            value={thisCase?.assistance}
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-        </ContentCell>
+      <CaseDescription thisCase={thisCase} />
         <ContentCell gap="20px">
           <ComboBox
             label="Comuna de atención"

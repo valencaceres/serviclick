@@ -6,7 +6,12 @@ import { ContentCell, ContentRow } from "../../layout/Content";
 import Button from "../../ui/Button";
 import InputText from "../../ui/InputText";
 
-import { useQueryCase, useQueryContractor, useQueryStage, useQueryUF } from "../../../hooks/query";
+import {
+  useQueryCase,
+  useQueryContractor,
+  useQueryStage,
+  useQueryUF,
+} from "../../../hooks/query";
 import TextArea from "../../ui/TextArea/TextArea";
 import ComboBox from "../../ui/ComboBox";
 import {
@@ -14,6 +19,7 @@ import {
   selfSolutionSummaryActions,
 } from "../../../data/masters";
 import { useUser } from "@clerk/nextjs";
+import { CaseDescription } from "./CaseDescription";
 
 const CaseTracking = ({ thisCase }: any) => {
   const router = useRouter();
@@ -31,7 +37,6 @@ const CaseTracking = ({ thisCase }: any) => {
   const { user } = useUser();
   const { data: ufValue } = useQueryUF().useGetUFValue();
   const { data: stages } = useQueryStage().useGetAll();
-  const { mutate: updateCase } = useQueryCase().useCreate();
   const { data: assignedPartner } = useQueryCase().useGetAssignedPartner(
     thisCase?.case_id,
     stages?.find((s: any) => s?.name === "Designación de convenio")?.id
@@ -49,10 +54,8 @@ const CaseTracking = ({ thisCase }: any) => {
   const { data: thisReimbursement } = useQueryCase().useGetReimbursment(
     thisCase?.case_id
   );
-  const { data: contractor } = useQueryContractor().useGetById(
-    thisCase?.contractor_id
-  );
 
+  const { mutate: updateCase } = useQueryCase().useCreate();
   const { mutate: assignPartner } = useQueryCase().useAssignPartner();
   const { mutate: assignSpecialist } = useQueryCase().useAssignSpecialist();
   const { mutate: reimburse } = useQueryCase().useReimburse();
@@ -287,34 +290,7 @@ const CaseTracking = ({ thisCase }: any) => {
   return (
     <form>
       <ContentCell gap="20px">
-        <ContentCell gap="5px">
-          <InputText
-            label="Cliente"
-            value={
-              contractor?.companyName ||
-              contractor?.name + " " + contractor?.paternalLastName
-            }
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-          <InputText
-            label="Asegurado"
-            value={
-              thisCase?.applicant_name + " " + thisCase?.applicant_lastname
-            }
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-          <InputText
-            label="Servicio"
-            value={thisCase?.assistance}
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-        </ContentCell>
+        <CaseDescription thisCase={thisCase} />
         <ContentCell gap="5px">
           {thisCase?.stages?.find(
             (s: any) =>

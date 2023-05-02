@@ -15,6 +15,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useUser } from "@clerk/nextjs";
+import { CaseDescription } from "./CaseDescription";
 
 const CaseFormResolution = ({ thisCase }: any) => {
   const router = useRouter();
@@ -25,11 +26,9 @@ const CaseFormResolution = ({ thisCase }: any) => {
   const queryClient = useQueryClient();
 
   const { user } = useUser();
-  const { data: ufValue } = useQueryUF().useGetUFValue();
   const { data: thisReimbursement } = useQueryCase().useGetReimbursment(
     thisCase?.case_id
   );
-
   const { data: assignedPartner } = useQueryCase().useGetAssignedPartner(
     thisCase?.case_id,
     stages?.find((s: any) => s?.name === "Designación de convenio")?.id
@@ -37,9 +36,6 @@ const CaseFormResolution = ({ thisCase }: any) => {
   const { data: assignedSpecialist } = useQueryCase().useGetAssignedSpecialist(
     thisCase?.case_id,
     stages?.find((s: any) => s?.name === "Designación de especialista")?.id
-  );
-  const { data: contractor } = useQueryContractor().useGetById(
-    thisCase?.contractor_id
   );
 
   const { mutate: updateCase } = useQueryCase().useCreate();
@@ -130,34 +126,7 @@ const CaseFormResolution = ({ thisCase }: any) => {
   return (
     <form>
       <ContentCell gap="20px">
-        <ContentCell gap="5px">
-          <InputText
-            label="Cliente"
-            value={
-              contractor?.companyName ||
-              contractor?.name + " " + contractor?.paternalLastName
-            }
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-          <InputText
-            label="Asegurado"
-            value={
-              thisCase?.applicant_name + " " + thisCase?.applicant_lastname
-            }
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-          <InputText
-            label="Servicio"
-            value={thisCase?.assistance}
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-        </ContentCell>
+      <CaseDescription thisCase={thisCase} />
         <ContentCell gap="5px">
           {thisReimbursement && (
             <ContentCell gap="20px">

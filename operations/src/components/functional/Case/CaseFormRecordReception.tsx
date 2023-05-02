@@ -10,6 +10,7 @@ import CaseDocumentsTable from "./CaseDocumentsTable";
 
 import { useQueryCase, useQueryContractor, useQueryStage } from "../../../hooks/query";
 import { useUser } from "@clerk/nextjs";
+import { CaseDescription } from "./CaseDescription";
 
 const CaseFormRecordReception = ({ thisCase }: any) => {
   const router = useRouter();
@@ -23,13 +24,10 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
 
   const { user } = useUser();
   const { data: stages } = useQueryStage().useGetAll();
+
   const { mutate: uploadDocuments, isLoading } =
     useQueryCase().useUploadDocument();
   const { mutate: updateCase } = useQueryCase().useCreate();
-
-  const { data: contractor } = useQueryContractor().useGetById(
-    thisCase?.contractor_id
-  );
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -145,34 +143,7 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
       onSubmit={handleSubmit}
     >
       <ContentCell gap="20px">
-        <ContentCell gap="5px">
-          <InputText
-            label="Cliente"
-            value={
-              contractor?.companyName ||
-              contractor?.name + " " + contractor?.paternalLastName
-            }
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-          <InputText
-            label="Asegurado"
-            value={
-              thisCase?.applicant_name + " " + thisCase?.applicant_lastname
-            }
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-          <InputText
-            label="Servicio"
-            value={thisCase?.assistance}
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-        </ContentCell>
+      <CaseDescription thisCase={thisCase} />
         <ContentCell gap="5px">
           <CaseDocumentsTable
             thisCase={thisCase}

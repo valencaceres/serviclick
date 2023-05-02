@@ -15,6 +15,7 @@ import TextArea from "../../ui/TextArea/TextArea";
 import ComboBox from "../../ui/ComboBox";
 import { decisions } from "../../../data/masters";
 import { useUser } from "@clerk/nextjs";
+import { CaseDescription } from "./CaseDescription";
 
 const CaseFormEvaluation = ({ thisCase }: any) => {
   const router = useRouter();
@@ -23,10 +24,6 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
   const [description, setDescription] = useState<string>("");
   const [justification, setJustification] = useState<string>("");
   const [evaluation, setEvaluation] = useState<string>("");
-
-  const { data: contractor } = useQueryContractor().useGetById(
-    thisCase?.contractor_id
-  );
 
   const { user } = useUser();
   const { data: stages } = useQueryStage().useGetAll();
@@ -100,34 +97,7 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
       onSubmit={handleSubmit}
     >
       <ContentCell gap="20px">
-        <ContentCell gap="5px">
-          <InputText
-            label="Cliente"
-            value={
-              contractor?.companyName ||
-              thisCase?.applicant_name + " " + thisCase?.applicant_lastname
-            }
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-          <InputText
-            label="Asegurado"
-            value={
-              thisCase?.applicant_name + " " + thisCase?.applicant_lastname
-            }
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-          <InputText
-            label="Servicio"
-            value={thisCase?.assistance}
-            type="text"
-            disabled={true}
-            width="525px"
-          />
-        </ContentCell>
+        <CaseDescription thisCase={thisCase} />
         <ContentCell gap="20px">
           <TextArea
             value={description}
