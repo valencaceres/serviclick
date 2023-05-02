@@ -60,7 +60,7 @@ const ReimbursementTable: React.FC = () => {
       <tbody>
         {isLoading ? (
           <tr>
-            <td colSpan={8} className="w-full bg-slate-50 p-2 text-center">
+            <td colSpan={9} className="w-full bg-slate-50 p-2 text-center">
               Cargando...
             </td>
           </tr>
