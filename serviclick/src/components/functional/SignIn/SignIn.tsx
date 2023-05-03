@@ -1,7 +1,7 @@
 import React from "react";
-import { useRouter } from "next/router";
 import { useSession, useSignIn } from "@clerk/nextjs";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/router";
 
 import { Button } from "~/components/ui/ButtonC";
 import { Input } from "~/components/ui/Input";
@@ -13,12 +13,7 @@ const SIMPLE_REGEX_PATTERN = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
 
 export const SignIn: React.FC = () => {
   const router = useRouter();
-  const { isLoaded, signIn, setSession } = useSignIn();
-  const { isSignedIn } = useSession();
-
-  if (isSignedIn) {
-    void router.push("/");
-  }
+  const { isLoaded, signIn, setActive } = useSignIn();
 
   const {
     register,
@@ -45,7 +40,8 @@ export const SignIn: React.FC = () => {
         password: getValues("password"),
       });
       if (signInResponse.status === "complete") {
-        await setSession(signInResponse.createdSessionId);
+        await setActive({ session: signInResponse.createdSessionId });
+        await router.push("/");
       } else {
         console.log(signInResponse);
       }
