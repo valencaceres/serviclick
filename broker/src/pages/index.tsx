@@ -10,11 +10,7 @@ const DashboardPage: NextPage = () => {
     setTitle("Dashboard");
   }, [setTitle]);
 
-  return (
-    <>
-      <Dashboard />
-    </>
-  );
+  return <Dashboard />;
 };
 
 export default DashboardPage;

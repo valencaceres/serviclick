@@ -12,7 +12,7 @@ enum SaleSteps {
 
 export function Sale() {
   const [saleStep, setSaleStep] = useState(SaleSteps.FAMILY);
-  
+
   const { setFamily } = useUI();
 
   const goToNextStep = () => setSaleStep((saleStep) => saleStep + 1);
@@ -20,7 +20,7 @@ export function Sale() {
   const goToPreviousStep = () => {
     setSaleStep((saleStep) => saleStep - 1);
     setFamily(null);
-  }
+  };
 
   return (
     <>
@@ -31,7 +31,10 @@ export function Sale() {
           case SaleSteps.PRODUCT:
             return (
               <>
-                <SaleProductStep onDone={goToNextStep} />
+                <SaleProductStep
+                  onDone={goToNextStep}
+                  previousStep={goToPreviousStep}
+                />
                 <Button
                   className="fixed bottom-0 right-0 m-4 h-16 w-16 rounded-full bg-teal-blue"
                   onClick={goToPreviousStep}

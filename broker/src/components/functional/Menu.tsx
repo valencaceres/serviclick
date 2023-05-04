@@ -28,6 +28,7 @@ const routes = [
   },
   {
     text: "Cobranza",
+    route: "/billing",
   }
 ];
 

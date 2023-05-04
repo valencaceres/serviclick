@@ -1,9 +1,10 @@
+import { useEffect } from "react";
 import { Button } from "~/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/Card";
 import { useUI } from "~/store/hooks";
-import { RouterOutputs, api } from "~/utils/api";
+import { type RouterOutputs, api } from "~/utils/api";
 
-export function SaleProductStep({ onDone }: { onDone: () => void }) {
+export function SaleProductStep({ onDone, previousStep }: { onDone: () => void, previousStep: () => void }) {
   const { broker, family } = useUI();
 
   const { data: products, isLoading } = api.broker.getProducts.useQuery(
@@ -15,6 +16,17 @@ export function SaleProductStep({ onDone }: { onDone: () => void }) {
       enabled: !!broker && !!family,
     }
   );
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        previousStep();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [previousStep]);
 
   return (
     <div className="flex w-full flex-col items-center justify-center gap-4 pb-24 pl-12">

@@ -19,6 +19,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <title>Serviclick.cl - Broker</title>
         <meta name="description" content="Serviclick Admin Module" />
         <link rel="icon" href="/favicon.ico" />
+        <link rel="manifest" href="/manifest.json" />
       </Head>
       <Header />
       <Main>{children}</Main>
@@ -41,14 +42,12 @@ const Header = () => {
   return (
     <header
       className={
-        "fixed z-20 flex h-32 w-full flex-col border-b border-ultraLightGrey bg-white"
+        "fixed z-20 flex h-32 w-full flex-col border-ultraLightGrey bg-white"
       }
     >
       <div className="relative flex w-full items-center border-b bg-white md:bg-primary-500 ">
         {isSignedIn && <Menu isOpen={isOpen} setIsOpen={setIsOpen} />}
-        <div
-          className={"flex w-full items-center bg-white p-2 md:w-1/2"}
-        >
+        <div className={"flex w-full items-center bg-white p-2 md:w-1/2"}>
           <div className={`select-none ${isSignedIn ? "pl-16" : ""}`}>
             <Link href="/">
               <Image
@@ -78,28 +77,32 @@ const Header = () => {
           {title}
         </div>
       </div>
-      <div
-        className={`relative flex w-full justify-between p-2 ${
-          isSignedIn ? "pl-16" : ""
-        }`}
-      >
-        <SelectBroker
-          broker={broker}
-          setBroker={setBroker}
-          open={open}
-          setOpen={setOpen}
-        />
-        {router.pathname !== "/sale" && (
-          <Button
-            className="hidden gap-1 md:flex"
-            type="button"
-            onClick={() => void router.push("/sale")}
-          >
-            <PlusIcon size={20} />
-            Nueva Venta
-          </Button>
-        )}
-      </div>
+      {isSignedIn && (
+        <div
+          className={`relative border-b flex w-full justify-between p-2 ${
+            isSignedIn ? "pl-16" : ""
+          }`}
+        >
+          <>
+            <SelectBroker
+              broker={broker}
+              setBroker={setBroker}
+              open={open}
+              setOpen={setOpen}
+            />
+            {router.pathname !== "/sale" && (
+              <Button
+                className="hidden gap-1 md:flex"
+                type="button"
+                onClick={() => void router.push("/sale")}
+              >
+                <PlusIcon size={20} />
+                Nueva Venta
+              </Button>
+            )}
+          </>
+        </div>
+      )}
     </header>
   );
 };

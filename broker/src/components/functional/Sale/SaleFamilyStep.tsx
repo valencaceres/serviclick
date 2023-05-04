@@ -1,8 +1,7 @@
-import { Card, CardHeader, CardTitle } from "~/components/ui/Card";
-
 import { type RouterOutputs, api } from "~/utils/api";
 
 import { useUI } from "~/store/hooks";
+import { Button } from "~/components/ui/Button";
 
 export function SaleFamilyStep({ onDone }: { onDone: () => void }) {
   const { broker, setFamily } = useUI();
@@ -56,16 +55,12 @@ function FamilyCard({
   onClick,
 }: Family & { onClick: (family: Family) => void }) {
   return (
-    <Card
+    <Button
       key={id}
       onClick={() => onClick({ id, name, icon })}
-      className="w-full max-w-xs cursor-pointer bg-primary-500 shadow-md duration-75 hover:bg-primary-600 hover:shadow-none active:bg-primary-700"
+      className="w-full max-w-xs p-10 select-none text-center text-2xl text-teal-blue cursor-pointer bg-primary-500 shadow-md duration-75 hover:bg-primary-600 hover:shadow-none active:bg-primary-700"
     >
-      <CardHeader>
-        <CardTitle className="select-none text-center text-2xl text-teal-blue">
           {name}
-        </CardTitle>
-      </CardHeader>
-    </Card>
+    </Button>
   );
 }

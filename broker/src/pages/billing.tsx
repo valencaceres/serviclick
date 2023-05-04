@@ -1,18 +1,17 @@
 import { type NextPage } from "next";
 import { useEffect } from "react";
-
-import { Sale } from "~/components/functional/Sale";
+import { Billing } from "~/components/functional/Billing";
 
 import { useUI } from "~/store/hooks";
 
-const SalePage: NextPage = () => {
+const BillingPage: NextPage = () => {
   const { setTitle } = useUI();
 
   useEffect(() => {
-    setTitle("Venta");
+    setTitle("Cobranza");
   }, [setTitle]);
   
-  return <Sale />;
+  return <Billing />;
 };
 
-export default SalePage;
+export default BillingPage;
