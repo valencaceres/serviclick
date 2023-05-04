@@ -9,7 +9,18 @@ export default {
       },
       colors: {
         primary: {
+          DEFAULT: "#B4CD25",
+          50: "#E3EFA4",
+          100: "#DFEC95",
+          200: "#D6E677",
+          300: "#CDE158",
+          400: "#C3DB3A",
           500: "#B4CD25",
+          600: "#A9C023",
+          700: "#9DB320",
+          800: "#92A61E",
+          900: "#86991C",
+          950: "#81931A",
         },
         "teal-blue": {
           DEFAULT: "#03495C",

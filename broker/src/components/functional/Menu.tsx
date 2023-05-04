@@ -23,9 +23,12 @@ const routes = [
     route: "/",
   },
   {
-    text: "Productos",
-    route: "/products",
+    text: "Venta",
+    route: "/sale",
   },
+  {
+    text: "Cobranza",
+  }
 ];
 
 interface MenuProps {
