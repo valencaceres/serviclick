@@ -1,31 +1,36 @@
 import Image from "next/image";
 
-import ButtonIcon from "../../ui/ButtonIcon";
-
 import useUI from "../../../hooks/useUI";
-
-import styles from "./Header.module.scss";
+import { useSession } from "@clerk/nextjs";
 
 const Header = () => {
-  const { setShowMenuUI, showMenu, title, user } = useUI();
-
-  const handleToggleMenu = () => {
-    setShowMenuUI(!showMenu);
-  };
+  const { title } = useUI();
+  const { isSignedIn } = useSession();
 
   return (
-    <div className={styles.header}>
-      <div className={styles.left}>
-        {user.rut !== "" && (
-          <ButtonIcon
-            iconName="menu"
-            onClick={handleToggleMenu}
-            color="transparent"
-          />
-        )}
-        <Image alt="ServiClick" src="/logo.jpg" width={243} height={51} />
+    <div className={"flex h-[70px] w-full border-b border-ultraLightGrey"}>
+      <div className={"flex w-full items-center pl-2 md:w-1/2"}>
+        <div className={`select-none ${isSignedIn ? "pl-16" : ""}`}>
+          <div className={"hidden md:block"}>
+            <Image alt="ServiClick" src="/logo.jpg" width={243} height={51} />
+          </div>
+          <div className={"md:hidden"}>
+            <Image
+              alt="ServiClick Logo"
+              src="/favicon.png"
+              width={48}
+              height={48}
+            />
+          </div>
+        </div>
       </div>
-      <div className={styles.right}>{title}</div>
+      <div
+        className={
+          "flex h-full w-full items-center bg-primary-500 pl-5 text-[22px] font-semibold text-white md:w-1/2"
+        }
+      >
+        {title}
+      </div>
     </div>
   );
 };

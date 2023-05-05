@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import Image from "next/image";
+import { useSession } from "@clerk/nextjs";
 
 import { Content } from "../../layout/Content";
 
 import { Menu } from "../Menu/Menu";
 
 import { useDistrict } from "../../../hooks";
-import { useSession } from "@clerk/nextjs";
 
 const Main = ({ children }: any) => {
   const { listAllDistrict } = useDistrict();

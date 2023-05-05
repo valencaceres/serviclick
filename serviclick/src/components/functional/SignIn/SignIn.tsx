@@ -1,11 +1,11 @@
 import React from "react";
 import { useRouter } from "next/router";
-import { useSignIn } from "@clerk/nextjs";
+import { useSession, useSignIn } from "@clerk/nextjs";
 import { useForm } from "react-hook-form";
 
-import { Button } from "../ui/Button";
-import { Input } from "../ui/Input";
-import { Label } from "../ui/Label";
+import { Button } from "~/components/ui/ButtonC";
+import { Input } from "~/components/ui/Input";
+import { Label } from "~/components/ui/Label";
 
 import { type APIResponseError, parseError } from "~/utils/errors";
 
@@ -13,10 +13,16 @@ const SIMPLE_REGEX_PATTERN = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
 
 export const SignIn: React.FC = () => {
   const router = useRouter();
-  const { isLoaded, signIn, setActive } = useSignIn();
+  const { isLoaded, signIn, setSession } = useSignIn();
+  const { isSignedIn } = useSession();
+
+  if (isSignedIn) {
+    void router.push("/");
+  }
 
   const {
     register,
+    getValues,
     watch,
     setError,
     clearErrors,
@@ -35,11 +41,13 @@ export const SignIn: React.FC = () => {
     try {
       clearErrors();
       const signInResponse = await signIn.create({
-        identifier: email,
-        password: password,
+        identifier: getValues("email"),
+        password: getValues("password"),
       });
       if (signInResponse.status === "complete") {
-        await setActive({ session: signInResponse.createdSessionId });
+        await setSession(signInResponse.createdSessionId);
+      } else {
+        console.log(signInResponse);
       }
     } catch (err) {
       setError("email", {
@@ -51,7 +59,6 @@ export const SignIn: React.FC = () => {
 
   return (
     <form
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onSubmit={handleSubmit(submit)}
       className="flex w-96 flex-col items-center gap-2 p-2"
     >

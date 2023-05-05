@@ -78,7 +78,7 @@ const FamilyDetail = ({ saveFamily }: any) => {
             <TableCell width="available">Campos</TableCell>
           </TableHeader>
           <TableDetail>
-            {values.map((value: any, idx: number) => (
+            {values?.map((value: any, idx: number) => (
               <TableRow key={idx} className={"deleted"}>
                 <TableCell width="available">
                   {value.name}

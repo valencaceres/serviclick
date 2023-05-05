@@ -1,17 +1,27 @@
-import { Router, useRouter } from "next/router";
+import React from "react";
+import { useRouter } from "next/router";
+import { UserButton, useUser } from "@clerk/nextjs";
+import { MenuIcon, XIcon } from "lucide-react";
+import Link from "next/link";
 
-import Icon from "../../ui/Icon";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "~/components/ui/Accordion";
 
-import useUI from "../../../hooks/useUI";
+interface Route {
+  text: string;
+  route?: string;
+  subRoutes?: Route[];
+}
 
-import styles from "./Menu.module.scss";
-
-const menu = [
-  { icon: <Icon iconName="home" />, text: "Inicio", route: "/" },
+const routes = [
+  { text: "Inicio", route: "/" },
   {
-    icon: <Icon iconName="settings" />,
     text: "Maestros",
-    subOptions: [
+    subRoutes: [
       { text: "Canales de Venta", route: "/masters/channel" },
       { text: "Familias", route: "/masters/family" },
       { text: "Tipos de valor", route: "/masters/valueType" },
@@ -22,96 +32,154 @@ const menu = [
     ],
   },
   {
-    icon: <Icon iconName="shopping_cart_checkout" />,
     text: "Canales de venta",
-    subOptions: [
+    subRoutes: [
       { text: "Internet", route: "/channels/web" },
       { text: "Brokers", route: "/channels/broker" },
       { text: "Retail", route: "/channels/retail" },
     ],
   },
   {
-    icon: <Icon iconName="directions_car" />,
     text: "Procesos",
   },
   {
-    icon: <Icon iconName="receipt_long" />,
     text: "Reportes",
-    subOptions: [
+    subRoutes: [
       { text: "Transacciones", route: "/reports/transactions" },
       { text: "Clientes", route: "/reports/contractor" },
     ],
   },
 ];
 
-const Menu = () => {
-  const { showMenu } = useUI();
+interface MenuProps {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+}
 
+export function Menu({ isOpen, setIsOpen }: MenuProps) {
+  const user = useUser();
   return (
-    <div className={styles.menu + " " + styles[showMenu ? "show" : "hide"]}>
-      {menu.map((item: any, idx: number) => (
-        <MenuOption
-          key={idx}
-          iconName={item.icon}
-          id={item.id}
-          text={item.text}
-          className={styles.menuOption}
-          subOptions={item.subOptions}
-          route={item.route}
-        />
-      ))}
-    </div>
-  );
-};
-
-const MenuOption = ({
-  iconName,
-  text,
-  subOptions,
-  className,
-  setShowSubOptions,
-  showSubOptions,
-  route,
-}: any) => {
-  const router = useRouter();
-
-  const handleClickOption = (route: string) => {
-    if (route) {
-      router.push(route);
-    }
-  };
-
-  return (
-    <div className={className}>
-      <div className={styles.option} onClick={() => handleClickOption(route)}>
-        <div className={styles.left}>
-          <Icon iconName={iconName} className={styles.icon} />
-          <p>{text}</p>
+    <>
+      <nav
+        className={`border-grayDark-6 absolute left-0 top-0 z-20 flex h-screen flex-col justify-between overflow-y-auto border-r bg-white duration-75 ${
+          isOpen ? "w-64" : "w-12"
+        }`}
+      >
+        <div className="w-full">
+          <div
+            className={`flex w-full px-2 py-4 ${
+              !isOpen ? "justify-center" : "justify-end"
+            }`}
+          >
+            <MenuButton isOpen={isOpen} setIsOpen={setIsOpen} />
+          </div>
+          <div className={`flex flex-col gap-2 p-1 ${!isOpen ? "hidden" : ""}`}>
+            {routes.map((route, key) => (
+              <MenuItem
+                key={key}
+                route={route}
+                setIsOpen={setIsOpen}
+                isOpen={isOpen}
+              />
+            ))}
+          </div>
         </div>
-        {subOptions && <Icon iconName="chevron_right" />}
-      </div>
-      {subOptions && (
-        <SubOptions
-          subOptions={subOptions}
-          show={showSubOptions}
-          setShowMenu={setShowSubOptions}
+        <div>
+          <div className={`flex items-center justify-start gap-2 p-2`}>
+            <UserButton />
+            <p
+              className={`${
+                !isOpen ? "hidden" : ""
+              } whitespace-nowrap text-sm text-black`}
+            >
+              {user.user?.fullName}
+            </p>
+          </div>
+        </div>
+      </nav>
+      <div
+        className={`absolute left-0 top-0 z-10 h-screen w-screen bg-black bg-opacity-20 ${
+          isOpen ? "" : "hidden"
+        }`}
+        onClick={() => setIsOpen(false)}
+      ></div>
+    </>
+  );
+}
+
+interface MenuButtonProps {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+}
+
+const MenuButton: React.FC<MenuButtonProps> = ({ isOpen, setIsOpen }) => {
+  return (
+    <button onClick={() => setIsOpen(!isOpen)}>
+      {!isOpen ? (
+        <MenuIcon
+          size={24}
+          className="text-teal-blue hover:text-teal-blue-300"
         />
+      ) : (
+        <XIcon size={24} className="text-teal-blue hover:text-teal-blue-300" />
       )}
-    </div>
+    </button>
   );
 };
 
-const SubOptions = ({ subOptions, show, setShowMenu }: any) => {
-  const router = useRouter();
+interface MenuItemProps {
+  route: Route;
+  isOpen: boolean;
+  setIsOpen?: (isOpen: boolean) => void;
+}
 
-  return subOptions.map((item: any, key: number) => (
-    <div
-      key={key}
-      onClick={() => router.push(item.route)}
-      className={styles.subOption + " " + styles[show ? "show" : "hide"]}>
-      {item.text}
-    </div>
-  ));
+const MenuItem: React.FC<MenuItemProps> = ({ route, isOpen, setIsOpen }) => {
+  const { pathname } = useRouter();
+
+  if (!route.route && !route.subRoutes) {
+    return (
+      <li
+        className={`flex w-full list-none p-2  text-dusty-gray-200 line-through ${
+          pathname === route.route ? "font-extrabold" : "font-medium"
+        }`}
+      >
+        {route.text}
+      </li>
+    );
+  }
+
+  if (!route.route)
+    return (
+      <Accordion type="multiple">
+        <AccordionItem
+          className="list-none rounded-md border border-dusty-gray-100 px-2 text-teal-blue-100 shadow-sm hover:border-teal-blue-100"
+          value={route.text}
+        >
+          <AccordionTrigger>{route.text}</AccordionTrigger>
+          <AccordionContent>
+            {route.subRoutes?.map((subRoute: any) => (
+              <MenuItem
+                key={subRoute.text}
+                route={subRoute}
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+              />
+            ))}
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+    );
+
+  return (
+    <li
+      className={`flex w-full list-none p-2  text-teal-blue-100 ${
+        pathname === route.route ? "font-extrabold" : "font-medium"
+      }`}
+      onClick={() => setIsOpen && setIsOpen(false)}
+    >
+      <Link className="w-full py-2 hover:underline" href={route.route}>
+        {route.text}
+      </Link>
+    </li>
+  );
 };
-
-export default Menu;
