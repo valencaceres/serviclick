@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { ContentCell, ContentRow } from "../../layout/Content";
-import Button from "../../ui/Button";
 import InputText from "../../ui/InputText";
 
 import {
@@ -15,6 +14,7 @@ import {
 import ComboBox from "../../ui/ComboBox";
 import { useUser } from "@clerk/nextjs";
 import { CaseDescription } from "./CaseDescription";
+import { Button } from "~/components/ui/ButtonC";
 
 const CaseFormPartner = ({ thisCase }: any) => {
   const router = useRouter();
@@ -38,8 +38,9 @@ const CaseFormPartner = ({ thisCase }: any) => {
   const { data: partners } = useQueryPartner().useGetByFamilyId(
     thisCase?.family_id
   );
-  const { data: contractor } =
-    useQueryContractor().useGetById(thisCase?.contractor_id);
+  const { data: contractor } = useQueryContractor().useGetById(
+    thisCase?.contractor_id
+  );
 
   const { mutate: updateCase } = useQueryCase().useCreate();
   const { mutate: assignPartner } = useQueryCase().useAssignPartner();
@@ -164,11 +165,12 @@ const CaseFormPartner = ({ thisCase }: any) => {
             </ContentRow>
             {partner !== getAssignedPartner?.partner_id ? (
               <Button
-                text="Asignar convenio"
                 type="button"
-                enabled={thisCase?.is_active === true ? true : false}
+                disabled={thisCase?.is_active ? false : true}
                 onClick={handleAssign}
-              />
+              >
+                Asignar
+              </Button>
             ) : (
               getAssignedPartner && (
                 <div className="mt-5">
@@ -195,11 +197,12 @@ const CaseFormPartner = ({ thisCase }: any) => {
                       />
                     </ContentRow>
                     <Button
-                      text="Programar visita"
                       type="button"
-                      enabled={thisCase?.is_active === true ? true : false}
+                      disabled={thisCase?.is_active ? false : true}
                       onClick={handleSchedule}
-                    />
+                    >
+                      Agendar
+                    </Button>
                   </ContentCell>
                 </div>
               )

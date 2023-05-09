@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { ContentCell, ContentRow } from "../../layout/Content";
-import Button from "../../ui/Button";
 import InputText from "../../ui/InputText";
 import ComboBox from "../../ui/ComboBox";
 
@@ -16,6 +15,7 @@ import {
 import { useDistrict } from "../../../hooks";
 import { useUser } from "@clerk/nextjs";
 import { CaseDescription } from "./CaseDescription";
+import { Button } from "~/components/ui/ButtonC";
 
 const CaseFormSpecialist = ({ thisCase }: any) => {
   const router = useRouter();
@@ -217,12 +217,13 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
             </ContentRow>
             {specialist !== assignedSpecialist?.specialist_id ? (
               <Button
-                text="Asignar especialista"
                 type="button"
                 className="w-full"
-                enabled={thisCase?.is_active === true ? true : false}
+                disabled={thisCase?.is_active ? false : true}
                 onClick={handleAssign}
-              />
+              >
+                Asignar
+              </Button>
             ) : (
               assignedSpecialist && (
                 <div className="mt-5">
@@ -249,11 +250,12 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
                       />
                     </ContentRow>
                     <Button
-                      text="Programar visita"
                       type="button"
-                      enabled={thisCase?.is_active === true ? true : false}
+                      disabled={thisCase?.is_active ? false : true}
                       onClick={handleSchedule}
-                    />
+                    >
+                      Agendar
+                    </Button>
                   </ContentCell>
                 </div>
               )
