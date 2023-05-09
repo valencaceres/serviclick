@@ -40,6 +40,9 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
     district,
     thisCase?.assistance_id
   );
+  const { data: contractor } = useQueryContractor().useGetById(
+    thisCase?.contractor_id
+  );
 
   const { mutate: updateCase } = useQueryCase().useCreate();
   const { mutate: assignSpecialist } = useQueryCase().useAssignSpecialist();
@@ -53,7 +56,8 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
     number: thisCase?.case_number,
     product_id: thisCase?.product_id,
     assistance_id: thisCase?.assistance_id,
-    company_id: thisCase?.contractor_id,
+    company_id: contractor?.type === "C" ? thisCase?.contractor_id : null,
+    customer_id: contractor?.type === "P" ? thisCase?.contractor_id : null,
     stage_id: stageId,
     user_id: user?.id,
     isactive: true,
@@ -144,7 +148,7 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
   return (
     <div>
       <ContentCell gap="20px">
-      <CaseDescription thisCase={thisCase} />
+        <CaseDescription thisCase={thisCase} />
         <ContentCell gap="20px">
           <ComboBox
             label="Comuna de atención"
@@ -240,8 +244,7 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
                         value={scheduledTime}
                         onChange={(e: any) => setScheduledTime(e.target.value)}
                         minTime="09:00"
-                        maxTime="18:00"
-                        step="3600"
+                        maxTime="20:00"
                         disabled={thisCase?.is_active === true ? false : true}
                       />
                     </ContentRow>

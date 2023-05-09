@@ -3,8 +3,6 @@ import { useRouter } from "next/router";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { ContentCell, ContentRow } from "../../layout/Content";
-import Button from "../../ui/Button";
-import InputText from "../../ui/InputText";
 
 import {
   useQueryCase,
@@ -16,6 +14,7 @@ import ComboBox from "../../ui/ComboBox";
 import { decisions } from "../../../data/masters";
 import { useUser } from "@clerk/nextjs";
 import { CaseDescription } from "./CaseDescription";
+import { Button } from "~/components/ui/ButtonC";
 
 const CaseFormEvaluation = ({ thisCase }: any) => {
   const router = useRouter();
@@ -27,6 +26,10 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
 
   const { user } = useUser();
   const { data: stages } = useQueryStage().useGetAll();
+  const { data: contractor } = useQueryContractor().useGetById(
+    thisCase?.contractor_id
+  );
+
   const { mutate: updateCase } = useQueryCase().useCreate();
 
   const findStageByName = (name: string) =>
@@ -42,7 +45,8 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
     product_id: thisCase?.product_id,
     assistance_id: thisCase?.assistance_id,
     stage_id: findStageByName(stageName)?.id || "",
-    company_id: thisCase?.contractor_id,
+    company_id: contractor?.type === "C" ? thisCase?.contractor_id : null,
+    customer_id: contractor?.type === "P" ? thisCase?.contractor_id : null,
     user_id: user?.id,
     description,
     isactive: true,
@@ -127,11 +131,9 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
             dataValue="name"
           />
         </ContentCell>
-        <Button
-          enabled={thisCase?.is_active ? true : false}
-          text="Registrar evaluación"
-          type="submit"
-        />
+        <Button disabled={thisCase?.is_active ? false : true}>
+          Registrar evaluación
+        </Button>
       </ContentCell>
     </form>
   );

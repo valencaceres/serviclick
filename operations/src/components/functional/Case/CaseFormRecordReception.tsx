@@ -3,14 +3,18 @@ import { useRouter } from "next/router";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { ContentCell, ContentRow } from "../../layout/Content";
-import Button from "../../ui/Button";
 import { LoadingMessage } from "../../ui/LoadingMessage";
-import InputText from "../../ui/InputText";
+
 import CaseDocumentsTable from "./CaseDocumentsTable";
 
-import { useQueryCase, useQueryContractor, useQueryStage } from "../../../hooks/query";
+import {
+  useQueryCase,
+  useQueryContractor,
+  useQueryStage,
+} from "../../../hooks/query";
 import { useUser } from "@clerk/nextjs";
 import { CaseDescription } from "./CaseDescription";
+import { Button } from "~/components/ui/ButtonC";
 
 const CaseFormRecordReception = ({ thisCase }: any) => {
   const router = useRouter();
@@ -24,6 +28,9 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
 
   const { user } = useUser();
   const { data: stages } = useQueryStage().useGetAll();
+  const { data: contractor } = useQueryContractor().useGetById(
+    thisCase?.contractor_id
+  );
 
   const { mutate: uploadDocuments, isLoading } =
     useQueryCase().useUploadDocument();
@@ -51,6 +58,10 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
             number: thisCase?.case_number,
             product_id: thisCase?.product_id,
             assistance_id: thisCase?.assistance_id,
+            company_id:
+              contractor?.type === "C" ? thisCase?.contractor_id : null,
+            customer_id:
+              contractor?.type === "P" ? thisCase?.contractor_id : null,
             stage_id:
               stages?.find((s: any) => s.name === "Recepción de antecedentes")
                 ?.id || "",
@@ -67,6 +78,10 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
                   number: thisCase?.case_number,
                   product_id: thisCase?.product_id,
                   assistance_id: thisCase?.assistance_id,
+                  company_id:
+                    contractor?.type === "C" ? thisCase?.contractor_id : null,
+                  customer_id:
+                    contractor?.type === "P" ? thisCase?.contractor_id : null,
                   stage_id: stages?.find((s: any) => s?.name === "Seguimiento")
                     ?.id,
                   user_id: user?.id,
@@ -96,6 +111,8 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
         number: thisCase?.case_number,
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
+        company_id: contractor?.type === "C" ? thisCase?.contractor_id : null,
+        customer_id: contractor?.type === "P" ? thisCase?.contractor_id : null,
         stage_id:
           stages?.find((s: any) => s.name === "Recepción de antecedentes")
             ?.id || "",
@@ -112,7 +129,10 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
               number: thisCase?.case_number,
               product_id: thisCase?.product_id,
               assistance_id: thisCase?.assistance_id,
-              company_id: thisCase?.contractor_id,
+              company_id:
+                contractor?.type === "C" ? thisCase?.contractor_id : null,
+              customer_id:
+                contractor?.type === "P" ? thisCase?.contractor_id : null,
               stage_id: stages?.find((s: any) => s?.name === "Seguimiento")?.id,
               user_id: user?.id,
               isactive: true,
@@ -143,7 +163,7 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
       onSubmit={handleSubmit}
     >
       <ContentCell gap="20px">
-      <CaseDescription thisCase={thisCase} />
+        <CaseDescription thisCase={thisCase} />
         <ContentCell gap="5px">
           <CaseDocumentsTable
             thisCase={thisCase}
@@ -154,18 +174,19 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
         </ContentCell>
         <ContentRow gap="5px">
           <Button
-            enabled={thisCase?.is_active ? true : false}
-            text="Subir archivos"
-            width="50%"
-            type="submit"
-          />
+            disabled={thisCase?.is_active ? false : true}
+            className="w-full"
+          >
+            Subir documentos
+          </Button>
           <Button
-            enabled={thisCase?.is_active ? true : false}
-            text="Omitir"
+            disabled={thisCase?.is_active ? false : true}
             type="button"
-            width="50%"
+            className="w-full"
             onClick={(e: any) => handleSkip(e)}
-          />
+          >
+            Omitir
+          </Button>
         </ContentRow>
       </ContentCell>
       <LoadingMessage showModal={isLoading} />

@@ -102,6 +102,9 @@ const BeneficiaryForm = ({ thisCase }: any) => {
   const { data: insuredByRut, isLoading: isLoadingRut } =
     useQueryInsured().useGetByRut(rut);
 
+  const { data: contractor, isLoading: isLoadingContractor } =
+    useQueryContractor().useGetById(thisCase?.contractor_id);
+
   const isValidRut = (rut: string) => {
     if (
       (rutRegEx.test(unFormatRut(rut)) &&
@@ -146,12 +149,14 @@ const BeneficiaryForm = ({ thisCase }: any) => {
     }
   };
 
+  console.log(thisCase)
+
   const send = async () => {
     updateCase(
       {
         applicant: {
-          type: "C",
-          id: isNewBeneficiary ? null : insured?.id,
+          type: isNewBeneficiary ? "C" : thisCase?.beneficiary_id ? "B" : "I",
+          id: isNewBeneficiary ? null : insured?.id || insuredByRut?.id,
           rut,
           name,
           paternalLastName,
@@ -163,6 +168,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
           phone,
         },
         company_id: client !== "" ? client : null,
+        customer_id: contractor?.type === "P" ? contractor?.id : null,
         isInsured: isInsured === "isInsured",
         beneficiary_id: thisCase?.beneficiary_id,
         number: thisCase !== null ? thisCase?.case_number : newCaseNumber,
@@ -172,31 +178,6 @@ const BeneficiaryForm = ({ thisCase }: any) => {
       {
         onSuccess: (response) => {
           router.push(`/case/${response.data.id}/registro de servicio`);
-          queryClient.invalidateQueries(["case", thisCase?.case_id]);
-        },
-      }
-    );
-  };
-
-  const skip = (e: any) => {
-    e.preventDefault();
-    updateCase(
-      {
-        applicant: {
-          type: "C",
-          id: thisCase?.insured_id,
-        },
-        number: thisCase?.case_number,
-        company_id: client !== "" ? client : null,
-        product_id: thisCase?.product_id,
-        assistance_id: thisCase?.assistance_id,
-        stage_id: stage,
-        user_id: user?.id,
-        isactive: true,
-      },
-      {
-        onSuccess: () => {
-          router.push(`/case/${thisCase?.case_id}/registro de servicio`);
           queryClient.invalidateQueries(["case", thisCase?.case_id]);
         },
       }
@@ -228,7 +209,9 @@ const BeneficiaryForm = ({ thisCase }: any) => {
       setValue(key as keyof typeof initialValues, value)
     );
 
-    setClient(thisCase?.contractor_id);
+    if (contractor?.type !== "P") {
+      setClient(thisCase?.contractor_id);
+    }
   };
 
   useEffect(() => {
@@ -284,6 +267,12 @@ const BeneficiaryForm = ({ thisCase }: any) => {
       }
     }
   }, [rut, thisCase]);
+
+  useEffect(() => {
+    if (contractor && contractor?.type === "P") {
+      setInitialValues(contractor);
+    }
+  }, [contractor]);
 
   useEffect(() => {
     if (stages) {
@@ -567,13 +556,25 @@ const BeneficiaryForm = ({ thisCase }: any) => {
             </div>
           </ContentCell>
           <div className="mt-4">
-            <ClientSelect value={client} setValue={setClient} thisCase={thisCase} />
+            {contractor?.type !== "P" && (
+              <ClientSelect
+                value={client}
+                setValue={setClient}
+                thisCase={thisCase}
+              />
+            )}
             <div className="mt-6 flex gap-2">
-              <Button className="w-full" disabled={isSubmitting}>
+              <Button
+                className="w-full"
+                disabled={
+                  isSubmitting ||
+                  !thisCase?.is_active ||
+                  (client === "" && contractor?.type !== "P")
+                    ? true
+                    : false
+                }
+              >
                 {isSubmitting ? "Enviando..." : "Continuar"}
-              </Button>
-              <Button className="w-full" onClick={skip}>
-                Omitir
               </Button>
             </div>
           </div>
