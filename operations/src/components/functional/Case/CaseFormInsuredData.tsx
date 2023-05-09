@@ -149,8 +149,6 @@ const BeneficiaryForm = ({ thisCase }: any) => {
     }
   };
 
-  console.log(thisCase)
-
   const send = async () => {
     updateCase(
       {

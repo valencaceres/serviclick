@@ -228,6 +228,9 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
               assignedSpecialist && (
                 <div className="mt-5">
                   <ContentCell gap="5px">
+                    <h2 className="text-lg font-semibold text-teal-blue">
+                      Agendar visita
+                    </h2>
                     <ContentRow gap="5px">
                       <InputText
                         label="Fecha de visita"

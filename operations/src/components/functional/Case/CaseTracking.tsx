@@ -307,7 +307,9 @@ const CaseTracking = ({ thisCase }: any) => {
               s.stage === "Designación de especialista"
           ) ? (
             <ContentCell gap="5px">
-              <h2 className="font-semibold">Hora programada</h2>
+              <h2 className="text-lg font-semibold text-teal-blue">
+                Hora programada
+              </h2>
               {assignedPartner && (
                 <InputText
                   label="Convenio"
