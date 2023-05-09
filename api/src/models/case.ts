@@ -32,8 +32,15 @@ const create: any = async (
         }
 
         const result = await pool.query(
-          `INSERT INTO app.case (number, insured_id, beneficiary_id, company_id, customer_id) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-          [number, applicant.id, beneficiary_id, company_id, customer_id]
+          `INSERT INTO app.case (number, insured_id, beneficiary_id, company_id, customer_id, type) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+          [
+            number,
+            applicant.id,
+            beneficiary_id,
+            company_id,
+            customer_id,
+            applicant.type,
+          ]
         );
 
         return { success: true, data: result.rows[0], error: null };
@@ -120,34 +127,41 @@ const create: any = async (
 const getAll: any = async () => {
   try {
     const result = await pool.query(`
-      SELECT cst.case_id,
-      cas.number,
-      sta.name as stage,
-      prd.name as product,
-      CASE 
-        WHEN ben.name IS NOT NULL THEN ben.name 
-        WHEN ins.name IS NOT NULL THEN ins.name 
-        ELSE per.name 
-        END as name,
+    SELECT cst.case_id,
+        cas.number,
+        sta.name as stage,
+        prd.name as product,
         CASE 
-            WHEN ben.paternallastname IS NOT NULL THEN ben.paternallastname 
-            WHEN ins.paternallastname IS NOT NULL THEN ins.paternallastname 
-            ELSE per.paternallastname 
-        END as paternallastname
-        FROM app.casestage cst
-        INNER JOIN (
-          SELECT case_id, MAX(sta.number) AS max_number
-          FROM app.casestage cst
-          INNER JOIN app.stage sta ON cst.stage_id = sta.id
-          GROUP BY case_id
-        ) latest_stages ON cst.case_id = latest_stages.case_id
-        INNER JOIN app.stage sta ON cst.stage_id = sta.id AND sta.number = latest_stages.max_number
-        INNER JOIN app.case cas ON cas.id = cst.case_id
-        LEFT OUTER JOIN app.product prd ON prd.id = cas.product_id
-        LEFT OUTER JOIN app.assistance asi ON asi.id = cas.assistance_id
-        LEFT OUTER JOIN app.beneficiary ben ON ben.id = cas.beneficiary_id
-        LEFT OUTER JOIN app.insured ins ON ins.id = cas.insured_id
-        LEFT OUTER JOIN app.person per ON per.id = cas.insured_id
+          WHEN ben.name IS NOT NULL THEN ben.name 
+          WHEN ins.name IS NOT NULL THEN ins.name 
+          ELSE per.name 
+          END as name,
+        CASE 
+          WHEN ben.paternallastname IS NOT NULL THEN ben.paternallastname 
+          WHEN ins.paternallastname IS NOT NULL THEN ins.paternallastname 
+          ELSE per.paternallastname 
+          END as paternallastname,
+        CASE
+          WHEN comp.companyname IS NOT NULL THEN comp.companyname 
+          ELSE CONCAT_WS(' ', cust.name, cust.paternallastname)
+      END as contractor_name
+    FROM app.casestage cst
+    INNER JOIN (
+      SELECT case_id, MAX(sta.number) AS max_number
+      FROM app.casestage cst
+      INNER JOIN app.stage sta ON cst.stage_id = sta.id
+      GROUP BY case_id
+    ) latest_stages ON cst.case_id = latest_stages.case_id
+    INNER JOIN app.stage sta ON cst.stage_id = sta.id AND sta.number = latest_stages.max_number
+    INNER JOIN app.case cas ON cas.id = cst.case_id
+    LEFT OUTER JOIN app.product prd ON prd.id = cas.product_id
+    LEFT OUTER JOIN app.assistance asi ON asi.id = cas.assistance_id
+    LEFT OUTER JOIN app.beneficiary ben ON ben.id = cas.beneficiary_id
+    LEFT OUTER JOIN app.insured ins ON ins.id = cas.insured_id
+    LEFT OUTER JOIN app.person per ON per.id = cas.insured_id
+    LEFT OUTER JOIN app.company comp ON comp.id = cas.company_id
+    LEFT OUTER JOIN app.customer cust ON cust.id = cas.customer_id
+    ORDER BY cas.number desc
     `);
 
     return { success: true, data: result.rows, error: null };

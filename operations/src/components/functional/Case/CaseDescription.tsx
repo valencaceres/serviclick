@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ContentCell } from "~/components/layout/Content";
 import InputText from "~/components/ui/InputText";
 import { useQueryContractor } from "~/hooks/query";
@@ -9,20 +10,20 @@ export const CaseDescription = ({ thisCase }: any) => {
 
   return (
     <ContentCell gap="5px">
+      <Link href={`/entities/contractor/${contractor?.id}`}>
+        <InputText
+          label="Cliente"
+          value={
+            isLoading
+              ? "Cargando..."
+              : contractor?.companyName ||
+                contractor?.name + " " + contractor?.paternalLastName
+          }
+          disabled
+        />
+      </Link>
       <InputText
-        label="Cliente"
-        value={
-          isLoading
-            ? "Cargando..."
-            : contractor?.companyName ||
-              contractor?.name + " " + contractor?.paternalLastName
-        }
-        type="text"
-        disabled={true}
-        width="525px"
-      />
-      <InputText
-        label="Asegurado"
+        label="Beneficiario"
         value={
           isLoading
             ? "Cargando..."

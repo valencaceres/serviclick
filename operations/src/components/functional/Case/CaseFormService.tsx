@@ -2,7 +2,6 @@ import { Fragment, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { useQueryClient } from "@tanstack/react-query";
 
-import Button from "../../ui/Button";
 import ComboBox from "../../ui/ComboBox";
 import { ContentCell, ContentRow } from "../../layout/Content";
 import { LoadingMessage } from "../../ui/LoadingMessage";
@@ -18,6 +17,7 @@ import {
 } from "../../../hooks/query";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
+import { Button } from "~/components/ui/ButtonC";
 interface IAssistance {
   id: string;
   name: string;
@@ -59,41 +59,42 @@ const CaseFormService = ({ thisCase }: any) => {
   );
 
   const { data } = useQueryCase().useGetBeneficiaryByRut(thisCase?.rut);
-  const { data: contractor } = useQueryContractor().useGetById(
-    thisCase?.contractor_id
-  );
+  const { data: contractor, isLoading: isLoadingContractor } =
+    useQueryContractor().useGetById(thisCase?.contractor_id);
 
   useEffect(() => {
-    const assistancesMap = new Map(
-      data?.products.map((product: any) => [
-        product.assistance.id,
-        { ...product.assistance },
-      ])
+    const productsMap = new Map(
+      data?.products.map((product: any) => [product.id, product])
     );
-    setUniqueAssistances(Array.from(assistancesMap.values()));
+    setRelatedProducts(Array.from(productsMap.values()));
   }, [data]);
 
   useEffect(() => {
-    if (selectedAssistance) {
-      const productsMap = new Map(
+    if (selectedProduct) {
+      const assistancesMap = new Map(
         data?.products
-          .filter(
-            (product: any) => product.assistance.id === selectedAssistance?.id
-          )
-          .map((product: any) => [product.id, product])
+          .filter((product: any) => product.id === selectedProduct?.id)
+          .map((product: any) => [
+            product.assistance.id,
+            { ...product.assistance },
+          ])
       );
-      setRelatedProducts(Array.from(productsMap.values()));
+      setUniqueAssistances(Array.from(assistancesMap.values()));
     } else {
-      if (selectedAssistance === null) {
-        setSelectedProduct(null);
+      if (selectedProduct === null) {
+        setSelectedAssistance(null);
       }
-      setRelatedProducts([]);
+      setUniqueAssistances([]);
     }
-  }, [selectedAssistance]);
+  }, [selectedProduct]);
 
-  useEffect(() => {
-    setSelectedProduct(relatedProducts[0]);
-  }, [relatedProducts]);
+  const handleProductChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const productId = event.target.value;
+    const product =
+      relatedProducts.find((p: any) => p.id === productId) || null;
+    setSelectedProduct(product);
+    setSelectedAssistance(null);
+  };
 
   const handleAssistanceChange = (
     event: React.ChangeEvent<HTMLSelectElement>
@@ -102,13 +103,6 @@ const CaseFormService = ({ thisCase }: any) => {
     const assistance =
       uniqueAssistances.find((a: any) => a.id === assistanceId) || null;
     setSelectedAssistance(assistance);
-  };
-
-  const handleProductChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const productId = event.target.value;
-    const product =
-      relatedProducts.find((p: any) => p.id === productId) || null;
-    setSelectedProduct(product);
   };
 
   const currentStage = useMemo(() => {
@@ -139,13 +133,17 @@ const CaseFormService = ({ thisCase }: any) => {
       return updateCase(
         {
           applicant: {
-            id: thisCase?.insured_id ? thisCase?.insured_id : thisCase?.beneficiary_id,
+            id: thisCase?.insured_id
+              ? thisCase?.insured_id
+              : thisCase?.beneficiary_id,
           },
           number: thisCase?.case_number,
           product_id: selectedProduct?.id,
           assistance_id: selectedAssistance?.id,
           beneficiary_id: thisCase?.beneficiary_id,
-          company_id: thisCase?.contractor_id,
+          company_id:
+            contractor?.type === "C" ? thisCase?.contractor_id : null,
+          customer_id: contractor?.type === "P" ? thisCase?.contractor_id : null,
           stage_id: stage,
           user_id: user?.id,
           description,
@@ -163,18 +161,20 @@ const CaseFormService = ({ thisCase }: any) => {
   };
 
   useEffect(() => {
-    if (thisCase?.assistance_id && thisCase?.product_id) {
-      const assistance = uniqueAssistances.find(
-        (a: any) => a.id === thisCase.assistance_id
-      );
-      setSelectedAssistance(assistance || null);
-
+    if (thisCase?.product_id) {
       const product = relatedProducts.find(
         (p: any) => p.id === thisCase.product_id
       );
       setSelectedProduct(product || null);
+
+      if (thisCase?.assistance_id) {
+        const assistance = uniqueAssistances.find(
+          (a: any) => a.id === thisCase.assistance_id
+        );
+        setSelectedAssistance(assistance || null);
+      }
     }
-  }, [thisCase]);
+  }, [thisCase, relatedProducts, uniqueAssistances]);
 
   return (
     <div>
@@ -184,36 +184,42 @@ const CaseFormService = ({ thisCase }: any) => {
             <Link href={`/entities/contractor/${contractor?.id}`}>
               <InputText
                 label="Cliente"
-                value={contractor?.companyName || (contractor?.name + " " + contractor?.paternalLastName)}
+                value={
+                  isLoadingContractor
+                    ? "Cargando..."
+                    : contractor?.companyName ||
+                      contractor?.name + " " + contractor?.paternalLastName
+                }
                 disabled
               />
             </Link>
           )}
           <ComboBox
-            label="Servicio"
-            placeHolder="Seleccione servicio"
+            label="Producto"
+            placeHolder="Seleccione producto"
             width="525px"
-            value={selectedAssistance?.id || ""}
+            value={selectedProduct?.id || ""}
             enabled={thisCase?.is_active || !thisCase ? true : false}
-            onChange={handleAssistanceChange}
-            data={uniqueAssistances}
+            onChange={handleProductChange}
+            data={relatedProducts}
             dataText="name"
             dataValue="id"
           />
-          {selectedAssistance && (
+          {selectedProduct && (
             <ComboBox
-              label="Producto"
-              placeHolder="Seleccione producto"
+              label="Servicio"
+              placeHolder="Seleccione servicio"
               width="525px"
-              value={selectedProduct?.id || ""}
+              value={selectedAssistance?.id || ""}
               enabled={thisCase?.is_active || !thisCase ? true : false}
-              onChange={handleProductChange}
-              data={relatedProducts}
+              onChange={handleAssistanceChange}
+              data={uniqueAssistances}
               dataText="name"
               dataValue="id"
             />
           )}
-          {selectedProduct ? (
+
+          {selectedAssistance ? (
             <>
               <ContentRow gap="5px">
                 <InputText
@@ -285,7 +291,7 @@ const CaseFormService = ({ thisCase }: any) => {
             </>
           ) : null}
         </ContentCell>
-        {selectedProduct ? (
+        {selectedAssistance ? (
           <Fragment>
             <h2 className="text-md font-semibold text-secondary-500">
               {selectedProduct?.name}
@@ -302,10 +308,11 @@ const CaseFormService = ({ thisCase }: any) => {
           </Fragment>
         ) : null}
         <Button
-          text="Continuar"
-          enabled={thisCase?.is_active && selectedProduct ? true : false}
+          disabled={thisCase?.is_active && selectedAssistance ? false : true}
           onClick={handleAddService}
-        />
+        >
+          Continuar
+        </Button>
       </ContentCell>
       <LoadingMessage />
     </div>
