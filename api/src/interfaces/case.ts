@@ -32,6 +32,7 @@ interface IBeneficiary {
   email: string;
   phone: string;
   birthdate: string;
+  relationship: string;
 }
 
 interface IProduct {

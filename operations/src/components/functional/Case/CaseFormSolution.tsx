@@ -19,6 +19,7 @@ const CaseFormSolution = ({ thisCase }: any) => {
   const queryClient = useQueryClient();
 
   const [description, setDescription] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
 
   const { user } = useUser();
   const { data: stages } = useQueryStage().useGetAll();
@@ -47,6 +48,7 @@ const CaseFormSolution = ({ thisCase }: any) => {
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (description) {
+      setError(null);
       return updateCase(updateCaseData("Solución particular", description), {
         onSuccess: () => {
           updateCase(updateCaseData("Recepción de antecedentes"), {
@@ -60,7 +62,7 @@ const CaseFormSolution = ({ thisCase }: any) => {
         },
       });
     }
-    alert("Debe completar todos los campos");
+    setError("Debe ingresar una descripción");
   };
 
   useEffect(() => {
@@ -85,6 +87,7 @@ const CaseFormSolution = ({ thisCase }: any) => {
             height="110px"
             disabled={thisCase?.is_active === true ? false : true}
           />
+          {error && <p className="text-red-500 text-sm">{error}</p>}
         </ContentCell>
         <Button disabled={thisCase?.is_active ? false : true}>
           Registrar solución

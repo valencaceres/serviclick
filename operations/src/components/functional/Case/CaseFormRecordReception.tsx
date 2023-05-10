@@ -70,6 +70,7 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
           },
           {
             onSuccess: () => {
+              console.log("hiiii")
               return updateCase(
                 {
                   applicant: {

@@ -37,7 +37,7 @@ const CaseFormResolution = ({ thisCase }: any) => {
     thisCase?.case_id,
     stages?.find((s: any) => s?.name === "Designación de especialista")?.id
   );
-  const { data: contractor, isLoading: isLoadingContractor } =
+  const { data: contractor } =
     useQueryContractor().useGetById(thisCase?.contractor_id);
 
   const { mutate: updateCase } = useQueryCase().useCreate();

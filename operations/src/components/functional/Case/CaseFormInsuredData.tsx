@@ -303,6 +303,9 @@ const BeneficiaryForm = ({ thisCase }: any) => {
             width="260px"
           />
         </ContentRow>
+        <h2 className="text-secondary-500 font-semibold text-lg">
+          Datos del titular
+        </h2>
         {isNewBeneficiary ? (
           <ContentCell gap="2px">
             <h2 className="font-semibold text-red-500">Contención</h2>

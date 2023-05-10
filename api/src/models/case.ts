@@ -203,6 +203,7 @@ const getBeneficiaryData: any = async (rut: string) => {
           email: result.rows[0].beneficiary_email,
           phone: result.rows[0].beneficiary_phone,
           birthdate: result.rows[0].beneficiary_birthdate,
+          relationship: result.rows[0].beneficiary_relationship,
         },
         products: result.rows.map((row: any) => ({
           lead_id: row.lead_id,

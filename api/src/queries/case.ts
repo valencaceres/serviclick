@@ -19,6 +19,7 @@ export const _getBeneficiaryData = `
                     ben.email AS beneficiary_email,
                     ben.phone AS beneficiary_phone,
                     ben.birthdate AS beneficiary_birthdate,
+                    ben.relationship AS beneficiary_relationship,
                     pro.id AS product_id,
                     pro.name AS product_name,
                     asi.name AS assistance_name,
