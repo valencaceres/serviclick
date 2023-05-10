@@ -16,23 +16,25 @@ import { useCase } from "../../../store/hooks/useCase";
 import { useQueryAssistances, useQueryCase } from "../../../hooks/query";
 import { useRouter } from "next/router";
 
-const CaseServiceTable = ({ product }: any) => {
+const CaseServiceTable = ({ product, assistance }: any) => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  const { data: thisCase } = useQueryCase().useGetById(router.query.case_id as string);
+  const { data: thisCase } = useQueryCase().useGetById(
+    router.query.case_id as string
+  );
   const { data: assistanceValues } = useQueryAssistances().useGetValues(
-    product?.assistance.id
+    assistance?.id
   );
   const { data: insuredValues } = useQueryAssistances().useGetValuesById(
     thisCase?.insured_id,
-    product?.assistance.id,
+    assistance?.id,
     product?.id
   );
 
-  const { mutate: assignValue } = useQueryAssistances().useAssignValue();
+  const { mutate: assignValue, isLoading } = useQueryAssistances().useAssignValue();
 
   const handleSubmit = (e: any, data: any) => {
     e.preventDefault();

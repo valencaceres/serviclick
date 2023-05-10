@@ -23,6 +23,7 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
   const [description, setDescription] = useState<string>("");
   const [justification, setJustification] = useState<string>("");
   const [evaluation, setEvaluation] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
 
   const { user } = useUser();
   const { data: stages } = useQueryStage().useGetAll();
@@ -55,6 +56,7 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (justification) {
+      setError(null);
       return updateCase(
         updateCaseData("Evaluación del evento", justification),
         {
@@ -71,7 +73,7 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
         }
       );
     }
-    alert("Debe completar todos los campos");
+    setError("Debe ingresar una justificación");
   };
 
   useEffect(() => {
@@ -119,6 +121,7 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
             height="110px"
             disabled={thisCase?.is_active ? false : true}
           />
+          {error && <p className="text-red-500 text-md">{error}</p>}
           <ComboBox
             label="Decisión de evaluación"
             placeHolder="Seleccione decisión"

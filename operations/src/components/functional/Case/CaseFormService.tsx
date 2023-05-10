@@ -296,7 +296,7 @@ const CaseFormService = ({ thisCase }: any) => {
             <h2 className="text-md font-semibold text-secondary-500">
               {selectedProduct?.name}
             </h2>
-            <CaseServiceTable product={selectedProduct} />
+            <CaseServiceTable product={selectedProduct} assistance={selectedAssistance} />
             <TextArea
               value={description}
               disabled={thisCase?.is_active ? false : true}

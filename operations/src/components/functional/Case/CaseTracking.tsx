@@ -140,7 +140,7 @@ const CaseTracking = ({ thisCase }: any) => {
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
         company_id:
-          contractor?.type === "C" ? thisCase.thisCase?.contractor_id : null,
+          contractor?.type === "C" ? thisCase?.contractor_id : null,
         customer_id: contractor?.type === "P" ? thisCase?.contractor_id : null,
         stage_id: stages.find((s: any) => s?.name === "Seguimiento")?.id,
         user_id: user?.id,
@@ -203,7 +203,7 @@ const CaseTracking = ({ thisCase }: any) => {
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
         company_id:
-          contractor?.type === "C" ? thisCase.thisCase?.contractor_id : null,
+          contractor?.type === "C" ? thisCase?.contractor_id : null,
         customer_id: contractor?.type === "P" ? thisCase?.contractor_id : null,
         stage_id: stages.find((s: any) => s?.name === "Resolución")?.id,
         description: evaluation,
@@ -249,7 +249,7 @@ const CaseTracking = ({ thisCase }: any) => {
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
         company_id:
-          contractor?.type === "C" ? thisCase.thisCase?.contractor_id : null,
+          contractor?.type === "C" ? thisCase?.contractor_id : null,
         customer_id: contractor?.type === "P" ? thisCase?.contractor_id : null,
         stage_id: stages.find((s: any) => s?.name === "Rechazado")?.id,
         user_id: user?.id,
@@ -298,7 +298,7 @@ const CaseTracking = ({ thisCase }: any) => {
 
   return (
     <form>
-      <ContentCell gap="20px">
+      <ContentCell gap="10px">
         <CaseDescription thisCase={thisCase} />
         <ContentCell gap="5px">
           {thisCase?.stages?.find(
