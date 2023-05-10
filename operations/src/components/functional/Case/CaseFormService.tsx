@@ -45,6 +45,7 @@ const CaseFormService = ({ thisCase }: any) => {
   const [selectedProduct, setSelectedProduct] = useState<IProduct | null>(null);
   const [description, setDescription] = useState("");
   const [stage, setStage] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
 
   const { user } = useUser();
 
@@ -130,6 +131,7 @@ const CaseFormService = ({ thisCase }: any) => {
 
   const handleAddService = () => {
     if (selectedAssistance && selectedProduct && description) {
+      setError(null);
       return updateCase(
         {
           applicant: {
@@ -141,9 +143,9 @@ const CaseFormService = ({ thisCase }: any) => {
           product_id: selectedProduct?.id,
           assistance_id: selectedAssistance?.id,
           beneficiary_id: thisCase?.beneficiary_id,
-          company_id:
-            contractor?.type === "C" ? thisCase?.contractor_id : null,
-          customer_id: contractor?.type === "P" ? thisCase?.contractor_id : null,
+          company_id: contractor?.type === "C" ? thisCase?.contractor_id : null,
+          customer_id:
+            contractor?.type === "P" ? thisCase?.contractor_id : null,
           stage_id: stage,
           user_id: user?.id,
           description,
@@ -157,7 +159,7 @@ const CaseFormService = ({ thisCase }: any) => {
         }
       );
     }
-    alert("Debe completar todos los campos");
+    setError("Debe completar todos los campos");
   };
 
   useEffect(() => {
@@ -296,7 +298,10 @@ const CaseFormService = ({ thisCase }: any) => {
             <h2 className="text-md font-semibold text-secondary-500">
               {selectedProduct?.name}
             </h2>
-            <CaseServiceTable product={selectedProduct} assistance={selectedAssistance} />
+            <CaseServiceTable
+              product={selectedProduct}
+              assistance={selectedAssistance}
+            />
             <TextArea
               value={description}
               disabled={thisCase?.is_active ? false : true}
@@ -305,6 +310,7 @@ const CaseFormService = ({ thisCase }: any) => {
               width="525px"
               height="110px"
             />
+            {error && <p className="text-sm text-red-500">{error}</p>}
           </Fragment>
         ) : null}
         <Button

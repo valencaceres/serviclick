@@ -282,7 +282,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
 
   return (
     <div>
-      <ContentCell gap="10px">
+      <ContentCell gap="20px">
         <ContentRow gap="5px">
           <InputText
             label="N° Caso"
