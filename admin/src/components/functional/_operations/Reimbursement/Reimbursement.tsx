@@ -144,6 +144,34 @@ const ReimbursementRow = ({
   const applicant =
     casemodel?.type === "I" ? casemodel?.insured : casemodel?.beneficiary;
 
+  const availableValueFormatted =
+    casestageresult.currency === "U"
+      ? (
+          Number(String(casestageresult.available)) *
+          Number(casestageresult.uf_value)
+        ).toLocaleString("es-CL", {
+          style: "currency",
+          currency: "CLP",
+        })
+      : Number(String(casestageresult.available)).toLocaleString("es-CL", {
+          style: "currency",
+          currency: "CLP",
+        });
+
+  const reimbursementValueFormatted =
+    casestageresult.currency === "U"
+      ? (
+          Number(String(casestageresult.amount)) *
+          Number(casestageresult.uf_value)
+        ).toLocaleString("es-CL", {
+          style: "currency",
+          currency: "CLP",
+        })
+      : Number(String(casestageresult.amount)).toLocaleString("es-CL", {
+          style: "currency",
+          currency: "CLP",
+        });
+
   return (
     <tr className="border-y border-dusty-gray-100 text-lg font-light text-dusty-gray-900 odd:bg-slate-50 hover:border-dusty-gray-200 hover:bg-slate-100">
       <td className="p-2 text-center font-oswald">{casemodel.number}</td>
@@ -156,33 +184,9 @@ const ReimbursementRow = ({
       <td className="truncate p-2 font-oswald">
         {casemodel?.assistance?.name}
       </td>
-      <td className="p-2 text-center font-oswald">
-        {casestageresult.currency === "U"
-          ? (
-              Number(String(casestageresult.available)) *
-              Number(casestageresult.uf_value)
-            ).toLocaleString("es-CL", {
-              style: "currency",
-              currency: "CLP",
-            })
-          : Number(String(casestageresult.available)).toLocaleString("es-CL", {
-              style: "currency",
-              currency: "CLP",
-            })}
-      </td>
+      <td className="p-2 text-center font-oswald">{availableValueFormatted}</td>
       <td className="p-2 text-center font-oswald font-medium">
-        {casestageresult.currency === "U"
-          ? (
-              Number(String(casestageresult.amount)) *
-              Number(casestageresult.uf_value)
-            ).toLocaleString("es-CL", {
-              style: "currency",
-              currency: "CLP",
-            })
-          : Number(String(casestageresult.amount)).toLocaleString("es-CL", {
-              style: "currency",
-              currency: "CLP",
-            })}
+        {reimbursementValueFormatted}
       </td>
       <td className="p-2 text-center font-oswald font-medium">
         {resolutionStage?.description === "Reembolsar IMED" ? "IMED" : "Normal"}
@@ -247,6 +251,8 @@ const ReimbursementRow = ({
                 setReimbursement={setReimbursement}
                 imedReimbursement={imedReimbursement}
                 setImedReimbursement={setImedReimbursement}
+                availableValue={availableValueFormatted}
+                reimbursementValue={reimbursementValueFormatted}
               />
               <DropdownMenuSeparator className="bg-slate-100" />
               <DialogTrigger onClick={() => setIsOpen(true)} asChild>
@@ -451,6 +457,8 @@ const CustomDialog = ({
   setReimbursement,
   imedReimbursement,
   setImedReimbursement,
+  availableValue,
+  reimbursementValue,
 }: {
   action: string;
   onClick?: () => void;
@@ -462,6 +470,8 @@ const CustomDialog = ({
   setReimbursement: (value: string) => void;
   imedReimbursement: string | undefined;
   setImedReimbursement: (value: string) => void;
+  availableValue: string;
+  reimbursementValue: string;
 }) => {
   return (
     <>
@@ -471,7 +481,16 @@ const CustomDialog = ({
             <DialogTitle>
               {action === "Aprobado" ? "Aceptar" : "Rechazar"} el rembolso
             </DialogTitle>
-            <div className="flex gap-2 pt-4">
+            <div className="flex flex-col gap-2 rounded-md border p-2">
+              <h2 className="font-semibold text-teal-blue">
+                Disponible: <span className="font-bold">{availableValue}</span>
+              </h2>
+              <h2 className="font-semibold text-teal-blue">
+                Reembolso solicitado:{" "}
+                <span className="font-bold">{reimbursementValue}</span>
+              </h2>
+            </div>
+            <div className="flex gap-2">
               {type === "Reembolsar IMED" && action === "Aprobado" && (
                 <div>
                   <Label className="text-dusty-gray-500">Reembolso IMED</Label>

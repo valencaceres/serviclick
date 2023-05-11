@@ -63,8 +63,13 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
           onSuccess: () => {
             return updateCase(updateCaseData(evaluation), {
               onSuccess: () => {
+                if (evaluation !== "Solución particular") {
+                  router.push(
+                    `/case/${thisCase?.case_id}/${evaluation.toLowerCase()}`
+                  );
+                }
                 router.push(
-                  `/case/${thisCase?.case_id}/${evaluation.toLowerCase()}`
+                  `/case/${thisCase?.case_id}/recepción de antecedentes`
                 );
                 queryClient.invalidateQueries(["case", thisCase?.case_id]);
               },
@@ -121,7 +126,7 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
             height="110px"
             disabled={thisCase?.is_active ? false : true}
           />
-          {error && <p className="text-red-500 text-md">{error}</p>}
+          {error && <p className="text-md text-red-500">{error}</p>}
           <ComboBox
             label="Decisión de evaluación"
             placeHolder="Seleccione decisión"

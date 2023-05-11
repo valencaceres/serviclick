@@ -104,7 +104,7 @@ const CaseList = () => {
           <TableHeader>
             <TableCell width="99px">N° Caso</TableCell>
             <TableCell width="189px">Cliente</TableCell>
-            <TableCell width="290px">Beneficiaro</TableCell>
+            <TableCell width="290px">Beneficiario</TableCell>
             <TableCell width="300px">Servicio</TableCell>
             <TableCell width="200px">Estado</TableCell>
             <TableCell width="50px">&nbsp;</TableCell>

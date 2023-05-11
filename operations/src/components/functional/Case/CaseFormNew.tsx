@@ -287,11 +287,6 @@ const BeneficiaryForm = ({ thisCase }: any) => {
         setPrevRut(rut);
         setInitialValues(data, false);
         setIsNewBeneficiary(false);
-        if (data?.beneficiary.id) {
-          setIsInsured("isBeneficiary");
-        } else {
-          setIsInsured("isInsured");
-        }
       } else if (
         !data &&
         rut?.length >= 10 &&

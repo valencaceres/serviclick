@@ -87,11 +87,9 @@ const CaseFormSolution = ({ thisCase }: any) => {
             height="110px"
             disabled={thisCase?.is_active === true ? false : true}
           />
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {error && <p className="text-sm text-red-500">{error}</p>}
         </ContentCell>
-        <Button disabled={thisCase?.is_active ? false : true}>
-          Registrar solución
-        </Button>
+        <Button disabled={thisCase?.is_active ? false : true}>Continuar</Button>
       </ContentCell>
     </form>
   );
