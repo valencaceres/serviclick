@@ -303,7 +303,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
             width="260px"
           />
         </ContentRow>
-        <h2 className="text-secondary-500 font-semibold text-lg">
+        <h2 className="text-secondary-500 font-semibold text-xl">
           Datos del titular
         </h2>
         {isNewBeneficiary ? (

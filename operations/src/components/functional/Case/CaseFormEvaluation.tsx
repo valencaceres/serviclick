@@ -24,6 +24,7 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
   const [justification, setJustification] = useState<string>("");
   const [evaluation, setEvaluation] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const [evaluationExists, setEvaluationExists] = useState<boolean>(false);
 
   const { user } = useUser();
   const { data: stages } = useQueryStage().useGetAll();
@@ -40,7 +41,11 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
       (s: any) => s.stage.toLowerCase() === stage.toLowerCase()
     );
 
-  const updateCaseData = (stageName: string, description?: string) => ({
+  const updateCaseData = (
+    stageName: string,
+    description?: string,
+    active: boolean = true
+  ) => ({
     applicant: { id: thisCase?.insured_id },
     number: thisCase?.case_number,
     product_id: thisCase?.product_id,
@@ -50,33 +55,53 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
     customer_id: contractor?.type === "P" ? thisCase?.contractor_id : null,
     user_id: user?.id,
     description,
-    isactive: true,
+    isactive: active,
   });
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (justification) {
       setError(null);
-      return updateCase(
-        updateCaseData("Evaluación del evento", justification),
-        {
-          onSuccess: () => {
-            return updateCase(updateCaseData(evaluation), {
+      return updateCase(updateCaseData("Evaluación del evento"), {
+        onSuccess: () => {
+          if (evaluation === "Rechazado") {
+            return updateCase(
+              updateCaseData(evaluation, justification, false),
+              {
+                onSuccess: () => {
+                  return updateCase(
+                    updateCaseData("Cerrado", justification, false),
+                    {
+                      onSuccess: () => {
+                        router.push(`/case/${thisCase?.case_id}/cerrado`);
+                        queryClient.invalidateQueries([
+                          "case",
+                          thisCase?.case_id,
+                        ]);
+                      },
+                    }
+                  );
+                },
+              }
+            );
+          } else {
+            return updateCase(updateCaseData(evaluation, justification), {
               onSuccess: () => {
                 if (evaluation !== "Solución particular") {
                   router.push(
                     `/case/${thisCase?.case_id}/${evaluation.toLowerCase()}`
                   );
+                } else {
+                  router.push(
+                    `/case/${thisCase?.case_id}/recepción de antecedentes`
+                  );
                 }
-                router.push(
-                  `/case/${thisCase?.case_id}/recepción de antecedentes`
-                );
                 queryClient.invalidateQueries(["case", thisCase?.case_id]);
               },
             });
-          },
-        }
-      );
+          }
+        },
+      });
     }
     setError("Debe ingresar una justificación");
   };
@@ -84,16 +109,18 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
   useEffect(() => {
     if (thisCase) {
       setDescription(findStageByStage("Registro de servicio")?.description);
-      setJustification(findStageByStage("Evaluación del evento")?.description);
       const evaluationStages = [
         "Solución particular",
         "Designación de convenio",
         "Designación de especialista",
+        "Rechazado",
       ];
 
       for (const stageName of evaluationStages) {
         if (findStageByStage(stageName)) {
+          setJustification(findStageByStage(stageName)?.description);
           setEvaluation(stageName);
+          setEvaluationExists(true);
           break;
         }
       }
@@ -139,7 +166,7 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
             dataValue="name"
           />
         </ContentCell>
-        <Button disabled={thisCase?.is_active ? false : true}>
+        <Button disabled={thisCase?.is_active && !evaluationExists ? false : true}>
           Registrar evaluación
         </Button>
       </ContentCell>

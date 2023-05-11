@@ -29,8 +29,8 @@ const CaseTracking = ({ thisCase }: any) => {
   const [justification, setJustification] = useState<string>("");
   const [scheduledDate, setScheduledDate] = useState<string>("");
   const [scheduledTime, setScheduledTime] = useState<string>("");
-  const [confirmDate, setConfirmDate] = useState<string>("");
-  const [confirmTime, setConfirmTime] = useState<string>("");
+  const [confirmDate, setConfirmDate] = useState<string>(scheduledDate);
+  const [confirmTime, setConfirmTime] = useState<string>(scheduledTime);
   const [evaluation, setEvaluation] = useState<string>("");
   const [refundAmount, setRefundAmount] = useState<number | null>(null);
 
@@ -139,8 +139,7 @@ const CaseTracking = ({ thisCase }: any) => {
         number: thisCase?.case_number,
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
-        company_id:
-          contractor?.type === "C" ? thisCase?.contractor_id : null,
+        company_id: contractor?.type === "C" ? thisCase?.contractor_id : null,
         customer_id: contractor?.type === "P" ? thisCase?.contractor_id : null,
         stage_id: stages.find((s: any) => s?.name === "Seguimiento")?.id,
         user_id: user?.id,
@@ -202,8 +201,7 @@ const CaseTracking = ({ thisCase }: any) => {
         number: thisCase?.case_number,
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
-        company_id:
-          contractor?.type === "C" ? thisCase?.contractor_id : null,
+        company_id: contractor?.type === "C" ? thisCase?.contractor_id : null,
         customer_id: contractor?.type === "P" ? thisCase?.contractor_id : null,
         stage_id: stages.find((s: any) => s?.name === "Resolución")?.id,
         description: evaluation,
@@ -248,8 +246,7 @@ const CaseTracking = ({ thisCase }: any) => {
         number: thisCase?.case_number,
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
-        company_id:
-          contractor?.type === "C" ? thisCase?.contractor_id : null,
+        company_id: contractor?.type === "C" ? thisCase?.contractor_id : null,
         customer_id: contractor?.type === "P" ? thisCase?.contractor_id : null,
         stage_id: stages.find((s: any) => s?.name === "Rechazado")?.id,
         user_id: user?.id,
@@ -307,7 +304,7 @@ const CaseTracking = ({ thisCase }: any) => {
               s.stage === "Designación de especialista"
           ) ? (
             <ContentCell gap="5px">
-              <h2 className="text-lg font-semibold text-teal-blue">
+              <h2 className="pb-5 pt-4 text-xl font-semibold text-teal-blue">
                 Hora programada
               </h2>
               {assignedPartner && (
@@ -337,7 +334,6 @@ const CaseTracking = ({ thisCase }: any) => {
                   onChange={(e: any) => setScheduledTime(e.target.value)}
                   minTime="09:00"
                   maxTime="18:00"
-                  step="3600"
                 />
               </ContentRow>
             </ContentCell>
@@ -362,7 +358,7 @@ const CaseTracking = ({ thisCase }: any) => {
             enabled={thisCase?.is_active === true ? true : false}
           />
           {evaluation?.toLowerCase() === "confirmar visita" ? (
-            <ContentCell gap="5px">
+            <ContentCell gap="20px">
               <ContentRow gap="5px">
                 <InputText
                   label="Fecha de visita"
@@ -394,7 +390,7 @@ const CaseTracking = ({ thisCase }: any) => {
               </Button>
             </ContentCell>
           ) : evaluation?.toLowerCase() === "reprogramar visita" ? (
-            <ContentCell gap="5px">
+            <ContentCell gap="20px">
               <ContentRow gap="5px">
                 <InputText
                   label="Fecha de visita"
@@ -447,7 +443,7 @@ const CaseTracking = ({ thisCase }: any) => {
               </Button>
             </ContentCell>
           ) : evaluation?.toLowerCase() === "rechazar caso" ? (
-            <ContentCell gap="5px">
+            <ContentCell gap="20px">
               <TextArea
                 value={justification}
                 onChange={(e: any) => setJustification(e.target.value)}
@@ -468,7 +464,9 @@ const CaseTracking = ({ thisCase }: any) => {
             evaluation?.toLowerCase() === "reembolsar imed" ? (
             <ContentCell gap="5px">
               <ContentCell gap="5px">
-                <h2 className="font-semibold">Disponible</h2>
+                <h2 className="text-xl font-semibold text-teal-blue">
+                  Disponible
+                </h2>
                 <ContentRow gap="5px">
                   <InputText
                     label={"Monto Disponible"}
@@ -511,7 +509,9 @@ const CaseTracking = ({ thisCase }: any) => {
                 </ContentRow>
               </ContentCell>
               <ContentCell gap="5px">
-                <h2 className="font-semibold">Reembolsar</h2>
+                <h2 className="pt-4 text-xl font-semibold text-teal-blue">
+                  Reembolsar
+                </h2>
                 <InputText
                   label={"Monto ($)"}
                   value={
@@ -531,6 +531,7 @@ const CaseTracking = ({ thisCase }: any) => {
                   type="button"
                   disabled={thisCase?.is_active ? false : true}
                   onClick={handleReimburse}
+                  className="mt-4"
                 >
                   Reembolsar
                 </Button>

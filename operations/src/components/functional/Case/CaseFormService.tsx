@@ -295,7 +295,7 @@ const CaseFormService = ({ thisCase }: any) => {
         </ContentCell>
         {selectedAssistance ? (
           <Fragment>
-            <h2 className="text-md font-semibold text-secondary-500">
+            <h2 className="text-xl font-semibold text-secondary-500">
               {selectedProduct?.name}
             </h2>
             <CaseServiceTable

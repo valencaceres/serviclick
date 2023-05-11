@@ -70,7 +70,7 @@ export const decisions = [
   },
   {
     id: 3,
-    name: "Rechazar caso",
+    name: "Rechazado",
   },
 ];
 
