@@ -32,9 +32,8 @@ const create: any = async (
         }
 
         const result = await pool.query(
-          `INSERT INTO app.case (number, insured_id, beneficiary_id, company_id, customer_id, type) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+          `INSERT INTO app.case (insured_id, beneficiary_id, company_id, customer_id, type) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
           [
-            number,
             applicant.id,
             beneficiary_id,
             company_id,
