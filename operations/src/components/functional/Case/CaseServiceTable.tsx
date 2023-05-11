@@ -16,7 +16,12 @@ import { useCase } from "../../../store/hooks/useCase";
 import { useQueryAssistances, useQueryCase } from "../../../hooks/query";
 import { useRouter } from "next/router";
 
-const CaseServiceTable = ({ product, assistance }: any) => {
+const CaseServiceTable = ({
+  product,
+  assistance,
+  formValues,
+  setFormValues,
+}: any) => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -34,7 +39,8 @@ const CaseServiceTable = ({ product, assistance }: any) => {
     product?.id
   );
 
-  const { mutate: assignValue, isLoading } = useQueryAssistances().useAssignValue();
+  const { mutate: assignValue } =
+    useQueryAssistances().useAssignValue();
 
   const handleSubmit = (e: any, data: any) => {
     e.preventDefault();
@@ -99,6 +105,12 @@ const CaseServiceTable = ({ product, assistance }: any) => {
                               (i: any) => i.value_name === item.name
                             )?.value
                           }
+                          onChange={(e) =>
+                            setFormValues({
+                              ...formValues,
+                              [item.id]: e.target.value,
+                            })
+                          }
                         />
                         <button>
                           <Icon iconName="check" button={true} />
@@ -139,6 +151,12 @@ const CaseServiceTable = ({ product, assistance }: any) => {
                       className="rounded-md bg-transparent px-2 font-medium text-secondary-500 focus:bg-white"
                       placeholder="Ingrese valor"
                       id="newValue"
+                      onChange={(e) =>
+                        setFormValues({
+                          ...formValues,
+                          [item.id]: e.target.value,
+                        })
+                      }
                     />
                     <button>
                       <Icon iconName="check" button={true} />

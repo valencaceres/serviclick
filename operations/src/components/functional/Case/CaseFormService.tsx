@@ -10,6 +10,7 @@ import TextArea from "../../ui/TextArea/TextArea";
 import CaseServiceTable from "./CaseServiceTable";
 
 import {
+  useQueryAssistances,
   useQueryCase,
   useQueryContractor,
   useQueryStage,
@@ -30,6 +31,8 @@ interface IAssistance {
 
 interface IProduct {
   id: string;
+  lead_id: string;
+  insured_id: string;
   name: string;
   assistance: IAssistance;
 }
@@ -46,12 +49,12 @@ const CaseFormService = ({ thisCase }: any) => {
   const [description, setDescription] = useState("");
   const [stage, setStage] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const [formValues, setFormValues] = useState<{ [key: string]: any }>({});
 
   const { user } = useUser();
 
   const { data: ufValue } = useQueryUF().useGetUFValue();
   const { data: stageData } = useQueryStage().useGetAll();
-  const { mutate: updateCase } = useQueryCase().useCreate();
 
   const { data: assistanceData } = useQueryCase().useGetAssistanceData(
     thisCase?.insured_id,
@@ -62,6 +65,9 @@ const CaseFormService = ({ thisCase }: any) => {
   const { data } = useQueryCase().useGetBeneficiaryByRut(thisCase?.rut);
   const { data: contractor, isLoading: isLoadingContractor } =
     useQueryContractor().useGetById(thisCase?.contractor_id);
+
+  const { mutate: updateCase } = useQueryCase().useCreate();
+  const { mutate: assignValue } = useQueryAssistances().useAssignValue();
 
   useEffect(() => {
     const productsMap = new Map(
@@ -129,9 +135,20 @@ const CaseFormService = ({ thisCase }: any) => {
     }
   }, [currentDescription]);
 
+  console.log(selectedProduct);
+
   const handleAddService = () => {
     if (selectedAssistance && selectedProduct && description) {
       setError(null);
+      for (const key in formValues) {
+        assignValue({
+          lead_id: selectedProduct?.lead_id,
+          product_id: selectedProduct?.id,
+          insured_id: thisCase?.insured_id,
+          value_id: key,
+          value: formValues[key],
+        });
+      }
       return updateCase(
         {
           applicant: {
@@ -154,6 +171,7 @@ const CaseFormService = ({ thisCase }: any) => {
         {
           onSuccess: () => {
             router.push(`/case/${thisCase?.case_id}/evaluación del evento`);
+            queryClient.invalidateQueries(["assistanceValueById"]);
             queryClient.invalidateQueries(["case", thisCase?.case_id]);
           },
         }
@@ -177,6 +195,8 @@ const CaseFormService = ({ thisCase }: any) => {
       }
     }
   }, [thisCase, relatedProducts, uniqueAssistances]);
+
+  console.log(formValues);
 
   return (
     <div>
@@ -301,6 +321,8 @@ const CaseFormService = ({ thisCase }: any) => {
             <CaseServiceTable
               product={selectedProduct}
               assistance={selectedAssistance}
+              formValues={formValues}
+              setFormValues={setFormValues}
             />
             <TextArea
               value={description}
