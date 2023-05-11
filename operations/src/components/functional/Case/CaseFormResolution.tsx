@@ -243,7 +243,7 @@ const CaseFormResolution = ({ thisCase }: any) => {
               {["Aprobado", "Rechazado"].includes(
                 thisReimbursement?.status
               ) && (
-                <ContentCell gap="5px">
+                <ContentCell gap="20px">
                   <TextArea
                     label="Comentarios"
                     width="525px"
