@@ -174,8 +174,8 @@ const CaseFormPartner = ({ thisCase }: any) => {
             ) : (
               getAssignedPartner && (
                 <div className="mt-5">
-                  <ContentCell gap="5px">
-                    <h2 className="text-lg font-semibold text-teal-blue">
+                  <ContentCell gap="20px">
+                    <h2 className="text-xl font-semibold text-teal-blue">
                       Agendar visita
                     </h2>
                     <ContentRow gap="5px">

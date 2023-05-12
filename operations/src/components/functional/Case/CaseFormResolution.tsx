@@ -37,8 +37,9 @@ const CaseFormResolution = ({ thisCase }: any) => {
     thisCase?.case_id,
     stages?.find((s: any) => s?.name === "Designación de especialista")?.id
   );
-  const { data: contractor } =
-    useQueryContractor().useGetById(thisCase?.contractor_id);
+  const { data: contractor } = useQueryContractor().useGetById(
+    thisCase?.contractor_id
+  );
 
   const { mutate: updateCase } = useQueryCase().useCreate();
 
@@ -132,6 +133,8 @@ const CaseFormResolution = ({ thisCase }: any) => {
     }
   }, [thisCase]);
 
+  console.log(assignedPartner);
+
   return (
     <form>
       <ContentCell gap="20px">
@@ -141,7 +144,9 @@ const CaseFormResolution = ({ thisCase }: any) => {
             <ContentCell gap="20px">
               {thisCase?.stages.find((c: any) => c?.stage === "Resolución")
                 ?.description === "Reembolsar IMED" && (
-                <p className="font-semibold text-teal-blue">Reembolso IMED</p>
+                <h2 className="text-xl font-semibold text-teal-blue">
+                  Reembolso IMED
+                </h2>
               )}
               <ContentRow gap="5px">
                 <InputText
@@ -238,7 +243,7 @@ const CaseFormResolution = ({ thisCase }: any) => {
               {["Aprobado", "Rechazado"].includes(
                 thisReimbursement?.status
               ) && (
-                <ContentCell gap="5px">
+                <ContentCell gap="20px">
                   <TextArea
                     label="Comentarios"
                     width="525px"
@@ -260,7 +265,9 @@ const CaseFormResolution = ({ thisCase }: any) => {
           {(assignedSpecialist || assignedPartner) && (
             <ContentCell gap="20px">
               <ContentCell gap="5px">
-                <p className="font-semibold">Visita confirmada</p>
+                <h2 className="pb-5 pt-2 text-xl font-semibold text-teal-blue">
+                  Visita confirmada
+                </h2>
                 {assignedSpecialist && (
                   <InputText
                     label="Especialista"
@@ -316,7 +323,7 @@ const CaseFormResolution = ({ thisCase }: any) => {
                 value={action}
               />
               {action === "Calificar" && (
-                <ContentCell gap="5px">
+                <ContentCell gap="20px">
                   <TextArea
                     label="Comentarios"
                     width="525px"
@@ -335,7 +342,7 @@ const CaseFormResolution = ({ thisCase }: any) => {
                 </ContentCell>
               )}
               {action === "Cerrar caso" && (
-                <ContentCell gap="5px">
+                <ContentCell gap="20px">
                   <TextArea
                     label="Comentarios"
                     width="525px"

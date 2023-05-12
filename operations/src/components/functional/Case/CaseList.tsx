@@ -41,6 +41,14 @@ const CaseList = () => {
   const { data: cases } = useQueryCase().useGetAll();
   const { data: stages } = useQueryStage().useGetAll();
 
+  const filteredCases = cases?.filter(
+    (c: any) =>
+      (search.state === "" || c.stage === search.state) &&
+      (search.name === "" ||
+        c.name.toLowerCase().includes(search.name.toLowerCase()) ||
+        c.paternallastname.toLowerCase().includes(search.name.toLowerCase()))
+  );
+
   const handleChangeCompany = async (e: any) => {
     setSearch({
       ...search,
@@ -48,6 +56,7 @@ const CaseList = () => {
     });
   };
 
+  console.log(search);
   const handleChangeName = async (e: any) => {
     setSearch({
       ...search,
@@ -71,22 +80,21 @@ const CaseList = () => {
       <ContentCell gap="5px" className="fade-in-fwd">
         <ContentRow gap="5px" align="start">
           <ComboBox
-            label="Cliente"
+            label="Compañía"
             width="300px"
             value={search.company_id}
             onChange={handleChangeCompany}
-            placeHolder="Seleccione cliente"
+            placeHolder="Seleccione compañía"
             data={companies}
             dataValue="id"
             dataText="companyName"
           />
           <InputText
-            label="Asegurado"
+            label="Beneficiario"
             width="500px"
-            value={""}
+            value={search.name}
             onChange={handleChangeName}
             type="text"
-            disabled={true}
           />
 
           <ComboBox
@@ -96,7 +104,7 @@ const CaseList = () => {
             onChange={handleChangeState}
             placeHolder="Seleccione estado"
             data={stages}
-            dataValue="id"
+            dataValue="name"
             dataText="name"
           />
         </ContentRow>
@@ -104,14 +112,14 @@ const CaseList = () => {
           <TableHeader>
             <TableCell width="99px">N° Caso</TableCell>
             <TableCell width="189px">Cliente</TableCell>
-            <TableCell width="290px">Beneficiaro</TableCell>
+            <TableCell width="290px">Beneficiario</TableCell>
             <TableCell width="300px">Servicio</TableCell>
             <TableCell width="200px">Estado</TableCell>
             <TableCell width="50px">&nbsp;</TableCell>
             <TableCellEnd />
           </TableHeader>
           <TableDetail>
-            {cases?.map((data: any, idx: number) => (
+            {filteredCases?.map((data: any, idx: number) => (
               <TableRow key={idx}>
                 <TableCell width="99px" align="center">
                   {data.number}
