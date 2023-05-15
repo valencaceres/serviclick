@@ -16,23 +16,31 @@ import { useCase } from "../../../store/hooks/useCase";
 import { useQueryAssistances, useQueryCase } from "../../../hooks/query";
 import { useRouter } from "next/router";
 
-const CaseServiceTable = ({ product }: any) => {
+const CaseServiceTable = ({
+  product,
+  assistance,
+  formValues,
+  setFormValues,
+}: any) => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  const { data: thisCase } = useQueryCase().useGetById(router.query.case_id as string);
+  const { data: thisCase } = useQueryCase().useGetById(
+    router.query.case_id as string
+  );
   const { data: assistanceValues } = useQueryAssistances().useGetValues(
-    product?.assistance.id
+    assistance?.id
   );
   const { data: insuredValues } = useQueryAssistances().useGetValuesById(
     thisCase?.insured_id,
-    product?.assistance.id,
+    assistance?.id,
     product?.id
   );
 
-  const { mutate: assignValue } = useQueryAssistances().useAssignValue();
+  const { mutate: assignValue } =
+    useQueryAssistances().useAssignValue();
 
   const handleSubmit = (e: any, data: any) => {
     e.preventDefault();
@@ -97,6 +105,12 @@ const CaseServiceTable = ({ product }: any) => {
                               (i: any) => i.value_name === item.name
                             )?.value
                           }
+                          onChange={(e) =>
+                            setFormValues({
+                              ...formValues,
+                              [item.id]: e.target.value,
+                            })
+                          }
                         />
                         <button>
                           <Icon iconName="check" button={true} />
@@ -137,6 +151,12 @@ const CaseServiceTable = ({ product }: any) => {
                       className="rounded-md bg-transparent px-2 font-medium text-secondary-500 focus:bg-white"
                       placeholder="Ingrese valor"
                       id="newValue"
+                      onChange={(e) =>
+                        setFormValues({
+                          ...formValues,
+                          [item.id]: e.target.value,
+                        })
+                      }
                     />
                     <button>
                       <Icon iconName="check" button={true} />

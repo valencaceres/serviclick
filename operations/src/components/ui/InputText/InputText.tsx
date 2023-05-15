@@ -21,6 +21,7 @@ type InputTextT = {
   maxTime?: string;
   step?: string;
   timeFormat?: string;
+  defaultValue?: string;
 };
 
 const InputText = ({
@@ -44,6 +45,7 @@ const InputText = ({
   maxTime,
   step,
   timeFormat,
+  defaultValue,
 }: InputTextT) => {
   let iconName;
 
@@ -54,6 +56,7 @@ const InputText = ({
         autoComplete="none"
         id={id}
         value={value}
+        defaultValue={defaultValue}
         onChange={onChange}
         onFocus={onFocus}
         onBlur={onBlur}

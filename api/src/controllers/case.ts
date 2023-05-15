@@ -86,7 +86,7 @@ const create = async (req: any, res: any) => {
     isInsured,
     company_id,
     customer_id,
-    beneficiary_id,
+    beneficiary_id
   );
 
   if (!caseResponse.success) {
@@ -146,6 +146,13 @@ const getAll = async (req: any, res: any) => {
 const uploadDocument = async (req: any, res: any) => {
   const { case_id } = req.body;
   const document_id = JSON.parse(req.body.document_id);
+
+  if (req.files === null) {
+    return res
+      .status(200)
+      .json({ success: true, data: null, error: "No file uploaded" });
+  }
+
   let files = req.files["files"];
 
   if (!Array.isArray(files)) {

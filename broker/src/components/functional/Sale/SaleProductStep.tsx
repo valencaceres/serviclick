@@ -1,13 +1,21 @@
+import { useUser } from "@clerk/nextjs";
+import Link from "next/link";
 import { useEffect } from "react";
 import { Button } from "~/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/Card";
 import { useUI } from "~/store/hooks";
 import { type RouterOutputs, api } from "~/utils/api";
 
-export function SaleProductStep({ onDone, previousStep }: { onDone: () => void, previousStep: () => void }) {
+export function SaleProductStep({
+  onDone,
+  previousStep,
+}: {
+  onDone: () => void;
+  previousStep: () => void;
+}) {
   const { broker, family } = useUI();
 
-  const { data: products, isLoading } = api.broker.getProducts.useQuery(
+  const { data: products, isLoading } = api.product.getProducts.useQuery(
     {
       brokerId: broker?.id || "",
       familyId: family?.id || "",
@@ -46,7 +54,11 @@ export function SaleProductStep({ onDone, previousStep }: { onDone: () => void, 
           </div>
         ) : (
           products?.map((product) => (
-            <ProductCard key={product.id} {...product} />
+            <ProductCard
+              key={product.id}
+              {...product}
+              broker={broker?.id || ""}
+            />
           ))
         )}
       </div>
@@ -54,15 +66,20 @@ export function SaleProductStep({ onDone, previousStep }: { onDone: () => void, 
   );
 }
 
-type Product = RouterOutputs["broker"]["getProducts"][number];
+type Product = RouterOutputs["product"]["getProducts"][number];
 
 function ProductCard({
   id,
   name,
-  currency,
   companyprice,
   customerprice,
-}: Product) {
+  broker,
+}: Product & { broker: string }) {
+  const { data } = api.product.getProductPlan.useQuery({
+    agentId: broker,
+    productId: id,
+  });
+
   function formatPrice(price: number) {
     return price.toLocaleString("es-CL", {
       style: "currency",
@@ -71,7 +88,8 @@ function ProductCard({
     });
   }
 
-  console.log(currency);
+  const customerId = data?.find((plan) => plan.type === "customer")?.id;
+  const companyId = data?.find((plan) => plan.type === "company")?.id;
 
   return (
     <Card className="w-full max-w-xs text-center">
@@ -80,20 +98,30 @@ function ProductCard({
       </CardHeader>
       <CardContent className="flex items-center justify-between rounded-b-md bg-teal-blue p-2">
         <div className="w-full border-r p-2">
-          <Button className="flex w-full flex-col items-center justify-center p-6">
-            <h2>Persona</h2>
-            <h3 className="text-lg font-semibold">
-              {formatPrice(customerprice)}
-            </h3>
-          </Button>
+          <Link
+            href={`https://productos.serviclick.cl/contractor?productPlanId=${customerId}`}
+            passHref
+          >
+            <Button className="flex w-full flex-col items-center justify-center p-6">
+              <h2>Persona</h2>
+              <h3 className="text-lg font-semibold">
+                {formatPrice(customerprice)}
+              </h3>
+            </Button>
+          </Link>
         </div>
         <div className="w-full border-l p-2">
+        <Link
+            href={`https://productos.serviclick.cl/contractor?productPlanId=${companyId}`}
+            passHref
+          >
           <Button className="flex w-full flex-col items-center justify-center p-6">
             <h2>Empresa</h2>
             <h3 className="text-lg font-semibold">
               {formatPrice(companyprice)}
             </h3>
           </Button>
+          </Link>
         </div>
       </CardContent>
     </Card>

@@ -3,8 +3,8 @@ import { createTRPCRouter, publicProcedure } from "../trpc";
 import { z } from "zod";
 
 import { type IReport } from "~/interfaces/report";
-import { IFamily } from "~/interfaces/family";
-import { IProduct } from "~/interfaces/product";
+import { type IFamily } from "~/interfaces/family";
+import { type IProduct } from "~/interfaces/product";
 
 export const brokerRouter = createTRPCRouter({
   getByUser: publicProcedure
@@ -91,29 +91,6 @@ export const brokerRouter = createTRPCRouter({
                                                         inner join app.family fam on pro.family_id = fam.id
                                                         inner join app.brokerproduct bpr on pro.id = bpr.product_id
                                                 where	  bpr.broker_id = ${input.brokerId}::UUID and
-                                                      bpr.isActive is true`;
-
-      return result;
-    }),
-  getProducts: publicProcedure
-    .input(
-      z.object({
-        brokerId: z.string(),
-        familyId: z.string(),
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      const result = await ctx.prisma.$queryRaw<IProduct[]>`select  pro.id,
-                                                      pro.name,
-                                                      pro.currency,
-                                                      pro.frequency,
-                                                      bpr.companyprice,
-                                                      bpr.customerprice
-                                                from    app.product pro
-                                                        inner join app.family fam on pro.family_id = fam.id
-                                                        inner join app.brokerproduct bpr on pro.id = bpr.product_id
-                                                where   bpr.broker_id = ${input.brokerId}::UUID and
-                                                      fam.id = ${input.familyId}::UUID and
                                                       bpr.isActive is true`;
 
       return result;

@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { ContentCell, ContentRow } from "../../layout/Content";
-import Button from "../../ui/Button";
 import InputText from "../../ui/InputText";
 
 import {
@@ -20,6 +19,7 @@ import {
 } from "../../../data/masters";
 import { useUser } from "@clerk/nextjs";
 import { CaseDescription } from "./CaseDescription";
+import { Button } from "~/components/ui/ButtonC";
 
 const CaseTracking = ({ thisCase }: any) => {
   const router = useRouter();
@@ -29,8 +29,8 @@ const CaseTracking = ({ thisCase }: any) => {
   const [justification, setJustification] = useState<string>("");
   const [scheduledDate, setScheduledDate] = useState<string>("");
   const [scheduledTime, setScheduledTime] = useState<string>("");
-  const [confirmDate, setConfirmDate] = useState<string>("");
-  const [confirmTime, setConfirmTime] = useState<string>("");
+  const [confirmDate, setConfirmDate] = useState<string>(scheduledDate);
+  const [confirmTime, setConfirmTime] = useState<string>(scheduledTime);
   const [evaluation, setEvaluation] = useState<string>("");
   const [refundAmount, setRefundAmount] = useState<number | null>(null);
 
@@ -45,7 +45,6 @@ const CaseTracking = ({ thisCase }: any) => {
     thisCase?.case_id,
     stages?.find((s: any) => s?.name === "Designación de especialista")?.id
   );
-
   const { data: assistanceData } = useQueryCase().useGetAssistanceData(
     thisCase?.insured_id,
     thisCase?.assistance_id,
@@ -53,6 +52,9 @@ const CaseTracking = ({ thisCase }: any) => {
   );
   const { data: thisReimbursement } = useQueryCase().useGetReimbursment(
     thisCase?.case_id
+  );
+  const { data: contractor } = useQueryContractor().useGetById(
+    thisCase?.contractor_id
   );
 
   const { mutate: updateCase } = useQueryCase().useCreate();
@@ -70,7 +72,8 @@ const CaseTracking = ({ thisCase }: any) => {
         number: thisCase?.case_number,
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
-        company_id: thisCase?.contractor_id,
+        company_id: contractor?.type === "C" ? thisCase?.contractor_id : null,
+        customer_id: contractor?.type === "P" ? thisCase?.contractor_id : null,
         stage_id: stages.find((s: any) => s?.name === "Resolución")?.id,
         user_id: user?.id,
         description: evaluation,
@@ -136,7 +139,8 @@ const CaseTracking = ({ thisCase }: any) => {
         number: thisCase?.case_number,
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
-        company_id: thisCase?.contractor_id,
+        company_id: contractor?.type === "C" ? thisCase?.contractor_id : null,
+        customer_id: contractor?.type === "P" ? thisCase?.contractor_id : null,
         stage_id: stages.find((s: any) => s?.name === "Seguimiento")?.id,
         user_id: user?.id,
         isactive: true,
@@ -197,7 +201,8 @@ const CaseTracking = ({ thisCase }: any) => {
         number: thisCase?.case_number,
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
-        company_id: thisCase?.contractor_id,
+        company_id: contractor?.type === "C" ? thisCase?.contractor_id : null,
+        customer_id: contractor?.type === "P" ? thisCase?.contractor_id : null,
         stage_id: stages.find((s: any) => s?.name === "Resolución")?.id,
         description: evaluation,
         user_id: user?.id,
@@ -241,7 +246,8 @@ const CaseTracking = ({ thisCase }: any) => {
         number: thisCase?.case_number,
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
-        company_id: thisCase?.contractor_id,
+        company_id: contractor?.type === "C" ? thisCase?.contractor_id : null,
+        customer_id: contractor?.type === "P" ? thisCase?.contractor_id : null,
         stage_id: stages.find((s: any) => s?.name === "Rechazado")?.id,
         user_id: user?.id,
         description: justification,
@@ -289,7 +295,7 @@ const CaseTracking = ({ thisCase }: any) => {
 
   return (
     <form>
-      <ContentCell gap="20px">
+      <ContentCell gap="10px">
         <CaseDescription thisCase={thisCase} />
         <ContentCell gap="5px">
           {thisCase?.stages?.find(
@@ -298,7 +304,9 @@ const CaseTracking = ({ thisCase }: any) => {
               s.stage === "Designación de especialista"
           ) ? (
             <ContentCell gap="5px">
-              <h2 className="font-semibold">Hora programada</h2>
+              <h2 className="pb-5 pt-4 text-xl font-semibold text-teal-blue">
+                Hora programada
+              </h2>
               {assignedPartner && (
                 <InputText
                   label="Convenio"
@@ -326,7 +334,6 @@ const CaseTracking = ({ thisCase }: any) => {
                   onChange={(e: any) => setScheduledTime(e.target.value)}
                   minTime="09:00"
                   maxTime="18:00"
-                  step="3600"
                 />
               </ContentRow>
             </ContentCell>
@@ -351,13 +358,14 @@ const CaseTracking = ({ thisCase }: any) => {
             enabled={thisCase?.is_active === true ? true : false}
           />
           {evaluation?.toLowerCase() === "confirmar visita" ? (
-            <ContentCell gap="5px">
+            <ContentCell gap="20px">
               <ContentRow gap="5px">
                 <InputText
                   label="Fecha de visita"
                   type="date"
                   width="260px"
                   value={confirmDate}
+                  defaultValue={scheduledDate}
                   disabled={thisCase?.is_active === true ? false : true}
                   onChange={(e: any) => setConfirmDate(e.target.value)}
                 />
@@ -366,6 +374,7 @@ const CaseTracking = ({ thisCase }: any) => {
                   type="time"
                   width="260px"
                   value={confirmTime}
+                  defaultValue={scheduledTime}
                   onChange={(e: any) => setConfirmTime(e.target.value)}
                   minTime="09:00"
                   maxTime="18:00"
@@ -373,20 +382,22 @@ const CaseTracking = ({ thisCase }: any) => {
                 />
               </ContentRow>
               <Button
-                text="Confirmar visita"
                 type="button"
-                enabled={thisCase?.is_active === true ? true : false}
+                disabled={thisCase?.is_active ? false : true}
                 onClick={handleConfirm}
-              />
+              >
+                Confirmar visita
+              </Button>
             </ContentCell>
           ) : evaluation?.toLowerCase() === "reprogramar visita" ? (
-            <ContentCell gap="5px">
+            <ContentCell gap="20px">
               <ContentRow gap="5px">
                 <InputText
                   label="Fecha de visita"
                   type="date"
                   width="260px"
                   value={confirmDate}
+                  defaultValue={scheduledDate}
                   disabled={thisCase?.is_active === true ? false : true}
                   onChange={(e: any) => setConfirmDate(e.target.value)}
                 />
@@ -395,6 +406,7 @@ const CaseTracking = ({ thisCase }: any) => {
                   type="time"
                   width="260px"
                   value={confirmTime}
+                  defaultValue={scheduledTime}
                   onChange={(e: any) => setConfirmTime(e.target.value)}
                   minTime="09:00"
                   maxTime="18:00"
@@ -403,11 +415,12 @@ const CaseTracking = ({ thisCase }: any) => {
                 />
               </ContentRow>
               <Button
-                text="Reprogramar visita"
                 type="button"
-                enabled={thisCase?.is_active === true ? true : false}
+                disabled={thisCase?.is_active ? false : true}
                 onClick={handleReschedule}
-              />
+              >
+                Reprogramar visita
+              </Button>
             </ContentCell>
           ) : evaluation?.toLowerCase() === "cancelar visita" ? (
             <ContentCell gap="5px">
@@ -420,16 +433,17 @@ const CaseTracking = ({ thisCase }: any) => {
                 disabled={thisCase?.is_active === true ? false : true}
               />
               <Button
-                text="Cancelar visita"
                 type="button"
-                enabled={thisCase?.is_active === true ? true : false}
+                disabled={thisCase?.is_active ? false : true}
                 onClick={(e: any) => {
                   e.preventDefault();
                 }}
-              />
+              >
+                Cancelar visita
+              </Button>
             </ContentCell>
           ) : evaluation?.toLowerCase() === "rechazar caso" ? (
-            <ContentCell gap="5px">
+            <ContentCell gap="20px">
               <TextArea
                 value={justification}
                 onChange={(e: any) => setJustification(e.target.value)}
@@ -439,17 +453,20 @@ const CaseTracking = ({ thisCase }: any) => {
                 disabled={thisCase?.is_active === true ? false : true}
               />
               <Button
-                text="Rechazar caso"
                 type="button"
-                enabled={thisCase?.is_active === true ? true : false}
+                disabled={thisCase?.is_active ? false : true}
                 onClick={handleReject}
-              />
+              >
+                Rechazar caso
+              </Button>
             </ContentCell>
           ) : evaluation?.toLowerCase() === "reembolsar" ||
             evaluation?.toLowerCase() === "reembolsar imed" ? (
             <ContentCell gap="5px">
               <ContentCell gap="5px">
-                <h2 className="font-semibold">Disponible</h2>
+                <h2 className="text-xl font-semibold text-teal-blue">
+                  Disponible
+                </h2>
                 <ContentRow gap="5px">
                   <InputText
                     label={"Monto Disponible"}
@@ -470,16 +487,18 @@ const CaseTracking = ({ thisCase }: any) => {
                           })
                     }
                     type="text"
-                    width="152px"
+                    width={assistanceData?.max_events !== 0 ? "152px" : "286px"}
                     disabled
                   />
-                  <InputText
-                    label="Eventos restantes"
-                    value={assistanceData?.remaining_events}
-                    type="number"
-                    width="129px"
-                    disabled
-                  />
+                  {assistanceData?.max_events !== 0 && (
+                    <InputText
+                      label="Eventos restantes"
+                      value={assistanceData?.remaining_events}
+                      type="number"
+                      width="129px"
+                      disabled
+                    />
+                  )}
                   <InputText
                     label="Límite"
                     value={assistanceData?.maximum}
@@ -490,7 +509,9 @@ const CaseTracking = ({ thisCase }: any) => {
                 </ContentRow>
               </ContentCell>
               <ContentCell gap="5px">
-                <h2 className="font-semibold">Reembolsar</h2>
+                <h2 className="pt-4 text-xl font-semibold text-teal-blue">
+                  Reembolsar
+                </h2>
                 <InputText
                   label={"Monto ($)"}
                   value={
@@ -507,11 +528,13 @@ const CaseTracking = ({ thisCase }: any) => {
                   onChange={(e: any) => setRefundAmount(e.target.value)}
                 />
                 <Button
-                  text="Reembolsar"
                   type="button"
-                  enabled={thisCase?.is_active === true ? true : false}
+                  disabled={thisCase?.is_active ? false : true}
                   onClick={handleReimburse}
-                />
+                  className="mt-4"
+                >
+                  Reembolsar
+                </Button>
               </ContentCell>
             </ContentCell>
           ) : null}

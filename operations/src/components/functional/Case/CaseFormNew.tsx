@@ -154,7 +154,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
       {
         applicant: {
           type: isNewBeneficiary ? "C" : isInsured === "isInsured" ? "I" : "B",
-          id: isNewBeneficiary ? null : isInsured === "isInsured" ? data?.insured.id : null,
+          id: isNewBeneficiary ? null : data?.insured.id,
           rut,
           name,
           paternalLastName,
@@ -165,10 +165,14 @@ const BeneficiaryForm = ({ thisCase }: any) => {
           email,
           phone,
         },
-        company_id: client !== "" ? client : null,
+        company_id: !client ? data?.company_id : client,
         customer_id: data?.customer_id,
         isInsured: isInsured === "isInsured",
-        beneficiary_id: isNewBeneficiary ? null : isInsured === "isInsured" ? null : data?.beneficiary.id,
+        beneficiary_id: isNewBeneficiary
+          ? null
+          : isInsured === "isInsured"
+          ? null
+          : data?.beneficiary.id,
         number: thisCase !== null ? thisCase?.case_number : newCaseNumber,
         stage_id: stage,
         user_id: user?.id,
@@ -254,7 +258,6 @@ const BeneficiaryForm = ({ thisCase }: any) => {
     setClient(newData.contractor_id);
   };
 
-
   useEffect(() => {
     setDateTime(getDateTime());
 
@@ -312,14 +315,16 @@ const BeneficiaryForm = ({ thisCase }: any) => {
       )
         ? "Contención"
         : "Apertura";
-      const stageId = stageData.find((s: any) => s.name === stageName)?.id;
+      const stageId = stageData?.find((s: any) => s.name === stageName)?.id;
       setStage(stageId || "");
     } else {
       if (isNewBeneficiary) {
-        const stageId = stageData.find((s: any) => s.name === "Contención")?.id;
+        const stageId = stageData?.find(
+          (s: any) => s.name === "Contención"
+        )?.id;
         setStage(stageId || "");
       } else if (data?.beneficiary) {
-        const stageId = stageData.find((s: any) => s.name === "Apertura")?.id;
+        const stageId = stageData?.find((s: any) => s.name === "Apertura")?.id;
         setStage(stageId || "");
       }
     }
@@ -327,7 +332,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
 
   return (
     <div>
-      <ContentCell gap="20px">
+      <ContentCell gap="10px">
         <ContentRow gap="5px">
           <InputText
             label="N° Caso"
@@ -348,6 +353,29 @@ const BeneficiaryForm = ({ thisCase }: any) => {
             width="260px"
           />
         </ContentRow>
+        {data && isInsured === "isBeneficiary" && (
+          <ContentCell gap="2px">
+            <ContentRow gap="5px">
+              <h2 className="text-xl font-semibold text-secondary-500 w-[260px]">
+                Datos de carga
+              </h2>
+              <InputText
+                label="Relación"
+                value={data?.beneficiary?.relationship || "Sin relación asignada"}
+                type="text"
+                disabled={true}
+                width="260px"
+              />
+            </ContentRow>
+          </ContentCell>
+        )}
+        {data && isInsured === "isInsured" && (
+          <ContentCell gap="2px">
+            <h2 className="text-xl font-semibold text-secondary-500">
+              Datos del titular
+            </h2>
+          </ContentCell>
+        )}
         {isNewBeneficiary ? (
           <ContentCell gap="2px">
             <h2 className="font-semibold text-red-500">Contención</h2>
@@ -654,7 +682,12 @@ const BeneficiaryForm = ({ thisCase }: any) => {
             </>
           )}
           {!isNewBeneficiary ? (
-            <Button className="my-6 w-full" disabled={isSubmitting}>
+            <Button
+              className="my-6 w-full"
+              disabled={
+                isSubmitting || thisCase?.is_active || !thisCase ? false : true
+              }
+            >
               {isSubmitting ? "Enviando..." : "Continuar"}
             </Button>
           ) : null}

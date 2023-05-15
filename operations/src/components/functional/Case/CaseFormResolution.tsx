@@ -4,7 +4,6 @@ import { ContentCell, ContentRow } from "../../layout/Content";
 import InputText from "../../ui/InputText";
 import ComboBox from "../../ui/ComboBox";
 import TextArea from "../../ui/TextArea/TextArea";
-import Button from "../../ui/Button";
 
 import {
   useQueryCase,
@@ -16,6 +15,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useUser } from "@clerk/nextjs";
 import { CaseDescription } from "./CaseDescription";
+import { Button } from "~/components/ui/ButtonC";
 
 const CaseFormResolution = ({ thisCase }: any) => {
   const router = useRouter();
@@ -37,6 +37,9 @@ const CaseFormResolution = ({ thisCase }: any) => {
     thisCase?.case_id,
     stages?.find((s: any) => s?.name === "Designación de especialista")?.id
   );
+  const { data: contractor } = useQueryContractor().useGetById(
+    thisCase?.contractor_id
+  );
 
   const { mutate: updateCase } = useQueryCase().useCreate();
 
@@ -50,7 +53,8 @@ const CaseFormResolution = ({ thisCase }: any) => {
         number: thisCase?.case_number,
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
-        company_id: thisCase?.contractor_id,
+        company_id: contractor?.type === "C" ? thisCase?.contractor_id : null,
+        customer_id: contractor?.type === "P" ? thisCase?.contractor_id : null,
         stage_id: stages.find((s: any) => s?.name === "Calificación")?.id,
         user_id: user?.id,
         description: comment,
@@ -66,6 +70,10 @@ const CaseFormResolution = ({ thisCase }: any) => {
               number: thisCase?.case_number,
               product_id: thisCase?.product_id,
               assistance_id: thisCase?.assistance_id,
+              company_id:
+                contractor?.type === "C" ? thisCase?.contractor_id : null,
+              customer_id:
+                contractor?.type === "P" ? thisCase?.contractor_id : null,
               stage_id: stages.find((s: any) => s?.name === "Cerrado")?.id,
               user_id: user?.id,
               isactive: false,
@@ -92,6 +100,8 @@ const CaseFormResolution = ({ thisCase }: any) => {
         number: thisCase?.case_number,
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
+        company_id: contractor?.type === "C" ? thisCase?.contractor_id : null,
+        customer_id: contractor?.type === "P" ? thisCase?.contractor_id : null,
         stage_id: stages.find((s: any) => s?.name === "Cerrado")?.id,
         user_id: user?.id,
         description: comment,
@@ -123,16 +133,20 @@ const CaseFormResolution = ({ thisCase }: any) => {
     }
   }, [thisCase]);
 
+  console.log(assignedPartner);
+
   return (
     <form>
       <ContentCell gap="20px">
-      <CaseDescription thisCase={thisCase} />
+        <CaseDescription thisCase={thisCase} />
         <ContentCell gap="5px">
           {thisReimbursement && (
             <ContentCell gap="20px">
               {thisCase?.stages.find((c: any) => c?.stage === "Resolución")
                 ?.description === "Reembolsar IMED" && (
-                <p className="font-semibold text-teal-blue">Reembolso IMED</p>
+                <h2 className="text-xl font-semibold text-teal-blue">
+                  Reembolso IMED
+                </h2>
               )}
               <ContentRow gap="5px">
                 <InputText
@@ -229,7 +243,7 @@ const CaseFormResolution = ({ thisCase }: any) => {
               {["Aprobado", "Rechazado"].includes(
                 thisReimbursement?.status
               ) && (
-                <ContentCell gap="5px">
+                <ContentCell gap="20px">
                   <TextArea
                     label="Comentarios"
                     width="525px"
@@ -239,11 +253,11 @@ const CaseFormResolution = ({ thisCase }: any) => {
                     onChange={(e: any) => setComment(e.target.value)}
                   />
                   <Button
-                    text="Cerrar caso"
                     onClick={handleClose}
-                    width="525px"
-                    enabled={thisCase?.is_active === true ? true : false}
-                  />
+                    disabled={thisCase?.is_active ? false : true}
+                  >
+                    Cerrar caso
+                  </Button>
                 </ContentCell>
               )}
             </ContentCell>
@@ -251,7 +265,9 @@ const CaseFormResolution = ({ thisCase }: any) => {
           {(assignedSpecialist || assignedPartner) && (
             <ContentCell gap="20px">
               <ContentCell gap="5px">
-                <p className="font-semibold">Visita confirmada</p>
+                <h2 className="pb-5 pt-2 text-xl font-semibold text-teal-blue">
+                  Visita confirmada
+                </h2>
                 {assignedSpecialist && (
                   <InputText
                     label="Especialista"
@@ -307,7 +323,7 @@ const CaseFormResolution = ({ thisCase }: any) => {
                 value={action}
               />
               {action === "Calificar" && (
-                <ContentCell gap="5px">
+                <ContentCell gap="20px">
                   <TextArea
                     label="Comentarios"
                     width="525px"
@@ -317,15 +333,16 @@ const CaseFormResolution = ({ thisCase }: any) => {
                     onChange={(e: any) => setComment(e.target.value)}
                   />
                   <Button
-                    text="Calificar & Cerrar"
                     type="button"
-                    enabled={thisCase?.is_active === true ? true : false}
+                    disabled={thisCase?.is_active ? false : true}
                     onClick={handleRate}
-                  />
+                  >
+                    Calificar & cerrar
+                  </Button>
                 </ContentCell>
               )}
               {action === "Cerrar caso" && (
-                <ContentCell gap="5px">
+                <ContentCell gap="20px">
                   <TextArea
                     label="Comentarios"
                     width="525px"
@@ -335,11 +352,12 @@ const CaseFormResolution = ({ thisCase }: any) => {
                     onChange={(e: any) => setComment(e.target.value)}
                   />
                   <Button
-                    text="Cerrar caso"
                     type="button"
-                    enabled={thisCase?.is_active === true ? true : false}
+                    disabled={thisCase?.is_active ? false : true}
                     onClick={handleClose}
-                  />
+                  >
+                    Cerrar caso
+                  </Button>
                 </ContentCell>
               )}
             </ContentCell>

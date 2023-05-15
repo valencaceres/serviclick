@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { ContentCell, ContentRow } from "../../layout/Content";
-import Button from "../../ui/Button";
 import InputText from "../../ui/InputText";
 
 import {
@@ -15,6 +14,7 @@ import {
 import ComboBox from "../../ui/ComboBox";
 import { useUser } from "@clerk/nextjs";
 import { CaseDescription } from "./CaseDescription";
+import { Button } from "~/components/ui/ButtonC";
 
 const CaseFormPartner = ({ thisCase }: any) => {
   const router = useRouter();
@@ -38,7 +38,10 @@ const CaseFormPartner = ({ thisCase }: any) => {
   const { data: partners } = useQueryPartner().useGetByFamilyId(
     thisCase?.family_id
   );
-  
+  const { data: contractor } = useQueryContractor().useGetById(
+    thisCase?.contractor_id
+  );
+
   const { mutate: updateCase } = useQueryCase().useCreate();
   const { mutate: assignPartner } = useQueryCase().useAssignPartner();
 
@@ -51,7 +54,8 @@ const CaseFormPartner = ({ thisCase }: any) => {
     product_id: thisCase?.product_id,
     assistance_id: thisCase?.assistance_id,
     stage_id: findStageByName(stageName)?.id || "",
-    company_id: thisCase?.contractor_id,
+    company_id: contractor?.type === "C" ? thisCase?.contractor_id : null,
+    customer_id: contractor?.type === "P" ? thisCase?.contractor_id : null,
     user_id: user?.id,
     isactive: true,
   });
@@ -113,7 +117,7 @@ const CaseFormPartner = ({ thisCase }: any) => {
   return (
     <div>
       <ContentCell gap="20px">
-      <CaseDescription thisCase={thisCase} />
+        <CaseDescription thisCase={thisCase} />
         <ContentCell gap="20px">
           <ComboBox
             label="Convenio"
@@ -161,15 +165,19 @@ const CaseFormPartner = ({ thisCase }: any) => {
             </ContentRow>
             {partner !== getAssignedPartner?.partner_id ? (
               <Button
-                text="Asignar convenio"
                 type="button"
-                enabled={thisCase?.is_active === true ? true : false}
+                disabled={thisCase?.is_active ? false : true}
                 onClick={handleAssign}
-              />
+              >
+                Asignar
+              </Button>
             ) : (
               getAssignedPartner && (
                 <div className="mt-5">
-                  <ContentCell gap="5px">
+                  <ContentCell gap="20px">
+                    <h2 className="text-xl font-semibold text-teal-blue">
+                      Agendar visita
+                    </h2>
                     <ContentRow gap="5px">
                       <InputText
                         label="Fecha de visita"
@@ -187,17 +195,17 @@ const CaseFormPartner = ({ thisCase }: any) => {
                         value={scheduledTime}
                         onChange={(e: any) => setScheduledTime(e.target.value)}
                         minTime="09:00"
-                        maxTime="18:00"
-                        step="3600"
+                        maxTime="20:00"
                         disabled={thisCase?.is_active === true ? false : true}
                       />
                     </ContentRow>
                     <Button
-                      text="Programar visita"
                       type="button"
-                      enabled={thisCase?.is_active === true ? true : false}
+                      disabled={thisCase?.is_active ? false : true}
                       onClick={handleSchedule}
-                    />
+                    >
+                      Agendar
+                    </Button>
                   </ContentCell>
                 </div>
               )

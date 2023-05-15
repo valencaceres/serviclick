@@ -1,6 +1,6 @@
 import { type NextPage } from "next";
 import { useEffect } from "react";
-import { Billing } from "~/components/functional/Billing";
+import { Billing } from "~/components/functional/Billing/Billing"; 
 
 import { useUI } from "~/store/hooks";
 
