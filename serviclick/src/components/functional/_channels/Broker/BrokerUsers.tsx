@@ -16,32 +16,38 @@ import ButtonIcon from "../../../ui/ButtonIcon";
 import Icon from "../../../ui/Icon";
 
 import { useBroker } from "../../../../hooks";
+import { useBroker as useBrokerQuery } from "~/hooks/query";
+import { useRouter } from "next/router";
 
 const BrokerUsers = ({ addNewUser, editUser, deleteUser }: any) => {
+  const router = useRouter();
+
   const { broker } = useBroker();
+
+  const { data } = useBrokerQuery().useGetBrokerAgents(router.query.id as string);
 
   return (
     <ContentCell gap="5px">
       <Table width="739px" height="226px">
         <TableHeader>
           <TableCell width="300px">Nombre</TableCell>
-          <TableCell width="232px">e-mail</TableCell>
+          <TableCell width="232px">E-mail</TableCell>
           <TableCell width="120px">Perfil</TableCell>
           <TableCell width="68px"></TableCell>
           <TableCellEnd />
         </TableHeader>
         <TableDetail>
-          {broker.users.map((user: any, idx: number) => (
+          {data?.map((item: any, idx: number) => (
             <TableRow key={idx}>
               <TableCell width="300px">
-                {user.name} {user.paternalLastName} {user.maternalLastName}
+                {item.user.first_name} {item.user.last_name} 
               </TableCell>
-              <TableCell width="232px">{user.email}</TableCell>
-              <TableCell width="120px">{user.profileName}</TableCell>
+              <TableCell width="232px">{item.user.email_addresses[0]?.email_address}</TableCell>
+              <TableCell width="120px">{item.profilecode === "A" ? "Administrador" : "Vendedor"}</TableCell>
               <TableCell width="68px" align="center">
                 <TableIcons>
-                  <Icon iconName="edit" onClick={() => editUser(user)} />
-                  <Icon iconName="delete" onClick={() => deleteUser(user)} />
+                  <Icon iconName="edit" onClick={() => editUser(item.user)} />
+                  <Icon iconName="delete" onClick={() => deleteUser(item.user)} />
                 </TableIcons>
               </TableCell>
             </TableRow>
@@ -57,7 +63,7 @@ const BrokerUsers = ({ addNewUser, editUser, deleteUser }: any) => {
             ? "1 usuario asociado"
             : `${broker.users.length} usuarios asociados`}
         </ContentCellSummary>
-        {/* <ButtonIcon iconName="add" color="gray" onClick={addNewUser} /> */}
+        <ButtonIcon iconName="add" color="gray" onClick={addNewUser} />
       </ContentRow>
     </ContentCell>
   );

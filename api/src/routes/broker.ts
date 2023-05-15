@@ -12,6 +12,7 @@ import {
   getFamiliesByBrokerId,
   getProductsByBrokerIdAndFamilyId,
   getCollectById,
+  getBrokerAgents,
 } from "../controllers/broker";
 
 const BrokerRouter = Router();
@@ -30,5 +31,6 @@ BrokerRouter.get(
 BrokerRouter.get("/getCollectById/:id", auth, getCollectById);
 BrokerRouter.put("/updateLogo/:id", updateLogo);
 BrokerRouter.delete("/deleteById/:id", auth, deleteById);
+BrokerRouter.get("/getBrokerAgents/:id", auth, getBrokerAgents);
 
 export default BrokerRouter;

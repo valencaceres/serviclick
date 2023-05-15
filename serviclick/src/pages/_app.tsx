@@ -5,6 +5,8 @@ import {
   SignedIn,
   SignedOut,
 } from "@clerk/nextjs";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useRouter } from "next/router";
 
 import store from "../redux/store";
@@ -18,6 +20,8 @@ import { esES } from "@clerk/localizations";
 
 const publicPages: Array<string> = ["/sign-in/[[...index]]"];
 
+const queryClient = new QueryClient();
+
 function MyApp({ Component, pageProps }: AppProps) {
   const { pathname } = useRouter();
 
@@ -25,19 +29,25 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ClerkProvider {...pageProps} localization={esES}>
       {isPublicPage ? (
-        <Provider store={store}>
-          <Switch>
-            <Component {...pageProps} />
-          </Switch>
-        </Provider>
+        <QueryClientProvider client={queryClient}>
+          <Provider store={store}>
+            <Switch>
+              <Component {...pageProps} />
+              <ReactQueryDevtools initialIsOpen={false} />
+            </Switch>
+          </Provider>
+        </QueryClientProvider>
       ) : (
         <>
           <SignedIn>
-            <Provider store={store}>
-              <Switch>
-                <Component {...pageProps} />
-              </Switch>
-            </Provider>
+            <QueryClientProvider client={queryClient}>
+              <Provider store={store}>
+                <Switch>
+                  <Component {...pageProps} />
+                  <ReactQueryDevtools initialIsOpen={false} />
+                </Switch>
+              </Provider>
+            </QueryClientProvider>
           </SignedIn>
           <SignedOut>
             <RedirectToSignIn />

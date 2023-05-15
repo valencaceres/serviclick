@@ -66,8 +66,8 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div>
-      <div className="flex items-center justify-between py-4">
+    <div className="w-full p-2">
+      <div className="flex flex-col-reverse items-start justify-between gap-2 py-4 lg:flex-row lg:items-end">
         <div className="flex items-center gap-2">
           <div className="flex w-full flex-col gap-1">
             <Label htmlFor="searchClient">Buscar por cliente</Label>
@@ -102,7 +102,7 @@ export function DataTable<TData, TValue>({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-auto">
-                Columnas
+                Filtros
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="bg-white">
@@ -127,7 +127,7 @@ export function DataTable<TData, TValue>({
           </DropdownMenu>
         </div>
       </div>
-      <div className="rounded-md border">
+      <div className="w-full rounded-md border">
         <Table>
           <TableHeader>
             {table?.getHeaderGroups().map((headerGroup) => (
@@ -147,7 +147,7 @@ export function DataTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          <TableBody className="w-[600px]">
             {table?.getRowModel()?.rows?.length ? (
               table?.getRowModel()?.rows.map((row) => (
                 <TableRow
@@ -155,7 +155,7 @@ export function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="capitalize">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -168,7 +168,7 @@ export function DataTable<TData, TValue>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-24 w-full text-center"
                 >
                   No results.
                 </TableCell>
@@ -177,23 +177,29 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Anterior
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Siguiente
-        </Button>
+      <div className="flex items-center justify-between py-4">
+        <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+          Página {table.getState().pagination.pageIndex + 1} de{" "}
+          {table.getPageCount()}
+        </div>
+        <div className="flex items-center space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Anterior
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Siguiente
+          </Button>
+        </div>
       </div>
     </div>
   );
