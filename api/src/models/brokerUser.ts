@@ -21,4 +21,21 @@ const getByBrokerId = async (brokerId: number) => {
   }
 };
 
-export { getByBrokerId };
+const updateProfileCode = async (
+  agentId: string,
+  brokerId: string,
+  profileCode: string
+) => {
+  try {
+    const result = await pool.query(
+      `UPDATE app.brokeruser SET profilecode = $1 WHERE user_id = $2 AND broker_id = $3`,
+      [profileCode, agentId, brokerId]
+    );
+
+    return { success: true, data: result.rows[0] };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+export { getByBrokerId, updateProfileCode };

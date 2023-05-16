@@ -16,9 +16,24 @@ const useGetBrokerAgents = (brokerId: string) => {
   });
 };
 
+const updateAgent = async (payload: any) => {
+  const { data } = await apiInstance.put(`/broker/updateAgent/${payload.brokerId}`, payload);
+
+  return data;
+};
+
+const useUpdateAgent = () => {
+  return useMutation(["updateAgent"], (payload: any) => updateAgent(payload), {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["brokerAgents"]);
+    },
+  });
+};
+
 const useBroker = () => {
   return {
     useGetBrokerAgents,
+    useUpdateAgent
   };
 };
 

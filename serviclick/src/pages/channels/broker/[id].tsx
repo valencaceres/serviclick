@@ -26,11 +26,11 @@ const BrokerDetailPage = () => {
   const handleClickBack = () => {
     router.push("/channels/broker");
   };
-
+  
   useEffect(() => {
-    setTitleUI(`Broker - ${broker.name}`);
+    setTitleUI(`Broker - ${broker?.name}`);
     getBrokerById(router.query.id as string);
-  }, []);
+  }, [router]);
 
   return (
     <Fragment>
