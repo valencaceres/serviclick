@@ -5,7 +5,9 @@ import { sendMail } from "../util/email";
 import * as Broker from "../models/broker";
 import * as BrokerProduct from "../models/brokerProduct";
 import * as UserBroker from "../models/userBroker";
+import * as BrokerUser from "../models/brokerUser";
 import * as Product from "./product";
+import { updateClerkUser } from "../util/clerkUserData";
 
 const create = async (req: any, res: any) => {
   try {
@@ -492,6 +494,48 @@ const addProduct = async (req: any, res: any) => {
   }
 };
 
+const getBrokerAgents = async (req: any, res: any) => {
+  const { id } = req.params;
+
+  const response = await BrokerUser.getByBrokerId(id);
+
+  if (!response.success) {
+    createLogger.error({
+      model: "brokerUser/getByBrokerId",
+      error: response.error,
+    });
+    res.status(500).json({ error: response.error });
+    return;
+  }
+
+  createLogger.info({
+    controller: "broker/getBrokerAgents",
+    message: "OK",
+  });
+
+  res.status(200).json(response.data);
+};
+
+const updateAgent = async (req: any, res: any) => {
+  const { brokerId } = req.params;
+  const { id, rut, name, lastname, maternallastname, profilecode } = req.body;
+
+  const response = await updateClerkUser({
+    user_id: id,
+    first_name: name,
+    last_name: lastname,
+    public_metadata: { rut: rut, maternallastname: maternallastname },
+  });
+
+  const profileCode = await BrokerUser.updateProfileCode(
+    id,
+    brokerId,
+    profilecode
+  );
+
+  return res.status(200).json(profileCode);
+};
+
 export {
   create,
   addProduct,
@@ -503,6 +547,8 @@ export {
   getFamiliesByBrokerId,
   getProductsByBrokerIdAndFamilyId,
   getCollectById,
+  getBrokerAgents,
+  updateAgent,
 };
 
 export const getBrokerDataById = async (id: string) => {

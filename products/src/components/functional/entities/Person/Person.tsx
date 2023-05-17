@@ -73,7 +73,7 @@ const Person = ({ data, setData, setCompletedForm, getByRut }: any) => {
         isValid: isValidRut(event.target.value),
       },
     });
-    getByRut(event.target.value);
+    isValidRut(event.target.value) && getByRut(event.target.value);
     setSearch(false);
   };
 

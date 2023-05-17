@@ -18,6 +18,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
+import { esES } from "@clerk/localizations";
 
 const publicPages: Array<string> = ["/sign-in/[[...index]]"];
 
@@ -29,7 +30,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const isPublicPage = publicPages.includes(pathname);
 
   return (
-    <ClerkProvider {...pageProps}>
+    <ClerkProvider {...pageProps} localization={esES}>
       {isPublicPage ? (
         <QueryClientProvider client={queryClient}>
           <Provider store={store}>

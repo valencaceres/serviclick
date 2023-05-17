@@ -1,19 +1,16 @@
 import { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
 
-import FloatMenu from "../../components/ui/FloatMenu";
-import ButtonIcon from "../../components/ui/ButtonIcon";
+import FloatMenu from "~/components/ui/FloatMenu"; 
+import ButtonIcon from "~/components/ui/ButtonIcon"; 
 
-import {
-  BrokerDetail,
-  BrokerList,
-} from "../../components/functional/_channels/Broker";
+import { BrokerList } from "~/components/functional/_channels/Broker";
 
-import { useUI, useBroker, useProduct } from "../../hooks";
+import { useUI, useBroker, useProduct } from "~/hooks";
 
-import { channels } from "../../data/masters";
+import { channels } from "~/data/masters";
 
-const Web = () => {
+const BrokerListPage = () => {
   const router = useRouter();
 
   const { setTitleUI } = useUI();
@@ -22,13 +19,10 @@ const Web = () => {
     getBrokerById,
     deleteBrokerById,
     reset,
-    createBroker,
     broker,
-    loading: brokerLoading,
+    loading
   } = useBroker();
   const { getAllProducts } = useProduct();
-
-  const [enableSave, setEnableSave] = useState(false);
 
   const handleClickHome = () => {
     router.push("/");
@@ -43,20 +37,12 @@ const Web = () => {
     router.push("/channels/broker?id=new");
   };
 
-  const handleClickBack = () => {
-    router.push("/channels/broker");
-  };
-
   const handleClickEdit = (id: string) => {
-    router.push(`/channels/broker?id=${id}`);
+    router.push(`/channels/broker/${id}`);
   };
 
   const handleClickDelete = (id: string) => {
     deleteBrokerById(id);
-  };
-
-  const handleClickSave = () => {
-    createBroker(broker);
   };
 
   useEffect(() => {
@@ -72,22 +58,7 @@ const Web = () => {
     }
   }, [router.query]);
 
-  return router.isReady && router.query.id ? (
-    <Fragment>
-      <BrokerDetail setEnableButtonSave={setEnableSave} />
-      <FloatMenu>
-        <ButtonIcon iconName="home" onClick={handleClickHome} />
-        <ButtonIcon iconName="arrow_back" onClick={handleClickBack} />
-        {/* <ButtonIcon iconName="add" onClick={handleClickNew} />
-        <ButtonIcon
-          iconName="save"
-          onClick={handleClickSave}
-          disabled={!enableSave}
-          loading={brokerLoading}
-        /> */}
-      </FloatMenu>
-    </Fragment>
-  ) : (
+  return (
     <Fragment>
       <BrokerList
         editBroker={handleClickEdit}
@@ -102,4 +73,4 @@ const Web = () => {
   );
 };
 
-export default Web;
+export default BrokerListPage;

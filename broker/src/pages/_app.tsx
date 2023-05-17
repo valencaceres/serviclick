@@ -1,32 +1,46 @@
-import Head from "next/head";
-import { Provider } from "react-redux";
+import {
+  ClerkProvider,
+  RedirectToSignIn,
+  SignedIn,
+  SignedOut,
+} from "@clerk/nextjs";
+import { esES } from "@clerk/localizations";
+import { useRouter } from "next/router";
+import { type AppType } from "next/app";
 
-import store from "../redux/store";
+import { api } from "~/utils/api";
 
-import Switch from "../components/functional/Switch";
+import { Layout } from "~/components/layout/Layout";
 
-import "../styles/app.css";
-import type { AppProps } from "next/app";
+import "~/styles/globals.css";
 
-function MyApp({ Component, pageProps }: AppProps) {
+const publicPages: Array<string> = ["/sign-in/[[...index]]"];
+
+const MyApp: AppType = ({ Component, pageProps }) => {
+  const { pathname } = useRouter();
+
+  const isPublicPage = publicPages.includes(pathname);
+
   return (
-    <Provider store={store}>
-      <Head>
-        <title>
-          Serviclick.cl - Todas las soluciones para tu hogar, en la palma de tu
-          mano
-        </title>
-        <meta
-          name="description"
-          content="Serviclick.cl - Todas las soluciones para tu hogar, en la palma de tu mano"
-        />
-        <link rel="icon" href="/favicon.png" />
-      </Head>
-      <Switch>
-        <Component {...pageProps} />
-      </Switch>
-    </Provider>
+    <ClerkProvider {...pageProps} localization={esES}>
+      {isPublicPage ? (
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      ) : (
+        <>
+          <SignedIn>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </SignedIn>
+          <SignedOut>
+            <RedirectToSignIn />
+          </SignedOut>
+        </>
+      )}
+    </ClerkProvider>
   );
-}
+};
 
-export default MyApp;
+export default api.withTRPC(MyApp);

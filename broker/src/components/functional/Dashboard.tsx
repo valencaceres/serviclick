@@ -1,0 +1,137 @@
+import React from "react";
+
+import { DollarSignIcon, WalletIcon } from "lucide-react";
+
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../ui/Card";
+
+import { type RouterOutputs, api } from "~/utils/api";
+
+import { useUI } from "~/store/hooks";
+import { Skeleton } from "../ui/Skeleton";
+
+export const Dashboard: React.FC = () => {
+  const { broker } = useUI();
+
+  return (
+    <div className="flex w-full flex-col items-center gap-2 pl-12">
+      <BrokerSummary broker={broker} />
+    </div>
+  );
+};
+
+type Broker = RouterOutputs["broker"]["getByUser"][number];
+
+function BrokerSummary({ broker }: { broker: Broker | null }) {
+  const { data, isLoading } = api.broker.getReport.useQuery(
+    {
+      agentId: broker?.id || "",
+    },
+    {
+      enabled: !!broker,
+    }
+  );
+
+  return (
+    <div className="flex w-full flex-col flex-wrap items-center gap-4 py-4 lg:flex-row lg:justify-center">
+      <Card className="w-full max-w-xs hover:bg-slate-50">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle>Cantidad de Ventas</CardTitle>
+            <WalletIcon className="h-5 w-5" />
+          </div>
+        </CardHeader>
+        <CardContent>
+          {isLoading || !broker ? (
+            <Skeleton className="h-8 w-full bg-primary-500" />
+          ) : (
+            <h2 className="text-2xl font-bold">{data?.length} ventas</h2>
+          )}
+        </CardContent>
+        <CardFooter>
+          <Skeleton className="h-4 w-full bg-primary-500" />
+        </CardFooter>
+      </Card>
+      <Card className="w-full max-w-xs bg-green-100 hover:bg-green-200">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle>Cobrado</CardTitle>
+            <DollarSignIcon className="h-5 w-5" />
+          </div>
+        </CardHeader>
+        <CardContent>
+          {isLoading || !broker ? (
+            <Skeleton className="h-8 w-full bg-primary-500" />
+          ) : (
+            <h2 className="text-2xl font-bold">
+              {data
+                ?.reduce((acc, curr) => acc + Number(curr.charged), 0)
+                .toLocaleString("es-CL", {
+                  style: "currency",
+                  currency: "CLP",
+                })}
+            </h2>
+          )}
+        </CardContent>
+        <CardFooter>
+          <Skeleton className="h-4 w-full bg-primary-500" />
+        </CardFooter>
+      </Card>
+      <Card className="w-full max-w-xs bg-yellow-100 hover:bg-yellow-200">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle>Pagado</CardTitle>
+            <DollarSignIcon className="h-5 w-5" />
+          </div>
+        </CardHeader>
+        <CardContent>
+          {isLoading || !broker ? (
+            <Skeleton className="h-8 w-full bg-primary-500" />
+          ) : (
+            <h2 className="text-2xl font-bold">
+              {data
+                ?.reduce((acc, curr) => acc + Number(curr.paid), 0)
+                .toLocaleString("es-CL", {
+                  style: "currency",
+                  currency: "CLP",
+                })}
+            </h2>
+          )}
+        </CardContent>
+        <CardFooter>
+          <Skeleton className="h-4 w-full bg-primary-500" />
+        </CardFooter>
+      </Card>
+      <Card className="w-full max-w-xs bg-red-100 hover:bg-red-200">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle>Deuda</CardTitle>
+            <DollarSignIcon className="h-5 w-5" />
+          </div>
+        </CardHeader>
+        <CardContent>
+          {isLoading || !broker ? (
+            <Skeleton className="h-8 w-full bg-primary-500" />
+          ) : (
+            <h2 className="text-2xl font-bold">
+              {data
+                ?.reduce((acc, curr) => acc + Number(curr.balance), 0)
+                .toLocaleString("es-CL", {
+                  style: "currency",
+                  currency: "CLP",
+                })}
+            </h2>
+          )}
+        </CardContent>
+        <CardFooter>
+          <Skeleton className="h-4 w-full bg-primary-500" />
+        </CardFooter>
+      </Card>
+    </div>
+  );
+}
