@@ -10,7 +10,8 @@ const createModel: any = async (
   link: string = "",
   subscription_id?: string,
   policy_id?: string,
-  paymenttype_code?: string
+  paymenttype_code?: string,
+  user_id?: string,
 ) => {
   try {
     const createDate = format(new Date(), "yyyy-MM-dd HH:mm:ss");
@@ -27,8 +28,9 @@ const createModel: any = async (
                   link,
                   subscription_id,
                   policy_id,
-                  paymenttype_code)
-          VALUES( $1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+                  paymenttype_code,
+                  user_id)
+          VALUES( $1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
         [
           createDate,
           customer_id === "" ? null : customer_id,
@@ -37,7 +39,8 @@ const createModel: any = async (
           link,
           subscription_id,
           policy_id,
-          paymenttype_code
+          paymenttype_code,
+          user_id,
         ]
       );
     } else {
@@ -50,7 +53,8 @@ const createModel: any = async (
                   link = $5,
                   subscription_id = $6,
                   policy_id = $7,
-                  paymenttype_code = $8
+                  paymenttype_code = $8,
+                  user_id = $9
           WHERE   id = $4 RETURNING *`,
         [
           createDate,
@@ -60,7 +64,8 @@ const createModel: any = async (
           link,
           subscription_id,
           policy_id,
-          paymenttype_code
+          paymenttype_code,
+          user_id,
         ]
       );
     }

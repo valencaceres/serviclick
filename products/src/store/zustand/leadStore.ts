@@ -23,6 +23,7 @@ interface leadState {
 const initialData: ILead = {
   id: "",
   agent_id: "",
+  user_id: "",
   customer: {
     id: "",
     rut: "",

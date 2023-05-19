@@ -109,7 +109,7 @@ const Header = () => {
 
 const Main = ({ children }: { children: React.ReactNode }) => {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center pt-36">
+    <main className="flex min-h-screen flex-col items-center justify-center pt-32">
       {children}
     </main>
   );

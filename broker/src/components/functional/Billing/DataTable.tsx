@@ -31,6 +31,7 @@ import {
   TableRow,
 } from "~/components/ui/Table";
 import { Label } from "~/components/ui/Label";
+import { DataTablePagination } from "./DataTablePagination";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -67,7 +68,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="w-full p-2">
-      <div className="flex flex-col-reverse items-start justify-between gap-2 py-4 lg:flex-row lg:items-end">
+      <div className="flex flex-col-reverse items-start justify-between gap-2 py-2 lg:flex-row lg:items-end">
         <div className="flex items-center gap-2">
           <div className="flex w-full flex-col gap-1">
             <Label htmlFor="searchClient">Buscar por cliente</Label>
@@ -153,6 +154,7 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  className="hover:bg-gray-100"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="capitalize">
@@ -177,29 +179,8 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-between py-4">
-        <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-          Página {table.getState().pagination.pageIndex + 1} de{" "}
-          {table.getPageCount()}
-        </div>
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Anterior
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Siguiente
-          </Button>
-        </div>
+      <div className="py-2">
+        <DataTablePagination table={table} />
       </div>
     </div>
   );

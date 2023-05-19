@@ -1,6 +1,6 @@
 import { currencyFormat, formatAmount } from "@/utils/format";
 import { useRouter } from "next/router";
-import ReactHtmlParser from "react-html-parser";
+import DOMPurify from "dompurify";
 
 import { useUI, useProduct } from "@/store/hooks";
 
@@ -41,7 +41,8 @@ const Banner = () => {
       className={styles.landingBanner}
       style={{
         backgroundImage: `url(/images/products/banners/${product.id}.jpg)`,
-      }}></div>
+      }}
+    ></div>
   );
 };
 
@@ -102,7 +103,9 @@ const Coverage = () => {
       return (text += `<p>${m}&nbsp;</p>`);
     });
 
-    return ReactHtmlParser(`<div>${text}</div>`);
+    const sanitizedHTML = DOMPurify.sanitize(text);
+
+    return <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }}></div>;
   };
 
   return productIsLoading ? (
@@ -166,19 +169,22 @@ const LandingFooter = () => {
             <a
               href="https://www.facebook.com/serviclick.cl"
               target="_blank"
-              rel="noreferrer">
+              rel="noreferrer"
+            >
               <div className={styles.facebook}></div>
             </a>
             <a
               href="https://www.instagram.com/serviclick.cl/"
               target="_blank"
-              rel="noreferrer">
+              rel="noreferrer"
+            >
               <div className={styles.instagram}></div>
             </a>
             <a
               href="https://www.linkedin.com/company/serviclick/"
               target="_blank"
-              rel="noreferrer">
+              rel="noreferrer"
+            >
               <div className={styles.linkedin}></div>
             </a>
           </div>
@@ -187,31 +193,36 @@ const LandingFooter = () => {
           <a
             href="https://serviclick.cl/salud/"
             target="_blank"
-            rel="noreferrer">
+            rel="noreferrer"
+          >
             Planes Salud
           </a>
           <a
             href="https://serviclick.cl/asistencia-hogar/"
             target="_blank"
-            rel="noreferrer">
+            rel="noreferrer"
+          >
             Planes Hogar
           </a>
           <a
             href="https://serviclick.cl/asistencia-automovil/"
             target="_blank"
-            rel="noreferrer">
+            rel="noreferrer"
+          >
             Plan Automóvil
           </a>
           <a
             href="https://serviclick.cl/asistencia-veterinaria/"
             target="_blank"
-            rel="noreferrer">
+            rel="noreferrer"
+          >
             Planes Veterinaria
           </a>
           <a
             href="https://serviclick.cl/proteccion-total-ultra/"
             target="_blank"
-            rel="noreferrer">
+            rel="noreferrer"
+          >
             Plan Protección Total Ultra
           </a>
         </div>
@@ -219,31 +230,36 @@ const LandingFooter = () => {
           <a
             href="https://serviclick.cl/personas/"
             target="_blank"
-            rel="noreferrer">
+            rel="noreferrer"
+          >
             Personas
           </a>
           <a
             href="https://serviclick.cl/empresas/"
             target="_blank"
-            rel="noreferrer">
+            rel="noreferrer"
+          >
             Empresas
           </a>
           <a
             href="https://asegurado.serviclick.cl/"
             target="_blank"
-            rel="noreferrer">
+            rel="noreferrer"
+          >
             Acceso Beneficiario
           </a>
           <a
             href="https://serviclick.cl/terminos-y-condiciones/"
             target="_blank"
-            rel="noreferrer">
+            rel="noreferrer"
+          >
             Términos y condiciones
           </a>
           <a
             href="https://serviclick.cl/canales-comerciales/"
             target="_blank"
-            rel="noreferrer">
+            rel="noreferrer"
+          >
             Trabaja con nosotros
           </a>
         </div>

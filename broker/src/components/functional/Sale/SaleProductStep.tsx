@@ -1,5 +1,6 @@
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { Button } from "~/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/Card";
@@ -7,7 +8,6 @@ import { useUI } from "~/store/hooks";
 import { type RouterOutputs, api } from "~/utils/api";
 
 export function SaleProductStep({
-  onDone,
   previousStep,
 }: {
   onDone: () => void;
@@ -75,6 +75,8 @@ function ProductCard({
   customerprice,
   broker,
 }: Product & { broker: string }) {
+  const router = useRouter();
+  const { user } = useUser();
   const { data } = api.product.getProductPlan.useQuery({
     agentId: broker,
     productId: id,
@@ -91,6 +93,8 @@ function ProductCard({
   const customerId = data?.find((plan) => plan.type === "customer")?.id;
   const companyId = data?.find((plan) => plan.type === "company")?.id;
 
+  if (!customerId || !companyId || !user) return null;
+
   return (
     <Card className="w-full max-w-xs text-center">
       <CardHeader className="flex h-20 items-center justify-center rounded-t-md bg-primary">
@@ -98,30 +102,34 @@ function ProductCard({
       </CardHeader>
       <CardContent className="flex items-center justify-between rounded-b-md bg-teal-blue p-2">
         <div className="w-full border-r p-2">
-          <Link
-            href={`https://productos.serviclick.cl/contractor?productPlanId=${customerId}`}
-            passHref
+          <Button
+            className="flex w-full flex-col items-center justify-center p-6"
+            onClick={() =>
+              void router.push(
+                `https://productos.serviclick.cl/contractor?productPlanId=${customerId}&userId=${user?.id}`
+              )
+            }
           >
-            <Button className="flex w-full flex-col items-center justify-center p-6">
-              <h2>Persona</h2>
-              <h3 className="text-lg font-semibold">
-                {formatPrice(customerprice)}
-              </h3>
-            </Button>
-          </Link>
+            <h2>Persona</h2>
+            <h3 className="text-lg font-semibold">
+              {formatPrice(customerprice)}
+            </h3>
+          </Button>
         </div>
         <div className="w-full border-l p-2">
-        <Link
-            href={`https://productos.serviclick.cl/contractor?productPlanId=${companyId}`}
-            passHref
+          <Button
+            className="flex w-full flex-col items-center justify-center p-6"
+            onClick={() =>
+              void router.push(
+                `https://productos.serviclick.cl/contractor?productPlanId=${companyId}&userId=${user?.id}`
+              )
+            }
           >
-          <Button className="flex w-full flex-col items-center justify-center p-6">
             <h2>Empresa</h2>
             <h3 className="text-lg font-semibold">
               {formatPrice(companyprice)}
             </h3>
           </Button>
-          </Link>
         </div>
       </CardContent>
     </Card>

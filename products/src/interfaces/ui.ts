@@ -17,6 +17,7 @@ export interface IUI {
   lead_id: string;
   channel: { id: string; name: string };
   agent: { id: string; name: string };
+  userId: string;
   product: {
     id: string;
     name: string;

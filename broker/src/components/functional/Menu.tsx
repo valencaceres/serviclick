@@ -153,12 +153,12 @@ const MenuItem: React.FC<MenuItemProps> = ({ route, isOpen, setIsOpen }) => {
 
   return (
     <li
-      className={`flex w-full list-none p-2  text-teal-blue-100 ${
-        pathname === route.route ? "font-extrabold" : "font-medium"
+      className={`flex w-full list-none rounded-md text-teal-blue-100 ${
+        pathname === route.route ? "font-extrabold bg-teal-blue-50 bg-opacity-20" : "font-medium hover:bg-teal-blue-50 hover:bg-opacity-10"
       }`}
       onClick={() => setIsOpen && setIsOpen(false)}
     >
-      <Link className="w-full py-2 hover:underline" href={route.route}>
+      <Link className="w-full h-full p-4" href={route.route}>
         {route.text}
       </Link>
     </li>
