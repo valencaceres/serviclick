@@ -2,11 +2,7 @@ import { useRouter } from "next/router";
 
 import { type ColumnDef } from "@tanstack/react-table";
 
-import {
-  useQueryCompany,
-  useQueryCase,
-  useQueryStage,
-} from "../../../hooks/query";
+import { useQueryCase } from "../../../hooks/query";
 import { DataTable } from "~/components/ui/DataTable/DataTable";
 import { DataTableColumnHeader } from "~/components/ui/DataTable/DataTableColumnHeader";
 
@@ -14,8 +10,6 @@ const CaseList = () => {
   const router = useRouter();
 
   const { data: cases } = useQueryCase().useGetAll();
-  const { data: companies } = useQueryCompany().useGetAll();
-  const { data: stages } = useQueryStage().useGetAll();
 
   if (!cases) return null;
 
@@ -65,25 +59,17 @@ const columns: ColumnDef<Case>[] = [
   {
     accessorKey: "fullname",
     header: "Beneficiario",
-    cell: ({ row }) => {
-      const name = `${row.original.name} ${row.original.lastname}`;
-      return (
-        <div className="font-medium">
-          {name}
-        </div>
-      )
+    filterFn: (rows, id, filterValue) => {
+      const rowValue = `${rows.original["name"]} ${rows.original["lastname"]}`;
+      return rowValue !== undefined
+        ? String(rowValue)
+            .toLowerCase()
+            .includes(String(filterValue).toLowerCase())
+        : true;
     },
-  },
-  {
-    accessorKey: "product",
-    header: "Producto",
     cell: ({ row }) => {
-      const prod = `${row.getValue("product")}`;
-      return (
-        <div>
-          {!!row.getValue("product") ? prod : "Sin producto asignado"}
-        </div>
-      );
+      const fullname = `${row.original.name} ${row.original.lastname}`;
+      return <div className="font-medium">{fullname}</div>;
     },
   },
   {
@@ -92,7 +78,7 @@ const columns: ColumnDef<Case>[] = [
     cell: ({ row }) => {
       const service = `${row.getValue("assistance")}`;
       return (
-        <div>
+        <div className={!!row.getValue("assistance") ? "" : "italic"}>
           {!!row.getValue("assistance") ? service : "Sin servicio asignado"}
         </div>
       );
