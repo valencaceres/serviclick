@@ -25,96 +25,70 @@ import { Modal, Window } from "~/components/ui/Modal";
 import { useQueryCase } from "~/hooks/query";
 import CaseFormInsuredData from "~/components/functional/Case/CaseFormInsuredData";
 
+const stageComponents = {
+  apertura: CaseFormNew,
+  contención: CaseFormNew,
+  "datos titular": CaseFormInsuredData,
+  "registro de servicio": CaseFormService,
+  "recepción de antecedentes": CaseFormRecordReception,
+  "evaluación del evento": CaseFormEvaluation,
+  "solución particular": CaseFormSolution,
+  "designación de convenio": CaseFormPartner,
+  "designación de especialista": CaseFormSpecialist,
+  seguimiento: CaseTracking,
+  resolución: CaseFormResolution,
+  calificación: CaseRating,
+  rechazado: CaseFormRejected,
+};
+
+const stageNames = {
+  new: "Nuevo caso",
+  apertura: "Apertura",
+  contención: "Contención",
+  "datos titular": "Datos titular",
+  "registro de servicio": "Registro de servicio",
+  "recepción de antecedentes": "Recepción de antecedentes",
+  "evaluación del evento": "Evaluación",
+  "solución particular": "Solución particular",
+  "designación de convenio": "Designación de convenio",
+  "designación de especialista": "Designación de especialista",
+  seguimiento: "Seguimiento",
+  resolución: "Resolución",
+  calificación: "Calificación",
+  rechazado: "Rechazado",
+};
+
+type StageKeys = keyof typeof stageComponents;
+
 const CaseStepPage = () => {
   const router = useRouter();
-
   const [showModal, setShowModal] = useState(false);
-
   const { setTitleUI } = useUI();
-  const { case_id, stage } = router.query;
+  const case_id = Array.isArray(router.query.case_id)
+    ? router.query.case_id[0]
+    : router.query.case_id;
 
-  const { data: thisCase } = useQueryCase().useGetById(case_id as string);
-
+  const stage = (Array.isArray(router.query.stage)
+    ? router.query.stage[0]
+    : router.query.stage) as StageKeys | undefined;
+  const { data: thisCase, isLoading } = useQueryCase().useGetById(case_id as string);
   const number = thisCase?.case_number;
+  const StageComponent = stage ? stageComponents[stage] : null;
 
-  const handleClickHome = () => {
-    router.push("/");
-  };
-
-  const handleClickBack = () => {
-    router.push("/case");
-  };
-
-  const setClosed = () => {
-    setShowModal(false);
-  };
+  const handleClickHome = () => router.push("/");
+  const handleClickBack = () => router.push("/case");
+  const setClosed = () => setShowModal(false);
 
   useEffect(() => {
-    setTitleUI(
-      stage === "new"
-        ? `Nuevo caso`
-        : stage === "apertura"
-        ? `Apertura | Caso ${number}`
-        : stage === "contención"
-        ? `Contención | Caso ${number}`
-        : stage === "datos titular"
-        ? `Datos titular | Caso ${number}`
-        : stage === "registro de servicio"
-        ? `Registro de servicio | Caso ${number}`
-        : stage === "recepción de antecedentes"
-        ? `Recepción de antecedentes | Caso ${number}`
-        : stage === "evaluación del evento"
-        ? `Evaluación | Caso ${number}`
-        : stage === "solución particular"
-        ? `Solución particular | Caso ${number}`
-        : stage === "designación de convenio"
-        ? `Designación de convenio | Caso ${number}`
-        : stage === "designación de especialista"
-        ? `Designación de especialista | Caso ${number}`
-        : stage === "solución particular"
-        ? `Solución particular | Caso ${number}`
-        : stage === "seguimiento"
-        ? `Seguimiento | Caso ${number}`
-        : stage === "resolución"
-        ? `Resolución | Caso ${number}`
-        : stage === "calificación"
-        ? `Calificación | Caso ${number}`
-        : stage === "rechazado"
-        ? `Rechazado | Caso ${number}`
-        : null
-    );
-  }, [router, thisCase]);
+    if (stage) {
+      setTitleUI(`${isLoading ? "Cargando..." : `${stageNames[stage]} | Caso ${number ?? stageNames[stage]}`}`);
+    }
+  }, [router, thisCase, stage]);
 
   return (
     <Fragment>
       <ContentHalfRow>
-        {stage === "apertura" ? (
-          <CaseFormNew thisCase={thisCase} />
-        ) : stage === "contención" ? (
-          <CaseFormNew thisCase={thisCase} />
-        ) : stage === "datos titular" ? (
-          <CaseFormInsuredData thisCase={thisCase} />
-        ) : stage === "registro de servicio" ? (
-          <CaseFormService thisCase={thisCase} />
-        ) : stage === "recepción de antecedentes" ? (
-          <CaseFormRecordReception thisCase={thisCase} />
-        ) : stage === "evaluación del evento" ? (
-          <CaseFormEvaluation thisCase={thisCase} />
-        ) : stage === "solución particular" ? (
-          <CaseFormSolution thisCase={thisCase} />
-        ) : stage === "designación de convenio" ? (
-          <CaseFormPartner thisCase={thisCase} />
-        ) : stage === "designación de especialista" ? (
-          <CaseFormSpecialist thisCase={thisCase} />
-        ) : stage === "seguimiento" ? (
-          <CaseTracking thisCase={thisCase} />
-        ) : stage === "resolución" ? (
-          <CaseFormResolution thisCase={thisCase} />
-        ) : stage === "calificación" ? (
-          <CaseRating thisCase={thisCase} />
-        ) : stage === "rechazado" ? (
-          <CaseFormRejected thisCase={thisCase} />
-        ) : null}
+        {StageComponent && <StageComponent thisCase={thisCase} />}
         <ContentCell gap="20px">
           <CaseStageList setShowModal={setShowModal} showModal={showModal} />
         </ContentCell>

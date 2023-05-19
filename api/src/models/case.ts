@@ -130,6 +130,7 @@ const getAll: any = async () => {
         cas.number,
         sta.name as stage,
         prd.name as product,
+        asi.name as assistance,
         CASE 
           WHEN ben.name IS NOT NULL THEN ben.name 
           WHEN ins.name IS NOT NULL THEN ins.name 
@@ -139,7 +140,12 @@ const getAll: any = async () => {
           WHEN ben.paternallastname IS NOT NULL THEN ben.paternallastname 
           WHEN ins.paternallastname IS NOT NULL THEN ins.paternallastname 
           ELSE per.paternallastname 
-          END as paternallastname,
+          END as lastname,
+        CASE 
+          WHEN ben.rut IS NOT NULL THEN ben.rut 
+          WHEN ins.rut IS NOT NULL THEN ins.rut 
+          ELSE per.rut 
+          END as rut,
         CASE
           WHEN comp.companyname IS NOT NULL THEN comp.companyname 
           ELSE CONCAT_WS(' ', cust.name, cust.paternallastname)

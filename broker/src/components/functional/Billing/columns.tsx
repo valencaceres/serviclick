@@ -85,7 +85,7 @@ export const columns: ColumnDef<IReport>[] = [
         currency: "CLP",
       }).format(charged);
 
-      return formatted;
+      return <div className="font-semibold text-green-500">{formatted}</div>;
     },
   },
   {
@@ -99,7 +99,7 @@ export const columns: ColumnDef<IReport>[] = [
         currency: "CLP",
       }).format(charged);
 
-      return formatted;
+      return <div className="font-semibold text-yellow-500">{formatted}</div>;
     },
   },
   {
@@ -113,7 +113,7 @@ export const columns: ColumnDef<IReport>[] = [
         currency: "CLP",
       }).format(charged);
 
-      return formatted;
+      return <div className="font-semibold text-red-500">{formatted}</div>;
     },
   },
 ];

@@ -71,6 +71,7 @@ interface IInsured {
 export interface ILead {
   id: string;
   agent_id: string;
+  user_id: string;
   customer: ICustomer;
   company?: ICompany;
   product: IProduct;

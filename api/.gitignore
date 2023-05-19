@@ -106,3 +106,6 @@ dist
 
 # Temp Files
 uploads
+
+.yarnrc.yml
+.yarn

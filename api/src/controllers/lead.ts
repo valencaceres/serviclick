@@ -198,14 +198,19 @@ const createLead = async (
   agent_id: string,
   customer_id: string,
   company_id: string,
-  link: string = ""
+  link: string = "",
+  user_id?: string,
 ) => {
   const leadResponse = await Lead.createModel(
     id,
     customer_id,
     company_id,
     agent_id,
-    link
+    link,
+    undefined,
+    undefined,
+    undefined,
+    user_id,
   );
   return errorHandler(leadResponse, "lead/createLeadModel");
 };
@@ -486,6 +491,7 @@ const create = async (lead: any) => {
       insured,
       agent_id,
       link = "",
+      user_id,
     } = lead;
     let leadDataResponse: LeadT = initialLeadData;
 
@@ -506,7 +512,8 @@ const create = async (lead: any) => {
       agent_id,
       leadDataResponse.customer.id,
       leadDataResponse.company.id,
-      link
+      link,
+      user_id
     );
     leadDataResponse = { ...leadDataResponse, id: leadData.id };
     console.log("OK3");
@@ -606,6 +613,7 @@ const createController = async (req: any, res: any) => {
     link,
     send,
     subscription,
+    user_id,
   } = req.body;
 
   let { success, data, error } = await create({
@@ -616,6 +624,7 @@ const createController = async (req: any, res: any) => {
     insured,
     agent_id,
     link,
+    user_id,
   });
 
   if (!success || !data) {

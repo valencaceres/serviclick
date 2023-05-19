@@ -15,10 +15,11 @@ const StagePage = () => {
   const { lead, getLeadById } = useLead();
 
   const [component, setComponent] = useState(None);
-
+  
+  const { stage, productPlanId, leadId, userId } = router.query;
+  
   useEffect(() => {
     if (router.isReady) {
-      const { stage, productPlanId, leadId } = router.query;
 
       if (stages.some((item) => item.code === stage)) {
         const stageItem = stages.filter((item) => item.code == stage)[0];
@@ -37,11 +38,14 @@ const StagePage = () => {
     }
   }, [router]);
 
+  console.log(ui)
+
   useEffect(() => {
     setUI({
       ...ui,
       customerType: product.plan.customerType === "customer" ? "p" : "c",
       agent: { ...ui.agent, id: product.plan.agentId },
+      userId: userId ? userId.toString() : "",
       product: { ...ui.product, productPlan_id: product.plan.id },
     });
   }, [product]);

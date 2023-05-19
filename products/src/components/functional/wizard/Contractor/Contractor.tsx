@@ -44,6 +44,7 @@ const Contractor = () => {
     setLead({
       ...lead,
       agent_id: ui.agent.id,
+      user_id: ui.userId,
       customer: {
         ...lead.customer,
         id: data.id || "",
