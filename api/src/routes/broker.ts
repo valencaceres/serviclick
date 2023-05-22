@@ -12,7 +12,7 @@ import {
   getFamiliesByBrokerId,
   getProductsByBrokerIdAndFamilyId,
   getCollectById,
-  getBrokerAgents,
+  getAgents,
   updateAgent,
 } from "../controllers/broker";
 
@@ -32,7 +32,7 @@ BrokerRouter.get(
 BrokerRouter.get("/getCollectById/:id", auth, getCollectById);
 BrokerRouter.put("/updateLogo/:id", updateLogo);
 BrokerRouter.delete("/deleteById/:id", auth, deleteById);
-BrokerRouter.get("/getBrokerAgents/:id", auth, getBrokerAgents);
+BrokerRouter.get("/getAgents/:id", auth, getAgents);
 BrokerRouter.put("/updateAgent/:brokerId", auth, updateAgent);
 
 export default BrokerRouter;

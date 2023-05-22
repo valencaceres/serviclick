@@ -4,14 +4,14 @@ import { apiInstance } from "../../utils/api";
 
 const queryClient = new QueryClient();
 
-const getBrokerAgents = async (brokerId: string) => {
-  const { data } = await apiInstance.get(`/broker/getBrokerAgents/${brokerId}`);
+const getAgents = async (brokerId: string) => {
+  const { data } = await apiInstance.get(`/broker/getAgents/${brokerId}`);
 
   return data;
 };
 
-const useGetBrokerAgents = (brokerId: string) => {
-  return useQuery(["brokerAgents", brokerId], () => getBrokerAgents(brokerId), {
+const useGetAgents = (brokerId: string) => {
+  return useQuery(["brokerAgents", brokerId], () => getAgents(brokerId), {
     enabled: !!brokerId,
   });
 };
@@ -32,7 +32,7 @@ const useUpdateAgent = () => {
 
 const useBroker = () => {
   return {
-    useGetBrokerAgents,
+    useGetAgents,
     useUpdateAgent
   };
 };
