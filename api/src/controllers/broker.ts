@@ -494,7 +494,7 @@ const addProduct = async (req: any, res: any) => {
   }
 };
 
-const getBrokerAgents = async (req: any, res: any) => {
+const getAgents = async (req: any, res: any) => {
   const { id } = req.params;
 
   const response = await BrokerUser.getByBrokerId(id);
@@ -509,7 +509,7 @@ const getBrokerAgents = async (req: any, res: any) => {
   }
 
   createLogger.info({
-    controller: "broker/getBrokerAgents",
+    controller: "broker/getAgents",
     message: "OK",
   });
 
@@ -547,7 +547,7 @@ export {
   getFamiliesByBrokerId,
   getProductsByBrokerIdAndFamilyId,
   getCollectById,
-  getBrokerAgents,
+  getAgents,
   updateAgent,
 };
 

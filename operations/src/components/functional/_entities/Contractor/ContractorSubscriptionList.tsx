@@ -104,8 +104,6 @@ const AddSubscription = () => {
   const { data } = useQueryProduct().useGetAll();
   const { mutate: addProduct } = useQueryLead().useAddProduct();
 
-  console.log(agent)
-
   const add = () => {
     addProduct(
       {

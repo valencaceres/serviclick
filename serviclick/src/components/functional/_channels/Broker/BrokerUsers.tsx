@@ -45,7 +45,7 @@ const BrokerUsers = ({ addNewUser, editUser, deleteUser }: any) => {
 
   const { broker } = useBroker();
 
-  const { data } = useBrokerQuery().useGetBrokerAgents(
+  const { data } = useBrokerQuery().useGetAgents(
     router.query.id as string
   );
 

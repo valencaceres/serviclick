@@ -13,7 +13,7 @@ const SIMPLE_REGEX_PATTERN = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
 
 export const SignIn: React.FC = () => {
   const router = useRouter();
-  const { isSignedIn} = useUser();
+  const { isSignedIn } = useUser();
   const { isLoaded, signIn, setActive } = useSignIn();
 
   if (isSignedIn) {

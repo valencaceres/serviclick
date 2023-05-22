@@ -37,6 +37,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandSeparator,
 } from "../Command";
 import { useQueryAssistances, useQueryStage } from "~/hooks/query";
 import { cn } from "~/lib/utils";
@@ -190,7 +191,7 @@ export function DataTable<TData, TValue>({
                       table.getColumn("assistance")?.setFilterValue(undefined);
                       setOpen(false);
                     }}
-                    className={cn(value === "" ? "font-semibold" : "")}
+                    className={cn("hover:bg-gray-50",value === "" ? "font-semibold" : "")}
                   >
                     <Check
                       className={cn(
@@ -200,6 +201,7 @@ export function DataTable<TData, TValue>({
                     />
                     Sin filtro
                   </CommandItem>
+                  <CommandSeparator className="my-2" />
                   {assistances?.map((assistance: any) => (
                     <CommandItem
                       key={assistance.id}
@@ -261,7 +263,7 @@ export function DataTable<TData, TValue>({
                       table.getColumn("stage")?.setFilterValue(undefined);
                       setOpen(false);
                     }}
-                    className={cn(valueStage === "" ? "font-semibold" : "")}
+                    className={cn("hover:bg-gray-50",value === "" ? "font-semibold" : "")}
                   >
                     <Check
                       className={cn(
@@ -271,6 +273,7 @@ export function DataTable<TData, TValue>({
                     />
                     Sin filtro
                   </CommandItem>
+                  <CommandSeparator className="my-2" />
                   {stages?.map((stage: any) => (
                     <CommandItem
                       key={stage.id}

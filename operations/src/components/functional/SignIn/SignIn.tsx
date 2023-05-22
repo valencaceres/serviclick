@@ -16,6 +16,9 @@ export const SignIn: React.FC = () => {
   const { isLoaded, signIn, setSession } = useSignIn();
   const { isSignedIn } = useSession();
 
+  if (isSignedIn) {
+    void router.push("/");
+  }
   const {
     register,
     getValues,
@@ -42,7 +45,6 @@ export const SignIn: React.FC = () => {
       });
       if (signInResponse.status === "complete") {
         await setSession(signInResponse.createdSessionId);
-        await router.push("/");
       } else {
         console.log(signInResponse);
       }
