@@ -52,7 +52,7 @@ const columns: ColumnDef<Case>[] = [
     accessorKey: "contractor_name",
     header: "Cliente",
     cell: ({ row }) => {
-      return (<div className="capitalize">{row.getValue("contractor_name")}</div>)
+      return (<div className="capitalize">{row.original.contractor_name.toLowerCase()}</div>)
     }
   },
   {
@@ -71,7 +71,7 @@ const columns: ColumnDef<Case>[] = [
         : true;
     },
     cell: ({ row }) => {
-      const fullname = `${row.original.name} ${row.original.lastname}`;
+      const fullname = `${row.original.name.toLowerCase()} ${row.original.lastname.toLowerCase()}`;
       return <div className="font-medium capitalize">{fullname}</div>;
     },
   },
