@@ -66,7 +66,7 @@ export const decisions = [
   },
   {
     id: 4,
-    name: "Solución particular",
+    name: "Solicitud reembolso",
   },
   {
     id: 3,

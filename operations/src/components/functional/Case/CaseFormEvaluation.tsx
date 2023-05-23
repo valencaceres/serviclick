@@ -87,7 +87,7 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
           } else {
             return updateCase(updateCaseData(evaluation, justification), {
               onSuccess: () => {
-                if (evaluation !== "Solución particular") {
+                if (evaluation !== "Solicitud reembolso") {
                   router.push(
                     `/case/${thisCase?.case_id}/${evaluation.toLowerCase()}`
                   );
@@ -110,7 +110,7 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
     if (thisCase) {
       setDescription(findStageByStage("Registro de servicio")?.description);
       const evaluationStages = [
-        "Solución particular",
+        "Solicitud reembolso",
         "Designación de convenio",
         "Designación de especialista",
         "Rechazado",

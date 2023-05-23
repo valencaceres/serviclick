@@ -344,7 +344,7 @@ const CaseTracking = ({ thisCase }: any) => {
             label="Seleccione una acción"
             data={
               thisCase?.stages.find(
-                (s: any) => s.stage === "Solución particular"
+                (s: any) => s.stage === "Solicitud reembolso"
               )
                 ? selfSolutionSummaryActions
                 : summaryActions
