@@ -1,6 +1,5 @@
 import { useEffect, Fragment, useState } from "react";
 import { useRouter } from "next/router";
-import { useQuery } from "@tanstack/react-query";
 
 import { ContentHalfRow } from "~/components/layout/ResponsiveContent";
 import CaseFormService from "~/components/functional/Case/CaseFormService";
@@ -32,7 +31,7 @@ const stageComponents = {
   "registro de servicio": CaseFormService,
   "recepción de antecedentes": CaseFormRecordReception,
   "evaluación del evento": CaseFormEvaluation,
-  "solución particular": CaseFormSolution,
+  "solicitud reembolso": CaseFormSolution,
   "designación de convenio": CaseFormPartner,
   "designación de especialista": CaseFormSpecialist,
   seguimiento: CaseTracking,
@@ -49,7 +48,7 @@ const stageNames = {
   "registro de servicio": "Registro de servicio",
   "recepción de antecedentes": "Recepción de antecedentes",
   "evaluación del evento": "Evaluación",
-  "solución particular": "Solución particular",
+  "solicitud reembolso": "Solicitud reembolso",
   "designación de convenio": "Designación de convenio",
   "designación de especialista": "Designación de especialista",
   seguimiento: "Seguimiento",

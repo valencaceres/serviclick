@@ -12,7 +12,7 @@ import {
   getFilteredRowModel,
 } from "@tanstack/react-table";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Table,
@@ -40,7 +40,7 @@ import {
   CommandSeparator,
 } from "../Command";
 import { useQueryAssistances, useQueryStage } from "~/hooks/query";
-import { cn } from "~/lib/utils";
+import { cn } from "~/utils/cn";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -92,13 +92,6 @@ export function DataTable<TData, TValue>({
   };
 
   const handleChangeRut = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value === "-") {
-      setRutInput("");
-      setIsRutValid(true);
-      table.getColumn("rut")?.setFilterValue("");
-      return;
-    }
-
     const raw = e.target.value.replace(/[^0-9kK]/g, "");
     const formatted = formatRut(raw);
     setRutInput(formatted);
@@ -123,6 +116,14 @@ export function DataTable<TData, TValue>({
       columnFilters,
     },
   });
+
+  useEffect(() => {
+    if (rutInput === "-") {
+      setRutInput("");
+      setIsRutValid(true);
+      table.getColumn("rut")?.setFilterValue("");
+    }
+  }, [rutInput, table])
 
   return (
     <div className="flex w-full flex-col gap-2 pl-12">
