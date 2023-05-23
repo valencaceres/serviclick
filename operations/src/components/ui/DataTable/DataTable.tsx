@@ -40,7 +40,7 @@ import {
   CommandSeparator,
 } from "../Command";
 import { useQueryAssistances, useQueryStage } from "~/hooks/query";
-import { cn } from "~/lib/utils";
+import { cn } from "~/utils/cn";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
