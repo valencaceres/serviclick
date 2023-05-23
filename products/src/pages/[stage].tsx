@@ -20,7 +20,6 @@ const StagePage = () => {
   
   useEffect(() => {
     if (router.isReady) {
-
       if (stages.some((item) => item.code === stage)) {
         const stageItem = stages.filter((item) => item.code == stage)[0];
 
@@ -37,8 +36,6 @@ const StagePage = () => {
       }
     }
   }, [router]);
-
-  console.log(ui)
 
   useEffect(() => {
     setUI({
