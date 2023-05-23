@@ -42,9 +42,16 @@ import {
 import {
   useQueryAssistances,
   useQueryBeneficiary,
+  useQueryCase,
   useQueryStage,
 } from "~/hooks/query";
 import { cn } from "~/utils/cn";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../Accordion";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -73,9 +80,25 @@ export function DataTable<TData, TValue>({
 
   const { data: assistances } = useQueryAssistances().useGetAll();
   const { data: stages } = useQueryStage().useGetAll();
-  const { data: beneficiary } = useQueryBeneficiary().useGetByRut(rutInput);
+  const { data: customer, isLoading } =
+    useQueryCase().useGetBeneficiaryByRut(rutInput);
 
-  console.log(beneficiary);
+  let person = customer?.insured?.rut === rutInput ? customer?.insured : null;
+
+  if (!person) {
+    person =
+      customer?.beneficiary?.rut === rutInput ? customer?.beneficiary : null;
+  }
+
+  const uniqueProducts = customer?.products.reduce(
+    (unique: any, product: any) => {
+      if (!unique.some((obj: any) => obj.name === product.name)) {
+        unique.push(product);
+      }
+      return unique;
+    },
+    []
+  );
 
   const formatRut = (rawRut: string) => {
     let tempRut = rawRut.replace(/\./g, "").replace(/-/g, "");
@@ -132,8 +155,10 @@ export function DataTable<TData, TValue>({
     }
   }, [rutInput, table]);
 
+  console.log(customer);
+
   return (
-    <div className="flex w-full flex-col gap-2 pl-12 max-w-7xl">
+    <div className="flex w-full max-w-7xl flex-col gap-2 pl-12">
       <div className="flex flex-col gap-2 md:flex-row">
         <fieldset className="flex flex-col">
           <Label htmlFor="searchRut" className="mb-1">
@@ -328,13 +353,34 @@ export function DataTable<TData, TValue>({
       </div>
       <div
         className={cn(
-          "max-w-md rounded-md border p-2 hover:border-dusty-gray-400",
-          !beneficiary ? "hidden" : "flex flex-col"
+          "max-w-[412px] rounded-md border p-4 duration-75 hover:bg-slate-50 hover:border-dusty-gray-200",
+          !customer && rutInput.length <= 10 ? "hidden" : "flex flex-col"
         )}
       >
-        <h2 className="font-semibold capitalize">{`${beneficiary?.name} ${beneficiary?.paternalLastName} ${beneficiary?.maternalLastName}`}</h2>
-        <p>{beneficiary?.email}</p>
-        <p>{beneficiary?.birthDate}</p>
+        {isLoading ? (
+          <h2>Cargando...</h2>
+        ) : !customer ? (
+          <h2 className="italic text-sm">No se encontraron datos.</h2>
+        ) : (
+          <>
+            <div className="flex gap-1">
+              <h2 className="font-bold capitalize">{`${person?.name} ${person?.paternallastname}`}</h2>
+              <p>{`(${person?.type === "I" ? "Titular" : "Carga"})`}</p>
+            </div>
+            <Accordion type="single" collapsible>
+              <AccordionItem value="products">
+                <AccordionTrigger className="p-0">Productos</AccordionTrigger>
+                <AccordionContent className="px-2">
+                  <ul className="list-disc">
+                    {uniqueProducts?.map((product: any) => (
+                      <li key={product.id} className="hover:underline cursor-default font-medium">{product.name}</li>
+                    ))}
+                  </ul>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </>
+        )}
       </div>
       <div className="rounded-md border">
         <Table>
