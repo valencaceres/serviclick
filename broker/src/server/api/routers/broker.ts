@@ -4,7 +4,6 @@ import { z } from "zod";
 
 import { type IReport } from "~/interfaces/report";
 import { type IFamily } from "~/interfaces/family";
-import { type IProduct } from "~/interfaces/product";
 
 export const brokerRouter = createTRPCRouter({
   getByUser: publicProcedure

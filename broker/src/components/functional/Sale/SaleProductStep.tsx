@@ -1,10 +1,12 @@
 import { useUser } from "@clerk/nextjs";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+
 import { Button } from "~/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/Card";
+
 import { useUI } from "~/store/hooks";
+
 import { type RouterOutputs, api } from "~/utils/api";
 
 export function SaleProductStep({

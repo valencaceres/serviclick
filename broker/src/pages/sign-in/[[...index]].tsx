@@ -1,5 +1,3 @@
-import { useSession } from "@clerk/nextjs";
-import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { SignIn } from "~/components/functional/SignIn";
 import { AuthLayout } from "~/components/layout/AuthLayout";
