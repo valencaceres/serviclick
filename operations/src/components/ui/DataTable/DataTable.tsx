@@ -39,7 +39,11 @@ import {
   CommandItem,
   CommandSeparator,
 } from "../Command";
-import { useQueryAssistances, useQueryStage } from "~/hooks/query";
+import {
+  useQueryAssistances,
+  useQueryBeneficiary,
+  useQueryStage,
+} from "~/hooks/query";
 import { cn } from "~/utils/cn";
 
 interface DataTableProps<TData, TValue> {
@@ -69,6 +73,9 @@ export function DataTable<TData, TValue>({
 
   const { data: assistances } = useQueryAssistances().useGetAll();
   const { data: stages } = useQueryStage().useGetAll();
+  const { data: beneficiary } = useQueryBeneficiary().useGetByRut(rutInput);
+
+  console.log(beneficiary);
 
   const formatRut = (rawRut: string) => {
     let tempRut = rawRut.replace(/\./g, "").replace(/-/g, "");
@@ -123,10 +130,10 @@ export function DataTable<TData, TValue>({
       setIsRutValid(true);
       table.getColumn("rut")?.setFilterValue("");
     }
-  }, [rutInput, table])
+  }, [rutInput, table]);
 
   return (
-    <div className="flex w-full flex-col gap-2 pl-12">
+    <div className="flex w-full flex-col gap-2 pl-12 max-w-7xl">
       <div className="flex flex-col gap-2 md:flex-row">
         <fieldset className="flex flex-col">
           <Label htmlFor="searchRut" className="mb-1">
@@ -192,7 +199,10 @@ export function DataTable<TData, TValue>({
                       table.getColumn("assistance")?.setFilterValue(undefined);
                       setOpen(false);
                     }}
-                    className={cn("hover:bg-gray-50",value === "" ? "font-semibold" : "")}
+                    className={cn(
+                      "hover:bg-gray-50",
+                      value === "" ? "font-semibold" : ""
+                    )}
                   >
                     <Check
                       className={cn(
@@ -213,7 +223,11 @@ export function DataTable<TData, TValue>({
                           ?.setFilterValue(assistance.name);
                         setOpen(false);
                       }}
-                      className={cn(value === assistance.name.toLowerCase() ? "font-semibold" : "")}
+                      className={cn(
+                        value === assistance.name.toLowerCase()
+                          ? "font-semibold"
+                          : ""
+                      )}
                     >
                       <Check
                         className={cn(
@@ -245,8 +259,7 @@ export function DataTable<TData, TValue>({
               >
                 {valueStage
                   ? stages?.find(
-                      (stage: any) =>
-                        stage.name.toLowerCase() === valueStage
+                      (stage: any) => stage.name.toLowerCase() === valueStage
                     )?.name
                   : "Seleccionar estado..."}
                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -260,11 +273,16 @@ export function DataTable<TData, TValue>({
                   <CommandItem
                     value=""
                     onSelect={(currentValue) => {
-                      setValueStage(currentValue === valueStage ? "" : currentValue);
+                      setValueStage(
+                        currentValue === valueStage ? "" : currentValue
+                      );
                       table.getColumn("stage")?.setFilterValue(undefined);
                       setOpen(false);
                     }}
-                    className={cn("hover:bg-gray-50",value === "" ? "font-semibold" : "")}
+                    className={cn(
+                      "hover:bg-gray-50",
+                      value === "" ? "font-semibold" : ""
+                    )}
                   >
                     <Check
                       className={cn(
@@ -279,13 +297,17 @@ export function DataTable<TData, TValue>({
                     <CommandItem
                       key={stage.id}
                       onSelect={(currentValue) => {
-                        setValueStage(currentValue === valueStage ? "" : currentValue);
-                        table
-                          .getColumn("stage")
-                          ?.setFilterValue(stage.name);
+                        setValueStage(
+                          currentValue === valueStage ? "" : currentValue
+                        );
+                        table.getColumn("stage")?.setFilterValue(stage.name);
                         setOpen(false);
                       }}
-                      className={cn(valueStage === stage.name.toLowerCase() ? "font-semibold" : "")}
+                      className={cn(
+                        valueStage === stage.name.toLowerCase()
+                          ? "font-semibold"
+                          : ""
+                      )}
                     >
                       <Check
                         className={cn(
@@ -303,6 +325,16 @@ export function DataTable<TData, TValue>({
             </PopoverContent>
           </Popover>
         </fieldset>
+      </div>
+      <div
+        className={cn(
+          "max-w-md rounded-md border p-2 hover:border-dusty-gray-400",
+          !beneficiary ? "hidden" : "flex flex-col"
+        )}
+      >
+        <h2 className="font-semibold capitalize">{`${beneficiary?.name} ${beneficiary?.paternalLastName} ${beneficiary?.maternalLastName}`}</h2>
+        <p>{beneficiary?.email}</p>
+        <p>{beneficiary?.birthDate}</p>
       </div>
       <div className="rounded-md border">
         <Table>

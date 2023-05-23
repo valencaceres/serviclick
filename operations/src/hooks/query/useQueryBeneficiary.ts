@@ -12,7 +12,6 @@ const useGetByRut = (rut: string) => {
     ["beneficiary", rut],
     () => getByRut(rut), {
       enabled: rut?.length >= 10,
-
     }
   );
 }
