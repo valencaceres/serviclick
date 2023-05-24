@@ -89,7 +89,7 @@ const Contractor = () => {
   useEffect(() => {
     if (lead.id !== "" && leadIsLoading === false && isProcessing === true) {
       router.push(
-        `/insured?productPlanId=${ui.product.productPlan_id}&leadId=${lead.id}`
+        `/insured?productPlanId=${ui.product.productPlan_id}&leadId=${lead.id}&userId=${ui.userId}`
       );
       setIsProcessing(false);
     }
