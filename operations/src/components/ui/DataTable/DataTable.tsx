@@ -155,8 +155,6 @@ export function DataTable<TData, TValue>({
     }
   }, [rutInput, table]);
 
-  console.log(customer);
-
   return (
     <div className="flex w-full max-w-7xl flex-col gap-2 pl-12">
       <div className="flex flex-col gap-2 md:flex-row">
