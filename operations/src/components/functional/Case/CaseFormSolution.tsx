@@ -49,7 +49,7 @@ const CaseFormSolution = ({ thisCase }: any) => {
     e.preventDefault();
     if (description) {
       setError(null);
-      return updateCase(updateCaseData("Solución particular", description), {
+      return updateCase(updateCaseData("Solicitud reembolso", description), {
         onSuccess: () => {
           updateCase(updateCaseData("Recepción de antecedentes"), {
             onSuccess: () => {
@@ -68,7 +68,7 @@ const CaseFormSolution = ({ thisCase }: any) => {
   useEffect(() => {
     if (thisCase) {
       setDescription(
-        thisCase?.stages.find((s: any) => s.stage === "Solución particular")
+        thisCase?.stages.find((s: any) => s.stage === "Solicitud reembolso")
           ?.description
       );
     }

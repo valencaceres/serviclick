@@ -8,7 +8,8 @@ const SignInPage = () => {
 
   useEffect(() => {
     setTitleUI("Iniciar Sesión");
-  }, [setTitleUI]);
+  }, []);
+
   return (
     <AuthLayout>
       <SignIn />

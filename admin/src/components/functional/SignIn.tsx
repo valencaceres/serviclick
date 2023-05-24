@@ -40,6 +40,7 @@ export const SignIn: React.FC = () => {
       });
       if (signInResponse.status === "complete") {
         await setActive({ session: signInResponse.createdSessionId });
+        await router.push("/");
       }
     } catch (err) {
       setError("email", {

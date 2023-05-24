@@ -121,13 +121,13 @@ const BrokerUsersItem = ({
 
   useEffect(() => {
     setEnabledButton(
-      brokerUserForm.rut.isValid &&
-        brokerUserForm.name.isValid &&
-        brokerUserForm.paternalLastName.isValid &&
-        brokerUserForm.maternalLastName.isValid &&
-        brokerUserForm.email.isValid &&
-        brokerUserForm.profileCode.isValid &&
-        brokerUserForm.profileName.isValid
+      brokerUserForm?.rut.isValid &&
+        brokerUserForm?.name.isValid &&
+        brokerUserForm?.paternalLastName.isValid &&
+        brokerUserForm?.maternalLastName.isValid &&
+        brokerUserForm?.email.isValid &&
+        brokerUserForm?.profileCode.isValid &&
+        brokerUserForm?.profileName.isValid
     );
   }, [brokerUserForm]);
 
@@ -141,15 +141,15 @@ const BrokerUsersItem = ({
             maxLength={10}
             onFocus={handleFocusRut}
             onBlur={handleBlurRut}
-            value={brokerUserForm.rut.value}
+            value={""}
             onChange={handleChangeRut}
-            isValid={brokerUserForm.rut.isValid}
+            isValid={brokerUserForm?.rut.isValid}
           />
           <ComboBox
             id="cmbProfile"
             label="Perfil"
             width="100%"
-            value={brokerUserForm.profileCode.value}
+            value={""}
             onChange={handleChangeProfile}
             placeHolder=":: Seleccione Perfil ::"
             data={profileData}
@@ -160,33 +160,33 @@ const BrokerUsersItem = ({
         <InputText
           label="Nombres"
           width="100%"
-          value={brokerUserForm.name.value}
+          value={""}
           onChange={handleChangeName}
-          isValid={brokerUserForm.name.isValid}
+          isValid={brokerUserForm?.name.isValid}
         />
         <ContentRow gap="5px" className={styles.userForm}>
           <InputText
             label="Apellido paterno"
             width="100%"
-            value={brokerUserForm.paternalLastName.value}
+            value={""}
             onChange={handleChangePaternalLastName}
-            isValid={brokerUserForm.paternalLastName.isValid}
+            isValid={brokerUserForm?.paternalLastName.isValid}
           />
           <InputText
             label="Apellido materno"
             width="100%"
-            value={brokerUserForm.maternalLastName.value}
+            value={""}
             onChange={handleChangeMaternalLastName}
-            isValid={brokerUserForm.maternalLastName.isValid}
+            isValid={brokerUserForm?.maternalLastName.isValid}
           />
         </ContentRow>
         <ContentRow gap="5px">
           <InputText
             label="Correo electrónico"
             width="100%"
-            value={brokerUserForm.email.value}
+            value={""}
             onChange={handleChangeEmail}
-            isValid={brokerUserForm.email.isValid}
+            isValid={brokerUserForm?.email.isValid}
           />
         </ContentRow>
       </ContentCell>

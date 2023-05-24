@@ -27,6 +27,7 @@ const initialData: IUI = {
   lead_id: "",
   channel: { id: "", name: "" },
   agent: { id: "", name: "" },
+  userId: "",
   product: { id: "", name: "", price: 0, plan_id: 0, productPlan_id: "" },
   breadCumbs: [],
 };

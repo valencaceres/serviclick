@@ -19,7 +19,6 @@ export const SignIn: React.FC = () => {
   if (isSignedIn) {
     void router.push("/");
   }
-
   const {
     register,
     getValues,

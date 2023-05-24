@@ -36,27 +36,27 @@ const BrokerProducts = ({ addNewProduct, editProduct, deleteProduct }: any) => {
         <TableDetail>
           {broker.products.map((item: any, idx: number) => (
             <TableRow key={idx}>
-              <TableCell width="305px">{item.name}</TableCell>
+              <TableCell width="305px">{item?.name}</TableCell>
               <TableCell width="145px" align="center">
-                {item.discount.type === ""
+                {item?.discount.type === ""
                   ? "Sin descuento"
-                  : item.discount.type === "t" && item.discount.cicles > 0
-                  ? `${item.discount.cicles} ${
-                      item.discount.cicles > 1 ? "meses" : "mes"
+                  : item?.discount.type === "t" && item?.discount.cicles > 0
+                  ? `${item?.discount.cicles} ${
+                      item?.discount.cicles > 1 ? "meses" : "mes"
                     } gratis`
-                  : item.discount.type === "p" &&
-                    item.discount.percent > 0 &&
-                    item.discount.cicles > 0
-                  ? `${item.discount.percent}% dcto. ${item.discount.cicles} ${
-                      item.discount.cicles > 1 ? "meses" : "mes"
+                  : item?.discount.type === "p" &&
+                    item?.discount.percent > 0 &&
+                    item?.discount.cicles > 0
+                  ? `${item?.discount.percent}% dcto. ${item?.discount.cicles} ${
+                      item?.discount.cicles > 1 ? "meses" : "mes"
                     }`
                   : "Sin descuento"}
               </TableCell>
               <TableCell width="100px" align="right">
-                ${item.price.customer.toLocaleString("en-US").replace(",", ".")}
+                ${item?.price.customer?.toLocaleString("en-US").replace(",", ".")}
               </TableCell>
               <TableCell width="100px" align="right">
-                ${item.price.company.toLocaleString("en-US").replace(",", ".")}
+                ${item?.price.company?.toLocaleString("en-US").replace(",", ".")}
               </TableCell>
               <TableCell width="68px" align="center">
                 <TableIcons>
