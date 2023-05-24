@@ -29,7 +29,7 @@ const Welcome = () => {
             />
           </div>
           <div className="text-2xl font-bold text-teal-blue">
-            Bienvenido {user?.firstName ? user?.firstName : ""}
+            Bienvenido/a {user?.firstName ? user?.firstName : ""}
           </div>
         </ContentCell>
       </Content>
