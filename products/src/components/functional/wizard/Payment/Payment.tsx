@@ -18,7 +18,7 @@ import Loading from "@/components/ui/Loading";
 import Tooltip from "@/components/ui/Tooltip";
 import ModalWindow from "@/components/ui/ModalWindow/index";
 
-import { useProduct, useLead } from "@/store/hooks";
+import { useProduct, useLead, useUI } from "@/store/hooks";
 
 import styles from "./Payment.module.scss";
 
@@ -48,6 +48,7 @@ const Payment = () => {
   ];
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
 
+  const { ui } = useUI();
   const { lead, getLeadById, createLead, leadIsLoading, leadIsError } =
     useLead();
   const { product } = useProduct();
@@ -96,6 +97,7 @@ const Payment = () => {
     setPaymentType(type);
     createLead({
       ...lead,
+      user_id: ui.userId,
       link: `${config.baseURL}${router.asPath}`,
       subscription: type === "C",
       send: type === "L",
@@ -162,34 +164,39 @@ const Payment = () => {
                 <PaymentSection
                   title="Contratante"
                   selected={isSelectedContractor}
-                  state={setIsSelectedContractor}>
+                  state={setIsSelectedContractor}
+                >
                   <PaymentPerson data={lead.customer} />
                 </PaymentSection>
                 <PaymentSection
                   title="Beneficiario"
                   selected={isSelectedinsured}
-                  state={setIsSelectedinsured}>
+                  state={setIsSelectedinsured}
+                >
                   <PaymentInsured data={lead.insured && lead.insured[0]} />
                 </PaymentSection>
               </Row>
               <PaymentSection
                 title="Producto"
                 selected={isSelectedProduct}
-                state={setIsSelectedProduct}>
+                state={setIsSelectedProduct}
+              >
                 <PaymentCoverage product={product} />
               </PaymentSection>
               {product.beneficiaries > 0 && (
                 <PaymentSection
                   title="Cargas"
                   selected={isSelectedBeneficiaries}
-                  state={setIsSelectedBeneficiaries}>
+                  state={setIsSelectedBeneficiaries}
+                >
                   <PaymentBeneficiaries lead={lead} />
                 </PaymentSection>
               )}
               <PaymentSection
                 title="Valores"
                 selected={isSelectedPayment}
-                state={setIsSelectedPayment}>
+                state={setIsSelectedPayment}
+              >
                 <PaymentProduct lead={lead} product={product} />
               </PaymentSection>
               <PaymentTerms
@@ -202,33 +209,38 @@ const Payment = () => {
               <PaymentSection
                 title="Contratante"
                 selected={isSelectedContractor}
-                state={setIsSelectedContractor}>
+                state={setIsSelectedContractor}
+              >
                 <PaymentPerson data={lead.customer} />
               </PaymentSection>
               <PaymentSection
                 title="Beneficiario"
                 selected={isSelectedinsured}
-                state={setIsSelectedinsured}>
+                state={setIsSelectedinsured}
+              >
                 <PaymentInsured data={lead.insured && lead.insured[0]} />
               </PaymentSection>
               <PaymentSection
                 title="Producto"
                 selected={isSelectedProduct}
-                state={setIsSelectedProduct}>
+                state={setIsSelectedProduct}
+              >
                 <PaymentCoverage product={product} />
               </PaymentSection>
               {product.beneficiaries > 0 && (
                 <PaymentSection
                   title="Cargas"
                   selected={isSelectedBeneficiaries}
-                  state={setIsSelectedBeneficiaries}>
+                  state={setIsSelectedBeneficiaries}
+                >
                   <PaymentBeneficiaries lead={lead} />
                 </PaymentSection>
               )}
               <PaymentSection
                 title="Valores"
                 selected={isSelectedPayment}
-                state={setIsSelectedPayment}>
+                state={setIsSelectedPayment}
+              >
                 <PaymentProduct lead={lead} product={product} />
               </PaymentSection>
               <PaymentTerms
@@ -266,13 +278,15 @@ const Payment = () => {
       <ModalWindow
         showModal={showTerms}
         setClosed={handleClickCloseTerms}
-        title="Términos y condiciones">
+        title="Términos y condiciones"
+      >
         <div className={styles.termsContainer}>{termsAndCondicions.data}</div>
       </ModalWindow>
       <ModalWindow
         showModal={showPaymentType}
         setClosed={handleClickClosePaymentType}
-        title="Seleccione una opción">
+        title="Seleccione una opción"
+      >
         <PaymentType data={paymentTypeData} />
       </ModalWindow>
     </Body>
