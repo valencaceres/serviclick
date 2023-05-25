@@ -199,7 +199,7 @@ const createLead = async (
   customer_id: string,
   company_id: string,
   link: string = "",
-  user_id?: string,
+  user_id?: string
 ) => {
   const leadResponse = await Lead.createModel(
     id,
@@ -210,7 +210,7 @@ const createLead = async (
     undefined,
     undefined,
     undefined,
-    user_id,
+    user_id
   );
   return errorHandler(leadResponse, "lead/createLeadModel");
 };
@@ -1308,6 +1308,34 @@ const addBeneficiary = async (req: any, res: any) => {
   return res.status(200).json(leadBeneficiaryResponse.data);
 };
 
+const getStatistics = async (req: any, res: any) => {
+  const monthlySubscriptions = await Lead.getMonthlySubscriptions();
+
+  if (!monthlySubscriptions.success) {
+    createLogger.error({
+      model: "lead/getMonthlySubscriptions",
+      error: monthlySubscriptions.error,
+    });
+    res.status(500).json(monthlySubscriptions.error);
+    return;
+  }
+
+  const monthlySubscriptionsData = monthlySubscriptions.data;
+
+  const monthlySubscriptionsDataFormatted = monthlySubscriptionsData.map(
+    (item: any) => {
+      return {
+        month: item.month,
+        year: item.year,
+        subscriptions: item.subscriptions,
+        collected: item.monthly_collection,
+      };
+    }
+  );
+  
+  return res.status(200).json(monthlySubscriptionsDataFormatted);
+};
+
 export {
   createController,
   addBeneficiariesController,
@@ -1318,4 +1346,5 @@ export {
   addProduct,
   addInsured,
   addBeneficiary,
+  getStatistics,
 };

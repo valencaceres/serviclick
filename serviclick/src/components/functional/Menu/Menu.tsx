@@ -18,7 +18,7 @@ interface Route {
 }
 
 const routes = [
-  { text: "Inicio", route: "/" },
+  { text: "Dashboard", route: "/" },
   {
     text: "Maestros",
     subRoutes: [

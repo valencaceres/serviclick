@@ -11,7 +11,7 @@ const createModel: any = async (
   subscription_id?: string,
   policy_id?: string,
   paymenttype_code?: string,
-  user_id?: string,
+  user_id?: string
 ) => {
   try {
     const createDate = format(new Date(), "yyyy-MM-dd HH:mm:ss");
@@ -75,7 +75,6 @@ const createModel: any = async (
     return { success: false, data: null, error: (e as Error).message };
   }
 };
-
 
 const updatePaymentTypeCode: any = async (
   id: string,
@@ -269,6 +268,32 @@ const updateSubscription: any = async (
   }
 };
 
+const getMonthlySubscriptions: any = async () => {
+  try {
+    const result = await pool.query(
+      `select    extract(YEAR FROM lea.createdate) as year,
+              extract(MONTH FROM lea.createdate) as month,
+              count(1) as subscriptions,
+              sum(ppl.price) as monthly_collection
+        from    app.lead lea
+                  inner join app.leadproduct lpr on lea.id = lpr.lead_id
+                  inner join app.productplan ppl on lpr.product_id = ppl.product_id and ppl.agent_id = lea.agent_id and type = 'customer'
+        where    not policy_id is null
+        group     by
+              extract(YEAR FROM lea.createdate),
+              extract(MONTH FROM lea.createdate)
+        order     by
+              extract(YEAR FROM lea.createdate) desc,
+              extract(MONTH FROM lea.createdate) desc
+        `
+    );
+
+    return { success: true, data: result.rows, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 export {
   createModel,
   updatePaymentTypeCode,
@@ -278,4 +303,5 @@ export {
   getInsuredById,
   getProductsById,
   updateSubscription,
+  getMonthlySubscriptions
 };
