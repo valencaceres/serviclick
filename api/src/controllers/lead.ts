@@ -1320,20 +1320,40 @@ const getStatistics = async (req: any, res: any) => {
     return;
   }
 
-  const monthlySubscriptionsData = monthlySubscriptions.data;
+  const totalCollected = await Lead.getTotalCollected();
 
-  const monthlySubscriptionsDataFormatted = monthlySubscriptionsData.map(
-    (item: any) => {
-      return {
-        month: item.month,
-        year: item.year,
-        subscriptions: item.subscriptions,
-        collected: item.monthly_collection,
-      };
-    }
-  );
-  
-  return res.status(200).json(monthlySubscriptionsDataFormatted);
+  if (!totalCollected.success) {
+    createLogger.error({
+      model: "lead/getTotalCollected",
+      error: totalCollected.error,
+    });
+    res.status(500).json(totalCollected.error);
+    return;
+  }
+
+  const channelCollected = await Lead.getChannelCollected();
+
+  if (!channelCollected.success) {
+    createLogger.error({
+      model: "lead/getChannelCollected",
+      error: channelCollected.error,
+    });
+    res.status(500).json(channelCollected.error);
+    return;
+  }
+
+  const statistics = {
+    monthlySubscriptions: monthlySubscriptions.data,
+    totalCollected: totalCollected.data,
+    channelCollected: channelCollected.data,
+  };
+
+  createLogger.info({
+    controller: "lead/getStatistics",
+    message: "OK",
+  });
+
+  res.status(200).json(statistics);
 };
 
 export {

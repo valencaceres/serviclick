@@ -270,6 +270,21 @@ const updateSubscription: any = async (
 
 const getMonthlySubscriptions: any = async () => {
   try {
+    const monthNames = [
+      "Ene",
+      "Feb",
+      "Mar",
+      "Abr",
+      "May",
+      "Jun",
+      "Jul",
+      "Ago",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dic",
+    ];
+
     const result = await pool.query(
       `select    extract(YEAR FROM lea.createdate) as year,
               extract(MONTH FROM lea.createdate) as month,
@@ -283,12 +298,69 @@ const getMonthlySubscriptions: any = async () => {
               extract(YEAR FROM lea.createdate),
               extract(MONTH FROM lea.createdate)
         order     by
-              extract(YEAR FROM lea.createdate) desc,
-              extract(MONTH FROM lea.createdate) desc
+              extract(YEAR FROM lea.createdate) asc,
+              extract(MONTH FROM lea.createdate) asc
         `
     );
 
-    return { success: true, data: result.rows, error: null };
+    let data = result.rows.map((item) => {
+      const monthYear = `${monthNames[item.month - 1]}, ${item.year}`;
+      return {
+        monthYear: monthYear,
+        subscriptions: parseInt(item.subscriptions),
+        collection: item.monthly_collection,
+      };
+    });
+
+    return { success: true, data, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+const getTotalCollected: any = async () => {
+  try {
+    const result = await pool.query(
+      `select     count(1) as subscriptions,
+            sum(ppl.price) as monthly_collection
+      from    app.lead lea
+                inner join app.leadproduct lpr on lea.id = lpr.lead_id
+                inner join app.productplan ppl on lpr.product_id = ppl.product_id and ppl.agent_id = lea.agent_id and type = 'customer'
+      where    not policy_id is null`
+    );
+
+    return { success: true, data: result.rows[0], error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+const getChannelCollected: any = async () => {
+  try {
+    const result = await pool.query(
+      `select     case when age.name is null then case when bro.name is null then ret.name else bro.name end else age.name end as channel_name,
+            count(1) as subscriptions,
+            sum(ppl.price) as monthly_collection
+      from    app.lead lea
+                inner join app.leadproduct lpr on lea.id = lpr.lead_id
+                inner join app.productplan ppl on lpr.product_id = ppl.product_id and ppl.agent_id = lea.agent_id and type = 'customer'
+                left outer join app.broker bro on lea.agent_id = bro.id
+                left outer join app.retail ret on lea.agent_id = ret.id
+                left outer join app.agent age on lea.agent_id = age.id
+      where    not policy_id is null
+      group     by
+            channel_name
+      order     by
+            sum(ppl.price) desc`
+    );
+
+    const parsedData = result.rows.map((row: any) => ({
+      ...row,
+      subscriptions: parseInt(row.subscriptions),
+      monthly_collection: parseInt(row.monthly_collection),
+    }));
+
+    return { success: true, data: parsedData, error: null };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
   }
@@ -303,5 +375,7 @@ export {
   getInsuredById,
   getProductsById,
   updateSubscription,
-  getMonthlySubscriptions
+  getMonthlySubscriptions,
+  getTotalCollected,
+  getChannelCollected,
 };
