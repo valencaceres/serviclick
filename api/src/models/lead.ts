@@ -338,7 +338,7 @@ const getTotalCollected: any = async () => {
 const getChannelCollected: any = async () => {
   try {
     const result = await pool.query(
-      `select     case when age.name is null then case when bro.name is null then ret.name else bro.name end else age.name end as channel_name,
+      `select     case when age.name is null then case when bro.fantasyname is null then ret.fantasyname else bro.fantasyname end else age.name end as channel_name,
             count(1) as subscriptions,
             sum(ppl.price) as monthly_collection
       from    app.lead lea
