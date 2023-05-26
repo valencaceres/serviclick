@@ -48,7 +48,7 @@ const CurrencyLabel = ({ x, y, value }: any) => {
       x={x + 5}
       y={y}
       dy={-4}
-      fill="#666"
+      fill="teal"
       fontSize={10}
       textAnchor="middle"
       className="text-teal-blue"
@@ -125,7 +125,7 @@ export function Dashboard() {
       </div>
       <div className="flex justify-center gap-2 py-8">
         <div className="flex flex-col gap-2">
-          <div>
+          <Card className="py-4">
             <h1 className="pl-8 text-xl font-semibold text-teal-blue-300">
               Cantidad de suscripciones por mes
             </h1>
@@ -147,8 +147,8 @@ export function Dashboard() {
                 label={{ position: "top", fill: "teal" }}
               />
             </BarChart>
-          </div>
-          <div>
+          </Card>
+          <Card className="py-4">
             <h1 className="pl-8 text-xl font-semibold text-teal-blue-300">
               Recaudación por mes
             </h1>
@@ -158,8 +158,8 @@ export function Dashboard() {
               data={data?.monthlySubscriptions}
               margin={{
                 top: 10,
-                right: 30,
-                left: 30,
+                right: 50,
+                left: 50,
                 bottom: 0,
               }}
             >
@@ -179,38 +179,34 @@ export function Dashboard() {
                 type="monotone"
                 dataKey="collection"
                 name="Recaudación"
-                stroke="#8884d8"
-                fill="#8884d8"
+                stroke="#82ca9d"
+                fill="#82ca9d"
                 label={<CurrencyLabel />}
               />
             </AreaChart>
-          </div>
+          </Card>
         </div>
         <div className="flex flex-col gap-2">
-          <div>
+          <Card className="py-4">
             <h1 className="pl-8 text-xl font-semibold text-teal-blue-300">
               Suscripciones por canal de venta
             </h1>
-            <PieChart
+            <BarChart
               width={800}
               height={400}
-              margin={{
-                top: 20,
-                right: 30,
-                left: 30,
-                bottom: 50,
-              }}
+              data={data?.channelCollected}
+              margin={{ top: 20, right: 30, left: 50, bottom: 0 }}
+              layout="vertical"
             >
               <CartesianGrid strokeDasharray="3 3" />
+              <XAxis type="number" />
+              <YAxis dataKey="channel_name" type="category" />
               <Tooltip content={<CustomTooltip name="Suscripciones" />} />
-              <Pie
-                data={data?.channelCollected}
-                dataKey="subscriptions"
-                cx="50%"
-                cy="50%"
-                outerRadius={130}
+              <Bar
+                dataKey={"subscriptions"}
+                name="Cantidad Suscripciones"
                 fill="#8884d8"
-                label={(entry) => entry.channel_name}
+                label={{ position: "right", fill: "teal" }}
               >
                 {data?.channelCollected?.map((entry: any, index: number) => (
                   <Cell
@@ -218,36 +214,31 @@ export function Dashboard() {
                     fill={COLORS[index % COLORS.length]}
                   />
                 ))}
-              </Pie>
-            </PieChart>
-          </div>
-          <div>
+              </Bar>
+            </BarChart>
+          </Card>
+          <Card className="py-4">
             <h1 className="pl-8 text-xl font-semibold text-teal-blue-300">
-              Recaudación por canal de venta
+              Suscripciones por canal de venta
             </h1>
-            <PieChart
+            <BarChart
               width={800}
               height={400}
-              key={"channel_name"}
-              margin={{
-                top: 10,
-                right: 30,
-                left: 30,
-                bottom: 50,
-              }}
+              data={data?.channelCollected}
+              margin={{ top: 20, right: 30, left: 50, bottom: 0 }}
+              layout="vertical"
             >
               <CartesianGrid strokeDasharray="3 3" />
+              <XAxis type="number" tickFormatter={formatToCurrency} />
+              <YAxis dataKey="channel_name" type="category" />
               <Tooltip
                 content={<CustomTooltip name={"Recaudación"} currency />}
               />
-              <Pie
-                data={data?.channelCollected}
-                dataKey="monthly_collection"
-                cx="50%"
-                cy="50%"
-                outerRadius={130}
+              <Bar
+                dataKey={"monthly_collection"}
+                name="Recaudación por"
                 fill="#8884d8"
-                label={(entry) => entry.channel_name}
+                label={{ position: "right", fill: "teal", formatter: formatToCurrency }}
               >
                 {data?.channelCollected?.map((entry: any, index: number) => (
                   <Cell
@@ -255,9 +246,9 @@ export function Dashboard() {
                     fill={COLORS[index % COLORS.length]}
                   />
                 ))}
-              </Pie>
-            </PieChart>
-          </div>
+              </Bar>
+            </BarChart>
+          </Card>
         </div>
       </div>
     </div>
