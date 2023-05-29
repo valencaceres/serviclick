@@ -44,6 +44,7 @@ const Product = () => {
       setIsProcessing(true);
       createLead({
         ...lead,
+        user_id: ui.userId,
         insured:
           lead.insured && lead.insured.length > 0
             ? [
@@ -98,7 +99,7 @@ const Product = () => {
       router.push(
         `/${
           product.beneficiaries > 0 ? "beneficiaries" : "payment"
-        }?productPlanId=${ui.product.productPlan_id}&leadId=${lead.id}`
+        }?productPlanId=${ui.product.productPlan_id}&leadId=${lead.id}&userId=${ui.userId}`
       );
       setIsProcessing(false);
     }

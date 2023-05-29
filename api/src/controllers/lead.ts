@@ -199,7 +199,7 @@ const createLead = async (
   customer_id: string,
   company_id: string,
   link: string = "",
-  user_id?: string,
+  user_id?: string
 ) => {
   const leadResponse = await Lead.createModel(
     id,
@@ -210,7 +210,7 @@ const createLead = async (
     undefined,
     undefined,
     undefined,
-    user_id,
+    user_id
   );
   return errorHandler(leadResponse, "lead/createLeadModel");
 };
@@ -1308,6 +1308,54 @@ const addBeneficiary = async (req: any, res: any) => {
   return res.status(200).json(leadBeneficiaryResponse.data);
 };
 
+const getStatistics = async (req: any, res: any) => {
+  const monthlySubscriptions = await Lead.getMonthlySubscriptions();
+
+  if (!monthlySubscriptions.success) {
+    createLogger.error({
+      model: "lead/getMonthlySubscriptions",
+      error: monthlySubscriptions.error,
+    });
+    res.status(500).json(monthlySubscriptions.error);
+    return;
+  }
+
+  const totalCollected = await Lead.getTotalCollected();
+
+  if (!totalCollected.success) {
+    createLogger.error({
+      model: "lead/getTotalCollected",
+      error: totalCollected.error,
+    });
+    res.status(500).json(totalCollected.error);
+    return;
+  }
+
+  const channelCollected = await Lead.getChannelCollected();
+
+  if (!channelCollected.success) {
+    createLogger.error({
+      model: "lead/getChannelCollected",
+      error: channelCollected.error,
+    });
+    res.status(500).json(channelCollected.error);
+    return;
+  }
+
+  const statistics = {
+    monthlySubscriptions: monthlySubscriptions.data,
+    totalCollected: totalCollected.data,
+    channelCollected: channelCollected.data,
+  };
+
+  createLogger.info({
+    controller: "lead/getStatistics",
+    message: "OK",
+  });
+
+  res.status(200).json(statistics);
+};
+
 export {
   createController,
   addBeneficiariesController,
@@ -1318,4 +1366,5 @@ export {
   addProduct,
   addInsured,
   addBeneficiary,
+  getStatistics,
 };

@@ -89,6 +89,7 @@ const Insured = () => {
   const setLeadInsured = (data: any) => {
     setLead({
       ...lead,
+      user_id: ui.userId,
       insured: [
         {
           id: data.id || "",
@@ -346,7 +347,7 @@ const Insured = () => {
             : product.beneficiaries > 0
             ? "beneficiaries"
             : "payment"
-        }?productPlanId=${ui.product.productPlan_id}&leadId=${lead.id}`
+        }?productPlanId=${ui.product.productPlan_id}&leadId=${lead.id}&userId=${ui.userId}`
       );
       setIsProcessing(false);
     }

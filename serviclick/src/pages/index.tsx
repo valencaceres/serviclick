@@ -1,9 +1,9 @@
 import type { NextPage } from "next";
 
-import Welcome from "../components/functional/Welcome";
+import { Dashboard } from "~/components/functional/Dashboard/Dashboard";
 
 const Home: NextPage = () => {
-  return <Welcome />;
+  return <Dashboard />;
 };
 
 export default Home;

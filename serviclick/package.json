@@ -30,6 +30,7 @@
     "react-hook-form": "^7.43.9",
     "react-redux": "^8.0.2",
     "react-responsive": "^9.0.0-beta.10",
+    "recharts": "^2.6.2",
     "sass": "^1.54.4",
     "shadcn-ui": "^0.1.2",
     "sharp": "^0.32.1",
