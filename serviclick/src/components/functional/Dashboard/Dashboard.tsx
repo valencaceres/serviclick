@@ -85,8 +85,10 @@ export function Dashboard() {
 
   if (!data) return null;
 
+  console.log(data);
+
   return (
-    <div className="flex w-full flex-col items-center justify-center gap-1 pl-16">
+    <div className="flex w-full flex-col items-center justify-center pl-16">
       <div className="flex w-full justify-center gap-4">
         <Card className="w-full max-w-sm hover:bg-slate-50">
           <CardHeader>
@@ -100,6 +102,7 @@ export function Dashboard() {
               {data?.totalCollected.subscriptions} suscripciones
             </h2>
           </CardContent>
+          <CardFooter></CardFooter>
         </Card>
         <Card className="w-full max-w-sm hover:bg-slate-50">
           <CardHeader>
@@ -116,15 +119,16 @@ export function Dashboard() {
               recaudación
             </h2>
           </CardContent>
+          <CardFooter></CardFooter>
         </Card>
       </div>
-      <div className="flex w-full max-w-[1800px] justify-center gap-2">
+      <div className="flex w-full max-w-[1800px] justify-center gap-2 py-8">
         <div className="flex w-1/2 flex-col gap-2">
           <Card className="py-4">
             <h1 className="pl-8 text-xl font-semibold text-teal-blue-300">
               Cantidad de suscripciones por mes
             </h1>
-            <ResponsiveContainer width="100%" height={350}>
+            <ResponsiveContainer width="100%" height={400}>
               <BarChart
                 data={data?.monthlySubscriptions}
                 margin={{ top: 20, right: 30, left: 30, bottom: 0 }}
@@ -147,7 +151,7 @@ export function Dashboard() {
             <h1 className="pl-8 text-xl font-semibold text-teal-blue-300">
               Recaudación por mes
             </h1>
-            <ResponsiveContainer width="100%" height={350}>
+            <ResponsiveContainer width="100%" height={400}>
               <AreaChart
                 data={data?.monthlySubscriptions}
                 margin={{
@@ -160,8 +164,8 @@ export function Dashboard() {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="monthYear" />
                 <YAxis
-                  type="number"
                   domain={["auto", "auto"]}
+                  type="number"
                   tickFormatter={formatToCurrency}
                 />
                 <Tooltip
@@ -169,8 +173,7 @@ export function Dashboard() {
                 />
                 <Legend />
                 <Area
-                  type={"monotone"}
-                  dot={true}
+                  type="monotone"
                   dataKey="collection"
                   name="Recaudación"
                   stroke="#82ca9d"
@@ -186,7 +189,7 @@ export function Dashboard() {
             <h1 className="pl-8 text-xl font-semibold text-teal-blue-300">
               Suscripciones por canal de venta
             </h1>
-            <ResponsiveContainer width="100%" height={350}>
+            <ResponsiveContainer width="100%" height={400}>
               <BarChart
                 data={data?.channelCollected}
                 margin={{ top: 20, right: 30, left: 50, bottom: 0 }}
@@ -216,7 +219,7 @@ export function Dashboard() {
             <h1 className="pl-8 text-xl font-semibold text-teal-blue-300">
               Recaudación por canal de venta
             </h1>
-            <ResponsiveContainer width="100%" height={350}>
+            <ResponsiveContainer width="100%" height={400}>
               <BarChart
                 data={data?.channelCollected}
                 margin={{ top: 20, right: 30, left: 50, bottom: 0 }}

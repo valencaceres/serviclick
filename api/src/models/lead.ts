@@ -308,7 +308,7 @@ const getMonthlySubscriptions: any = async () => {
       return {
         monthYear: monthYear,
         subscriptions: parseInt(item.subscriptions),
-        collection: parseInt(item.monthly_collection),
+        collection: item.monthly_collection,
       };
     });
 
