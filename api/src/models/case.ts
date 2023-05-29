@@ -15,7 +15,7 @@ const create: any = async (
   beneficiary_id?: string
 ) => {
   try {
-    if (!product_id || !assistance_id) {
+    if (!product_id && !assistance_id) {
       if (beneficiary_id) {
         const exists = await pool.query(
           `SELECT * FROM app.case WHERE beneficiary_id = $1 AND number = $2`,

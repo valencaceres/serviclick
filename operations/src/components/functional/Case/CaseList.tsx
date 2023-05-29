@@ -71,7 +71,7 @@ const columns: ColumnDef<Case>[] = [
         : true;
     },
     cell: ({ row }) => {
-      const fullname = `${row.original.name.toLowerCase()} ${row.original.lastname.toLowerCase()}`;
+      const fullname = `${row.original.name?.toLowerCase()} ${row.original.lastname?.toLowerCase()}`;
       return <div className="font-medium capitalize">{fullname}</div>;
     },
   },
