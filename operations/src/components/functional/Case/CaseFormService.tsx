@@ -135,8 +135,6 @@ const CaseFormService = ({ thisCase }: any) => {
     }
   }, [currentDescription]);
 
-  console.log(thisCase)
-
   const handleAddService = () => {
     if (selectedAssistance && selectedProduct && description) {
       setError(null);
