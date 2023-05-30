@@ -35,6 +35,7 @@ interface IProduct {
   insured_id: string;
   name: string;
   assistance: IAssistance;
+  created_at: string;
 }
 
 const CaseFormService = ({ thisCase }: any) => {
@@ -68,6 +69,15 @@ const CaseFormService = ({ thisCase }: any) => {
 
   const { mutate: updateCase } = useQueryCase().useCreate();
   const { mutate: assignValue } = useQueryAssistances().useAssignValue();
+
+  const selectedProductCreatedAt = useMemo(() => {
+    const date = new Date(selectedProduct?.created_at || "");
+    return date.toLocaleDateString("es-CL", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+  }, [selectedProduct]);
 
   useEffect(() => {
     const productsMap = new Map(
@@ -194,8 +204,6 @@ const CaseFormService = ({ thisCase }: any) => {
     }
   }, [thisCase, relatedProducts, uniqueAssistances]);
 
-  console.log(formValues);
-
   return (
     <div>
       <ContentCell gap="20px">
@@ -204,11 +212,12 @@ const CaseFormService = ({ thisCase }: any) => {
             <Link href={`/entities/contractor/${contractor?.id}`}>
               <InputText
                 label="Cliente"
+                className="capitalize"
                 value={
                   isLoadingContractor
                     ? "Cargando..."
                     : contractor?.companyName ||
-                      contractor?.name + " " + contractor?.paternalLastName
+                      `${contractor?.name} ${contractor?.paternalLastName}`
                 }
                 disabled
               />
@@ -313,9 +322,14 @@ const CaseFormService = ({ thisCase }: any) => {
         </ContentCell>
         {selectedAssistance ? (
           <Fragment>
-            <h2 className="text-xl font-semibold text-secondary-500">
-              {selectedProduct?.name}
-            </h2>
+            <div className="flex flex-col gap-1">
+              <h2 className="text-xl font-semibold text-secondary-500">
+                {selectedProduct?.name}
+              </h2>
+              <p className="text-secondary-500">
+                Fecha de adquisición: <span className="font-semibold">{selectedProductCreatedAt}</span>
+              </p>
+            </div>
             <CaseServiceTable
               product={selectedProduct}
               assistance={selectedAssistance}

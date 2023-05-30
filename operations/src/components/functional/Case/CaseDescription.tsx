@@ -19,6 +19,7 @@ export const CaseDescription = ({ thisCase }: any) => {
               : contractor?.companyName ||
                 contractor?.name + " " + contractor?.paternalLastName
           }
+          className="capitalize"
           disabled
         />
       </Link>
