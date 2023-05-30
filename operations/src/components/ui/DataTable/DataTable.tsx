@@ -55,6 +55,17 @@ import {
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/router";
 import { useQueryClient } from "@tanstack/react-query";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../AlertDialog";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -157,6 +168,8 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  console.log(customer);
+
   function newCase(productId: string) {
     createCase(
       {
@@ -173,7 +186,7 @@ export function DataTable<TData, TValue>({
           email: person?.email,
           phone: person?.phone,
         },
-        customer_id: customer?.company_id,
+        customer_id: customer?.customer_id,
         company_id: customer?.company_id,
         isInsured: customer?.insured?.rut === rutInput ? true : false,
         beneficiary_id:
@@ -186,33 +199,85 @@ export function DataTable<TData, TValue>({
       },
       {
         onSuccess: (res) => {
-          queryClient.invalidateQueries(["case", res.data?.id]);
-          createCase(
-            {
-              applicant: {
-                type: person?.type,
-                id: person?.id,
+          if (person?.type === "I") {
+            return createCase(
+              {
+                applicant: {
+                  type: person?.type,
+                  id: person?.id,
+                },
+                number: res.data.number,
+                product_id: productId,
+                assistance_id: null,
+                beneficiary_id: res?.data.beneficiary_id,
+                company_id: res?.data.company_id,
+                customer_id: res?.data.customer_id,
+                stage_id: stages.find(
+                  (stage: any) => stage.name === "Registro de servicio"
+                )?.id,
+                user_id: user?.id,
+                description: "",
+                isactive: true,
               },
-              number: res.data.number,
-              product_id: productId,
-              assistance_id: null,
-              beneficiary_id: res?.data.beneficiary_id,
-              company_id: res?.data.company_id,
-              customer_id: res?.data.customer_id,
-              stage_id: stages.find(
-                (stage: any) => stage.name === "Registro de servicio"
-              )?.id,
-              user_id: user?.id,
-              description: "",
-              isactive: true,
-            },
-            {
-              onSuccess: (res) => {
-                void router.push(`/case/${res.data.id}/registro de servicio`);
-                queryClient.invalidateQueries(["case", res.data?.id]);
+              {
+                onSuccess: (res) => {
+                  void router.push(`/case/${res.data.id}/registro de servicio`);
+                  queryClient.invalidateQueries(["case", res.data?.id]);
+                },
+              }
+            );
+          } else {
+            return createCase(
+              {
+                applicant: {
+                  type: person?.type,
+                  id: customer?.insured?.id,
+                },
+                number: res.data.number,
+                beneficiary_id: res?.data.beneficiary_id,
+                isInsured: false,
+                company_id: res?.data.company_id,
+                customer_id: res?.data.customer_id,
+                stage_id: stages.find(
+                  (stage: any) => stage.name === "Datos Titular"
+                )?.id,
+                user_id: user?.id,
+                isactive: true,
               },
-            }
-          );
+              {
+                onSuccess: (res) => {
+                  return createCase(
+                    {
+                      applicant: {
+                        type: person?.type,
+                        id: person?.id,
+                      },
+                      number: res.data.number,
+                      product_id: productId,
+                      assistance_id: null,
+                      beneficiary_id: res?.data.beneficiary_id,
+                      company_id: res?.data.company_id,
+                      customer_id: res?.data.customer_id,
+                      stage_id: stages.find(
+                        (stage: any) => stage.name === "Registro de servicio"
+                      )?.id,
+                      user_id: user?.id,
+                      description: "",
+                      isactive: true,
+                    },
+                    {
+                      onSuccess: (res) => {
+                        void router.push(
+                          `/case/${res.data.id}/registro de servicio`
+                        );
+                        queryClient.invalidateQueries(["case", res.data?.id]);
+                      },
+                    }
+                  );
+                },
+              }
+            );
+          }
         },
       }
     );
@@ -441,15 +506,44 @@ export function DataTable<TData, TValue>({
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="px-2">
-                  <ul className="flex list-disc flex-col gap-1">
+                  <ul className="flex list-disc flex-col gap-1 items-start">
                     {uniqueProducts?.map((product: any) => (
-                      <li
-                        onClick={() => newCase(product.id)}
-                        key={product.id}
-                        className="cursor-pointer font-medium hover:underline"
-                      >
-                        {product.name}
-                      </li>
+                      <AlertDialog key={product.id}>
+                        <AlertDialogTrigger className="hover:underline">{product.name}</AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              Creación rápida de caso
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Al continuar se creará un caso para el siguiente cliente y
+                              producto.
+                            </AlertDialogDescription>
+                            <div>
+                              <p className="font-semibold">
+                                Cliente:{" "}
+                                <span className="font-normal capitalize">
+                                  {`${person?.name} ${person?.paternallastname}`}
+                                </span>
+                              </p>
+                              <p className="font-semibold">
+                                Producto:{" "}
+                                <span className="font-normal">
+                                  {product.name}
+                                </span>
+                              </p>
+                            </div>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => newCase(product.id)}
+                            >
+                              Continuar
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     ))}
                   </ul>
                 </AccordionContent>
