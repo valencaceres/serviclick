@@ -59,6 +59,7 @@ const CaseFormResolution = ({ thisCase }: any) => {
         user_id: user?.id,
         description: comment,
         isactive: true,
+        lead_id: thisCase?.lead_id,
       },
       {
         onSuccess: () => {

@@ -27,6 +27,7 @@ const create = async (req: any, res: any) => {
     user_id,
     beneficiary_id,
     isactive,
+    lead_id,
   } = req.body;
 
   if (applicant?.type === "C" && isInsured === true) {
@@ -86,7 +87,8 @@ const create = async (req: any, res: any) => {
     isInsured,
     company_id,
     customer_id,
-    beneficiary_id
+    beneficiary_id,
+    lead_id,
   );
 
   if (!caseResponse.success) {

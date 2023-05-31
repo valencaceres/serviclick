@@ -175,6 +175,7 @@ const CaseFormService = ({ thisCase }: any) => {
           user_id: user?.id,
           description,
           isactive: true,
+          lead_id: selectedProduct?.lead_id,
         },
         {
           onSuccess: () => {

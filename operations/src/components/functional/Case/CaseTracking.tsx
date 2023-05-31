@@ -78,6 +78,7 @@ const CaseTracking = ({ thisCase }: any) => {
         user_id: user?.id,
         description: evaluation,
         isactive: true,
+        lead_id: thisCase?.lead_id,
       },
       {
         onSuccess: () => {
@@ -144,6 +145,7 @@ const CaseTracking = ({ thisCase }: any) => {
         stage_id: stages.find((s: any) => s?.name === "Seguimiento")?.id,
         user_id: user?.id,
         isactive: true,
+        lead_id: thisCase?.lead_id,
       },
       {
         onSuccess: () => {
@@ -207,6 +209,7 @@ const CaseTracking = ({ thisCase }: any) => {
         description: evaluation,
         user_id: user?.id,
         isactive: true,
+        lead_id: thisCase?.lead_id,
       },
       {
         onSuccess: () => {
@@ -252,6 +255,7 @@ const CaseTracking = ({ thisCase }: any) => {
         user_id: user?.id,
         description: justification,
         isactive: false,
+        lead_id: thisCase?.lead_id,
       },
       {
         onSuccess: () => {

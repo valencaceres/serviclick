@@ -176,6 +176,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
         number: thisCase !== null ? thisCase?.case_number : newCaseNumber,
         stage_id: stage,
         user_id: user?.id,
+        lead_id: thisCase?.lead_id,
       },
       {
         onSuccess: (response) => {

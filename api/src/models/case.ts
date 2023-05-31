@@ -12,7 +12,8 @@ const create: any = async (
   isInsured?: boolean,
   company_id?: string,
   customer_id?: string,
-  beneficiary_id?: string
+  beneficiary_id?: string,
+  lead_id?: string
 ) => {
   try {
     if (!product_id && !assistance_id) {
@@ -96,12 +97,12 @@ const create: any = async (
 
     if (resultCase.rows.length > 0) {
       const result = await pool.query(
-        `UPDATE app.case SET product_id = $1, assistance_id = $2, isactive = $3, company_id = $4, customer_id = $5
-        WHERE number = $6 AND ${
+        `UPDATE app.case SET product_id = $1, assistance_id = $2, isactive = $3, company_id = $4, customer_id = $5, lead_id = $6
+        WHERE number = $7 AND ${
           applicant.type === "B" || isInsured === false
             ? "beneficiary_id"
             : "insured_id"
-        } = $7
+        } = $8
         RETURNING *`,
         [
           product_id,
@@ -109,6 +110,7 @@ const create: any = async (
           isactive,
           company_id,
           customer_id,
+          lead_id,
           number,
           applicant.id,
         ]

@@ -61,6 +61,7 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
     stage_id: stageId,
     user_id: user?.id,
     isactive: true,
+    lead_id: thisCase?.lead_id,
   });
 
   const handleAssign = (e: any) => {
