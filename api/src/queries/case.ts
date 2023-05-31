@@ -35,6 +35,7 @@ export const _getBeneficiaryData = `
                     lin.insured_id,
                     lea.customer_id,
                     lea.company_id,
+                    lea.createdate,
                     COALESCE(lea.customer_id, lea.company_id) AS contractor_id
                     FROM app.lead lea
                     INNER JOIN app.leadinsured lin ON lea.id = lin.lead_id 
