@@ -37,11 +37,25 @@ const useAddBeneficiary = () => {
   return useMutation(addBeneficiary);
 };
 
+const getContract = async (lead_id: string) => {
+  const { data: result } = await apiInstance.get(
+    `/lead/getContract/${lead_id}`
+  );
+  return result;
+};
+
+const useGetContract = (lead_id: string) => {
+  return useQuery(["getContract"], () => getContract(lead_id), {
+    enabled: !!lead_id,
+  });
+};
+
 const useQueryLead = () => {
   return {
     useAddProduct,
     useAddInsured,
     useAddBeneficiary,
+    useGetContract,
   };
 };
 

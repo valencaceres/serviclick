@@ -88,7 +88,7 @@ const create = async (req: any, res: any) => {
     company_id,
     customer_id,
     beneficiary_id,
-    lead_id,
+    lead_id
   );
 
   if (!caseResponse.success) {

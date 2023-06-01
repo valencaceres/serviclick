@@ -18,14 +18,17 @@ import {
 import Icon from "../../ui/Icon";
 import { LoadingMessage } from "../../ui/LoadingMessage";
 
-import { useQueryCase } from "../../../hooks/query";
+import { useQueryCase, useQueryLead } from "../../../hooks/query";
 import Button from "../../ui/Button";
+import Link from "next/link";
 
 const CaseStageList = ({ showModal, setShowModal }: any) => {
   const router = useRouter();
   const { case_id } = router.query;
 
-  const { data } = useQueryCase().useGetById((case_id as string) || "");
+  const { data } = useQueryCase().useGetById(case_id as string);
+
+  const { data: contract } = useQueryLead().useGetContract(data?.lead_id);
 
   return (
     <Fragment>
@@ -83,11 +86,19 @@ const CaseStageList = ({ showModal, setShowModal }: any) => {
               ? "1 acción"
               : `${data?.stages?.length} acciones`}
           </ContentCellSummary>
-          <Button
-            text="Chat"
-            iconName="chat"
-            onClick={() => setShowModal(true)}
-          />
+          <div className="flex gap-2">
+            {contract?.link && (
+              <Link href={contract.link} target="_blank" className="bg-teal-blue text-white flex items-center rounded-full px-4 py-2 hover:bg-teal-blue-400">
+                <Icon iconName="history_edu" className="mr-2" />
+                Contrato
+              </Link>
+            )}
+            <Button
+              text="Chat"
+              iconName="chat"
+              onClick={() => setShowModal(true)}
+            />
+          </div>
         </ContentRow>
       </ContentCell>
       <LoadingMessage />

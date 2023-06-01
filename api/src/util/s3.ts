@@ -7,7 +7,8 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import fs from "fs";
 
-const AWS_BUCKET_NAME = process.env.AWS_BUCKET_NAME;
+const AWS_BUCKET_OPERATIONS = process.env.AWS_BUCKET_OPERATIONS;
+const AWS_BUCKET_CONTRACTS = process.env.AWS_BUCKET_CONTRACTS;
 const AWS_BUCKET_REGION = process.env.AWS_BUCKET_REGION;
 const AWS_PUBLIC_KEY = process.env.AWS_PUBLIC_KEY;
 const AWS_SECRET_KEY = process.env.AWS_SECRET_KEY;
@@ -24,7 +25,7 @@ async function uploadFile(file: any) {
   const stream = fs.createReadStream(file.tempFilePath);
 
   const uploadParams = {
-    Bucket: AWS_BUCKET_NAME,
+    Bucket: AWS_BUCKET_OPERATIONS,
     Key: file.name,
     Body: stream,
     ContentType: file.mimetype,
@@ -37,7 +38,7 @@ async function uploadFile(file: any) {
 
 async function getFileViewLink(key: string, expiresInSeconds: number = 300) {
   const command = new GetObjectCommand({
-    Bucket: AWS_BUCKET_NAME,
+    Bucket: AWS_BUCKET_OPERATIONS,
     Key: key,
   });
 
@@ -46,4 +47,15 @@ async function getFileViewLink(key: string, expiresInSeconds: number = 300) {
   });
 }
 
-export { uploadFile, getFileViewLink };
+async function getContractLink(key: string, expiresInSeconds: number = 300) {
+  const command = new GetObjectCommand({
+    Bucket: "serviclick-contracts",
+    Key: key,
+  })
+
+  return await getSignedUrl(client, command, {
+    expiresIn: expiresInSeconds,
+  })
+}
+
+export { uploadFile, getFileViewLink, getContractLink };
