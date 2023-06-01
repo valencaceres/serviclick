@@ -168,8 +168,6 @@ export function DataTable<TData, TValue>({
     },
   });
 
-  console.log(customer);
-
   function newCase(productId: string) {
     createCase(
       {

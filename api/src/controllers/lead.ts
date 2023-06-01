@@ -1369,8 +1369,11 @@ const getContract = async (req: any, res: any) => {
     });
 
     return res.status(200).json({ link });
-  } catch (e) {
-    return res.status(500).json({ error: e });
+  } catch (e: any) {
+    if (e.message = "File not found") {
+      return res.status(404).json({ error: "File not found" });
+    }
+    return res.status(500).json({ error: e.message });
   }
 };
 

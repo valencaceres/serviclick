@@ -3,6 +3,7 @@ import {
   S3Client,
   PutObjectCommand,
   GetObjectCommand,
+  HeadObjectCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import fs from "fs";
@@ -36,7 +37,26 @@ async function uploadFile(file: any) {
   return await client.send(command);
 }
 
+async function fileExists(key: string, bucket: string) {
+  try {
+    await client.send(new HeadObjectCommand({ Bucket: bucket, Key: key }));
+    return true;
+  } catch (error: any) {
+    if (error.code === "NotFound") {
+      return false
+    }
+
+    throw error
+  }
+}
+
 async function getFileViewLink(key: string, expiresInSeconds: number = 300) {
+  const exists = await fileExists(key, AWS_BUCKET_OPERATIONS as string)
+
+  if (!exists) {
+    throw new Error("File not found")
+  }
+
   const command = new GetObjectCommand({
     Bucket: AWS_BUCKET_OPERATIONS,
     Key: key,
@@ -48,8 +68,14 @@ async function getFileViewLink(key: string, expiresInSeconds: number = 300) {
 }
 
 async function getContractLink(key: string, expiresInSeconds: number = 300) {
+  const exists = await fileExists(key, AWS_BUCKET_CONTRACTS as string)
+
+  if (!exists) {
+    throw new Error("File not found")
+  }
+
   const command = new GetObjectCommand({
-    Bucket: "serviclick-contracts",
+    Bucket: AWS_BUCKET_CONTRACTS,
     Key: key,
   })
 

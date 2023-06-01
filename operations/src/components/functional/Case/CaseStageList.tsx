@@ -28,7 +28,7 @@ const CaseStageList = ({ showModal, setShowModal }: any) => {
 
   const { data } = useQueryCase().useGetById(case_id as string);
 
-  const { data: contract } = useQueryLead().useGetContract(data?.lead_id);
+  const { data: contract, isError, isLoading, isFetching } = useQueryLead().useGetContract(data?.lead_id);
 
   return (
     <Fragment>
@@ -87,7 +87,7 @@ const CaseStageList = ({ showModal, setShowModal }: any) => {
               : `${data?.stages?.length} acciones`}
           </ContentCellSummary>
           <div className="flex gap-2">
-            {contract?.link && (
+            {contract && !isError && !isLoading && !isFetching && (
               <Link href={contract.link} target="_blank" className="bg-teal-blue text-white flex items-center rounded-full px-4 py-2 hover:bg-teal-blue-400">
                 <Icon iconName="history_edu" className="mr-2" />
                 Contrato

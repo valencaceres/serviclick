@@ -295,8 +295,6 @@ const CaseTracking = ({ thisCase }: any) => {
     }
   }, [stages, stage, assignedPartner, assignedSpecialist]);
 
-  console.log(thisReimbursement);
-
   return (
     <form>
       <ContentCell gap="10px">
