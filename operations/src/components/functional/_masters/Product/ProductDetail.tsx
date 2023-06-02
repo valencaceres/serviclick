@@ -1,4 +1,6 @@
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect } from "react";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
   ContentCell,
@@ -6,28 +8,67 @@ import {
   ContentCellSummary,
 } from "../../../layout/Content";
 
-import InputText from "../../../ui/InputText";
-import ComboBox from "../../../ui/ComboBox";
-import CheckBox from "../../../ui/CheckBox";
-import Icon from "../../../ui/Icon";
 import {
   Table,
   TableHeader,
   TableDetail,
   TableRow,
   TableCell,
-  TableIcons,
   TableCellEnd,
 } from "../../../ui/Table";
-import ButtonIcon from "../../../ui/ButtonIcon";
-import TextArea from "../../../ui/TextArea/TextArea";
 import ModalWindow from "../../../ui/ModalWindow";
-
-import { useFamily, useAssistance, useProduct } from "../../../../hooks";
 
 import { frequencyList, termList } from "../../../../data/masters";
 import ProductAssistance from "./ProductAssistance";
-import { LoadingMessage, SuccessMessage } from "../../../ui/LoadingMessage";
+import { useQueryFamily, useQueryProduct } from "~/hooks/query";
+import { useForm } from "react-hook-form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "~/components/ui/Form";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/Popover";
+import { Button } from "~/components/ui/ButtonC";
+import { cn } from "~/utils/cn";
+import { Check, ChevronsUpDown } from "lucide-react";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "~/components/ui/Command";
+import { Input } from "~/components/ui/Input";
+import { Textarea } from "~/components/ui/TextArea";
+import { Checkbox } from "~/components/ui/Checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/Select";
+import FloatMenu from "~/components/ui/FloatMenu";
+import ButtonIcon from "~/components/ui/ButtonIcon";
+import { useRouter } from "next/router";
+import Icon from "~/components/ui/Icon";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui/Dialog";
+import { useQueryClient } from "@tanstack/react-query";
+import { LoadingMessage } from "~/components/ui/ModalMessage";
+import { useToast } from "~/components/ui/use-toast";
 
 export type CoverageT = {
   id: string;
@@ -39,28 +80,72 @@ export type CoverageT = {
   isCombined: boolean;
 };
 
-const ProductDetail = ({ setEnableSave, isSaving, setIsSaving }: any) => {
-  const { product, setProduct, productLoading } = useProduct();
-  const {
-    list: listFamilies,
-    getById: getFamilyById,
-    reset: resetFamily,
-  } = useFamily();
+const assistanceSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  amount: z.string(),
+  maximum: z.string(),
+  events: z.number(),
+  lack: z.number(),
+  currency: z.string(),
+});
 
-  const initialDataAssistance = {
-    line_order: 0,
-    id: "",
-    name: "",
-    amount: 0,
-    maximum: "",
-    events: 0,
-    lack: 0,
-    currency: "",
-  };
+const formSchema = z.object({
+  id: z.string(),
+  family_id: z.string(),
+  name: z.string(),
+  cost: z.number().min(0),
+  isSubject: z.boolean(),
+  frequency: z.enum(["M", "A", "S"]),
+  term: z.string(),
+  beneficiaries: z.number().min(0),
+  currency: z.string(),
+  dueDay: z.number().min(0),
+  alias: z.string(),
+  minInsuredCompanyPrice: z.number().min(0),
+  title: z.string(),
+  subTitle: z.string().optional(),
+  description: z.string(),
+  territorialScope: z.string(),
+  hiringConditions: z.string(),
+  assistances: z.array(assistanceSchema),
+});
 
-  const [familySelected, setFamilySelected] = useState(false);
-  const [showModalAssistance, setShowModalAssistance] = useState(false);
-  const [assistanceData, setAssistanceData] = useState(initialDataAssistance);
+const ProductDetail = ({ product }: any) => {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [assistances, setAssistances] = useState<(typeof assistanceSchema)[]>(
+    []
+  );
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      id: product?.id || undefined,
+      family_id: product?.family_id || undefined,
+      name: product?.name || "",
+      cost: product?.cost || 0,
+      isSubject: product?.isSubject || false,
+      frequency: product?.frequency || "M",
+      term: product?.term || 0,
+      beneficiaries: product?.beneficiaries || 0,
+      currency: product?.currency || "P",
+      dueDay: product?.dueDay || 0,
+      alias: product?.alias || "",
+      minInsuredCompanyPrice: product?.minInsuredCompanyPrice || 0,
+      title: product?.title || "",
+      subTitle: product?.subTitle || "",
+      description: product?.description || "",
+      territorialScope: product?.territorialScope || "",
+      hiringConditions: product?.hiringConditions || "",
+      assistances: product?.assistances || [],
+    },
+  });
+
+  const { data: families } = useQueryFamily().useGetAll();
 
   const formatAmount = (amount: string, currency: string) => {
     if (amount === "0") {
@@ -73,315 +158,452 @@ const ProductDetail = ({ setEnableSave, isSaving, setIsSaving }: any) => {
     }
   };
 
-  const handleValue = (field: string, value: any) => {
-    const state = { ...product, [field]: value };
-    setProduct(state);
-  };
+  const { mutate: createProduct, isLoading } = useQueryProduct().useCreate();
 
-  const handleChangeFamily = (e: any) => {
-    //set({ ...product, familyValues: [] });
-    handleValue("family_id", e.target.value);
-    if (e.target.value === "") {
-      resetFamily();
-    } else {
-      getFamilyById(e.target.value);
-    }
-  };
-
-  const handleChangeName = (e: any) => {
-    handleValue("name", e.target.value);
-  };
-
-  const handleChangeTitle = (e: any) => {
-    handleValue("title", e.target.value);
-  };
-
-  const handleChangeSubTitle = (e: any) => {
-    handleValue("subTitle", e.target.value);
-  };
-
-  const handleChangeDescription = (e: any) => {
-    handleValue("description", e.target.value);
-  };
-
-  const handleChangeTerritorialScope = (e: any) => {
-    handleValue("territorialScope", e.target.value);
-  };
-
-  const handleChangeHiringConditions = (e: any) => {
-    handleValue("hiringConditions", e.target.value);
-  };
-
-  const handleChangeBeneficiaries = (e: any) => {
-    handleValue("beneficiaries", e.target.value);
-  };
-
-  const handleChangeDueDay = (e: any) => {
-    handleValue("dueDay", e.target.value);
-  };
-
-  const handleChangeMinInsuredCompanyPrice = (e: any) => {
-    handleValue("minInsuredCompanyPrice", e.target.value);
-  };
-
-  const handleCheckSubject = () => {
-    handleValue("isSubject", !product.isSubject);
-  };
-
-  const handleChangeCost = (e: any) => {
-    handleValue("cost", e.target.value);
-  };
-
-  const handleChangeFrequency = (e: any) => {
-    handleValue("frequency", e.target.value);
-  };
-
-  const handleChangeTerm = (e: any) => {
-    handleValue("term", e.target.value);
-  };
-
-  const handleClickAddAssistance = () => {
-    setAssistanceData(initialDataAssistance);
-    setShowModalAssistance(true);
-  };
-
-  const handleClickEditAssistance = (assistanceItem: any) => {
-    setAssistanceData(assistanceItem);
-    setShowModalAssistance(true);
-  };
-
-  const handleClickDeleteAssistance = (assistanceItem: any) => {
-    setProduct({
-      ...product,
-      assistances: [
-        ...product.assistances.filter(
-          (item: any) => item.id !== assistanceItem.id
-        ),
-      ],
-    });
-  };
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    createProduct(
+      {
+        id: values.id,
+        family_id: values.family_id,
+        name: values.name,
+        cost: values.cost,
+        isSubject: values.isSubject,
+        frequency: values.frequency,
+        term: values.term,
+        beneficiaries: values.beneficiaries,
+        currency: values.currency,
+        dueDay: values.dueDay,
+        alias: values.alias,
+        minInsuredCompanyPrice: values.minInsuredCompanyPrice,
+        title: values.title,
+        subTitle: values.subTitle,
+        description: values.description,
+        territorialScope: values.territorialScope,
+        hiringConditions: values.hiringConditions,
+        assistances: assistances,
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(["product", product?.id]);
+          toast({
+            title: router.pathname.includes("new")
+              ? "Producto creado"
+              : "Producto actualizado",
+            description: router.pathname.includes("new")
+              ? "El producto se ha creado correctamente"
+              : "El producto se ha actualizado correctamente",
+          });
+        },
+      }
+    );
+  }
 
   useEffect(() => {
-    setEnableSave(
-      product.family_id !== "" &&
-        product.name !== "" &&
-        product.beneficiaries.toString() !== "" &&
-        product.term > 0
-    );
+    if (product?.assistances) {
+      setAssistances(product?.assistances);
+    }
   }, [product]);
 
-  useEffect(() => {
-    setFamilySelected(product.family_id !== "");
-    if (product.family_id !== "") {
-      getFamilyById(product.family_id);
-    }
-  }, [product.family_id]);
-
   return (
-    <Fragment>
-      <ContentCell gap="20px">
-        <ContentCell gap="5px">
-          <ContentRow gap="5px">
-            <ComboBox
-              id="txtProductFamily"
-              label="Familia"
-              width="310px"
-              value={product.family_id}
-              onChange={handleChangeFamily}
-              placeHolder=":: Seleccione familia ::"
-              data={listFamilies}
-              dataValue="id"
-              dataText="name"
-              enabled={true}
-            />
-            <InputText
-              id="txtProductName"
-              label="Nombre"
-              width="638px"
-              value={product.name}
-              onChange={handleChangeName}
-              onBlur={handleChangeName}
-              disabled={true}
-            />
-          </ContentRow>
-          <ContentRow gap="5px">
-            <InputText
-              id="txtTitle"
-              label="Título"
-              width="310px"
-              value={product.title}
-              onChange={handleChangeTitle}
-              disabled={true}
-            />
-            <InputText
-              id="txtSubTitle"
-              label="Sub título"
-              width="638px"
-              value={product.subTitle}
-              onChange={handleChangeSubTitle}
-              disabled={true}
-            />
-          </ContentRow>
-          <TextArea
-            id="txtName"
-            label="Descripción"
-            width="953px"
-            height="100px"
-            value={product.description}
-            onChange={handleChangeDescription}
-            disabled={true}
-          />
-          <ContentRow gap="5px">
-            <TextArea
-              id="txtName"
-              label="Ambito regional"
-              width="100%"
-              height="150px"
-              value={product.territorialScope}
-              onChange={handleChangeTerritorialScope}
-              disabled={true}
-            />
-            <TextArea
-              id="txtName"
-              label="Condiciones de contratación"
-              width="100%"
-              height="150px"
-              value={product.hiringConditions}
-              onChange={handleChangeHiringConditions}
-              disabled={true}
-            />
-          </ContentRow>
-        </ContentCell>
-        <ContentCell gap="5px">
-          <ContentRow gap="5px" align="space-between">
-            <ContentRow gap="5px">
-              <InputText
-                id="txtProductBeneficiaries"
-                label="N° Cargas máximo"
-                width="200px"
-                value={product.beneficiaries.toString()}
-                onChange={handleChangeBeneficiaries}
-                onBlur={handleChangeBeneficiaries}
-                disabled={true}
+    <>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <ContentCell gap="20px">
+            <ContentCell gap="5px">
+              <ContentRow gap="5px">
+                <FormField
+                  control={form.control}
+                  name="family_id"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Familia</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "w-[314px] justify-between rounded-sm border-dusty-gray border-opacity-40 py-6",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value
+                                ? families?.find(
+                                    (family: any) => family.id === field.value
+                                  )?.name
+                                : "Seleccionar familia"}
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[200px] p-0">
+                          <Command>
+                            <CommandInput placeholder="Buscar familia..." />
+                            <CommandEmpty>
+                              No se encontró la familia.
+                            </CommandEmpty>
+                            <CommandGroup>
+                              {families?.map((family: any) => (
+                                <CommandItem
+                                  value={family.name}
+                                  key={family.id}
+                                  onSelect={(value) => {
+                                    form.setValue("family_id", family.id);
+                                  }}
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      family.id === field.value
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                  {family.name}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem className="flex w-full flex-col">
+                      <FormLabel>Nombre</FormLabel>
+                      <Input
+                        {...field}
+                        placeholder="Nombre"
+                        className="w-full"
+                      />
+                    </FormItem>
+                  )}
+                />
+              </ContentRow>
+              <ContentRow gap="5px">
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem className="flex w-full flex-col">
+                      <FormLabel>Título</FormLabel>
+                      <Input
+                        {...field}
+                        placeholder="Título"
+                        className="w-full"
+                      />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="subTitle"
+                  render={({ field }) => (
+                    <FormItem className="flex w-full flex-col">
+                      <FormLabel>Sub título</FormLabel>
+                      <Input
+                        {...field}
+                        placeholder="Sub título"
+                        className="w-full"
+                      />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="alias"
+                  render={({ field }) => (
+                    <FormItem className="flex w-full flex-col">
+                      <FormLabel>Alianza</FormLabel>
+                      <Input
+                        {...field}
+                        placeholder="Alias"
+                        className="w-full"
+                      />
+                    </FormItem>
+                  )}
+                />
+              </ContentRow>
+              <ContentRow gap="5px">
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem className="flex w-full flex-col">
+                      <FormLabel>Descripción Formal</FormLabel>
+                      <Textarea
+                        {...field}
+                        placeholder="Descripción"
+                        className="min-h-[120px] w-full rounded-sm hover:border-opacity-80"
+                      />
+                    </FormItem>
+                  )}
+                />
+              </ContentRow>
+              <ContentRow gap="5px">
+                <FormField
+                  control={form.control}
+                  name="territorialScope"
+                  render={({ field }) => (
+                    <FormItem className="flex w-full flex-col">
+                      <FormLabel>Ambito regional</FormLabel>
+                      <Textarea
+                        {...field}
+                        placeholder="Ambito regional"
+                        className="min-h-[160px] w-full rounded-sm hover:border-opacity-80"
+                      />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="hiringConditions"
+                  render={({ field }) => (
+                    <FormItem className="flex w-full flex-col">
+                      <FormLabel>Condiciones de contratación</FormLabel>
+                      <Textarea
+                        {...field}
+                        placeholder="Condiciones de contratación"
+                        className="min-h-[160px] w-full rounded-sm hover:border-opacity-80"
+                      />
+                    </FormItem>
+                  )}
+                />
+              </ContentRow>
+            </ContentCell>
+            <ContentCell gap="5px">
+              <ContentRow gap="5px" align="space-between">
+                <ContentRow gap="5px">
+                  <FormField
+                    control={form.control}
+                    name="beneficiaries"
+                    render={({ field }) => (
+                      <FormItem className="flex w-full flex-col">
+                        <FormLabel>N° Cargas máximo</FormLabel>
+                        <Input
+                          {...field}
+                          placeholder="N° Cargas máximo"
+                          className="w-full"
+                        />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="minInsuredCompanyPrice"
+                    render={({ field }) => (
+                      <FormItem className="flex w-full flex-col">
+                        <FormLabel>N° mínimo beneficiarios</FormLabel>
+                        <Input
+                          {...field}
+                          placeholder="N° mínimo beneficiarios"
+                          className="w-full"
+                        />
+                      </FormItem>
+                    )}
+                  />
+                </ContentRow>
+                <ContentRow gap="20px">
+                  <FormField
+                    control={form.control}
+                    name="cost"
+                    render={({ field }) => (
+                      <FormItem className="flex w-full flex-col">
+                        <FormLabel htmlFor="cost">Costo técnico ($)</FormLabel>
+                        <Input {...field} />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="isSubject"
+                    render={({ field }) => (
+                      <FormItem className="flex items-center gap-2 space-y-0 self-end">
+                        <Checkbox
+                          id="isSubject"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                          className="h-8 w-8 border-dusty-gray border-opacity-40 hover:border-opacity-80"
+                        />
+                        <FormLabel className="text-lg " htmlFor="isSubject">
+                          Afecto
+                        </FormLabel>
+                      </FormItem>
+                    )}
+                  />
+                </ContentRow>
+              </ContentRow>
+              <ContentRow gap="5px" align="space-between">
+                <FormField
+                  control={form.control}
+                  name="frequency"
+                  render={({ field }) => (
+                    <FormItem className="flex w-full flex-col">
+                      <FormLabel>Frecuencia</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="rounded-sm border-dusty-gray border-opacity-40 py-6 hover:border-opacity-80">
+                            <SelectValue placeholder="Seleccione frecuencia" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {frequencyList.map((item) => (
+                            <SelectItem key={item.id} value={item.id}>
+                              {item.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="dueDay"
+                  render={({ field }) => (
+                    <FormItem className="flex w-full flex-col">
+                      <FormLabel>Día de pago</FormLabel>
+                      <Input
+                        {...field}
+                        placeholder="Día de pago"
+                        className="w-full"
+                      />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="term"
+                  render={({ field }) => (
+                    <FormItem className="flex w-full flex-col">
+                      <FormLabel>Duración (meses)</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value?.toString()}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="rounded-sm border-dusty-gray border-opacity-40 py-6 hover:border-opacity-80">
+                            <SelectValue placeholder="Seleccione duración" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {termList.map((item) => (
+                            <SelectItem key={item.id} value={item.id}>
+                              {item.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormItem>
+                  )}
+                />
+              </ContentRow>
+            </ContentCell>
+            <ContentCell gap="5px">
+              <Table width="953px" height="347px">
+                <TableHeader>
+                  <TableCell width="385px">Servicio</TableCell>
+                  <TableCell width="100px">Monto</TableCell>
+                  <TableCell width="275px">Límite</TableCell>
+                  <TableCell width="85px">Eventos</TableCell>
+                  <TableCell width="85px">Carencia</TableCell>
+                  <TableCellEnd />
+                </TableHeader>
+                <TableDetail>
+                  {assistances?.map((item: any, idx: number) => (
+                    <TableRow key={idx}>
+                      <TableCell width="385px">{item.name}</TableCell>
+                      <TableCell width="100px" align="center">
+                        {formatAmount(item.amount, item.currency)}
+                      </TableCell>
+                      <TableCell width="275px" align="center">
+                        {item.maximum}
+                      </TableCell>
+                      <TableCell width="85px" align="center">
+                        {item.events === 0 ? "Ilimitado" : item.events}
+                      </TableCell>
+                      <TableCell width="85px" align="center">
+                        {item.lack}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableDetail>
+              </Table>
+              <ContentRow gap="10px" align="space-between">
+                <ContentCellSummary>{`${product?.assistances.length} servicios`}</ContentCellSummary>
+                <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                  <DialogTrigger className="h-10 w-10 rounded-full bg-teal-blue p-2 text-white hover:bg-teal-blue-400">
+                    +
+                  </DialogTrigger>
+                  <DialogContent className="w-[890px]">
+                    <DialogHeader>
+                      <DialogTitle>Asistencia</DialogTitle>
+                      <DialogDescription>
+                        Llena el formulario para asignar una asistencia al
+                        producto.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <ProductAssistance
+                      form={form}
+                      assistancesList={assistances}
+                      setAssistances={setAssistances}
+                      setIsOpen={setIsOpen}
+                    />
+                  </DialogContent>
+                </Dialog>
+              </ContentRow>
+            </ContentCell>
+          </ContentCell>
+          <FloatMenu>
+            <Button
+              className="h-10 w-10 rounded-full bg-teal-blue-300 p-0 hover:bg-teal-blue"
+              onClick={() => router.push("/")}
+              type="button"
+            >
+              <Icon
+                iconName="home"
+                size="24px"
+                className="cursor-pointer"
+                button
               />
-              <InputText
-                id="txtProductBeneficiaries"
-                label="N° mínimo beneficiarios"
-                width="200px"
-                value={product.minInsuredCompanyPrice.toString()}
-                onChange={handleChangeMinInsuredCompanyPrice}
-                onBlur={handleChangeMinInsuredCompanyPrice}
-                disabled={true}
+            </Button>
+            <Button
+              className="h-10 w-10 rounded-full bg-teal-blue-300 p-0 hover:bg-teal-blue"
+              onClick={() => router.back()}
+              type="button"
+            >
+              <Icon
+                iconName="arrow_back"
+                size="24px"
+                className="cursor-pointer"
+                button
               />
-            </ContentRow>
-            <ContentRow gap="20px">
-              <InputText
-                id="txtProductCost"
-                type="number"
-                label="Costo técnico ($)"
-                width="200px"
-                value={product.cost.toString()}
-                onChange={handleChangeCost}
-                onBlur={handleChangeCost}
-                disabled={true}
+            </Button>
+            <Button
+              className="h-10 w-10 rounded-full bg-teal-blue-300 p-0 hover:bg-teal-blue"
+              type="submit"
+              disabled={isLoading}
+            >
+              <Icon
+                iconName="save"
+                size="24px"
+                className="cursor-pointer"
+                button
               />
-              <CheckBox
-                label="Afecto"
-                width="90px"
-                value={product.isSubject}
-                onChange={handleCheckSubject}
-              />
-            </ContentRow>
-          </ContentRow>
-          <ContentRow gap="5px" align="space-between">
-            <ComboBox
-              id="txtProductFrecuency"
-              label="Frecuencia"
-              width="405px"
-              value={product.frequency}
-              onChange={handleChangeFrequency}
-              placeHolder=":: Seleccione frecuencia ::"
-              data={frequencyList}
-              dataValue="id"
-              dataText="name"
-            />
-            <InputText
-              id="txtProductBeneficiaries"
-              label="Día de pago"
-              width="200px"
-              value={product.dueDay.toString()}
-              onChange={handleChangeDueDay}
-              onBlur={handleChangeDueDay}
-              disabled={true}
-            />
-            <ComboBox
-              id="txtProductTerm"
-              label="Duración (meses)"
-              width="310px"
-              value={product.term.toString()}
-              onChange={handleChangeTerm}
-              placeHolder=":: Seleccione duración ::"
-              data={termList}
-              dataValue="id"
-              dataText="name"
-            />
-          </ContentRow>
-        </ContentCell>
-        <ContentCell gap="5px">
-          <Table width="953px" height="347px">
-            <TableHeader>
-              <TableCell width="385px">Servicio</TableCell>
-              <TableCell width="100px">Monto</TableCell>
-              <TableCell width="275px">Límite</TableCell>
-              <TableCell width="85px">Eventos</TableCell>
-              <TableCell width="85px">Carencia</TableCell>
-              <TableCellEnd />
-            </TableHeader>
-            <TableDetail>
-              {product.assistances.map((item: any, idx: number) => (
-                <TableRow key={idx}>
-                  <TableCell width="385px">{item.name}</TableCell>
-                  <TableCell width="100px" align="center">
-                    {formatAmount(item.amount, item.currency)}
-                  </TableCell>
-                  <TableCell width="275px" align="center">
-                    {item.maximum}
-                  </TableCell>
-                  <TableCell width="85px" align="center">
-                    {item.events === 0 ? "Ilimitado" : item.events}
-                  </TableCell>
-                  <TableCell width="85px" align="center">
-                    {item.lack}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableDetail>
-          </Table>
-          <ContentRow gap="10px" align="space-between">
-            <ContentCellSummary>{`${product.assistances.length} servicios`}</ContentCellSummary>
-          </ContentRow>
-        </ContentCell>
-      </ContentCell>
-      <ModalWindow
-        showModal={showModalAssistance}
-        setClosed={() => setShowModalAssistance(false)}
-        title="Asistencia">
-        <ProductAssistance
-          assistanceData={assistanceData}
-          setAssistanceData={setAssistanceData}
-          setShowModalAssistance={setShowModalAssistance}
-        />
-      </ModalWindow>
-      {productLoading ? (
-        <LoadingMessage showModal={productLoading} />
-      ) : (
-        isSaving && (
-          <SuccessMessage showModal={!productLoading} callback={() => {}}>
-            Producto registrado correctamente
-          </SuccessMessage>
-        )
-      )}
-    </Fragment>
+            </Button>
+          </FloatMenu>
+        </form>
+      </Form>
+      <LoadingMessage showModal={isLoading} />
+    </>
   );
 };
 

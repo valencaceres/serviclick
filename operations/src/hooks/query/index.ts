@@ -12,6 +12,7 @@ import useQueryProduct from "./useQueryProduct";
 import useQueryLead from "./useQueryLead";
 import useQueryBeneficiary from "./useQueryBeneficiary";
 import useQueryInsured from "./useQueryInsured";
+import useQueryFamily from "./useQueryFamily";
 
 export {
   useQueryCompany,
@@ -27,5 +28,6 @@ export {
   useQueryProduct,
   useQueryLead,
   useQueryBeneficiary,
-  useQueryInsured
+  useQueryInsured,
+  useQueryFamily,
 };

@@ -19,6 +19,7 @@ import "react-toastify/dist/ReactToastify.css";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
 import { esES } from "@clerk/localizations";
+import { Toaster } from "~/components/ui/Toaster";
 
 const publicPages: Array<string> = ["/sign-in/[[...index]]"];
 
@@ -36,6 +37,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           <Provider store={store}>
             <Switch>
               <Component {...pageProps} />
+              <Toaster />
             </Switch>
             <ToastContainer />
             <ReactQueryDevtools initialIsOpen={false} />
@@ -48,6 +50,7 @@ function MyApp({ Component, pageProps }: AppProps) {
               <Provider store={store}>
                 <Switch>
                   <Component {...pageProps} />
+                  <Toaster />
                 </Switch>
                 <ToastContainer />
                 <ReactQueryDevtools initialIsOpen={false} />

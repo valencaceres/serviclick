@@ -6,127 +6,88 @@ import {
   ContentCellSummary,
 } from "../../../layout/Content";
 
-import InputText from "../../../ui/InputText";
-import ComboBox from "../../../ui/ComboBox";
-import ButtonIcon from "../../../ui/ButtonIcon";
-import {
-  Table,
-  TableHeader,
-  TableDetail,
-  TableRow,
-  TableCell,
-  TableIcons,
-  TableCellEnd,
-} from "../../../ui/Table";
-import Icon from "../../../ui/Icon";
-import ModalWarning from "../../../ui/ModalWarning";
+import { type ColumnDef } from "@tanstack/react-table";
+import { DataTable } from "./DataTable.tsx/DataTable";
+import { useRouter } from "next/router";
 
-import { useProduct } from "../../../../hooks";
+const ProductList = ({ products }: any) => {
+  const router = useRouter();
 
-const ProductList = ({ editProduct }: any) => {
-  const {
-    getAllProducts,
-    productList,
-    getProductByFamilyId,
-    setProduct,
-    families,
-    product,
-  } = useProduct();
+  if (!products) return null;
 
-  const initialSearchForm = {
-    family: { value: "", isValid: true },
-    searchText: { value: "", isValid: true },
-  };
-
-  const [search, setSearch] = useState(initialSearchForm);
-
-  const handleChangeFamily = (e: any) => {
-    setSearch({
-      ...search,
-      family: { value: e.target.value, isValid: true },
-    });
-  };
-
-  const handleChangeSearchText = (e: any) => {
-    setSearch({
-      ...search,
-      searchText: { value: e.target.value, isValid: true },
-    });
-  };
-
-  const handleClickSearch = () => {
-    search.family.value !== ""
-      ? getProductByFamilyId(
-          search.family.value,
-          "020579a3-8461-45ec-994b-ad22ff8e3275"
-        )
-      : getAllProducts("020579a3-8461-45ec-994b-ad22ff8e3275");
+  const handleViewProduct = ({ id }: Product) => {
+    router.push(`product/${id}`);
   };
 
   return (
-    <Fragment>
-      <ContentCell gap="5px">
-        <ContentRow gap="5px" align="center">
-          <ComboBox
-            label="Familia"
-            width="300px"
-            value={search.family.value}
-            onChange={handleChangeFamily}
-            placeHolder=":: Seleccione familia ::"
-            data={families}
-            dataValue="id"
-            dataText="name"
-          />
-          <InputText
-            label="Texto a buscar"
-            width="520px"
-            value={search.searchText.value}
-            onChange={handleChangeSearchText}
-          />
-          <ButtonIcon
-            iconName="search"
-            color="gray"
-            onClick={handleClickSearch}
-          />
-        </ContentRow>
-        <Table width="871px">
-          <TableHeader>
-            <TableCell width="70px" align="center">
-              #
-            </TableCell>
-            <TableCell width="260px">Familia</TableCell>
-            <TableCell width="350px">Nombre</TableCell>
-            <TableCell width="90px">Día pago</TableCell>
-            <TableCell width="80px">Afecto</TableCell>
-            <TableCellEnd />
-          </TableHeader>
-          <TableDetail>
-            {productList.map((product: any, idx: number) => (
-              <TableRow
-                key={idx}
-                link={true}
-                onClick={() => editProduct(product.id)}>
-                <TableCell width="70px" align="center">
-                  {idx + 1}
-                </TableCell>
-                <TableCell width="260px">{product.family_name}</TableCell>
-                <TableCell width="350px">{product.name}</TableCell>
-                <TableCell width="90px" align="center">
-                  {product.dueDay === 0 ? "" : product.dueDay}
-                </TableCell>
-                <TableCell width="80px" align="center">
-                  {product.isSubject ? "SI" : ""}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableDetail>
-        </Table>
-        <ContentRow align="flex-end">
-          <ContentCellSummary>{`${productList.length} productos`}</ContentCellSummary>
-        </ContentRow>
-      </ContentCell>
-    </Fragment>
+    <ContentCell>
+      <DataTable
+        columns={columns}
+        data={products}
+        onRowClick={handleViewProduct}
+      />
+    </ContentCell>
   );
 };
 
 export default ProductList;
+
+interface Assistance {
+  id: string;
+  name: string;
+  amount: string;
+  maximum: string;
+  events: number;
+  lack: number;
+  currency: string;
+}
+
+type Frequency = "M" | "A" | "S";
+
+interface Product {
+  id: string;
+  family_id: string;
+  family_name: string;
+  name: string;
+  cost: number; // Ensure >= 0 in code
+  isSubject: boolean;
+  frequency: Frequency;
+  term: string;
+  beneficiaries: number; // Ensure >= 0 in code
+  currency: string;
+  dueDay: number; // Ensure >= 0 in code
+  alias: string;
+  minInsuredCompanyPrice: number; // Ensure >= 0 in code
+  title: string;
+  subTitle?: string; // optional
+  description: string;
+  territorialScope: string;
+  hiringConditions: string;
+  assistances: Assistance[];
+}
+
+const columns: ColumnDef<Product>[] = [
+  {
+    accessorKey: "number",
+    header: "N°",
+    cell: ({ row }) => <div>{row.index + 1}</div>,
+  },
+  {
+    accessorKey: "family_name",
+    header: "Familia",
+  },
+  {
+    accessorKey: "alias",
+    header: "Alianza",
+  },
+  {
+    accessorKey: "name",
+    header: "Nombre",
+    cell: ({ row }) => <div className="font-semibold">{row.original.name}</div>,
+  },
+  {
+    accessorKey: "isSubject",
+    header: "Afecto",
+    cell: ({ row }) => <div>{row.original.isSubject ? "Sí" : "No"}</div>,
+  },
+];

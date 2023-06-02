@@ -24,9 +24,9 @@ const pool = new Pool({
   password: dbPassword,
   port: 5432,
   keepAlive: true,
-  ssl: {
-    ca: fs.readFileSync(path.join(__dirname, "/certificate.crt")),
-  },
+  // ssl: {
+  //   ca: fs.readFileSync(path.join(__dirname, "/certificate.crt")),
+  // },
 });
 
 pool.connect(function (err) {

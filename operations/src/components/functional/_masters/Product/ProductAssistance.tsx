@@ -1,11 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
-import { ContentCell, ContentRow } from "../../../layout/Content";
-import ComboBox from "../../../ui/ComboBox";
-import InputText from "../../../ui/InputText";
+import { Button } from "~/components/ui/ButtonC";
+import { FormLabel } from "~/components/ui/Form";
+import { Input } from "~/components/ui/Input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/Select";
 
-import { useAssistance, useProduct } from "../../../../hooks";
-import Button from "../../../ui/Button";
+import { useQueryAssistances } from "~/hooks/query";
 
 const dataCurrency = [
   { code: "P", name: "Pesos" },
@@ -13,165 +19,132 @@ const dataCurrency = [
 ];
 
 const ProductAssistance = ({
-  assistanceData,
-  setAssistanceData,
-  setShowModalAssistance,
+  form,
+  assistancesList,
+  setAssistances,
+  setIsOpen,
 }: any) => {
-  const { assistanceList } = useAssistance();
-  const { setProduct, product } = useProduct();
+  const [serviceName, setServiceName] = useState<string | undefined>(undefined);
+  const [amount, setAmount] = useState<string | undefined>(undefined);
+  const [currency, setCurrency] = useState("P");
+  const [maximum, setMaximum] = useState("");
+  const [events, setEvents] = useState("");
+  const [lack, setLack] = useState("");
 
-  const [enableButton, setEnableButton] = useState(false);
-
-  const handleChangeAssistance = (e: any) => {
-    setAssistanceData({
-      ...assistanceData,
-      id: e.target.value,
-      name: e.target.options[e.target.selectedIndex].text,
-    });
-  };
-
-  const handleChangeAmount = (e: any) => {
-    setAssistanceData({
-      ...assistanceData,
-      amount: e.target.value,
-    });
-  };
-
-  const handleChangeMaximum = (e: any) => {
-    setAssistanceData({
-      ...assistanceData,
-      maximum: e.target.value,
-    });
-  };
-
-  const handleChangeEvents = (e: any) => {
-    setAssistanceData({
-      ...assistanceData,
-      events: e.target.value,
-    });
-  };
-
-  const handleChangeLack = (e: any) => {
-    setAssistanceData({
-      ...assistanceData,
-      lack: e.target.value,
-    });
-  };
-
-  const handleChangeCurrency = (e: any) => {
-    setAssistanceData({
-      ...assistanceData,
-      currency: e.target.value,
-    });
-  };
-
-  const handleClickAddAssistance = () => {
-    if (assistanceData.line_order > 0) {
-      const newArray = [...product.assistances];
-      newArray[assistanceData.line_order - 1] = {
-        id: assistanceData.id,
-        name: assistanceData.name,
-        amount: assistanceData.amount,
-        maximum: assistanceData.maximum,
-        events: assistanceData.events,
-        lack: assistanceData.lack,
-        currency: assistanceData.currency,
-      };
-      setProduct({
-        ...product,
-        assistances: [...newArray],
-      });
-    } else {
-      setProduct({
-        ...product,
-        assistances: [...product.assistances, assistanceData],
-      });
-    }
-    setShowModalAssistance(false);
-  };
-
-  useEffect(() => {
-    setEnableButton(
-      assistanceData.id !== "" &&
-        ((assistanceData.amount > 0 && assistanceData.currency.id !== "") ||
-          assistanceData.maximum !== "") &&
-        assistanceData.lack > 0
-    );
-  }, [assistanceData]);
+  const { data: assistances } = useQueryAssistances().useGetAll();
 
   return (
-    <ContentCell gap="20px" align="center">
-      <ContentCell gap="5px">
-        <ComboBox
-          id="cmbAssistance"
-          label="Servicio"
-          width="500px"
-          value={assistanceData.id}
-          onChange={handleChangeAssistance}
-          placeHolder=":: Seleccione servicio ::"
-          data={assistanceList.filter((item: any) => {
-            return !product.assistances
-              .filter((itd: any) => itd.id !== assistanceData.id)
-              ?.map((itemAssistance) => itemAssistance.name)
-              .includes(item.name);
-          })}
-          dataValue="id"
-          dataText="name"
-        />
-        <ContentRow gap="5px">
-          <InputText
-            id="txtAmount"
+    <div className="flex w-full flex-col gap-2">
+      <div>
+        <FormLabel>Servicio</FormLabel>
+        <Select
+          onValueChange={(value) => setServiceName(value)}
+          defaultValue={serviceName}
+          required
+        >
+          <SelectTrigger className="py-6">
+            <SelectValue placeholder="Seleccione servicio" />
+          </SelectTrigger>
+          <SelectContent className="max-h-[200px]">
+            {assistances?.map((item: any) => (
+              <SelectItem
+                className="hover:bg-gray-50"
+                key={item.id}
+                value={item.name}
+              >
+                {item.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="flex gap-2">
+        <div className="w-full">
+          <FormLabel>Monto</FormLabel>
+          <Input
             type="number"
-            label="Monto"
-            width="200px"
-            value={assistanceData.amount.toString()}
-            onChange={handleChangeAmount}
+            className="w-full"
+            onChange={(e) => setAmount(e.target.value)}
+            required
           />
-          <ComboBox
-            id="cmbCurrency"
-            label="Moneda"
-            width="295px"
-            value={assistanceData.currency}
-            onChange={handleChangeCurrency}
-            placeHolder=":: Seleccione moneda ::"
-            data={dataCurrency}
-            dataValue="code"
-            dataText="name"
+        </div>
+        <div className="w-full">
+          <FormLabel>Moneda</FormLabel>
+          <Select
+            onValueChange={(value) => setCurrency(value)}
+            defaultValue={currency}
+          >
+            <SelectTrigger className="w-full py-6">
+              <SelectValue placeholder="Selecccione moneda" />
+            </SelectTrigger>
+            <SelectContent className="max-h-[200px]">
+              {dataCurrency?.map((item: any) => (
+                <SelectItem
+                  className="hover:bg-gray-50"
+                  key={item.code}
+                  value={item.code}
+                >
+                  {item.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      <div className="flex gap-2">
+        <div className="w-full">
+          <FormLabel>Límite</FormLabel>
+          <Input
+            className="w-full"
+            onChange={(e) => setMaximum(e.target.value)}
           />
-        </ContentRow>
-        <ContentRow gap="5px">
-          <InputText
-            id="txtMaximum"
-            label="Límite"
-            width="250px"
-            value={assistanceData.maximum.toString()}
-            onChange={handleChangeMaximum}
-          />
-          <InputText
-            id="txtEvents"
+        </div>
+        <div className="w-full">
+          <FormLabel>Eventos anuales</FormLabel>
+          <Input
             type="number"
-            label="Eventos anuales"
-            width="120px"
-            value={assistanceData.events.toString()}
-            onChange={handleChangeEvents}
+            className="w-full"
+            onChange={(e) => setEvents(e.target.value)}
+            required
           />
-          <InputText
-            id="txtLack"
+        </div>
+        <div className="w-full">
+          <FormLabel>Período de carencia</FormLabel>
+          <Input
             type="number"
-            label="Carencia"
-            width="120px"
-            value={assistanceData.lack.toString()}
-            onChange={handleChangeLack}
+            className="w-full"
+            onChange={(e) => setLack(e.target.value)}
+            required
           />
-        </ContentRow>
-      </ContentCell>
+        </div>
+      </div>
       <Button
-        text="Registrar"
-        width="150px"
-        onClick={handleClickAddAssistance}
-        enabled={enableButton}
-      />
-    </ContentCell>
+        type="button"
+        className="mt-4"
+        disabled={!serviceName || !amount || !events || !lack}
+        onClick={() => {
+          const assistanceId = assistances.find(
+            (item: any) => item.name === serviceName
+          )?.id;
+
+          setAssistances([
+            ...assistancesList,
+            {
+              id: assistanceId,
+              name: serviceName,
+              amount,
+              currency,
+              maximum,
+              events,
+              lack,
+            },
+          ]);
+          setIsOpen(false);
+        }}
+      >
+        Registrar
+      </Button>
+    </div>
   );
 };
 

@@ -61,7 +61,7 @@ export function Menu({ isOpen, setIsOpen }: MenuProps) {
   return (
     <>
       <nav
-        className={`border-grayDark-6 absolute left-0 top-0 z-20 flex h-screen flex-col justify-between overflow-y-auto border-r bg-white duration-75 ${
+        className={`border-grayDark-6 fixed left-0 top-0 z-30 flex h-full flex-col justify-between overflow-y-auto border-r bg-white duration-75 ${
           isOpen ? "w-64" : "w-12"
         }`}
       >
@@ -98,7 +98,7 @@ export function Menu({ isOpen, setIsOpen }: MenuProps) {
         </div>
       </nav>
       <div
-        className={`absolute left-0 top-0 z-10 h-screen w-screen bg-black bg-opacity-20 ${
+        className={`fixed left-0 top-0 z-20 min-h-screen h-full w-screen bg-black bg-opacity-20 ${
           isOpen ? "" : "hidden"
         }`}
         onClick={() => setIsOpen(false)}
