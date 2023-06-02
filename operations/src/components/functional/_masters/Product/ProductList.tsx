@@ -20,13 +20,11 @@ const ProductList = ({ products }: any) => {
   };
 
   return (
-    <ContentCell>
-      <DataTable
-        columns={columns}
-        data={products}
-        onRowClick={handleViewProduct}
-      />
-    </ContentCell>
+    <DataTable
+      columns={columns}
+      data={products}
+      onRowClick={handleViewProduct}
+    />
   );
 };
 
