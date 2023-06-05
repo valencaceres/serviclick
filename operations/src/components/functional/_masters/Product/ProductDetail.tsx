@@ -16,7 +16,6 @@ import {
   TableCell,
   TableCellEnd,
 } from "../../../ui/Table";
-import ModalWindow from "../../../ui/ModalWindow";
 
 import { frequencyList, termList } from "../../../../data/masters";
 import ProductAssistance from "./ProductAssistance";
@@ -144,6 +143,8 @@ const ProductDetail = ({ product }: any) => {
       assistances: product?.assistances || [],
     },
   });
+
+  console.log(form.getValues())
 
   const { data: families } = useQueryFamily().useGetAll();
 
