@@ -1160,7 +1160,7 @@ const addProduct = async (req: any, res: any) => {
     lead_id,
     product_id,
     productPlanResponse.data.price,
-    productResponse.data.currency,
+    productResponse.data?.currency,
     productPlanResponse.data.frequency,
     productPlanResponse.data.plan_id
   );

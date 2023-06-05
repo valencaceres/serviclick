@@ -75,7 +75,7 @@ export function DataTable<TData, TValue>({
       <div className="flex flex-col gap-2 md:flex-row">
         <fieldset className="flex w-full max-w-sm flex-col">
           <Label htmlFor="searchService" className="mb-1">
-            Buscar por Servicio
+            Buscar por familia
           </Label>
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
@@ -83,7 +83,7 @@ export function DataTable<TData, TValue>({
                 variant="outline"
                 role="combobox"
                 aria-expanded={open}
-                className="w-full max-w-sm items-center justify-between overflow-hidden rounded-sm border-dusty-gray-200 py-6"
+                className="w-full md:max-w-sm items-center justify-between overflow-hidden rounded-sm border-dusty-gray-200 py-6"
               >
                 {selectedFamily
                   ? families?.find(
@@ -170,7 +170,7 @@ export function DataTable<TData, TValue>({
             className="w-full"
           />
         </fieldset>
-        <fieldset className="flex w-full flex-col max-w-sm">
+        <fieldset className="flex w-full flex-col">
           <Label htmlFor="searchAlias" className="mb-1">
             Buscar por alianza
           </Label>
@@ -181,7 +181,7 @@ export function DataTable<TData, TValue>({
             onChange={(event) =>
               table.getColumn("alias")?.setFilterValue(event.target.value)
             }
-            className="w-full max-w-sm"
+            className="w-full"
           />
         </fieldset>
       </div>

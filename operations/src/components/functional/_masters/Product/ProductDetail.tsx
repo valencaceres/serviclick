@@ -91,18 +91,18 @@ const assistanceSchema = z.object({
 });
 
 const formSchema = z.object({
-  id: z.string(),
+  id: z.string().optional(),
   family_id: z.string(),
   name: z.string(),
-  cost: z.number().min(0),
+  cost: z.string().refine((val) => parseInt(val) >= 0),
   isSubject: z.boolean(),
   frequency: z.enum(["M", "A", "S"]),
   term: z.string(),
-  beneficiaries: z.number().min(0),
+  beneficiaries: z.string().refine((val) => parseInt(val) >= 0),
   currency: z.string(),
-  dueDay: z.number().min(0),
+  dueDay: z.string().refine((val) => parseInt(val) >= 0),
   alias: z.string(),
-  minInsuredCompanyPrice: z.number().min(0),
+  minInsuredCompanyPrice: z.string().refine((val) => parseInt(val) >= 0),
   title: z.string(),
   subTitle: z.string().optional(),
   description: z.string(),
@@ -130,7 +130,7 @@ const ProductDetail = ({ product }: any) => {
       cost: product?.cost || 0,
       isSubject: product?.isSubject || false,
       frequency: product?.frequency || "M",
-      term: product?.term || 0,
+      term: product?.term || "",
       beneficiaries: product?.beneficiaries || 0,
       currency: product?.currency || "P",
       dueDay: product?.dueDay || 0,
@@ -163,18 +163,18 @@ const ProductDetail = ({ product }: any) => {
   function onSubmit(values: z.infer<typeof formSchema>) {
     createProduct(
       {
-        id: values.id,
+        id: values.id || undefined,
         family_id: values.family_id,
         name: values.name,
-        cost: values.cost,
+        cost: parseInt(values.cost),
         isSubject: values.isSubject,
         frequency: values.frequency,
         term: values.term,
-        beneficiaries: values.beneficiaries,
+        beneficiaries: parseInt(values.beneficiaries),
         currency: values.currency,
-        dueDay: values.dueDay,
+        dueDay: parseInt(values.dueDay),
         alias: values.alias,
-        minInsuredCompanyPrice: values.minInsuredCompanyPrice,
+        minInsuredCompanyPrice: parseInt(values.minInsuredCompanyPrice),
         title: values.title,
         subTitle: values.subTitle,
         description: values.description,
@@ -183,8 +183,11 @@ const ProductDetail = ({ product }: any) => {
         assistances: assistances,
       },
       {
-        onSuccess: () => {
-          queryClient.invalidateQueries(["product", product?.id]);
+        onSuccess: (data) => {
+          queryClient.invalidateQueries(["product", data.id]);
+          if (router.pathname.includes("new")) {
+            router.push(`${data.id}`);
+          }
           toast({
             title: router.pathname.includes("new")
               ? "Producto creado"
@@ -487,7 +490,7 @@ const ProductDetail = ({ product }: any) => {
                       <FormLabel>Duración (meses)</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value?.toString()}
+                        defaultValue={field.value}
                       >
                         <FormControl>
                           <SelectTrigger className="rounded-sm border-dusty-gray border-opacity-40 py-6 hover:border-opacity-80">
@@ -538,7 +541,9 @@ const ProductDetail = ({ product }: any) => {
                 </TableDetail>
               </Table>
               <ContentRow gap="10px" align="space-between">
-                <ContentCellSummary>{`${product?.assistances.length} servicios`}</ContentCellSummary>
+                <ContentCellSummary>{`${
+                  product?.assistances.length || 0
+                } servicios`}</ContentCellSummary>
                 <Dialog open={isOpen} onOpenChange={setIsOpen}>
                   <DialogTrigger className="h-10 w-10 rounded-full bg-teal-blue p-2 text-white hover:bg-teal-blue-400">
                     +
@@ -577,7 +582,7 @@ const ProductDetail = ({ product }: any) => {
             </Button>
             <Button
               className="h-10 w-10 rounded-full bg-teal-blue-300 p-0 hover:bg-teal-blue"
-              onClick={() => router.back()}
+              onClick={() => router.push("/masters/product")}
               type="button"
             >
               <Icon
