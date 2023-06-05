@@ -126,15 +126,15 @@ const ProductDetail = ({ product }: any) => {
       id: product?.id || undefined,
       family_id: product?.family_id || undefined,
       name: product?.name || "",
-      cost: product?.cost || 0,
+      cost: product?.cost?.toString() || "0",
       isSubject: product?.isSubject || false,
       frequency: product?.frequency || "M",
-      term: product?.term || "",
-      beneficiaries: product?.beneficiaries || 0,
+      term: product?.term || undefined,
+      beneficiaries: product?.beneficiaries?.toString() || "0",
       currency: product?.currency || "P",
-      dueDay: product?.dueDay || 0,
+      dueDay: product?.dueDay?.toString() || "0",
       alias: product?.alias || "",
-      minInsuredCompanyPrice: product?.minInsuredCompanyPrice || 0,
+      minInsuredCompanyPrice: product?.minInsuredCompanyPrice?.toString() || "0",
       title: product?.title || "",
       subTitle: product?.subTitle || "",
       description: product?.description || "",
@@ -391,6 +391,7 @@ const ProductDetail = ({ product }: any) => {
                         <FormLabel>N° Cargas máximo</FormLabel>
                         <Input
                           {...field}
+                          type="number"
                           placeholder="N° Cargas máximo"
                           className="w-full"
                         />
@@ -405,6 +406,7 @@ const ProductDetail = ({ product }: any) => {
                         <FormLabel>N° mínimo beneficiarios</FormLabel>
                         <Input
                           {...field}
+                          type="number"
                           placeholder="N° mínimo beneficiarios"
                           className="w-full"
                         />
@@ -419,7 +421,7 @@ const ProductDetail = ({ product }: any) => {
                     render={({ field }) => (
                       <FormItem className="flex w-full flex-col">
                         <FormLabel htmlFor="cost">Costo técnico ($)</FormLabel>
-                        <Input {...field} />
+                        <Input {...field} type="number" placeholder="ej: 5000" />
                       </FormItem>
                     )}
                   />
@@ -596,7 +598,7 @@ const ProductDetail = ({ product }: any) => {
             <Button
               className="h-10 w-10 rounded-full bg-teal-blue-300 p-0 hover:bg-teal-blue"
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || !form.formState.isValid}
             >
               <Icon
                 iconName="save"
