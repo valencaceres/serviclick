@@ -1,11 +1,3 @@
-import { useState, Fragment } from "react";
-
-import {
-  ContentCell,
-  ContentRow,
-  ContentCellSummary,
-} from "../../../layout/Content";
-
 import { type ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "./DataTable.tsx/DataTable";
 import { useRouter } from "next/router";
@@ -47,17 +39,17 @@ interface Product {
   family_id: string;
   family_name: string;
   name: string;
-  cost: number; // Ensure >= 0 in code
+  cost: number;
   isSubject: boolean;
   frequency: Frequency;
   term: string;
-  beneficiaries: number; // Ensure >= 0 in code
+  beneficiaries: number;
   currency: string;
-  dueDay: number; // Ensure >= 0 in code
+  dueDay: number;
   alias: string;
-  minInsuredCompanyPrice: number; // Ensure >= 0 in code
+  minInsuredCompanyPrice: number;
   title: string;
-  subTitle?: string; // optional
+  subTitle?: string;
   description: string;
   territorialScope: string;
   hiringConditions: string;
