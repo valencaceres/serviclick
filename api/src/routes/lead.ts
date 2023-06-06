@@ -12,6 +12,7 @@ import {
   addInsured,
   addBeneficiary,
   getStatistics,
+  getContract
 } from "../controllers/lead";
 
 const LeadRouter = Router();
@@ -38,5 +39,6 @@ LeadRouter.post("/addProduct", auth, addProduct);
 LeadRouter.post("/addInsured", auth, addInsured);
 LeadRouter.post("/addBeneficiary", auth, addBeneficiary);
 LeadRouter.get("/getStatistics", auth, getStatistics);
+LeadRouter.get("/getContract/:lead_id", auth, getContract);
 
 export default LeadRouter;

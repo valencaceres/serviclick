@@ -43,6 +43,7 @@ const CaseFormSolution = ({ thisCase }: any) => {
     user_id: user?.id,
     description,
     isactive: true,
+    lead_id: thisCase?.lead_id,
   });
 
   const handleSubmit = (e: any) => {

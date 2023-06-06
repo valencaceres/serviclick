@@ -57,6 +57,7 @@ const getById = async (id: string) => {
               CAS.isactive,
               CAS.type,
               FAM.id AS family_id,
+              CAS.lead_id,
               CST.user_id,
               COALESCE(CAS.customer_id, CAS.company_id) AS contractor_id,
               CASE WHEN BEN.name IS NOT NULL THEN BEN.name
@@ -123,6 +124,7 @@ const getById = async (id: string) => {
       contractor_id: result.rows[0].contractor_id,
       type: result.rows[0].type,
       is_active: result.rows[0].isactive,
+      lead_id: result.rows[0].lead_id,
       stages: result.rows.map((row: any) => ({
         id: row.stage_id,
         stage: row.stage,

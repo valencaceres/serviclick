@@ -61,6 +61,7 @@ const CaseFormReimbursement = ({ thisCase }: any) => {
             contractor?.type === "P" ? thisCase?.contractor_id : null,
           user_id: user?.id,
           isactive: true,
+          lead_id: thisCase?.lead_id,
         },
         {
           onSuccess: () => {

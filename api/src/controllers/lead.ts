@@ -18,6 +18,7 @@ import * as Product from "../models/product";
 import * as ProductPlan from "../models/productPlan";
 import * as Policy from "../models/policy";
 import * as LeadProductValues from "../models/leadProductValue";
+import { getContractLink } from "../util/s3";
 
 export type CustomerT = {
   id: string;
@@ -1356,6 +1357,26 @@ const getStatistics = async (req: any, res: any) => {
   res.status(200).json(statistics);
 };
 
+const getContract = async (req: any, res: any) => {
+  const { lead_id } = req.params;
+
+  try {
+    const link = await getContractLink(`contrato_${lead_id}.pdf`);
+
+    createLogger.info({
+      controller: `case/getContract`,
+      message: `OK - Contract link generated`,
+    });
+
+    return res.status(200).json({ link });
+  } catch (e: any) {
+    if (e.message = "File not found") {
+      return res.status(404).json({ error: "File not found" });
+    }
+    return res.status(500).json({ error: e.message });
+  }
+};
+
 export {
   createController,
   addBeneficiariesController,
@@ -1367,4 +1388,5 @@ export {
   addInsured,
   addBeneficiary,
   getStatistics,
+  getContract,
 };

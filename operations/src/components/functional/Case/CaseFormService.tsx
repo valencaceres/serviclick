@@ -175,6 +175,7 @@ const CaseFormService = ({ thisCase }: any) => {
           user_id: user?.id,
           description,
           isactive: true,
+          lead_id: selectedProduct?.lead_id,
         },
         {
           onSuccess: () => {
@@ -269,7 +270,7 @@ const CaseFormService = ({ thisCase }: any) => {
                           )
                         : (
                             assistanceData?.remaining_amount *
-                            ufValue.serie[0].valor
+                            ufValue?.serie[0].valor
                           ).toLocaleString("es-CL", {
                             style: "currency",
                             currency: "CLP",
