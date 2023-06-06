@@ -45,7 +45,7 @@ import {
 } from "~/components/ui/Command";
 import { Input } from "~/components/ui/Input";
 import { Textarea } from "~/components/ui/TextArea";
-import { Checkbox } from "~/components/ui/Checkbox";
+import { Checkbox } from "~/components/ui/CheckboxC";
 import {
   Select,
   SelectContent,
