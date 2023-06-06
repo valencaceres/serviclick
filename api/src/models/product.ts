@@ -348,89 +348,63 @@ const getProductByFamilyId: any = async (
   }
 };
 
-const getById: any = async (id: string) => {
+const getById = async (id: string) => {
   try {
-    const result = await pool.query(
-      `
-      select 	pro.id,
-              pro.family_id,
-              pro.name,
-              pro.cost,
-              pro.issubject,
-              pro.frequency,
-              pro.term,
-              pro.beneficiaries,
-              pro.currency,
-              pro.dueday,
-              pro.mininsuredcompanyprice,
-              des.title,
-              des.sub_title,
-              des.alias,
-              des.promotional,
-              des.description,
-              des.territorial_scope,
-              des.hiring_conditions,
-              pas.number,
-              asi.id as assistance_id,
-              asi.name as assistance_name,
-              pas.amount,
-              pas.maximum,
-              pas.events,
-              pas.lack,
-              pas.currency
-        from 	app.product pro
-                inner join app.productdescription des on pro.id = des.product_id
-                inner join app.productassistance pas on pro.id = pas.product_id
-                inner join app.assistance asi on pas.assistance_id = asi.id
-        where 	pro.id = $1
-        order 	by
-                pas.number`,
-      [id]
-    );
+    const sqlQuery = `
+      SELECT  pro.id, pro.family_id, pro.name, pro.cost, pro.issubject,
+              pro.frequency, pro.term, pro.beneficiaries, pro.currency,
+              pro.dueday, pro.mininsuredcompanyprice, des.title, des.sub_title,
+              des.alias, des.promotional, des.description, des.territorial_scope,
+              des.hiring_conditions, pas.number, asi.id as assistance_id,
+              asi.name as assistance_name, pas.amount, pas.maximum,
+              pas.events, pas.lack, pas.currency
+      FROM 	app.product pro
+      INNER JOIN app.productdescription des ON pro.id = des.product_id
+      LEFT OUTER JOIN app.productassistance pas ON pro.id = pas.product_id
+      LEFT OUTER JOIN app.assistance asi ON pas.assistance_id = asi.id
+      WHERE 	pro.id = $1
+      ORDER 	BY pas.number
+    `;
 
-    let data: any = {};
+    const result = await pool.query(sqlQuery, [id]);
+    const { rows } = result;
 
-    if (result.rows.length > 0) {
-      data = {
-        id: result.rows[0].id,
-        family_id: result.rows[0].family_id,
-        name: result.rows[0].name,
-        cost: result.rows[0].cost,
-        isSubject: result.rows[0].issubject,
-        frequency: result.rows[0].frequency,
-        term: result.rows[0].term,
-        beneficiaries: result.rows[0].beneficiaries,
-        currency: result.rows[0].currency,
-        dueDay: result.rows[0].dueday,
-        minInsuredCompanyPrice: result.rows[0].mininsuredcompanyprice,
-        title: result.rows[0].title,
-        subTitle: result.rows[0].sub_title,
-        alias: result.rows[0].alias,
-        promotional: result.rows[0].promotional,
-        description: result.rows[0].description,
-        territorialScope: result.rows[0].territorial_scope,
-        hiringConditions: result.rows[0].hiring_conditions,
-        assistances: [],
-      };
-
-      result.rows.map((item: any) => {
-        data = {
-          ...data,
-          assistances: [
-            ...data.assistances,
-            {
-              id: item.assistance_id,
-              name: item.assistance_name,
-              amount: item.amount,
-              maximum: item.maximum,
-              events: item.events,
-              lack: item.lack,
-              currency: item.currency,
-            },
-          ],
-        };
-      });
+    if (rows.length === 0) {
+      return { success: false, data: null, error: "No data found" };
     }
+
+    const firstRow = rows[0];
+    const data = {
+      id: firstRow.id,
+      family_id: firstRow.family_id,
+      name: firstRow.name,
+      cost: firstRow.cost,
+      isSubject: firstRow.issubject,
+      frequency: firstRow.frequency,
+      term: firstRow.term,
+      beneficiaries: firstRow.beneficiaries,
+      currency: firstRow.currency,
+      dueDay: firstRow.dueday,
+      minInsuredCompanyPrice: firstRow.mininsuredcompanyprice,
+      title: firstRow.title,
+      subTitle: firstRow.sub_title,
+      alias: firstRow.alias,
+      promotional: firstRow.promotional,
+      description: firstRow.description,
+      territorialScope: firstRow.territorial_scope,
+      hiringConditions: firstRow.hiring_conditions,
+      assistances: rows
+        .filter((row) => row.assistance_id !== null)
+        .map((row) => ({
+          id: row.assistance_id,
+          name: row.assistance_name,
+          amount: row.amount,
+          maximum: row.maximum,
+          events: row.events,
+          lack: row.lack,
+          currency: row.currency,
+        })),
+    };
 
     return { success: true, data, error: null };
   } catch (e) {

@@ -5,7 +5,7 @@ import { ContentCell, ContentRow } from "../../../layout/Content";
 import Button from "../../../ui/Button";
 import InputText from "../../../ui/InputText";
 import ButtonIcon from "../../../ui/ButtonIcon";
-import CheckBox from "../../../ui/CheckBox";
+import CheckBox from "../../../ui/Checkbox";
 
 const ProductCoverage = ({
   setCoverage,

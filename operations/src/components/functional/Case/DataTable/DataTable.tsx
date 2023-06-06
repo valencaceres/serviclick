@@ -21,15 +21,15 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../TableC";
-import { Input } from "../Input";
-import { Label } from "../Label";
+} from "../../../ui/TableC";
+import { Input } from "../../../ui/Input";
+import { Label } from "../../../ui/Label";
 
 import { DataTablePagination } from "./DataTablePagination";
 import { isValidRut, rutValidate } from "~/utils/validations";
 import { unFormatRut } from "~/utils/format";
-import { Popover, PopoverContent, PopoverTrigger } from "../Popover";
-import { Button } from "../ButtonC";
+import { Popover, PopoverContent, PopoverTrigger } from "../../../ui/Popover";
+import { Button } from "../../../ui/ButtonC";
 import { Check, ChevronsUpDown } from "lucide-react";
 import {
   Command,
@@ -38,7 +38,7 @@ import {
   CommandInput,
   CommandItem,
   CommandSeparator,
-} from "../Command";
+} from "../../../ui/Command";
 import {
   useQueryAssistances,
   useQueryBeneficiary,
@@ -51,7 +51,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "../Accordion";
+} from "../../../ui/Accordion";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/router";
 import { useQueryClient } from "@tanstack/react-query";
@@ -65,7 +65,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "../AlertDialog";
+} from "../../../ui/AlertDialog";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -578,7 +578,7 @@ export function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() && "selected"}
                   className={`${
                     onRowClick && "cursor-pointer"
-                  } hover:bg-gray-100`}
+                  } hover:bg-gray-100 even:bg-sky-50`}
                   onClick={() => onRowClick && onRowClick(row.original)}
                 >
                   {row.getVisibleCells().map((cell) => (

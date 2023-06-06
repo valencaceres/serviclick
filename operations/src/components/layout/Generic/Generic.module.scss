@@ -1,19 +1,15 @@
 @import "../../../styles/variables.scss";
 
 .screen {
-  height: calc(100vh - 60px);
-  width: 100vw;
-
-  @media screen and (min-width: 1200px) {
-    height: calc(100vh);
-  }
-
   .header {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: fixed;
     height: 70px;
     width: 100%;
+    background-color: white;
+    z-index: 10;
     border-bottom: 1px solid $ultra-light-gray-color;
     //filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.1));
 
@@ -47,7 +43,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: calc(100% - 70px);
     width: 100%;
+    padding-top: 80px;
   }
 }
