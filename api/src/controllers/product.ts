@@ -128,6 +128,7 @@ const createProduct = async (req: any, res: any) => {
 
   const productByIdResponse = await Product.getById(id);
 
+
   if (!productByIdResponse.success) {
     createLogger.error({
       model: "product/getById",

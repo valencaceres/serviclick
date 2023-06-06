@@ -15,9 +15,9 @@ const Icon = ({
 }: IconT) => {
   return (
     <span
-      className={`${className} material-symbols-outlined select-none`}
-      onClick={onClick}
-      style={{ fontSize: size, cursor: button ? "pointer" : "default" }}
+    onClick={onClick}
+    style={{ fontSize: size, cursor: button ? "pointer" : "default" }}
+    className={`material-symbols-outlined select-none ${className} `}
     >
       {iconName}
     </span>

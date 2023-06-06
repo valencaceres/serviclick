@@ -1,7 +1,7 @@
 import { ContentCell } from "../../../layout/Content";
 
 import Button from "../../../ui/Button";
-import CheckBox from "../../../ui/CheckBox";
+import CheckBox from "../../../ui/Checkbox";
 
 type FamilyValuesDetailT = {
   id: string;

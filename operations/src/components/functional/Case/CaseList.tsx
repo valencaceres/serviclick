@@ -3,8 +3,8 @@ import { useRouter } from "next/router";
 import { type ColumnDef } from "@tanstack/react-table";
 
 import { useQueryCase } from "../../../hooks/query";
-import { DataTable } from "~/components/ui/DataTable/DataTable";
-import { DataTableColumnHeader } from "~/components/ui/DataTable/DataTableColumnHeader";
+import { DataTable } from "~/components/functional/Case/DataTable/DataTable";
+import { DataTableColumnHeader } from "~/components/functional/Case/DataTable/DataTableColumnHeader";
 
 const CaseList = () => {
   const router = useRouter();
