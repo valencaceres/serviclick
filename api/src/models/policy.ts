@@ -1,10 +1,11 @@
 import pool from "../util/database";
 import { format } from "date-fns";
 
-
-const create = async () => {
+const create = async (customDate?: string) => {
   try {
-    const createDate = format(new Date(), "yyyy-MM-dd HH:mm:ss");
+    const dateToFormat = customDate ? new Date(customDate) : new Date();
+    const createDate = format(dateToFormat, "yyyy-MM-dd HH:mm:ss");
+
     const response = await pool.query(
       `INSERT INTO app.policy
       (createdate, startdate)

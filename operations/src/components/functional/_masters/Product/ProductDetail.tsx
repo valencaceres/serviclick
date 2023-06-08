@@ -144,8 +144,6 @@ const ProductDetail = ({ product }: any) => {
     },
   });
 
-  console.log(form.getValues())
-
   const { data: families } = useQueryFamily().useGetAll();
 
   const formatAmount = (amount: string, currency: string) => {

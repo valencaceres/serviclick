@@ -54,7 +54,7 @@ const ContractorInsured = ({ contractor }: any) => {
           <ComboBox
             label="Nombre del producto"
             width="425px"
-            value={subscriptionItem.subscription_id.toString()}
+            value={subscriptionItem.subscription_id?.toString()}
             onChange={handleChangeProduct}
             data={contractor?.subscriptions}
             dataValue="subscription_id"
@@ -79,7 +79,7 @@ const ContractorInsured = ({ contractor }: any) => {
             <TableCellEnd />
           </TableHeader>
           <TableDetail>
-            {subscriptionItem.insured.map((item, idx: number) => (
+            {subscriptionItem.insured?.map((item, idx: number) => (
               <TableRow key={idx}>
                 <TableCell width="60px" align="center">
                   {idx + 1}
@@ -98,9 +98,9 @@ const ContractorInsured = ({ contractor }: any) => {
                   {dbDateToText(item.incorporation)}
                 </TableCell>
                 <TableCell width="90px" align="center">
-                  {item.beneficiaries.length === 0
+                  {item.beneficiaries?.length === 0
                     ? "No tiene"
-                    : item.beneficiaries.length}
+                    : item.beneficiaries?.length}
                 </TableCell>
               </TableRow>
             ))}
@@ -109,12 +109,12 @@ const ContractorInsured = ({ contractor }: any) => {
         <ContentRow align="space-between">
           <ContentRow gap="5px">
             <ContentCellSummary
-              color={subscriptionItem.insured.length > 0 ? "blue" : "#959595"}
+              color={subscriptionItem.insured?.length > 0 ? "blue" : "#959595"}
             >
-              {subscriptionItem.insured.length > 0
-                ? subscriptionItem.insured.length === 1
-                  ? `${subscriptionItem.insured.length} beneficiario`
-                  : `${subscriptionItem.insured.length} beneficiarios`
+              {subscriptionItem.insured?.length > 0
+                ? subscriptionItem.insured?.length === 1
+                  ? `${subscriptionItem.insured?.length} beneficiario`
+                  : `${subscriptionItem.insured?.length} beneficiarios`
                 : `No hay beneficiarios`}
             </ContentCellSummary>
           </ContentRow>
