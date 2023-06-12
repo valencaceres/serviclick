@@ -50,12 +50,32 @@ const useGetContract = (lead_id: string) => {
   });
 };
 
+const addInsuredFromExcel = async (data: any) => {
+  const formData = new FormData();
+  formData.append('file', data.file);
+  formData.append('subscription_id', data.subscriptionId);
+
+  const { data: result } = await apiInstance.post('/lead/addInsuredFromExcel', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
+
+  return result;
+};
+
+const useAddInsuredFromExcel = () => {
+  return useMutation(addInsuredFromExcel);
+};
+
+
 const useQueryLead = () => {
   return {
     useAddProduct,
     useAddInsured,
     useAddBeneficiary,
     useGetContract,
+    useAddInsuredFromExcel,
   };
 };
 

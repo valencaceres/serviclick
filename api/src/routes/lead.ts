@@ -1,4 +1,5 @@
 import { Router } from "express";
+import multer from "multer";
 
 import auth from "../middlewares/auth";
 import {
@@ -12,8 +13,11 @@ import {
   addInsured,
   addBeneficiary,
   getStatistics,
-  getContract
+  getContract,
+  addInsuredFromExcel,
 } from "../controllers/lead";
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 const LeadRouter = Router();
 
@@ -40,5 +44,6 @@ LeadRouter.post("/addInsured", auth, addInsured);
 LeadRouter.post("/addBeneficiary", auth, addBeneficiary);
 LeadRouter.get("/getStatistics", auth, getStatistics);
 LeadRouter.get("/getContract/:lead_id", auth, getContract);
+LeadRouter.post('/addInsuredFromExcel', auth, upload.single('file'), addInsuredFromExcel);
 
 export default LeadRouter;
