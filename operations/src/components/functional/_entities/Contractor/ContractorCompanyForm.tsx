@@ -126,7 +126,10 @@ const ContractorCompanyForm = ({
 
     createCompany(data, {
       onSuccess: (data) => {
-        setIsEditing(false);
+        if (!pathname.includes("/new")) {
+          setIsEditing(false);
+          reset();
+        }
         queryClient.invalidateQueries(["contractor", data.data?.id]);
         push(`/entities/contractor/${data.data?.id}`);
       },

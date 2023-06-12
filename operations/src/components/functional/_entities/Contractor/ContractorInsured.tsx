@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { PlusIcon } from "lucide-react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
@@ -38,10 +38,15 @@ import { Input } from "~/components/ui/Input";
 import { formatRut, unFormatRut } from "~/utils/format";
 import { emailRegEx, numberRegEx, rutRegEx } from "~/utils/regEx";
 import { rutValidate } from "~/utils/validations";
-import { useQueryContractor, useQueryInsured, useQueryLead } from "~/hooks/query";
+import { useQueryInsured, useQueryLead } from "~/hooks/query";
+
+import { LoadingMessage } from "~/components/ui/LoadingMessage";
 
 const ContractorInsured = ({ contractor }: any) => {
   const { subscriptionItem, getSubscriptionById } = useContractor();
+  const [isUploading, setIsUploading] = useState(false);
+
+  const [isFileDialogOpen, setIsFileDialogOpen] = useState(false);
 
   const handleChangeProduct = (e: any) => {
     getSubscriptionById(e.target.value);
@@ -118,22 +123,120 @@ const ContractorInsured = ({ contractor }: any) => {
                 : `No hay beneficiarios`}
             </ContentCellSummary>
           </ContentRow>
-          {subscriptionItem.subscription_id !== "" && <AddInsured />}
+          {subscriptionItem.subscription_id !== "" && (
+            <div className="space-x-2">
+              <AddInsuredFromExcel
+                subscriptionId={subscriptionItem.subscription_id}
+                isOpen={isFileDialogOpen}
+                setIsOpen={setIsFileDialogOpen}
+                isUploading={isUploading}
+                setIsUploading={setIsUploading}
+              />
+              <AddInsured />
+            </div>
+          )}
         </ContentRow>
       </ContentCell>
+      <LoadingMessage showModal={isUploading} />
     </Fragment>
   );
 };
 
 export default ContractorInsured;
 
+const AddInsuredFromExcel = ({
+  subscriptionId,
+  isOpen,
+  setIsOpen,
+  isUploading,
+  setIsUploading,
+}: {
+  subscriptionId: string;
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+  isUploading: boolean;
+  setIsUploading: (isUploading: boolean) => void;
+}) => {
+  const { getSubscriptionById } = useContractor();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const {
+    mutate: addInsuredFromExcel,
+    isLoading,
+    error,
+  } = useQueryLead().useAddInsuredFromExcel();
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedFile(event.target.files ? event.target.files[0] : null);
+  };
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!selectedFile) {
+      return;
+    }
+
+    addInsuredFromExcel(
+      { subscriptionId, file: selectedFile },
+      {
+        onSuccess: () => {
+          getSubscriptionById(parseInt(subscriptionId));
+          setSelectedFile(null);
+          setIsOpen(false);
+        },
+      }
+    );
+  };
+
+  useEffect(() => {
+    if (isLoading) {
+      setIsUploading(true);
+    } else {
+      setIsUploading(false);
+    }
+  }, [isLoading, setIsUploading]);
+
+  return (
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger>
+        <Button>Carga masiva</Button>
+      </DialogTrigger>
+      <DialogContent className="bg-white">
+        <DialogHeader>
+          <DialogTitle>Carga masiva de beneficiarios</DialogTitle>
+          <Button
+            type="button"
+            size={"sm"}
+            variant={"outline"}
+            className="w-fit"
+          >
+            Descargar documento con formato
+          </Button>
+          <DialogDescription>
+            Descarga el documento y rellenalo con los datos de los
+            beneficiarios. Luego, sube el documento completado.
+          </DialogDescription>
+        </DialogHeader>
+        <h2 className="font-bold text-teal-blue">
+          Subir documento con los datos de los beneficiarios.
+        </h2>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+          <Input className="py-1" type="file" onChange={handleFileChange} />
+          <Button type="submit" disabled={!selectedFile || isUploading}>
+            {isUploading ? "Subiendo..." : "Subir"}
+          </Button>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 const AddInsured = () => {
   return (
     <Dialog>
       <DialogTrigger>
-        <Button className="h-10 w-10 rounded-full p-2">
-          <PlusIcon />
-        </Button>
+        <Button>Agregar beneficiario</Button>
       </DialogTrigger>
       <DialogContent className="bg-white">
         <DialogHeader>
@@ -149,8 +252,6 @@ const AddInsured = () => {
 };
 
 const NewInsuredForm = () => {
-  const { pathname } = useRouter();
-
   const {
     reset,
     register,

@@ -1,4 +1,5 @@
 import axios from "axios";
+import xlsx from "xlsx";
 
 import config from "../util/config";
 import createLogger from "../util/logger";
@@ -19,6 +20,7 @@ import * as ProductPlan from "../models/productPlan";
 import * as Policy from "../models/policy";
 import * as LeadProductValues from "../models/leadProductValue";
 import { getContractLink } from "../util/s3";
+import excelToJson from "../util/excelToJson";
 
 export type CustomerT = {
   id: string;
@@ -79,8 +81,8 @@ type InsuredT = {
   district: string;
   email: string;
   phone: string;
-  beneficiaries: BeneficiaryT[];
-  values: ValuesT[];
+  values?: ValuesT[];
+  beneficiaries?: BeneficiaryT[];
 };
 
 type ProductT = {
@@ -482,6 +484,91 @@ const createSubscription = async (
   }
 };
 
+const addMultipleInsured = async (
+  leadDataResponse: any,
+  insured: InsuredT[],
+  productId: string
+) => {
+  try {
+    const insuredPromises = insured.flatMap(async (item: any) => {
+      const insuredDataPromises = item.data.map(async (insuredItem: any) => {
+        const { data: insuredData } = await createInsured(insuredItem);
+        console.log("OK6");
+
+        const { data: leadInsuredData } = await createLeadInsured(
+          leadDataResponse.id,
+          insuredData.id
+        );
+        console.log("OK7");
+
+        const leadProductDeleteResponse =
+          await LeadProductValues.deleteByInsuredId(
+            leadDataResponse.id,
+            productId,
+            insuredData.id
+          );
+
+        if (insuredItem.values && insuredItem.values.length > 0) {
+          for (const value of insuredItem.values) {
+            console.log("OK9---");
+            const leadProductValue = await LeadProductValues.create(
+              leadDataResponse.id,
+              productId,
+              insuredData.id,
+              value.value_id,
+              value.value
+            );
+            console.log("OK9");
+          }
+        }
+
+        const { data: leadBeneficiaryDelete } = await deleteLeadBeneficiaries(
+          leadDataResponse.id,
+          insuredData.id
+        );
+        console.log("OK10");
+
+        const newInsured = { ...insuredData, beneficiaries: [] };
+
+        if (insuredItem.beneficiaries && insuredItem.beneficiaries.length > 0) {
+          for (const beneficiary of insuredItem.beneficiaries) {
+            console.log(insuredItem);
+            const { data: beneficiaryData } = await createBeneficiary(
+              beneficiary
+            );
+            console.log("OK11");
+
+            const { data: leadBeneficiaryData } = await createLeadBeneficiary(
+              leadDataResponse.id,
+              insuredData.id,
+              beneficiaryData.id
+            );
+            console.log("OK12");
+
+            newInsured.beneficiaries.push(beneficiaryData);
+          }
+        }
+
+        return newInsured;
+      });
+
+      return Promise.all(insuredDataPromises);
+    });
+
+    const insuredDataArray = await Promise.all(insuredPromises);
+
+    leadDataResponse = {
+      ...leadDataResponse,
+      insured: insuredDataArray,
+    };
+
+    return { success: true, data: leadDataResponse };
+  } catch (error) {
+    console.error("Error al procesar:", error);
+    return { success: false, data: null, error: error };
+  }
+};
+
 const create = async (lead: any) => {
   try {
     const {
@@ -494,7 +581,7 @@ const create = async (lead: any) => {
       link = "",
       user_id,
     } = lead;
-    let leadDataResponse: LeadT = initialLeadData;
+    let leadDataResponse: any = initialLeadData;
 
     if (customer.rut !== "") {
       const { data: customerData } = await createCustomer(customer);
@@ -521,79 +608,20 @@ const create = async (lead: any) => {
 
     const { data: leadProductData } = await createProduct(
       leadDataResponse.id,
-      product
+      lead.product
     );
     leadDataResponse = { ...leadDataResponse, product: leadProductData };
     console.log("OK4");
 
-    if (insured) {
-      const { data: leadInsuredDelete } = await deleteLeadInsured(
-        leadDataResponse.id
-      );
+    if (lead.insured) {
+      await deleteLeadInsured(leadDataResponse.id);
       console.log("OK5");
 
-      for (const item of insured) {
-        const { data: insuredData } = await createInsured(item);
-        console.log("OK6");
-
-        const { data: leadInsuredData } = await createLeadInsured(
-          leadDataResponse.id,
-          insuredData.id
-        );
-        console.log("OK7");
-
-        const leadProductDeleteResponse =
-          await LeadProductValues.deleteByInsuredId(
-            leadDataResponse.id,
-            product.id,
-            insuredData.id
-          );
-        console.log(leadProductDeleteResponse);
-
-        if (item.values) {
-          for (const value of item.values) {
-            console.log("OK9---");
-            const leadProductValue = await LeadProductValues.create(
-              leadDataResponse.id,
-              product.id,
-              insuredData.id,
-              value.value_id,
-              value.value
-            );
-            console.log("OK9");
-          }
-        }
-
-        const { data: leadBeneficiaryDelete } = await deleteLeadBeneficiaries(
-          leadDataResponse.id,
-          insuredData.id
-        );
-        console.log("OK10");
-
-        const newInsured = { ...insuredData, beneficiaries: [] };
-        for (const beneficiary of item.beneficiaries) {
-          const { data: beneficiaryData } = await createBeneficiary(
-            beneficiary
-          );
-          console.log("OK11");
-
-          console.log(beneficiaryData);
-
-          const { data: leadBeneficiaryData } = await createLeadBeneficiary(
-            leadDataResponse.id,
-            insuredData.id,
-            beneficiaryData.id
-          );
-          console.log("OK12");
-
-          newInsured.beneficiaries.push(beneficiaryData);
-        }
-
-        leadDataResponse = {
-          ...leadDataResponse,
-          insured: [...leadDataResponse.insured, newInsured],
-        };
-      }
+      leadDataResponse = await addMultipleInsured(
+        leadDataResponse,
+        insured,
+        product.id
+      );
     }
 
     return { success: true, data: leadDataResponse, error: null };
@@ -1309,6 +1337,51 @@ const addBeneficiary = async (req: any, res: any) => {
   return res.status(200).json(leadBeneficiaryResponse.data);
 };
 
+const addInsuredFromExcel = async (req: any, res: any) => {
+  try {
+    const { subscription_id } = req.body;
+    const file = req.file;
+    const workbook = xlsx.read(file.buffer, { type: "buffer" });
+    const sheet_name_list = workbook.SheetNames;
+    const xlsData = xlsx.utils.sheet_to_json(
+      workbook.Sheets[sheet_name_list[0]],
+      {
+        raw: false,
+        dateNF: "yyyy-mm-dd",
+      }
+    );
+
+    const leadDataResponse = await Lead.getBySubscriptionId(subscription_id);
+
+    const leadProductResponse = await LeadProduct.getByLeadId(
+      leadDataResponse.data.id
+    );
+
+    const jsonData = excelToJson(
+      xlsData,
+      subscription_id,
+      leadProductResponse.data.product_id
+    );
+
+    const responses = await Promise.all(
+      jsonData.map((item: any) =>
+        addMultipleInsured(
+          leadDataResponse.data,
+          [item],
+          leadProductResponse.data.product_id
+        )
+      )
+    );
+
+    const successResponse = { success: true, data: responses };
+    res.json(successResponse);
+  } catch (error) {
+    const errorResponse = { success: false, error };
+    res.json(errorResponse);
+  }
+};
+
+
 const getStatistics = async (req: any, res: any) => {
   const monthlySubscriptions = await Lead.getMonthlySubscriptions();
 
@@ -1370,7 +1443,7 @@ const getContract = async (req: any, res: any) => {
 
     return res.status(200).json({ link });
   } catch (e: any) {
-    if (e.message = "File not found") {
+    if ((e.message = "File not found")) {
       return res.status(404).json({ error: "File not found" });
     }
     return res.status(500).json({ error: e.message });
@@ -1389,4 +1462,5 @@ export {
   addBeneficiary,
   getStatistics,
   getContract,
+  addInsuredFromExcel,
 };
