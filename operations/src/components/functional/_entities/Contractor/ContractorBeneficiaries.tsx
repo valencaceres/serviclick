@@ -81,7 +81,7 @@ const ContractorBeneficiaries = ({ contractor }: any) => {
           <ComboBox
             label="Nombre del producto"
             width="425px"
-            value={subscriptionItem.subscription_id.toString()}
+            value={subscriptionItem.subscription_id?.toString()}
             onChange={handleChangeProduct}
             data={contractor?.subscriptions}
             dataValue="subscription_id"
@@ -110,7 +110,7 @@ const ContractorBeneficiaries = ({ contractor }: any) => {
             width="650px"
             value={insured?.rut || ""}
             onChange={handleChangeInsured}
-            data={subscriptionItem.insured.map((item) => ({
+            data={subscriptionItem.insured?.map((item) => ({
               rut: item.rut,
               fullName:
                 item.name +
@@ -159,26 +159,26 @@ const ContractorBeneficiaries = ({ contractor }: any) => {
         <ContentRow gap="5px">
           <ContentCellSummary
             color={
-              subscriptionItem.insured.filter(
+              subscriptionItem.insured?.filter(
                 (item) => item.rut === rutInsured
               )[0]?.beneficiaries.length > 0
                 ? "blue"
                 : "#959595"
             }
           >
-            {subscriptionItem.insured.filter(
+            {subscriptionItem.insured?.filter(
               (item) => item.rut === rutInsured
             )[0]?.beneficiaries.length > 0
-              ? subscriptionItem.insured.filter(
+              ? subscriptionItem.insured?.filter(
                   (item) => item.rut === rutInsured
                 )[0]?.beneficiaries.length === 1
                 ? `${
-                    subscriptionItem.insured.filter(
+                    subscriptionItem.insured?.filter(
                       (item) => item.rut === rutInsured
                     )[0]?.beneficiaries.length
                   } carga`
                 : `${
-                    subscriptionItem.insured.filter(
+                    subscriptionItem.insured?.filter(
                       (item) => item.rut === rutInsured
                     )[0]?.beneficiaries.length
                   } cargas`

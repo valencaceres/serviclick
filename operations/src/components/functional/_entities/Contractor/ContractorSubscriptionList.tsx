@@ -1,8 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 
-import { PlusIcon } from "lucide-react";
+import { CalendarIcon, PlusIcon } from "lucide-react";
 import {
   ContentCell,
   ContentCellSummary,
@@ -32,8 +32,19 @@ import ComboBox from "~/components/ui/ComboBox";
 import { useQueryLead, useQueryProduct } from "~/hooks/query";
 import { useQueryClient } from "@tanstack/react-query";
 import { useContractor } from "~/hooks";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/Popover";
+import { cn } from "~/utils/cn";
+import { format } from "date-fns";
+import { Calendar } from "~/components/ui/Calendar";
+
+import { es } from "date-fns/locale";
 
 const ContractorSubscriptionList = ({ contractor, subscriptionClick }: any) => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const { getSubscriptionById } = useContractor();
 
   useEffect(() => {
@@ -61,7 +72,7 @@ const ContractorSubscriptionList = ({ contractor, subscriptionClick }: any) => {
             >
               <TableCell width="360px">{item.product_name}</TableCell>
               <TableCell width="110px" align="center">
-                {dbDateToText(item.createDate)}
+                {item.createDate}
               </TableCell>
             </TableRow>
           ))}
@@ -77,7 +88,7 @@ const ContractorSubscriptionList = ({ contractor, subscriptionClick }: any) => {
               : `${contractor?.subscriptions?.length} suscripciones`
             : `No hay suscripciones`}
         </ContentCellSummary>
-        <AddSubscription />
+        <AddSubscription isOpen={isOpen} setIsOpen={setIsOpen} />
       </ContentRow>
     </ContentCell>
   );
@@ -85,14 +96,23 @@ const ContractorSubscriptionList = ({ contractor, subscriptionClick }: any) => {
 
 export default ContractorSubscriptionList;
 
-const AddSubscription = () => {
+const AddSubscription = ({
+  isOpen,
+  setIsOpen,
+}: {
+  isOpen: boolean;
+  setIsOpen: (value: boolean) => void;
+}) => {
   const router = useRouter();
   const queryClient = useQueryClient();
+
+  const [date, setDate] = useState<Date>(new Date());
 
   const { watch, setValue, handleSubmit, reset } = useForm<{
     subscription: string;
     plan: string;
     agent: string;
+    date: Date | string;
   }>({
     mode: "onChange",
   });
@@ -111,11 +131,13 @@ const AddSubscription = () => {
         agent_id: agent,
         product_id: subscription,
         company_id: router.query.id,
+        customDate: date,
       },
       {
         onSuccess: () => {
           queryClient.invalidateQueries(["contractor", router.query.id]);
           reset();
+          setIsOpen(false);
         },
       }
     );
@@ -131,7 +153,7 @@ const AddSubscription = () => {
   }, [plan]);
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen} >
       <DialogTrigger>
         <Button className="h-10 w-10 rounded-full p-2">
           <PlusIcon />
@@ -146,6 +168,43 @@ const AddSubscription = () => {
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-2 py-2">
+            <Popover modal>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={"outline"}
+                  type="button"
+                  className={cn(
+                    "w-full justify-start rounded-sm border-dusty-gray border-opacity-40 py-6 text-left font-normal",
+                    !date && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date ? (
+                    format(date, "PPP", {
+                      locale: es,
+                    })
+                  ) : (
+                    <span>Selecciona una fecha</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  className="z-50"
+                  selected={date}
+                  onSelect={(day) => {
+                    if (day) {
+                      setDate(day);
+                    }
+                  }}
+                  disabled={(date) =>
+                    date > new Date() || date < new Date("1900-01-01")
+                  }
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
             <ComboBox
               label="Suscripción"
               data={data}
