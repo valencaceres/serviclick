@@ -1,16 +1,14 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useQueryClient } from "@tanstack/react-query";
 
 import {
-  ProductDetail,
   ProductList,
 } from "~/components/functional/_masters/Product";
 
 import FloatMenu from "~/components/ui/FloatMenu";
-import ButtonIcon from "~/components/ui/ButtonIcon";
 
-import { useUI, useFamily, useProduct, useAssistance } from "~/hooks";
+import { useUI } from "~/hooks";
 import { Button } from "~/components/ui/ButtonC";
 import Icon from "~/components/ui/Icon";
 import { useQueryProduct } from "~/hooks/query";
@@ -21,7 +19,7 @@ const Product = () => {
 
   const { setTitleUI } = useUI();
 
-  const { data: products } = useQueryProduct().useListProducts("020579a3-8461-45ec-994b-ad22ff8e3275");
+  const { data: products } = useQueryProduct().useListProducts("7ea804e5-6de1-4e60-affc-f5b31af90ba3");
 
   useEffect(() => {
     setTitleUI("Producto");

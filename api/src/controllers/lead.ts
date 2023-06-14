@@ -1189,83 +1189,114 @@ const addBeneficiariesData = async (
 };
 
 const addProduct = async (req: any, res: any) => {
-  const {
-    product_id,
-    productPlan_id,
-    agent_id,
-    company_id,
-    customer_id,
-    link,
-    paymenttype_code,
-  } = req.body;
+  try {
+    const {
+      product_id,
+      productPlan_id,
+      agent_id,
+      company_id,
+      customer_id,
+      link,
+      paymenttype_code,
+      customDate,
+    } = req.body;
 
-  const policyResponse = await Policy.create();
+    const {
+      success: policySuccess,
+      data: policyData,
+      error: policyError,
+    } = await Policy.create(customDate);
 
-  if (!policyResponse.success) {
-    createLogger.error({
-      model: "policy/create",
-      error: policyResponse.error,
+    if (!policySuccess) {
+      createLogger.error({
+        model: "policy/create",
+        error: policyError,
+      });
+      return res.status(500).json(policyError);
+    }
+
+    const { id: policy_id } = policyData;
+
+    const { data: productPlanData } = await ProductPlan.getById(productPlan_id);
+    const { data: productData } = await Product.getById(product_id);
+
+    const {
+      success: subscriptionSuccess,
+      data: subscriptionData,
+      error: subscriptionError,
+    } = await Subscription.create(
+      productPlanData.price,
+      productPlanData.plan_id,
+      customDate
+    );
+
+    if (!subscriptionSuccess) {
+      createLogger.error({
+        model: "subscription/create",
+        error: subscriptionError,
+      });
+      return res.status(500).json(subscriptionError);
+    }
+
+    const {
+      success: leadSuccess,
+      data: leadData,
+      error: leadError,
+    } = await Lead.createModel(
+      "",
+      customer_id,
+      company_id,
+      agent_id,
+      link,
+      subscriptionData.subscription_id,
+      policy_id,
+      paymenttype_code
+    );
+
+    if (!leadSuccess) {
+      createLogger.error({
+        model: "lead/create",
+        error: leadError,
+      });
+      return res.status(500).json(leadError);
+    }
+
+    const { id: lead_id } = leadData;
+
+    const {
+      success: leadProductSuccess,
+      data: leadProductData,
+      error: leadProductError,
+    } = await LeadProduct.createModel(
+      lead_id,
+      product_id,
+      productPlanData.price,
+      productData?.currency,
+      productPlanData.frequency,
+      productPlanData.plan_id
+    );
+
+    if (!leadProductSuccess) {
+      createLogger.error({
+        model: "leadProduct/createModel",
+        error: leadProductError,
+      });
+      return res.status(500).json(leadProductError);
+    }
+
+    createLogger.info({
+      controller: "lead/addProduct",
+      message: "OK",
     });
-    res.status(500).json(policyResponse.error);
-    return;
-  }
 
-  const { id: policy_id } = policyResponse.data;
-
-  const productPlanResponse = await ProductPlan.getById(productPlan_id);
-  const productResponse = await Product.getById(product_id);
-
-  const subscriptionResponse = await Subscription.create(
-    productPlanResponse.data.price,
-    productPlanResponse.data.plan_id
-  );
-
-  const leadResponse = await Lead.createModel(
-    "",
-    customer_id,
-    company_id,
-    agent_id,
-    link,
-    subscriptionResponse.data.subscription_id,
-    policy_id,
-    paymenttype_code
-  );
-
-  if (!leadResponse.success) {
+    res.status(200).json(leadProductData);
+  } catch (err) {
     createLogger.error({
-      model: "lead/create",
-      error: leadResponse.error,
+      model: "addProduct",
+      error: err,
     });
-    res.status(500).json(leadResponse.error);
-    return;
+    res.status(500).json({ error: err });
   }
-
-  const { id: lead_id } = leadResponse.data;
-
-  const leadProductResponse = await LeadProduct.createModel(
-    lead_id,
-    product_id,
-    productPlanResponse.data.price,
-    productResponse.data?.currency,
-    productPlanResponse.data.frequency,
-    productPlanResponse.data.plan_id
-  );
-
-  if (!leadProductResponse.success) {
-    createLogger.error({
-      model: "leadProduct/createModel",
-      error: leadProductResponse.error,
-    });
-    res.status(500).json(leadProductResponse.error);
-    return;
-  }
-
-  createLogger.info({
-    controller: "lead/addProduct",
-    message: "OK",
-  });
-
-  res.status(200).json(leadProductResponse.data);
 };
 
 const addInsured = async (req: any, res: any) => {

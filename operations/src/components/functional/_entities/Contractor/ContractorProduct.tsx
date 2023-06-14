@@ -33,7 +33,7 @@ const ContractorProduct = ({ contractor }: any) => {
         <ComboBox
           label="Producto"
           width="100%"
-          value={subscriptionItem.subscription_id.toString()}
+          value={subscriptionItem.subscription_id?.toString()}
           onChange={handleChangeProduct}
           data={contractor?.subscriptions}
           dataValue="subscription_id"
@@ -70,7 +70,7 @@ const ContractorProduct = ({ contractor }: any) => {
           <TableCellEnd />
         </TableHeader>
         <TableDetail>
-          {subscriptionItem.assistances.map((item, idx) => (
+          {subscriptionItem.assistances?.map((item, idx) => (
             <TableRow key={idx}>
               <TableCell width="320px">{item.name}</TableCell>
               <TableCell width="100px" align="center">
@@ -91,12 +91,12 @@ const ContractorProduct = ({ contractor }: any) => {
       </Table>
       <ContentRow align="space-between">
         <ContentCellSummary
-          color={subscriptionItem.assistances.length > 0 ? "blue" : "#959595"}
+          color={subscriptionItem.assistances?.length > 0 ? "blue" : "#959595"}
         >
-          {subscriptionItem.assistances.length > 0
-            ? subscriptionItem.assistances.length === 1
-              ? `${subscriptionItem.assistances.length} servicio`
-              : `${subscriptionItem.assistances.length} servicios`
+          {subscriptionItem.assistances?.length > 0
+            ? subscriptionItem.assistances?.length === 1
+              ? `${subscriptionItem.assistances?.length} servicio`
+              : `${subscriptionItem.assistances?.length} servicios`
             : `No hay servicios`}
         </ContentCellSummary>
       </ContentRow>

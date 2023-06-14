@@ -7,11 +7,9 @@ import ContractorInsured from "./ContractorInsured";
 import ContractorBeneficiaries from "./ContractorBeneficiaries";
 import ContractorSubscriptionList from "./ContractorSubscriptionList";
 import ContractorSubscription from "./ContractorSubscription";
-import ContractorModal from "./ContractorModal";
 
 import {
   ContentCell,
-  ContentCellSummary,
   ContentRow,
 } from "../../../layout/Content";
 
@@ -23,7 +21,6 @@ import ButtonIcon from "../../../ui/ButtonIcon";
 import { useContractor } from "../../../../hooks";
 
 import { contractor } from "../../../../interfaces";
-import { Button } from "~/components/ui/ButtonC";
 
 const ContractorDetail = ({ contractor }: any) => {
   const { pathname } = useRouter();
