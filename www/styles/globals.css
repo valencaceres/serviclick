@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 193 94% 19%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 193 94% 19%;
+
+    --border: 193 94% 19%;
+    --input: 193 94% 19%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 193 94% 19%;
+
+    --primary: 69 69% 47%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 193 94% 19%;
+    --secondary-foreground: 193 94% 19%;
+
+    --accent: 193 94% 19%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 210 40% 98%;
+
+    --ring: 215 20.2% 65.1%;
+
+    --radius: 0.5rem;
+
+    --swiper-navigation-color: var(--foreground);
+    --swiper-pagination-bullet-size: 14px;
+    --swiper-pagination-color: hsla(0, 0%, 100%, 1);
+  }
+
+  .dark {
+    --background: 0 0% 13%;
+    --foreground: 69 69% 47%;
+
+    --muted: 223 47% 11%;
+    --muted-foreground: 215.4 16.3% 56.9%;
+
+    --accent: 0 0% 100%;
+    --accent-foreground: 193 94% 19%;
+
+    --popover: 224 71% 4%;
+    --popover-foreground: 215 20.2% 65.1%;
+
+    --border: 0 0% 100%;
+    --input: 0 0% 100%;
+
+    --card: 224 71% 4%;
+    --card-foreground: 213 31% 91%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 1.2%;
+
+    --secondary: 222.2 47.4% 11.2%;
+    --secondary-foreground: 210 40% 98%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+
+    --ring: 216 34% 17%;
+
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
