@@ -617,11 +617,68 @@ const create = async (lead: any) => {
       await deleteLeadInsured(leadDataResponse.id);
       console.log("OK5");
 
-      leadDataResponse = await addMultipleInsured(
-        leadDataResponse,
-        insured,
-        product.id
-      );
+      for (const item of insured) {
+        const { data: insuredData } = await createInsured(item);
+        console.log("OK6");
+
+        const { data: leadInsuredData } = await createLeadInsured(
+          leadDataResponse.id,
+          insuredData.id
+        );
+        console.log("OK7");
+
+        const leadProductDeleteResponse =
+          await LeadProductValues.deleteByInsuredId(
+            leadDataResponse.id,
+            product.id,
+            insuredData.id
+          );
+        console.log(leadProductDeleteResponse);
+
+        if (item.values) {
+          for (const value of item.values) {
+            console.log("OK9---");
+            const leadProductValue = await LeadProductValues.create(
+              leadDataResponse.id,
+              product.id,
+              insuredData.id,
+              value.value_id,
+              value.value
+            );
+            console.log("OK9");
+          }
+        }
+
+        const { data: leadBeneficiaryDelete } = await deleteLeadBeneficiaries(
+          leadDataResponse.id,
+          insuredData.id
+        );
+        console.log("OK10");
+
+        const newInsured = { ...insuredData, beneficiaries: [] };
+        for (const beneficiary of item.beneficiaries) {
+          const { data: beneficiaryData } = await createBeneficiary(
+            beneficiary
+          );
+          console.log("OK11");
+
+          console.log(beneficiaryData);
+
+          const { data: leadBeneficiaryData } = await createLeadBeneficiary(
+            leadDataResponse.id,
+            insuredData.id,
+            beneficiaryData.id
+          );
+          console.log("OK12");
+
+          newInsured.beneficiaries.push(beneficiaryData);
+        }
+
+        leadDataResponse = {
+          ...leadDataResponse,
+          insured: [...leadDataResponse.insured, newInsured],
+        };
+      }
     }
 
     return { success: true, data: leadDataResponse, error: null };
@@ -1380,7 +1437,6 @@ const addInsuredFromExcel = async (req: any, res: any) => {
     res.json(errorResponse);
   }
 };
-
 
 const getStatistics = async (req: any, res: any) => {
   const monthlySubscriptions = await Lead.getMonthlySubscriptions();
