@@ -9,47 +9,27 @@ import { CustomSwiper } from "./slider"
 const assistances = [
   {
     id: "asistencia-al-ciclista",
-    title: "Asistencia al ciclista",
+    title: "Ciclista",
     imageLink: "/assistance1.png",
   },
   {
     id: "asistencia-salud-universal",
-    title: "Asistencia salud universal",
+    title: "Salud",
     imageLink: "/assistance2.png",
   },
   {
     id: "asistencia-salud-joven",
-    title: "Asistencia salud joven",
+    title: "Protección total ultra",
     imageLink: "/assistance3.png",
   },
   {
     id: "asistencia-escolar",
-    title: "Asistencia escolar",
+    title: "Escolar",
     imageLink: "/assistance4.png",
-  },
-  {
-    id: "asistencia-mascota",
-    title: "Asistencia mascota",
-    imageLink: "/assistance5.png",
-  },
-  {
-    id: "asistencia-hogar",
-    title: "Asistencia hogar",
-    imageLink: "/assistance6.png",
-  },
-  {
-    id: "asistencia-vehicular",
-    title: "Asistencia vehicular",
-    imageLink: "/assistance7.png",
-  },
-  {
-    id: "asistencia-total-ultra",
-    title: "Asistencia total ultra",
-    imageLink: "/assistance8.png",
   },
 ]
 
-export const AssistancesCarousel = () => {
+export const Interests = () => {
   const options: SwiperOptions = {
     modules: [Scrollbar],
     breakpoints: {

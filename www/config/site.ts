@@ -4,14 +4,14 @@ export const siteConfig: SiteConfig = {
   name: "Serviclick",
   description:
     "Beautifully designed components built with Radix UI and Tailwind CSS.",
-  mainNav: [
+  secondaryNav: [
     {
       title: "¿Qué es serviclick?",
       href: "/about/what",
     },
     {
       title: "Sobre nosotros",
-      href: "/about/us",
+      href: "/aboutus",
     },
     {
       title: "Ubicación",
@@ -22,7 +22,7 @@ export const siteConfig: SiteConfig = {
       href: "/contact",
     },
   ],
-  subNav: [
+  mainNav: [
     {
       title: "Personas",
       href: "/people",

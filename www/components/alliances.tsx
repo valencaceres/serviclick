@@ -5,15 +5,15 @@ import { Scrollbar, SwiperOptions } from "swiper"
 
 import { CustomSwiper } from "./slider"
 
-const clients = [
-  { image: "/client1.png" },
-  { image: "/client2.png" },
-  { image: "/client3.png" },
-  { image: "/client4.png" },
-  { image: "/client5.png" },
+const alliances = [
+  { image: "/alliance1.png" },
+  { image: "/alliance2.png" },
+  { image: "/alliance3.png" },
+  { image: "/alliance4.png" },
+  { image: "/alliance5.png" },
 ]
 
-export const Clients = () => {
+export const Alliances = () => {
   const options: SwiperOptions = {
     modules: [Scrollbar],
     breakpoints: {
@@ -31,11 +31,11 @@ export const Clients = () => {
     scrollbar: { draggable: true, enabled: true },
   }
 
-  const slides = clients.map((client) => (
+  const slides = alliances.map((client) => (
     <Image
       className="mx-auto cursor-pointer hover:scale-105 duration-75 py-2"
       src={client.image}
-      alt="News"
+      alt="Alliance"
       width={200}
       height={100}
       loading="lazy"

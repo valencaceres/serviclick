@@ -8,8 +8,8 @@ export interface NavItem {
 export interface SiteConfig {
   name: string
   description: string
+  secondaryNav: NavItem[]
   mainNav: NavItem[]
-  subNav: NavItem[]
   links: {
     instagram: string
     facebook: string
