@@ -71,6 +71,58 @@ export default function AboutUsPage() {
           </div>
         </div>
       </section>
+      <section className="py-20 flex flex-col gap-8 items-center justify-center">
+        <h1 className="uppercase text-2xl font-bold text-center">Grupo MHM</h1>
+        <div className="flex flex-wrap w-full max-w-5xl justify-center items-center">
+          <div className="relative w-[380px] h-20">
+            <Image
+              src="/mhm1.png"
+              alt="MHM1"
+              fill={true}
+              loading="lazy"
+              quality={100}
+              unoptimized
+            />
+          </div>
+          <div className="relative w-[470px] h-16">
+            <Image
+              src="/mhm2.png"
+              alt="MHM2"
+              fill={true}
+              loading="lazy"
+              quality={100}
+              unoptimized
+            />
+          </div>
+          <div className="relative w-[270px] h-20">
+            <Image
+              src="/mhm3.png"
+              alt="MHM3"
+              fill={true}
+              loading="lazy"
+              unoptimized
+            />
+          </div>
+          <div className="relative w-[261px] h-24">
+            <Image
+              src="/mhm4.png"
+              alt="MHM4"
+              fill={true}
+              loading="lazy"
+              unoptimized
+            />
+          </div>
+          <div className="relative w-[265px] h-20">
+            <Image
+              src="/mhm5.png"
+              alt="MHM5"
+              fill={true}
+              loading="lazy"
+              unoptimized
+            />
+          </div>
+        </div>
+      </section>
     </>
   )
 }

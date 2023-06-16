@@ -7,6 +7,7 @@ import { Icons } from "@/components/functional/icons"
 
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetHeader,
   SheetTitle,
@@ -46,7 +47,6 @@ function Main(siteConfig: SiteConfig) {
       <Link href="/" className="flex items-center space-x-2">
         <Icons.logo />
       </Link>
-
       <div className="flex flex-1 items-center justify-end">
         <div className="flex md:hidden">
           <Sheet>
@@ -57,58 +57,69 @@ function Main(siteConfig: SiteConfig) {
               <SheetHeader>
                 <SheetTitle className="self-start">Menu</SheetTitle>
                 <div className="py-5 gap-2 flex flex-col">
-                  <Link
-                    href="#"
-                    className={cn(
-                      "text-background mb-1 w-fit whitespace-nowrap flex items-center font-semibold bg-primary hover:bg-primary/80 uppercase shadow-lg hover:shadow-none hover:text-background rounded-md px-2 py-1 duration-75"
-                    )}
-                  >
-                    Mis asistencias
-                  </Link>
-                  <Link
-                    href={"/"}
-                    className={cn(
-                      "text-foreground uppercase w-fit whitespace-nowrap flex items-center font-semibold bg-transparent hover:bg-foreground hover:text-background rounded-md px-2 py-1 duration-75"
-                    )}
-                  >
-                    Inicio
-                  </Link>
+                  <SheetClose asChild>
+                    <Link
+                      href={"https://asegurado.serviclick.cl"}
+                      target="_blank"
+                      className={cn(
+                        "text-background mb-1 w-fit whitespace-nowrap flex items-center font-semibold bg-primary hover:bg-primary/80 uppercase shadow-lg hover:shadow-none hover:text-background rounded-md px-2 py-1 duration-75"
+                      )}
+                    >
+                      Mis asistencias
+                    </Link>
+                  </SheetClose>
+                  <SheetClose asChild>
+                    <Link
+                      href={"/"}
+                      className={cn(
+                        "text-foreground uppercase w-fit whitespace-nowrap flex items-center font-semibold bg-transparent hover:bg-foreground hover:text-background rounded-md px-2 py-1 duration-75"
+                      )}
+                    >
+                      Inicio
+                    </Link>
+                  </SheetClose>
                   {siteConfig.mainNav?.map(
                     (item, index) =>
                       item.href && (
-                        <Link
-                          key={index}
-                          href={item.href}
-                          className={cn(
-                            "text-foreground uppercase w-fit whitespace-nowrap flex items-center font-semibold bg-transparent hover:bg-foreground hover:text-background rounded-md px-2 py-1 duration-75",
-                            item.disabled && "cursor-not-allowed opacity-80"
-                          )}
-                        >
-                          {item.title}
-                        </Link>
+                        <SheetClose asChild>
+                          <Link
+                            key={index}
+                            href={item.href}
+                            className={cn(
+                              "text-foreground uppercase w-fit whitespace-nowrap flex items-center font-semibold bg-transparent hover:bg-foreground hover:text-background rounded-md px-2 py-1 duration-75",
+                              item.disabled && "cursor-not-allowed opacity-80"
+                            )}
+                          >
+                            {item.title}
+                          </Link>
+                        </SheetClose>
                       )
                   )}
-                  <Link
-                    href={"/assistances"}
-                    className={cn(
-                      "text-foreground uppercase w-fit whitespace-nowrap flex items-center font-semibold bg-transparent hover:bg-foreground hover:text-background rounded-md px-2 py-1 duration-75"
-                    )}
-                  >
-                    Asistencias
-                  </Link>
+                  <SheetClose asChild>
+                    <Link
+                      href={"/assistances"}
+                      className={cn(
+                        "text-foreground uppercase w-fit whitespace-nowrap flex items-center font-semibold bg-transparent hover:bg-foreground hover:text-background rounded-md px-2 py-1 duration-75"
+                      )}
+                    >
+                      Asistencias
+                    </Link>
+                  </SheetClose>
                   {siteConfig.secondaryNav?.map(
                     (item, index) =>
                       item.href && (
-                        <Link
-                          key={index}
-                          href={item.href}
-                          className={cn(
-                            "text-foreground uppercase w-fit whitespace-nowrap flex items-center font-semibold bg-transparent hover:bg-foreground hover:text-background rounded-md px-2 py-1 duration-75",
-                            item.disabled && "cursor-not-allowed opacity-80"
-                          )}
-                        >
-                          {item.title}
-                        </Link>
+                        <SheetClose asChild>
+                          <Link
+                            key={index}
+                            href={item.href}
+                            className={cn(
+                              "text-foreground uppercase w-fit whitespace-nowrap flex items-center font-semibold bg-transparent hover:bg-foreground hover:text-background rounded-md px-2 py-1 duration-75",
+                              item.disabled && "cursor-not-allowed opacity-80"
+                            )}
+                          >
+                            {item.title}
+                          </Link>
+                        </SheetClose>
                       )
                   )}
                 </div>
@@ -133,7 +144,8 @@ function Main(siteConfig: SiteConfig) {
               )
           )}
           <Link
-            href="#"
+            href={"https://asegurado.serviclick.cl"}
+            target="_blank"
             className={cn(
               "text-background whitespace-nowrap flex items-center font-semibold bg-primary hover:bg-primary/80 uppercase shadow-lg hover:shadow-none hover:text-background rounded-md px-2 py-1 duration-75"
             )}

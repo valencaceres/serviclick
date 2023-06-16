@@ -16,7 +16,7 @@ export const siteConfig: SiteConfig = {
     },
     {
       title: "Ubicación & Contacto",
-      href: "/#contact",
+      href: "#contact",
       scroll: false,
     },
   ],
