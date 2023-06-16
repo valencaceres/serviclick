@@ -3,7 +3,7 @@
 import Image from "next/image"
 import { Scrollbar, SwiperOptions } from "swiper"
 
-import { CustomSwiper } from "./slider"
+import { CustomSwiper } from "../slider"
 
 const clients = [
   { image: "/client1.png" },

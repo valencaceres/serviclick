@@ -7,7 +7,7 @@ import "swiper/css/navigation"
 import "swiper/css/pagination"
 import Image from "next/image"
 
-import { CustomSwiper } from "./slider"
+import { CustomSwiper } from "../slider"
 
 export const HeroCarousel = () => {
   const options: SwiperOptions = {

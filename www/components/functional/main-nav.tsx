@@ -3,17 +3,15 @@ import Link from "next/link"
 
 import { SiteConfig } from "@/types/nav"
 import { cn } from "@/lib/utils"
-import { Icons } from "@/components/icons"
+import { Icons } from "@/components/functional/icons"
 
-import { Input } from "./ui/input"
-import { Label } from "./ui/label"
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "./ui/sheet"
+} from "../ui/sheet"
 
 function Secondary(siteConfig: SiteConfig) {
   return (
@@ -26,6 +24,7 @@ function Secondary(siteConfig: SiteConfig) {
                 <Link
                   key={index}
                   href={item.href}
+                  scroll={item.scroll || true}
                   className={cn(
                     "text-background whitespace-nowrap flex items-center text-sm font-semibold",
                     item.disabled && "cursor-not-allowed opacity-80"
@@ -37,16 +36,6 @@ function Secondary(siteConfig: SiteConfig) {
           )}
         </nav>
       ) : null}
-      <div className="relative">
-        <Label htmlFor="search" className="absolute right-0 cursor-pointer">
-          <Icons.search className="h-4 text-foreground" />
-        </Label>
-        <Input
-          type="search"
-          id="search"
-          className="h-4 border-none bg-white bg-opacity-80 focus:bg-opacity-100 rounded-sm"
-        />
-      </div>
     </div>
   )
 }
@@ -66,22 +55,7 @@ function Main(siteConfig: SiteConfig) {
             </SheetTrigger>
             <SheetContent size={"full"}>
               <SheetHeader>
-                <SheetTitle>
-                  <div className="relative w-4/5">
-                    <Label
-                      htmlFor="menuSearch"
-                      className="absolute left-2 top-1 cursor-pointer"
-                    >
-                      <Icons.search className="h-5 text-foreground rotate-90" />
-                    </Label>
-                    <Input
-                      type="search"
-                      id="menuSearch"
-                      autoFocus={false}
-                      className="h-7 pl-10 border-none bg-[#F3F4F6] bg-opacity-80 focus:bg-opacity-100 rounded-sm"
-                    />
-                  </div>
-                </SheetTitle>
+                <SheetTitle className="self-start">Menu</SheetTitle>
                 <div className="py-5 gap-2 flex flex-col">
                   <Link
                     href="#"

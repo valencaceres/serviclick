@@ -7,19 +7,17 @@ export const siteConfig: SiteConfig = {
   secondaryNav: [
     {
       title: "¿Qué es serviclick?",
-      href: "/about/what",
+      href: "/#about",
+      scroll: false,
     },
     {
       title: "Sobre nosotros",
       href: "/aboutus",
     },
     {
-      title: "Ubicación",
-      href: "/contact/location",
-    },
-    {
-      title: "Contacto",
-      href: "/contact",
+      title: "Ubicación & Contacto",
+      href: "/#contact",
+      scroll: false,
     },
   ],
   mainNav: [

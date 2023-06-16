@@ -1,8 +1,8 @@
 import Image from "next/image"
 
-import AssistanceSuggestionForm from "@/components/assistance-suggestion-form"
-import Faq from "@/components/faq"
-import { Interests } from "@/components/interests"
+import AssistanceSuggestionForm from "@/components/functional/people/assistance-suggestion-form"
+import Faq from "@/components/functional/people/faq"
+import { Interests } from "@/components/functional/people/interests"
 
 export default function PeoplePage() {
   return (

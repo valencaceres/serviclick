@@ -39,7 +39,7 @@
     --swiper-pagination-bullet-size: 14px;
     --swiper-pagination-color: hsla(0, 0%, 100%, 1);
   }
-
+/* 
   .dark {
     --background: 0 0% 13%;
     --foreground: 0 0% 81%;
@@ -71,7 +71,7 @@
     --ring: 215 20.2% 45.1%;
 
     --radius: 0.5rem;
-  }
+  } */
 }
 
 @layer base {

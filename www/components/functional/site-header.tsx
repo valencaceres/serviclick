@@ -3,12 +3,12 @@ import Link from "next/link"
 import { SiteConfig } from "@/types/nav"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
-import { Icons } from "@/components/icons"
-import Nav from "@/components/main-nav"
-import { ThemeToggle } from "@/components/theme-toggle"
+import { Icons } from "@/components/functional/icons"
+import Nav from "@/components/functional/main-nav"
+import { ThemeToggle } from "@/components/functional/theme-toggle"
 
-import { Input } from "./ui/input"
-import { Label } from "./ui/label"
+import { Input } from "../ui/input"
+import { Label } from "../ui/label"
 import {
   Sheet,
   SheetContent,
@@ -16,7 +16,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "./ui/sheet"
+} from "../ui/sheet"
 
 export function SiteHeader({ siteConfig }: { siteConfig: SiteConfig }) {
   return (

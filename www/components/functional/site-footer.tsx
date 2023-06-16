@@ -2,12 +2,12 @@ import Link from "next/link"
 
 import { SiteConfig } from "@/types/nav"
 
+import { Button } from "../ui/button"
 import { Icons } from "./icons"
-import { Button } from "./ui/button"
 
 export function SiteFooter({ siteConfig }: { siteConfig: SiteConfig }) {
   return (
-    <footer className="flex flex-col">
+    <footer className="flex flex-col" id="contact">
       <div className="bg-[#F3F4F6] flex gap-4 justify-between flex-wrap px-16 py-6">
         <div className="flex flex-col gap-2">
           <h2 className="uppercase font-bold text-lg">Contacto Comercial</h2>

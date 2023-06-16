@@ -2,11 +2,11 @@ import "swiper/css"
 import "swiper/css/navigation"
 import Image from "next/image"
 
-import { Alliances } from "@/components/alliances"
-import { AssistancesCarousel } from "@/components/assistances-carousel"
-import { Clients } from "@/components/clients"
-import { HeroCarousel } from "@/components/hero-carousel"
-import { News } from "@/components/news"
+import { Alliances } from "@/components/functional/home/alliances"
+import { AssistancesCarousel } from "@/components/functional/home/assistances-carousel"
+import { Clients } from "@/components/functional/home/clients"
+import { HeroCarousel } from "@/components/functional/home/hero-carousel"
+import { News } from "@/components/functional/home/news"
 
 export default function IndexPage() {
   return (
@@ -20,7 +20,10 @@ export default function IndexPage() {
         </div>
         <AssistancesCarousel />
       </section>
-      <section className="relative bg-background h-[480px] sm:h-[600px] lg:h-[600px] duration-75">
+      <section
+        id="about"
+        className="relative bg-background h-[480px] sm:h-[600px] lg:h-[600px] duration-75"
+      >
         <div className="bg-primary flex flex-col lg:flex-row-reverse items-center py-4 h-96 lg:justify-evenly">
           <div className="flex flex-col py-4 gap-4 items-center justify-center lg:order-2">
             <h2 className="uppercase text-4xl px-16 text-background font-bold flex justify-center lg:justify-start w-full">

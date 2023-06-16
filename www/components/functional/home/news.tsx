@@ -6,7 +6,7 @@ import "swiper/css"
 import "swiper/css/pagination"
 import Image from "next/image"
 
-import { CustomSwiper } from "./slider"
+import { CustomSwiper } from "../slider"
 
 const news = [
   {
