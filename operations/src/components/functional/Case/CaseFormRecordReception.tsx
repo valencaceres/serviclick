@@ -15,11 +15,13 @@ import {
 import { useUser } from "@clerk/nextjs";
 import { CaseDescription } from "./CaseDescription";
 import { Button } from "~/components/ui/ButtonC";
+import { useToast } from "~/components/ui/use-toast";
 
 const CaseFormRecordReception = ({ thisCase }: any) => {
   const router = useRouter();
   const { stage } = router.query;
   const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   const [uploadedFiles, setUploadedFiles] = useState<
     { file: any; documentId: any }[]
@@ -71,6 +73,11 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
           },
           {
             onSuccess: () => {
+              toast({
+                title: "Documentos subidos correctamente",
+                description:
+                  "Se ha subido correctamente los documentos y puedes volver a revisarlos en la sección de Recepción de antecedentes.",
+              });
               return updateCase(
                 {
                   applicant: {
@@ -96,6 +103,14 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
                   },
                 }
               );
+            },
+            onError: () => {
+              toast({
+                title: "Error al subir documentos",
+                description:
+                  "Ha ocurrido un error al subir los documentos, por favor intenta nuevamente.",
+                variant: "destructive",
+              });
             },
           }
         );

@@ -328,7 +328,10 @@ const CaseFormService = ({ thisCase }: any) => {
                 {selectedProduct?.name}
               </h2>
               <p className="text-secondary-500">
-                Fecha de adquisición: <span className="font-semibold">{selectedProductCreatedAt}</span>
+                Fecha de adquisición:{" "}
+                <span className="font-semibold">
+                  {selectedProductCreatedAt}
+                </span>
               </p>
             </div>
             <CaseServiceTable
