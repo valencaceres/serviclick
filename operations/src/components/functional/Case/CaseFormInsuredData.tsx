@@ -31,6 +31,7 @@ import { useForm } from "react-hook-form";
 import { Input } from "~/components/ui/Input";
 import { getDateTime } from "~/utils/dateAndTime";
 import { useQueryClient } from "@tanstack/react-query";
+import { useDistrict } from "~/hooks";
 
 const CaseFormInsuredData = ({ thisCase }: any) => {
   return (
@@ -90,6 +91,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
 
   const prevDataRef = useRef();
 
+  const { list: districtList } = useDistrict();
   const { user } = useUser();
   const { data: stages } = useQueryStage().useGetAll();
   const { mutate: updateCase } = useQueryCase().useCreate();
@@ -304,7 +306,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
             width="260px"
           />
         </ContentRow>
-        <h2 className="text-secondary-500 font-semibold text-xl">
+        <h2 className="text-xl font-semibold text-secondary-500">
           Datos del titular
         </h2>
         {isNewBeneficiary ? (
@@ -481,24 +483,30 @@ const BeneficiaryForm = ({ thisCase }: any) => {
               <Label htmlFor="email" className="text-xs text-dusty-gray">
                 Comuna
               </Label>
-              <Input
-                errorText={errors.district?.message}
-                {...register("district", {
-                  required: "Este campo es requerido",
-                })}
-                type="text"
-                id="district"
-                placeholder="Comuna"
-                disabled={
-                  isLoading || thisCase?.is_active || !thisCase === true
-                    ? false
-                    : true
-                }
-                className={`w-full ${
-                  errors.district?.message?.length ? "border-red-500" : ""
-                }`}
+              <Select
                 value={district}
-              />
+                onValueChange={(value) => {
+                  setValue("district", value);
+                }}
+              >
+                <SelectTrigger className="h-10 rounded-sm border-dusty-gray border-opacity-40 py-6">
+                  <SelectValue placeholder="Seleccione comuna" />
+                </SelectTrigger>
+                <SelectContent className="h-52" id="district">
+                  {districtList.map((district) => (
+                    <SelectItem
+                      {...register("district", {
+                        required: "Este campo es requerido",
+                      })}
+                      key={district.district_name}
+                      value={district.district_name}
+                      className="text-sm"
+                    >
+                      {district.district_name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="flex gap-2">
               <div className="flex w-full flex-col">

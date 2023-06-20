@@ -1,4 +1,4 @@
-import { BanknoteIcon, ExternalLinkIcon, SearchIcon } from "lucide-react";
+import { BanknoteIcon, SearchIcon } from "lucide-react";
 import React, { useState } from "react";
 import SyncLoader from "react-spinners/SyncLoader";
 
@@ -33,6 +33,7 @@ import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
 import { Input } from "~/components/ui/Input";
 import { Label } from "~/components/ui/Label";
+import { cn } from "~/utils/cn";
 
 export const Reimbursement: React.FC = () => {
   return <ReimbursementTable />;
@@ -41,6 +42,8 @@ export const Reimbursement: React.FC = () => {
 const ReimbursementTable: React.FC = () => {
   const { data: reimbursements, isLoading } =
     api.reimbursement.getAll.useQuery();
+
+    console.log(reimbursements)
 
   return (
     <table className="w-full max-w-7xl table-fixed overflow-x-auto border pl-12">
@@ -172,6 +175,11 @@ const ReimbursementRow = ({
           currency: "CLP",
         });
 
+        const limitValue = casemodel.assistance?.productassistances.find(
+          (pa) => pa?.product_id === casemodel?.product_id
+        )?.maximum ?? "";
+        
+
   return (
     <tr className="border-y border-dusty-gray-100 text-lg font-light text-dusty-gray-900 odd:bg-slate-50 hover:border-dusty-gray-200 hover:bg-slate-100">
       <td className="p-2 text-center font-oswald">{casemodel.number}</td>
@@ -216,10 +224,17 @@ const ReimbursementRow = ({
       <td className="flex justify-center gap-2 p-2 font-oswald">
         <Dialog open={isOpen} defaultOpen={false} onOpenChange={setIsOpen}>
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger asChild disabled={
+              status === "Aprobado" || status === "Rechazado"
+            }>
               <BanknoteIcon
                 size={24}
-                className="cursor-pointer text-teal-blue hover:text-teal-blue-100"
+                className={cn(
+                  "cursor-pointer",
+                  status === "Aprobado" || status === "Rechazado"
+                    ? "text-gray-300"
+                    : "text-teal-blue hover:text-teal-blue-100"
+                )}
               />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="bg-white">
@@ -228,11 +243,12 @@ const ReimbursementRow = ({
                   className="z-20 cursor-pointer select-none text-teal-blue-100 hover:bg-slate-50 active:bg-slate-100"
                   onClick={() => setAction("Aprobado")}
                 >
-                  Aceptar
+                  Aprobar
                 </DropdownMenuLabel>
               </DialogTrigger>
               <DropdownMenuSeparator className="bg-slate-100 " />
-              <DialogTrigger onClick={() => setIsOpen(true)} asChild>
+              <DialogTrigger 
+              onClick={() => setIsOpen(true)} asChild>
                 <DropdownMenuLabel
                   className="z-20 cursor-pointer select-none text-teal-blue-100 hover:bg-slate-50 active:bg-slate-100"
                   onClick={() => setAction("Rechazado")}
@@ -253,16 +269,8 @@ const ReimbursementRow = ({
                 setImedReimbursement={setImedReimbursement}
                 availableValue={availableValueFormatted}
                 reimbursementValue={reimbursementValueFormatted}
+                limitValue={limitValue}
               />
-              <DropdownMenuSeparator className="bg-slate-100" />
-              <DialogTrigger onClick={() => setIsOpen(true)} asChild>
-                <DropdownMenuLabel
-                  className="z-20 cursor-pointer select-none text-teal-blue-100 hover:bg-slate-50 active:bg-slate-100"
-                  onClick={() => setAction("Pendiente")}
-                >
-                  Pendiente
-                </DropdownMenuLabel>
-              </DialogTrigger>
             </DropdownMenuContent>
           </DropdownMenu>
         </Dialog>
@@ -459,6 +467,7 @@ const CustomDialog = ({
   setImedReimbursement,
   availableValue,
   reimbursementValue,
+  limitValue,
 }: {
   action: string;
   onClick?: () => void;
@@ -472,14 +481,13 @@ const CustomDialog = ({
   setImedReimbursement: (value: string) => void;
   availableValue: string;
   reimbursementValue: string;
+  limitValue: string;
 }) => {
   return (
-    <>
-      {action !== "Pendiente" ? (
         <DialogContent className="bg-white">
           <DialogHeader>
             <DialogTitle>
-              {action === "Aprobado" ? "Aceptar" : "Rechazar"} el rembolso
+              {action === "Aprobado" ? "Aprobar" : "Rechazar"} el rembolso
             </DialogTitle>
             <div className="flex flex-col gap-2 rounded-md border p-2">
               <h2 className="font-semibold text-teal-blue">
@@ -488,6 +496,10 @@ const CustomDialog = ({
               <h2 className="font-semibold text-teal-blue">
                 Reembolso solicitado:{" "}
                 <span className="font-bold">{reimbursementValue}</span>
+              </h2>
+              <h2 className="font-semibold text-teal-blue">
+                Límite:{" "}
+                <span className="font-bold">{!limitValue ? "Sin limitación" : limitValue}</span>
               </h2>
             </div>
             <div className="flex gap-2">
@@ -537,29 +549,9 @@ const CustomDialog = ({
               }`}
               disabled={isLoading}
             >
-              {isLoading ? "Cargando..." : "Aceptar"}
+              {isLoading ? "Cargando..." : "Continuar"}
             </Button>
           </DialogFooter>
         </DialogContent>
-      ) : (
-        <DialogContent className="bg-white">
-          <DialogHeader>
-            <DialogTitle>¿Estás seguro?</DialogTitle>
-            <DialogDescription>
-              Al aceptar cambiarás el estado a pendiente.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              onClick={onClick}
-              className={"bg-green-600 hover:bg-green-700"}
-              disabled={isLoading}
-            >
-              {isLoading ? "Cargando..." : "Aceptar"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      )}
-    </>
   );
 };

@@ -161,13 +161,21 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
             data={decisions}
             width="525px"
             value={evaluation}
-            enabled={thisCase?.is_active ? true : false}
+            enabled={
+              thisCase?.is_active &&
+              !thisCase.stages.find(
+                (stage: any) => stage.stage === "Evaluación del evento"
+              ) &&
+              !evaluationExists
+                ? true
+                : false
+            }
             onChange={(e: any) => setEvaluation(e.target.value)}
             dataText="name"
             dataValue="name"
           />
         </ContentCell>
-        <Button disabled={thisCase?.is_active && !evaluationExists ? false : true}>
+        <Button disabled={thisCase?.is_active ? false : true}>
           Registrar evaluación
         </Button>
       </ContentCell>

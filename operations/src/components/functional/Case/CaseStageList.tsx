@@ -28,7 +28,12 @@ const CaseStageList = ({ showModal, setShowModal }: any) => {
 
   const { data } = useQueryCase().useGetById(case_id as string);
 
-  const { data: contract, isError, isLoading, isFetching } = useQueryLead().useGetContract(data?.lead_id);
+  const {
+    data: contract,
+    isError,
+    isLoading,
+    isFetching,
+  } = useQueryLead().useGetContract(data?.lead_id);
 
   return (
     <Fragment>
@@ -45,35 +50,41 @@ const CaseStageList = ({ showModal, setShowModal }: any) => {
             <TableCellEnd />
           </TableHeader>
           <TableDetail>
-            {data?.stages?.map((stage: any, idx: number) => (
-              <TableRow key={idx}>
-                <TableCell width="95px" align="center">
-                  {new Date(stage.createddate).toISOString().substring(0, 10)}
-                </TableCell>
-                <TableCell width="57px">
-                  {new Date(stage.createddate).toISOString().substring(11, 16)}
-                </TableCell>
-                <TableCell width="177px" align="center">
-                  {stage.user?.first_name + " " + stage.user?.last_name}
-                </TableCell>
-                <TableCell width="208px" align="center">
-                  {stage.stage}
-                </TableCell>
-                <TableCell width="41px" align="center">
-                  <TableIcons>
-                    <Icon
-                      iconName="search"
-                      button={true}
-                      onClick={() => {
-                        router.push(
-                          `/case/${data?.case_id}/${stage.stage.toLowerCase()}`
-                        );
-                      }}
-                    />
-                  </TableIcons>
-                </TableCell>
-              </TableRow>
-            ))}
+            {data?.stages
+              ?.filter((stage: any) => stage.stage !== "Solicitud reembolso")
+              .map((stage: any, idx: number) => (
+                <TableRow key={idx}>
+                  <TableCell width="95px" align="center">
+                    {new Date(stage.createddate).toISOString().substring(0, 10)}
+                  </TableCell>
+                  <TableCell width="57px">
+                    {new Date(stage.createddate)
+                      .toISOString()
+                      .substring(11, 16)}
+                  </TableCell>
+                  <TableCell width="177px" align="center">
+                    {stage.user?.first_name + " " + stage.user?.last_name}
+                  </TableCell>
+                  <TableCell width="208px" align="center">
+                    {stage.stage}
+                  </TableCell>
+                  <TableCell width="41px" align="center">
+                    <TableIcons>
+                      <Icon
+                        iconName="search"
+                        button={true}
+                        onClick={() => {
+                          router.push(
+                            `/case/${
+                              data?.case_id
+                            }/${stage.stage.toLowerCase()}`
+                          );
+                        }}
+                      />
+                    </TableIcons>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableDetail>
         </Table>
         <ContentRow className="justify-between">
@@ -88,7 +99,11 @@ const CaseStageList = ({ showModal, setShowModal }: any) => {
           </ContentCellSummary>
           <div className="flex gap-2">
             {contract && !isError && !isLoading && !isFetching && (
-              <Link href={contract.link} target="_blank" className="bg-teal-blue text-white flex items-center rounded-full px-4 py-2 hover:bg-teal-blue-400">
+              <Link
+                href={contract.link}
+                target="_blank"
+                className="flex items-center rounded-full bg-teal-blue px-4 py-2 text-white hover:bg-teal-blue-400"
+              >
                 <Icon iconName="history_edu" className="mr-2" />
                 Contrato
               </Link>

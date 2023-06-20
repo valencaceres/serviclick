@@ -83,11 +83,14 @@ const CaseFormSolution = ({ thisCase }: any) => {
           <TextArea
             value={description}
             onChange={(e: any) => setDescription(e.target.value)}
-            label="Descripción de la solución"
+            label="Justificación de la decisión"
             width="525px"
             height="110px"
             disabled={thisCase?.is_active === true ? false : true}
           />
+          <p className="text-sm">
+            Justificación de la decisión del paso Evaluación del evento.
+          </p>
           {error && <p className="text-sm text-red-500">{error}</p>}
         </ContentCell>
         <Button disabled={thisCase?.is_active ? false : true}>Continuar</Button>
