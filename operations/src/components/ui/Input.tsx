@@ -1,4 +1,5 @@
 import * as React from "react";
+
 import { cn } from "~/utils/cn";
 
 export interface InputProps
@@ -7,50 +8,13 @@ export interface InputProps
   errorText?: string;
   onPaste?: React.ClipboardEventHandler<HTMLInputElement>;
   autoFocus?: boolean;
-  value: string | number;
-  debounce?: number;
-  onDebouncedChange?: (value: string | number) => void;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   (
-    {
-      className,
-      autoFocus = true,
-      helperText,
-      errorText,
-      onPaste,
-      value: initialValue,
-      debounce = 500,
-      onChange,
-      onDebouncedChange,
-      ...props
-    },
+    { className, autoFocus = true, helperText, errorText, onPaste, ...props },
     ref
   ) => {
-    const [value, setValue] = React.useState(initialValue);
-
-    React.useEffect(() => {
-      setValue(initialValue);
-    }, [initialValue]);
-
-    React.useEffect(() => {
-      if (onDebouncedChange && debounce > 0) {
-        const timeout = setTimeout(() => {
-          onDebouncedChange(value);
-        }, debounce);
-
-        return () => clearTimeout(timeout);
-      }
-    }, [value, debounce, onDebouncedChange]);
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setValue(e.target.value);
-      if (onChange) {
-        onChange(e);
-      }
-    };
-
     return (
       <div className="flex flex-col">
         {helperText && (
@@ -64,8 +28,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             className
           )}
           ref={ref}
-          value={value}
-          onChange={handleChange}
           {...props}
         />
         {errorText && (
@@ -75,7 +37,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     );
   }
 );
-
 Input.displayName = "Input";
 
 export { Input };
