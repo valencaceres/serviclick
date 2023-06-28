@@ -52,6 +52,14 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
         });
         queryClient.invalidateQueries(["case"]);
       },
+      onError: () => {
+        toast({
+          title: "Error al subir documentos",
+          description:
+            "Ha ocurrido un error al subir los documentos, por favor intenta nuevamente.",
+          variant: "destructive",
+        });
+      },
     });
   };
 
@@ -103,14 +111,6 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
               },
             }
           );
-        },
-        onError: () => {
-          toast({
-            title: "Error al subir documentos",
-            description:
-              "Ha ocurrido un error al subir los documentos, por favor intenta nuevamente.",
-            variant: "destructive",
-          });
         },
       }
     );
