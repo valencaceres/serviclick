@@ -57,6 +57,8 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
     description,
     isactive: active,
     lead_id: thisCase?.lead_id,
+    event_date: thisCase?.event_date,
+    event_location: thisCase?.event_location,
   });
 
   const handleSubmit = (e: any) => {
@@ -146,15 +148,6 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
             disabled={true}
             height="110px"
           />
-          <TextArea
-            value={justification}
-            onChange={(e: any) => setJustification(e.target.value)}
-            label="Justificación de la decisión"
-            width="525px"
-            height="110px"
-            disabled={thisCase?.is_active ? false : true}
-          />
-          {error && <p className="text-md text-red-500">{error}</p>}
           <ComboBox
             label="Decisión de evaluación"
             placeHolder="Seleccione decisión"
@@ -174,6 +167,15 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
             dataText="name"
             dataValue="name"
           />
+          <TextArea
+            value={justification}
+            onChange={(e: any) => setJustification(e.target.value)}
+            label="Justificación de la decisión"
+            width="525px"
+            height="110px"
+            disabled={thisCase?.is_active ? false : true}
+          />
+          {error && <p className="text-md text-red-500">{error}</p>}
         </ContentCell>
         <Button disabled={thisCase?.is_active ? false : true}>
           Registrar evaluación

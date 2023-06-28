@@ -3,8 +3,13 @@ import pool from "../util/database";
 import { _getBeneficiaryData } from "../queries/case";
 import { IData } from "../interfaces/case";
 
+interface IApplicant {
+  id: string;
+  type: string;
+}
+
 const create: any = async (
-  applicant: any,
+  applicant: IApplicant,
   number?: number,
   product_id?: string,
   assistance_id?: string,
@@ -13,7 +18,9 @@ const create: any = async (
   company_id?: string,
   customer_id?: string,
   beneficiary_id?: string,
-  lead_id?: string
+  lead_id?: string,
+  event_date?: Date,
+  event_location?: string
 ) => {
   try {
     if (!product_id && !assistance_id) {
@@ -25,21 +32,31 @@ const create: any = async (
 
         if (exists.rows.length > 0) {
           const result = await pool.query(
-            `UPDATE app.case SET insured_id = $1, company_id = $2, customer_id = $3 WHERE beneficiary_id = $4 AND number = $5 RETURNING *`,
-            [applicant.id, company_id, customer_id, beneficiary_id, number]
+            `UPDATE app.case SET insured_id = $1, company_id = $2, customer_id = $3, event_date = $6, event_location = $7 WHERE beneficiary_id = $4 AND number = $5 RETURNING *`,
+            [
+              applicant.id,
+              company_id,
+              customer_id,
+              beneficiary_id,
+              number,
+              event_date,
+              event_location,
+            ]
           );
 
           return { success: true, data: result.rows[0], error: null };
         }
 
         const result = await pool.query(
-          `INSERT INTO app.case (insured_id, beneficiary_id, company_id, customer_id, type) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+          `INSERT INTO app.case (insured_id, beneficiary_id, company_id, customer_id, type, event_date, event_location) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
           [
             applicant.id,
             beneficiary_id,
             company_id,
             customer_id,
             applicant.type,
+            event_date,
+            event_location,
           ]
         );
 
@@ -62,13 +79,23 @@ const create: any = async (
               : "insured_id"
           } = $2,
           company_id = $3,
-          customer_id = $4
+          customer_id = $4,
+          event_date = $6,
+          event_location = $7
           WHERE ${
             applicant.type === "B" || isInsured === false
               ? "beneficiary_id"
               : "insured_id"
           } = $2 AND number = $5 RETURNING *`,
-          [applicant.type, applicant.id, company_id, customer_id, number]
+          [
+            applicant.type,
+            applicant.id,
+            company_id,
+            customer_id,
+            number,
+            event_date,
+            event_location,
+          ]
         );
 
         return { success: true, data: result.rows[0], error: null };
@@ -78,8 +105,15 @@ const create: any = async (
           applicant.type === "B" || isInsured === false
             ? "beneficiary_id"
             : "insured_id"
-        }, company_id, customer_id) VALUES ($1, $2, $3, $4) RETURNING *`,
-        [applicant.type, applicant.id, company_id, customer_id]
+        }, company_id, customer_id, event_date, event_location) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+        [
+          applicant.type,
+          applicant.id,
+          company_id,
+          customer_id,
+          event_date,
+          event_location,
+        ]
       );
 
       return { success: true, data: result.rows[0], error: null };
@@ -97,7 +131,7 @@ const create: any = async (
 
     if (resultCase.rows.length > 0) {
       const result = await pool.query(
-        `UPDATE app.case SET product_id = $1, assistance_id = $2, isactive = $3, company_id = $4, customer_id = $5, lead_id = $6
+        `UPDATE app.case SET product_id = $1, assistance_id = $2, isactive = $3, company_id = $4, customer_id = $5, lead_id = $6, event_date = $9, event_location = $10
         WHERE number = $7 AND ${
           applicant.type === "B" || isInsured === false
             ? "beneficiary_id"
@@ -113,6 +147,8 @@ const create: any = async (
           lead_id,
           number,
           applicant.id,
+          event_date,
+          event_location,
         ]
       );
 
