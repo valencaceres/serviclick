@@ -28,6 +28,8 @@ const create = async (req: any, res: any) => {
     beneficiary_id,
     isactive,
     lead_id,
+    event_date,
+    event_location,
   } = req.body;
 
   if (applicant?.type === "C" && isInsured === true) {
@@ -88,7 +90,9 @@ const create = async (req: any, res: any) => {
     company_id,
     customer_id,
     beneficiary_id,
-    lead_id
+    lead_id,
+    event_date,
+    event_location
   );
 
   if (!caseResponse.success) {
@@ -147,7 +151,7 @@ const getAll = async (req: any, res: any) => {
 
 const uploadDocument = async (req: any, res: any) => {
   const { case_id } = req.body;
-  const document_id = JSON.parse(req.body.document_id);
+  const document_id = req.body.document_id;
 
   if (req.files === null) {
     return res
@@ -155,41 +159,32 @@ const uploadDocument = async (req: any, res: any) => {
       .json({ success: true, data: null, error: "No file uploaded" });
   }
 
-  let files = req.files["files"];
+  const file = req.files["files"];
 
-  if (!Array.isArray(files)) {
-    files = [files];
+  const result = await uploadFile(file);
+
+  if (!result) {
+    return res.status(400).json({ error: "No file was uploaded." });
   }
 
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
-    const document = document_id[i];
+  const caseStageAttachResponse = await CaseStageAttach.uploadDocument(
+    case_id,
+    document_id,
+    file.name
+  );
 
-    const result = await uploadFile(file);
-
-    if (!result) {
-      return res.status(400).json({ error: "No files were uploaded." });
-    }
-
-    const caseStageAttachResponse = await CaseStageAttach.uploadDocument(
-      case_id,
-      document,
-      file.name
-    );
-
-    if (!caseStageAttachResponse.success) {
-      createLogger.error({
-        model: `caseStage/uploadDocument`,
-        error: caseStageAttachResponse.error,
-      });
-      return res.status(500).json({ error: caseStageAttachResponse.error });
-    }
-
-    createLogger.info({
+  if (!caseStageAttachResponse.success) {
+    createLogger.error({
       model: `caseStage/uploadDocument`,
-      message: `Document uploaded successfully`,
+      error: caseStageAttachResponse.error,
     });
+    return res.status(500).json({ error: caseStageAttachResponse.error });
   }
+
+  createLogger.info({
+    model: `caseStage/uploadDocument`,
+    message: `Document uploaded successfully`,
+  });
 
   return res.status(200).json({ success: true, data: null, error: null });
 };

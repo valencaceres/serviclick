@@ -62,6 +62,14 @@ const CaseTracking = ({ thisCase }: any) => {
   const { mutate: assignSpecialist } = useQueryCase().useAssignSpecialist();
   const { mutate: reimburse } = useQueryCase().useReimburse();
 
+  const previousEvaluation = thisCase?.stages.find(
+    (s: any) =>
+      s.stage === "Solicitud reembolso" ||
+      s.stage === "Designación de especialista" ||
+      s.stage === "Designación de convenio" ||
+      s.stage === "Descuento IMED"
+  )?.stage;
+
   const handleConfirm = (e: any) => {
     e.preventDefault();
     return updateCase(
@@ -79,6 +87,8 @@ const CaseTracking = ({ thisCase }: any) => {
         description: evaluation,
         isactive: true,
         lead_id: thisCase?.lead_id,
+        event_date: thisCase.event_date,
+        event_location: thisCase.event_location,
       },
       {
         onSuccess: () => {
@@ -146,6 +156,8 @@ const CaseTracking = ({ thisCase }: any) => {
         user_id: user?.id,
         isactive: true,
         lead_id: thisCase?.lead_id,
+        event_date: thisCase.event_date,
+        event_location: thisCase.event_location,
       },
       {
         onSuccess: () => {
@@ -210,6 +222,8 @@ const CaseTracking = ({ thisCase }: any) => {
         user_id: user?.id,
         isactive: true,
         lead_id: thisCase?.lead_id,
+        event_date: thisCase.event_date,
+        event_location: thisCase.event_location,
       },
       {
         onSuccess: () => {
@@ -256,6 +270,8 @@ const CaseTracking = ({ thisCase }: any) => {
         description: justification,
         isactive: false,
         lead_id: thisCase?.lead_id,
+        event_date: thisCase.event_date,
+        event_location: thisCase.event_location,
       },
       {
         onSuccess: () => {
@@ -293,12 +309,15 @@ const CaseTracking = ({ thisCase }: any) => {
       setConfirmDate(assignedSpecialist?.confirmed_date?.split("T")[0]);
       setConfirmTime(assignedSpecialist?.confirmed_time);
     }
-  }, [stages, stage, assignedPartner, assignedSpecialist]);
+  }, [stages, stage, assignedPartner, assignedSpecialist, thisCase?.stages]);
 
   return (
     <form>
       <ContentCell gap="10px">
         <CaseDescription thisCase={thisCase} />
+        <h1 className="text-xl font-semibold text-teal-blue">
+          {previousEvaluation}
+        </h1>
         <ContentCell gap="5px">
           {thisCase?.stages?.find(
             (s: any) =>

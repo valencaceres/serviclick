@@ -60,6 +60,8 @@ const CaseFormResolution = ({ thisCase }: any) => {
         description: comment,
         isactive: true,
         lead_id: thisCase?.lead_id,
+        event_date: thisCase.event_date,
+        event_location: thisCase.event_location,
       },
       {
         onSuccess: () => {
@@ -78,6 +80,8 @@ const CaseFormResolution = ({ thisCase }: any) => {
               stage_id: stages.find((s: any) => s?.name === "Cerrado")?.id,
               user_id: user?.id,
               isactive: false,
+              event_date: thisCase.event_date,
+              event_location: thisCase.event_location,
             },
             {
               onSuccess: () => {
@@ -107,6 +111,8 @@ const CaseFormResolution = ({ thisCase }: any) => {
         user_id: user?.id,
         description: comment,
         isactive: false,
+        event_date: thisCase.event_date,
+        event_location: thisCase.event_location,
       },
       {
         onSuccess: () => {
@@ -133,8 +139,6 @@ const CaseFormResolution = ({ thisCase }: any) => {
       );
     }
   }, [thisCase]);
-
-  console.log(assignedPartner);
 
   return (
     <form>

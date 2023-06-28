@@ -44,6 +44,8 @@ const CaseFormSolution = ({ thisCase }: any) => {
     description,
     isactive: true,
     lead_id: thisCase?.lead_id,
+    event_date: thisCase.event_date,
+    event_location: thisCase.event_location,
   });
 
   const handleSubmit = (e: any) => {

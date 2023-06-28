@@ -14,12 +14,7 @@ import { useQueryAssistances, useQueryCase } from "../../../hooks/query";
 import { useCase } from "../../../store/hooks/useCase";
 import Link from "next/link";
 
-const CaseDocumentsTable = ({
-  thisCase,
-  thisStage,
-  uploadedFiles,
-  setUploadedFiles,
-}: any) => {
+const CaseDocumentsTable = ({ thisCase, thisStage, handleSubmit }: any) => {
   const { data } = useCase();
   const [assistance, setAssistance] = useState<any>(null);
 
@@ -27,7 +22,7 @@ const CaseDocumentsTable = ({
     if (data) {
       setAssistance(thisCase?.assistance_id);
     }
-  }, [data]);
+  }, [data, thisCase?.assistance_id]);
 
   const { data: documents } =
     useQueryAssistances().useGetDocumentsById(assistance);
@@ -39,10 +34,9 @@ const CaseDocumentsTable = ({
 
   const handleChangeInput = (e: any, item: any) => {
     if (e.target.files && e.target.files.length > 0) {
-      setUploadedFiles([
-        ...uploadedFiles,
-        { file: e.target.files[0], documentId: item.id },
-      ]);
+      const file = e.target.files[0];
+      const documentId = item.id;
+      handleSubmit(file, documentId);
     }
   };
 
@@ -72,9 +66,11 @@ const CaseDocumentsTable = ({
                       id={`file-[${idx}]`}
                       onChange={(e) => handleChangeInput(e, item)}
                       className={"hidden"}
-                      accept=".csv .jpg .png .pdf .jpeg"
+                      accept=".csv,.jpg,.png,.pdf,.jpeg"
                     />
-                    {uploadedFiles[idx] ? (
+                    {attachments?.find(
+                      (a: any) => a.document_id === item.id
+                    ) ? (
                       <Icon iconName="check" />
                     ) : (
                       <Icon iconName="upload" button={true} />

@@ -38,88 +38,24 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
     useQueryCase().useUploadDocument();
   const { mutate: updateCase } = useQueryCase().useCreate();
 
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
+  const handleSubmit = (file: any, documentId: any) => {
     const formData = new FormData();
     formData.append("case_id", thisCase?.case_id);
-    const documentIds = uploadedFiles.map(({ documentId }) =>
-      documentId.toString()
-    );
-    formData.append("document_id", JSON.stringify(documentIds));
-    uploadedFiles.forEach(({ file }) => {
-      formData.append("files", file);
-    });
+    formData.append("document_id", documentId.toString());
+    formData.append("files", file);
 
     uploadDocuments(formData, {
       onSuccess: () => {
-        updateCase(
-          {
-            applicant: {
-              id: thisCase?.insured_id,
-            },
-            number: thisCase?.case_number,
-            product_id: thisCase?.product_id,
-            assistance_id: thisCase?.assistance_id,
-            company_id:
-              contractor?.type === "C" ? thisCase?.contractor_id : null,
-            customer_id:
-              contractor?.type === "P" ? thisCase?.contractor_id : null,
-            stage_id:
-              stages?.find((s: any) => s.name === "Recepción de antecedentes")
-                ?.id || "",
-            user_id: user?.id,
-            isactive: true,
-            lead_id: thisCase?.lead_id,
-          },
-          {
-            onSuccess: () => {
-              toast({
-                title: "Documentos subidos correctamente",
-                description:
-                  "Se ha subido correctamente los documentos y puedes volver a revisarlos en la sección de Recepción de antecedentes.",
-              });
-              return updateCase(
-                {
-                  applicant: {
-                    id: thisCase?.insured_id,
-                  },
-                  number: thisCase?.case_number,
-                  product_id: thisCase?.product_id,
-                  assistance_id: thisCase?.assistance_id,
-                  company_id:
-                    contractor?.type === "C" ? thisCase?.contractor_id : null,
-                  customer_id:
-                    contractor?.type === "P" ? thisCase?.contractor_id : null,
-                  stage_id: stages?.find((s: any) => s?.name === "Seguimiento")
-                    ?.id,
-                  user_id: user?.id,
-                  isactive: true,
-                  lead_id: thisCase?.lead_id,
-                },
-                {
-                  onSuccess: () => {
-                    router.push(`/case/${thisCase?.case_id}/seguimiento`);
-                    queryClient.invalidateQueries(["case", thisCase?.case_id]);
-                  },
-                }
-              );
-            },
-            onError: () => {
-              toast({
-                title: "Error al subir documentos",
-                description:
-                  "Ha ocurrido un error al subir los documentos, por favor intenta nuevamente.",
-                variant: "destructive",
-              });
-            },
-          }
-        );
+        toast({
+          title: "Documento subido correctamente",
+          description: "Se ha subido correctamente el documento.",
+        });
+        queryClient.invalidateQueries(["case"]);
       },
     });
   };
 
-  const handleSkip = (e: any) => {
-    e.preventDefault();
+  const handleContinue = () => {
     updateCase(
       {
         applicant: {
@@ -136,6 +72,8 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
         user_id: user?.id,
         isactive: true,
         lead_id: thisCase?.lead_id,
+        event_date: thisCase?.event_date,
+        event_location: thisCase?.event_location,
       },
       {
         onSuccess: () => {
@@ -155,6 +93,8 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
               user_id: user?.id,
               isactive: true,
               lead_id: thisCase?.lead_id,
+              event_date: thisCase?.event_date,
+              event_location: thisCase?.event_location,
             },
             {
               onSuccess: () => {
@@ -163,6 +103,14 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
               },
             }
           );
+        },
+        onError: () => {
+          toast({
+            title: "Error al subir documentos",
+            description:
+              "Ha ocurrido un error al subir los documentos, por favor intenta nuevamente.",
+            variant: "destructive",
+          });
         },
       }
     );
@@ -175,41 +123,29 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
   }, [stages, stage]);
 
   return (
-    <form
-      action=""
-      encType="multipart/form-data"
-      method="post"
-      onSubmit={handleSubmit}
-    >
+    <>
       <ContentCell gap="20px">
         <CaseDescription thisCase={thisCase} />
         <ContentCell gap="5px">
           <CaseDocumentsTable
             thisCase={thisCase}
             thisStage={thisStage}
-            uploadedFiles={uploadedFiles}
-            setUploadedFiles={setUploadedFiles}
+            handleSubmit={handleSubmit}
           />
         </ContentCell>
         <ContentRow gap="5px">
           <Button
-            disabled={thisCase?.is_active ? false : true}
-            className="w-full"
-          >
-            Subir documentos
-          </Button>
-          <Button
-            disabled={thisCase?.is_active ? false : true}
             type="button"
+            onClick={handleContinue}
+            disabled={thisCase?.is_active ? false : true}
             className="w-full"
-            onClick={(e: any) => handleSkip(e)}
           >
-            Omitir
+            Continuar
           </Button>
         </ContentRow>
       </ContentCell>
       <LoadingMessage showModal={isLoading} />
-    </form>
+    </>
   );
 };
 
