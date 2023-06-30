@@ -14,7 +14,7 @@ import {
 import { CaseDescription } from "./CaseDescription";
 import { Button } from "~/components/ui/ButtonC";
 
-const CaseFormSolution = ({ thisCase }: any) => {
+const CaseFormIMED = ({ thisCase }: any) => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -52,7 +52,7 @@ const CaseFormSolution = ({ thisCase }: any) => {
     e.preventDefault();
     if (description) {
       setError(null);
-      return updateCase(updateCaseData("Solicitud reembolso", description), {
+      return updateCase(updateCaseData("Descuento IMED", description), {
         onSuccess: () => {
           updateCase(updateCaseData("Recepción de antecedentes"), {
             onSuccess: () => {
@@ -71,7 +71,7 @@ const CaseFormSolution = ({ thisCase }: any) => {
   useEffect(() => {
     if (thisCase) {
       setDescription(
-        thisCase?.stages.find((s: any) => s.stage === "Solicitud reembolso")
+        thisCase?.stages.find((s: any) => s.stage === "Descuento IMED")
           ?.description
       );
     }
@@ -101,4 +101,4 @@ const CaseFormSolution = ({ thisCase }: any) => {
   );
 };
 
-export default CaseFormSolution;
+export default CaseFormIMED;

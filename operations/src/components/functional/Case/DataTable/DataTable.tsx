@@ -219,7 +219,7 @@ export function DataTable<TData, TValue>({
               },
               {
                 onSuccess: (res) => {
-                  void router.push(`/case/${res.data.id}/registro de servicio`);
+                  void router.push(`/case/${res.data.id}/apertura`);
                   queryClient.invalidateQueries(["case", res.data?.id]);
                 },
               }
@@ -309,11 +309,11 @@ export function DataTable<TData, TValue>({
         </fieldset>
         <fieldset className="flex flex-col">
           <Label htmlFor="searchFullname" className="mb-1">
-            Buscar por Beneficiario
+            Buscar por Nombre
           </Label>
           <Input
             id="searchFullname"
-            placeholder="Nombre o apellido..."
+            placeholder="Cliente o Beneficiario"
             value={
               (table.getColumn("fullname")?.getFilterValue() as string) ?? ""
             }
@@ -504,18 +504,20 @@ export function DataTable<TData, TValue>({
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="px-2">
-                  <ul className="flex list-disc flex-col gap-1 items-start">
+                  <ul className="flex list-disc flex-col items-start gap-1">
                     {uniqueProducts?.map((product: any) => (
                       <AlertDialog key={product.id}>
-                        <AlertDialogTrigger className="hover:underline">{product.name}</AlertDialogTrigger>
+                        <AlertDialogTrigger className="hover:underline">
+                          {product.name}
+                        </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
                             <AlertDialogTitle>
                               Creación rápida de caso
                             </AlertDialogTitle>
                             <AlertDialogDescription>
-                              Al continuar se creará un caso para el siguiente cliente y
-                              producto.
+                              Al continuar se creará un caso para el siguiente
+                              cliente y producto.
                             </AlertDialogDescription>
                             <div>
                               <p className="font-semibold">
@@ -578,7 +580,7 @@ export function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() && "selected"}
                   className={`${
                     onRowClick && "cursor-pointer"
-                  } hover:bg-gray-100 even:bg-sky-50`}
+                  } even:bg-sky-50 hover:bg-gray-100`}
                   onClick={() => onRowClick && onRowClick(row.original)}
                 >
                   {row.getVisibleCells().map((cell) => (

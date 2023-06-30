@@ -19,6 +19,8 @@ import {
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import { Button } from "~/components/ui/ButtonC";
+import { useDistrict } from "~/hooks";
+
 interface IAssistance {
   id: string;
   name: string;
@@ -48,10 +50,13 @@ const CaseFormService = ({ thisCase }: any) => {
   const [relatedProducts, setRelatedProducts] = useState<any>([]);
   const [selectedProduct, setSelectedProduct] = useState<IProduct | null>(null);
   const [description, setDescription] = useState("");
+  const [eventDate, setEventDate] = useState<Date | null>(null);
+  const [district, setDistrict] = useState<string>("");
   const [stage, setStage] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [formValues, setFormValues] = useState<{ [key: string]: any }>({});
 
+  const { list: districtList } = useDistrict();
   const { user } = useUser();
 
   const { data: ufValue } = useQueryUF().useGetUFValue();
@@ -103,7 +108,7 @@ const CaseFormService = ({ thisCase }: any) => {
       }
       setUniqueAssistances([]);
     }
-  }, [selectedProduct]);
+  }, [data?.products, selectedProduct]);
 
   const handleProductChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const productId = event.target.value;
@@ -133,17 +138,20 @@ const CaseFormService = ({ thisCase }: any) => {
       ?.description;
   }, [thisCase]);
 
-  useEffect(() => {
-    if (currentStage) {
-      setStage(currentStage);
-    }
-  }, [currentStage]);
+  const currentEventDate = useMemo(() => {
+    return thisCase?.event_date;
+  }, [thisCase]);
+
+  const currentDistrict = useMemo(() => {
+    return thisCase?.event_location;
+  }, [thisCase]);
 
   useEffect(() => {
-    if (currentDescription) {
-      setDescription(currentDescription);
-    }
-  }, [currentDescription]);
+    if (currentStage) setStage(currentStage);
+    if (currentDescription) setDescription(currentDescription);
+    if (currentEventDate) setEventDate(new Date(currentEventDate));
+    if (currentDistrict) setDistrict(currentDistrict);
+  }, [currentDescription, currentDistrict, currentEventDate, currentStage]);
 
   const handleAddService = () => {
     if (selectedAssistance && selectedProduct && description) {
@@ -176,6 +184,8 @@ const CaseFormService = ({ thisCase }: any) => {
           description,
           isactive: true,
           lead_id: selectedProduct?.lead_id,
+          event_date: eventDate,
+          event_location: district,
         },
         {
           onSuccess: () => {
@@ -207,7 +217,7 @@ const CaseFormService = ({ thisCase }: any) => {
 
   return (
     <div>
-      <ContentCell gap="20px">
+      <ContentCell gap="10px">
         <ContentCell gap="5px">
           {thisCase?.contractor_id && (
             <Link href={`/entities/contractor/${contractor?.id}`}>
@@ -322,13 +332,16 @@ const CaseFormService = ({ thisCase }: any) => {
           ) : null}
         </ContentCell>
         {selectedAssistance ? (
-          <Fragment>
+          <>
             <div className="flex flex-col gap-1">
               <h2 className="text-xl font-semibold text-secondary-500">
                 {selectedProduct?.name}
               </h2>
               <p className="text-secondary-500">
-                Fecha de adquisición: <span className="font-semibold">{selectedProductCreatedAt}</span>
+                Fecha de adquisición:{" "}
+                <span className="font-semibold">
+                  {selectedProductCreatedAt}
+                </span>
               </p>
             </div>
             <CaseServiceTable
@@ -337,6 +350,29 @@ const CaseFormService = ({ thisCase }: any) => {
               formValues={formValues}
               setFormValues={setFormValues}
             />
+            <ContentRow gap="5px">
+              <InputText
+                label="Fecha del evento"
+                value={
+                  eventDate ? eventDate.toISOString().substring(0, 10) : ""
+                }
+                type="date"
+                width="234px"
+                onChange={(e: any) => setEventDate(new Date(e.target.value))}
+                disabled={thisCase?.is_active ? false : true}
+              />
+              <ComboBox
+                label="Comuna del evento"
+                placeHolder="Seleccione comuna"
+                width="286px"
+                data={districtList}
+                dataText="district_name"
+                dataValue="district_name"
+                value={district}
+                onChange={(e: any) => setDistrict(e.target.value)}
+                enabled={thisCase?.is_active ? true : false}
+              />
+            </ContentRow>
             <TextArea
               value={description}
               disabled={thisCase?.is_active ? false : true}
@@ -346,7 +382,7 @@ const CaseFormService = ({ thisCase }: any) => {
               height="110px"
             />
             {error && <p className="text-sm text-red-500">{error}</p>}
-          </Fragment>
+          </>
         ) : null}
         <Button
           disabled={thisCase?.is_active && selectedAssistance ? false : true}

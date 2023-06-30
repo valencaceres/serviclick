@@ -39,8 +39,7 @@ const CaseServiceTable = ({
     product?.id
   );
 
-  const { mutate: assignValue } =
-    useQueryAssistances().useAssignValue();
+  const { mutate: assignValue } = useQueryAssistances().useAssignValue();
 
   const handleSubmit = (e: any, data: any) => {
     e.preventDefault();
@@ -93,7 +92,7 @@ const CaseServiceTable = ({
                             value_id: item.id,
                           })
                         }
-                        className="flex items-center gap-2"
+                        className="flex items-center gap-4"
                       >
                         <input
                           type="text"
@@ -117,7 +116,7 @@ const CaseServiceTable = ({
                         </button>
                       </form>
                     ) : (
-                      <div className="relative flex w-full justify-center">
+                      <div className="relative flex h-full w-full items-center justify-center">
                         <p className="font-semibold">
                           {
                             insuredValues.find(
@@ -126,7 +125,7 @@ const CaseServiceTable = ({
                           }
                         </p>
                         <button
-                          className="absolute right-0 top-0"
+                          className="absolute right-0 top-1"
                           onClick={() => setEditingId(item.id)}
                         >
                           <Icon iconName="edit" button={true} />

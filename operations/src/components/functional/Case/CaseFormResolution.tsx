@@ -60,6 +60,8 @@ const CaseFormResolution = ({ thisCase }: any) => {
         description: comment,
         isactive: true,
         lead_id: thisCase?.lead_id,
+        event_date: thisCase.event_date,
+        event_location: thisCase.event_location,
       },
       {
         onSuccess: () => {
@@ -78,6 +80,8 @@ const CaseFormResolution = ({ thisCase }: any) => {
               stage_id: stages.find((s: any) => s?.name === "Cerrado")?.id,
               user_id: user?.id,
               isactive: false,
+              event_date: thisCase.event_date,
+              event_location: thisCase.event_location,
             },
             {
               onSuccess: () => {
@@ -107,6 +111,8 @@ const CaseFormResolution = ({ thisCase }: any) => {
         user_id: user?.id,
         description: comment,
         isactive: false,
+        event_date: thisCase.event_date,
+        event_location: thisCase.event_location,
       },
       {
         onSuccess: () => {
@@ -133,8 +139,6 @@ const CaseFormResolution = ({ thisCase }: any) => {
       );
     }
   }, [thisCase]);
-
-  console.log(assignedPartner);
 
   return (
     <form>
@@ -183,11 +187,10 @@ const CaseFormResolution = ({ thisCase }: any) => {
               </ContentRow>
               {thisReimbursement?.status === "Aprobado" && (
                 <ContentRow gap="5px">
-                  {thisCase?.stages.find((c: any) => c?.stage === "Resolución")
-                    ?.description === "Reembolsar IMED" ? (
-                    <>
+                  <>
+                    {thisReimbursement?.imed_amount !== null && (
                       <InputText
-                        label="Reembolso IMED"
+                        label="Descuento IMED"
                         value={thisReimbursement?.imed_amount.toLocaleString(
                           "es-CL",
                           {
@@ -199,21 +202,7 @@ const CaseFormResolution = ({ thisCase }: any) => {
                         disabled={true}
                         width="260px"
                       />
-                      <InputText
-                        label="Reembolso ServiClick"
-                        value={thisReimbursement?.serviclick_amount.toLocaleString(
-                          "es-CL",
-                          {
-                            style: "currency",
-                            currency: "CLP",
-                          }
-                        )}
-                        type="text"
-                        disabled={true}
-                        width="260px"
-                      />
-                    </>
-                  ) : (
+                    )}
                     <InputText
                       label="Reembolso ServiClick"
                       value={thisReimbursement?.serviclick_amount.toLocaleString(
@@ -225,9 +214,9 @@ const CaseFormResolution = ({ thisCase }: any) => {
                       )}
                       type="text"
                       disabled={true}
-                      width="525px"
+                      width="260px"
                     />
-                  )}
+                  </>
                 </ContentRow>
               )}
               {thisReimbursement?.comment && (

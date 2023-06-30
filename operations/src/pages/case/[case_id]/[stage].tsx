@@ -23,6 +23,7 @@ import CaseNotes from "~/components/functional/Case/CaseChat";
 import { Modal, Window } from "~/components/ui/Modal";
 import { useQueryCase } from "~/hooks/query";
 import CaseFormInsuredData from "~/components/functional/Case/CaseFormInsuredData";
+import CaseFormIMED from "~/components/functional/Case/CaseFormIMED";
 
 const stageComponents = {
   apertura: CaseFormNew,
@@ -34,6 +35,7 @@ const stageComponents = {
   "solicitud reembolso": CaseFormSolution,
   "designación de convenio": CaseFormPartner,
   "designación de especialista": CaseFormSpecialist,
+  "descuento imed": CaseFormIMED,
   seguimiento: CaseTracking,
   resolución: CaseFormResolution,
   calificación: CaseRating,
@@ -49,6 +51,7 @@ const stageNames = {
   "recepción de antecedentes": "Recepción de antecedentes",
   "evaluación del evento": "Evaluación",
   "solicitud reembolso": "Solicitud reembolso",
+  "descuento imed": "Descuento IMED",
   "designación de convenio": "Designación de convenio",
   "designación de especialista": "Designación de especialista",
   seguimiento: "Seguimiento",
@@ -67,10 +70,14 @@ const CaseStepPage = () => {
     ? router.query.case_id[0]
     : router.query.case_id;
 
-  const stage = (Array.isArray(router.query.stage)
-    ? router.query.stage[0]
-    : router.query.stage) as StageKeys | undefined;
-  const { data: thisCase, isLoading } = useQueryCase().useGetById(case_id as string);
+  const stage = (
+    Array.isArray(router.query.stage)
+      ? router.query.stage[0]
+      : router.query.stage
+  ) as StageKeys | undefined;
+  const { data: thisCase, isLoading } = useQueryCase().useGetById(
+    case_id as string
+  );
   const number = thisCase?.case_number;
   const StageComponent = stage ? stageComponents[stage] : null;
 
@@ -80,7 +87,13 @@ const CaseStepPage = () => {
 
   useEffect(() => {
     if (stage) {
-      setTitleUI(`${isLoading ? "Cargando..." : `${stageNames[stage]} | Caso ${number ?? stageNames[stage]}`}`);
+      setTitleUI(
+        `${
+          isLoading
+            ? "Cargando..."
+            : `${stageNames[stage]} | Caso ${number ?? stageNames[stage]}`
+        }`
+      );
     }
   }, [router, thisCase, stage]);
 

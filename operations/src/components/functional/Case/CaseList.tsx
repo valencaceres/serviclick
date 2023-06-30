@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 
-import { type ColumnDef } from "@tanstack/react-table";
+import { Row, type ColumnDef } from "@tanstack/react-table";
 
 import { useQueryCase } from "../../../hooks/query";
 import { DataTable } from "~/components/functional/Case/DataTable/DataTable";
@@ -41,6 +41,18 @@ type Case = {
   stage: string;
 };
 
+const filterFn = (row: Row<Case>, id: string, filterValue: string) => {
+  const rowValue = row.getValue(id);
+  const fullname = `${row.original.name} ${row.original.lastname}`;
+  const contractorName = row.original.contractor_name;
+
+  return (
+    String(rowValue).toLowerCase().includes(filterValue.toLowerCase()) ||
+    fullname.toLowerCase().includes(filterValue.toLowerCase()) ||
+    contractorName.toLowerCase().includes(filterValue.toLowerCase())
+  );
+};
+
 const columns: ColumnDef<Case>[] = [
   {
     accessorKey: "number",
@@ -51,9 +63,14 @@ const columns: ColumnDef<Case>[] = [
   {
     accessorKey: "contractor_name",
     header: "Cliente",
+    filterFn: filterFn,
     cell: ({ row }) => {
-      return (<div className="capitalize">{row.original.contractor_name.toLowerCase()}</div>)
-    }
+      return (
+        <div className="capitalize">
+          {row.original.contractor_name.toLowerCase()}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "rut",
@@ -62,14 +79,7 @@ const columns: ColumnDef<Case>[] = [
   {
     accessorKey: "fullname",
     header: "Beneficiario",
-    filterFn: (rows, id, filterValue) => {
-      const rowValue = `${rows.original["name"]} ${rows.original["lastname"]}`;
-      return rowValue !== undefined
-        ? String(rowValue)
-            .toLowerCase()
-            .includes(String(filterValue).toLowerCase())
-        : true;
-    },
+    filterFn: filterFn,
     cell: ({ row }) => {
       const fullname = `${row.original.name?.toLowerCase()} ${row.original.lastname?.toLowerCase()}`;
       return <div className="font-medium capitalize">{fullname}</div>;

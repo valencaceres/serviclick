@@ -57,6 +57,8 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
     description,
     isactive: active,
     lead_id: thisCase?.lead_id,
+    event_date: thisCase?.event_date,
+    event_location: thisCase?.event_location,
   });
 
   const handleSubmit = (e: any) => {
@@ -88,7 +90,10 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
           } else {
             return updateCase(updateCaseData(evaluation, justification), {
               onSuccess: () => {
-                if (evaluation !== "Solicitud reembolso") {
+                if (
+                  evaluation !== "Solicitud reembolso" &&
+                  evaluation !== "Descuento IMED"
+                ) {
                   router.push(
                     `/case/${thisCase?.case_id}/${evaluation.toLowerCase()}`
                   );
@@ -114,7 +119,7 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
         "Solicitud reembolso",
         "Designación de convenio",
         "Designación de especialista",
-        "Rechazado",
+        "Descuento IMED",
       ];
 
       for (const stageName of evaluationStages) {
@@ -146,6 +151,25 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
             disabled={true}
             height="110px"
           />
+          <ComboBox
+            label="Decisión de evaluación"
+            placeHolder="Seleccione decisión"
+            data={decisions}
+            width="525px"
+            value={evaluation}
+            enabled={
+              thisCase?.is_active &&
+              !thisCase.stages.find(
+                (stage: any) => stage.stage === "Evaluación del evento"
+              ) &&
+              !evaluationExists
+                ? true
+                : false
+            }
+            onChange={(e: any) => setEvaluation(e.target.value)}
+            dataText="name"
+            dataValue="name"
+          />
           <TextArea
             value={justification}
             onChange={(e: any) => setJustification(e.target.value)}
@@ -155,19 +179,8 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
             disabled={thisCase?.is_active ? false : true}
           />
           {error && <p className="text-md text-red-500">{error}</p>}
-          <ComboBox
-            label="Decisión de evaluación"
-            placeHolder="Seleccione decisión"
-            data={decisions}
-            width="525px"
-            value={evaluation}
-            enabled={thisCase?.is_active ? true : false}
-            onChange={(e: any) => setEvaluation(e.target.value)}
-            dataText="name"
-            dataValue="name"
-          />
         </ContentCell>
-        <Button disabled={thisCase?.is_active && !evaluationExists ? false : true}>
+        <Button disabled={thisCase?.is_active ? false : true}>
           Registrar evaluación
         </Button>
       </ContentCell>

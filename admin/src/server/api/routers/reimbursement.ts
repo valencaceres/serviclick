@@ -3,32 +3,43 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const reimbursementRouter = createTRPCRouter({
-  getAll: publicProcedure.query(async ({ ctx }) => {
-    const reimbursement = await ctx.prisma.casereimbursment.findMany({
-      include: {
-        casemodel: {
-          include: {
-            insured: true,
-            beneficiary: true,
-            product: true,
-            assistance: {
-              include: {
-                productassistances: true,
+  getAll: publicProcedure
+    .input(
+      z.object({
+        isImed: z.boolean(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const whereCondition = input.isImed
+        ? { OR: [{ imed_amount: { gt: 0 } }, { imed_amount: 0 }] }
+        : { OR: [{ imed_amount: null }] };
+
+      const reimbursement = await ctx.prisma.casereimbursment.findMany({
+        where: whereCondition,
+        include: {
+          casemodel: {
+            include: {
+              insured: true,
+              beneficiary: true,
+              assistance: {
+                include: {
+                  productassistances: true,
+                },
               },
+              product: true,
             },
           },
+          casestageresult: true,
         },
-        casestageresult: true,
-      },
-      orderBy: {
-        casemodel: {
-          number: "asc",
+        orderBy: {
+          casemodel: {
+            number: "asc",
+          },
         },
-      },
-    });
+      });
 
-    return reimbursement;
-  }),
+      return reimbursement;
+    }),
   update: publicProcedure
     .input(
       z.object({

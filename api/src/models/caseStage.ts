@@ -56,6 +56,8 @@ const getById = async (id: string) => {
               CAS.beneficiary_id,
               CAS.isactive,
               CAS.type,
+              CAS.event_date,
+              CAS.event_location,
               FAM.id AS family_id,
               CAS.lead_id,
               CST.user_id,
@@ -125,6 +127,8 @@ const getById = async (id: string) => {
       type: result.rows[0].type,
       is_active: result.rows[0].isactive,
       lead_id: result.rows[0].lead_id,
+      event_date: result.rows[0].event_date,
+      event_location: result.rows[0].event_location,
       stages: result.rows.map((row: any) => ({
         id: row.stage_id,
         stage: row.stage,

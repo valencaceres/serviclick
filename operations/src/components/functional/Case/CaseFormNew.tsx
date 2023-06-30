@@ -30,6 +30,8 @@ import {
 import { useForm } from "react-hook-form";
 import { Input } from "~/components/ui/Input";
 import { getDateTime } from "~/utils/dateAndTime";
+import { useDistrict } from "~/hooks";
+import ComboBox from "~/components/ui/ComboBox";
 
 interface IInitialValues {
   rut: string;
@@ -98,6 +100,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
   const [prevRut, setPrevRut] = useState<string>("");
   const prevDataRef = useRef();
 
+  const { list: districtList } = useDistrict();
   const { user } = useUser();
   const { data: stageData } = useQueryStage().useGetAll();
   const { mutate: createCase } = useQueryCase().useCreate();
@@ -177,6 +180,8 @@ const BeneficiaryForm = ({ thisCase }: any) => {
         stage_id: stage,
         user_id: user?.id,
         lead_id: thisCase?.lead_id,
+        event_date: thisCase.event_date,
+        event_location: thisCase.event_location,
       },
       {
         onSuccess: (response) => {
@@ -357,12 +362,14 @@ const BeneficiaryForm = ({ thisCase }: any) => {
         {data && isInsured === "isBeneficiary" && (
           <ContentCell gap="2px">
             <ContentRow gap="5px">
-              <h2 className="text-xl font-semibold text-secondary-500 w-[260px]">
+              <h2 className="w-[260px] text-xl font-semibold text-secondary-500">
                 Datos de carga
               </h2>
               <InputText
                 label="Relación"
-                value={data?.beneficiary?.relationship || "Sin relación asignada"}
+                value={
+                  data?.beneficiary?.relationship || "Sin relación asignada"
+                }
                 type="text"
                 disabled={true}
                 width="260px"
@@ -551,24 +558,30 @@ const BeneficiaryForm = ({ thisCase }: any) => {
               <Label htmlFor="email" className="text-xs text-dusty-gray">
                 Comuna
               </Label>
-              <Input
-                errorText={errors.district?.message}
-                {...register("district", {
-                  required: "Este campo es requerido",
-                })}
-                type="text"
-                id="district"
-                placeholder="Comuna"
-                disabled={
-                  isLoading || thisCase?.is_active || !thisCase === true
-                    ? false
-                    : true
-                }
-                className={`w-full ${
-                  errors.district?.message?.length ? "border-red-500" : ""
-                }`}
+              <Select
                 value={district}
-              />
+                onValueChange={(value) => {
+                  setValue("district", value);
+                }}
+              >
+                <SelectTrigger className="h-10 rounded-sm border-dusty-gray border-opacity-40 py-6">
+                  <SelectValue placeholder="Seleccione comuna" />
+                </SelectTrigger>
+                <SelectContent className="h-52" id="district">
+                  {districtList.map((district) => (
+                    <SelectItem
+                      {...register("district", {
+                        required: "Este campo es requerido",
+                      })}
+                      key={district.district_name}
+                      value={district.district_name}
+                      className="text-sm"
+                    >
+                      {district.district_name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="flex gap-2">
               <div className="flex w-full flex-col">

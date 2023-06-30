@@ -4,7 +4,8 @@ const create: any = async (
   case_id: string,
   casestageresult_id: string,
   user_id?: string,
-  status?: "Pendiente" | "Aprobado" | "Rechazado"
+  status?: "Pendiente" | "Aprobado" | "Rechazado",
+  imed_amount?: number
 ) => {
   try {
     const caseStageReimbursment = await pool.query(
@@ -18,20 +19,21 @@ const create: any = async (
       const result = await pool.query(
         `UPDATE app.casereimbursment
         SET user_id = $1,
-            status = $2
+            status = $2,
+            imed_amount = $5
         WHERE case_id = $3
         AND casestageresult_id = $4
         RETURNING *`,
-        [user_id, status, case_id, casestageresult_id]
+        [user_id, status, case_id, casestageresult_id, imed_amount]
       );
 
       return { success: true, data: result.rows[0], error: null };
     }
 
     const result = await pool.query(
-      `INSERT INTO app.casereimbursment(case_id, casestageresult_id, user_id, status)
-        VALUES ($1, $2, $3, $4) RETURNING *`,
-      [case_id, casestageresult_id, user_id, status]
+      `INSERT INTO app.casereimbursment(case_id, casestageresult_id, user_id, status, imed_amount)
+        VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+      [case_id, casestageresult_id, user_id, status, imed_amount]
     );
 
     return { success: true, data: result.rows[0], error: null };
@@ -54,6 +56,7 @@ const getAll: any = async () => {
                                         sub.maternallastname,
                                         sub.assistance,
                                         sub.max_amount,
+                                        SUB.maximum,
                                         sub.case_id,
                                         sub.case_number,
                                         sub.stage_name,
@@ -72,6 +75,7 @@ const getAll: any = async () => {
                                             I.maternallastname,
                                             A.name AS assistance,
                                             PA.amount AS max_amount,
+                                            PA.maximum AS maximum,
                                             C.id AS case_id,
                                             C.number AS case_number,
                                             S.name AS stage_name,

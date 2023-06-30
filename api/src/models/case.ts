@@ -3,8 +3,13 @@ import pool from "../util/database";
 import { _getBeneficiaryData } from "../queries/case";
 import { IData } from "../interfaces/case";
 
+interface IApplicant {
+  id: string;
+  type: string;
+}
+
 const create: any = async (
-  applicant: any,
+  applicant: IApplicant,
   number?: number,
   product_id?: string,
   assistance_id?: string,
@@ -13,7 +18,9 @@ const create: any = async (
   company_id?: string,
   customer_id?: string,
   beneficiary_id?: string,
-  lead_id?: string
+  lead_id?: string,
+  event_date?: Date,
+  event_location?: string
 ) => {
   try {
     if (!product_id && !assistance_id) {
@@ -25,21 +32,31 @@ const create: any = async (
 
         if (exists.rows.length > 0) {
           const result = await pool.query(
-            `UPDATE app.case SET insured_id = $1, company_id = $2, customer_id = $3 WHERE beneficiary_id = $4 AND number = $5 RETURNING *`,
-            [applicant.id, company_id, customer_id, beneficiary_id, number]
+            `UPDATE app.case SET insured_id = $1, company_id = $2, customer_id = $3, event_date = $6, event_location = $7 WHERE beneficiary_id = $4 AND number = $5 RETURNING *`,
+            [
+              applicant.id,
+              company_id,
+              customer_id,
+              beneficiary_id,
+              number,
+              event_date,
+              event_location,
+            ]
           );
 
           return { success: true, data: result.rows[0], error: null };
         }
 
         const result = await pool.query(
-          `INSERT INTO app.case (insured_id, beneficiary_id, company_id, customer_id, type) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+          `INSERT INTO app.case (insured_id, beneficiary_id, company_id, customer_id, type, event_date, event_location) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
           [
             applicant.id,
             beneficiary_id,
             company_id,
             customer_id,
             applicant.type,
+            event_date,
+            event_location,
           ]
         );
 
@@ -62,13 +79,23 @@ const create: any = async (
               : "insured_id"
           } = $2,
           company_id = $3,
-          customer_id = $4
+          customer_id = $4,
+          event_date = $6,
+          event_location = $7
           WHERE ${
             applicant.type === "B" || isInsured === false
               ? "beneficiary_id"
               : "insured_id"
           } = $2 AND number = $5 RETURNING *`,
-          [applicant.type, applicant.id, company_id, customer_id, number]
+          [
+            applicant.type,
+            applicant.id,
+            company_id,
+            customer_id,
+            number,
+            event_date,
+            event_location,
+          ]
         );
 
         return { success: true, data: result.rows[0], error: null };
@@ -78,8 +105,15 @@ const create: any = async (
           applicant.type === "B" || isInsured === false
             ? "beneficiary_id"
             : "insured_id"
-        }, company_id, customer_id) VALUES ($1, $2, $3, $4) RETURNING *`,
-        [applicant.type, applicant.id, company_id, customer_id]
+        }, company_id, customer_id, event_date, event_location) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+        [
+          applicant.type,
+          applicant.id,
+          company_id,
+          customer_id,
+          event_date,
+          event_location,
+        ]
       );
 
       return { success: true, data: result.rows[0], error: null };
@@ -97,7 +131,7 @@ const create: any = async (
 
     if (resultCase.rows.length > 0) {
       const result = await pool.query(
-        `UPDATE app.case SET product_id = $1, assistance_id = $2, isactive = $3, company_id = $4, customer_id = $5, lead_id = $6
+        `UPDATE app.case SET product_id = $1, assistance_id = $2, isactive = $3, company_id = $4, customer_id = $5, lead_id = $6, event_date = $9, event_location = $10
         WHERE number = $7 AND ${
           applicant.type === "B" || isInsured === false
             ? "beneficiary_id"
@@ -113,6 +147,8 @@ const create: any = async (
           lead_id,
           number,
           applicant.id,
+          event_date,
+          event_location,
         ]
       );
 
@@ -258,8 +294,8 @@ const getAssistanceData: any = async (
   product_id: string
 ) => {
   try {
-    const result = await pool.query(
-      `select     asi.id,
+    const { rows } = await pool.query(
+      `select asi.id,
             max(asi.name) as assistance_name,
             max(pas.amount) as max_amount,
             max(pas.currency) as currency,
@@ -267,43 +303,52 @@ const getAssistanceData: any = async (
             max(pas.events) as max_events,
             sum(case when csr.amount is null or (crm.status <> 'Pendiente' and crm.status <> 'Aprobado') then 0 else csr.amount end) as requested_amount,
             sum(case when crm.amount is null or (crm.status <> 'Pendiente' and crm.status <> 'Aprobado') then 0 else crm.amount end) as used_amount,
+            sum(case when crm.imed_amount is null or (crm.status <> 'Pendiente' and crm.status <> 'Aprobado') then 0 else crm.imed_amount end) as imed_amount,
             sum(case when csr.amount > 0 and (crm.status = 'Pendiente' or crm.status = 'Aprobado') then 1 else 0 end) as used_events
-      from     app.case cas
-                left outer join app.casestage cst ON cst.case_id = cas.id
-                left outer join app.casestageresult csr on cst.id = csr.casestage_id
-                left outer join app.casereimbursment crm on csr.id = crm.casestageresult_id
-                inner join app.assistance asi ON cas.assistance_id = asi.id
-                inner join app.productassistance pas ON asi.id = pas.assistance_id
-                inner join app.product pro on pas.product_id = pro.id and cas.product_id = pro.id
-      where     cas.insured_id = $1
+      from app.case cas
+            left join app.casestage cst ON cst.case_id = cas.id
+            left join app.casestageresult csr on cst.id = csr.casestage_id
+            left join app.casereimbursment crm on csr.id = crm.casestageresult_id
+            inner join app.assistance asi ON cas.assistance_id = asi.id
+            inner join app.productassistance pas ON asi.id = pas.assistance_id
+            inner join app.product pro on pas.product_id = pro.id and cas.product_id = pro.id
+      where cas.insured_id = $1
             and cas.assistance_id = $2
             and cas.product_id = $3
-      group     by
-            asi.id`,
+      group by asi.id`,
       [insured_id, assistance_id, product_id]
     );
 
-    if (result.rows.length > 0) {
-      const remainingAmount = result.rows[0].max_amount
-        ? result.rows[0].max_amount - result.rows[0].used_amount
-        : 0;
-      const remainingEvents =
-        result.rows[0].max_events > 0
-          ? result.rows[0].max_events - result.rows[0].used_events
-          : 0;
+    if (rows.length > 0) {
+      const {
+        id,
+        assistance_name,
+        max_amount,
+        currency,
+        maximum,
+        max_events,
+        used_amount,
+        used_events,
+        imed_amount,
+      } = rows[0];
+
+      const remainingAmount = max_amount ? max_amount - used_amount : 0;
+      const remainingEvents = max_events > 0 ? max_events - used_events : 0;
 
       const data = {
-        id: result.rows[0].id,
-        name: result.rows[0].assistance_name,
-        max_amount: result.rows[0].max_amount,
-        currency: result.rows[0].currency,
-        maximum: result.rows[0].maximum,
-        max_events: result.rows[0].max_events,
+        id,
+        name: assistance_name,
+        max_amount,
+        currency,
+        maximum,
+        max_events,
         remaining_amount: remainingAmount,
         remaining_events: remainingEvents,
-        used_amount: result.rows[0].used_amount,
-        used_events: result.rows[0].used_events,
+        used_amount,
+        used_events,
+        imed_amount,
       };
+
       return { success: true, data, error: null };
     } else {
       return {
