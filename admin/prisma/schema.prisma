@@ -77,19 +77,20 @@ model beneficiary {
 }
 
 model broker {
-  id                  String  @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
-  rut                 String  @unique(map: "broker_rut_idx") @db.VarChar
-  name                String  @db.VarChar
-  legalrepresentative String  @db.VarChar
-  line                String  @db.VarChar
-  address             String  @db.VarChar
-  district            String  @db.VarChar
-  email               String  @db.VarChar
-  phone               String  @db.VarChar
+  id                  String       @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
+  rut                 String       @unique(map: "broker_rut_idx") @db.VarChar
+  name                String       @db.VarChar
+  legalrepresentative String       @db.VarChar
+  line                String       @db.VarChar
+  address             String       @db.VarChar
+  district            String       @db.VarChar
+  email               String       @db.VarChar
+  phone               String       @db.VarChar
   logo                String?
-  isactive            Boolean @default(true)
-  channel_id          String  @default(dbgenerated("'47c5171d-1af8-4442-a2e8-fe680b235220'::uuid")) @db.Uuid
-  fantasyname         String? @db.VarChar
+  isactive            Boolean      @default(true)
+  channel_id          String       @default(dbgenerated("'47c5171d-1af8-4442-a2e8-fe680b235220'::uuid")) @db.Uuid
+  fantasyname         String?      @db.VarChar
+  brokeruser          brokeruser[]
 }
 
 model brokercontractor {
@@ -120,6 +121,7 @@ model brokerproduct {
   customer_plan_id   Int?
   company_plan_id    Int?
   baseprice          Int     @default(0)
+  number             Int?    @default(0)
 
   @@unique([broker_id, product_id], map: "brokerproduct_idx")
 }
@@ -136,9 +138,13 @@ model casemodel {
   beneficiary_id   String?            @db.Uuid
   customer_id      String?            @db.Uuid
   company_id       String?            @db.Uuid
+  lead_id          String?            @db.Uuid
+  event_date       DateTime?          @db.Date
+  event_location   String?            @db.VarChar
   insured          insured?           @relation(fields: [insured_id], references: [id], map: "case_applicant_id_fkey")
   assistance       assistance?        @relation(fields: [assistance_id], references: [id])
   beneficiary      beneficiary?       @relation(fields: [beneficiary_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  lead             lead?              @relation(fields: [lead_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   product          product?           @relation(fields: [product_id], references: [id])
   casechat         casechat[]
   casereimbursment casereimbursment[]
@@ -356,16 +362,18 @@ model insured {
 }
 
 model lead {
-  id               String   @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
-  createdate       DateTime @db.Timestamp(6)
-  customer_id      String?  @db.Uuid
-  company_id       String?  @db.Uuid
+  id               String      @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
+  createdate       DateTime    @db.Timestamp(6)
+  customer_id      String?     @db.Uuid
+  company_id       String?     @db.Uuid
   subscription_id  Int?
-  isactive         Boolean  @default(true)
-  agent_id         String?  @db.Uuid
-  paymenttype_code String?  @db.VarChar(1)
-  policy_id        String?  @db.Uuid
-  link             String?  @db.VarChar
+  isactive         Boolean     @default(true)
+  agent_id         String?     @db.Uuid
+  paymenttype_code String?     @db.VarChar(1)
+  policy_id        String?     @db.Uuid
+  link             String?     @db.VarChar
+  user_id          String?     @db.VarChar(255)
+  Renamedcase      casemodel[]
 }
 
 model leadbeneficiary {
@@ -763,4 +771,14 @@ model valuetype {
   code        String @unique(map: "valuetype_code_idx") @db.VarChar
   name        String @db.VarChar
   description String @db.VarChar
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model brokeruser {
+  id          String  @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
+  broker_id   String  @db.Uuid
+  user_id     String
+  isactive    Boolean @default(true)
+  profilecode String  @default("S") @db.Char(1)
+  broker      broker  @relation(fields: [broker_id], references: [id])
 }

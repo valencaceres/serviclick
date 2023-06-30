@@ -29,6 +29,10 @@ const routes = [
         text: "Reembolsos",
         route: "/operations/reimbursement",
       },
+      {
+        text: "Descuentos IMED",
+        route: "/operations/imed",
+      },
     ],
   },
   {

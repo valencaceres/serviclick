@@ -187,11 +187,10 @@ const CaseFormResolution = ({ thisCase }: any) => {
               </ContentRow>
               {thisReimbursement?.status === "Aprobado" && (
                 <ContentRow gap="5px">
-                  {thisCase?.stages.find((c: any) => c?.stage === "Resolución")
-                    ?.description === "Reembolsar IMED" ? (
-                    <>
+                  <>
+                    {thisReimbursement?.imed_amount !== null && (
                       <InputText
-                        label="Reembolso IMED"
+                        label="Descuento IMED"
                         value={thisReimbursement?.imed_amount.toLocaleString(
                           "es-CL",
                           {
@@ -203,21 +202,7 @@ const CaseFormResolution = ({ thisCase }: any) => {
                         disabled={true}
                         width="260px"
                       />
-                      <InputText
-                        label="Reembolso ServiClick"
-                        value={thisReimbursement?.serviclick_amount.toLocaleString(
-                          "es-CL",
-                          {
-                            style: "currency",
-                            currency: "CLP",
-                          }
-                        )}
-                        type="text"
-                        disabled={true}
-                        width="260px"
-                      />
-                    </>
-                  ) : (
+                    )}
                     <InputText
                       label="Reembolso ServiClick"
                       value={thisReimbursement?.serviclick_amount.toLocaleString(
@@ -229,9 +214,9 @@ const CaseFormResolution = ({ thisCase }: any) => {
                       )}
                       type="text"
                       disabled={true}
-                      width="525px"
+                      width="260px"
                     />
-                  )}
+                  </>
                 </ContentRow>
               )}
               {thisReimbursement?.comment && (

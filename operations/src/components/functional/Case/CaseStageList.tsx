@@ -51,7 +51,11 @@ const CaseStageList = ({ showModal, setShowModal }: any) => {
           </TableHeader>
           <TableDetail>
             {data?.stages
-              ?.filter((stage: any) => stage.stage !== "Solicitud reembolso")
+              ?.filter(
+                (stage: any) =>
+                  stage.stage !== "Solicitud reembolso" &&
+                  stage.stage !== "Descuento IMED"
+              )
               .map((stage: any, idx: number) => (
                 <TableRow key={idx}>
                   <TableCell width="95px" align="center">

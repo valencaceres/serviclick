@@ -2,26 +2,26 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import { useEffect } from "react";
 
-import { Reimbursement } from "~/components/functional/_operations/Reimbursement/Reimbursement";
+import { Imed } from "~/components/functional/_operations/IMED/Imed";
 import { useUI } from "~/store/hooks";
 
-const ReimbursementPage: NextPage = () => {
+const ImedPage: NextPage = () => {
   const { setTitle } = useUI();
 
   useEffect(() => {
-    setTitle("Reembolsos");
+    setTitle("Descuentos IMED");
   }, [setTitle]);
 
   return (
     <>
       <Head>
-        <title>Serviclick.cl - Reembolsos</title>
+        <title>Serviclick.cl - Descuentos IMED</title>
         <meta name="description" content="Serviclick Admin Module" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Reimbursement />
+      <Imed />
     </>
   );
 };
 
-export default ReimbursementPage;
+export default ImedPage;
