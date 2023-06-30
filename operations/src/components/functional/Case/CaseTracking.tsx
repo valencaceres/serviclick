@@ -33,6 +33,7 @@ const CaseTracking = ({ thisCase }: any) => {
   const [confirmTime, setConfirmTime] = useState<string>(scheduledTime);
   const [evaluation, setEvaluation] = useState<string>("");
   const [refundAmount, setRefundAmount] = useState<number | null>(null);
+  const [imedDiscount, setImedDiscount] = useState<number | null>(null);
 
   const { user } = useUser();
   const { data: ufValue } = useQueryUF().useGetUFValue();
@@ -240,6 +241,7 @@ const CaseTracking = ({ thisCase }: any) => {
               currency: assistanceData?.currency,
               uf_value: ufValue.serie[0].valor,
               available: assistanceData?.remaining_amount,
+              imed_amount: imedDiscount,
             },
             {
               onSuccess: () => {
@@ -361,23 +363,118 @@ const CaseTracking = ({ thisCase }: any) => {
           ) : null}
         </ContentCell>
         <ContentCell gap="20px">
-          <ComboBox
-            label="Seleccione una acción"
-            data={
-              thisCase?.stages.find(
-                (s: any) => s.stage === "Solicitud reembolso"
-              )
-                ? selfSolutionSummaryActions
-                : summaryActions
-            }
-            placeHolder="Seleccione una acción"
-            onChange={(e: any) => setEvaluation(e.target.value)}
-            width="525px"
-            value={evaluation}
-            dataText="name"
-            dataValue="name"
-            enabled={thisCase?.is_active === true ? true : false}
-          />
+          {!thisCase?.stages.find((s: any) => s.stage === "Descuento IMED") ? (
+            <ComboBox
+              label="Seleccione una acción"
+              data={
+                thisCase?.stages.find(
+                  (s: any) => s.stage === "Solicitud reembolso"
+                )
+                  ? selfSolutionSummaryActions
+                  : summaryActions
+              }
+              placeHolder="Seleccione una acción"
+              onChange={(e: any) => setEvaluation(e.target.value)}
+              width="525px"
+              value={evaluation}
+              dataText="name"
+              dataValue="name"
+              enabled={thisCase?.is_active === true ? true : false}
+            />
+          ) : (
+            <ContentRow gap="5px">
+              <ContentCell gap="5px">
+                <h2 className="text-xl font-semibold text-teal-blue">
+                  Disponible
+                </h2>
+                <ContentRow gap="5px">
+                  <InputText
+                    label={"Monto Disponible"}
+                    value={
+                      assistanceData?.currency === "P"
+                        ? parseInt(
+                            assistanceData?.remaining_amount
+                          ).toLocaleString("es-CL", {
+                            style: "currency",
+                            currency: "CLP",
+                          })
+                        : (
+                            assistanceData?.remaining_amount! *
+                            ufValue?.serie[0].valor
+                          ).toLocaleString("es-CL", {
+                            style: "currency",
+                            currency: "CLP",
+                          })
+                    }
+                    type="text"
+                    width={assistanceData?.max_events !== 0 ? "152px" : "286px"}
+                    disabled
+                  />
+                  {assistanceData?.max_events !== 0 && (
+                    <InputText
+                      label="Eventos restantes"
+                      value={assistanceData?.remaining_events}
+                      type="number"
+                      width="129px"
+                      disabled
+                    />
+                  )}
+                  <InputText
+                    label="Límite"
+                    value={assistanceData?.maximum}
+                    type="text"
+                    width="234px"
+                    disabled
+                  />
+                </ContentRow>
+                <ContentCell gap="5px">
+                  <h2 className="pt-4 text-xl font-semibold text-teal-blue">
+                    Descuento
+                  </h2>
+                  <ContentRow gap="5px">
+                    <InputText
+                      label={"Descuento IMED ($)"}
+                      value={
+                        thisReimbursement?.imed_amount
+                          ? thisReimbursement?.currency === "P"
+                            ? thisReimbursement?.imed_amount
+                            : thisReimbursement?.imed_amount *
+                              thisReimbursement?.uf_value
+                          : imedDiscount
+                      }
+                      type="number"
+                      width="260px"
+                      disabled={thisCase?.is_active === true ? false : true}
+                      onChange={(e: any) => setImedDiscount(e.target.value)}
+                    />
+                    <InputText
+                      label={"Reembolso ($)"}
+                      value={
+                        thisReimbursement?.amount
+                          ? thisReimbursement?.currency === "P"
+                            ? thisReimbursement?.amount
+                            : thisReimbursement?.amount *
+                              thisReimbursement?.uf_value
+                          : refundAmount
+                      }
+                      type="number"
+                      width="260px"
+                      disabled={thisCase?.is_active === true ? false : true}
+                      onChange={(e: any) => setRefundAmount(e.target.value)}
+                    />
+                  </ContentRow>
+                  <Button
+                    type="button"
+                    disabled={thisCase?.is_active ? false : true}
+                    onClick={handleReimburse}
+                    className="mt-4"
+                  >
+                    Registrar
+                  </Button>
+                </ContentCell>
+              </ContentCell>
+            </ContentRow>
+          )}
           {evaluation?.toLowerCase() === "confirmar visita" ? (
             <ContentCell gap="20px">
               <ContentRow gap="5px">
@@ -481,8 +578,7 @@ const CaseTracking = ({ thisCase }: any) => {
                 Rechazar caso
               </Button>
             </ContentCell>
-          ) : evaluation?.toLowerCase() === "reembolsar" ||
-            evaluation?.toLowerCase() === "reembolsar imed" ? (
+          ) : evaluation?.toLowerCase() === "reembolsar" ? (
             <ContentCell gap="5px">
               <ContentCell gap="5px">
                 <h2 className="text-xl font-semibold text-teal-blue">
@@ -531,7 +627,7 @@ const CaseTracking = ({ thisCase }: any) => {
               </ContentCell>
               <ContentCell gap="5px">
                 <h2 className="pt-4 text-xl font-semibold text-teal-blue">
-                  Reembolsar
+                  Solicitar reembolso
                 </h2>
                 <InputText
                   label={"Monto ($)"}

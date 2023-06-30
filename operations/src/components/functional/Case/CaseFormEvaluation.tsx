@@ -90,7 +90,10 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
           } else {
             return updateCase(updateCaseData(evaluation, justification), {
               onSuccess: () => {
-                if (evaluation !== "Solicitud reembolso") {
+                if (
+                  evaluation !== "Solicitud reembolso" &&
+                  evaluation !== "Descuento IMED"
+                ) {
                   router.push(
                     `/case/${thisCase?.case_id}/${evaluation.toLowerCase()}`
                   );
@@ -116,7 +119,7 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
         "Solicitud reembolso",
         "Designación de convenio",
         "Designación de especialista",
-        "Rechazado",
+        "Descuento IMED",
       ];
 
       for (const stageName of evaluationStages) {
