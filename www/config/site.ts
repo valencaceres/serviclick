@@ -2,8 +2,7 @@ import { SiteConfig } from "@/types/nav"
 
 export const siteConfig: SiteConfig = {
   name: "Serviclick",
-  description:
-    "Beautifully designed components built with Radix UI and Tailwind CSS.",
+  description: "Soluciones en la palma de tu mano.",
   secondaryNav: [
     {
       title: "¿Qué es serviclick?",
