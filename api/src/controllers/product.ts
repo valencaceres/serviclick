@@ -97,6 +97,40 @@ const createProduct = async (req: any, res: any) => {
     return;
   }
 
+  const existingAssistances = await productAssistance.getByProductId(id);
+
+  if (!existingAssistances.success) {
+    createLogger.error({
+      model: "productAssistance/getByProductId",
+      error: existingAssistances.error,
+    });
+    res.status(500).json({ error: existingAssistances.error });
+    return;
+  }
+
+  const existingAssistancesArray = existingAssistances.data;
+
+  for (const existingAssistance of existingAssistancesArray) {
+    const foundAssistance = assistances.find(
+      (assistance: any) => assistance.id === existingAssistance.id
+    );
+
+    if (!foundAssistance) {
+      const deleteResponse = await productAssistance.deleteById(
+        existingAssistance.id
+      );
+
+      if (!deleteResponse.success) {
+        createLogger.error({
+          model: "productAssistance/deleteById",
+          error: deleteResponse.error,
+        });
+        res.status(500).json({ error: deleteResponse.error });
+        return;
+      }
+    }
+  }
+
   let line_order = 1;
   for (const assistance of assistances) {
     const addValue = await productAssistance.create(
@@ -127,7 +161,6 @@ const createProduct = async (req: any, res: any) => {
   });
 
   const productByIdResponse = await Product.getById(id);
-
 
   if (!productByIdResponse.success) {
     createLogger.error({

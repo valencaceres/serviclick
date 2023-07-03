@@ -249,19 +249,22 @@ const AssistanceDetail = ({ setEnableSave }: any) => {
       <ModalWindow
         showModal={showModalValues}
         setClosed={() => setShowModalValues(false)}
-        title="Seleccione valores">
+        title="Seleccione valores"
+      >
         <AssistanceValues setShowModal={setShowModalValues} />
       </ModalWindow>
       <ModalWindow
         showModal={showModalSpecialties}
         setClosed={() => setShowModalSpecialties(false)}
-        title="Seleccione especialidades">
+        title="Seleccione especialidades"
+      >
         <AssistanceSpecialties setShowModal={setShowModalSpecialties} />
       </ModalWindow>
       <ModalWindow
         showModal={showModalDocuments}
         setClosed={() => setShowModalDocuments(false)}
-        title="Seleccione valores">
+        title="Seleccione valores"
+      >
         <AssistanceDocuments setShowModal={setShowModalDocuments} />
       </ModalWindow>
       {assistanceLoading && <LoadingMessage showModal={assistanceLoading} />}

@@ -43,4 +43,24 @@ const create: any = async (
   }
 };
 
-export { create };
+const getByProductId: any = async (product_id: string) => {
+  try {
+    const query = "SELECT * FROM app.productassistance WHERE product_id = $1";
+    const result = await pool.query(query, [product_id]);
+    return { success: true, data: result.rows, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+const deleteById: any = async (id: string) => {
+  try {
+    const query = "DELETE FROM app.productassistance WHERE id = $1";
+    await pool.query(query, [id]);
+    return { success: true, error: null };
+  } catch (e) {
+    return { success: false, error: (e as Error).message };
+  }
+};
+
+export { create, getByProductId, deleteById };
