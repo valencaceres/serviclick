@@ -9,7 +9,7 @@ interface ITableRow {
 interface ITableCell {
   width: string;
   align?: string;
-  children: any;
+  children?: any;
   className?: string;
 }
 

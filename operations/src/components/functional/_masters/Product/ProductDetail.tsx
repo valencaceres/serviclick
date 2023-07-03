@@ -35,7 +35,7 @@ import {
 } from "~/components/ui/Popover";
 import { Button } from "~/components/ui/ButtonC";
 import { cn } from "~/utils/cn";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import {
   Command,
   CommandEmpty,
@@ -105,10 +105,13 @@ const formSchema = z.object({
   title: z.string(),
   subTitle: z.string().optional(),
   description: z.string(),
+  promotional: z.string().optional(),
   territorialScope: z.string(),
   hiringConditions: z.string(),
   assistances: z.array(assistanceSchema),
 });
+
+type AssistanceType = z.infer<typeof assistanceSchema>;
 
 const ProductDetail = ({ product }: any) => {
   const router = useRouter();
@@ -116,8 +119,9 @@ const ProductDetail = ({ product }: any) => {
   const { toast } = useToast();
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [assistances, setAssistances] = useState<(typeof assistanceSchema)[]>(
-    []
+  const [assistances, setAssistances] = useState<AssistanceType[]>([]);
+  const [editAssistance, setEditAssistance] = useState<AssistanceType | null>(
+    null
   );
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -134,13 +138,15 @@ const ProductDetail = ({ product }: any) => {
       currency: product?.currency || "P",
       dueDay: product?.dueDay?.toString() || "0",
       alias: product?.alias || "",
-      minInsuredCompanyPrice: product?.minInsuredCompanyPrice?.toString() || "0",
+      minInsuredCompanyPrice:
+        product?.minInsuredCompanyPrice?.toString() || "0",
       title: product?.title || "",
       subTitle: product?.subTitle || "",
       description: product?.description || "",
       territorialScope: product?.territorialScope || "",
       hiringConditions: product?.hiringConditions || "",
       assistances: product?.assistances || [],
+      promotional: product?.promotional || "",
     },
   });
 
@@ -177,6 +183,7 @@ const ProductDetail = ({ product }: any) => {
         title: values.title,
         subTitle: values.subTitle,
         description: values.description,
+        promotional: values.promotional,
         territorialScope: values.territorialScope,
         hiringConditions: values.hiringConditions,
         assistances: assistances,
@@ -199,6 +206,16 @@ const ProductDetail = ({ product }: any) => {
       }
     );
   }
+
+  console.log(assistances);
+
+  const handleClickDeleteAssistance = (assistanceItem: AssistanceType) => {
+    setAssistances(
+      assistances.filter(
+        (item: AssistanceType) => item.id !== assistanceItem.id
+      )
+    );
+  };
 
   useEffect(() => {
     if (product?.assistances) {
@@ -334,6 +351,22 @@ const ProductDetail = ({ product }: any) => {
               <ContentRow gap="5px">
                 <FormField
                   control={form.control}
+                  name="promotional"
+                  render={({ field }) => (
+                    <FormItem className="flex w-full flex-col">
+                      <FormLabel>Descripción Promocional</FormLabel>
+                      <Textarea
+                        {...field}
+                        placeholder="Descripción Promocional"
+                        className="min-h-[80px] w-full resize-none rounded-sm hover:border-opacity-80"
+                      />
+                    </FormItem>
+                  )}
+                />
+              </ContentRow>
+              <ContentRow gap="5px">
+                <FormField
+                  control={form.control}
                   name="description"
                   render={({ field }) => (
                     <FormItem className="flex w-full flex-col">
@@ -341,7 +374,7 @@ const ProductDetail = ({ product }: any) => {
                       <Textarea
                         {...field}
                         placeholder="Descripción"
-                        className="min-h-[120px] w-full rounded-sm hover:border-opacity-80"
+                        className="min-h-[120px] w-full resize-none rounded-sm hover:border-opacity-80"
                       />
                     </FormItem>
                   )}
@@ -357,7 +390,7 @@ const ProductDetail = ({ product }: any) => {
                       <Textarea
                         {...field}
                         placeholder="Ambito regional"
-                        className="min-h-[160px] w-full rounded-sm hover:border-opacity-80"
+                        className="min-h-[160px] w-full resize-none rounded-sm hover:border-opacity-80"
                       />
                     </FormItem>
                   )}
@@ -371,7 +404,7 @@ const ProductDetail = ({ product }: any) => {
                       <Textarea
                         {...field}
                         placeholder="Condiciones de contratación"
-                        className="min-h-[160px] w-full rounded-sm hover:border-opacity-80"
+                        className="min-h-[160px] w-full resize-none rounded-sm hover:border-opacity-80"
                       />
                     </FormItem>
                   )}
@@ -419,7 +452,11 @@ const ProductDetail = ({ product }: any) => {
                     render={({ field }) => (
                       <FormItem className="flex w-full flex-col">
                         <FormLabel htmlFor="cost">Costo técnico ($)</FormLabel>
-                        <Input {...field} type="number" placeholder="ej: 5000" />
+                        <Input
+                          {...field}
+                          type="number"
+                          placeholder="ej: 5000"
+                        />
                       </FormItem>
                     )}
                   />
@@ -454,7 +491,7 @@ const ProductDetail = ({ product }: any) => {
                         defaultValue={field.value}
                       >
                         <FormControl>
-                          <SelectTrigger className="rounded-sm border-dusty-gray border-opacity-40 py-6 hover:border-opacity-80">
+                          <SelectTrigger className="w-[410px] rounded-sm border-dusty-gray border-opacity-40 py-6 hover:border-opacity-80">
                             <SelectValue placeholder="Seleccione frecuencia" />
                           </SelectTrigger>
                         </FormControl>
@@ -494,7 +531,7 @@ const ProductDetail = ({ product }: any) => {
                         defaultValue={field.value}
                       >
                         <FormControl>
-                          <SelectTrigger className="rounded-sm border-dusty-gray border-opacity-40 py-6 hover:border-opacity-80">
+                          <SelectTrigger className="w-[316px] rounded-sm border-dusty-gray border-opacity-40 py-6 hover:border-opacity-80">
                             <SelectValue placeholder="Seleccione duración" />
                           </SelectTrigger>
                         </FormControl>
@@ -519,6 +556,7 @@ const ProductDetail = ({ product }: any) => {
                   <TableCell width="275px">Límite</TableCell>
                   <TableCell width="85px">Eventos</TableCell>
                   <TableCell width="85px">Carencia</TableCell>
+                  <TableCell width="85px"></TableCell>
                   <TableCellEnd />
                 </TableHeader>
                 <TableDetail>
@@ -537,6 +575,19 @@ const ProductDetail = ({ product }: any) => {
                       <TableCell width="85px" align="center">
                         {item.lack}
                       </TableCell>
+                      <TableCell width="85px" align="center">
+                        <Icon
+                          iconName="edit"
+                          onClick={() => {
+                            setIsOpen(true);
+                            setEditAssistance(item);
+                          }}
+                        />
+                        <Icon
+                          iconName="delete"
+                          onClick={() => handleClickDeleteAssistance(item)}
+                        />
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableDetail>
@@ -546,8 +597,13 @@ const ProductDetail = ({ product }: any) => {
                   product?.assistances.length || 0
                 } servicios`}</ContentCellSummary>
                 <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                  <DialogTrigger className="h-10 w-10 rounded-full bg-teal-blue p-2 text-white hover:bg-teal-blue-400">
-                    +
+                  <DialogTrigger
+                    onClick={() => {
+                      setEditAssistance(null);
+                    }}
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-teal-blue text-white hover:bg-teal-blue-400"
+                  >
+                    <Plus />
                   </DialogTrigger>
                   <DialogContent className="w-[890px]">
                     <DialogHeader>
@@ -561,6 +617,7 @@ const ProductDetail = ({ product }: any) => {
                       form={form}
                       assistancesList={assistances}
                       setAssistances={setAssistances}
+                      assistance={editAssistance}
                       setIsOpen={setIsOpen}
                     />
                   </DialogContent>
