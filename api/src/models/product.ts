@@ -435,10 +435,11 @@ const getFamilies = async () => {
 const getByRetailRut = async (rut: string) => {
   try {
     const sqlQuery = `select    ret.rut,
-                        pro.id,
                         pro.name,
                         rpt.companyprice,
-                        pla.*
+                        pla.id,
+                        pla.product_id,
+                        pla.agent_id
                     from    app.retail ret
                         inner join app.retailproduct rpt on ret.id = rpt.retail_id
                         inner join app.product pro on rpt.product_id = pro.id
@@ -450,8 +451,6 @@ const getByRetailRut = async (rut: string) => {
     if (rows.length === 0) {
       return { success: false, data: null, error: "No data found" };
     }
-
-    console.log(rows);
 
     const data = rows.map((row) => ({
       id: row.id,
