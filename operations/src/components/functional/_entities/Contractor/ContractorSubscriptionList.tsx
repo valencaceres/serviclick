@@ -88,7 +88,11 @@ const ContractorSubscriptionList = ({ contractor, subscriptionClick }: any) => {
               : `${contractor?.subscriptions?.length} suscripciones`
             : `No hay suscripciones`}
         </ContentCellSummary>
-        <AddSubscription isOpen={isOpen} setIsOpen={setIsOpen} />
+        <AddSubscription
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          contractor={contractor}
+        />
       </ContentRow>
     </ContentCell>
   );
@@ -99,13 +103,16 @@ export default ContractorSubscriptionList;
 const AddSubscription = ({
   isOpen,
   setIsOpen,
+  contractor,
 }: {
   isOpen: boolean;
   setIsOpen: (value: boolean) => void;
+  contractor: any;
 }) => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
+  const [price, setPrice] = useState<number>(0);
   const [date, setDate] = useState<Date>(new Date());
 
   const { watch, setValue, handleSubmit, reset } = useForm<{
@@ -121,7 +128,7 @@ const AddSubscription = ({
   const plan = watch("plan");
   const agent = watch("agent");
 
-  const { data } = useQueryProduct().useGetAll();
+  const { data } = useQueryProduct().useGetByRetailRut(contractor?.rut);
   const { mutate: addProduct } = useQueryLead().useAddProduct();
 
   const add = () => {
@@ -144,16 +151,23 @@ const AddSubscription = ({
   };
 
   useEffect(() => {
-    setValue(
-      "agent",
-      data
-        ?.find((item: any) => item.id === subscription)
-        ?.product_plans?.find((item: any) => item.id === plan)?.agent_id
-    );
-  }, [plan]);
+    if (subscription) {
+      setValue(
+        "agent",
+        data?.find((item: any) => item.product_id === subscription)?.agent_id
+      );
+      setValue(
+        "plan",
+        data.find((item: any) => item.product_id === subscription)?.id
+      );
+      setPrice(
+        data?.find((item: any) => item.product_id === subscription)?.price
+      );
+    }
+  }, [data, plan, setValue, subscription]);
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen} >
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger>
         <Button className="h-10 w-10 rounded-full p-2">
           <PlusIcon />
@@ -210,7 +224,7 @@ const AddSubscription = ({
               data={data}
               placeHolder="Selecciona una suscripción"
               dataText="name"
-              dataValue="id"
+              dataValue="product_id"
               value={subscription}
               onChange={(e: any) => {
                 setValue("subscription", e.target.value);
@@ -218,23 +232,12 @@ const AddSubscription = ({
               width="100%"
             />
             {subscription && (
-              <ComboBox
-                label="Plan"
-                data={data
-                  .find((item: any) => item.id === subscription)
-                  .product_plans.filter((item: any) => item.type === "company")}
-                placeHolder="Selecciona un plan"
-                dataText="price"
-                dataValue="id"
-                value={plan}
-                onChange={(e: any) => {
-                  setValue("plan", e.target.value);
-                }}
-                width="100%"
-                currency={
-                  data.find((item: any) => item.name === subscription)?.currency
-                }
-              />
+              <h1 className="px-2 text-xl text-black">
+                {price.toLocaleString("es-CL", {
+                  style: "currency",
+                  currency: "CLP",
+                })}
+              </h1>
             )}
           </div>
           <DialogFooter>

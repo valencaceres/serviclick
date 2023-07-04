@@ -42,7 +42,17 @@ const listProducts = async (agent_id: string | undefined) => {
 
 const useListProducts = (agent_id: string | undefined) => {
   return useQuery(["products", agent_id], () => listProducts(agent_id));
-  
+};
+
+const getByRetailRut = async (rut: string) => {
+  const { data } = await apiInstance.get(`/product/getByRetailRut/${rut}`);
+  return data;
+};
+
+const useGetByRetailRut = (rut: string) => {
+  return useQuery(["product", rut], () => getByRetailRut(rut), {
+    enabled: !!rut,
+  });
 };
 
 const useQueryProduct = () => {
@@ -51,8 +61,8 @@ const useQueryProduct = () => {
     useGetById,
     useCreate,
     useListProducts,
+    useGetByRetailRut,
   };
 };
-
 
 export default useQueryProduct;

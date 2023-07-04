@@ -14,6 +14,7 @@ import {
   getFamilies,
   getByProductPlanId,
   getAll,
+  getByRetailRut,
 } from "../controllers/product";
 
 const ProductRouter = Router();
@@ -38,5 +39,6 @@ ProductRouter.get(
   getByProductPlanId
 );
 ProductRouter.get("/getAll", auth, getAll);
+ProductRouter.get("/getByRetailRut/:rut", auth, getByRetailRut);
 
 export default ProductRouter;

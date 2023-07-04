@@ -955,6 +955,28 @@ const getAll = async (req: any, res: any) => {
   return res.status(200).json(result.data);
 };
 
+const getByRetailRut = async (req: any, res: any) => {
+  const { rut } = req.params;
+
+  const result = await Product.getByRetailRut(rut);
+
+  if (!result.success) {
+    createLogger.error({
+      model: "product/getByRetailRut",
+      error: result.error,
+    });
+
+    return res.status(500).json({ error: result.error });
+  }
+
+  createLogger.info({
+    controller: "products/getByRetailRut",
+    message: "OK",
+  });
+
+  return res.status(200).json(result.data);
+};
+
 export {
   createProduct,
   createPlans,
@@ -969,4 +991,5 @@ export {
   createProductPlans,
   getFamilies,
   getByProductPlanId,
+  getByRetailRut,
 };
