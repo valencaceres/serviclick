@@ -232,12 +232,17 @@ const AddSubscription = ({
               width="100%"
             />
             {subscription && (
-              <h1 className="px-2 text-xl text-black">
-                {price.toLocaleString("es-CL", {
-                  style: "currency",
-                  currency: "CLP",
-                })}
-              </h1>
+              <div>
+                <h2 className="text-lg font-medium text-teal-blue">
+                  Valor del plan
+                </h2>
+                <h3 className="px-2 text-xl font-semibold text-teal-blue">
+                  {price.toLocaleString("es-CL", {
+                    style: "currency",
+                    currency: "CLP",
+                  })}
+                </h3>
+              </div>
             )}
           </div>
           <DialogFooter>
