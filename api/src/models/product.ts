@@ -437,7 +437,7 @@ const getByRetailRut = async (rut: string) => {
     const sqlQuery = `select    ret.rut,
                         pro.name,
                         rpt.companyprice,
-                        pla.id,
+                        pla.id as productplan_id,
                         pla.product_id,
                         pla.agent_id
                     from    app.retail ret
@@ -453,10 +453,10 @@ const getByRetailRut = async (rut: string) => {
     }
 
     const data = rows.map((row) => ({
-      id: row.id,
+      productplan_id: row.productplan_id,
+      product_id: row.product_id,
       name: row.name,
       price: row.companyprice,
-      product_id: row.product_id,
       agent_id: row.agent_id,
     }));
 

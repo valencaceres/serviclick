@@ -158,13 +158,16 @@ const AddSubscription = ({
       );
       setValue(
         "plan",
-        data.find((item: any) => item.product_id === subscription)?.id
+        data.find((item: any) => item.product_id === subscription)
+          ?.productplan_id
       );
       setPrice(
         data?.find((item: any) => item.product_id === subscription)?.price
       );
     }
   }, [data, plan, setValue, subscription]);
+
+  console.log(plan);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
