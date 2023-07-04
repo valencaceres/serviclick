@@ -3,6 +3,7 @@ import { generateGenericPassword } from "../util/user";
 import { sendMail } from "../util/email";
 
 import * as Retail from "../models/retail";
+import * as Company from "../models/company";
 import * as RetailLegalRepresentative from "../models/retailLegalRepresentative";
 import * as RetailProduct from "../models/retailProduct";
 import * as RetailCampaign from "../models/retailCampaign";
@@ -45,6 +46,26 @@ const create = async (req: any, res: any) => {
         error: retailResponse.error,
       });
       res.status(500).json({ error: retailResponse.error });
+      return;
+    }
+
+    const companyResponse = await Company.create(
+      rut,
+      name,
+      "",
+      line,
+      address,
+      district,
+      email,
+      phone
+    );
+
+    if (!companyResponse.success) {
+      createLogger.error({
+        model: "company/create",
+        error: companyResponse.error,
+      });
+      res.status(500).json({ error: companyResponse.error });
       return;
     }
 
