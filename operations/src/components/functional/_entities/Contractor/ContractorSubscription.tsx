@@ -18,8 +18,6 @@ import {
 import { dbDateToText } from "../../../../utils/date";
 import { formatAmount } from "../../../../utils/format";
 
-import { useContractor } from "../../../../hooks";
-
 interface IPayment {
   collected: number;
   paid: number;
@@ -27,7 +25,6 @@ interface IPayment {
 }
 
 const ContractorSubscription = ({ contractor }: any) => {
-
   const [payment, setPayment] = useState<IPayment>({
     collected: 0,
     paid: 0,

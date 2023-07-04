@@ -72,8 +72,6 @@ const ContractorBeneficiaries = ({ contractor }: any) => {
     setRutInsured(subscriptionItem.insured[0]?.rut);
   }, [subscriptionItem]);
 
-  console.log(subscriptionItem);
-
   return (
     <Fragment>
       <ContentCell gap="5px">

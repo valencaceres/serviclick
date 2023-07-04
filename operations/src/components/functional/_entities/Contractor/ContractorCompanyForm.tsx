@@ -58,14 +58,12 @@ const ContractorCompanyForm = ({
   const address = watch("address");
   const district = watch("district");
   const email = watch("email");
-  {
-    enabled: !pathname.includes("/new");
-  }
   const phone = watch("phone");
 
   const { list: districtList } = useDistrict();
 
   const { mutate: createCompany } = useQueryContractor().useCreate();
+  const { data: contractorData } = useQueryContractor().useGetByRut(rut, "C");
 
   const isValidRut = (rut: string) => {
     if (
@@ -147,7 +145,17 @@ const ContractorCompanyForm = ({
       setValue("email", contractor?.email);
       setValue("phone", contractor?.phone);
     }
-  }, [contractor]);
+    if (contractorData) {
+      setValue("rut", contractorData?.rut);
+      setValue("name", contractorData?.companyName);
+      setValue("legalRepresentative", contractorData?.legalRepresentative);
+      setValue("line", contractorData?.line);
+      setValue("address", contractorData?.address);
+      setValue("district", contractorData?.district);
+      setValue("email", contractorData?.email);
+      setValue("phone", contractorData?.phone);
+    }
+  }, [contractor, contractorData, setValue]);
 
   return (
     <form onSubmit={handleSubmit(send)}>

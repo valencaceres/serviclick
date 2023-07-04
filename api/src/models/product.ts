@@ -432,6 +432,40 @@ const getFamilies = async () => {
   }
 };
 
+const getByRetailRut = async (rut: string) => {
+  try {
+    const sqlQuery = `select    ret.rut,
+                        pro.name,
+                        rpt.companyprice,
+                        pla.id as productplan_id,
+                        pla.product_id,
+                        pla.agent_id
+                    from    app.retail ret
+                        inner join app.retailproduct rpt on ret.id = rpt.retail_id
+                        inner join app.product pro on rpt.product_id = pro.id
+                        inner join app.productplan pla on pro.id = pla.product_id and ret.id = pla.agent_id
+                    where   ret.rut = $1`;
+    const result = await pool.query(sqlQuery, [rut]);
+    const { rows } = result;
+
+    if (rows.length === 0) {
+      return { success: false, data: null, error: "No data found" };
+    }
+
+    const data = rows.map((row) => ({
+      productplan_id: row.productplan_id,
+      product_id: row.product_id,
+      name: row.name,
+      price: row.companyprice,
+      agent_id: row.agent_id,
+    }));
+
+    return { success: true, data, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 export {
   createProduct,
   updateProduct,
@@ -443,4 +477,5 @@ export {
   listProducts,
   getProductByFamilyId,
   getFamilies,
+  getByRetailRut,
 };

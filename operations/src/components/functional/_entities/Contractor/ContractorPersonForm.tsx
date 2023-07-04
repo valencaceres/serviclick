@@ -26,14 +26,12 @@ const ContractorPersonForm = ({ contractor, isEditing, setIsEditing }: any) => {
   const queryClient = useQueryClient();
 
   const {
-    reset,
     register,
-    getValues,
     setValue,
     watch,
     clearErrors,
     setError,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     handleSubmit,
   } = useForm<{
     rut: string;
@@ -150,7 +148,7 @@ const ContractorPersonForm = ({ contractor, isEditing, setIsEditing }: any) => {
       setValue("email", contractorData?.email);
       setValue("phone", contractorData?.phone);
     }
-  }, [contractor, contractorData]);
+  }, [contractor, contractorData, setValue]);
 
   return (
     <form onSubmit={handleSubmit(send)}>
