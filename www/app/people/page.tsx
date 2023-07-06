@@ -11,9 +11,14 @@ export default async function PeoplePage() {
       headers: {
         id: process.env.API_KEY!,
       },
+      next: {
+        revalidate: 1,
+      },
     }
   )
   const families = await responseFamilies.json()
+
+  console.log(families)
 
   let uniqueFamilyNames = new Set()
   let uniqueFamilies = families.filter((family: { family_name: unknown }) => {
