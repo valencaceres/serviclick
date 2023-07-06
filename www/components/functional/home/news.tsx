@@ -25,8 +25,11 @@ const news = [
 
 export const News = () => {
   const options: SwiperOptions = {
-    modules: [Scrollbar, Pagination],
+    modules: [Pagination],
     breakpoints: {
+      1280: {
+        slidesPerView: 4,
+      },
       960: {
         slidesPerView: 3,
       },
@@ -38,8 +41,9 @@ export const News = () => {
       },
     },
     loop: true,
-    pagination: true,
-    scrollbar: { draggable: true, enabled: true },
+    pagination: {
+      enabled: true,
+    },
   }
 
   const slides = news.map((news) => (

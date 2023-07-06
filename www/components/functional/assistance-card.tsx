@@ -4,13 +4,13 @@ import Link from "next/link"
 import { Button } from "../ui/button"
 
 type AssistanceCardProps = {
-  id: string
+  family_id: string
   title: string
   imageLink: string
 }
 
 export const AssistanceCard = ({
-  id,
+  family_id,
   title,
   imageLink,
 }: AssistanceCardProps) => {
@@ -24,7 +24,7 @@ export const AssistanceCard = ({
       <div className="h-24 flex items-center w-full justify-center">
         <h2 className="uppercase font-bold text-lg text-center">{title}</h2>
       </div>
-      <Link href={`/assistance/${id}`} passHref={true}>
+      <Link href={`/family/${family_id}`} passHref={true}>
         <Button className="w-full rounded-none bg-foreground uppercase text-xl">
           Ver más
         </Button>

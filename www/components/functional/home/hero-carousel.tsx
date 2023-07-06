@@ -23,23 +23,26 @@ export const HeroCarousel = () => {
     <Image
       src="/slide.png"
       alt="Slide 1"
-      width={1280}
+      width={2560}
       height={450}
       loading="lazy"
+      className="object-cover object-center"
     />,
     <Image
       src="/slide2.jpg"
       alt="Slide 2"
-      width={1280}
+      width={2560}
       height={450}
       loading="lazy"
+      className="object-cover object-center"
     />,
     <Image
       src="/slide3.png"
       alt="Slide 3"
-      width={1280}
+      width={2560}
       height={450}
       loading="lazy"
+      className="object-cover object-center"
     />,
   ]
 

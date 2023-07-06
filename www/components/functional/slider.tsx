@@ -1,6 +1,10 @@
 import { type SwiperOptions } from "swiper"
 import { Swiper, SwiperSlide } from "swiper/react"
 
+import "swiper/css"
+import "swiper/css/navigation"
+import "swiper/css/pagination"
+
 type CustomSwiperProps = {
   options: SwiperOptions
   slides: React.ReactElement[]
@@ -11,10 +15,15 @@ export const CustomSwiper: React.FC<CustomSwiperProps> = ({
   slides,
 }) => {
   return (
-    <div className="max-w-7xl select-none m-auto w-full">
-      <Swiper {...options}>
-        {slides.map((slide, index) => (
-          <SwiperSlide key={index}>{slide}</SwiperSlide>
+    <div className="select-none m-auto w-full">
+      <Swiper className="mx-auto" {...options}>
+        {slides?.map((slide, index) => (
+          <SwiperSlide
+            className="h-full w-full object-cover flex justify-center item-scenter mx-auto"
+            key={index}
+          >
+            {slide}
+          </SwiperSlide>
         ))}
       </Swiper>
     </div>

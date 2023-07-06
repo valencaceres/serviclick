@@ -1,16 +1,26 @@
 "use client"
 
-import { Scrollbar, SwiperOptions } from "swiper"
+import { Navigation, SwiperOptions } from "swiper"
 
-import "swiper/css"
-import { assistancesAreas } from "@/lib/assistances-areas"
+import { getFamilyImage } from "@/lib/images"
 
 import { AssistanceCard } from "../assistance-card"
 import { CustomSwiper } from "../slider"
 
-export const Interests = () => {
+interface Families {
+  family_id: string
+  family_name: string
+  product_id: string
+  product_name: string
+}
+
+interface FamiliesCarouselProps {
+  families: Families[]
+}
+
+export const Interests = ({ families }: FamiliesCarouselProps) => {
   const options: SwiperOptions = {
-    modules: [Scrollbar],
+    modules: [Navigation],
     breakpoints: {
       1280: {
         slidesPerView: 4,
@@ -30,16 +40,16 @@ export const Interests = () => {
       },
     },
     loop: true,
-    scrollbar: { draggable: true, enabled: true },
+    navigation: true,
   }
 
-  const slides = assistancesAreas.map((assistance) => (
+  const slides = families.map((family) => (
     <div className="shadow-md hover:shadow-none duration-75 w-full max-w-[300px]">
       <AssistanceCard
-        key={assistance.id}
-        id={assistance.id}
-        title={assistance.label}
-        imageLink={assistance.image}
+        key={family.family_id}
+        family_id={family.family_id}
+        title={family.family_name}
+        imageLink={getFamilyImage(family.family_name)}
       />
     </div>
   ))

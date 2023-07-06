@@ -977,6 +977,27 @@ const getByRetailRut = async (req: any, res: any) => {
   return res.status(200).json(result.data);
 };
 
+const listByFamilies = async (req: any, res: any) => {
+  const result = await Product.listByFamilies();
+
+  if (!result.success) {
+    createLogger.error({
+      model: "product/listByFamilies",
+      error: result.error,
+    });
+
+    res.status(500).json({ error: result.error });
+    return;
+  }
+
+  createLogger.info({
+    controller: "products/listByFamilies",
+    message: "OK",
+  });
+
+  return res.status(200).json(result.data);
+};
+
 export {
   createProduct,
   createPlans,
@@ -992,4 +1013,5 @@ export {
   getFamilies,
   getByProductPlanId,
   getByRetailRut,
+  listByFamilies,
 };

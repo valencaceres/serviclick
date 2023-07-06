@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { Scrollbar, SwiperOptions } from "swiper"
+import { Pagination, SwiperOptions } from "swiper"
 
 import { CustomSwiper } from "../slider"
 
@@ -15,8 +15,11 @@ const alliances = [
 
 export const Alliances = () => {
   const options: SwiperOptions = {
-    modules: [Scrollbar],
+    modules: [Pagination],
     breakpoints: {
+      1280: {
+        slidesPerView: 5,
+      },
       960: {
         slidesPerView: 4,
       },
@@ -28,7 +31,7 @@ export const Alliances = () => {
       },
     },
     loop: true,
-    scrollbar: { draggable: true, enabled: true },
+    pagination: { enabled: true },
   }
 
   const slides = alliances.map((client) => (
