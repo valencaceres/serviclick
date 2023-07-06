@@ -86,29 +86,54 @@ export default async function Page({ params }: { params: { id: string } }) {
         </div>
         <div className="bg-black absolute w-full h-full z-5 top-0 right-0 bg-opacity-30"></div>
       </section>
-      <section className="container flex justify-center flex-col items-center py-10">
-        <h1 className="pb-6 uppercase text-2xl font-bold">Coberturas</h1>
+      <section className="container flex justify-center flex-col items-center py-10 gap-4">
         {uniqueAssistancesArray?.map((assistance: any) => (
           <div
             key={assistance.product_id}
-            className="w-full flex flex-col items-center"
+            className="w-full flex flex-col items-center gap-6"
           >
-            <h2 className="text-2xl font-bold">{assistance.product_name}</h2>
-            <div className="w-full flex flex-col items-center">
-              {assistance.covereages?.map((coverage: any) => (
-                <div
-                  key={coverage.coverage_name}
-                  className="w-full flex flex-col items-center"
-                >
-                  <h3 className="text-xl font-bold">
-                    {coverage.coverage_name}
+            <h1 className="text-3xl font-bold uppercase">
+              {assistance.product_name}
+            </h1>
+            <div className="flex gap-20">
+              <div className="flex-col gap-2 flex">
+                <h2 className="text-primary uppercase text-2xl font-bold text-center">
+                  {!assistance.family_price
+                    ? "Valor Mensual"
+                    : "Valor Individual"}
+                </h2>
+                <h3 className="text-center text-2xl font-extrabold">
+                  {assistance.family_price || assistance.price
+                    ? (
+                        assistance.family_price || assistance.price
+                      ).toLocaleString("es-CL", {
+                        style: "currency",
+                        currency: "CLP",
+                      })
+                    : "No disponible"}
+                </h3>
+                <Button className="uppercase w-full font-semibold">
+                  Contrata aquí
+                </Button>
+              </div>
+              {assistance.family_price && (
+                <div className="flex-col gap-2 flex">
+                  <h2 className="text-primary uppercase text-2xl font-bold text-center">
+                    {"Valor familiar"}
+                  </h2>
+                  <h3 className="text-center text-2xl font-extrabold">
+                    {assistance.family_price
+                      ? assistance.family_price.toLocaleString("es-CL", {
+                          style: "currency",
+                          currency: "CLP",
+                        })
+                      : "No disponible"}
                   </h3>
-                  <p className="text-lg">{coverage.coverage_amount}</p>
-                  <p className="text-lg">{coverage.coverage_maximum}</p>
-                  <p className="text-lg">{coverage.coverage_lack}</p>
-                  <p className="text-lg">{coverage.coverage_events}</p>
+                  <Button className="uppercase w-full font-semibold">
+                    Contrata aquí
+                  </Button>
                 </div>
-              ))}
+              )}
             </div>
           </div>
         ))}

@@ -18,8 +18,6 @@ export default async function PeoplePage() {
   )
   const families = await responseFamilies.json()
 
-  console.log(families)
-
   let uniqueFamilyNames = new Set()
   let uniqueFamilies = families.filter((family: { family_name: unknown }) => {
     if (!uniqueFamilyNames.has(family.family_name)) {

@@ -42,7 +42,7 @@ export const AssistancesCarousel = ({
     navigation: true,
   }
 
-  const slides = assistances.map((assistance) => (
+  const slides = assistances?.map((assistance) => (
     <div className="shadow-md hover:shadow-none duration-75 w-full max-w-[300px] mx-auto">
       <AssistanceCard
         key={assistance.id}

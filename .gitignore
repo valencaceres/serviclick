@@ -74,6 +74,9 @@ yarn.lock
 # dotenv environment variables file
 .env
 .env.test
+.env.production
+.env.development
+.env.local
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
