@@ -1,6 +1,5 @@
 import "swiper/css"
 import "swiper/css/navigation"
-import { revalidatePath } from "next/cache"
 import Image from "next/image"
 
 import { Alliances } from "@/components/functional/home/alliances"
@@ -20,6 +19,8 @@ export default async function IndexPage() {
   )
 
   const categories = await responseCategories.json()
+
+  console.log(categories)
 
   return (
     <>
