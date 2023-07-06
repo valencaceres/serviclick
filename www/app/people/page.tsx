@@ -4,7 +4,31 @@ import AssistanceSuggestionForm from "@/components/functional/people/assistance-
 import Faq from "@/components/functional/people/faq"
 import { Interests } from "@/components/functional/people/interests"
 
-export default function PeoplePage() {
+export default async function PeoplePage() {
+  const responseFamilies = await fetch(
+    process.env.API_URL! + "/api/product/listByFamilies",
+    {
+      headers: {
+        id: process.env.API_KEY!,
+      },
+      next: {
+        revalidate: 1,
+      },
+    }
+  )
+  const families = await responseFamilies.json()
+
+  console.log(families)
+
+  let uniqueFamilyNames = new Set()
+  let uniqueFamilies = families.filter((family: { family_name: unknown }) => {
+    if (!uniqueFamilyNames.has(family.family_name)) {
+      uniqueFamilyNames.add(family.family_name)
+      return true
+    }
+    return false
+  })
+
   return (
     <>
       <section className="relative h-[450px] flex items-center px-20 pb-20">
@@ -26,7 +50,7 @@ export default function PeoplePage() {
         <h1 className="pb-6 uppercase text-2xl font-bold">
           Selecciona el área de tu interés
         </h1>
-        <Interests />
+        <Interests families={uniqueFamilies} />
       </section>
       <section className="container flex justify-center flex-col items-center py-10">
         <h1 className="pb-6 uppercase text-2xl font-bold">

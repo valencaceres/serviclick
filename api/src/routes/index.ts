@@ -34,6 +34,7 @@ import RelationshipRouter from "./relationship";
 import PartnerRouter from "./partner";
 import ImportRouter from "./import";
 import CaseRouter from "./case";
+import CategoryRouter from "./category";
 
 export {
   SlugRouter,
@@ -72,4 +73,5 @@ export {
   PartnerRouter,
   ImportRouter,
   CaseRouter,
+  CategoryRouter,
 };

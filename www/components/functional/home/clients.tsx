@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { Scrollbar, SwiperOptions } from "swiper"
+import { Pagination, SwiperOptions } from "swiper"
 
 import { CustomSwiper } from "../slider"
 
@@ -15,8 +15,11 @@ const clients = [
 
 export const Clients = () => {
   const options: SwiperOptions = {
-    modules: [Scrollbar],
+    modules: [Pagination],
     breakpoints: {
+      1280: {
+        slidesPerView: 5,
+      },
       960: {
         slidesPerView: 4,
       },
@@ -27,8 +30,11 @@ export const Clients = () => {
         slidesPerView: 1,
       },
     },
+    pagination: {
+      enabled: true,
+    },
     loop: true,
-    scrollbar: { draggable: true, enabled: true },
+    centeredSlidesBounds: true,
   }
 
   const slides = clients.map((client) => (

@@ -1,5 +1,6 @@
 import "swiper/css"
 import "swiper/css/navigation"
+import { revalidatePath } from "next/cache"
 import Image from "next/image"
 
 import { Alliances } from "@/components/functional/home/alliances"
@@ -8,7 +9,18 @@ import { Clients } from "@/components/functional/home/clients"
 import { HeroCarousel } from "@/components/functional/home/hero-carousel"
 import { News } from "@/components/functional/home/news"
 
-export default function IndexPage() {
+export default async function IndexPage() {
+  const responseCategories = await fetch(
+    process.env.API_URL! + "/api/category/getAll",
+    {
+      headers: {
+        id: process.env.API_KEY!,
+      },
+    }
+  )
+
+  const categories = await responseCategories.json()
+
   return (
     <>
       <HeroCarousel />
@@ -18,7 +30,7 @@ export default function IndexPage() {
             Selecciona la asistencia que necesitas
           </h1>
         </div>
-        <AssistancesCarousel />
+        <AssistancesCarousel assistances={categories} />
       </section>
       <section
         id="about"
@@ -26,10 +38,10 @@ export default function IndexPage() {
       >
         <div className="bg-primary flex flex-col lg:flex-row-reverse items-center py-4 h-96 lg:justify-evenly">
           <div className="flex flex-col py-4 gap-4 items-center justify-center lg:order-2">
-            <h2 className="uppercase text-4xl px-16 text-background font-bold flex justify-center lg:justify-start w-full">
+            <h2 className="uppercase text-3xl md:text-4xl px-16 text-background text-center lg:text-start font-bold flex justify-center lg:justify-start w-full">
               ¿Por qué Serviclick?
             </h2>
-            <ul className="flex lg:flex-col px-16 md:px-24 justify-around gap-4 lg:gap-2 text-lg lg:justify-start flex-wrap w-full list-disc uppercase font-semibold text-background marker:text-foreground">
+            <ul className="flex lg:flex-col px-16 md:px-24 justify-evenly gap-4 lg:gap-2 text-lg lg:justify-start  w-full md:list-disc uppercase font-semibold text-background marker:text-foreground">
               <li>Confiable</li>
               <li>Rápido</li>
               <li>Oportuno</li>

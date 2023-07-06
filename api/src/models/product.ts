@@ -466,6 +466,39 @@ const getByRetailRut = async (rut: string) => {
   }
 };
 
+const listByFamilies = async () => {
+  try {
+    const sqlQuery = `select    distinct
+                          fam.id as family_id,
+                          fam.name as family_name,
+                          pro.id as product_id,
+                          pro.name as product_name,
+                          pro.beneficiaries,
+                          ppl.id as productplan_id,
+                          ppl.price,
+                          pco.name as coverage_name,
+                          pco.amount as coverage_amount,
+                          pco.maximum as coverage_maximum,
+                          pco.lack as coverage_lack,
+                          pco.events as coverage_events
+                      from    app.product pro
+                              inner join app.productplan ppl on pro.id = ppl.product_id
+                              inner join app.productcoverage pco on pro.id = pco.product_id
+                              inner join app.agent age on ppl.agent_id = age.id
+                              inner join app.family fam on pro.family_id = fam.id
+                      where     age.id = '020579a3-8461-45ec-994b-ad22ff8e3275'
+                      order     by
+                          fam.name,
+                          pro.name`;
+
+    const result = await pool.query(sqlQuery);
+
+    return { success: true, data: result.rows, error: null };
+  } catch (error) {
+    return { success: false, data: null, error: (error as Error).message };
+  }
+};
+
 export {
   createProduct,
   updateProduct,
@@ -478,4 +511,5 @@ export {
   getProductByFamilyId,
   getFamilies,
   getByRetailRut,
+  listByFamilies,
 };
