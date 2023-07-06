@@ -76,6 +76,7 @@ yarn.lock
 .env.test
 .env.production
 .env.development
+.env.local
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
