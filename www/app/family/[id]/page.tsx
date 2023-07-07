@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Link from "next/link"
 
 import { getServiceImage } from "@/lib/images"
 import { Button } from "@/components/ui/button"
@@ -35,6 +36,8 @@ export default async function Page({ params }: { params: { id: string } }) {
 
     if (!acc[key]) {
       acc[key] = {
+        product_id: current.product_id,
+        productplan_id: current.productplan_id,
         product_name: current.product_name.replace(" Familiar", ""),
         price: current.product_name.includes("Familiar")
           ? undefined
@@ -85,12 +88,12 @@ export default async function Page({ params }: { params: { id: string } }) {
           fill={true}
           className="absolute z-0 object-cover" // This will position the image below the text.
         />
-        <div className="z-10 w-full flex lg:items-end lg:justify-center gap-6 lg:gap-16 flex-col lg:flex-row items-center justify-center h-full">
+        <div className="z-10 w-full hidden md:flex lg:items-end lg:justify-center gap-6 lg:gap-16 flex-col lg:flex-row items-center justify-end h-full">
           {uniqueAssistancesArray?.map((assistance: any) => (
             <Button
               key={assistance.product_id}
               variant="secondary"
-              className="text-xl py-8 px-6 hover:bg-secondary/90 uppercase w-96"
+              className="text-xl py-8 px-6 bg-secondary/70 hover:bg-secondary/90 uppercase w-96"
             >
               {assistance.product_name}
             </Button>
@@ -122,9 +125,14 @@ export default async function Page({ params }: { params: { id: string } }) {
                       })
                     : "No disponible"}
                 </h3>
-                <Button className="uppercase w-full font-bold text-lg ">
-                  Contrata aquí
-                </Button>
+                <Link
+                  href={`https://productos.serviclick.cl/contractor?productPlanId=${assistance.productplan_id}`}
+                  passHref
+                >
+                  <Button className="uppercase w-full font-bold text-lg ">
+                    Contrata aquí
+                  </Button>
+                </Link>
               </div>
               {assistance.family_price && (
                 <div className="flex-col gap-2 flex">
@@ -139,9 +147,14 @@ export default async function Page({ params }: { params: { id: string } }) {
                         })
                       : "No disponible"}
                   </h3>
-                  <Button className="uppercase w-full font-semibold">
-                    Contrata aquí
-                  </Button>
+                  <Link
+                    href={`https://productos.serviclick.cl/contractor?productPlanId=${assistance.productplan_id}`}
+                    passHref
+                  >
+                    <Button className="uppercase w-full font-semibold">
+                      Contrata aquí
+                    </Button>
+                  </Link>
                 </div>
               )}
             </div>
