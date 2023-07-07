@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Link from "next/link"
 
 import { getServiceImage } from "@/lib/images"
 import { Button } from "@/components/ui/button"
@@ -85,15 +86,18 @@ export default async function Page({ params }: { params: { id: string } }) {
           fill={true}
           className="absolute z-0 object-cover" // This will position the image below the text.
         />
-        <div className="z-10 w-full flex lg:items-end lg:justify-center gap-6 lg:gap-16 flex-col lg:flex-row items-center justify-center h-full">
+        <div className="z-10 w-full flex lg:items-end lg:justify-center gap-6 lg:gap-16 flex-col lg:flex-row items-center justify-end h-full">
           {uniqueAssistancesArray?.map((assistance: any) => (
-            <Button
-              key={assistance.product_id}
-              variant="secondary"
-              className="text-xl py-8 px-6 hover:bg-secondary/90 uppercase w-96"
-            >
-              {assistance.product_name}
-            </Button>
+            <Link href={`#${assistance.product_name}`} passHref>
+              <Button
+                type="button"
+                key={assistance.product_id}
+                variant="secondary"
+                className="text-xl py-8 px-6 hover:bg-secondary/90 bg-secondary/90 lg:bg-secondary uppercase w-96"
+              >
+                {assistance.product_name}
+              </Button>
+            </Link>
           ))}
         </div>
         <div className="bg-black absolute w-full h-full z-5 top-0 right-0 bg-opacity-30"></div>
@@ -101,6 +105,7 @@ export default async function Page({ params }: { params: { id: string } }) {
       <section className="flex justify-center flex-col items-center py-10 gap-32">
         {uniqueAssistancesArray?.map((assistance: any) => (
           <div
+            id={assistance.product_name}
             key={assistance.product_id}
             className="w-full flex flex-col items-center gap-6"
           >
@@ -122,7 +127,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                       })
                     : "No disponible"}
                 </h3>
-                <Button className="uppercase w-full font-bold text-lg ">
+                <Button className="uppercase w-full font-bold text-xl py-6">
                   Contrata aquí
                 </Button>
               </div>
@@ -139,7 +144,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                         })
                       : "No disponible"}
                   </h3>
-                  <Button className="uppercase w-full font-semibold">
+                  <Button className="uppercase w-full font-semibold text-xl py-6">
                     Contrata aquí
                   </Button>
                 </div>
