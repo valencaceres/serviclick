@@ -11,15 +11,23 @@ import { CustomSwiper } from "../slider"
 const news = [
   {
     id: "novedad-1",
-    image: "/news1.png",
+    image: "/news1.jpg",
   },
   {
     id: "novedad-2",
-    image: "/news2.png",
+    image: "/news2.jpg",
   },
   {
     id: "novedad-3",
-    image: "/news3.png",
+    image: "/news3.jpg",
+  },
+  {
+    id: "novedad-4",
+    image: "/news4.jpg",
+  },
+  {
+    id: "novedad-5",
+    image: "/news5.jpg",
   },
 ]
 

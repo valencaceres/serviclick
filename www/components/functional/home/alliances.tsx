@@ -11,6 +11,9 @@ const alliances = [
   { image: "/alliance3.png" },
   { image: "/alliance4.png" },
   { image: "/alliance5.png" },
+  { image: "/alliance6.png" },
+  { image: "/alliance7.png" },
+  { image: "/alliance8.png" },
 ]
 
 export const Alliances = () => {
