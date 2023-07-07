@@ -20,11 +20,11 @@ export default async function IndexPage() {
 
   const categories = await responseCategories.json()
 
-  console.log(categories)
-
   return (
     <>
-      <HeroCarousel />
+      <section className="relative h-[200px] md:h-[550px] flex items-center">
+        <HeroCarousel />
+      </section>
       <section className="container flex justify-center flex-col items-center pb-20">
         <div className="md:pt-20 md:pb-10 py-4">
           <h1 className="uppercase font-bold text-xl text-center md:text-4xl">

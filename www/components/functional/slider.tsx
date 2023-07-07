@@ -15,11 +15,11 @@ export const CustomSwiper: React.FC<CustomSwiperProps> = ({
   slides,
 }) => {
   return (
-    <div className="select-none m-auto w-full">
+    <div className="select-none w-full h-full">
       <Swiper className="mx-auto" {...options}>
         {slides?.map((slide, index) => (
           <SwiperSlide
-            className="w-full object-cover flex justify-center item-scenter mx-auto"
+            className="w-full h-full flex justify-center items-center mx-auto"
             key={index}
           >
             {slide}
