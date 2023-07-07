@@ -36,7 +36,7 @@ export default function AboutUsPage() {
           </div>
           <div className="w-full md:w-1/3 h-[300px] object-cover relative">
             <Image
-              src="/ourmission.png"
+              src="/ourmission.jpeg"
               alt="Nuestra misión"
               fill={true}
               loading="lazy"
@@ -48,7 +48,7 @@ export default function AboutUsPage() {
         <div className="flex flex-auto items-center justify-between flex-wrap-reverse max-w-8xl">
           <div className="w-full md:w-1/3 h-[300px] object-cover relative">
             <Image
-              src="/ourvision.png"
+              src="/ourvision.jpeg"
               alt="Nuestra misión"
               fill={true}
               loading="lazy"
@@ -74,53 +74,64 @@ export default function AboutUsPage() {
       <section className="py-20 flex flex-col gap-8 items-center justify-center">
         <h1 className="uppercase text-2xl font-bold text-center">Grupo MHM</h1>
         <div className="flex flex-wrap w-full max-w-5xl justify-center items-center">
-          <div className="relative w-[380px] h-20">
-            <Image
-              src="/mhm1.png"
-              alt="MHM1"
-              fill={true}
-              loading="lazy"
-              quality={100}
-              unoptimized
-            />
-          </div>
-          <div className="relative w-[470px] h-16">
-            <Image
-              src="/mhm2.png"
-              alt="MHM2"
-              fill={true}
-              loading="lazy"
-              quality={100}
-              unoptimized
-            />
-          </div>
-          <div className="relative w-[270px] h-20">
-            <Image
-              src="/mhm3.png"
-              alt="MHM3"
-              fill={true}
-              loading="lazy"
-              unoptimized
-            />
-          </div>
-          <div className="relative w-[261px] h-24">
-            <Image
-              src="/mhm4.png"
-              alt="MHM4"
-              fill={true}
-              loading="lazy"
-              unoptimized
-            />
-          </div>
-          <div className="relative w-[265px] h-20">
-            <Image
-              src="/mhm5.png"
-              alt="MHM5"
-              fill={true}
-              loading="lazy"
-              unoptimized
-            />
-          </div>
+          <Image
+            src="/mhm1.png"
+            alt="MHM1"
+            width={300}
+            height={80}
+            loading="lazy"
+            quality={100}
+            unoptimized
+          />
+          <Image
+            src="/mhm2.png"
+            alt="MHM2"
+            width={300}
+            height={80}
+            loading="lazy"
+            quality={100}
+            unoptimized
+          />
+          <Image
+            src="/mhm3.png"
+            alt="MHM3"
+            width={300}
+            height={80}
+            loading="lazy"
+            unoptimized
+          />
+          <Image
+            src="/mhm4.png"
+            alt="MHM4"
+            width={300}
+            height={80}
+            loading="lazy"
+            unoptimized
+          />
+          <Image
+            src="/mhm5.png"
+            alt="MHM5"
+            width={300}
+            height={80}
+            loading="lazy"
+            unoptimized
+          />
+          <Image
+            src="/mhm6.png"
+            alt="MHM5"
+            width={300}
+            height={80}
+            loading="lazy"
+            unoptimized
+          />
+          <Image
+            src="/mhm7.png"
+            alt="MHM5"
+            width={300}
+            height={80}
+            loading="lazy"
+            unoptimized
+          />
         </div>
       </section>
     </>

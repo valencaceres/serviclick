@@ -84,15 +84,20 @@ export default async function PeoplePage() {
               <li>Accesible</li>
             </ul>
           </div>
-          <div className="flex justify-center mx-4 items-center order-1 lg:order-2 relative lg:-bottom-24 lg:right-16">
-            <Image
-              src={"/videopreview.png"}
-              alt="Video Preview"
-              width={800}
-              height={450}
-              sizes="(max-width: 640px) 100vw, 640px"
-              className="rounded-lg"
-            />
+          <div className="flex justify-center lg:w-[800px] lg:h-[450px] rounded-md mx-4 items-center order-1 lg:order-2 relative lg:-bottom-24 lg:right-16">
+            <video
+              style={{
+                objectFit: "cover",
+                width: "100%",
+                height: "100%",
+                borderRadius: "14px",
+              }}
+              controls
+              loop
+              id="video1"
+            >
+              <source src="/videocorp.mp4" type="video/mp4" />
+            </video>
           </div>
         </div>
       </section>
