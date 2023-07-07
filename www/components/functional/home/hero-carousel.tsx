@@ -37,8 +37,7 @@ export const HeroCarousel = () => {
       width={2560}
       height={450}
       quality={100}
-      className="md:h-[550px] h-[200px] object-cover object-center w-full"
-      objectPosition="center"
+      className="md:h-[550px] h-[200px] object-cover object-top w-full"
       loading="lazy"
     />,
     <Image
@@ -47,8 +46,7 @@ export const HeroCarousel = () => {
       width={2560}
       height={450}
       quality={100}
-      className="md:h-[550px] h-[200px] object-cover object-center w-full"
-      objectPosition="center"
+      className="md:h-[550px] h-[200px] object-cover object-top w-full"
       loading="lazy"
     />,
   ]

@@ -44,7 +44,7 @@ export const Interests = ({ families }: FamiliesCarouselProps) => {
   }
 
   const slides = families.map((family) => (
-    <div className="shadow-md hover:shadow-none duration-75 w-full max-w-[300px]">
+    <div className="shadow-md hover:shadow-none duration-75 w-full max-w-[300px] mx-auto">
       <AssistanceCard
         key={family.family_id}
         family_id={family.family_id}

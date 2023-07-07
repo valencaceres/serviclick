@@ -47,7 +47,7 @@ export default async function PeoplePage() {
         >
           <source src="/people.mp4" type="video/mp4" />
         </video>
-        <div className="z-10 w-96">
+        <div className="z-10 w-96 self-end pb-12 md:self-center md:pb-0 text-center md:text-left">
           <h1 className="uppercase text-4xl text-background font-bold">
             Asistencias que facilitan tu vida.
           </h1>
@@ -75,24 +75,29 @@ export default async function PeoplePage() {
       <section className="relative bg-background h-[480px] sm:h-[600px] lg:h-[600px] duration-75">
         <div className="bg-foreground flex flex-col lg:flex-row items-center py-4 h-96 lg:justify-evenly">
           <div className="flex flex-col py-4 gap-4 items-center justify-center lg:order-2">
-            <h2 className="uppercase text-4xl px-16 text-background font-bold flex justify-center lg:justify-start w-full">
+            <h2 className="uppercase text-2xl lg:text-4xl px-16 text-background font-bold flex justify-center lg:justify-start w-full">
               ¿Cómo obtengo mi asistencia?
             </h2>
-            <ul className="flex lg:flex-col px-16 md:px-24 justify-around gap-4 lg:gap-2 text-lg lg:justify-start flex-wrap w-full list-disc uppercase font-semibold text-background marker:text-primary">
+            <ul className="flex lg:flex-col px-12 md:px-24 justify-around gap-4 lg:gap-2 text-lg lg:justify-start flex-wrap w-full lg:list-disc uppercase font-semibold text-background marker:text-primary">
               <li>Rápido</li>
               <li>En pocos pasos</li>
               <li>Accesible</li>
             </ul>
           </div>
-          <div className="flex justify-center mx-4 items-center order-1 lg:order-2 relative lg:-bottom-24 lg:right-16">
-            <Image
-              src={"/videopreview.png"}
-              alt="Video Preview"
-              width={800}
-              height={450}
-              sizes="(max-width: 640px) 100vw, 640px"
-              className="rounded-lg"
-            />
+          <div className="flex justify-center lg:w-[800px] lg:h-[450px] rounded-md mx-4 items-center order-1 lg:order-2 relative lg:-bottom-24 lg:right-16">
+            <video
+              style={{
+                objectFit: "cover",
+                width: "100%",
+                height: "100%",
+                borderRadius: "14px",
+              }}
+              controls
+              loop
+              id="video1"
+            >
+              <source src="/videocorp.mp4" type="video/mp4" />
+            </video>
           </div>
         </div>
       </section>

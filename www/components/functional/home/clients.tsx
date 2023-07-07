@@ -24,10 +24,10 @@ export const Clients = () => {
     modules: [Pagination],
     breakpoints: {
       1280: {
-        slidesPerView: 5,
+        slidesPerView: 4,
       },
       960: {
-        slidesPerView: 4,
+        slidesPerView: 3,
       },
       480: {
         slidesPerView: 2,
