@@ -48,7 +48,6 @@ export const News = () => {
         slidesPerView: 1,
       },
     },
-    loop: true,
     pagination: {
       enabled: true,
     },
