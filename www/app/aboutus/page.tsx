@@ -39,6 +39,7 @@ export default function AboutUsPage() {
               src="/ourmission.jpeg"
               alt="Nuestra misión"
               fill={true}
+              className="object-cover"
               loading="lazy"
             />
           </div>
@@ -51,6 +52,7 @@ export default function AboutUsPage() {
               src="/ourvision.jpeg"
               alt="Nuestra misión"
               fill={true}
+              className="object-cover"
               loading="lazy"
             />
           </div>
