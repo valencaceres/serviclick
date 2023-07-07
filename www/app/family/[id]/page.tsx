@@ -88,15 +88,18 @@ export default async function Page({ params }: { params: { id: string } }) {
           fill={true}
           className="absolute z-0 object-cover" // This will position the image below the text.
         />
-        <div className="z-10 w-full hidden md:flex lg:items-end lg:justify-center gap-6 lg:gap-16 flex-col lg:flex-row items-center justify-end h-full">
+        <div className="z-10 w-full flex lg:items-end lg:justify-center gap-6 lg:gap-16 flex-col lg:flex-row items-center justify-end h-full">
           {uniqueAssistancesArray?.map((assistance: any) => (
-            <Button
-              key={assistance.product_id}
-              variant="secondary"
-              className="text-xl py-8 px-6 bg-secondary/70 hover:bg-secondary/90 uppercase w-96"
-            >
-              {assistance.product_name}
-            </Button>
+            <Link href={`#${assistance.product_name}`} passHref>
+              <Button
+                type="button"
+                key={assistance.product_id}
+                variant="secondary"
+                className="text-xl py-8 px-6 hover:bg-secondary/90 bg-secondary/90 lg:bg-secondary uppercase w-96"
+              >
+                {assistance.product_name}
+              </Button>
+            </Link>
           ))}
         </div>
         <div className="bg-black absolute w-full h-full z-5 top-0 right-0 bg-opacity-30"></div>
@@ -104,6 +107,7 @@ export default async function Page({ params }: { params: { id: string } }) {
       <section className="flex justify-center flex-col items-center py-10 gap-32">
         {uniqueAssistancesArray?.map((assistance: any) => (
           <div
+            id={assistance.product_name}
             key={assistance.product_id}
             className="w-full flex flex-col items-center gap-6"
           >

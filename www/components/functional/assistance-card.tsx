@@ -18,7 +18,14 @@ export const AssistanceCard = ({
     <article className="bg-[#F3F4F6] border-t-4 border-primary">
       <div className="p-2">
         <div className="w-full h-[250px] relative">
-          <Image src={imageLink} alt="Slide 1" fill={true} loading="lazy" />
+          <Image
+            src={imageLink}
+            alt="Slide 1"
+            fill={true}
+            objectFit="cover"
+            objectPosition="center"
+            loading="lazy"
+          />
         </div>
       </div>
       <div className="h-24 flex items-center w-full justify-center">

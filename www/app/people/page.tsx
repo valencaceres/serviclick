@@ -29,14 +29,24 @@ export default async function PeoplePage() {
 
   return (
     <>
-      <section className="relative h-[450px] flex items-center px-20 pb-20">
-        <Image
-          src="/peoplecover.png"
-          alt="Picture of the author"
-          quality={100}
-          fill={true}
-          className="absolute z-0 object-cover" // This will position the image below the text.
-        />
+      <section className="relative h-[550px] flex items-center px-20">
+        <video
+          style={{
+            objectFit: "cover",
+            width: "100%",
+            height: "100%",
+            position: "absolute",
+            objectPosition: "top",
+            top: 0,
+            left: 0,
+          }}
+          autoPlay
+          loop
+          muted
+          id="video"
+        >
+          <source src="/people.mp4" type="video/mp4" />
+        </video>
         <div className="z-10 w-96">
           <h1 className="uppercase text-4xl text-background font-bold">
             Asistencias que facilitan tu vida.

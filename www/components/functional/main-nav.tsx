@@ -2,18 +2,8 @@ import * as React from "react"
 import Link from "next/link"
 
 import { SiteConfig } from "@/types/nav"
-import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
-import { Icons } from "@/components/functional/icons"
 
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "../ui/sheet"
 import { NavPrimary } from "./primary-nav"
 
 function Secondary(siteConfig: SiteConfig) {
@@ -29,7 +19,7 @@ function Secondary(siteConfig: SiteConfig) {
                   href={item.href}
                   scroll={item.scroll || true}
                   className={cn(
-                    "text-background whitespace-nowrap flex items-center text-sm font-semibold",
+                    "text-background whitespace-nowrap flex items-center text-sm font-semibold hover:text-gray-200 transition-colors duration-200",
                     item.disabled && "cursor-not-allowed opacity-80"
                   )}
                 >

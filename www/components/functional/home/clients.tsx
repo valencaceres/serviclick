@@ -11,6 +11,12 @@ const clients = [
   { image: "/client3.png" },
   { image: "/client4.png" },
   { image: "/client5.png" },
+  { image: "/client6.png" },
+  { image: "/client7.png" },
+  { image: "/client8.png" },
+  { image: "/client9.png" },
+  { image: "/client10.png" },
+  { image: "/client11.png" },
 ]
 
 export const Clients = () => {
