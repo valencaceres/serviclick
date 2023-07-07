@@ -1,33 +1,33 @@
 const familyImages: { [key: string]: string } = {
-  bicicletas: "/assistance1.png",
-  hogar: "/assistance2.png",
-  "protección total": "/assistance8.png",
-  salud: "/assistance3.png",
-  vehículo: "/assistance7.png",
-  veterinaria: "/assistance5.png",
+  bicicletas: "/assistance1.jpg",
+  hogar: "/assistance2.jpg",
+  "protección total": "/assistance8.jpg",
+  salud: "/assistance3.jpg",
+  vehículo: "/assistance7.jpeg",
+  veterinaria: "/assistance5.jpg",
 }
 
 export function getFamilyImage(familyName: string): string {
   return (
     familyImages[familyName.toLowerCase() as keyof typeof familyImages] ||
-    "/assistance6.png"
+    "/assistance6.jpg"
   )
 }
 
 const categoryImages: { [key: string]: string } = {
-  "asistencia al ciclista": "/assistance1.png",
-  "asistencia hogar": "/assistance2.png",
-  "asistencia protección total": "/assistance8.png",
-  "asistencia salud joven": "/assistance3.png",
-  "asistencia salud universal": "/assistance2.png",
-  "asistencia vehicular": "/assistance7.png",
-  "asistencia veterinaria": "/assistance5.png",
+  "asistencia al ciclista": "/assistance1.jpg",
+  "asistencia hogar": "/assistance2.jpg",
+  "asistencia protección total": "/assistance8.jpg",
+  "asistencia salud joven": "/assistance3.jpg",
+  "asistencia salud universal": "/assistance2.jpg",
+  "asistencia vehicular": "/assistance7.jpeg",
+  "asistencia veterinaria": "/assistance5.jpg",
 }
 
 export function getCategoryImage(categoryName: string): string {
   return (
     categoryImages[categoryName.toLowerCase() as keyof typeof categoryImages] ||
-    "/assistance6.png"
+    "/assistance6.jpg"
   )
 }
 

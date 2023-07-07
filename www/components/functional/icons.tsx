@@ -6,6 +6,7 @@ import {
   Linkedin,
   Menu,
   Moon,
+  PhoneCall,
   Search,
   Share2,
   Store,
@@ -31,4 +32,5 @@ export const Icons = {
   store: Store,
   share: Share2,
   users: Users2,
+  phonecall: PhoneCall,
 }
