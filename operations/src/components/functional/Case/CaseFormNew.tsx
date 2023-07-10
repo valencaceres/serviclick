@@ -40,7 +40,7 @@ interface IInitialValues {
   paternalLastName: string;
   maternalLastName: string;
   address: string;
-  district: string;
+  district: string | undefined;
   email: string;
   phone: string;
 }
@@ -75,7 +75,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
     paternalLastName: string;
     maternalLastName: string;
     address: string;
-    district: string;
+    district: string | undefined;
     email: string;
     phone: string;
   }>({
@@ -180,8 +180,8 @@ const BeneficiaryForm = ({ thisCase }: any) => {
         stage_id: stage,
         user_id: user?.id,
         lead_id: thisCase?.lead_id,
-        event_date: thisCase.event_date,
-        event_location: thisCase.event_location,
+        event_date: thisCase?.event_date,
+        event_location: thisCase?.event_location,
       },
       {
         onSuccess: (response) => {
@@ -203,7 +203,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
       paternalLastName: "",
       maternalLastName: "",
       address: "",
-      district: "",
+      district: undefined,
       email: "",
       phone: "",
     };

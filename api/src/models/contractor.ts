@@ -396,6 +396,63 @@ const getPaymentById: any = async (id: string) => {
   }
 };
 
+const getProductsByContractor = async (id: string) => {
+  try {
+    const result = await pool.query(
+      `select 	pro.id,
+                                        lea.id as lead_id,
+                                        pro.name,
+                                        to_char(pol.createdate, 'YYYY-MM-DD') as created_at,
+                                        asi.family_id,
+                                        asi.id as assistance_id,
+                                        asi.name as assistance_name,
+                                        pas.amount as assistance_amount,
+                                        pas.currency as assistance_currency,
+                                        pas.events as assistance_events,
+                                        pas.lack as assistance_lack,
+                                        pas.maximum as assistance_maximum
+                                    from 	app.lead lea
+                                                inner join app.leadproduct lpr on lea.id = lpr.lead_id
+                                                inner join app.policy pol on lea.policy_id = pol.id
+                                                inner join app.product pro on lpr.product_id = pro.id
+                                                inner join app.productassistance pas on pro.id = pas.product_id
+                                                inner join app.assistance asi on asi.id = pas.assistance_id 
+                                    where 	(lea.customer_id = $1 or lea.company_id = $1)
+                                    order 	by
+                                        pol.createdate,
+                                        pro.name`,
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return { success: true, data: [], error: null };
+    }
+
+    const data = result.rows.map((item: any) => ({
+      id: item.id,
+      lead_id: item.lead_id,
+      name: item.name,
+      created_at: item.created_at,
+      family_id: item.family_id,
+      assistances: result.rows
+        .filter((row: any) => row.id === item.id)
+        .map((row: any) => ({
+          id: row.assistance_id,
+          name: row.assistance_name,
+          amount: row.assistance_amount,
+          currency: row.assistance_currency,
+          events: row.assistance_events,
+          lack: row.assistance_lack,
+          maximum: row.assistance_maximum,
+        })),
+    }));
+
+    return { success: true, data, error: null };
+  } catch (error) {
+    return { success: false, data: null, error: (error as Error).message };
+  }
+};
+
 export {
   create,
   getAll,
@@ -405,4 +462,5 @@ export {
   getSubscriptionById,
   getInsuredBySubscriptionId,
   getPaymentById,
+  getProductsByContractor,
 };

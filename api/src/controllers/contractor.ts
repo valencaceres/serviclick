@@ -258,6 +258,27 @@ const getPaymentById = async (req: any, res: any) => {
   res.status(200).json(suscriptionResponse.data);
 };
 
+const getProductsByContractor = async (req: any, res: any) => {
+  const { id } = req.params;
+
+  const contractorResponse = await Contractor.getProductsByContractor(id);
+
+  if (!contractorResponse.success) {
+    createLogger.error({
+      model: "contractor/getProductsByContractor",
+      error: contractorResponse.error,
+    });
+    res.status(500).json({ error: contractorResponse.error });
+    return;
+  }
+
+  createLogger.info({
+    controller: "contractor/getProductsByContractor",
+    message: "OK",
+  });
+  res.status(200).json(contractorResponse.data);
+};
+
 export {
   create,
   getAll,
@@ -267,4 +288,5 @@ export {
   getSubscriptionById,
   getInsuredBySubscriptionId,
   getPaymentById,
+  getProductsByContractor,
 };

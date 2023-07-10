@@ -1,4 +1,10 @@
-import React, { Dispatch, useEffect, useRef, useState } from "react";
+import React, {
+  Dispatch,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useRouter } from "next/router";
 import { useUser } from "@clerk/nextjs";
 
@@ -185,35 +191,38 @@ const BeneficiaryForm = ({ thisCase }: any) => {
     );
   };
 
-  const setInitialValues = (newData: any) => {
-    const formatDate = (dateString: string) => {
-      const date = new Date(dateString);
-      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
-        2,
-        "0"
-      )}-${String(date.getDate()).padStart(2, "0")}`;
-    };
+  const setInitialValues = useCallback(
+    (newData: any) => {
+      const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+          2,
+          "0"
+        )}-${String(date.getDate()).padStart(2, "0")}`;
+      };
 
-    const initialValues = {
-      rut: newData?.rut,
-      birthdate: formatDate(newData?.birthDate),
-      name: newData?.name,
-      paternalLastName: newData?.paternalLastName,
-      maternalLastName: newData?.maternalLastName,
-      address: newData?.address,
-      district: newData?.district,
-      email: newData?.email,
-      phone: newData?.phone,
-    };
+      const initialValues = {
+        rut: newData?.rut,
+        birthdate: formatDate(newData?.birthDate),
+        name: newData?.name,
+        paternalLastName: newData?.paternalLastName,
+        maternalLastName: newData?.maternalLastName,
+        address: newData?.address,
+        district: newData?.district,
+        email: newData?.email,
+        phone: newData?.phone,
+      };
 
-    Object.entries(initialValues).forEach(([key, value]) =>
-      setValue(key as keyof typeof initialValues, value)
-    );
+      Object.entries(initialValues).forEach(([key, value]) =>
+        setValue(key as keyof typeof initialValues, value)
+      );
 
-    if (contractor?.type !== "P") {
-      setClient(thisCase?.contractor_id);
-    }
-  };
+      if (contractor?.type !== "P") {
+        setClient(thisCase?.contractor_id);
+      }
+    },
+    [setValue, contractor, thisCase, setClient]
+  );
 
   useEffect(() => {
     setDateTime(getDateTime());
@@ -222,20 +231,20 @@ const BeneficiaryForm = ({ thisCase }: any) => {
       setIsNewBeneficiary(false);
       reset();
     }
-  }, [router]);
+  }, [reset, router]);
 
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
     reset({
       birthdate: "",
       name: "",
       paternalLastName: "",
       maternalLastName: "",
       address: "",
-      district: "",
+      district: undefined,
       email: "",
       phone: "",
     });
-  };
+  }, [reset]);
 
   useEffect(() => {
     if (thisCase?.insured_id) {
@@ -244,7 +253,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
         setInitialValues(insured);
       }
     }
-  }, [insured, thisCase]);
+  }, [insured, setInitialValues, thisCase]);
 
   // Update the form state when there is no insured_id and insuredByRut changes
   useEffect(() => {
@@ -256,7 +265,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
         setInitialValues(insuredByRut);
       }
     }
-  }, [insuredByRut, isLoadingRut, thisCase]);
+  }, [insuredByRut, isLoadingRut, rut, setInitialValues, thisCase]);
 
   // Update the form state when there is no insured_id and rut changes
   useEffect(() => {
@@ -267,13 +276,13 @@ const BeneficiaryForm = ({ thisCase }: any) => {
         resetForm();
       }
     }
-  }, [rut, thisCase]);
+  }, [insuredByRut, prevRut, resetForm, rut, thisCase]);
 
   useEffect(() => {
     if (contractor && contractor?.type === "P") {
       setInitialValues(contractor);
     }
-  }, [contractor]);
+  }, [contractor, setInitialValues]);
 
   useEffect(() => {
     if (stages) {
@@ -281,7 +290,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
         stages.find((s: any) => s.name.toLowerCase() === router.query.stage)?.id
       );
     }
-  }, [stages, stage]);
+  }, [stages, stage, router.query.stage]);
 
   return (
     <div>
@@ -488,6 +497,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
                 onValueChange={(value) => {
                   setValue("district", value);
                 }}
+                defaultValue={insured?.district || district}
               >
                 <SelectTrigger className="h-10 rounded-sm border-dusty-gray border-opacity-40 py-6">
                   <SelectValue placeholder="Seleccione comuna" />

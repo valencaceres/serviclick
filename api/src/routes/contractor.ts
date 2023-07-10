@@ -10,6 +10,7 @@ import {
   getSubscriptionById,
   getInsuredBySubscriptionId,
   getPaymentById,
+  getProductsByContractor,
 } from "../controllers/contractor";
 
 const ContractorRouter = Router();
@@ -26,5 +27,10 @@ ContractorRouter.get(
   getInsuredBySubscriptionId
 );
 ContractorRouter.get("/getPaymentById/:id", auth, getPaymentById);
+ContractorRouter.get(
+  "/getProductsByContractor/:id",
+  auth,
+  getProductsByContractor
+);
 
 export default ContractorRouter;
