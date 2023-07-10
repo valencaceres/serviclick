@@ -62,6 +62,19 @@ const useGetSubscriptionById = (id: string) => {
   });
 };
 
+const getProductsByContractor = async (id: string) => {
+  const { data } = await apiInstance.get(
+    `/contractor/getProductsByContractor/${id}`
+  );
+  return data;
+};
+
+const useGetProductsByContractor = (id: string) => {
+  return useQuery(["products", id], () => getProductsByContractor(id), {
+    enabled: !!id && id !== "",
+  });
+};
+
 const useQueryContractor = () => {
   return {
     useCreate,
@@ -69,6 +82,7 @@ const useQueryContractor = () => {
     useGetByRut,
     useGetById,
     useGetSubscriptionById,
+    useGetProductsByContractor,
   };
 };
 

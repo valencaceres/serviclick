@@ -111,10 +111,10 @@ export default async function Page({ params }: { params: { id: string } }) {
             key={assistance.product_id}
             className="w-full flex flex-col items-center gap-6"
           >
-            <h1 className="text-3xl font-bold uppercase">
+            <h1 className="text-3xl font-bold uppercase text-center">
               {assistance.product_name}
             </h1>
-            <div className="flex gap-20">
+            <div className="flex gap-4 lg:gap-20">
               <div className="flex-col gap-2 flex">
                 <h2 className="text-primary uppercase text-2xl font-bold text-center">
                   {!assistance.family_price
@@ -132,8 +132,9 @@ export default async function Page({ params }: { params: { id: string } }) {
                 <Link
                   href={`https://productos.serviclick.cl/contractor?productPlanId=${assistance.productplan_id}`}
                   passHref
+                  target="_blank"
                 >
-                  <Button className="uppercase w-full font-bold text-lg ">
+                  <Button className="uppercase w-full font-bold text-lg">
                     Contrata aquí
                   </Button>
                 </Link>
@@ -154,8 +155,9 @@ export default async function Page({ params }: { params: { id: string } }) {
                   <Link
                     href={`https://productos.serviclick.cl/contractor?productPlanId=${assistance.productplan_id}`}
                     passHref
+                    target="_blank"
                   >
-                    <Button className="uppercase w-full font-semibold">
+                    <Button className="uppercase w-full font-bold text-lg">
                       Contrata aquí
                     </Button>
                   </Link>

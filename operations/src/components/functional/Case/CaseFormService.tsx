@@ -72,6 +72,8 @@ const CaseFormService = ({ thisCase }: any) => {
   const { data: contractor, isLoading: isLoadingContractor } =
     useQueryContractor().useGetById(thisCase?.contractor_id);
 
+  const { data: contractorSubscriptions } =
+    useQueryContractor().useGetProductsByContractor(thisCase?.contractor_id);
   const { mutate: updateCase } = useQueryCase().useCreate();
   const { mutate: assignValue } = useQueryAssistances().useAssignValue();
 
@@ -84,15 +86,40 @@ const CaseFormService = ({ thisCase }: any) => {
     });
   }, [selectedProduct]);
 
+  console.log(contractorSubscriptions);
   useEffect(() => {
+    if (!data) {
+      const productsMap = new Map(
+        contractorSubscriptions?.map((subscription: any) => [
+          subscription.id,
+          subscription,
+        ])
+      );
+      setRelatedProducts(Array.from(productsMap.values()));
+      return;
+    }
     const productsMap = new Map(
       data?.products.map((product: any) => [product.id, product])
     );
     setRelatedProducts(Array.from(productsMap.values()));
-  }, [data]);
+  }, [contractorSubscriptions, data]);
 
   useEffect(() => {
     if (selectedProduct) {
+      if (!data) {
+        const assistancesMap = new Map();
+        contractorSubscriptions
+          ?.filter(
+            (subscription: any) => subscription.id === selectedProduct?.id
+          )
+          .forEach((subscription: any) => {
+            subscription.assistances?.forEach((assistance: any) => {
+              assistancesMap.set(assistance.id, { ...assistance });
+            });
+          });
+        setUniqueAssistances(Array.from(assistancesMap.values()));
+        return;
+      }
       const assistancesMap = new Map(
         data?.products
           .filter((product: any) => product.id === selectedProduct?.id)
@@ -112,8 +139,7 @@ const CaseFormService = ({ thisCase }: any) => {
 
   const handleProductChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const productId = event.target.value;
-    const product =
-      relatedProducts.find((p: any) => p.id === productId) || null;
+    const product = relatedProducts.find((p: any) => p.id === productId);
     setSelectedProduct(product);
     setSelectedAssistance(null);
   };
@@ -219,8 +245,8 @@ const CaseFormService = ({ thisCase }: any) => {
     <div>
       <ContentCell gap="10px">
         <ContentCell gap="5px">
-          {thisCase?.contractor_id && (
-            <Link href={`/entities/contractor/${contractor?.id}`}>
+          {thisCase?.contractor_id && contractor && (
+            <Link href={`/entities/contractor/${contractor?.id}`} passHref>
               <InputText
                 label="Cliente"
                 className="capitalize"

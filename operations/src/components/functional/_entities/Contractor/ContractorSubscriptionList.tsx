@@ -167,8 +167,6 @@ const AddSubscription = ({
     }
   }, [data, plan, setValue, subscription]);
 
-  console.log(plan);
-
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger>
