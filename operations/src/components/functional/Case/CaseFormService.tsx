@@ -181,7 +181,6 @@ const CaseFormService = ({ thisCase }: any) => {
     if (currentDistrict) setDistrict(currentDistrict);
   }, [currentDescription, currentDistrict, currentEventDate, currentStage]);
 
-  console.log(thisCase);
   const handleAddService = () => {
     if (selectedAssistance && selectedProduct && description) {
       setError(null);
