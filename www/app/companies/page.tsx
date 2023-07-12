@@ -3,6 +3,8 @@ import Image from "next/image"
 import AssistanceQuoteForm from "@/components/functional/companies/assistance-quote-form"
 import { Details } from "@/components/functional/companies/details"
 
+import { GrupoMHM } from "../aboutus/page"
+
 export default function CompaniesPage() {
   return (
     <>
@@ -40,6 +42,7 @@ export default function CompaniesPage() {
         </h1>
         <AssistanceQuoteForm />
       </section>
+      <GrupoMHM />
     </>
   )
 }

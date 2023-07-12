@@ -1425,6 +1425,74 @@ const addBeneficiary = async (req: any, res: any) => {
   return res.status(200).json(leadBeneficiaryResponse.data);
 };
 
+const addFromCase = async (req: any, res: any) => {
+  const { subscription_id, beneficiary_id, insured_id } = req.body;
+
+  const leadResponse = await Lead.getBySubscriptionId(subscription_id);
+
+  if (!leadResponse.success) {
+    createLogger.error({
+      model: "lead/getBySubscriptionId",
+      error: leadResponse.error,
+    });
+
+    res.status(500).json(leadResponse.error);
+    return;
+  }
+
+  const { id: lead_id } = leadResponse.data;
+  console.log(lead_id);
+
+  const leadInsuredResponse = await LeadInsured.createModel(
+    lead_id,
+    insured_id
+  );
+
+  if (!leadInsuredResponse.success) {
+    createLogger.error({
+      model: "leadInsured/createModel",
+      error: leadInsuredResponse.error,
+    });
+    res.status(500).json(leadInsuredResponse.error);
+    return;
+  }
+
+  if (!beneficiary_id) {
+    createLogger.info({
+      controller: "lead/addFromCase",
+      message: "Lead Insured and Beneficiary created",
+    });
+
+    return res.status(200).json({
+      success: true,
+    });
+  }
+
+  const leadBeneficiaryResponse = await LeadBeneficiary.createModel(
+    lead_id,
+    insured_id,
+    beneficiary_id
+  );
+
+  if (!leadBeneficiaryResponse.success) {
+    createLogger.error({
+      model: "leadBeneficiary/createModel",
+      error: leadBeneficiaryResponse.error,
+    });
+    res.status(500).json();
+    return;
+  }
+
+  createLogger.info({
+    controller: "lead/addFromCase",
+    message: "Lead Insured and Beneficiary created",
+  });
+
+  return res.status(200).json({
+    success: true,
+  });
+};
+
 const addInsuredFromExcel = async (req: any, res: any) => {
   try {
     const { subscription_id } = req.body;
@@ -1550,4 +1618,5 @@ export {
   getStatistics,
   getContract,
   addInsuredFromExcel,
+  addFromCase,
 };

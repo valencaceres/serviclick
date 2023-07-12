@@ -13,6 +13,7 @@ import {
   useQueryAssistances,
   useQueryCase,
   useQueryContractor,
+  useQueryLead,
   useQueryStage,
   useQueryUF,
 } from "../../../hooks/query";
@@ -34,6 +35,7 @@ interface IAssistance {
 interface IProduct {
   id: string;
   lead_id: string;
+  subscription_id?: string;
   insured_id: string;
   name: string;
   assistance: IAssistance;
@@ -76,6 +78,7 @@ const CaseFormService = ({ thisCase }: any) => {
     useQueryContractor().useGetProductsByContractor(thisCase?.contractor_id);
   const { mutate: updateCase } = useQueryCase().useCreate();
   const { mutate: assignValue } = useQueryAssistances().useAssignValue();
+  const { mutate: createLead } = useQueryLead().useAddFromCase();
 
   const selectedProductCreatedAt = useMemo(() => {
     const date = new Date(selectedProduct?.created_at || "");
@@ -86,7 +89,6 @@ const CaseFormService = ({ thisCase }: any) => {
     });
   }, [selectedProduct]);
 
-  console.log(contractorSubscriptions);
   useEffect(() => {
     if (!data) {
       const productsMap = new Map(
@@ -179,6 +181,7 @@ const CaseFormService = ({ thisCase }: any) => {
     if (currentDistrict) setDistrict(currentDistrict);
   }, [currentDescription, currentDistrict, currentEventDate, currentStage]);
 
+  console.log(thisCase);
   const handleAddService = () => {
     if (selectedAssistance && selectedProduct && description) {
       setError(null);
@@ -189,6 +192,13 @@ const CaseFormService = ({ thisCase }: any) => {
           insured_id: thisCase?.insured_id,
           value_id: key,
           value: formValues[key],
+        });
+      }
+      if (!data) {
+        createLead({
+          subscription_id: selectedProduct?.subscription_id,
+          beneficiary_id: thisCase?.beneficiary_id,
+          insured_id: thisCase?.insured_id,
         });
       }
       return updateCase(

@@ -26,10 +26,7 @@ const useAddInsured = () => {
 };
 
 const addBeneficiary = async (data: any) => {
-  const { data: result } = await apiInstance.post(
-    "/lead/addBeneficiary",
-    data
-  );
+  const { data: result } = await apiInstance.post("/lead/addBeneficiary", data);
   return result;
 };
 
@@ -52,14 +49,18 @@ const useGetContract = (lead_id: string) => {
 
 const addInsuredFromExcel = async (data: any) => {
   const formData = new FormData();
-  formData.append('file', data.file);
-  formData.append('subscription_id', data.subscriptionId);
+  formData.append("file", data.file);
+  formData.append("subscription_id", data.subscriptionId);
 
-  const { data: result } = await apiInstance.post('/lead/addInsuredFromExcel', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
+  const { data: result } = await apiInstance.post(
+    "/lead/addInsuredFromExcel",
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     }
-  });
+  );
 
   return result;
 };
@@ -68,6 +69,14 @@ const useAddInsuredFromExcel = () => {
   return useMutation(addInsuredFromExcel);
 };
 
+const addFromCase = async (data: any) => {
+  const { data: result } = await apiInstance.post("/lead/addFromCase", data);
+  return result;
+};
+
+const useAddFromCase = () => {
+  return useMutation(addFromCase);
+};
 
 const useQueryLead = () => {
   return {
@@ -76,6 +85,7 @@ const useQueryLead = () => {
     useAddBeneficiary,
     useGetContract,
     useAddInsuredFromExcel,
+    useAddFromCase,
   };
 };
 
