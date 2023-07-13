@@ -11,7 +11,7 @@ import { Icons } from "../icons"
 export const Details = () => {
   return (
     <>
-      <Accordion className="w-full xl:hidden block" type="single" collapsible>
+      <Accordion className="w-full" type="single" collapsible>
         <AccordionItem value="insurance">
           <AccordionTrigger>
             <div className="flex w-full gap-2 text-xl items-center">
@@ -74,7 +74,7 @@ export const Details = () => {
           </AccordionContent>
         </AccordionItem>
       </Accordion>
-      <Tabs defaultValue="insurance" className="w-full hidden xl:block">
+      {/* <Tabs defaultValue="insurance" className="w-full hidden xl:block">
         <TabsList>
           <TabsTrigger
             className="md:max-w-full xl:max-w-[300px] flex gap-2 text-lg"
@@ -133,7 +133,7 @@ export const Details = () => {
           información, contáctanos a través de nuestro WhatsApp al +56956451904
           y uno de nuestros ejecutivos estará encantado de asistirte.
         </TabsContent>
-      </Tabs>
+      </Tabs> */}
     </>
   )
 }
