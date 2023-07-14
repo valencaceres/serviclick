@@ -75,7 +75,7 @@ export default async function PeoplePage() {
       <section className="relative bg-background h-[480px] sm:h-[600px] lg:h-[600px] duration-75">
         <div className="bg-foreground flex flex-col lg:flex-row items-center py-4 h-96 lg:justify-evenly">
           <div className="flex flex-col py-4 gap-4 items-center justify-center lg:order-2">
-            <h2 className="uppercase text-2xl lg:text-4xl px-16 text-background font-bold flex justify-center lg:justify-start w-full">
+            <h2 className="uppercase text-2xl lg:text-4xl px-16 text-background font-bold flex justify-center lg:justify-start w-full text-center lg:text-start">
               ¿Cómo obtengo mi asistencia?
             </h2>
             <ul className="flex lg:flex-col px-12 md:px-24 justify-around gap-4 lg:gap-2 text-lg lg:justify-start flex-wrap w-full lg:list-disc uppercase font-semibold text-background marker:text-primary">
@@ -84,7 +84,7 @@ export default async function PeoplePage() {
               <li>Accesible</li>
             </ul>
           </div>
-          <div className="flex justify-center lg:w-[800px] lg:h-[450px] rounded-md mx-4 items-center order-1 lg:order-2 relative lg:-bottom-24 lg:right-16">
+          <div className="flex justify-center lg:w-[800px] lg:h-[450px] shadow-lg rounded-xl mx-4 items-center order-1 lg:order-2 relative lg:-bottom-24 lg:right-16">
             <video
               style={{
                 objectFit: "cover",
@@ -96,7 +96,7 @@ export default async function PeoplePage() {
               loop
               id="video1"
             >
-              <source src="/videocorp.mp4" type="video/mp4" />
+              <source src="/videoiconografico.mp4" type="video/mp4" />
             </video>
           </div>
         </div>

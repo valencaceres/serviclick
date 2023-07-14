@@ -401,6 +401,7 @@ const getProductsByContractor = async (id: string) => {
     const result = await pool.query(
       `select 	pro.id,
                                         lea.id as lead_id,
+                                        lea.subscription_id,
                                         pro.name,
                                         to_char(pol.createdate, 'YYYY-MM-DD') as created_at,
                                         asi.family_id,
@@ -431,6 +432,7 @@ const getProductsByContractor = async (id: string) => {
     const data = result.rows.map((item: any) => ({
       id: item.id,
       lead_id: item.lead_id,
+      subscription_id: item.subscription_id,
       name: item.name,
       created_at: item.created_at,
       family_id: item.family_id,

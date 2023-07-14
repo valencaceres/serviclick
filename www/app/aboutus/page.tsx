@@ -1,9 +1,26 @@
 import Image from "next/image"
 
+import { Button } from "@/components/ui/button"
+
 export default function AboutUsPage() {
   return (
     <>
-      <section className="py-4 w-full flex justify-start">
+      <section className="relative h-[450px] flex items-center px-20">
+        <Image
+          src="/quienessomos.jpeg"
+          alt="Quienes somos"
+          quality={100}
+          fill={true}
+          className="absolute z-0 object-cover"
+        />
+        <div className="z-10 w-full flex items-center">
+          <h1 className="text-4xl font-bold uppercase text-white">
+            Sobre nosotros
+          </h1>
+        </div>
+        <div className="bg-black absolute w-full h-full z-5 top-0 right-0 bg-opacity-30"></div>
+      </section>
+      <section className="py-12 w-full flex justify-start">
         <div className="w-[60px] md:w-[120px] mt-2 pr-6 lg:w-[300px] h-3 bg-primary rounded-r-full"></div>
         <div className="flex gap-4">
           <div className="flex flex-col gap-4 px-4 max-w-4xl">
@@ -50,7 +67,7 @@ export default function AboutUsPage() {
           <div className="w-full md:w-1/3 h-[300px] object-cover relative">
             <Image
               src="/ourvision.jpeg"
-              alt="Nuestra misión"
+              alt="Nuestra visión"
               fill={true}
               className="object-cover"
               loading="lazy"
@@ -73,69 +90,86 @@ export default function AboutUsPage() {
           </div>
         </div>
       </section>
-      <section className="py-20 flex flex-col gap-8 items-center justify-center">
-        <h1 className="uppercase text-2xl font-bold text-center">Grupo MHM</h1>
-        <div className="flex flex-wrap w-full max-w-5xl justify-center items-center">
-          <Image
-            src="/mhm1.png"
-            alt="MHM1"
-            width={300}
-            height={80}
-            loading="lazy"
-            quality={100}
-            unoptimized
-          />
-          <Image
-            src="/mhm2.png"
-            alt="MHM2"
-            width={300}
-            height={80}
-            loading="lazy"
-            quality={100}
-            unoptimized
-          />
-          <Image
-            src="/mhm3.png"
-            alt="MHM3"
-            width={300}
-            height={80}
-            loading="lazy"
-            unoptimized
-          />
-          <Image
-            src="/mhm4.png"
-            alt="MHM4"
-            width={300}
-            height={80}
-            loading="lazy"
-            unoptimized
-          />
-          <Image
-            src="/mhm5.png"
-            alt="MHM5"
-            width={300}
-            height={80}
-            loading="lazy"
-            unoptimized
-          />
-          <Image
-            src="/mhm6.png"
-            alt="MHM5"
-            width={300}
-            height={80}
-            loading="lazy"
-            unoptimized
-          />
-          <Image
-            src="/mhm7.png"
-            alt="MHM5"
-            width={300}
-            height={80}
-            loading="lazy"
-            unoptimized
-          />
-        </div>
+      <section className="text-center bg-[#F3F4F6] py-12 mt-12 flex flex-col gap-6 items-center">
+        <h1 className="text-4xl text-foreground uppercase font-bold">
+          ¡Trabaja con nosotros!
+        </h1>
+        <h2 className="text-2xl text-foreground uppercase font-bold">
+          Únete a MHM Empresas
+        </h2>
+        <Button className="w-[250px] text-lg uppercase font-semibold">
+          Enviar CV
+        </Button>
       </section>
+      <GrupoMHM />
     </>
+  )
+}
+
+export function GrupoMHM() {
+  return (
+    <section className="py-20 flex flex-col gap-8 items-center justify-center">
+      <h1 className="uppercase text-2xl font-bold text-center">Grupo MHM</h1>
+      <div className="flex flex-wrap w-full max-w-5xl justify-center items-center">
+        <Image
+          src="/mhm1.png"
+          alt="MHM1"
+          width={300}
+          height={80}
+          loading="lazy"
+          quality={100}
+          unoptimized
+        />
+        <Image
+          src="/mhm2.png"
+          alt="MHM2"
+          width={300}
+          height={80}
+          loading="lazy"
+          quality={100}
+          unoptimized
+        />
+        <Image
+          src="/mhm3.png"
+          alt="MHM3"
+          width={300}
+          height={80}
+          loading="lazy"
+          unoptimized
+        />
+        <Image
+          src="/mhm4.png"
+          alt="MHM4"
+          width={300}
+          height={80}
+          loading="lazy"
+          unoptimized
+        />
+        <Image
+          src="/mhm5.png"
+          alt="MHM5"
+          width={300}
+          height={80}
+          loading="lazy"
+          unoptimized
+        />
+        <Image
+          src="/mhm6.png"
+          alt="MHM5"
+          width={300}
+          height={80}
+          loading="lazy"
+          unoptimized
+        />
+        <Image
+          src="/mhm7.png"
+          alt="MHM5"
+          width={300}
+          height={80}
+          loading="lazy"
+          unoptimized
+        />
+      </div>
+    </section>
   )
 }

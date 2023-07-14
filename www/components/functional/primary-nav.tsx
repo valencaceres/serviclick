@@ -74,16 +74,6 @@ export function NavPrimary(siteConfig: SiteConfig) {
                         </SheetClose>
                       )
                   )}
-                  <SheetClose asChild>
-                    <Link
-                      href={"/assistances"}
-                      className={cn(
-                        "text-foreground uppercase w-fit whitespace-nowrap flex items-center font-semibold bg-transparent hover:bg-foreground hover:text-background rounded-md px-2 py-1 duration-75"
-                      )}
-                    >
-                      Asistencias
-                    </Link>
-                  </SheetClose>
                   {siteConfig.secondaryNav?.map(
                     (item, index) =>
                       item.href && (

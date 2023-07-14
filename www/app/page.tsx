@@ -48,7 +48,7 @@ export default async function IndexPage() {
               <li>Oportuno</li>
             </ul>
           </div>
-          <div className="flex justify-center lg:w-[800px] lg:h-[450px] rounded-md mx-4 items-center order-1 lg:order-2 relative lg:-bottom-24 lg:left-16">
+          <div className="flex justify-center lg:w-[800px] lg:h-[450px] shadow-lg rounded-xl mx-4 items-center order-1 lg:order-2 relative lg:-bottom-24 lg:left-16">
             <video
               style={{
                 objectFit: "cover",

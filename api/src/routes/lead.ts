@@ -15,6 +15,7 @@ import {
   getStatistics,
   getContract,
   addInsuredFromExcel,
+  addFromCase,
 } from "../controllers/lead";
 
 const upload = multer({ storage: multer.memoryStorage() });
@@ -44,6 +45,12 @@ LeadRouter.post("/addInsured", auth, addInsured);
 LeadRouter.post("/addBeneficiary", auth, addBeneficiary);
 LeadRouter.get("/getStatistics", auth, getStatistics);
 LeadRouter.get("/getContract/:lead_id", auth, getContract);
-LeadRouter.post('/addInsuredFromExcel', auth, upload.single('file'), addInsuredFromExcel);
+LeadRouter.post(
+  "/addInsuredFromExcel",
+  auth,
+  upload.single("file"),
+  addInsuredFromExcel
+);
+LeadRouter.post("/addFromCase", auth, addFromCase);
 
 export default LeadRouter;
