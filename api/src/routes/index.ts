@@ -35,6 +35,8 @@ import PartnerRouter from "./partner";
 import ImportRouter from "./import";
 import CaseRouter from "./case";
 import CategoryRouter from "./category";
+import FileFormatRouter from "./fileFormat";
+import FieldRouter from "./field";
 
 export {
   SlugRouter,
@@ -74,4 +76,6 @@ export {
   ImportRouter,
   CaseRouter,
   CategoryRouter,
+  FileFormatRouter,
+  FieldRouter,
 };

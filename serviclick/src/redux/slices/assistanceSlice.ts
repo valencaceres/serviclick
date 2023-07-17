@@ -22,6 +22,19 @@ type ExclusionT = {
   description: string;
 };
 
+export interface IDocument {
+  id: string;
+  family_id: string;
+  name: string;
+}
+
+export interface ISpecialty {
+  id: string;
+  family_id: string;
+  family_name: string;
+  name: string;
+}
+
 export type AssistanceT = {
   id: string;
   name: string;
@@ -30,6 +43,8 @@ export type AssistanceT = {
   values: ValueT[];
   benefits: BenefitT[];
   exclusions: ExclusionT[];
+  documents: IDocument[];
+  specialties: ISpecialty[];
 };
 
 type StateT = {
@@ -53,6 +68,8 @@ const initialState: StateT = {
     values: [],
     benefits: [],
     exclusions: [],
+    documents: [],
+    specialties: [],
   },
   families: [],
   loading: false,

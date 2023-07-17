@@ -69,6 +69,8 @@ class App {
     this.server.use("/api/import", reqLogger, routes.ImportRouter);
     this.server.use("/api/case", reqLogger, routes.CaseRouter);
     this.server.use("/api/category", reqLogger, routes.CategoryRouter);
+    this.server.use("/api/fileFormat", reqLogger, routes.FileFormatRouter);
+    this.server.use("/api/field", reqLogger, routes.FieldRouter);
   }
 }
 

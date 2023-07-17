@@ -19,6 +19,8 @@ import specialtySlice from "../slices/specialtySlice";
 import documentSlice from "../slices/documentSlice";
 import stageSlice from "../slices/stageSlice";
 import specialistSlice from "../slices/specialistSlice";
+import fileFormatSlice from "../slices/fileFormatSlice";
+import fieldSlice from "../slices/fieldSlice";
 
 const store = configureStore({
   reducer: {
@@ -41,6 +43,8 @@ const store = configureStore({
     documentSlice,
     stageSlice,
     specialistSlice,
+    fileFormatSlice,
+    fieldSlice,
   },
 });
 

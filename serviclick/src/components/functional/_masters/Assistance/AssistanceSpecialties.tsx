@@ -13,14 +13,17 @@ import {
   TableRow,
 } from "../../../ui/Table";
 
-import { useValue, useAssistance } from "../../../../hooks";
+import { useSpecialty, useAssistance } from "../../../../hooks";
 
-const AssistanceValues = ({ setShowModal }: any) => {
-  const { valueList } = useValue();
+const AssistanceSpecialties = ({ setShowModal }: any) => {
+  const { specialtyList } = useSpecialty();
   const { assistance, setAssistance } = useAssistance();
 
-  const handleClickAddValue = (item: any) => {
-    setAssistance({ ...assistance, values: [...assistance.values, item] });
+  const handleClickAddSpecialty = (item: any) => {
+    setAssistance({
+      ...assistance,
+      specialties: [...(assistance.specialties || []), item],
+    });
     setShowModal(false);
   };
 
@@ -29,24 +32,24 @@ const AssistanceValues = ({ setShowModal }: any) => {
       <Table width="335px" height="189px">
         <TableHeader>
           <TableCell width="270px">Valor</TableCell>
-          <TableCell width="50px"></TableCell>
+          <TableCell width="50px">&nbsp;</TableCell>
           <TableCellEnd />
         </TableHeader>
         <TableDetail>
-          {valueList
+          {specialtyList
             .filter((item: any) => {
-              return !assistance.values
+              return !assistance.specialties
                 ?.map((itemAssistance) => itemAssistance.name)
                 .includes(item.name);
             })
-            .map((value: any, idx: number) => (
+            .map((specialty: any, idx: number) => (
               <TableRow key={idx}>
-                <TableCell width="270px">{value.name}</TableCell>
+                <TableCell width="270px">{specialty.name}</TableCell>
                 <TableCell width="50px" align="center">
                   <TableIcons>
                     <Icon
                       iconName="add_circle"
-                      onClick={() => handleClickAddValue(value)}
+                      onClick={() => handleClickAddSpecialty(specialty)}
                     />
                   </TableIcons>
                 </TableCell>
@@ -58,4 +61,4 @@ const AssistanceValues = ({ setShowModal }: any) => {
   );
 };
 
-export default AssistanceValues;
+export default AssistanceSpecialties;

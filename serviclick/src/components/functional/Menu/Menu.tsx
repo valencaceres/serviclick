@@ -19,18 +19,18 @@ interface Route {
 
 const routes = [
   { text: "Dashboard", route: "/" },
-  {
-    text: "Maestros",
-    subRoutes: [
-      { text: "Canales de Venta", route: "/masters/channel" },
-      { text: "Familias", route: "/masters/family" },
-      { text: "Tipos de valor", route: "/masters/valueType" },
-      { text: "Valores", route: "/masters/value" },
-      { text: "Servicios", route: "/masters/assistance" },
-      { text: "Productos", route: "/masters/product" },
-      { text: "Usuarios", route: "/masters/user" },
-    ],
-  },
+  // {
+  //   text: "Maestros",
+  //   subRoutes: [
+  //     { text: "Canales de Venta", route: "/masters/channel" },
+  //     { text: "Familias", route: "/masters/family" },
+  //     { text: "Tipos de valor", route: "/masters/valueType" },
+  //     { text: "Valores", route: "/masters/value" },
+  //     { text: "Servicios", route: "/masters/assistance" },
+  //     { text: "Productos", route: "/masters/product" },
+  //     { text: "Usuarios", route: "/masters/user" },
+  //   ],
+  // },
   {
     text: "Canales de venta",
     subRoutes: [
@@ -39,9 +39,9 @@ const routes = [
       { text: "Retail", route: "/channels/retail" },
     ],
   },
-  {
-    text: "Procesos",
-  },
+  // {
+  //   text: "Procesos",
+  // },
   {
     text: "Reportes",
     subRoutes: [

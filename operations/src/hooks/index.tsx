@@ -17,6 +17,8 @@ import useSpecialty from "./useSpecialty";
 import useDocument from "./useDocument";
 import useStage from "./useStage";
 import useSpecialist from "./useSpecialist";
+import useFileFormat from "./useFileFormat";
+import useField from "./useField";
 
 export {
   useUI,
@@ -38,4 +40,6 @@ export {
   useDocument,
   useStage,
   useSpecialist,
+  useFileFormat,
+  useField,
 };

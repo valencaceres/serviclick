@@ -13,6 +13,8 @@ import useAssistance from "./useAssistance";
 import useValue from "./useValue";
 import useValueType from "./useValueType";
 import useContractor from "./useContractor";
+import useDocument from "./useDocument";
+import useSpecialty from "./useSpecialty";
 
 export {
   useUI,
@@ -30,4 +32,6 @@ export {
   useValue,
   useValueType,
   useContractor,
+  useDocument,
+  useSpecialty,
 };

@@ -31,8 +31,8 @@ const AssistanceBenefits = ({
       <TextArea
         id="txtName"
         label="Prestación"
-        width="500px"
-        height="100px"
+        width="700px"
+        height="200px"
         value={benefitValue.description}
         onChange={(e: any) =>
           setBenefitValue({ id: "", description: e.target.value })

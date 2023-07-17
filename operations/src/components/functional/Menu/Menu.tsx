@@ -30,6 +30,7 @@ const routes = [
       { text: "Servicios", route: "/masters/assistance" },
       { text: "Etapas", route: "/masters/stage" },
       { text: "Productos", route: "/masters/product" },
+      { text: "Formatos importación", route: "/masters/fileFormat" },
     ],
   },
   {
@@ -46,7 +47,7 @@ const routes = [
     subRoutes: [
       { text: "Dashboard" },
       { text: "Casos", route: "/case" },
-      { text: "Importación", route: "/assistances/import" },
+      // { text: "Importación", route: "/assistances/import" },
     ],
   },
 ];
@@ -98,7 +99,7 @@ export function Menu({ isOpen, setIsOpen }: MenuProps) {
         </div>
       </nav>
       <div
-        className={`fixed left-0 top-0 z-20 min-h-screen h-full w-screen bg-black bg-opacity-20 ${
+        className={`fixed left-0 top-0 z-20 h-full min-h-screen w-screen bg-black bg-opacity-20 ${
           isOpen ? "" : "hidden"
         }`}
         onClick={() => setIsOpen(false)}

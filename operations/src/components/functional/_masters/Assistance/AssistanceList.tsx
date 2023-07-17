@@ -92,7 +92,7 @@ const AssistanceList = ({ editAssistance, isSaving }: any) => {
             </TableCell>
             <TableCell width="263px">Familia</TableCell>
             <TableCell width="580px">Nombre</TableCell>
-            <TableCell width="68px">&nbsp;</TableCell>
+            <TableCell width="68px"></TableCell>
             <TableCellEnd />
           </TableHeader>
           <TableDetail>
