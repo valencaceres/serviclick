@@ -27,7 +27,7 @@ export default function CompaniesPage() {
           <source src="/companies.mp4" type="video/mp4" />
         </video>
         <div className="z-10 w-96">
-          <h1 className="uppercase text-4xl text-background font-bold">
+          <h1 className="uppercase text-6xl text-background font-bebas text-center md:text-start">
             Juntos somos un gran equipo.
           </h1>
         </div>
@@ -37,7 +37,7 @@ export default function CompaniesPage() {
         <Details />
       </section>
       <section className="container flex justify-center flex-col items-center py-10">
-        <h1 className="pb-6 uppercase text-2xl font-bold">
+        <h1 className="pb-6 uppercase text-4xl font-bebas text-center">
           Cotiza la asistencia para tu empresa
         </h1>
         <AssistanceQuoteForm />

@@ -8,9 +8,9 @@ import { Icons } from "./icons"
 export function SiteFooter({ siteConfig }: { siteConfig: SiteConfig }) {
   return (
     <footer className="flex flex-col" id="contact">
-      <div className="bg-[#F3F4F6] flex gap-4 justify-between flex-wrap px-16 py-6">
+      <div className="bg-slate-50 flex gap-4 justify-between flex-wrap px-16 py-6">
         <div className="flex flex-col gap-2">
-          <h2 className="uppercase font-bold text-lg">Contacto Comercial</h2>
+          <h2 className="uppercase font-bebas text-2xl">Contacto Comercial</h2>
           <div>
             <Link href="tel:6000860580" className="hover:underline" passHref>
               <p>600 0860 580</p>
@@ -23,7 +23,7 @@ export function SiteFooter({ siteConfig }: { siteConfig: SiteConfig }) {
               <p>comercial@serviclick.cl</p>
             </Link>
           </div>
-          <h2 className="uppercase font-bold text-lg">Dirección</h2>
+          <h2 className="uppercase font-bebas text-2xl">Dirección</h2>
           <div>
             <Link
               href="https://goo.gl/maps/2pH3KDzeW7bvhLcJ6"
@@ -71,7 +71,7 @@ export function SiteFooter({ siteConfig }: { siteConfig: SiteConfig }) {
         </div>
         <div className="text-[#B2B2B2] px-12 text-sm flex flex-col gap-2">
           <p>Serviclick 2023 - Todos los derechos reservados.</p>
-          <Link href="#" className="hover:underline" passHref>
+          <Link href="/termsandconditions" className="hover:underline" passHref>
             <p>Términos y condiciones</p>
           </Link>
           <Link href="#" className="hover:underline" passHref>

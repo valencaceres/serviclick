@@ -55,6 +55,7 @@ module.exports = {
       },
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
+        bebas: ["Bebas Neue", ...fontFamily.sans],
       },
       keyframes: {
         "accordion-down": {

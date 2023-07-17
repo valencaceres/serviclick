@@ -15,7 +15,7 @@ export const AssistanceCard = ({
   imageLink,
 }: AssistanceCardProps) => {
   return (
-    <article className="bg-[#F3F4F6] border-t-4 border-primary">
+    <article className="bg-slate-50 border-t-4 border-primary">
       <div className="p-2">
         <div className="w-full h-[250px] relative">
           <Image
@@ -29,10 +29,10 @@ export const AssistanceCard = ({
         </div>
       </div>
       <div className="h-24 flex items-center w-full justify-center">
-        <h2 className="uppercase font-bold text-lg text-center">{title}</h2>
+        <h2 className="uppercase text-2xl text-center font-bebas">{title}</h2>
       </div>
       <Link href={`/family/${family_id}`} passHref={true}>
-        <Button className="w-full rounded-none bg-foreground uppercase text-xl">
+        <Button className="w-full rounded-none bg-foreground uppercase text-2xl font-bebas">
           Ver más
         </Button>
       </Link>
