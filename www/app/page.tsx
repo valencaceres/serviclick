@@ -65,11 +65,11 @@ export default async function IndexPage() {
           </div>
         </div>
       </section>
-      <section className="container flex justify-center flex-col items-center pb-20">
+      <section className="container flex justify-center flex-col items-center pb-12">
         <h1 className="pb-6 uppercase text-4xl font-bebas">Novedades</h1>
         <News />
       </section>
-      <section className="container flex justify-center flex-col items-center pb-20">
+      <section className="container flex justify-center flex-col items-center pb-12">
         <h1 className="text-4xl font-bebas uppercase text-center pb-6">
           Clientes
         </h1>

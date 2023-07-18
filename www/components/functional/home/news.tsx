@@ -1,6 +1,6 @@
 "use client"
 
-import { Navigation, Pagination, Scrollbar, SwiperOptions } from "swiper"
+import { Navigation, SwiperOptions } from "swiper"
 
 import "swiper/css"
 import "swiper/css/pagination"
@@ -33,7 +33,7 @@ const news = [
 
 export const News = () => {
   const options: SwiperOptions = {
-    modules: [Pagination, Navigation],
+    modules: [Navigation],
     breakpoints: {
       1280: {
         slidesPerView: 4,
@@ -47,9 +47,6 @@ export const News = () => {
       0: {
         slidesPerView: 1,
       },
-    },
-    pagination: {
-      enabled: true,
     },
     navigation: true,
   }
