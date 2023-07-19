@@ -4,6 +4,7 @@ import {
   Facebook,
   Instagram,
   Linkedin,
+  LucideIcon,
   Mail,
   Menu,
   Moon,
