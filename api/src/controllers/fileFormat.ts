@@ -3,28 +3,30 @@ import createLogger from "../util/logger";
 import * as FileFormat from "../models/fileFormat";
 
 const create = async (req: any, res: any) => {
-  const { company_id, field_id, number } = req.body;
+  const { lead_id, fields } = req.body;
 
-  const fileFormatResponse = await FileFormat.create(
-    company_id,
-    field_id,
-    number
-  );
+  const deleteResponse = await FileFormat.deleteByLeadId(lead_id);
 
-  if (!fileFormatResponse.success) {
+  if (!deleteResponse.success) {
     createLogger.error({
-      model: "fileFormat/create",
-      error: fileFormatResponse.error,
+      model: "fileFormat/deleteByLeadId",
+      error: deleteResponse.error,
     });
-    res.status(500).json({ error: fileFormatResponse.error });
+    res.status(500).json({ error: deleteResponse.error });
     return;
   }
 
-  createLogger.info({
-    controller: "fileFormat/create",
-    message: "OK",
-  });
-  res.status(200).json(fileFormatResponse.data);
+  let index = 0;
+  for (const field of fields) {
+    const contents = await FileFormat.create(
+      lead_id,
+      field.field_id,
+      index + 1
+    );
+    index++;
+  }
+
+  res.status(200).json("ok");
 };
 
 const getAll = async (req: any, res: any) => {
@@ -46,13 +48,13 @@ const getAll = async (req: any, res: any) => {
   res.status(200).json(fileFormatResponse.data);
 };
 
-const getByCompanyId = async (req: any, res: any) => {
-  const { company_id } = req.params;
-  const fileFormatResponse = await FileFormat.getByCompanyId(company_id);
+const getByLeadId = async (req: any, res: any) => {
+  const { lead_id } = req.params;
+  const fileFormatResponse = await FileFormat.getByLeadId(lead_id);
 
   if (!fileFormatResponse.success) {
     createLogger.error({
-      model: "fileFormat/getByCompanyId",
+      model: "fileFormat/getByLeadId",
       error: fileFormatResponse.error,
     });
     res.status(500).json({ error: fileFormatResponse.error });
@@ -60,19 +62,19 @@ const getByCompanyId = async (req: any, res: any) => {
   }
 
   createLogger.info({
-    controller: "fileFormat/getByCompanyId",
+    controller: "fileFormat/getByLeadId",
     message: "OK",
   });
   res.status(200).json(fileFormatResponse.data);
 };
 
-const deleteByCompanyId = async (req: any, res: any) => {
-  const { company_id } = req.params;
-  const fileFormatResponse = await FileFormat.deleteByCompanyId(company_id);
+const deleteByLeadId = async (req: any, res: any) => {
+  const { lead_id } = req.params;
+  const fileFormatResponse = await FileFormat.deleteByLeadId(lead_id);
 
   if (!fileFormatResponse.success) {
     createLogger.error({
-      model: "fileFormat/deleteByCompanyId",
+      model: "fileFormat/deleteByLeadId",
       error: fileFormatResponse.error,
     });
     res.status(500).json({ error: fileFormatResponse.error });
@@ -80,10 +82,10 @@ const deleteByCompanyId = async (req: any, res: any) => {
   }
 
   createLogger.info({
-    controller: "fileFormat/deleteByCompanyId",
+    controller: "fileFormat/deleteByLeadId",
     message: "OK",
   });
   res.status(200).json(fileFormatResponse.data);
 };
 
-export { create, getAll, getByCompanyId, deleteByCompanyId };
+export { create, getAll, getByLeadId, deleteByLeadId };

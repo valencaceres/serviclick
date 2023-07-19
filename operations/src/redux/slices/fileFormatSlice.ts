@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { apiInstance } from "../../utils/api";
 
-export interface IFileFormat {
+export interface IFieldFormat {
   id: string;
   field_id: string;
   field_name: string;
@@ -15,9 +15,14 @@ export interface IFileFormatListItem {
   companyName: string;
 }
 
+export interface IFileFormat {
+  lead_id: string;
+  fields: IFieldFormat[];
+}
+
 type StateT = {
   list: IFileFormatListItem[];
-  fileFormat: { fields: IFileFormat[] };
+  fileFormat: IFileFormat;
   isLoading: boolean;
   isError: boolean;
   error: string;
@@ -25,7 +30,7 @@ type StateT = {
 
 const initialState: StateT = {
   list: [],
-  fileFormat: { fields: [] },
+  fileFormat: { lead_id: "", fields: [] },
   isLoading: false,
   isError: false,
   error: "",
@@ -80,29 +85,24 @@ export const {
 export default fileFormatSlice.reducer;
 
 export const createFileFormat =
-  (company_id: string, field_id: string, number: number) =>
-  async (dispatch: any) => {
+  (fileFormat: IFileFormat) => async (dispatch: any) => {
     try {
       dispatch(setIsLoading(true));
-      const { data } = await apiInstance.post(`/fileFormat/create`, {
-        company_id,
-        field_id,
-        number,
-      });
+      const { data } = await apiInstance.post(`/fileFormat/create`, fileFormat);
       dispatch(getAllFileFormat());
     } catch (e) {
       dispatch(setError((e as Error).message));
     }
   };
 
-export const getFileFormatByCompanyId =
-  (company_id: string) => async (dispatch: any) => {
+export const getFileFormatByLeadId =
+  (lead_id: string) => async (dispatch: any) => {
     try {
       dispatch(setIsLoading(true));
       const { data } = await apiInstance.get(
-        `/fileFormat/getByCompanyId/${company_id}`
+        `/fileFormat/getByLeadId/${lead_id}`
       );
-      dispatch(setFileFormat(data));
+      dispatch(setFileFormat({ lead_id, fields: data }));
     } catch (e) {
       dispatch(setError((e as Error).message));
     }
@@ -118,12 +118,12 @@ export const getAllFileFormat = () => async (dispatch: any) => {
   }
 };
 
-export const deleteFileFormatByCompanyId =
-  (company_id: string) => async (dispatch: any) => {
+export const deleteFileFormatByLeadId =
+  (lead_id: string) => async (dispatch: any) => {
     try {
       dispatch(setIsLoading(true));
       const { data } = await apiInstance.delete(
-        `/fileFormat/deleteByCompanyId/${company_id}`
+        `/fileFormat/deleteByLeadId/${lead_id}`
       );
       dispatch(getAllFileFormat());
     } catch (e) {

@@ -14,8 +14,13 @@ const FileFormatPage = () => {
   const router = useRouter();
 
   const { setTitleUI } = useUI();
-  const { resetFileFormat, fileFormatIsLoading, getAllFileFormat } =
-    useFileFormat();
+  const {
+    resetFileFormat,
+    fileFormatIsLoading,
+    getAllFileFormat,
+    fileFormat,
+    createFileFormat,
+  } = useFileFormat();
 
   const [enableSave, setEnableSave] = useState(false);
 
@@ -37,7 +42,9 @@ const FileFormatPage = () => {
     router.push("/masters/fileFormat");
   };
 
-  const handleClickSave = () => {};
+  const handleClickSave = () => {
+    createFileFormat(fileFormat);
+  };
 
   useEffect(() => {
     setTitleUI("Formatos importación");
@@ -54,7 +61,7 @@ const FileFormatPage = () => {
           onClick={() => {
             handleClickSave();
           }}
-          disabled={!enableSave}
+          disabled={fileFormat.fields.length === 0}
           loading={fileFormatIsLoading}
         />
       </FloatMenu>

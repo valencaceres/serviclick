@@ -1,4 +1,5 @@
 import { useState, Fragment } from "react";
+import { useRouter } from "next/router";
 
 import {
   ContentCell,
@@ -18,7 +19,14 @@ import {
 import { useFileFormat } from "../../../../hooks";
 
 const FileFormatList = () => {
-  const { fileFormatList } = useFileFormat();
+  const router = useRouter();
+
+  const { fileFormatList, resetFileFormat } = useFileFormat();
+
+  const handleClickRow = (rut: string) => {
+    resetFileFormat();
+    router.push(`/masters/fileFormat?id=${rut}`);
+  };
 
   return (
     <Fragment>
@@ -33,7 +41,7 @@ const FileFormatList = () => {
           </TableHeader>
           <TableDetail>
             {fileFormatList.map((item: any, idx: number) => (
-              <TableRow key={idx}>
+              <TableRow key={idx} onClick={() => handleClickRow(item.rut)}>
                 <TableCell width="140px" align="center">
                   {item.rut}
                 </TableCell>

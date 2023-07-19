@@ -9,7 +9,8 @@ import {
 import FloatMenu from "../../components/ui/FloatMenu";
 import ButtonIcon from "../../components/ui/ButtonIcon";
 
-import { useUI, useAssistance } from "../../hooks";
+import { useUI, useAssistance, useFamily } from "../../hooks";
+import { getAll } from "../../../../retail/src/redux/slices/statusSlice";
 
 const Assistance = () => {
   const router = useRouter();
@@ -25,6 +26,7 @@ const Assistance = () => {
     assistance,
     assistanceLoading,
   } = useAssistance();
+  const { listAll } = useFamily();
 
   const [enableSave, setEnableSave] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -58,6 +60,7 @@ const Assistance = () => {
 
   useEffect(() => {
     setTitleUI("Servicios");
+    listAll();
     getAllAssistances();
     getAssistanceFamilies();
   }, []);
