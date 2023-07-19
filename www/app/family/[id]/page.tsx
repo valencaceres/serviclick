@@ -78,8 +78,6 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   const uniqueAssistancesArray = Object.values(uniqueAssistances)
 
-  console.log(assistances)
-
   return (
     <>
       <section className="relative h-[450px] flex items-center px-20 pb-20">

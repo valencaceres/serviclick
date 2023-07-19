@@ -1,11 +1,31 @@
-import Image from "next/image"
-
 import AssistanceQuoteForm from "@/components/functional/companies/assistance-quote-form"
 import { Details } from "@/components/functional/companies/details"
 
 import { GrupoMHM } from "../aboutus/page"
 
-export default function CompaniesPage() {
+export default async function CompaniesPage() {
+  const responseFamilies = await fetch(
+    process.env.API_URL! + "/api/product/listByFamilies",
+    {
+      headers: {
+        id: process.env.API_KEY!,
+      },
+      next: {
+        revalidate: 1,
+      },
+    }
+  )
+  const families = await responseFamilies.json()
+
+  let uniqueFamilyNames = new Set()
+  let uniqueFamilies = families.filter((family: { family_name: unknown }) => {
+    if (!uniqueFamilyNames.has(family.family_name)) {
+      uniqueFamilyNames.add(family.family_name)
+      return true
+    }
+    return false
+  })
+
   return (
     <>
       <section className="relative h-[550px] flex items-center px-20">
@@ -40,7 +60,7 @@ export default function CompaniesPage() {
         <h1 className="pb-6 uppercase text-4xl font-bebas text-center">
           Cotiza la asistencia para tu empresa
         </h1>
-        <AssistanceQuoteForm />
+        <AssistanceQuoteForm families={uniqueFamilies} />
       </section>
       <GrupoMHM />
     </>

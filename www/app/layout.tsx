@@ -5,6 +5,7 @@ import { siteConfig } from "@/config/site"
 import { fontSans } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { Toaster } from "@/components/ui/toaster"
 import { Icons } from "@/components/functional/icons"
 import { LayoutButtons } from "@/components/functional/layout-buttons"
 import { SiteFooter } from "@/components/functional/site-footer"
@@ -53,6 +54,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             <TailwindIndicator />
           </ThemeProvider>
           <LayoutButtons />
+          <Toaster />
         </body>
       </html>
     </>

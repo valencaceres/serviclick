@@ -52,13 +52,14 @@ export const News = () => {
   }
 
   const slides = news.map((news) => (
-    <Image
-      className="mx-auto cursor-pointer hover:scale-105 duration-75 py-2"
-      src={news.image}
-      alt="News"
-      width={300}
-      height={300}
-    />
+    <div className="h-[240px] w-[300px] mx-auto relative">
+      <Image
+        className="cursor-pointer hover:scale-105 duration-75 py-2"
+        src={news.image}
+        alt="News"
+        fill
+      />
+    </div>
   ))
 
   return <CustomSwiper options={options} slides={slides} />

@@ -64,7 +64,7 @@ export default async function PeoplePage() {
         <h1 className="pb-6 uppercase text-4xl font-bebas">
           Te ayudamos a seleccionar la asistencia ideal para ti
         </h1>
-        <AssistanceSuggestionForm />
+        <AssistanceSuggestionForm families={uniqueFamilies} />
       </section>
       <section className="container flex justify-center flex-col items-center py-10">
         <h1 className="pb-6 uppercase text-4xl font-bebas">
