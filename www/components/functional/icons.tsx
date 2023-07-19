@@ -4,6 +4,7 @@ import {
   Facebook,
   Instagram,
   Linkedin,
+  Mail,
   Menu,
   Moon,
   PhoneCall,
@@ -12,7 +13,6 @@ import {
   Store,
   SunMedium,
   Users2,
-  type Icon as LucideIcon,
 } from "lucide-react"
 
 export type Icon = LucideIcon
@@ -33,4 +33,5 @@ export const Icons = {
   share: Share2,
   users: Users2,
   phonecall: PhoneCall,
+  mail: Mail,
 }

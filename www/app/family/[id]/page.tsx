@@ -78,8 +78,6 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   const uniqueAssistancesArray = Object.values(uniqueAssistances)
 
-  console.log(assistances)
-
   return (
     <>
       <section className="relative h-[450px] flex items-center px-20 pb-20">
@@ -166,21 +164,21 @@ export default async function Page({ params }: { params: { id: string } }) {
                 </div>
               )}
             </div>
-            <div className="bg-[#F3F4F6] py-8 w-full hidden lg:block">
+            <div className="bg-slate-50 py-8 w-full hidden lg:block">
               <div className="flex justify-center gap-2">
                 {assistance.coverages.slice(0, 5).map((coverage: any) => (
                   <div
                     key={coverage.coverage_name}
                     className="flex justify-start w-[300px] items-center px-4 flex-col gap-2"
                   >
-                    <div className="bg-white w-32 h-32 relative shadow-none rounded-sm border-b-8 border-b-primary hover:scale-105 duration-75 hover:shadow-lg">
+                    <div className="bg-white w-32 h-32 relative shadow-none rounded-sm border-b-8 border-b-primary">
                       <Image
                         src={getServiceImage(coverage.coverage_name)}
                         alt={coverage.coverage_name}
                         fill
                       />
                     </div>
-                    <h3 className="text-lg font-bold uppercase text-center">
+                    <h3 className="text-lg font-bold uppercase text-center rounded-t-md">
                       {coverage.coverage_name}
                     </h3>
                   </div>
@@ -208,7 +206,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                 <TableBody>
                   {assistance.coverages.map((coverage: any) => (
                     <TableRow
-                      className="bg-[#F3F4F6]"
+                      className="bg-slate-50"
                       key={coverage.coverage_name}
                     >
                       <TableCell className="py-6 text-center font-bold text-lg uppercase">
@@ -256,7 +254,7 @@ export default async function Page({ params }: { params: { id: string } }) {
               {assistance.coverages.map((coverage: any) => (
                 <div
                   key={coverage.id}
-                  className="bg-[#F3F4F6] m-2 rounded-md px-4 py-2 text-center"
+                  className="bg-slate-50 m-2 rounded-md px-4 py-2 text-center"
                 >
                   <h2 className="font-bold uppercase">
                     {coverage.coverage_name}

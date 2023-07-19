@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
 
@@ -11,10 +12,10 @@ export default function AboutUsPage() {
           alt="Quienes somos"
           quality={100}
           fill={true}
-          className="absolute z-0 object-cover"
+          className="absolute z-0 object-cover object-right md:object-center"
         />
         <div className="z-10 w-full flex items-center">
-          <h1 className="text-4xl font-bold uppercase text-white">
+          <h1 className="text-6xl font-bebas uppercase text-white">
             Sobre nosotros
           </h1>
         </div>
@@ -24,7 +25,7 @@ export default function AboutUsPage() {
         <div className="w-[60px] md:w-[120px] mt-2 pr-6 lg:w-[300px] h-3 bg-primary rounded-r-full"></div>
         <div className="flex gap-4">
           <div className="flex flex-col gap-4 px-4 max-w-4xl">
-            <h1 className="uppercase text-2xl font-bold">Nuestra historia</h1>
+            <h1 className="uppercase text-4xl font-bebas">Nuestra historia</h1>
             <p>
               Nuestra compañía fue fundada en 2002 con el propósito de brindar
               servicios de protección integral que mejoren la calidad de vida de
@@ -36,10 +37,10 @@ export default function AboutUsPage() {
           </div>
         </div>
       </section>
-      <section className="bg-foreground text-background flex justify-center">
+      <section className="bg-foreground text-background flex justify-center pt-6">
         <div className="flex flex-auto items-center justify-between flex-wrap max-w-8xl">
           <div className="py-4 px-6 lg:px-20 w-full md:w-2/3 flex flex-col gap-4">
-            <h1 className="uppercase text-2xl font-bold text-center">
+            <h1 className="uppercase text-4xl font-bebas text-center">
               Nuestra misión
             </h1>
             <p>
@@ -62,7 +63,7 @@ export default function AboutUsPage() {
           </div>
         </div>
       </section>
-      <section className="bg-primary text-background flex justify-center">
+      <section className="bg-primary text-background flex justify-center pt-6">
         <div className="flex flex-auto items-center justify-between flex-wrap-reverse max-w-8xl">
           <div className="w-full md:w-1/3 h-[300px] object-cover relative">
             <Image
@@ -74,7 +75,7 @@ export default function AboutUsPage() {
             />
           </div>
           <div className="py-4 px-6 lg:px-20 w-full md:w-2/3 flex flex-col gap-4">
-            <h1 className="uppercase text-2xl font-bold text-center">
+            <h1 className="uppercase text-4xl font-bebas text-center">
               Nuestra visión
             </h1>
             <p>
@@ -90,16 +91,24 @@ export default function AboutUsPage() {
           </div>
         </div>
       </section>
-      <section className="text-center bg-[#F3F4F6] py-12 mt-12 flex flex-col gap-6 items-center">
-        <h1 className="text-4xl text-foreground uppercase font-bold">
+      <section className="text-center bg-slate-50 py-12 mt-12 flex flex-col gap-6 items-center">
+        <h1 className="text-6xl text-foreground uppercase font-bebas">
           ¡Trabaja con nosotros!
         </h1>
-        <h2 className="text-2xl text-foreground uppercase font-bold">
+        <h2 className="text-4xl text-foreground uppercase font-bebas">
           Únete a MHM Empresas
         </h2>
-        <Button className="w-[250px] text-lg uppercase font-semibold">
-          Enviar CV
-        </Button>
+        <Link
+          href={
+            "https://docs.google.com/forms/d/e/1FAIpQLSfLbQMt9eU4nCMWl2Ny26GqRb2E-3BDYn3G8ifLwVqEQQTcRg/viewform?usp=sf_link"
+          }
+          target="_blank"
+          passHref
+        >
+          <Button className="w-[250px] text-2xl uppercase font-bebas">
+            Enviar CV
+          </Button>
+        </Link>
       </section>
       <GrupoMHM />
     </>
@@ -109,7 +118,7 @@ export default function AboutUsPage() {
 export function GrupoMHM() {
   return (
     <section className="py-20 flex flex-col gap-8 items-center justify-center">
-      <h1 className="uppercase text-2xl font-bold text-center">Grupo MHM</h1>
+      <h1 className="uppercase text-4xl text-center font-bebas">Grupo MHM</h1>
       <div className="flex flex-wrap w-full max-w-5xl justify-center items-center">
         <Image
           src="/mhm1.png"

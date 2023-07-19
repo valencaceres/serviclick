@@ -19,7 +19,7 @@ export const CustomSwiper: React.FC<CustomSwiperProps> = ({
       <Swiper className="mx-auto" {...options}>
         {slides?.map((slide, index) => (
           <SwiperSlide
-            className="w-full h-full flex justify-center items-center mx-auto"
+            className="flex justify-center items-center mx-auto"
             key={index}
           >
             {slide}

@@ -1,6 +1,6 @@
 "use client"
 
-import { Navigation, Pagination, Scrollbar, SwiperOptions } from "swiper"
+import { Navigation, SwiperOptions } from "swiper"
 
 import "swiper/css"
 import "swiper/css/pagination"
@@ -33,7 +33,7 @@ const news = [
 
 export const News = () => {
   const options: SwiperOptions = {
-    modules: [Pagination, Navigation],
+    modules: [Navigation],
     breakpoints: {
       1280: {
         slidesPerView: 4,
@@ -48,20 +48,18 @@ export const News = () => {
         slidesPerView: 1,
       },
     },
-    pagination: {
-      enabled: true,
-    },
     navigation: true,
   }
 
   const slides = news.map((news) => (
-    <Image
-      className="mx-auto cursor-pointer hover:scale-105 duration-75 py-2"
-      src={news.image}
-      alt="News"
-      width={300}
-      height={300}
-    />
+    <div className="h-[240px] w-[300px] mx-auto relative">
+      <Image
+        className="cursor-pointer hover:scale-105 duration-75 py-2"
+        src={news.image}
+        alt="News"
+        fill
+      />
+    </div>
   ))
 
   return <CustomSwiper options={options} slides={slides} />

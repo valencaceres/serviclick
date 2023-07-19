@@ -38,14 +38,15 @@ export const Alliances = () => {
   }
 
   const slides = alliances.map((client) => (
-    <Image
-      className="mx-auto cursor-pointer hover:scale-105 duration-75 py-2"
-      src={client.image}
-      alt="Alliance"
-      width={200}
-      height={100}
-      loading="lazy"
-    />
+    <div className="h-[120px] w-[200px] relative mx-auto">
+      <Image
+        className="cursor-pointer hover:scale-105 duration-75 pb-8"
+        src={client.image}
+        alt="Alliance"
+        loading="lazy"
+        fill
+      />
+    </div>
   ))
 
   return <CustomSwiper options={options} slides={slides} />

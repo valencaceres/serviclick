@@ -1,13 +1,14 @@
 "use client"
 
 import { useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
-import { assistancesAreas } from "@/lib/assistances-areas"
 import { companySizes } from "@/lib/company-sizes"
 import { locations } from "@/lib/locations"
+import { useToast } from "@/components/ui/use-toast"
 
 import { Button } from "../../ui/button"
 import {
@@ -36,15 +37,70 @@ const FormSchema = z.object({
   name: z.string().min(1),
 })
 
-export default function AssistanceQuoteForm() {
+interface Families {
+  family_id: string
+  family_name: string
+  product_id: string
+  product_name: string
+}
+
+interface AssistanceQuoteFormProps {
+  families: Families[]
+}
+
+export default function AssistanceQuoteForm({
+  families,
+}: AssistanceQuoteFormProps) {
+  const { toast } = useToast()
+  const router = useRouter()
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   })
 
   const selectedRegion = form.watch("region")
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data)
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    const size = companySizes.find((size) => size.value === data.size)?.label
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_API_EMAIL_URL + "/api/email/send",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          id: process.env.NEXT_PUBLIC_API_EMAIL_KEY!,
+        },
+        body: JSON.stringify({
+          from: data.email,
+          to: "contacto-cv@serviclick.cl",
+          subject: "Serviclick Web - Formulario Empresa",
+          message: `
+          <h1>Formulario Empresa</h1>
+          <p><strong>Empresa:</strong> ${data.company}</p>
+          <p><strong>Nombre:</strong> ${data.name}</p>
+          <p><strong>Correo:</strong> ${data.email}</p>
+          <p><strong>Tamaño empresa:</strong> ${size}</p>
+          <p><strong>Área de interés:</strong> ${data.area}</p>
+          <p><strong>Región:</strong> ${data.region}</p>
+          <p><strong>Comuna:</strong> ${data.district}</p>
+        `,
+        }),
+      }
+    )
+    if (response.ok) {
+      router.push("/")
+      toast({
+        title: "Formulario enviado",
+        description: "Hemos recibido tu solicitud y te contactaremos pronto.",
+      })
+    } else {
+      console.error(response)
+      toast({
+        title: "Error",
+        description: "Ocurrió un error al enviar el formulario.",
+        variant: "destructive",
+      })
+    }
   }
 
   useEffect(() => {
@@ -102,9 +158,12 @@ export default function AssistanceQuoteForm() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {assistancesAreas.map((size) => (
-                      <SelectItem key={size.value} value={size.value}>
-                        {size.label}
+                    {families.map((family) => (
+                      <SelectItem
+                        key={family.family_id}
+                        value={family.family_name}
+                      >
+                        {family.family_name}
                       </SelectItem>
                     ))}
                   </SelectContent>

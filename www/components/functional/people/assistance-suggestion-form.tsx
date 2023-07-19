@@ -1,12 +1,13 @@
 "use client"
 
 import { useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
-import { assistancesAreas } from "@/lib/assistances-areas"
 import { locations } from "@/lib/locations"
+import { useToast } from "@/components/ui/use-toast"
 
 import { Button } from "../../ui/button"
 import {
@@ -29,24 +30,91 @@ const FormSchema = z.object({
   age: z.string().min(1),
   assistance: z.string().min(1),
   region: z.string().min(1),
-  district: z.string().min(1),
+  district: z.string().min(1).optional(),
   email: z.string().email(),
   name: z.string().min(1),
 })
 
-export default function AssistanceSuggestionForm() {
+interface Families {
+  family_id: string
+  family_name: string
+  product_id: string
+  product_name: string
+}
+
+interface AssistanceSuggestionFormProps {
+  families: Families[]
+}
+
+export default function AssistanceSuggestionForm({
+  families,
+}: AssistanceSuggestionFormProps) {
+  const { toast } = useToast()
+  const router = useRouter()
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+    defaultValues: {
+      age: undefined,
+      assistance: undefined,
+      region: undefined,
+      district: undefined,
+      email: "",
+      name: "",
+    },
   })
 
   const selectedRegion = form.watch("region")
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data)
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    const age =
+      data.age === "young-adult"
+        ? "Entre 18 y 30 años"
+        : data.age === "adult"
+        ? "Entre 31 y 60 años"
+        : "Más de 60 años"
+
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_API_EMAIL_URL + "/api/email/send",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          id: process.env.NEXT_PUBLIC_API_EMAIL_KEY!,
+        },
+        body: JSON.stringify({
+          from: data.email,
+          to: "contacto-cv@serviclick.cl",
+          subject: "Serviclick Web - Formulario Persona",
+          message: `
+          <h1>Formulario Persona</h1>
+          <p>Nombre: ${data.name}</p>
+          <p>Correo: ${data.email}</p>
+          <p>Edad: ${age}</p>
+          <p>Área de interés: ${data.assistance}</p>
+          <p>Región: ${data.region}</p>
+          <p>Comuna: ${data.district}</p>`,
+        }),
+      }
+    )
+    if (response.ok) {
+      router.push("/")
+      toast({
+        title: "Formulario enviado",
+        description: "Hemos recibido tu solicitud y te contactaremos pronto.",
+      })
+    } else {
+      console.error(response)
+      toast({
+        title: "Error",
+        description: "Ocurrió un error al enviar el formulario.",
+        variant: "destructive",
+      })
+    }
   }
 
   useEffect(() => {
-    form.setValue("district", "")
+    form.setValue("district", undefined)
   }, [selectedRegion, form])
 
   return (
@@ -65,6 +133,7 @@ export default function AssistanceSuggestionForm() {
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
+                  value={field.value}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -93,6 +162,7 @@ export default function AssistanceSuggestionForm() {
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
+                  value={field.value}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -100,9 +170,12 @@ export default function AssistanceSuggestionForm() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {assistancesAreas.map((area) => (
-                      <SelectItem key={area.id} value={area.value}>
-                        {area.label}
+                    {families.map((family) => (
+                      <SelectItem
+                        key={family.family_id}
+                        value={family.family_name}
+                      >
+                        {family.family_name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -121,6 +194,7 @@ export default function AssistanceSuggestionForm() {
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
+                  value={field.value}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -149,11 +223,15 @@ export default function AssistanceSuggestionForm() {
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
+                  value={field.value}
                   disabled={!selectedRegion}
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Selecciona tu comuna" />
+                      <SelectValue
+                        defaultValue=""
+                        placeholder="Selecciona tu comuna"
+                      />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent className="h-56">

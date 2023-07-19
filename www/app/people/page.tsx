@@ -48,37 +48,37 @@ export default async function PeoplePage() {
           <source src="/people.mp4" type="video/mp4" />
         </video>
         <div className="z-10 w-96 self-end pb-12 md:self-center md:pb-0 text-center md:text-left">
-          <h1 className="uppercase text-4xl text-background font-bold">
+          <h1 className="uppercase text-6xl text-background font-bebas">
             Asistencias que facilitan tu vida.
           </h1>
         </div>
         <div className="bg-black absolute w-full h-full z-5 top-0 right-0 bg-opacity-30"></div>
       </section>
-      <section className="container flex justify-center flex-col items-center py-10">
-        <h1 className="pb-6 uppercase text-2xl font-bold">
+      <section className="container flex justify-center flex-col items-center pt-20 pb-12">
+        <h1 className="pb-6 uppercase text-4xl md:text-5xl font-bebas text-center">
           Selecciona el área de tu interés
         </h1>
         <Interests families={uniqueFamilies} />
       </section>
       <section className="container flex justify-center flex-col items-center py-10">
-        <h1 className="pb-6 uppercase text-2xl font-bold">
+        <h1 className="pb-6 uppercase text-4xl font-bebas">
           Te ayudamos a seleccionar la asistencia ideal para ti
         </h1>
-        <AssistanceSuggestionForm />
+        <AssistanceSuggestionForm families={uniqueFamilies} />
       </section>
       <section className="container flex justify-center flex-col items-center py-10">
-        <h1 className="pb-6 uppercase text-2xl font-bold">
+        <h1 className="pb-6 uppercase text-4xl font-bebas">
           Preguntas frecuentes
         </h1>
         <Faq />
       </section>
-      <section className="relative bg-background h-[480px] sm:h-[600px] lg:h-[600px] duration-75">
+      <section className="relative bg-background h-[480px] sm:h-[600px] lg:h-[600px] duration-75 font-bebas mb-28 md:mb-44 lg:mb-12">
         <div className="bg-foreground flex flex-col lg:flex-row items-center py-4 h-96 lg:justify-evenly">
           <div className="flex flex-col py-4 gap-4 items-center justify-center lg:order-2">
-            <h2 className="uppercase text-2xl lg:text-4xl px-16 text-background font-bold flex justify-center lg:justify-start w-full text-center lg:text-start">
+            <h2 className="uppercase text-5xl px-16 text-background flex justify-center lg:justify-start w-full text-center lg:text-start">
               ¿Cómo obtengo mi asistencia?
             </h2>
-            <ul className="flex lg:flex-col px-12 md:px-24 justify-around gap-4 lg:gap-2 text-lg lg:justify-start flex-wrap w-full lg:list-disc uppercase font-semibold text-background marker:text-primary">
+            <ul className="flex flex-col text-center lg:text-start px-12 md:px-24 justify-around gap-4 lg:gap-2 text-xl lg:justify-start flex-wrap w-full lg:list-disc uppercase text-background marker:text-primary">
               <li>Rápido</li>
               <li>En pocos pasos</li>
               <li>Accesible</li>
