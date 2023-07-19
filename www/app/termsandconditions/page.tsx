@@ -45,7 +45,7 @@ export default async function TermsPage() {
           2.- Para la utilización de algunos Canales de Atención el sistema
           entregará la opción de registro, para tener acceso a contratar uno o
           más servicios, quedando a decisión del futuro Usuario. Sin perjuicio
-          de lo anterior, SERVICLCIK podrá exigir el registro para algún canal
+          de lo anterior, SERVICLICK podrá exigir el registro para algún canal
           específico o para acceder a algunas funcionalidades o programas de
           fidelización. En todos los casos, se deberán aceptar expresamente los
           Términos y Condiciones.
@@ -72,7 +72,7 @@ export default async function TermsPage() {
           proteger y asegurar la confidencialidad y reserva de su contraseña. En
           caso de creer que su contraseña ha sido conocida por otra persona o en
           caso de haber sido, o pudiere ser, utilizada de manera no autorizada,
-          el Usuario debe informar dicha situación a SERVICLCIK de inmediato al
+          el Usuario debe informar dicha situación a SERVICLICK de inmediato al
           correo electrónico info@serviclick.cl , o contactarse el fono al fono
           600 086 0580, así como reemplazarla por una nueva mediante el
           procedimiento establecido para tales efectos.
@@ -111,7 +111,7 @@ export default async function TermsPage() {
         sistemas o medios que se encuentren implementados o en el futuro se
         implementen para estos efectos. ii) Cargo directo a la cuenta del
         cliente en los Bancos o Instituciones Financieras afiliadas o no a
-        SERVICLCIK.
+        SERVICLICK.
       </p>
       <p>
         4.- Con respecto de la falta de pago recurrente por parte del cliente,
@@ -138,7 +138,7 @@ export default async function TermsPage() {
         individualización, así como su información de contacto y otros datos de
         su persona que resulten esenciales para las finalidades, el buen
         funcionamiento y el constante mejoramiento de los Canales de Atención y
-        de la SERVICLCIK. Están comprendidos dentro de lo anteriormente
+        de la SERVICLICK. Están comprendidos dentro de lo anteriormente
         señalado, el tratamiento conducente a aumentar el conocimiento de los
         clientes, para efectos de mejorar su experiencia de servicio o servicios
         , así como para otorgarles ofertas, promociones, beneficios exclusivos
@@ -147,7 +147,7 @@ export default async function TermsPage() {
         productos o servicios farmacéuticos , seguros, asistencias, y, en
         general, cualquier otra cortesía o privilegio que se otorgue en
         consideración a la aceptación de los Términos y Condiciones, así como
-        cualquier acción para recompensar la preferencia de éstos por SERVICLCIK
+        cualquier acción para recompensar la preferencia de éstos por SERVICLICK
         (en adelante también e indistintamente, los “Beneficios”). Estos
         Beneficios podrán ser tanto de carácter general, así como adaptados a
         las características personales de los Usuarios. En el tratamiento de
