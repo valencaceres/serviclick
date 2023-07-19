@@ -18,7 +18,7 @@ import {
 
 import FileFormatFieldsList from "./FileFormatFieldsList";
 
-import { useContractor, useFileFormat, useField } from "~/hooks";
+import { useContractor, useFileFormat, useField, useCompany } from "~/hooks";
 import ButtonIcon from "~/components/ui/ButtonIcon";
 import ModalWindow from "~/components/ui/ModalWindow";
 
@@ -26,8 +26,8 @@ const FileFormatFields = () => {
   const { getSubscriptionById } = useContractor();
   const { getFieldByLeadId, fieldList } = useField();
   const { setFileFormat, fileFormat } = useFileFormat();
+  const { company } = useCompany();
 
-  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [showModalFields, setShowModalFields] = useState(false);
 
   const handleClickAddField = () => {
@@ -40,10 +40,6 @@ const FileFormatFields = () => {
       fields: fileFormat.fields.filter((field) => field.field_id !== id),
     });
   };
-
-  useEffect(() => {
-    getFieldByLeadId("26d9ae5d-5e0c-4017-826c-5e423070d406");
-  }, []);
 
   return (
     <Fragment>
@@ -79,7 +75,7 @@ const FileFormatFields = () => {
             {fileFormat.fields.length > 0 ? fileFormat.fields.length : "No hay"}{" "}
             campos
           </ContentCellSummary>
-          {fieldList.length > 0 && (
+          {fieldList.length > 0 && company.rut !== "" && (
             <ButtonIcon
               iconName="add"
               color="gray"

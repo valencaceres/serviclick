@@ -96,4 +96,24 @@ const getAll = async (req: any, res: any) => {
   res.status(200).json(companyResponse.data);
 };
 
-export { getByRut, create, getProductsAndInsuredById, getAll };
+const getLeadsByRut = async (req: any, res: any) => {
+  const { id } = req.params;
+  const response = await Company.getLeadsByRut(id);
+
+  if (!response.success) {
+    createLogger.error({
+      model: "company/getLeadsByRut",
+      error: response.error,
+    });
+    res.status(500).json({ error: response.error });
+    return;
+  }
+
+  createLogger.info({
+    controller: "company/getLeadsByRut",
+    message: "OK",
+  });
+  res.status(200).json(response.data);
+};
+
+export { getByRut, create, getProductsAndInsuredById, getAll, getLeadsByRut };

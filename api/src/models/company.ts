@@ -353,4 +353,95 @@ const getAll: any = async () => {
   }
 };
 
-export { create, getAll, getById, getByRut, getProductsAndInsuredById };
+const getLeadsByRut: any = async (rut: string) => {
+  try {
+    const result = await pool.query(
+      `
+      select 	com.id,
+              com.rut,
+              com.companyname,
+              com.legalRepresentative,
+              com.line,
+              com.address,
+              com.district,
+              com.email,
+              com.phone,
+              lea.id as lead_id,
+              lea.subscription_id,
+              pro.id as product_id,
+              pro.name as product_name
+        from 	app.company com
+                inner join app.lead lea on com.id = lea.company_id and not lea.policy_id is null
+                inner join app.leadproduct lpr on lea.id = lpr.lead_id
+                inner join app.product pro on lpr.product_id = pro.id
+        where com.rut = $1`,
+      [rut]
+    );
+
+    const {
+      id,
+      companyname,
+      legalRepresentative,
+      line,
+      address,
+      district,
+      email,
+      phone,
+    } = result.rows[0];
+
+    interface ILead {
+      lead_id: string;
+      subscription_id: string;
+      product_id: string;
+      product_name: string;
+    }
+
+    interface IData {
+      id: string;
+      companyname: string;
+      legalRepresentative: string;
+      line: string;
+      address: string;
+      district: string;
+      email: string;
+      phone: string;
+      leads: ILead[];
+    }
+
+    const data = <IData>{
+      id,
+      companyname,
+      legalRepresentative,
+      line,
+      address,
+      district,
+      email,
+      phone,
+      leads: [],
+    };
+
+    result.rows.map((row: any) => {
+      const { lead_id, subscription_id, product_id, product_name } = row;
+
+      data.leads.push({
+        lead_id,
+        subscription_id,
+        product_id,
+        product_name,
+      });
+    });
+
+    return { success: true, data, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+export {
+  create,
+  getAll,
+  getById,
+  getByRut,
+  getProductsAndInsuredById,
+  getLeadsByRut,
+};

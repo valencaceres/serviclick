@@ -1,20 +1,18 @@
 import { useState, useEffect, Fragment } from "react";
+import { useRouter } from "next/router";
 
-import {
-  ContentCell,
-  ContentRow,
-  ContentCellSummary,
-} from "../../../layout/Content";
+import { ContentCell, ContentRow } from "../../../layout/Content";
 import { Section } from "../../../ui/Section";
 import InputText from "../../../ui/InputText";
 
 import { FileFormatSubscriptions, FileFormatFields } from ".";
 
 import { unFormatRut, formatRut } from "../../../../utils/format";
-import { numberRegEx, rutRegEx, emailRegEx } from "../../../../utils/regEx";
+import { rutRegEx } from "../../../../utils/regEx";
 import { rutValidate } from "../../../../utils/validations";
 
-import { useContractor } from "../../../../hooks";
+import { useCompany, useField } from "../../../../hooks";
+import { resetFileFormat } from "~/redux/slices/fileFormatSlice";
 
 export interface IFieldFormString {
   value: string;
@@ -33,6 +31,8 @@ interface ICustomerForm {
 }
 
 const FileFormatDetail = () => {
+  const router = useRouter();
+
   const initialDataForm = {
     rut: { value: "", isValid: true },
     companyName: { value: "", isValid: true },
@@ -44,10 +44,12 @@ const FileFormatDetail = () => {
     phone: { value: "", isValid: true },
   };
 
-  const { getContractorByRut, getContractorById, contractor } = useContractor();
+  const { getCompanyLeadsByRut, company, resetCompany } = useCompany();
+  const { resetField } = useField();
 
-  const [search, setSearch] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [formData, setFormData] = useState<ICustomerForm>(initialDataForm);
+  const [lead, setLead] = useState<any>(null);
 
   const isValidRut = (rut: string) => {
     return (
@@ -67,8 +69,8 @@ const FileFormatDetail = () => {
         isValid: isValidRut(event.target.value),
       },
     });
-    getContractorByRut(event.target.value, "C");
-    setSearch(false);
+    getCompanyLeadsByRut(event.target.value);
+    setIsProcessing(true);
   };
 
   const handleFocusRut = (event: any) => {
@@ -83,26 +85,49 @@ const FileFormatDetail = () => {
         isValid: isValidRut(event.target.value),
       },
     });
+    resetCompany();
+    resetFileFormat();
+    setLead(null);
   };
 
   useEffect(() => {
-    if (contractor.id) {
+    if (router.isReady) {
+      const { id } = router.query;
+      if (id) {
+        setFormData({
+          ...initialDataForm,
+          rut: { value: id.toString(), isValid: true },
+        });
+        getCompanyLeadsByRut(id.toString());
+        setIsProcessing(true);
+      }
+    }
+  }, [router]);
+
+  useEffect(() => {
+    resetCompany();
+    resetField();
+    setFormData(initialDataForm);
+  }, []);
+
+  useEffect(() => {
+    if (company.id && isProcessing) {
       setFormData({
-        rut: { value: contractor.rut, isValid: true },
-        companyName: { value: contractor.companyName, isValid: true },
+        rut: { value: company.rut, isValid: true },
+        companyName: { value: company.companyname, isValid: true },
         legalRepresentative: {
-          value: contractor.legalRepresentative,
+          value: company.legalRepresentative,
           isValid: true,
         },
-        line: { value: contractor.line, isValid: true },
-        address: { value: contractor.address, isValid: true },
-        district: { value: contractor.district, isValid: true },
-        email: { value: contractor.email, isValid: true },
-        phone: { value: contractor.phone, isValid: true },
+        line: { value: company.line, isValid: true },
+        address: { value: company.address, isValid: true },
+        district: { value: company.district, isValid: true },
+        email: { value: company.email, isValid: true },
+        phone: { value: company.phone, isValid: true },
       });
-      getContractorById(contractor.id);
+      setIsProcessing(false);
     }
-  }, [contractor.id]);
+  }, [company.id, isProcessing]);
 
   return (
     <Fragment>
@@ -163,11 +188,17 @@ const FileFormatDetail = () => {
           </ContentCell>
           <ContentCell gap="5px">
             <Section title="Suscripciones" width="375px" />
-            <FileFormatSubscriptions contractor={contractor} />
+            <FileFormatSubscriptions leads={company.leads} setLead={setLead} />
           </ContentCell>
         </ContentRow>
         <ContentCell gap="5px">
           <Section title="Campos" width="720px" />
+          <InputText
+            label="Producto"
+            width="720px"
+            value={lead?.product_name || ""}
+            disabled={true}
+          />
           <FileFormatFields />
         </ContentCell>
       </ContentCell>

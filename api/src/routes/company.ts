@@ -6,6 +6,7 @@ import {
   create,
   getAll,
   getProductsAndInsuredById,
+  getLeadsByRut,
 } from "../controllers/company";
 
 const CompanyRouter = Router();
@@ -18,5 +19,6 @@ CompanyRouter.get(
 );
 CompanyRouter.post("/create", auth, create);
 CompanyRouter.get("/getAll", auth, getAll);
+CompanyRouter.get("/getLeadsByRut/:id", auth, getLeadsByRut);
 
 export default CompanyRouter;

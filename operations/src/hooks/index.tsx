@@ -19,6 +19,7 @@ import useStage from "./useStage";
 import useSpecialist from "./useSpecialist";
 import useFileFormat from "./useFileFormat";
 import useField from "./useField";
+import useCompany from "./useCompany";
 
 export {
   useUI,
@@ -42,4 +43,5 @@ export {
   useSpecialist,
   useFileFormat,
   useField,
+  useCompany,
 };

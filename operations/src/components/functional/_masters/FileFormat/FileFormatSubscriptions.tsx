@@ -10,29 +10,20 @@ import {
   TableCellEnd,
 } from "../../../ui/Table";
 
-import { useContractor } from "~/hooks";
+import { useField, useFileFormat } from "~/hooks";
 
-const FileFormatSubscriptions = ({ contractor }: any) => {
+const FileFormatSubscriptions = ({ leads, setLead }: any) => {
+  const { getFieldByLeadId } = useField();
+  const { setFileFormat, fileFormat, getFileFormatByLeadId } = useFileFormat();
+
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const { getSubscriptionById, subscriptionItem } = useContractor();
 
   const handleSubscriptionClick = (item: any) => {
-    getSubscriptionById(item.subscription_id);
+    getFileFormatByLeadId(item.lead_id);
+    setFileFormat({ ...fileFormat, lead_id: item.lead_id });
+    getFieldByLeadId(item.lead_id);
+    setLead(item);
   };
-
-  useEffect(() => {
-    if (contractor) {
-      if (contractor?.subscriptions?.length > 0) {
-        getSubscriptionById(contractor?.subscriptions[0]?.subscription_id);
-      }
-    }
-  }, [contractor]);
-
-  useEffect(() => {
-    if (subscriptionItem) {
-      console.log(subscriptionItem);
-    }
-  }, [subscriptionItem]);
 
   return (
     <ContentCell gap="5px">
@@ -42,7 +33,7 @@ const FileFormatSubscriptions = ({ contractor }: any) => {
           <TableCellEnd />
         </TableHeader>
         <TableDetail>
-          {contractor?.subscriptions?.map((item: any, idx: number) => (
+          {leads.map((item: any, idx: number) => (
             <TableRow
               key={idx}
               link={true}
