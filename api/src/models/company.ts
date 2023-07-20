@@ -179,7 +179,8 @@ const getByRut: any = async (rut: string) => {
 
 const getProductsAndInsuredById: any = async (id: string) => {
   try {
-    const result = await pool.query(`
+    const result = await pool.query(
+      `
       select
         DISTINCT
         FAM.icon as family_icon,
@@ -209,13 +210,15 @@ const getProductsAndInsuredById: any = async (id: string) => {
         inner join app.leadInsured LIN on LEA.id = LIN.lead_id
         inner join app.insured INS on LIN.insured_id = INS.id
       where 
-        COM.id = '${id}'
+        COM.id = $1
       order by
         FAM.name,
         PRO.name,
         INS.name,
         INS.paternallastname,
-        INS.maternallastname`);
+        INS.maternallastname`,
+      [id]
+    );
 
     type InsuredT = {
       id: string;

@@ -43,7 +43,8 @@ const deleteAgent: any = async (id: string) => {
 const listAgents: any = async (channel_id: string) => {
   try {
     const result = await pool.query(
-      `SELECT id, channel_id, name FROM app.agent WHERE channel_id = '${channel_id}' and isActive IS true ORDER BY name`
+      `SELECT id, channel_id, name FROM app.agent WHERE channel_id = $1 and isActive IS true ORDER BY name`,
+      [channel_id]
     );
     return { success: true, data: result.rows, error: null };
   } catch (e) {
