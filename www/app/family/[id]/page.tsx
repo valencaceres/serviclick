@@ -38,6 +38,9 @@ export default async function Page({ params }: { params: { id: string } }) {
       acc[key] = {
         product_id: current.product_id,
         productplan_id: current.productplan_id,
+        family_productplan_id: current.product_name.includes("Familiar")
+          ? current.productplan_id
+          : undefined,
         product_name: current.product_name.replace(" Familiar", ""),
         price: current.product_name.includes("Familiar")
           ? undefined
@@ -50,8 +53,10 @@ export default async function Page({ params }: { params: { id: string } }) {
     } else {
       if (current.product_name.includes("Familiar")) {
         acc[key].family_price = current.price
+        acc[key].family_productplan_id = current.productplan_id
       } else {
         acc[key].price = current.price
+        acc[key].productplan_id = current.productplan_id
       }
     }
 
@@ -153,7 +158,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                       : "No disponible"}
                   </h3>
                   <Link
-                    href={`https://productos.serviclick.cl/contractor?productPlanId=${assistance.productplan_id}`}
+                    href={`https://productos.serviclick.cl/contractor?productPlanId=${assistance.family_productplan_id}`}
                     passHref
                     target="_blank"
                   >

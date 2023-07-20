@@ -486,7 +486,7 @@ const listByFamilies = async () => {
                               inner join app.productcoverage pco on pro.id = pco.product_id
                               inner join app.agent age on ppl.agent_id = age.id
                               inner join app.family fam on pro.family_id = fam.id
-                      where     age.id = '020579a3-8461-45ec-994b-ad22ff8e3275'
+                      where     age.id = '020579a3-8461-45ec-994b-ad22ff8e3275' and ppl.type = 'customer'
                       order     by
                           fam.name,
                           pro.name`;
