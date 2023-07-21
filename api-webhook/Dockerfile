@@ -1,4 +1,6 @@
 FROM node:16-alpine
+RUN apk add --no-cache tzdata
+ENV TZ=America/Santiago
 
 # Directorio de trabajo en el contenedor
 WORKDIR /app
