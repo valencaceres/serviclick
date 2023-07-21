@@ -48,6 +48,7 @@ const FileFormatPage = () => {
 
   useEffect(() => {
     setTitleUI("Formatos importación");
+    getAllFileFormat();
   }, []);
 
   return router.isReady && router.query.id ? (
