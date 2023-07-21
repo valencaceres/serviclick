@@ -14,13 +14,15 @@ import {
 interface Route {
   text: string;
   route?: string;
+  roles?: string[];
   subRoutes?: Route[];
 }
 
 const routes = [
-  { text: "Inicio", route: "/" },
+  { text: "Inicio", roles: ["user", "moderator", "admin"], route: "/" },
   {
     text: "Maestros",
+    roles: ["admin"],
     subRoutes: [
       { text: "Familias", route: "/masters/family" },
       { text: "Especialidades", route: "/masters/specialty" },
@@ -35,6 +37,7 @@ const routes = [
   },
   {
     text: "Entidades",
+    roles: ["admin"],
     subRoutes: [
       { text: "Clientes", route: "/entities/contractor" },
       { text: "Especialistas", route: "/entities/specialist" },
@@ -44,11 +47,8 @@ const routes = [
   },
   {
     text: "Asistencia",
-    subRoutes: [
-      { text: "Dashboard" },
-      { text: "Casos", route: "/case" },
-      // { text: "Importación", route: "/assistances/import" },
-    ],
+    roles: ["user", "moderator", "admin"],
+    subRoutes: [{ text: "Casos", route: "/case" }],
   },
 ];
 
@@ -58,7 +58,7 @@ interface MenuProps {
 }
 
 export function Menu({ isOpen, setIsOpen }: MenuProps) {
-  const user = useUser();
+  const { user } = useUser();
   return (
     <>
       <nav
@@ -93,7 +93,7 @@ export function Menu({ isOpen, setIsOpen }: MenuProps) {
                 !isOpen ? "hidden" : ""
               } whitespace-nowrap text-sm text-black`}
             >
-              {user.user?.fullName}
+              {user?.fullName}
             </p>
           </div>
         </div>
@@ -136,6 +136,16 @@ interface MenuItemProps {
 
 const MenuItem: React.FC<MenuItemProps> = ({ route, isOpen, setIsOpen }) => {
   const { pathname } = useRouter();
+  const { user } = useUser();
+  const userRoles = user?.publicMetadata.roles?.operaciones || {};
+
+  const userHasRole = (role: string) => {
+    return userRoles === role;
+  };
+
+  if (route.roles && !route.roles.some(userHasRole)) {
+    return null;
+  }
 
   if (!route.route && !route.subRoutes) {
     return (

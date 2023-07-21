@@ -17,51 +17,24 @@ import "../styles/app.css";
 import "react-toastify/dist/ReactToastify.css";
 
 import type { AppProps } from "next/app";
-import { useRouter } from "next/router";
 import { esES } from "@clerk/localizations";
 import { Toaster } from "~/components/ui/Toaster";
-
-const publicPages: Array<string> = ["/sign-in/[[...index]]"];
 
 const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const { pathname } = useRouter();
-
-  const isPublicPage = publicPages.includes(pathname);
-
   return (
     <ClerkProvider {...pageProps} localization={esES}>
-      {isPublicPage ? (
-        <QueryClientProvider client={queryClient}>
-          <Provider store={store}>
-            <Switch>
-              <Component {...pageProps} />
-              <Toaster />
-            </Switch>
-            <ToastContainer />
-            <ReactQueryDevtools initialIsOpen={false} />
-          </Provider>
-        </QueryClientProvider>
-      ) : (
-        <>
-          <SignedIn>
-            <QueryClientProvider client={queryClient}>
-              <Provider store={store}>
-                <Switch>
-                  <Component {...pageProps} />
-                  <Toaster />
-                </Switch>
-                <ToastContainer />
-                <ReactQueryDevtools initialIsOpen={false} />
-              </Provider>
-            </QueryClientProvider>
-          </SignedIn>
-          <SignedOut>
-            <RedirectToSignIn />
-          </SignedOut>
-        </>
-      )}
+      <QueryClientProvider client={queryClient}>
+        <Provider store={store}>
+          <Switch>
+            <Component {...pageProps} />
+            <Toaster />
+          </Switch>
+          <ToastContainer />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </Provider>
+      </QueryClientProvider>
     </ClerkProvider>
   );
 }
