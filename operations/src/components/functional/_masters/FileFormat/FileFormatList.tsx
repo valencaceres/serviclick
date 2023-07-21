@@ -18,6 +18,8 @@ import {
 
 import { useFileFormat } from "../../../../hooks";
 
+import styles from "./FileFormat.module.scss";
+
 const FileFormatList = () => {
   const router = useRouter();
 
@@ -42,10 +44,16 @@ const FileFormatList = () => {
           <TableDetail>
             {fileFormatList.map((item: any, idx: number) => (
               <TableRow key={idx} onClick={() => handleClickRow(item.rut)}>
-                <TableCell width="140px" align="center">
+                <TableCell
+                  width="140px"
+                  align="center"
+                  className={styles.tableCell}
+                >
                   {item.rut}
                 </TableCell>
-                <TableCell width="545px">{item.companyname}</TableCell>
+                <TableCell width="545px" className={styles.tableCell}>
+                  {item.companyname}
+                </TableCell>
               </TableRow>
             ))}
           </TableDetail>

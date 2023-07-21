@@ -93,7 +93,7 @@ const FileFormatDetail = () => {
   useEffect(() => {
     if (router.isReady) {
       const { id } = router.query;
-      if (id) {
+      if (id && id !== "new") {
         setFormData({
           ...initialDataForm,
           rut: { value: id.toString(), isValid: true },

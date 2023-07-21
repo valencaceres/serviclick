@@ -10,7 +10,6 @@ import FloatMenu from "../../components/ui/FloatMenu";
 import ButtonIcon from "../../components/ui/ButtonIcon";
 
 import { useUI, useAssistance, useFamily } from "../../hooks";
-import { getAll } from "../../../../retail/src/redux/slices/statusSlice";
 
 const Assistance = () => {
   const router = useRouter();
