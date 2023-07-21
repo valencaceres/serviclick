@@ -1,12 +1,13 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
 import { locations } from "@/lib/locations"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { useToast } from "@/components/ui/use-toast"
 
 import { Button } from "../../ui/button"
@@ -51,6 +52,8 @@ export default function AssistanceSuggestionForm({
 }: AssistanceSuggestionFormProps) {
   const { toast } = useToast()
   const router = useRouter()
+
+  const [isOpen, setIsOpen] = useState<boolean>(false)
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -98,16 +101,13 @@ export default function AssistanceSuggestionForm({
       }
     )
     if (response.ok) {
-      router.push("/")
-      toast({
-        title: "Formulario enviado",
-        description: "Hemos recibido tu solicitud y te contactaremos pronto.",
-      })
+      setIsOpen(true)
     } else {
       console.error(response)
       toast({
         title: "Error",
-        description: "Ocurrió un error al enviar el formulario.",
+        description:
+          "Ha ocurrido un error al enviar tu formulario, por favor intenta nuevamente.",
         variant: "destructive",
       })
     }
@@ -118,168 +118,195 @@ export default function AssistanceSuggestionForm({
   }, [selectedRegion, form])
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full max-w-xl space-y-4"
-      >
-        <FormField
-          control={form.control}
-          name="age"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Edad</FormLabel>
-              <FormControl>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  value={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecciona tu rango de edad" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="young-adult">
-                      Entre 18 y 30 años
-                    </SelectItem>
-                    <SelectItem value="adult">Entre 31 y 59 años</SelectItem>
-                    <SelectItem value="senior">60 años o más</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="assistance"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Área de interés</FormLabel>
-              <FormControl>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  value={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecciona tu área de interés" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {families.map((family) => (
-                      <SelectItem
-                        key={family.family_id}
-                        value={family.family_name}
-                      >
-                        {family.family_name}
+    <>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-full max-w-xl space-y-4"
+        >
+          <FormField
+            control={form.control}
+            name="age"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Edad</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    value={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecciona tu rango de edad" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="young-adult">
+                        Entre 18 y 30 años
                       </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="region"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Región</FormLabel>
-              <FormControl>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  value={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecciona tu región" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent className="h-56">
-                    {locations.regions.map((region) => (
-                      <SelectItem key={region.name} value={region.name}>
-                        {region.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="district"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Comuna</FormLabel>
-              <FormControl>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  value={field.value}
-                  disabled={!selectedRegion}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue
-                        defaultValue=""
-                        placeholder="Selecciona tu comuna"
-                      />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent className="h-56">
-                    {locations.regions
-                      .find((region) => region.name === selectedRegion)
-                      ?.districts.map((district) => (
-                        <SelectItem key={district} value={district}>
-                          {district}
+                      <SelectItem value="adult">Entre 31 y 59 años</SelectItem>
+                      <SelectItem value="senior">60 años o más</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="assistance"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Área de interés</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    value={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecciona tu área de interés" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {families.map((family) => (
+                        <SelectItem
+                          key={family.family_id}
+                          value={family.family_name}
+                        >
+                          {family.family_name}
                         </SelectItem>
                       ))}
-                  </SelectContent>
-                </Select>
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>E-mail</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Escribe tu e-mail"
-                  type="email"
-                  {...field}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nombre completo</FormLabel>
-              <FormControl>
-                <Input placeholder="Escribe tu nombre y apellido" {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <div className="flex justify-center">
-          <Button>Aceptar</Button>
-        </div>
-      </form>
-    </Form>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="region"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Región</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    value={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecciona tu región" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="h-56">
+                      {locations.regions.map((region) => (
+                        <SelectItem key={region.name} value={region.name}>
+                          {region.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="district"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Comuna</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    value={field.value}
+                    disabled={!selectedRegion}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue
+                          defaultValue=""
+                          placeholder="Selecciona tu comuna"
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="h-56">
+                      {locations.regions
+                        .find((region) => region.name === selectedRegion)
+                        ?.districts.map((district) => (
+                          <SelectItem key={district} value={district}>
+                            {district}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>E-mail</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Escribe tu e-mail"
+                    type="email"
+                    {...field}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nombre completo</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Escribe tu nombre y apellido"
+                    {...field}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <div className="flex justify-center">
+            <Button>Aceptar</Button>
+          </div>
+        </form>
+      </Form>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent className="border-none focus:border-none">
+          <div className="flex flex-col gap-4 text-center items-center">
+            <h1 className="text-4xl font-semibold text-primary">
+              ¡Felicidades!
+            </h1>
+            <h2 className="text-lg">
+              Tu consulta ha sido enviada satisfactoriamente.
+            </h2>
+            <p>Te contactaremos dentro de 48 hrs hábiles.</p>
+            <Button
+              className="w-fit"
+              onClick={() => {
+                setIsOpen(false)
+                router.push("/")
+              }}
+            >
+              Aceptar
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
