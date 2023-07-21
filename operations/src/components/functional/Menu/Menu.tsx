@@ -137,7 +137,7 @@ interface MenuItemProps {
 const MenuItem: React.FC<MenuItemProps> = ({ route, isOpen, setIsOpen }) => {
   const { pathname } = useRouter();
   const { user } = useUser();
-  const userRoles = user?.publicMetadata.roles.operaciones || {};
+  const userRoles = user?.publicMetadata.roles?.operaciones || {};
 
   const userHasRole = (role: string) => {
     return userRoles === role;

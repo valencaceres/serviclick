@@ -29,7 +29,7 @@ export default authMiddleware({
       return NextResponse.next();
     }
 
-    const userRoles = (auth.sessionClaims as any).publicMeta.roles;
+    const userRoles = (auth.sessionClaims as any).publicMeta?.roles;
     if (!userRoles) {
       if (req.nextUrl.pathname !== "/unauthorized") {
         const redirectURL = new URL("/unauthorized", req.url);
