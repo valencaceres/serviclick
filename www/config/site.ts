@@ -1,7 +1,7 @@
 import { SiteConfig } from "@/types/nav"
 
 export const siteConfig: SiteConfig = {
-  name: "Serviclick",
+  name: "Serviclick - Todas las soluciones en la palma de tu mano",
   description: "Soluciones en la palma de tu mano.",
   secondaryNav: [
     {

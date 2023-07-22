@@ -1,17 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { authMiddleware, redirectToSignIn } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 type UserRole = "user" | "moderator" | "admin";
 
 const roles: Record<UserRole, RegExp[]> = {
-  user: [/^\/$/, /^\/case(\/.*)?$/],
-  moderator: [/^\/$/, /^\/case(\/.*)?$/],
-  admin: [
-    /^\/$/,
-    /^\/case(\/.*)?$/,
-    /^\/masters(\/.*)?$/,
-    /^\/entities(\/.*)?$/,
-  ],
+  user: [/^\/$/],
+  moderator: [/^\/$/],
+  admin: [/^\/$/, /^\/operations(\/.*)?$/],
 };
 
 export default authMiddleware({
@@ -33,7 +31,7 @@ export default authMiddleware({
       }
     } else {
       // Check if user has the "operaciones" role and the required permission for it
-      const userRoleInOperaciones = userRoles["operaciones"];
+      const userRoleInOperaciones = userRoles["admin"];
       if (userRoleInOperaciones && roles[userRoleInOperaciones as UserRole]) {
         const rolePermissions = roles[userRoleInOperaciones as UserRole];
         for (const permission of rolePermissions) {
