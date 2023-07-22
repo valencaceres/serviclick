@@ -1,17 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { authMiddleware, redirectToSignIn } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 type UserRole = "user" | "moderator" | "admin";
 
 const roles: Record<UserRole, RegExp[]> = {
-  user: [/^\/$/, /^\/case(\/.*)?$/],
-  moderator: [/^\/$/, /^\/case(\/.*)?$/],
-  admin: [
-    /^\/$/,
-    /^\/case(\/.*)?$/,
-    /^\/masters(\/.*)?$/,
-    /^\/entities(\/.*)?$/,
-  ],
+  user: [/^\/$/, /^\/sale(\/.*)?$/, /^\/billing(\/.*)?$/],
+  moderator: [/^\/$/, /^\/sale(\/.*)?$/, /^\/billing(\/.*)?$/],
+  admin: [/^\/$/, /^\/sale(\/.*)?$/, /^\/billing(\/.*)?$/],
 };
 
 export default authMiddleware({
