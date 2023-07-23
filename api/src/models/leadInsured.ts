@@ -15,6 +15,15 @@ const deleteByLeadId: any = async (lead_id: string) => {
 
 const createModel: any = async (lead_id: string, insured_id: string) => {
   try {
+    const resultExists = await pool.query(
+      `SELECT * FROM app.leadinsured WHERE lead_id = $1 and insured_id = $2`,
+      [lead_id, insured_id]
+    );
+
+    if (resultExists.rowCount > 0) {
+      return { success: true, data: resultExists.rows[0], error: null };
+    }
+
     const result = await pool.query(
       `
         INSERT  INTO app.leadinsured(

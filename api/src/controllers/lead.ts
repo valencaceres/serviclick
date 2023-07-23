@@ -10,6 +10,8 @@ import * as Subscription from "../models/subscription";
 import * as LeadProduct from "../models/leadProduct";
 import * as LeadInsured from "../models/leadInsured";
 import * as LeadBeneficiary from "../models/leadBeneficiary";
+import * as LeadProductValue from "../models/leadProductValue";
+import * as FileFormat from "../models/fileFormat";
 
 import * as Customer from "../models/customer";
 import * as Company from "../models/company";
@@ -137,6 +139,10 @@ const initialLeadData: LeadT = {
   insured: [],
   subscription: {},
 };
+
+function isRecord(obj: unknown): obj is Record<string, any> {
+  return typeof obj === "object" && obj !== null;
+}
 
 const errorHandler = (response: any, path: string) => {
   if (!response.success) {
@@ -481,6 +487,53 @@ const createSubscription = async (
     };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+const addInsuredFromExcelItem = async (
+  lead_id: string,
+  product_id: string,
+  data: any
+) => {
+  const insuredResponse = await createInsured(data);
+
+  if (!insuredResponse.success) {
+    createLogger.error({
+      model: "lead/createInsured",
+      error: insuredResponse.error,
+    });
+    return {
+      success: false,
+      data: null,
+      error: insuredResponse.error,
+    };
+  }
+
+  const { id: insured_id } = insuredResponse.data;
+
+  const leadInsuredResponse = await createLeadInsured(lead_id, insured_id);
+
+  if (!leadInsuredResponse.success) {
+    createLogger.error({
+      model: "lead/createLeadInsured",
+      error: leadInsuredResponse.error,
+    });
+    return {
+      success: false,
+      data: null,
+      error: leadInsuredResponse.error,
+    };
+  }
+
+  for (const value of data.values) {
+    console.log(value);
+    const leadProductValuesResponse = await LeadProductValues.create(
+      lead_id,
+      product_id,
+      insured_id,
+      value.id,
+      value.value
+    );
   }
 };
 
@@ -1497,6 +1550,7 @@ const addInsuredFromExcel = async (req: any, res: any) => {
   try {
     const { subscription_id } = req.body;
     const file = req.file;
+
     const workbook = xlsx.read(file.buffer, { type: "buffer" });
     const sheet_name_list = workbook.SheetNames;
     const xlsData = xlsx.utils.sheet_to_json(
@@ -1509,27 +1563,103 @@ const addInsuredFromExcel = async (req: any, res: any) => {
 
     const leadDataResponse = await Lead.getBySubscriptionId(subscription_id);
 
+    if (!leadDataResponse.success) {
+      createLogger.error({
+        model: "lead/getBySubscriptionId",
+        error: leadDataResponse.error,
+      });
+      res.status(500).json(leadDataResponse.error);
+      return;
+    }
+
     const leadProductResponse = await LeadProduct.getByLeadId(
       leadDataResponse.data.id
     );
 
-    const jsonData = excelToJson(
-      xlsData,
-      subscription_id,
-      leadProductResponse.data.product_id
+    if (!leadProductResponse.success) {
+      createLogger.error({
+        model: "leadProduct/getByLeadId",
+        error: leadProductResponse.error,
+      });
+      res.status(500).json(leadProductResponse.error);
+      return;
+    }
+
+    const fileFormatResponse = await FileFormat.getBySubscriptionId(
+      subscription_id
     );
 
-    const responses = await Promise.all(
-      jsonData.map((item: any) =>
-        addMultipleInsured(
-          leadDataResponse.data,
-          [item],
-          leadProductResponse.data.product_id
-        )
-      )
+    if (!fileFormatResponse.success) {
+      createLogger.error({
+        model: "fileFormat/getBySubscriptionId",
+        error: fileFormatResponse.error,
+      });
+      res.status(500).json(fileFormatResponse.error);
+      return;
+    }
+
+    const { lead_id, product_id, fields } = fileFormatResponse.data;
+
+    let data = [];
+
+    for (const xlsItem of xlsData) {
+      if (isRecord(xlsItem)) {
+        let count = 0;
+        let dataItem: any = {};
+
+        for (const xlsField in xlsItem) {
+          const { field_db_name, field_type, field_id } = fields[count];
+
+          if (field_type === "value") {
+            dataItem = {
+              ...dataItem,
+              values: dataItem.values
+                ? [
+                    ...dataItem.values,
+                    { id: field_id, value: xlsItem[xlsField] },
+                  ]
+                : [{ id: field_id, value: xlsItem[xlsField] }],
+            };
+          } else {
+            dataItem = {
+              ...dataItem,
+              [field_db_name]: xlsItem[xlsField],
+            };
+          }
+          count++;
+        }
+        data.push(dataItem);
+      }
+    }
+
+    await Promise.all(
+      data.map(async (item) => {
+        const contents = await addInsuredFromExcelItem(
+          lead_id,
+          product_id,
+          item
+        );
+        console.log(contents);
+      })
     );
 
-    const successResponse = { success: true, data: responses };
+    // const jsonData = excelToJson(
+    //   xlsData,
+    //   subscription_id,
+    //   leadProductResponse.data.product_id
+    // );
+
+    // const responses = await Promise.all(
+    //   jsonData.map((item: any) =>
+    //     addMultipleInsured(
+    //       leadDataResponse.data,
+    //       [item],
+    //       leadProductResponse.data.product_id
+    //     )
+    //   )
+    // );
+
+    const successResponse = { success: true, data: true };
     res.json(successResponse);
   } catch (error) {
     const errorResponse = { success: false, error };
