@@ -10,9 +10,9 @@ import { NextResponse } from "next/server";
 type UserRole = "user" | "moderator" | "admin";
 
 const roles: Record<UserRole, RegExp[]> = {
-  user: [/^\/$/, /^\/billing(\/.*)?$/, /^\/sale(\/.*)?$/],
-  moderator: [/^\/$/, /^\/billing(\/.*)?$/, /^\/sale(\/.*)?$/],
-  admin: [/^\/$/, /^\/billing(\/.*)?$/, /^\/sale(\/.*)?$/],
+  user: [/^\/$/],
+  moderator: [/^\/$/],
+  admin: [/^\/$/, /^\/operations(\/.*)?$/],
 };
 
 export default authMiddleware({
@@ -33,8 +33,8 @@ export default authMiddleware({
         return NextResponse.redirect(redirectURL);
       }
     } else {
-      // Check if user has the "broker" role and the required permission for it
-      const userRoleInOperaciones = userRoles["broker"];
+      // Check if user has the "admin" role and the required permission for it
+      const userRoleInOperaciones = userRoles["admin"];
       if (userRoleInOperaciones && roles[userRoleInOperaciones as UserRole]) {
         const rolePermissions = roles[userRoleInOperaciones as UserRole];
         for (const permission of rolePermissions) {
