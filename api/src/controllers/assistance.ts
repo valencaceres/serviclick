@@ -404,7 +404,6 @@ const getDocumentsById = async (req: any, res: any) => {
 const assignValue = async (req: any, res: any) => {
   const { lead_id, product_id, insured_id, value_id, value } = req.body;
 
-  console.log(req.body);
   const response = await LeadProductValue.create(
     lead_id,
     product_id,

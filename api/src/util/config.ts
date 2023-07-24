@@ -53,16 +53,16 @@ const config = {
   },
   email: {
     URL: {
-      send: "https://api-email.serviclick.cl/api/email/send",
+      send: `${process.env.API_EMAIL_URL}/api/email/send`,
     },
-    apiKey: { id: "12345678" },
+    apiKey: { id: process.env.API_EMAIL_KEY },
   },
   pdf: {
     URL: {
-      contract: "https://api-pdf.serviclick.cl/api/document/contract",
-      annex: "https://api-pdf.serviclick.cl/api/document/annex",
+      contract: `${process.env.API_PDF_URL}/api/document/contract`,
+      annex: `${process.env.API_PDF_URL}/api/document/annex`,
     },
-    apiKey: { id: "97689458-b21c-4abf-9bb3-a05ac52b4791" },
+    apiKey: { id: process.env.API_PDF_KEY },
   },
   webHook: {
     URL: {

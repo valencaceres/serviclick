@@ -112,8 +112,6 @@ const getByBrokerId: any = async (broker_id: string) => {
       [broker_id]
     );
 
-    console.log(broker_id);
-
     const data = result.rows.map((row) => {
       const {
         product_id,

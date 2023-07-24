@@ -104,7 +104,6 @@ const getByEmail: any = async (email: string) => {
     );
 
     const data = await formatDataInsured(result.rows);
-    console.log(data);
 
     return {
       success: true,

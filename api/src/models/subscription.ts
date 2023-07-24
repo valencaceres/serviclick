@@ -119,14 +119,13 @@ const create: any = async (
       `SELECT MAX(subscription_id)
       FROM app.subscription
       WHERE subscription_id < 74000`
-      );
-      const subscription_id = rows[0].max + 1;
-      
-      // Determina la fecha. Si se pasa customDate, formatearla; de lo contrario, usar la fecha actual.
-      const dateToFormat = customDate ? new Date(customDate) : new Date();
-      const date = format(dateToFormat, "yyyy-MM-dd HH:mm:ss");
-      console.log(date)
-      
+    );
+    const subscription_id = rows[0].max + 1;
+
+    // Determina la fecha. Si se pasa customDate, formatearla; de lo contrario, usar la fecha actual.
+    const dateToFormat = customDate ? new Date(customDate) : new Date();
+    const date = format(dateToFormat, "yyyy-MM-dd HH:mm:ss");
+
     const sql = `
       INSERT INTO app.subscription(
           date,
