@@ -1,5 +1,4 @@
 export const config = {
-  apiKey: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-  //server: "http://localhost:3001",
-  server: "https://api.serviclick.cl",
+  apiKey: process.env.NEXT_PUBLIC_API_KEY || "",
+  server: process.env.NEXT_PUBLIC_API_URL || "",
 };

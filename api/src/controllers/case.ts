@@ -396,8 +396,6 @@ const assignSpecialist = async (req: any, res: any) => {
     confirmed_time,
   } = req.body;
 
-  console.log(req.body);
-
   const caseStageResponse = await CaseStageSpecialist.create(
     case_id,
     casestage_id,

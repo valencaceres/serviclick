@@ -261,11 +261,6 @@ const deleteLeadBeneficiaries = async (id: string, insured_id: string) => {
 };
 
 const createBeneficiary = async (beneficiary: BeneficiaryT) => {
-  console.log({
-    rut: beneficiary.rut,
-    nombre: beneficiary.name,
-    relationship: beneficiary.relationship || "",
-  });
   const beneficiaryResponse = await Beneficiary.createModel(
     beneficiary.rut,
     beneficiary.name,
@@ -278,7 +273,6 @@ const createBeneficiary = async (beneficiary: BeneficiaryT) => {
     beneficiary.phone,
     beneficiary.relationship || ""
   );
-  console.log(beneficiaryResponse);
   return errorHandler(beneficiaryResponse, "lead/createBeneficiaryModel");
 };
 
@@ -526,7 +520,6 @@ const addInsuredFromExcelItem = async (
   }
 
   for (const value of data.values) {
-    console.log(value);
     const leadProductValuesResponse = await LeadProductValues.create(
       lead_id,
       product_id,
@@ -546,13 +539,11 @@ const addMultipleInsured = async (
     const insuredPromises = insured.flatMap(async (item: any) => {
       const insuredDataPromises = item.data.map(async (insuredItem: any) => {
         const { data: insuredData } = await createInsured(insuredItem);
-        console.log("OK6");
 
         const { data: leadInsuredData } = await createLeadInsured(
           leadDataResponse.id,
           insuredData.id
         );
-        console.log("OK7");
 
         const leadProductDeleteResponse =
           await LeadProductValues.deleteByInsuredId(
@@ -563,7 +554,6 @@ const addMultipleInsured = async (
 
         if (insuredItem.values && insuredItem.values.length > 0) {
           for (const value of insuredItem.values) {
-            console.log("OK9---");
             const leadProductValue = await LeadProductValues.create(
               leadDataResponse.id,
               productId,
@@ -571,7 +561,6 @@ const addMultipleInsured = async (
               value.value_id,
               value.value
             );
-            console.log("OK9");
           }
         }
 
@@ -579,24 +568,20 @@ const addMultipleInsured = async (
           leadDataResponse.id,
           insuredData.id
         );
-        console.log("OK10");
 
         const newInsured = { ...insuredData, beneficiaries: [] };
 
         if (insuredItem.beneficiaries && insuredItem.beneficiaries.length > 0) {
           for (const beneficiary of insuredItem.beneficiaries) {
-            console.log(insuredItem);
             const { data: beneficiaryData } = await createBeneficiary(
               beneficiary
             );
-            console.log("OK11");
 
             const { data: leadBeneficiaryData } = await createLeadBeneficiary(
               leadDataResponse.id,
               insuredData.id,
               beneficiaryData.id
             );
-            console.log("OK12");
 
             newInsured.beneficiaries.push(beneficiaryData);
           }
@@ -640,13 +625,11 @@ const create = async (lead: any) => {
       const { data: customerData } = await createCustomer(customer);
       leadDataResponse = { ...leadDataResponse, customer: customerData };
     }
-    console.log("OK1");
 
     if (company && company.rut !== "") {
       const { data: conpanyData } = await createCompany(company);
       leadDataResponse = { ...leadDataResponse, company: conpanyData };
     }
-    console.log("OK2");
 
     const { data: leadData } = await createLead(
       id,
@@ -657,28 +640,23 @@ const create = async (lead: any) => {
       user_id
     );
     leadDataResponse = { ...leadDataResponse, id: leadData.id };
-    console.log("OK3");
 
     const { data: leadProductData } = await createProduct(
       leadDataResponse.id,
       lead.product
     );
     leadDataResponse = { ...leadDataResponse, product: leadProductData };
-    console.log("OK4");
 
     if (lead.insured) {
       await deleteLeadInsured(leadDataResponse.id);
-      console.log("OK5");
 
       for (const item of insured) {
         const { data: insuredData } = await createInsured(item);
-        console.log("OK6");
 
         const { data: leadInsuredData } = await createLeadInsured(
           leadDataResponse.id,
           insuredData.id
         );
-        console.log("OK7");
 
         const leadProductDeleteResponse =
           await LeadProductValues.deleteByInsuredId(
@@ -686,11 +664,9 @@ const create = async (lead: any) => {
             product.id,
             insuredData.id
           );
-        console.log(leadProductDeleteResponse);
 
         if (item.values) {
           for (const value of item.values) {
-            console.log("OK9---");
             const leadProductValue = await LeadProductValues.create(
               leadDataResponse.id,
               product.id,
@@ -698,7 +674,6 @@ const create = async (lead: any) => {
               value.value_id,
               value.value
             );
-            console.log("OK9");
           }
         }
 
@@ -706,23 +681,18 @@ const create = async (lead: any) => {
           leadDataResponse.id,
           insuredData.id
         );
-        console.log("OK10");
 
         const newInsured = { ...insuredData, beneficiaries: [] };
         for (const beneficiary of item.beneficiaries) {
           const { data: beneficiaryData } = await createBeneficiary(
             beneficiary
           );
-          console.log("OK11");
-
-          console.log(beneficiaryData);
 
           const { data: leadBeneficiaryData } = await createLeadBeneficiary(
             leadDataResponse.id,
             insuredData.id,
             beneficiaryData.id
           );
-          console.log("OK12");
 
           newInsured.beneficiaries.push(beneficiaryData);
         }
@@ -736,7 +706,6 @@ const create = async (lead: any) => {
 
     return { success: true, data: leadDataResponse, error: null };
   } catch (e) {
-    console.log((e as Error).message);
     return { success: false, data: null, error: (e as Error).message };
   }
 };
@@ -767,7 +736,6 @@ const createController = async (req: any, res: any) => {
   });
 
   if (!success || !data) {
-    console.log("==HERE(1)==");
     res.status(500).json(error || "");
     return;
   }
@@ -775,14 +743,12 @@ const createController = async (req: any, res: any) => {
   if (send) {
     const emailResponse = await sendPaymentLink(data, link);
     if (!emailResponse.success) {
-      console.log("==HERE(2)==");
       res.status(500).json(emailResponse.error);
       return;
     }
 
     const responseLeadUpdate = await updateLeadPaymentType(data.id, "L");
     if (!responseLeadUpdate.success) {
-      console.log("==HERE(3)==");
       res
         .status(500)
         .json({ error: "updateLeadPaymentType: " + responseLeadUpdate.error });
@@ -800,8 +766,6 @@ const createController = async (req: any, res: any) => {
     );
 
     if (!subscriptionResponse.success) {
-      console.log("==HERE(4)==");
-      console.log(subscriptionResponse.error);
       res
         .status(500)
         .json({ error: "createSubscription: " + subscriptionResponse.error });
@@ -1494,7 +1458,6 @@ const addFromCase = async (req: any, res: any) => {
   }
 
   const { id: lead_id } = leadResponse.data;
-  console.log(lead_id);
 
   const leadInsuredResponse = await LeadInsured.createModel(
     lead_id,
@@ -1639,7 +1602,6 @@ const addInsuredFromExcel = async (req: any, res: any) => {
           product_id,
           item
         );
-        console.log(contents);
       })
     );
 

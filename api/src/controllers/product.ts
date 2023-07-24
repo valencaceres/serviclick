@@ -680,14 +680,6 @@ const createProductPlans = async (
   let customerData: any = null;
 
   if (companyprice) {
-    console.log({
-      company_plan_id,
-      ...productPlanData,
-      is_custom_amount: true,
-      baseprice,
-      price: companyprice,
-    });
-
     const planResponseCompany = await axios[
       company_plan_id > 0 ? "patch" : "post"
     ](
@@ -728,14 +720,6 @@ const createProductPlans = async (
   }
 
   if (customerprice) {
-    console.log({
-      customer_plan_id,
-      ...productPlanData,
-      is_custom_amount: false,
-      baseprice,
-      price: customerprice,
-    });
-
     const planResponseCustomer = await axios[
       customer_plan_id > 0 ? "patch" : "post"
     ](

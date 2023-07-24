@@ -12,6 +12,7 @@ const familyImages: { [key: string]: string } = {
   salud: "/assistance3.jpg",
   vehículo: "/assistance7.jpeg",
   veterinaria: "/assistance5.jpg",
+  escolar: "/assistance4.jpg",
 }
 
 export function getFamilyImage(familyName: string): string {
@@ -29,6 +30,7 @@ const categoryImages: { [key: string]: string } = {
   "asistencia salud universal": "/assistance2.jpg",
   "asistencia vehicular": "/assistance7.jpeg",
   "asistencia veterinaria": "/assistance5.jpg",
+  "asistencia escolar": "/assistance4.jpg",
 }
 
 export function getCategoryImage(categoryName: string): string {
