@@ -7,9 +7,9 @@ import { NextResponse } from "next/server";
 type UserRole = "user" | "moderator" | "admin";
 
 const roles: Record<UserRole, RegExp[]> = {
-  user: [/^\/$/, /^\/billing(\/.*)?$/, /^\/sale(\/.*)?$/],
-  moderator: [/^\/$/, /^\/billing(\/.*)?$/, /^\/sale(\/.*)?$/],
-  admin: [/^\/$/, /^\/billing(\/.*)?$/, /^\/sale(\/.*)?$/],
+  user: [/^\/$/, /^\/sale(\/.*)?$/, /^\/billing(\/.*)?$/],
+  moderator: [/^\/$/, /^\/sale(\/.*)?$/, /^\/billing(\/.*)?$/],
+  admin: [/^\/$/, /^\/sale(\/.*)?$/, /^\/billing(\/.*)?$/],
 };
 
 export default authMiddleware({

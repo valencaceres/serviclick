@@ -1,8 +1,4 @@
-import {
-  authMiddleware,
-  getAuth,
-  redirectToSignIn,
-} from "@clerk/nextjs/server";
+import { authMiddleware, redirectToSignIn } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 type UserRole = "user" | "moderator" | "admin";

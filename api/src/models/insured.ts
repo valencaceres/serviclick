@@ -15,13 +15,13 @@ const create: any = async (
     const arrayValues = [
       rut,
       name,
-      paternalLastName,
-      maternalLastName,
+      paternalLastName || "",
+      maternalLastName || "",
       birthDate,
-      address,
-      district,
+      address || "",
+      district || "",
       email,
-      phone,
+      phone || "",
     ];
 
     const resultInsured = await pool.query(

@@ -401,6 +401,7 @@ const getLeadsByRut: any = async (rut: string) => {
 
     interface IData {
       id: string;
+      rut: string;
       companyname: string;
       legalRepresentative: string;
       line: string;
@@ -413,6 +414,7 @@ const getLeadsByRut: any = async (rut: string) => {
 
     const data = <IData>{
       id,
+      rut,
       companyname,
       legalRepresentative,
       line,
