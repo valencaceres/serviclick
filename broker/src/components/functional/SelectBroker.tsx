@@ -12,7 +12,7 @@ import {
   CommandItem,
 } from "../ui/Command";
 
-import { cn } from "~/utils/cn"; 
+import { cn } from "~/utils/cn";
 import { api, type RouterOutputs } from "~/utils/api";
 
 type Broker = RouterOutputs["broker"]["getByUser"][number];
