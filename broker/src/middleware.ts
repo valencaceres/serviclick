@@ -30,8 +30,8 @@ export default authMiddleware({
         return NextResponse.redirect(redirectURL);
       }
     } else {
-      // Check if user has the "operaciones" role and the required permission for it
-      const userRoleInOperaciones = userRoles["operaciones"];
+      // Check if user has the "broker" role and the required permission for it
+      const userRoleInOperaciones = userRoles["broker"];
       if (userRoleInOperaciones && roles[userRoleInOperaciones as UserRole]) {
         const rolePermissions = roles[userRoleInOperaciones as UserRole];
         for (const permission of rolePermissions) {
