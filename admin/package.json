@@ -13,8 +13,8 @@
     "@aws-sdk/client-s3": "^3.315.0",
     "@aws-sdk/s3-request-presigner": "^3.315.0",
     "@clerk/localizations": "^1.11.1",
-    "@clerk/nextjs": "^4.16.2",
-    "@clerk/types": "^3.46.1",
+    "@clerk/nextjs": "^4.23.0",
+    "@clerk/types": "^3.48.1",
     "@prisma/client": "^4.16.1",
     "@radix-ui/react-accordion": "^1.1.1",
     "@radix-ui/react-dialog": "^1.0.3",
@@ -59,7 +59,7 @@
     "prettier-plugin-tailwindcss": "^0.2.6",
     "prisma": "^4.16.1",
     "tailwindcss": "^3.3.0",
-    "typescript": "^5.0.2"
+    "typescript": "^5.1.6"
   },
   "ct3aMetadata": {
     "initVersion": "7.10.3"

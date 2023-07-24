@@ -1,0 +1,58 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+import { authMiddleware, redirectToSignIn } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
+
+type UserRole = "user" | "moderator" | "admin";
+
+const roles: Record<UserRole, RegExp[]> = {
+  user: [/^\/$/, /^\/billing(\/.*)?$/, /^\/sale(\/.*)?$/],
+  moderator: [/^\/$/, /^\/billing(\/.*)?$/, /^\/sale(\/.*)?$/],
+  admin: [/^\/$/, /^\/billing(\/.*)?$/, /^\/sale(\/.*)?$/],
+};
+
+export default authMiddleware({
+  publicRoutes: ["/sign-in/[[...index]]", "/unauthorized"],
+  afterAuth(auth, req, evt) {
+    if (!auth.userId && !auth.isPublicRoute) {
+      return redirectToSignIn({ returnBackUrl: req.url });
+    }
+
+    if (auth.isPublicRoute) {
+      return NextResponse.next();
+    }
+
+    const userRoles = (auth.sessionClaims as any).publicMeta?.roles;
+    if (!userRoles) {
+      if (req.nextUrl.pathname !== "/unauthorized") {
+        const redirectURL = new URL("/unauthorized", req.url);
+        return NextResponse.redirect(redirectURL);
+      }
+    } else {
+      // Check if user has the "broker" role and the required permission for it
+      const userRoleInOperaciones = userRoles["broker"];
+      if (userRoleInOperaciones && roles[userRoleInOperaciones as UserRole]) {
+        const rolePermissions = roles[userRoleInOperaciones as UserRole];
+        for (const permission of rolePermissions) {
+          if (permission.test(req.nextUrl.pathname)) {
+            return NextResponse.next();
+          }
+        }
+      }
+    }
+
+    // If user's role doesn't provide access to the route, redirect to unauthorized page
+    if (req.nextUrl.pathname !== "/unauthorized") {
+      const redirectURL = new URL("/unauthorized", req.url);
+      return NextResponse.redirect(redirectURL);
+    }
+  },
+});
+
+export const config = {
+  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+};
