@@ -13,7 +13,7 @@ const roles: Record<UserRole, RegExp[]> = {
 };
 
 export default authMiddleware({
-  publicRoutes: ["/sign-in/[[...index]]", "/unauthorized"],
+  publicRoutes: ["/sign-in/[[...index]]", "/unauthorized", "/(api|trpc)(.*)"],
   afterAuth(auth, req, evt) {
     if (!auth.userId && !auth.isPublicRoute) {
       return redirectToSignIn({ returnBackUrl: req.url });
