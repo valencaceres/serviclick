@@ -6,6 +6,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      height: {
+        "screen-nh": "calc(100vh - 200px)",
+      },
       fontFamily: {
         oswald: ["Oswald", "sans-serif"],
       },

@@ -1,14 +1,21 @@
+import { UserButton } from "@clerk/nextjs";
 import type { NextPage, GetStaticProps } from "next";
-
-import { useUI } from "../hooks";
+import { useEffect } from "react";
+import { useUI } from "~/hooks";
 
 const HomePage: NextPage = (props) => {
+  const { setTitleUI } = useUI();
+
+  useEffect(() => {
+    setTitleUI("Error 403");
+  }, []);
+
   return (
-    <div className="text-center">
-      <h1 className="text-3xl font-bold text-teal-blue">No autorizado/a</h1>
-      <p className="italic">
-        No tienes permisos para acceder a la página solicitada. Por favor, habla
-        con el administrador.
+    <div className="text-center h-screen-nh flex flex-col items-center justify-center">
+      <h1 className="text-6xl font-bold text-teal-blue">403</h1>
+      <p>Ocurrió un error al intentar acceder a esta página.</p>
+      <p className="italic text-sm">
+        Si crees que se trata de un error, por favor contacta a soporte.
       </p>
     </div>
   );

@@ -67,7 +67,7 @@ const columns: ColumnDef<Case>[] = [
     cell: ({ row }) => {
       return (
         <div className="capitalize">
-          {row.original.contractor_name.toLowerCase()}
+          {row.original.contractor_name?.toLowerCase()}
         </div>
       );
     },
