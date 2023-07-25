@@ -20,7 +20,7 @@ const HomePage: NextPage = (props) => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async (ctx) => {
+export const getStaticProps: GetStaticProps = (ctx) => {
   return {
     props: {
       appEnv: process.env.APP_ENV || null,
