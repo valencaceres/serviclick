@@ -1,4 +1,3 @@
-import { UserButton } from "@clerk/nextjs";
 import type { NextPage, GetStaticProps } from "next";
 import { useEffect } from "react";
 import { useUI } from "~/hooks";
