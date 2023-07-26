@@ -71,9 +71,9 @@ const serviceImages: { [key: string]: string } = {
 }
 
 export function getServiceImage(serviceName: string): string {
-  serviceName = serviceName.trim()
+  serviceName = serviceName?.trim()
   return (
-    serviceImages[serviceName.toLowerCase() as keyof typeof serviceImages] ||
+    serviceImages[serviceName?.toLowerCase() as keyof typeof serviceImages] ||
     "/serviceIcon/urgenciaMedica.png"
   )
 }

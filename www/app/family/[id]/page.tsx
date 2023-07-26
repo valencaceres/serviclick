@@ -62,11 +62,13 @@ export default async function Page({ params }: { params: { id: string } }) {
 
     if (!current.product_name.includes("Familiar")) {
       let coverage = {
+        assistance_id: current.assistance_id,
         coverage_name: current.coverage_name,
         coverage_amount: current.coverage_amount,
         coverage_maximum: current.coverage_maximum,
         coverage_lack: current.coverage_lack,
         coverage_events: current.coverage_events,
+        coverage_currency: current.coverage_currency,
       }
 
       if (
@@ -178,7 +180,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                   >
                     <div className="bg-white w-32 h-32 relative shadow-none rounded-sm border-b-8 border-b-primary">
                       <Image
-                        src={getServiceImage(coverage.coverage_name)}
+                        src={`/serviceIcon/${coverage.assistance_id}.png`}
                         alt={coverage.coverage_name}
                         fill
                       />
@@ -233,17 +235,25 @@ export default async function Page({ params }: { params: { id: string } }) {
                         )}
                       </TableCell>
                       <TableCell className="py-6 text-center font-bold text-lg uppercase">
-                        {coverage.coverage_amount === "Ilimitado"
-                          ? coverage.coverage_amount
-                          : Number(
+                        {coverage.coverage_amount === "0"
+                          ? "Ilimitado"
+                          : coverage.coverage_currency === "P"
+                          ? Number(
                               coverage.coverage_amount.replace(/\$|,/g, "")
                             ).toLocaleString("es-CL", {
                               style: "currency",
                               currency: "CLP",
-                            })}
+                            })
+                          : coverage.coverage_currency === "U"
+                          ? `${Number(
+                              coverage.coverage_amount.replace(/\$|,/g, "")
+                            )} UF`
+                          : null}
                       </TableCell>
                       <TableCell className="py-6 text-center font-bold text-lg uppercase">
-                        {coverage.coverage_events}
+                        {coverage.coverage_events === 0
+                          ? "Ilimitados"
+                          : coverage.coverage_events}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -270,7 +280,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                       dangerouslySetInnerHTML={{
                         __html: coverage.coverage_maximum.replace(
                           /(\d+%)/g,
-                          '<span class="text-red-500">$1</span>'
+                          '<span class="text-red-500 font-bold">$1</span>'
                         ),
                       }}
                     />
@@ -278,17 +288,28 @@ export default async function Page({ params }: { params: { id: string } }) {
                     coverage.coverage_maximum
                   )}
                   <h3 className="font-bold uppercase">
-                    {coverage.coverage_amount === "Ilimitado"
+                    {coverage.coverage_amount === "0" ||
+                    coverage.coverage_amount === "Ilimitado"
                       ? "Sin monto límite"
-                      : Number(
+                      : coverage.coverage_currency === "P"
+                      ? Number(
                           coverage.coverage_amount.replace(/\$|,/g, "")
                         ).toLocaleString("es-CL", {
                           style: "currency",
                           currency: "CLP",
-                        }) + " máximo por evento"}
+                        }) + " máximo por evento"
+                      : coverage.coverage_currency === "U"
+                      ? `${Number(
+                          coverage.coverage_amount.replace(/\$|,/g, "")
+                        )} UF máximo por evento`
+                      : null}
                   </h3>
                   <h3 className="font-bold uppercase">
-                    {coverage.coverage_events} eventos al año
+                    {coverage.coverage_events === "0"
+                      ? "Eventos ilimitados"
+                      : coverage.coverage_events === "1"
+                      ? "1 evento al año"
+                      : `${Number(coverage.coverage_events)} eventos al año`}
                   </h3>
                 </div>
               ))}
