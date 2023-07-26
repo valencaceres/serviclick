@@ -41,19 +41,33 @@
     --swiper-pagination-color: hsla(0, 0%, 100%, 1);
     --swiper-navigation-size: 20px !important;
     --swiper-navigation-color: var(--foreground);
-    .swiper-button-prev:after,
-    .swiper-rtl .swiper-button-next:after,
-    .swiper-button-next:after,
-    .swiper-rtl .swiper-button-prev:after {
+    .swiper-button-prev::after,
+    .swiper-rtl .swiper-button-next::after {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       background-color: hsla(0, 0%, 85%, 0.5);
       border-radius: 100%;
-      width: 30px;
-      height: 30px;
-      padding-left: 10px;
-      padding-right: 12px;
-      padding-top: 6px;
+      width: 35px;
+      height: 35px;
+      padding: 16px;
       font-weight: 600;
+      margin-left: 20px;
     }
+    .swiper-button-next::after,
+    .swiper-rtl .swiper-button-prev::after {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: hsla(0, 0%, 85%, 0.5);
+        border-radius: 100%;
+        width: 35px;
+        height: 35px;
+        padding: 12px;
+        font-weight: 600;
+        margin-right: 20px;
+    }
+
   }
   /* 
   .dark {

@@ -22,8 +22,7 @@ export const AssistanceCard = ({
             src={imageLink}
             alt="Slide 1"
             fill={true}
-            objectFit="cover"
-            objectPosition="center"
+            className="object-cover object-center"
             loading="lazy"
           />
         </div>

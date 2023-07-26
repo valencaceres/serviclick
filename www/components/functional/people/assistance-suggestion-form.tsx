@@ -68,6 +68,7 @@ export default function AssistanceSuggestionForm({
   })
 
   const selectedRegion = form.watch("region")
+  const assistance = form.watch("assistance")
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     const age =
@@ -299,7 +300,12 @@ export default function AssistanceSuggestionForm({
               className="w-fit"
               onClick={() => {
                 setIsOpen(false)
-                router.push("/")
+                router.push(
+                  `/family/${
+                    families.find((f) => f.family_name === assistance)
+                      ?.family_id
+                  }`
+                )
               }}
             >
               Aceptar

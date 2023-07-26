@@ -468,28 +468,32 @@ const getByRetailRut = async (rut: string) => {
 
 const listByFamilies = async () => {
   try {
-    const sqlQuery = `select    distinct
-                          fam.id as family_id,
+    const sqlQuery = `select    fam.id as family_id,
                           fam.name as family_name,
                           pro.id as product_id,
                           pro.name as product_name,
                           pro.beneficiaries,
                           ppl.id as productplan_id,
                           ppl.price,
-                          pco.name as coverage_name,
-                          pco.amount as coverage_amount,
-                          pco.maximum as coverage_maximum,
-                          pco.lack as coverage_lack,
-                          pco.events as coverage_events
+                          asi.id as assistance_id,
+                          asi.name as coverage_name,
+                          pas.amount as coverage_amount,
+                          pas.maximum as coverage_maximum,
+                          pas.events as coverage_events,
+                          pas.lack as coverage_lack,
+                          pas.currency as coverage_currency
                       from    app.product pro
                               inner join app.productplan ppl on pro.id = ppl.product_id
-                              inner join app.productcoverage pco on pro.id = pco.product_id
+                              inner join app.productassistance pas on pro.id = pas.product_id
+                              inner join app.assistance asi on pas.assistance_id = asi.id
                               inner join app.agent age on ppl.agent_id = age.id
                               inner join app.family fam on pro.family_id = fam.id
-                      where     age.id = '020579a3-8461-45ec-994b-ad22ff8e3275' and ppl.type = 'customer'
-                      order     by
+                      where   age.id = '020579a3-8461-45ec-994b-ad22ff8e3275' and 
+                              ppl.type = 'customer'
+                      order    by
                           fam.name,
-                          pro.name`;
+                          pro.name,
+                          pas.number`;
 
     const result = await pool.query(sqlQuery);
 

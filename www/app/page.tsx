@@ -1,7 +1,5 @@
 import "swiper/css"
 import "swiper/css/navigation"
-import Image from "next/image"
-
 import { Alliances } from "@/components/functional/home/alliances"
 import { AssistancesCarousel } from "@/components/functional/home/assistances-carousel"
 import { Clients } from "@/components/functional/home/clients"

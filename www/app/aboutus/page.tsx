@@ -37,7 +37,7 @@ export default function AboutUsPage() {
           </div>
         </div>
       </section>
-      <section className="bg-foreground text-background flex justify-center pt-6">
+      <section className="bg-foreground text-background flex justify-center">
         <div className="flex flex-auto items-center justify-between flex-wrap max-w-8xl">
           <div className="py-4 px-6 lg:px-20 w-full md:w-2/3 flex flex-col gap-4">
             <h1 className="uppercase text-4xl font-bebas text-center">
@@ -63,7 +63,7 @@ export default function AboutUsPage() {
           </div>
         </div>
       </section>
-      <section className="bg-primary text-background flex justify-center pt-6">
+      <section className="bg-primary text-background flex justify-center">
         <div className="flex flex-auto items-center justify-between flex-wrap-reverse max-w-8xl">
           <div className="w-full md:w-1/3 h-[300px] object-cover relative">
             <Image
@@ -91,7 +91,7 @@ export default function AboutUsPage() {
           </div>
         </div>
       </section>
-      <section className="text-center bg-slate-50 py-12 mt-12 flex flex-col gap-6 items-center">
+      <section className="text-center bg-slate-50 py-24 flex flex-col gap-6 items-center">
         <h1 className="text-6xl text-foreground uppercase font-bebas">
           ¡Trabaja con nosotros!
         </h1>

@@ -1,14 +1,23 @@
+import Image from "next/image"
 import Link from "next/link"
 
-import { SiteConfig } from "@/types/nav"
-
-import { Button } from "../ui/button"
 import { Icons } from "./icons"
 
-export function SiteFooter({ siteConfig }: { siteConfig: SiteConfig }) {
+export async function SiteFooter() {
+  const responseCategories = await fetch(
+    process.env.API_URL! + "/api/category/getAll",
+    {
+      headers: {
+        id: process.env.API_KEY!,
+      },
+    }
+  )
+
+  const categories = await responseCategories.json()
+
   return (
     <footer className="flex flex-col" id="contact">
-      <div className="bg-slate-50 flex gap-4 justify-between flex-wrap px-16 py-6">
+      <div className="bg-slate-50 flex gap-4 justify-between flex-wrap px-16 py-6 items-center">
         <div className="flex flex-col gap-2">
           <h2 className="uppercase font-bebas text-2xl">Contacto Comercial</h2>
           <div>
@@ -22,9 +31,6 @@ export function SiteFooter({ siteConfig }: { siteConfig: SiteConfig }) {
             >
               <p>comercial@serviclick.cl</p>
             </Link>
-          </div>
-          <h2 className="uppercase font-bebas text-2xl">Dirección</h2>
-          <div>
             <Link
               href="https://goo.gl/maps/2pH3KDzeW7bvhLcJ6"
               target="_blank"
@@ -32,6 +38,29 @@ export function SiteFooter({ siteConfig }: { siteConfig: SiteConfig }) {
               passHref
             >
               <p>Enrique Mac Iver 440 Oficina 702</p>
+            </Link>
+          </div>
+          <div className="flex gap-5">
+            <Link
+              href="https://www.instagram.com/serviclick"
+              passHref
+              target="_blank"
+            >
+              <Icons.instagram className="w-8 h-8 text-foreground" />
+            </Link>
+            <Link
+              href="https://www.facebook.com/serviclick.cl"
+              passHref
+              target="_blank"
+            >
+              <Icons.facebook className="w-8 h-8 text-foreground" />
+            </Link>
+            <Link
+              href="https://www.linkedin.com/company/serviclick"
+              passHref
+              target="_blank"
+            >
+              <Icons.linkedin className="w-8 h-8 text-foreground" />
             </Link>
           </div>
         </div>
@@ -44,39 +73,49 @@ export function SiteFooter({ siteConfig }: { siteConfig: SiteConfig }) {
             referrerPolicy="no-referrer-when-downgrade"
           ></iframe>
         </div>
-      </div>
-      <div className="bg-[#222222] w-full flex justify-between items-center flex-wrap py-4 gap-4">
-        <div className="px-12 flex gap-5">
-          <Link
-            href="https://www.instagram.com/serviclick"
-            passHref
-            target="_blank"
-          >
-            <Icons.instagram className="w-8 h-8 text-background" />
-          </Link>
-          <Link
-            href="https://www.facebook.com/serviclick.cl"
-            passHref
-            target="_blank"
-          >
-            <Icons.facebook className="w-8 h-8 text-background" />
-          </Link>
-          <Link
-            href="https://www.linkedin.com/company/serviclick"
-            passHref
-            target="_blank"
-          >
-            <Icons.linkedin className="w-8 h-8 text-background" />
-          </Link>
+        <div>
+          <Image src="/webpay.png" alt="webpay" width={235} height={100} />
         </div>
-        <div className="text-[#B2B2B2] px-12 text-sm flex flex-col gap-2">
-          <p>Serviclick 2023 - Todos los derechos reservados.</p>
-          <Link href="/termsandconditions" className="hover:underline" passHref>
-            <p>Términos y condiciones</p>
-          </Link>
-          <Link href="#" className="hover:underline" passHref>
-            <p>Trabaja con nostros</p>
-          </Link>
+      </div>
+      <div className="bg-[#222222] w-full flex justify-center md:justify-between items-center flex-wrap py-4 gap-4 cursor-pointer">
+        <div className="text-[#B2B2B2] flex-wrap px-12 text-sm flex gap-4">
+          <div className="flex flex-col gap-1">
+            <Link href="/termsandconditions" passHref>
+              <p className="hover:underline">Términos y condiciones</p>
+            </Link>
+            <Link href="/aboutus" passHref>
+              <p className="hover:underline">Trabaja con nostros</p>
+            </Link>
+            <Link href="/companies" passHref>
+              <p className="hover:underline">Contacto empresas</p>
+            </Link>
+            <Link href="/people" passHref>
+              <p className="hover:underline">Contacto personas</p>
+            </Link>
+          </div>
+          <div className="grid md:grid-cols-2 md:gap-x-4 md:gap-y-1">
+            {categories.map((assistance: any) => (
+              <Link
+                href={`/family/${assistance.family_id}`}
+                passHref
+                key={assistance.id}
+              >
+                <p className="hover:underline">{assistance.name}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+        <div className="md:pr-24 flex flex-col">
+          <Image
+            src="/logo-blank.png"
+            alt="logo"
+            width={250}
+            height={50}
+            loading="lazy"
+          />
+          <p className="text-[#B2B2B2] text-xs">
+            Serviclick 2023 - Todos los derechos reservados.
+          </p>
         </div>
       </div>
     </footer>

@@ -63,6 +63,7 @@ export default function AssistanceQuoteForm({
 
   const selectedRegion = form.watch("region")
   const companySize = form.watch("size")
+  const area = form.watch("area")
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     const size = companySizes.find((size) => size.value === data.size)?.label
@@ -320,7 +321,11 @@ export default function AssistanceQuoteForm({
               className="w-fit"
               onClick={() => {
                 setIsOpen(false)
-                router.push("/")
+                router.push(
+                  `/family/${
+                    families.find((f) => f.family_name === area)?.family_id
+                  }`
+                )
               }}
             >
               Aceptar
