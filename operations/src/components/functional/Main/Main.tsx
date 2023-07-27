@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSession } from "@clerk/nextjs";
+import { useSession, useUser } from "@clerk/nextjs";
 
 import { Content } from "../../layout/Content";
 
@@ -13,13 +13,17 @@ const Main = ({ children }: any) => {
 
   const { isSignedIn } = useSession();
 
+  const { user } = useUser();
+
   useEffect(() => {
     listAllDistrict();
   }, []);
 
   return (
     <Content>
-      {isSignedIn && <Menu isOpen={isOpen} setIsOpen={setIsOpen} />}
+      {isSignedIn && user?.publicMetadata.roles?.operaciones && (
+        <Menu isOpen={isOpen} setIsOpen={setIsOpen} />
+      )}
       {children}
     </Content>
   );

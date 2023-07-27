@@ -14,16 +14,19 @@ import {
 interface Route {
   text: string;
   route?: string;
+  roles?: string[];
   subRoutes?: Route[];
 }
 
 const routes = [
   {
     text: "Dashboard",
+    roles: ["user", "moderator", "admin"],
     route: "/",
   },
   {
     text: "Operaciones",
+    roles: ["admin"],
     subRoutes: [
       {
         text: "Reembolsos",
@@ -32,17 +35,6 @@ const routes = [
       {
         text: "Descuentos IMED",
         route: "/operations/imed",
-      },
-    ],
-  },
-  {
-    text: "Reportes",
-    subRoutes: [
-      {
-        text: "Reporte de ventas",
-      },
-      {
-        text: "Reporte de reembolsos",
       },
     ],
   },
@@ -132,6 +124,17 @@ interface MenuItemProps {
 
 const MenuItem: React.FC<MenuItemProps> = ({ route, isOpen, setIsOpen }) => {
   const { pathname } = useRouter();
+  const { user } = useUser();
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const userRoles = user?.publicMetadata.roles?.admin;
+
+  const userHasRole = (role: string) => {
+    return userRoles === role;
+  };
+
+  if (route.roles && !route.roles.some(userHasRole)) {
+    return null;
+  }
 
   if (!route.route && !route.subRoutes) {
     return (

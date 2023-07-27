@@ -14,6 +14,7 @@ import {
 interface Route {
   text: string;
   route?: string;
+  roles?: string[];
   subRoutes?: Route[];
 }
 
@@ -29,7 +30,7 @@ const routes = [
   {
     text: "Cobranza",
     route: "/billing",
-  }
+  },
 ];
 
 interface MenuProps {
@@ -117,6 +118,17 @@ interface MenuItemProps {
 const MenuItem: React.FC<MenuItemProps> = ({ route, isOpen, setIsOpen }) => {
   const { pathname } = useRouter();
 
+  const { user } = useUser();
+  const userRoles = user?.publicMetadata.roles?.broker;
+
+  const userHasRole = (role: string) => {
+    return userRoles === role;
+  };
+
+  if (route.roles && !route.roles.some(userHasRole)) {
+    return null;
+  }
+
   if (!route.route && !route.subRoutes) {
     return (
       <li
@@ -154,11 +166,13 @@ const MenuItem: React.FC<MenuItemProps> = ({ route, isOpen, setIsOpen }) => {
   return (
     <li
       className={`flex w-full list-none rounded-md text-teal-blue-100 ${
-        pathname === route.route ? "font-extrabold bg-teal-blue-50 bg-opacity-20" : "font-medium hover:bg-teal-blue-50 hover:bg-opacity-10"
+        pathname === route.route
+          ? "bg-teal-blue-50 bg-opacity-20 font-extrabold"
+          : "font-medium hover:bg-teal-blue-50 hover:bg-opacity-10"
       }`}
       onClick={() => setIsOpen && setIsOpen(false)}
     >
-      <Link className="w-full h-full p-4" href={route.route}>
+      <Link className="h-full w-full p-4" href={route.route}>
         {route.text}
       </Link>
     </li>

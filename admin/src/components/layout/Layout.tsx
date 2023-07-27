@@ -1,4 +1,4 @@
-import { useSession } from "@clerk/nextjs";
+import { UserButton, useSession, useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -17,6 +17,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 const Header = () => {
   const { isSignedIn } = useSession();
+  const { user } = useUser();
 
   const { title } = useUI();
 
@@ -29,8 +30,14 @@ const Header = () => {
       }
     >
       <div className={"relative flex w-full items-center pl-2 md:w-1/2"}>
-        {isSignedIn && <Menu isOpen={isOpen} setIsOpen={setIsOpen} />}
-        <div className={`select-none ${isSignedIn ? "pl-16" : ""}`}>
+        {isSignedIn && user?.publicMetadata.roles.admin && (
+          <Menu isOpen={isOpen} setIsOpen={setIsOpen} />
+        )}
+        <div
+          className={`select-none ${
+            isSignedIn && user?.publicMetadata.roles.admin ? "pl-16" : ""
+          }`}
+        >
           <Link href="/">
             <Image
               alt="ServiClick"
@@ -53,10 +60,11 @@ const Header = () => {
       </div>
       <div
         className={
-          "flex h-full w-full select-none items-center bg-primary-500 pl-5 text-[22px] font-semibold text-white md:w-1/2"
+          "flex w-full select-none items-center justify-end gap-2 bg-white px-5 text-[22px] font-semibold text-teal-blue md:w-1/2 md:justify-between md:bg-primary-500 md:text-white"
         }
       >
         {title}
+        {isSignedIn && !user?.publicMetadata.roles.admin && <UserButton />}
       </div>
     </header>
   );
