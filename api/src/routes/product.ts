@@ -41,6 +41,6 @@ ProductRouter.get(
 );
 ProductRouter.get("/getAll", auth, getAll);
 ProductRouter.get("/getByRetailRut/:rut", auth, getByRetailRut);
-ProductRouter.get("/listByFamilies", auth, listByFamilies);
+ProductRouter.get("/listByFamilies/:agent", auth, listByFamilies);
 
 export default ProductRouter;

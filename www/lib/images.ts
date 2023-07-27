@@ -17,7 +17,7 @@ const familyImages: { [key: string]: string } = {
 
 export function getFamilyImage(familyName: string): string {
   return (
-    familyImages[familyName.toLowerCase() as keyof typeof familyImages] ||
+    familyImages[familyName?.toLowerCase() as keyof typeof familyImages] ||
     "/assistance6.jpg"
   )
 }

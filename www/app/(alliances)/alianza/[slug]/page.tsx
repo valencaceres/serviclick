@@ -1,7 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 
-import { getFamilyImage } from "@/lib/images"
+import { alliancesData } from "@/lib/alliance-data"
 import { Button } from "@/components/ui/button"
 import {
   Table,
@@ -12,9 +12,9 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-export default async function Page({ params }: { params: { id: string } }) {
+export default async function Page({ params }: { params: { slug: string } }) {
   const responseFamilies = await fetch(
-    process.env.API_URL! + "/api/product/listByFamilies",
+    process.env.API_URL! + `/api/product/listByFamilies/${params.slug}`,
     {
       headers: {
         id: process.env.API_KEY!,
@@ -24,7 +24,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   const families = await responseFamilies.json()
 
   const assistances = families.filter(
-    (family: { family_id: string }) => family.family_id === params.id
+    (family: { agent_slug: string }) => family.agent_slug === params.slug
   )
 
   let uniqueAssistances = assistances.reduce((acc: any, current: any) => {
@@ -81,31 +81,47 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   const uniqueAssistancesArray = Object.values(uniqueAssistances)
 
+  console.log(families)
   return (
     <>
-      <section className="relative h-[450px] flex items-center px-20 pb-20">
-        <Image
-          src={getFamilyImage(assistances[0].family_name)}
-          alt="Picture of the author"
-          quality={100}
-          fill={true}
-          className="absolute z-0 object-cover"
-        />
-        <div className="z-10 w-full flex lg:items-end lg:justify-center gap-6 lg:gap-16 flex-col lg:flex-row items-center justify-end h-full">
-          {uniqueAssistancesArray?.map((assistance: any) => (
-            <Link href={`#${assistance.product_name}`} passHref>
-              <Button
-                type="button"
-                key={assistance.product_id}
-                variant="secondary"
-                className="text-xl py-8 px-6 hover:bg-secondary/90 bg-secondary/90 lg:bg-secondary uppercase w-96"
-              >
-                {assistance.product_name}
-              </Button>
-            </Link>
-          ))}
+      <section className="relative h-[600px] flex items-center px-20">
+        <video
+          style={{
+            objectFit: "cover",
+            width: "100%",
+            height: "100%",
+            position: "absolute",
+            objectPosition: "center",
+            top: 0,
+            left: 0,
+          }}
+          autoPlay
+          loop
+          muted
+          id="video"
+        >
+          <source
+            src={`/alliance/header/${params.slug}.mp4`}
+            type="video/mp4"
+          />
+        </video>
+        <div className="z-10 w-96">
+          <h1 className="uppercase text-6xl text-background font-bebas text-center md:text-start">
+            {
+              alliancesData.find((alliance) => alliance.slug === params.slug)
+                ?.heroText
+            }
+          </h1>
         </div>
         <div className="bg-black absolute w-full h-full z-5 top-0 right-0 bg-opacity-30"></div>
+      </section>
+      <section className="flex py-10 justify-center bg-slate-50">
+        <h2 className="text-center text-2xl max-w-2xl">
+          {
+            alliancesData.find((alliance) => alliance.slug === params.slug)
+              ?.description
+          }
+        </h2>
       </section>
       <section className="flex justify-center flex-col items-center py-10 gap-32">
         {uniqueAssistancesArray?.map((assistance: any) => (

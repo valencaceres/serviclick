@@ -962,7 +962,9 @@ const getByRetailRut = async (req: any, res: any) => {
 };
 
 const listByFamilies = async (req: any, res: any) => {
-  const result = await Product.listByFamilies();
+  const { agent } = req.params;
+
+  const result = await Product.listByFamilies(agent);
 
   if (!result.success) {
     createLogger.error({
