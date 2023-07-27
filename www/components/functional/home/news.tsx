@@ -28,12 +28,12 @@ const news = [
   {
     id: "novedad-4",
     image: "/news4.jpg",
-    link: "#",
+    link: "https://www.serviclick.cl/alianza/sindicato1prosegur",
   },
   {
     id: "novedad-5",
     image: "/news5.jpg",
-    link: "#",
+    link: "https://www.serviclick.cl/alianza/vinasanpedro",
   },
 ]
 
@@ -58,18 +58,16 @@ export const News = () => {
   }
 
   const slides = news.map((news) => (
-    <Link
-      href={news.link}
-      className="h-[240px] w-[300px] mx-auto relative"
-      passHref
-    >
-      <Image
-        className="cursor-pointer hover:scale-105 duration-75 py-2"
-        src={news.image}
-        alt="News"
-        fill
-      />
-    </Link>
+    <div className="h-[240px] w-[300px] mx-auto relative">
+      <Link href={news.link} passHref>
+        <Image
+          className="cursor-pointer hover:scale-105 duration-75 py-2"
+          src={news.image}
+          alt="News"
+          fill
+        />
+      </Link>
+    </div>
   ))
 
   return <CustomSwiper options={options} slides={slides} />

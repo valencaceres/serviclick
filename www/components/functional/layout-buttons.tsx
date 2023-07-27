@@ -23,7 +23,7 @@ export function LayoutButtons() {
             viewBox="0,0,256,256"
             width="32px"
             height="32px"
-            fill-rule="nonzero"
+            fillRule="nonzero"
           >
             <g
               fill="#ffffff"

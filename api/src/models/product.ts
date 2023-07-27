@@ -466,36 +466,40 @@ const getByRetailRut = async (rut: string) => {
   }
 };
 
-const listByFamilies = async () => {
+const listByFamilies = async (agent: string) => {
   try {
-    const sqlQuery = `select    fam.id as family_id,
-                          fam.name as family_name,
-                          pro.id as product_id,
-                          pro.name as product_name,
+    const sqlQuery = `SELECT
+                          fam.id AS family_id,
+                          fam.name AS family_name,
+                          pro.id AS product_id,
+                          pro.name AS product_name,
                           pro.beneficiaries,
-                          ppl.id as productplan_id,
+                          ppl.id AS productplan_id,
                           ppl.price,
-                          asi.id as assistance_id,
-                          asi.name as coverage_name,
-                          pas.amount as coverage_amount,
-                          pas.maximum as coverage_maximum,
-                          pas.events as coverage_events,
-                          pas.lack as coverage_lack,
-                          pas.currency as coverage_currency
-                      from    app.product pro
-                              inner join app.productplan ppl on pro.id = ppl.product_id
-                              inner join app.productassistance pas on pro.id = pas.product_id
-                              inner join app.assistance asi on pas.assistance_id = asi.id
-                              inner join app.agent age on ppl.agent_id = age.id
-                              inner join app.family fam on pro.family_id = fam.id
-                      where   age.id = '020579a3-8461-45ec-994b-ad22ff8e3275' and 
-                              ppl.type = 'customer'
-                      order    by
+                          age.fantasyname AS agent_slug,
+                          asi.id AS assistance_id,
+                          asi.name AS coverage_name,
+                          pas.amount AS coverage_amount,
+                          pas.maximum AS coverage_maximum,
+                          pas.events AS coverage_events,
+                          pas.lack AS coverage_lack,
+                          pas.currency AS coverage_currency
+                      FROM
+                          app.product pro
+                          INNER JOIN app.productplan ppl ON pro.id = ppl.product_id
+                          INNER JOIN app.productassistance pas ON pro.id = pas.product_id
+                          INNER JOIN app.assistance asi ON pas.assistance_id = asi.id
+                          INNER JOIN app.agent age ON ppl.agent_id = age.id
+                          INNER JOIN app.family fam ON pro.family_id = fam.id
+                      WHERE
+                          (age.id::TEXT = $1 OR age.fantasyname = $1)
+                          AND ppl.type = 'customer'
+                      ORDER BY
                           fam.name,
                           pro.name,
                           pas.number`;
 
-    const result = await pool.query(sqlQuery);
+    const result = await pool.query(sqlQuery, [agent]);
 
     return { success: true, data: result.rows, error: null };
   } catch (error) {

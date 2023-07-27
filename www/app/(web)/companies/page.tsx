@@ -5,7 +5,8 @@ import { GrupoMHM } from "../aboutus/page"
 
 export default async function CompaniesPage() {
   const responseFamilies = await fetch(
-    process.env.API_URL! + "/api/product/listByFamilies",
+    process.env.API_URL! +
+      "/api/product/listByFamilies/020579a3-8461-45ec-994b-ad22ff8e3275",
     {
       headers: {
         id: process.env.API_KEY!,
