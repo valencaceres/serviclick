@@ -1603,19 +1603,19 @@ const addInsuredFromExcel = async (req: any, res: any) => {
       }
     }
 
-    for (const item of data) {
-      const contents = await addInsuredFromExcelItem(lead_id, product_id, item);
-    }
+    // for (const item of data) {
+    //   const contents = await addInsuredFromExcelItem(lead_id, product_id, item);
+    // }
 
-    // await Promise.all(
-    //   data.map(async (item) => {
-    //     const contents = await addInsuredFromExcelItem(
-    //       lead_id,
-    //       product_id,
-    //       item
-    //     );
-    //   })
-    // );
+    await Promise.all(
+      data.map(async (item) => {
+        const contents = await addInsuredFromExcelItem(
+          lead_id,
+          product_id,
+          item
+        );
+      })
+    );
 
     // const jsonData = excelToJson(
     //   xlsData,
@@ -1632,6 +1632,11 @@ const addInsuredFromExcel = async (req: any, res: any) => {
     //     )
     //   )
     // );
+
+    createLogger.info({
+      controller: "lead/addInsuredFromExcel",
+      data: `${data.length} beneficiarios enviados`,
+    });
 
     const successResponse = { success: true, data: true };
     res.json(successResponse);
