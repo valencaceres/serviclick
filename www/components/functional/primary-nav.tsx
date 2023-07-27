@@ -60,7 +60,7 @@ export function NavPrimary(siteConfig: SiteConfig) {
                   {siteConfig.mainNav?.map(
                     (item, index) =>
                       item.href && (
-                        <SheetClose asChild>
+                        <SheetClose key={item.title} asChild>
                           <Link
                             key={index}
                             href={item.href}
@@ -77,7 +77,7 @@ export function NavPrimary(siteConfig: SiteConfig) {
                   {siteConfig.secondaryNav?.map(
                     (item, index) =>
                       item.href && (
-                        <SheetClose asChild>
+                        <SheetClose key={item.title} asChild>
                           <Link
                             key={index}
                             href={item.href}

@@ -1,6 +1,6 @@
 export const alliancesData = [
   {
-    slug: "prosegur",
+    slug: "sindicato1prosegur",
     heroText: "Un ahorro para ti, y tu familia",
     description:
       "Junto a Sindicato n°1 Prosegur Chile, te brindamos las mejores Asistencias diseñadas especialmente para ti y tu familia.",

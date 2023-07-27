@@ -28,7 +28,7 @@ const news = [
   {
     id: "novedad-4",
     image: "/news4.jpg",
-    link: "https://www.serviclick.cl/alianza/prosegur",
+    link: "https://www.serviclick.cl/alianza/sindicato1prosegur",
   },
   {
     id: "novedad-5",
