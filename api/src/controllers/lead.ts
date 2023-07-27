@@ -22,6 +22,9 @@ import * as ProductPlan from "../models/productPlan";
 import * as Policy from "../models/policy";
 import * as LeadProductValues from "../models/leadProductValue";
 import { getContractLink } from "../util/s3";
+import { formatRut } from "../util/rut";
+import { fillEmptyEmail } from "../util/email";
+
 import excelToJson from "../util/excelToJson";
 
 export type CustomerT = {
@@ -489,7 +492,12 @@ const addInsuredFromExcelItem = async (
   product_id: string,
   data: any
 ) => {
-  const insuredResponse = await createInsured(data);
+  const insuredResponse = await createInsured({
+    ...data,
+    rut: formatRut(data.rut),
+    email:
+      data.email === "" || !data.email ? fillEmptyEmail(data.rut) : data.email,
+  });
 
   if (!insuredResponse.success) {
     createLogger.error({
@@ -1595,6 +1603,10 @@ const addInsuredFromExcel = async (req: any, res: any) => {
       }
     }
 
+    // for (const item of data) {
+    //   const contents = await addInsuredFromExcelItem(lead_id, product_id, item);
+    // }
+
     await Promise.all(
       data.map(async (item) => {
         const contents = await addInsuredFromExcelItem(
@@ -1620,6 +1632,11 @@ const addInsuredFromExcel = async (req: any, res: any) => {
     //     )
     //   )
     // );
+
+    createLogger.info({
+      controller: "lead/addInsuredFromExcel",
+      data: `${data.length} beneficiarios enviados`,
+    });
 
     const successResponse = { success: true, data: true };
     res.json(successResponse);
