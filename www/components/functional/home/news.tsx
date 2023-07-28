@@ -18,22 +18,22 @@ const news = [
   {
     id: "novedad-2",
     image: "/news2.jpg",
-    link: "#",
+    link: "/family/290a790c-f7e3-491f-b528-c218401e5fe0",
   },
   {
     id: "novedad-3",
     image: "/news3.jpg",
-    link: "https://www.serviclick.cl/companies",
+    link: "/companies",
   },
   {
     id: "novedad-4",
     image: "/news4.jpg",
-    link: "https://www.serviclick.cl/alianza/sindicato1prosegur",
+    link: "/alianza/sindicato1prosegur",
   },
   {
     id: "novedad-5",
     image: "/news5.jpg",
-    link: "https://www.serviclick.cl/alianza/vinasanpedro",
+    link: "/alianza/vinasanpedro",
   },
 ]
 
