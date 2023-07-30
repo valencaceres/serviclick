@@ -29,6 +29,7 @@ class App {
 
   routes() {
     this.server.use("/reveniu", reqLogger, routes.ReveniuRouter);
+    this.server.use("/clerk", reqLogger, routes.ClerkRouter);
   }
 }
 
