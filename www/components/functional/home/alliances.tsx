@@ -7,9 +7,7 @@ import { CustomSwiper } from "../slider"
 
 const alliances = [
   { image: "/alliance1.png" },
-  { image: "/alliance2.png" },
   { image: "/alliance3.png" },
-  { image: "/alliance4.png" },
   { image: "/alliance5.png" },
   { image: "/alliance6.png" },
   { image: "/alliance7.png" },
