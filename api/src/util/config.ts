@@ -69,6 +69,7 @@ const config = {
       reveniu: environment["prod"].feedBack.webHook,
     },
   },
+  clerkPemKey: process.env.CLERK_PEM_PUBLIC_KEY,
 };
 
 export default config;
