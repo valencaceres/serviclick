@@ -21,15 +21,8 @@ const auth = (req: Request, res: Response, next: NextFunction) => {
     return;
   }
 
-  let formattedClerkPemKey = clerkPemKey.replace(
-    "-----BEGIN PUBLIC KEY-----",
-    ""
-  );
-  formattedClerkPemKey = formattedClerkPemKey.replace(
-    "-----END PUBLIC KEY-----",
-    ""
-  );
-  formattedClerkPemKey = `-----BEGIN PUBLIC KEY-----\n${formattedClerkPemKey}\n-----END PUBLIC KEY-----`;
+  // Here, we're adding the headers and footers to the public key
+  const formattedClerkPemKey = `-----BEGIN PUBLIC KEY-----\n${clerkPemKey}\n-----END PUBLIC KEY-----`;
 
   let decoded: string | object;
   try {
