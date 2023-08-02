@@ -26,8 +26,6 @@ export default async function PeoplePage() {
     return false
   })
 
-  console.log(uniqueFamilies)
-
   return (
     <>
       <section className="relative h-[550px] flex items-center px-20">
