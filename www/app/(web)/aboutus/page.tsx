@@ -81,12 +81,11 @@ export default function AboutUsPage() {
             <p>
               Nuestro objetivo es convertirnos en un referente mundial en la
               calidad de servicio, brindando protección y facilitando medidas de
-              seguridad ante riesgos imprevistos. Buscamos proporcionar un
-              acceso sencillo a nuestros servicios, mejorando así las
-              expectativas y la calidad de vida de todas las personas. Nos
-              esforzamos por crear un futuro mejor, donde todos puedan sentirse
-              protegidos y confiados gracias a nuestra destacada calidad de
-              servicio.
+              seguridad ante imprevistos. Buscamos proporcionar un acceso
+              sencillo a nuestros servicios, mejorando así las expectativas y la
+              calidad de vida de todas las personas. Nos esforzamos por crear un
+              futuro mejor, donde todos puedan sentirse protegidos y confiados
+              gracias a nuestra destacada calidad de servicio.
             </p>
           </div>
         </div>
