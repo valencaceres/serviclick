@@ -12,9 +12,7 @@ export default async function PeoplePage() {
       headers: {
         id: process.env.API_KEY!,
       },
-      next: {
-        revalidate: 1,
-      },
+      cache: "no-store",
     }
   )
   const families = await responseFamilies.json()
