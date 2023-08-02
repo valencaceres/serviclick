@@ -11,7 +11,7 @@ import { Icons } from "../icons"
 export const Details = () => {
   return (
     <>
-      <Accordion className="w-full" type="single" collapsible>
+      <Accordion className="w-full max-w-4xl" type="single" collapsible>
         <AccordionItem value="insurance">
           <AccordionTrigger>
             <div className="flex w-full gap-2 text-xl items-center">
