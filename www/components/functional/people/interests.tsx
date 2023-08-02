@@ -2,8 +2,6 @@
 
 import { Navigation, SwiperOptions } from "swiper"
 
-import { getFamilyImage } from "@/lib/images"
-
 import { AssistanceCard } from "../assistance-card"
 import { CustomSwiper } from "../slider"
 
@@ -49,7 +47,7 @@ export const Interests = ({ families }: FamiliesCarouselProps) => {
         key={family.family_id}
         family_id={family.family_id}
         title={family.family_name}
-        imageLink={getFamilyImage(family.family_name)}
+        imageLink={`/families/${family.family_id}.jpg`}
       />
     </div>
   ))

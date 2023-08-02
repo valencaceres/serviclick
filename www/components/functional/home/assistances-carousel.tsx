@@ -1,9 +1,6 @@
 "use client"
 
-import Link from "next/link"
-import { Navigation, Pagination, Scrollbar, SwiperOptions } from "swiper"
-
-import { getCategoryImage, getFamilyImage } from "@/lib/images"
+import { Navigation, SwiperOptions } from "swiper"
 
 import { AssistanceCard } from "../assistance-card"
 import { CustomSwiper } from "../slider"
@@ -48,7 +45,7 @@ export const AssistancesCarousel = ({
         key={assistance.id}
         family_id={assistance.family_id}
         title={assistance.name}
-        imageLink={getCategoryImage(assistance.name)}
+        imageLink={`/categories/${assistance.id}.jpg`}
       />
     </div>
   ))

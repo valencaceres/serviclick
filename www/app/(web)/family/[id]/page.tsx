@@ -1,7 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
 
-import { getFamilyImage } from "@/lib/images"
 import { Button } from "@/components/ui/button"
 import {
   Table,
@@ -82,14 +81,12 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   const uniqueAssistancesArray = Object.values(uniqueAssistances)
 
-  console.log(families)
-
   return (
     <>
       <section className="relative h-[450px] flex items-center px-20 pb-20">
         <Image
-          src={getFamilyImage(assistances[0].family_name)}
-          alt="Picture of the author"
+          src={`/families/${params.id}.jpg`}
+          alt={"Familia " + params.id}
           quality={100}
           fill={true}
           className="absolute z-0 object-cover"
