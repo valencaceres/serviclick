@@ -13,6 +13,7 @@ export default async function IndexPage() {
       headers: {
         id: process.env.API_KEY!,
       },
+      cache: "no-store",
     }
   )
 
