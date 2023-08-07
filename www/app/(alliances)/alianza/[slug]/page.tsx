@@ -19,6 +19,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
       headers: {
         id: process.env.API_KEY!,
       },
+      cache: "no-store",
     }
   )
   const families = await responseFamilies.json()

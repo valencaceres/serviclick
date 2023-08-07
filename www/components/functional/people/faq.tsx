@@ -1,3 +1,7 @@
+"use client"
+
+import { useState } from "react"
+
 import {
   Accordion,
   AccordionContent,
@@ -284,16 +288,38 @@ function FaqAccordion() {
 }
 
 function FaqTabs() {
+  const [selected, setSelected] = useState("subscription")
   return (
     <Tabs
-      defaultValue="subscription"
+      value={selected}
+      onValueChange={setSelected}
       className="w-full hidden xl:block max-w-2xl"
     >
       <TabsList>
-        <TabsTrigger value="subscription">Suscripción</TabsTrigger>
-        <TabsTrigger value="assistances">Asistencias</TabsTrigger>
-        <TabsTrigger value="my-assistance">Mis asistencias</TabsTrigger>
-        <TabsTrigger value="others">Otros</TabsTrigger>
+        <TabsTrigger className="text-center flex-col p-0" value="subscription">
+          <span className="py-4">Suscripción</span>
+          <div className="bg-background w-full h-[20px] flex justify-center">
+            {selected === "subscription" && <Icons.triangle />}
+          </div>
+        </TabsTrigger>
+        <TabsTrigger className="text-center flex-col p-0" value="assistances">
+          <span className="py-4">Asistencias</span>
+          <div className="bg-background w-full h-[20px] flex justify-center">
+            {selected === "assistances" && <Icons.triangle />}
+          </div>
+        </TabsTrigger>
+        <TabsTrigger className="text-center flex-col p-0" value="my-assistance">
+          <span className="py-4">Mis asistencias</span>
+          <div className="bg-background w-full h-[20px] flex justify-center">
+            {selected === "my-assistance" && <Icons.triangle />}
+          </div>
+        </TabsTrigger>
+        <TabsTrigger className="text-center flex-col p-0" value="others">
+          <span className="py-4">Otros</span>
+          <div className="bg-background w-full h-[20px] flex justify-center">
+            {selected === "others" && <Icons.triangle />}
+          </div>
+        </TabsTrigger>
       </TabsList>
       <TabsContent value="subscription">
         <Accordion type="single" collapsible>
