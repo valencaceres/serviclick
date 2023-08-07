@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/inline-script-id */
 import Image from "next/image";
 
 import styles from "./MainLayout.module.scss";
@@ -9,6 +10,7 @@ import { useUI, useProduct } from "@/store/hooks";
 import { currencyFormat } from "@/utils/format";
 import Badge from "@/components/ui/Badge/Badge";
 import Head from "next/head";
+import Script from "next/script";
 
 interface Props {
   children: JSX.Element | JSX.Element[];
@@ -40,7 +42,25 @@ const MainLayout = ({ children }: Props) => {
 };
 
 const Screen = ({ children }: Props) => {
-  return <div className={styles.screen}>{children}</div>;
+  return (
+    <>
+      <Script
+        strategy="lazyOnload"
+        src={`https://www.googletagmanager.com/gtag/js?id=G-3X55MR03FG`}
+      />
+      <Script strategy="lazyOnload">
+        {`
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){dataLayer.push(arguments);}
+                    gtag('js', new Date());
+                    gtag('config', 'G-3X55MR03FG', {
+                    page_path: window.location.pathname,
+                    });
+                `}
+      </Script>
+      <div className={styles.screen}>{children}</div>
+    </>
+  );
 };
 
 const HeaderServiClick = () => {
