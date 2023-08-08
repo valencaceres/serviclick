@@ -24,8 +24,7 @@ import {
   createChatMessage,
   getChatByCase,
 } from "../controllers/case";
-
-const upload = multer();
+import isAuthenticated from "../middlewares/isAuthenticated";
 
 const CaseRouter = Router();
 
@@ -39,7 +38,7 @@ CaseRouter.post(
   }),
   uploadDocument
 );
-CaseRouter.get("/all", auth, getAll);
+CaseRouter.get("/all", auth, isAuthenticated, getAll);
 CaseRouter.get("/getBeneficiaryByRut/:rut", auth, getBeneficiaryByRut);
 CaseRouter.get("/getById/:id", auth, getCaseById);
 CaseRouter.get("/getAttachById/:case_id/:casestage_id", auth, getAttachById);

@@ -1,5 +1,6 @@
 import axios from "axios";
 import Cookies from "js-cookie";
+
 import { config } from "../utils/config";
 
 const apiInstance = axios.create({

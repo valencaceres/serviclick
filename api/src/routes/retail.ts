@@ -11,6 +11,8 @@ import {
   getFamiliesByRetailId,
   getProductsByRetailIdAndFamilyId,
 } from "../controllers/retail";
+import isAuthenticated from "../middlewares/isAuthenticated";
+import isAdmin from "../middlewares/isAdmin";
 
 const RetailRouter = Router();
 
