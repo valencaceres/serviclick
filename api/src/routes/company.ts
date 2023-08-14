@@ -8,16 +8,14 @@ import {
   getProductsAndInsuredById,
   getLeadsByRut,
 } from "../controllers/company";
+import isAuthenticated from "../middlewares/isAuthenticated";
+import isAdmin from "../middlewares/isAdmin";
 
 const CompanyRouter = Router();
 
 CompanyRouter.get("/getByRut/:rut", auth, getByRut);
-CompanyRouter.get(
-  "/getProductsAndInsuredById/:id",
-  auth,
-  getProductsAndInsuredById
-);
-CompanyRouter.post("/create", auth, create);
+CompanyRouter.get("/getProductsAndInsuredById/:id", auth, getProductsAndInsuredById);
+CompanyRouter.post("/create", auth, isAuthenticated, isAdmin, create);
 CompanyRouter.get("/getAll", auth, getAll);
 CompanyRouter.get("/getLeadsByRut/:id", auth, getLeadsByRut);
 

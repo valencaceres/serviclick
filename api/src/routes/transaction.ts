@@ -5,14 +5,12 @@ import {
   getActivesByRutAndProductIdController,
   getByFiltersController,
 } from "../controllers/transaction";
+import isAuthenticated from "../middlewares/isAuthenticated";
+import isAdmin from "../middlewares/isAdmin";
 
 const TransactionRouter = Router();
 
-TransactionRouter.post(
-  "/getActivesByRutAndProductId",
-  auth,
-  getActivesByRutAndProductIdController
-);
-TransactionRouter.post("/getByFilters", auth, getByFiltersController);
+TransactionRouter.post("/getActivesByRutAndProductId", auth, isAuthenticated, isAdmin, getActivesByRutAndProductIdController);
+TransactionRouter.post("/getByFilters", auth, isAuthenticated, isAdmin, getByFiltersController);
 
 export default TransactionRouter;

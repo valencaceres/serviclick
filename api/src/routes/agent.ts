@@ -7,12 +7,14 @@ import {
   deleteAgent,
   listAgents,
 } from "../controllers/agent";
+import isAuthenticated from "../middlewares/isAuthenticated";
+import isAdmin from "../middlewares/isAdmin";
 
 const AgentRouter = Router();
 
-AgentRouter.post("/create", auth, createAgent);
-AgentRouter.put("/update/:id", auth, updateAgent);
-AgentRouter.delete("/delete/:id", auth, deleteAgent);
+AgentRouter.post("/create", auth, isAuthenticated, isAdmin, createAgent);
+AgentRouter.put("/update/:id", auth, isAuthenticated, isAdmin, updateAgent);
+AgentRouter.delete("/delete/:id", auth, isAuthenticated, isAdmin, deleteAgent);
 AgentRouter.get("/list/:channel_id", auth, listAgents);
 
 export default AgentRouter;
