@@ -17,6 +17,7 @@ import {
 import ModalWindow from "../../../ui/ModalWindow";
 import { Modal } from "../../../ui/Modal";
 import Icon from "../../../ui/Icon";
+import ModalWarning from "../../../ui/ModalWarning";
 
 import { useBroker } from "../../../../hooks";
 
@@ -73,25 +74,32 @@ interface IBrokerUserForm {
   profileName: IFormFieldString;
 }
 
-const BrokerDetail = ({ setEnableButtonSave }: any) => {
+const BrokerDetail = () => {
   const router = useRouter();
 
-  const { broker, setBroker, loading } = useBroker();
+  const {
+    broker,
+    setBroker,
+    loading,
+    createBroker,
+    addProduct,
+    removeProduct,
+  } = useBroker();
 
   const initialDataBrokerForm: IBrokerForm = {
-    rut: { value: "", isValid: false },
-    name: { value: "", isValid: false },
+    rut: { value: "", isValid: true },
+    name: { value: "", isValid: true },
     legalRepresentative: {
       value: "",
-      isValid: false,
+      isValid: true,
     },
-    line: { value: "", isValid: false },
-    fantasyName: { value: "", isValid: false },
-    address: { value: "", isValid: false },
-    district: { value: "", isValid: false },
-    email: { value: "", isValid: false },
-    phone: { value: "", isValid: false },
-    logo: { value: "", isValid: false },
+    line: { value: "", isValid: true },
+    fantasyName: { value: "", isValid: true },
+    address: { value: "", isValid: true },
+    district: { value: "", isValid: true },
+    email: { value: "", isValid: true },
+    phone: { value: "", isValid: true },
+    logo: { value: "", isValid: true },
   };
 
   const initialDataBrokerProductForm: IBrokerProductForm = {
@@ -135,6 +143,22 @@ const BrokerDetail = ({ setEnableButtonSave }: any) => {
   );
   const [showModalProducts, setShowModalProducts] = useState(false);
   const [showModalUsers, setShowModalUsers] = useState(false);
+  const [isDisabledBrokerForm, setIsDisabledBrokerForm] = useState(true);
+  const [productToDelete, setProductToDelete] = useState({ id: "", name: "" });
+  const [showWarningDeleteProduct, setShowWarningDeleteProduct] =
+    useState(false);
+
+  const setClosedWarningDeleteProduct = () => {
+    setShowWarningDeleteProduct(false);
+  };
+
+  const handleClickEditForm = () => {
+    if (isDisabledBrokerForm) {
+      setIsDisabledBrokerForm(false);
+      return;
+    }
+    createBroker(broker);
+  };
 
   const handleClickAddNewProduct = () => {
     setBrokerProductForm(initialDataBrokerProductForm);
@@ -166,15 +190,13 @@ const BrokerDetail = ({ setEnableButtonSave }: any) => {
   };
 
   const handleClickDeleteProduct = (item: any) => {
-    setBrokerProductForm(initialDataBrokerProductForm);
-    setBroker({
-      ...broker,
-      products: [
-        ...broker.products.filter(
-          (product: any) => product.product_id !== item.product_id
-        ),
-      ],
-    });
+    setProductToDelete({ id: item.product_id, name: item.name });
+    setShowWarningDeleteProduct(true);
+  };
+
+  const handleClickDeleteProductOK = () => {
+    removeProduct(broker.id, productToDelete.id);
+    setShowWarningDeleteProduct(false);
   };
 
   const handleClickAddNewUser = () => {
@@ -204,31 +226,25 @@ const BrokerDetail = ({ setEnableButtonSave }: any) => {
   };
 
   const handleClickSaveProduct = () => {
-    setBroker({
-      ...broker,
-      products: [
-        ...broker.products.filter(
-          (product: any) =>
-            product.product_id !== brokerProductForm.product_id.value
-        ),
-        {
-          product_id: brokerProductForm.product_id.value,
-          name: brokerProductForm.name.value,
-          price: {
-            base: brokerProductForm.price.base.value,
-            customer: brokerProductForm.price.customer.value,
-            company: brokerProductForm.price.company.value,
-          },
-          commisionTypeCode: brokerProductForm.commisionTypeCode.value,
-          value: brokerProductForm.value.value,
-          currency: "P",
-          discount: {
-            type: brokerProductForm.discount.type.value,
-            percent: brokerProductForm.discount.percent.value,
-            cicles: brokerProductForm.discount.cicles.value,
-          },
-        },
-      ],
+    addProduct(broker.id, {
+      product_id: brokerProductForm.product_id.value,
+      name: brokerProductForm.name.value,
+      price: {
+        base: brokerProductForm.price.base.value,
+        customer: brokerProductForm.price.customer.value,
+        company: brokerProductForm.price.company.value,
+      },
+      commisionTypeCode: brokerProductForm.commisionTypeCode.value,
+      value: brokerProductForm.value.value,
+      currency: "P",
+      discount: {
+        type:
+          brokerProductForm.discount.type.value == ""
+            ? "n"
+            : brokerProductForm.discount.type.value,
+        percent: brokerProductForm.discount.percent.value,
+        cicles: brokerProductForm.discount.cicles.value,
+      },
     });
   };
 
@@ -266,9 +282,10 @@ const BrokerDetail = ({ setEnableButtonSave }: any) => {
         <ContentCell gap="5px">
           <BrokerLogo />
           <BrokerForm
+            isDisabledBrokerForm={isDisabledBrokerForm}
             brokerForm={brokerForm}
             setBrokerForm={setBrokerForm}
-            setEnableButtonSave={setEnableButtonSave}
+            editForm={handleClickEditForm}
           />
         </ContentCell>
         <ContentCell gap="20px">
@@ -289,7 +306,8 @@ const BrokerDetail = ({ setEnableButtonSave }: any) => {
       <ModalWindow
         showModal={showModalProducts}
         title="Producto"
-        setClosed={() => setShowModalProducts(false)}>
+        setClosed={() => setShowModalProducts(false)}
+      >
         <BrokerProductsItem
           saveProduct={handleClickSaveProduct}
           brokerProductForm={brokerProductForm}
@@ -300,7 +318,8 @@ const BrokerDetail = ({ setEnableButtonSave }: any) => {
       <ModalWindow
         showModal={showModalUsers}
         title="User"
-        setClosed={() => setShowModalUsers(false)}>
+        setClosed={() => setShowModalUsers(false)}
+      >
         <BrokerUsersItem
           saveUser={handleClickSaveUser}
           brokerUserForm={brokerUserForm}
@@ -315,6 +334,20 @@ const BrokerDetail = ({ setEnableButtonSave }: any) => {
           Por favor espere
         </div>
       </Modal>
+      <ModalWarning
+        showModal={showWarningDeleteProduct}
+        title="Eliminación de Producto asociado a Broker"
+        message={`Está seguro de eliminar el producto ${productToDelete.name}`}
+        setClosed={setClosedWarningDeleteProduct}
+        iconName="warning"
+        buttons={[
+          { text: "No", function: setClosedWarningDeleteProduct },
+          {
+            text: "Si",
+            function: () => handleClickDeleteProductOK(),
+          },
+        ]}
+      />
     </Fragment>
   );
 };

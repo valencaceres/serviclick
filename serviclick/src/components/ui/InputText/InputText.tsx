@@ -7,6 +7,7 @@ type InputTextT = {
   type?: string;
   value: string;
   onChange?: any;
+  onKeyUp?: any;
   onFocus?: any;
   onBlur?: any;
   icon?: string;
@@ -25,6 +26,7 @@ const InputText = ({
   type = "text",
   value,
   onChange,
+  onKeyUp = () => {},
   onFocus = () => {},
   onBlur = () => {},
   icon,
@@ -44,6 +46,7 @@ const InputText = ({
         autoComplete="none"
         id={id}
         value={value}
+        onKeyUp={onKeyUp}
         onChange={onChange}
         onFocus={onFocus}
         onBlur={onBlur}

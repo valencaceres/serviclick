@@ -17,9 +17,9 @@ import {
   TableIcons,
 } from "../../../ui/Table";
 import Icon from "../../../ui/Icon";
+import ModalWarning from "../../../ui/ModalWarning";
 
 import { useBroker } from "../../../../hooks";
-import ModalWarning from "../../../ui/ModalWarning";
 
 const BrokerList = ({ editBroker, deleteBroker }: any) => {
   const { broker, setBroker, brokerList, getAllBrokers } = useBroker();
@@ -95,8 +95,8 @@ const BrokerList = ({ editBroker, deleteBroker }: any) => {
       </ContentCell>
       <ModalWarning
         showModal={showWarningDelete}
-        title="Eliminación de producto"
-        message={`Está seguro de eliminar ${broker.name}`}
+        title="Eliminación de Broker"
+        message={`Está seguro de eliminar el broker ${broker.name}`}
         setClosed={setClosedWarningDelete}
         iconName="warning"
         buttons={[
