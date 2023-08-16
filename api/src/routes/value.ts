@@ -9,11 +9,13 @@ import {
   getFamilies,
   getByFamilyId,
 } from "../controllers/value";
+import isAuthenticated from "../middlewares/isAuthenticated";
+import isAdmin from "../middlewares/isAdmin";
 
 const ValueRouter = Router();
 
-ValueRouter.post("/create", auth, create);
-ValueRouter.put("/updateById", auth, updateById);
+ValueRouter.post("/create", auth, isAuthenticated, isAdmin, create);
+ValueRouter.put("/updateById", auth, isAuthenticated, isAdmin, updateById);
 ValueRouter.get("/getAll", auth, getAll);
 ValueRouter.get("/getById/:id", auth, getById);
 ValueRouter.get("/getFamilies", auth, getFamilies);

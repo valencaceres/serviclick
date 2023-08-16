@@ -1,12 +1,15 @@
 import config from "../util/config";
+import { NextFunction, Request, Response } from "express";
 
-const auth = (req: any, res: any, next: any) => {
+const auth = (req: Request, res: Response, next: NextFunction) => {
   const { apiKey } = config;
+
   if (req.headers.id !== apiKey) {
-    res.status(401).json({ message: "No autorizado" });
-  } else {
-    return next();
+    res.status(401).json({ message: "Incorrect api key" });
+    return;
   }
+
+  return next(); // Call the next middleware or final request handler
 };
 
 export default auth;
