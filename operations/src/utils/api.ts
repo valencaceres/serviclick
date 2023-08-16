@@ -11,6 +11,7 @@ const apiInstance = axios.create({
     "X-Frame-Options": "DENY",
     "X-Content-Type-Options": "nosniff",
     "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Access-Control-Allow-Origin": "*",
   },
 });
 

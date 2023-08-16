@@ -1,5 +1,5 @@
 export const allowedOrigins = [
-  "https://operaciones.serviclick.cl/",
+  "https://operaciones.serviclick.cl",
   "https://app.serviclick.cl",
   "https://serviclick.cl",
   "https://www.serviclick.cl",
