@@ -9,6 +9,6 @@ export const alliancesData = [
     slug: "vinasanpedro",
     heroText: "Asistencias que te protegen en todo momento",
     description:
-      "Junto a Viña San Pedro, te brindamos las mejores Asistencias diseñadas especialmente para ti y tu mascota.",
+      "Junto a VSPT Wine Group, te brindamos las mejores Asistencias diseñadas especialmente para ti y tu Mascota.",
   },
 ]
