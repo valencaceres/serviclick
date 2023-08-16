@@ -3,6 +3,7 @@ import cors from "cors";
 
 import { reqLogger } from "./middlewares/logger";
 import * as routes from "./routes";
+import { allowedOrigins } from "./util/allowedOrigins";
 
 class App {
   public server: any;
@@ -18,10 +19,19 @@ class App {
     this.server.use(express.json());
     this.server.use(
       cors({
-        credentials: true,
         preflightContinue: true,
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-        origin: true,
+        origin:
+          process.env.ENV !== "dev"
+            ? function (origin, callback) {
+                if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+                  callback(null, true);
+                } else {
+                  callback(new Error("Not allowed by CORS"));
+                }
+              }
+            : true,
+        credentials: true,
       })
     );
     this.server.use(express.urlencoded({ extended: false }));
