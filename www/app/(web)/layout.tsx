@@ -1,5 +1,6 @@
 import "@/styles/globals.css"
 import { Metadata } from "next"
+import Script from "next/script"
 
 import { siteConfig } from "@/config/site"
 import { fontSans } from "@/lib/fonts"
@@ -37,9 +38,23 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <>
       <html lang="en" suppressHydrationWarning>
         <head />
+        <Script
+          strategy="lazyOnload"
+          src={`https://www.googletagmanager.com/gtag/js?id=G-KR0658EHGJ`}
+        />
+        <Script strategy="lazyOnload">
+          {`
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){dataLayer.push(arguments);}
+                    gtag('js', new Date());
+                    gtag('config', 'G-KR0658EHGJ', {
+                    page_path: window.location.pathname,
+                    });
+                `}
+        </Script>
         <body
           className={cn(
-            "bg-background min-h-[100dvh] font-sans antialiased",
+            "min-h-[100dvh] bg-background font-sans antialiased",
             fontSans.variable
           )}
         >

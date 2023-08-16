@@ -47,16 +47,20 @@ const BrokerProducts = ({ addNewProduct, editProduct, deleteProduct }: any) => {
                   : item?.discount.type === "p" &&
                     item?.discount.percent > 0 &&
                     item?.discount.cicles > 0
-                  ? `${item?.discount.percent}% dcto. ${item?.discount.cicles} ${
-                      item?.discount.cicles > 1 ? "meses" : "mes"
-                    }`
+                  ? `${item?.discount.percent}% dcto. ${
+                      item?.discount.cicles
+                    } ${item?.discount.cicles > 1 ? "meses" : "mes"}`
                   : "Sin descuento"}
               </TableCell>
               <TableCell width="100px" align="right">
-                ${item?.price.customer?.toLocaleString("en-US").replace(",", ".")}
+                $
+                {item?.price.customer
+                  ?.toLocaleString("en-US")
+                  .replace(",", ".")}
               </TableCell>
               <TableCell width="100px" align="right">
-                ${item?.price.company?.toLocaleString("en-US").replace(",", ".")}
+                $
+                {item?.price.company?.toLocaleString("en-US").replace(",", ".")}
               </TableCell>
               <TableCell width="68px" align="center">
                 <TableIcons>
@@ -70,14 +74,15 @@ const BrokerProducts = ({ addNewProduct, editProduct, deleteProduct }: any) => {
       </Table>
       <ContentRow align="space-between">
         <ContentCellSummary
-          color={broker.products.length > 0 ? "blue" : "#959595"}>
+          color={broker.products.length > 0 ? "blue" : "#959595"}
+        >
           {broker.products.length === 0
             ? "Sin productos asociados"
             : broker.products.length === 1
             ? "1 producto asociado"
             : `${broker.products.length} productos asociados`}
         </ContentCellSummary>
-        {/* <ButtonIcon iconName="add" color="gray" onClick={addNewProduct} /> */}
+        <ButtonIcon iconName="add" color="gray" onClick={addNewProduct} />
       </ContentRow>
     </ContentCell>
   );

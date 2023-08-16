@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { post, get, erase } from "../../utils/api";
 
 export type PriceT = {
+  base: number;
   customer: number;
   company: number;
 };
@@ -15,6 +16,7 @@ export type DiscountT = {
 
 export type ProductT = {
   product_id: string;
+  name: string;
   price: PriceT;
   commisionTypeCode: string;
   value: number;
@@ -83,6 +85,9 @@ export const brokerSlice = createSlice({
     setBroker: (state: StateT, action: PayloadAction<BrokerT>) => {
       state.broker = action.payload;
     },
+    setProducts: (state: StateT, action: PayloadAction<ProductT[]>) => {
+      state.broker.products = action.payload;
+    },
     setLogo: (state: StateT, action: PayloadAction<string>) => {
       state.broker.logo = action.payload;
     },
@@ -105,6 +110,7 @@ export const {
   setList,
   setBroker,
   setLoading,
+  setProducts,
   setLogo,
   resetLogo,
   resetBroker,
@@ -186,7 +192,38 @@ export const deleteById = (id: string) => async (dispatch: any) => {
     return false;
   }
 
-  dispatch(setList(data));
   dispatch(setLoading(false));
   return true;
 };
+
+export const addProduct =
+  (id: string, product: ProductT) => async (dispatch: any) => {
+    const { success, data, error } = await post(`broker/addProduct`, {
+      broker_id: id,
+      ...product,
+    });
+
+    if (!success) {
+      return false;
+    }
+
+    dispatch(setProducts(data));
+    dispatch(setLoading(false));
+    return true;
+  };
+
+export const removeProduct =
+  (id: string, product_id: string) => async (dispatch: any) => {
+    const { success, data, error } = await post(`broker/removeProduct`, {
+      broker_id: id,
+      product_id,
+    });
+
+    if (!success) {
+      return false;
+    }
+
+    dispatch(setProducts(data));
+    dispatch(setLoading(false));
+    return true;
+  };

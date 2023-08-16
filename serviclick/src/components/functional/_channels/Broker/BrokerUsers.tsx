@@ -45,9 +45,7 @@ const BrokerUsers = ({ addNewUser, editUser, deleteUser }: any) => {
 
   const { broker } = useBroker();
 
-  const { data } = useBrokerQuery().useGetAgents(
-    router.query.id as string
-  );
+  const { data } = useBrokerQuery().useGetAgents(router.query.id as string);
 
   return (
     <ContentCell gap="5px">
@@ -63,11 +61,7 @@ const BrokerUsers = ({ addNewUser, editUser, deleteUser }: any) => {
           {data?.map((item: any, idx: number) => (
             <TableRow key={idx}>
               <TableCell width="300px">
-                {item.user?.first_name +
-                  " " +
-                  item.user?.last_name +
-                  " " +
-                  item.user?.public_metadata?.maternallastname}
+                {item.user?.first_name + " " + item.user?.last_name}
               </TableCell>
               <TableCell width="232px">
                 {item.user?.email_addresses[0]?.email_address}

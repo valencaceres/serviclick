@@ -38,6 +38,7 @@ const useBroker = () => {
   const deleteBrokerById = (id: string) => {
     dispatch(Broker.setLoading(true));
     dispatch(Broker.deleteById(id));
+    dispatch(Broker.getAll());
   };
 
   const setBrokerList = (data: any) => {
@@ -64,6 +65,16 @@ const useBroker = () => {
     dispatch(Broker.resetBroker());
   };
 
+  const addProduct = (id: string, product: Broker.ProductT) => {
+    dispatch(Broker.setLoading(true));
+    dispatch(Broker.addProduct(id, product));
+  };
+
+  const removeProduct = (id: string, product_id: string) => {
+    dispatch(Broker.setLoading(true));
+    dispatch(Broker.removeProduct(id, product_id));
+  };
+
   return {
     createBroker,
     getAllBrokers,
@@ -80,6 +91,8 @@ const useBroker = () => {
     broker,
     brokerList,
     loading,
+    addProduct,
+    removeProduct,
   };
 };
 

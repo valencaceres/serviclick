@@ -28,8 +28,8 @@
     }
 
     &:disabled {
-      border: 1px solid lighten($light-gray-color, 10);
-      background-color: lighten(gray, 49);
+      //border: 1px solid lighten($light-gray-color, 10);
+      background-color: rgb(246, 246, 254); //lighten(gray, 49);
     }
 
     &:focus {
@@ -37,7 +37,7 @@
     }
 
     &:focus + label {
-      color: $link-color;
+      // color: $link-color;
       transform: translateY(-13px) translateX(0px);
       font-size: 12px;
     }
@@ -70,6 +70,9 @@
     transition: transform 0.3s;
     background-color: transparent;
     font-weight: 500;
+    // color: $link-color;
+    transform: translateY(-13px) translateX(0px);
+    font-size: 12px;
   }
 
   .icon {

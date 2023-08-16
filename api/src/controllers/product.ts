@@ -628,15 +628,15 @@ const createProductPlans = async (
     company_plan_id,
   }: ProductT = productResponse.data;
 
-  const productPlansDeleted = await Product.deletePlans(id, agent_id);
+  // const productPlansDeleted = await Product.deletePlans(id, agent_id);
 
-  if (!productPlansDeleted.success) {
-    createLogger.error({
-      model: "product/deletePlans",
-      error: productPlansDeleted.error,
-    });
-    return { success: false, error: productPlansDeleted.error };
-  }
+  // if (!productPlansDeleted.success) {
+  //   createLogger.error({
+  //     model: "product/deletePlans",
+  //     error: productPlansDeleted.error,
+  //   });
+  //   return { success: false, error: productPlansDeleted.error };
+  // }
 
   const FrequencyCode = {
     U: 1,
@@ -658,6 +658,8 @@ const createProductPlans = async (
     auto_renew: true,
     prefferred_due_day: dueday > 0 ? dueday : null,
     discount_enabled: discount.type === "p" && discount.percent > 0,
+    success_message:
+      "Muchas gracias por preferirnos, ya eres parte de ServiClick!",
     redirect_to: config.reveniu.feedbackURL.success,
     redirect_to_failure: config.reveniu.feedbackURL.error,
   };
@@ -693,6 +695,19 @@ const createProductPlans = async (
         headers: config.reveniu.apiKey,
       }
     );
+
+    createLogger.info({
+      method: company_plan_id > 0 ? "patch" : "post",
+      url: `${config.reveniu.URL.plan}${
+        company_plan_id > 0 ? company_plan_id : ""
+      }`,
+      data: {
+        ...productPlanData,
+        is_custom_amount: true,
+        price: companyprice,
+      },
+      response: planResponseCompany.data,
+    });
 
     const productPlanCompanyResponse = await ProductPlan.createModel(
       id,
@@ -735,6 +750,19 @@ const createProductPlans = async (
         headers: config.reveniu.apiKey,
       }
     );
+
+    createLogger.info({
+      method: customer_plan_id > 0 ? "patch" : "post",
+      url: `${config.reveniu.URL.plan}${
+        customer_plan_id > 0 ? customer_plan_id : ""
+      }`,
+      data: {
+        ...productPlanData,
+        is_custom_amount: false,
+        price: customerprice,
+      },
+      response: planResponseCustomer.data,
+    });
 
     const productPlanCustomerResponse = await ProductPlan.createModel(
       id,
