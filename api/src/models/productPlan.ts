@@ -11,22 +11,58 @@ const createModel: any = async (
   discount: any
 ) => {
   try {
-    const result = await pool.query(
-      "INSERT INTO app.productPlan(agent_id, createdate, product_id, plan_id, type, baseprice, price, frequency, discount_type, discount_percent, discount_cicles) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *",
-      [
-        agent_id,
-        new Date().toISOString(),
-        id,
-        plan_id,
-        type,
-        baseprice,
-        price,
-        frequency,
-        discount.type,
-        discount.percent,
-        discount.cicles,
-      ]
+    const resultProductPlan = await pool.query(
+      "SELECT 1 FROM app.productPlan WHERE agent_id = $1 AND type = $2 AND product_id = $3",
+      [agent_id, type, id]
     );
+
+    let query: string;
+
+    if (resultProductPlan.rows.length > 0) {
+      query = `
+        UPDATE  app.productPlan
+        SET     createdate = $2,
+                plan_id = $4,
+                baseprice = $6,
+                price = $7,
+                frequency = $8,
+                discount_type = $9,
+                discount_percent = $10,
+                discount_cicles = $11
+        WHERE   agent_id = $1 AND
+                type = $5 AND
+                product_id = $3 RETURNING *`;
+    } else {
+      query = `
+        INSERT  INTO app.productPlan(
+                agent_id, 
+                createdate, 
+                product_id, 
+                plan_id, 
+                type, 
+                baseprice, 
+                price, 
+                frequency, 
+                discount_type, 
+                discount_percent, 
+                discount_cicles) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *"`;
+    }
+
+    const result = await pool.query(query, [
+      agent_id,
+      new Date().toISOString(),
+      id,
+      plan_id,
+      type,
+      baseprice,
+      price,
+      frequency,
+      discount.type,
+      discount.percent,
+      discount.cicles,
+    ]);
+
     return { success: true, data: result.rows[0], error: null };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };

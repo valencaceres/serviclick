@@ -25,19 +25,42 @@ const create: any = async (
       currency,
     ];
 
-    const query: string = `
-            INSERT  INTO app.brokerProduct(
-                    broker_id,
-                    product_id,
-                    customer_plan_id,
-                    company_plan_id,
-                    baseprice,
-                    customerprice,
-                    companyprice,
-                    commisiontype_code,
-                    value,
-                    currency)
-            VALUES( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`;
+    const resultBrokerProduct = await pool.query(
+      "SELECT 1 FROM app.brokerProduct WHERE broker_id = $1 AND product_id = $2",
+      [broker_id, product_id]
+    );
+
+    let query: string;
+
+    if (resultBrokerProduct.rows.length > 0) {
+      query = `
+        UPDATE  app.brokerProduct
+        SET     customer_plan_id = $3,
+                company_plan_id = $4,
+                baseprice = $5,
+                customerprice = $6,
+                companyprice = $7,
+                commisiontype_code = $8,
+                value = $9,
+                currency = $10
+        WHERE   broker_id = $1 AND
+                product_id = $2 RETURNING *`;
+    } else {
+      query = `
+        INSERT  INTO app.brokerProduct(
+                broker_id,
+                product_id,
+                customer_plan_id,
+                company_plan_id,
+                baseprice,
+                customerprice,
+                companyprice,
+                commisiontype_code,
+                value,
+                currency)
+        VALUES( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`;
+    }
+
     const result = await pool.query(query, arrayValues);
 
     const data = {
@@ -70,6 +93,22 @@ const deleteByBrokerId: any = async (broker_id: string) => {
     const result = await pool.query(
       `DELETE FROM app.brokerProduct WHERE broker_id = $1`,
       [broker_id]
+    );
+
+    return { success: true, data: "OK", error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+const removeByProductId: any = async (
+  broker_id: string,
+  product_id: string
+) => {
+  try {
+    const result = await pool.query(
+      `UPDATE app.brokerproduct SET isactive = false WHERE broker_id = $1 AND product_id = $2`,
+      [broker_id, product_id]
     );
 
     return { success: true, data: "OK", error: null };
@@ -161,4 +200,4 @@ const getByBrokerId: any = async (broker_id: string) => {
   }
 };
 
-export { create, deleteByBrokerId, getByBrokerId };
+export { create, deleteByBrokerId, removeByProductId, getByBrokerId };

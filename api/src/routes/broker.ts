@@ -4,6 +4,7 @@ import auth from "../middlewares/auth";
 import {
   create,
   addProduct,
+  removeProduct,
   getAll,
   getById,
   getByRut,
@@ -20,6 +21,7 @@ const BrokerRouter = Router();
 
 BrokerRouter.post("/create", auth, create);
 BrokerRouter.post("/addProduct", auth, addProduct);
+BrokerRouter.post("/removeProduct", auth, removeProduct);
 BrokerRouter.get("/getAll", auth, getAll);
 BrokerRouter.get("/getById/:id", auth, getById);
 BrokerRouter.get("/getByRut/:rut", auth, getByRut);

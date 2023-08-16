@@ -9,7 +9,7 @@ import * as BrokerUser from "../models/brokerUser";
 import * as Product from "./product";
 import { updateClerkUser } from "../util/clerkUserData";
 
-const create = async (req: any, res: any) => {
+const createFull = async (req: any, res: any) => {
   try {
     const {
       rut,
@@ -181,6 +181,73 @@ const create = async (req: any, res: any) => {
     const { success, model, data, error, status } = await getBrokerDataById(
       broker_id
     );
+
+    if (!success) {
+      createLogger.error({
+        model,
+        error,
+      });
+      res.status(status).json({ error });
+      return;
+    }
+
+    createLogger.info({
+      controller: "broker/create",
+      message: "OK",
+    });
+
+    res.status(status).json(data);
+    return;
+  } catch (error) {
+    createLogger.error({
+      controller: "broker/create",
+      error: (error as Error).message,
+    });
+    res.status(500).json({ error });
+    return;
+  }
+};
+
+const create = async (req: any, res: any) => {
+  try {
+    const {
+      rut,
+      name,
+      legalRepresentative,
+      line,
+      fantasyName,
+      address,
+      district,
+      email,
+      phone,
+      logo,
+    } = req.body;
+
+    const brokerResponse = await Broker.create(
+      rut,
+      name,
+      legalRepresentative,
+      line,
+      fantasyName,
+      address,
+      district,
+      email,
+      phone,
+      logo
+    );
+
+    if (!brokerResponse.success) {
+      createLogger.error({
+        model: "broker/create",
+        error: brokerResponse.error,
+      });
+      res.status(500).json({ error: brokerResponse.error });
+      return;
+    }
+
+    const { id } = brokerResponse.data;
+
+    const { success, model, data, error, status } = await getBrokerDataById(id);
 
     if (!success) {
       createLogger.error({
@@ -473,6 +540,11 @@ const addProduct = async (req: any, res: any) => {
     return;
   }
 
+  createLogger.info({
+    controller: "product/createProductPlans",
+    data: responsePlans.data,
+  });
+
   const brokerProductResponse = await BrokerProduct.create(
     broker_id,
     product_id,
@@ -492,6 +564,50 @@ const addProduct = async (req: any, res: any) => {
     res.status(500).json({ error: brokerProductResponse.error });
     return;
   }
+
+  const brokerProducts = await BrokerProduct.getByBrokerId(broker_id);
+
+  if (!brokerProducts.success) {
+    createLogger.error({
+      model: "brokerProduct/getByBrokerId",
+      error: brokerProducts.error,
+    });
+    res.status(500).json({ error: brokerProducts.error });
+    return;
+  }
+
+  res.status(200).json(brokerProducts.data);
+};
+
+const removeProduct = async (req: any, res: any) => {
+  const { broker_id, product_id } = req.body;
+
+  const responseBrokerProduct = await BrokerProduct.removeByProductId(
+    broker_id,
+    product_id
+  );
+
+  if (!responseBrokerProduct.success) {
+    createLogger.error({
+      controller: "broker/removeProduct",
+      error: responseBrokerProduct.error,
+    });
+    res.status(500).json({ error: responseBrokerProduct.error });
+    return;
+  }
+
+  const brokerProducts = await BrokerProduct.getByBrokerId(broker_id);
+
+  if (!brokerProducts.success) {
+    createLogger.error({
+      model: "brokerProduct/getByBrokerId",
+      error: brokerProducts.error,
+    });
+    res.status(500).json({ error: brokerProducts.error });
+    return;
+  }
+
+  res.status(200).json(brokerProducts.data);
 };
 
 const getAgents = async (req: any, res: any) => {
@@ -539,6 +655,7 @@ const updateAgent = async (req: any, res: any) => {
 export {
   create,
   addProduct,
+  removeProduct,
   getById,
   getByRut,
   getAll,
