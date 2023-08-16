@@ -71,11 +71,11 @@ const BrokerUsers = ({ addNewUser, editUser, deleteUser }: any) => {
               </TableCell>
               <TableCell width="68px" align="center">
                 <TableIcons>
-                  <EditUser user={item.user} profilecode={item?.profilecode} />
+                  {/* <EditUser user={item.user} profilecode={item?.profilecode} />
                   <Icon
                     iconName="delete"
                     onClick={() => deleteUser(item.user)}
-                  />
+                  /> */}
                 </TableIcons>
               </TableCell>
             </TableRow>
@@ -92,7 +92,7 @@ const BrokerUsers = ({ addNewUser, editUser, deleteUser }: any) => {
             ? "1 usuario asociado"
             : `${broker.users.length} usuarios asociados`}
         </ContentCellSummary>
-        <ButtonIcon iconName="add" color="gray" onClick={addNewUser} />
+        {/* <ButtonIcon iconName="add" color="gray" onClick={addNewUser} /> */}
       </ContentRow>
     </ContentCell>
   );
