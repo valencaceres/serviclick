@@ -4,6 +4,7 @@ const nextConfig = {
   experimental: {
     appDir: true,
   },
+  poweredByHeader: false,
 }
 
 export default nextConfig
