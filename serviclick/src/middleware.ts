@@ -27,7 +27,7 @@ export default authMiddleware({
         return NextResponse.redirect(redirectURL);
       }
     } else {
-      // Check if user has the "operaciones" role and the required permission for it
+      // Check if user has the "serviclick" role and the required permission for it
       const userRoleInOperaciones = userRoles["serviclick"];
       if (userRoleInOperaciones && roles[userRoleInOperaciones as UserRole]) {
         const rolePermissions = roles[userRoleInOperaciones as UserRole];

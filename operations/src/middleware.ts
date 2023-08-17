@@ -15,7 +15,6 @@ const roles: Record<UserRole, RegExp[]> = {
 };
 
 export default authMiddleware({
-  signInUrl: "/sign-in",
   publicRoutes: ["/sign-in/[[...index]]", "/unauthorized"],
   afterAuth(auth, req, evt) {
     if (!auth.userId && !auth.isPublicRoute) {

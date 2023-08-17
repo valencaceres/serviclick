@@ -15,9 +15,9 @@ export const SignIn: React.FC = () => {
   const router = useRouter();
   const { isLoaded, signIn, setActive } = useSignIn();
   const { isSignedIn } = useSession();
-  
+
   if (isSignedIn) {
-    void router.push("/");
+    router.push("/");
   }
 
   const {
