@@ -44,14 +44,31 @@ CaseRouter.get("/getById/:id", auth, getCaseById);
 CaseRouter.get("/getAttachById/:case_id/:casestage_id", auth, getAttachById);
 CaseRouter.get("/getNewCaseNumber", auth, getNewCaseNumber);
 CaseRouter.post("/assignPartner", auth, isAuthenticated, assignPartner);
-CaseRouter.get("/getAssignedPartner/:case_id/:casestage_id", auth, getAssignedPartner);
+CaseRouter.get(
+  "/getAssignedPartner/:case_id/:casestage_id",
+  auth,
+  getAssignedPartner
+);
 CaseRouter.post("/assignSpecialist", auth, isAuthenticated, assignSpecialist);
-CaseRouter.get("/getAssignedSpecialist/:case_id/:casestage_id", auth, getAssignedSpecialist);
+CaseRouter.get(
+  "/getAssignedSpecialist/:case_id/:casestage_id",
+  auth,
+  getAssignedSpecialist
+);
 CaseRouter.post("/reimburse", auth, isAuthenticated, reimburse);
-CaseRouter.get("/getAssistanceData/:insured_id/:assistance_id/:product_id", auth, getAssistanceData);
+CaseRouter.get(
+  "/getAssistanceData/:insured_id/:assistance_id/:product_id",
+  auth,
+  getAssistanceData
+);
 CaseRouter.get("/getReimbursment/:case_id", auth, getReimbursment);
 CaseRouter.get("/getAllReimbursements", auth, getAllReimbursements);
-CaseRouter.put("/updateReimbursementStatus", auth, isAuthenticated, updateReimbursementStatus);
+CaseRouter.put(
+  "/updateReimbursementStatus",
+  auth,
+  isAuthenticated,
+  updateReimbursementStatus
+);
 CaseRouter.post("/createChatMessage", auth, isAuthenticated, createChatMessage);
 CaseRouter.get("/getChatByCase/:case_id", auth, getChatByCase);
 
