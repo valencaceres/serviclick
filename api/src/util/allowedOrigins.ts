@@ -9,4 +9,5 @@ export const allowedOrigins = [
   "https://webhook.serviclick.cl",
   "https://accounts.serviclick.cl",
   "https://clerk.serviclick.cl",
+  "https://alianza.serviclick.cl",
 ];
