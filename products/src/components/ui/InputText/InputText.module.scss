@@ -66,6 +66,8 @@
     left: 15px;
     position: absolute;
     color: $gray-color;
+    transform: translateY(-13px) translateX(0px);
+    font-size: 12px;
     transition: transform 0.3s;
     background-color: transparent;
     font-weight: 500;

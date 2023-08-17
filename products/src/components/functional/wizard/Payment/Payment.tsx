@@ -88,6 +88,10 @@ const Payment = () => {
     setShowPaymentType(true);
   };
 
+  const handleClickSuscribe = () => {
+    handleClickPaymentType("S");
+  };
+
   const handleClickClosePaymentType = () => {
     setShowPaymentType(false);
   };
@@ -152,6 +156,16 @@ const Payment = () => {
       setIsProcessing(false);
       router.push(`/resume/link?leadId=${lead.id}&success=${!leadIsError}`);
     }
+
+    if (
+      lead &&
+      paymentType === "S" &&
+      leadIsLoading === false &&
+      isProcessing === true
+    ) {
+      setIsProcessing(false);
+      router.push(`/resume/subscription`);
+    }
   }, [lead.subscriptionData, leadIsLoading, isProcessing]);
 
   return (
@@ -164,39 +178,34 @@ const Payment = () => {
                 <PaymentSection
                   title="Contratante"
                   selected={isSelectedContractor}
-                  state={setIsSelectedContractor}
-                >
+                  state={setIsSelectedContractor}>
                   <PaymentPerson data={lead.customer} />
                 </PaymentSection>
                 <PaymentSection
                   title="Beneficiario"
                   selected={isSelectedinsured}
-                  state={setIsSelectedinsured}
-                >
+                  state={setIsSelectedinsured}>
                   <PaymentInsured data={lead.insured && lead.insured[0]} />
                 </PaymentSection>
               </Row>
               <PaymentSection
                 title="Producto"
                 selected={isSelectedProduct}
-                state={setIsSelectedProduct}
-              >
+                state={setIsSelectedProduct}>
                 <PaymentCoverage product={product} />
               </PaymentSection>
               {product.beneficiaries > 0 && (
                 <PaymentSection
                   title="Cargas"
                   selected={isSelectedBeneficiaries}
-                  state={setIsSelectedBeneficiaries}
-                >
+                  state={setIsSelectedBeneficiaries}>
                   <PaymentBeneficiaries lead={lead} />
                 </PaymentSection>
               )}
               <PaymentSection
                 title="Valores"
                 selected={isSelectedPayment}
-                state={setIsSelectedPayment}
-              >
+                state={setIsSelectedPayment}>
                 <PaymentProduct lead={lead} product={product} />
               </PaymentSection>
               <PaymentTerms
@@ -209,38 +218,33 @@ const Payment = () => {
               <PaymentSection
                 title="Contratante"
                 selected={isSelectedContractor}
-                state={setIsSelectedContractor}
-              >
+                state={setIsSelectedContractor}>
                 <PaymentPerson data={lead.customer} />
               </PaymentSection>
               <PaymentSection
                 title="Beneficiario"
                 selected={isSelectedinsured}
-                state={setIsSelectedinsured}
-              >
+                state={setIsSelectedinsured}>
                 <PaymentInsured data={lead.insured && lead.insured[0]} />
               </PaymentSection>
               <PaymentSection
                 title="Producto"
                 selected={isSelectedProduct}
-                state={setIsSelectedProduct}
-              >
+                state={setIsSelectedProduct}>
                 <PaymentCoverage product={product} />
               </PaymentSection>
               {product.beneficiaries > 0 && (
                 <PaymentSection
                   title="Cargas"
                   selected={isSelectedBeneficiaries}
-                  state={setIsSelectedBeneficiaries}
-                >
+                  state={setIsSelectedBeneficiaries}>
                   <PaymentBeneficiaries lead={lead} />
                 </PaymentSection>
               )}
               <PaymentSection
                 title="Valores"
                 selected={isSelectedPayment}
-                state={setIsSelectedPayment}
-              >
+                state={setIsSelectedPayment}>
                 <PaymentProduct lead={lead} product={product} />
               </PaymentSection>
               <PaymentTerms
@@ -252,12 +256,25 @@ const Payment = () => {
         </Col>
       </Content>
       <Footer>
-        <Button
-          text="Pagar"
-          width="200px"
-          onClick={handleClickPay}
-          enabled={isButtonEnabled}
-        />
+        {router.query.productPlanId ===
+          "cfe1b614-d721-4b8b-b9dd-e61b6d473b56" ||
+        router.query.productPlanId === "3d3f4aab-85d5-4533-80e0-a28a42c8fd9b" ||
+        router.query.productPlanId ===
+          "a735654b-c01d-47e9-a214-861a1e67d0fb" ? (
+          <Button
+            text="Suscribir descuento por planilla"
+            width="300px"
+            onClick={handleClickSuscribe}
+            enabled={isButtonEnabled}
+          />
+        ) : (
+          <Button
+            text="Pagar"
+            width="200px"
+            onClick={handleClickPay}
+            enabled={isButtonEnabled}
+          />
+        )}
       </Footer>
       {leadIsLoading && <Loading />}
       <Tooltip>
@@ -278,15 +295,13 @@ const Payment = () => {
       <ModalWindow
         showModal={showTerms}
         setClosed={handleClickCloseTerms}
-        title="Términos y condiciones"
-      >
+        title="Términos y condiciones">
         <div className={styles.termsContainer}>{termsAndCondicions.data}</div>
       </ModalWindow>
       <ModalWindow
         showModal={showPaymentType}
         setClosed={handleClickClosePaymentType}
-        title="Seleccione una opción"
-      >
+        title="Seleccione una opción">
         <PaymentType data={paymentTypeData} />
       </ModalWindow>
     </Body>

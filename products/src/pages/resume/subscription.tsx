@@ -11,7 +11,7 @@ const Success = () => {
   const router = useRouter();
 
   const handleClickBack = () => {
-    router.push("https://www.serviclick.cl/");
+    router.push("https://www.serviclick.cl/alianza/sindicato1prosegur/");
   };
 
   return (
@@ -24,12 +24,11 @@ const Success = () => {
           alignItems: "center",
         }}>
         <div className={styles.message}>
-          <h1>Gracias por tu pedido</h1>
+          <h1>Gracias por tu suscripción</h1>
           <p>
-            Estamos procesando tu tarjeta, en unos minutos recibirás un correo
-            electrónico con el comprobante junto con tus datos de acceso a
-            nuestra plataforma para que puedas completar tu información y ver el
-            detalle del servicio contratado.
+            Tu información fue registrada con éxito, tus datos están siendo
+            validados por nuestro equipo, una vez confirmados, se suscribirá tu
+            plan para ser descontado por planilla.
           </p>
           <Button
             text="Volver a la página Web"
