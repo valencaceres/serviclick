@@ -21,16 +21,7 @@ class App {
       cors({
         preflightContinue: true,
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-        origin:
-          process.env.ENV !== "dev"
-            ? function (origin, callback) {
-                if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-                  callback(null, true);
-                } else {
-                  callback(new Error("Not allowed by CORS"));
-                }
-              }
-            : true,
+        origin: true,
         credentials: true,
       })
     );

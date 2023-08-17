@@ -1,6 +1,5 @@
 import axios from "axios";
 import Cookies from "js-cookie";
-
 import { config } from "../utils/config";
 
 const apiInstance = axios.create({
@@ -21,13 +20,19 @@ apiInstance.interceptors.request.use(
   }
 );
 
+const requestHeaders = () => {
+  const sessionCookie = Cookies.get("__session");
+  return {
+    id: config.apiKey,
+    Authorization: sessionCookie ? `Bearer ${sessionCookie}` : undefined,
+  };
+};
+
 const get = async (path: string) => {
-  const { apiKey, server } = config;
+  const { server } = config;
   try {
     const response = await axios.get(`${server}/api/${path}`, {
-      headers: {
-        id: apiKey,
-      },
+      headers: requestHeaders(),
     });
 
     return responseFromAPI(response.data, null);
@@ -37,12 +42,10 @@ const get = async (path: string) => {
 };
 
 const post = async (path: string, data: any) => {
-  const { apiKey, server } = config;
+  const { server } = config;
   try {
     const response = await axios.post(`${server}/api/${path}`, data, {
-      headers: {
-        id: apiKey,
-      },
+      headers: requestHeaders(),
     });
 
     return responseFromAPI(response.data, null);
@@ -52,12 +55,10 @@ const post = async (path: string, data: any) => {
 };
 
 const erase = async (path: string) => {
-  const { apiKey, server } = config;
+  const { server } = config;
   try {
     const response = await axios.delete(`${server}/api/${path}`, {
-      headers: {
-        id: apiKey,
-      },
+      headers: requestHeaders(),
     });
 
     return responseFromAPI(response.data, null);
