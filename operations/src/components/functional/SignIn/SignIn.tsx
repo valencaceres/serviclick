@@ -13,12 +13,13 @@ const SIMPLE_REGEX_PATTERN = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
 
 export const SignIn: React.FC = () => {
   const router = useRouter();
-  const { isLoaded, signIn, setSession } = useSignIn();
+  const { isLoaded, signIn, setActive } = useSignIn();
   const { isSignedIn } = useSession();
 
   if (isSignedIn) {
-    void router.push("/");
+    router.push("/");
   }
+
   const {
     register,
     getValues,
@@ -44,7 +45,10 @@ export const SignIn: React.FC = () => {
         password: getValues("password"),
       });
       if (signInResponse.status === "complete") {
-        await setSession(signInResponse.createdSessionId);
+        await setActive({
+          session: signInResponse.createdSessionId,
+        });
+        await router.push("/");
       } else {
         console.log(signInResponse);
       }
