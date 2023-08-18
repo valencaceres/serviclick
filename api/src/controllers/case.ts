@@ -50,7 +50,7 @@ const create = async (req: any, res: any) => {
         model: `person/create`,
         error: applicantResponse.error,
       });
-      return res.status(500).json({ error: applicantResponse.error });
+      return res.status(500).json({ error: "Error creating person" });
     }
 
     applicant.id = applicantResponse.data.id;
@@ -74,7 +74,7 @@ const create = async (req: any, res: any) => {
         model: `person/create`,
         error: applicantResponse.error,
       });
-      return res.status(500).json({ error: applicantResponse.error });
+      return res.status(500).json({ error: "Error creating person" });
     }
 
     applicant.id = applicantResponse.data.id;
@@ -100,7 +100,7 @@ const create = async (req: any, res: any) => {
       model: `case/create`,
       error: caseResponse.error,
     });
-    return res.status(500).json({ error: caseResponse.error });
+    return res.status(500).json({ error: "Error creating case" });
   }
 
   const { id } = caseResponse.data;
@@ -117,7 +117,7 @@ const create = async (req: any, res: any) => {
       model: `caseStage/create`,
       error: caseStageResponse.error,
     });
-    return res.status(500).json({ error: caseStageResponse.error });
+    return res.status(500).json({ error: "Error creating case stage" });
   }
 
   createLogger.info({
@@ -138,7 +138,7 @@ const getAll = async (req: any, res: any) => {
       model: `case/getAll`,
       error: caseResponse.error,
     });
-    return res.status(500).json({ error: caseResponse.error });
+    return res.status(500).json({ error: "Error retrieving cases" });
   }
 
   createLogger.info({
@@ -178,7 +178,7 @@ const uploadDocument = async (req: any, res: any) => {
       model: `caseStage/uploadDocument`,
       error: caseStageAttachResponse.error,
     });
-    return res.status(500).json({ error: caseStageAttachResponse.error });
+    return res.status(500).json({ error: "Error uploading document" });
   }
 
   createLogger.info({
@@ -199,7 +199,7 @@ const getBeneficiaryByRut = async (req: any, res: any) => {
       model: `case/getBeneficiaryData`,
       error: beneficaryResponse.error,
     });
-    return res.status(500).json({ error: beneficaryResponse.error });
+    return res.status(500).json({ error: "Error retrieving beneficiary data" });
   }
 
   if (beneficaryResponse.error === "Beneficiary not found") {
@@ -227,7 +227,7 @@ const getCaseById = async (req: any, res: any) => {
       model: `case/getById`,
       error: caseResponse.error,
     });
-    return res.status(500).json({ error: caseResponse.error });
+    return res.status(500).json({ error: "Error retrieving case" });
   }
 
   if (caseResponse.error === "Case not found") {
@@ -279,7 +279,7 @@ const getAttachById = async (req: any, res: any) => {
       model: `caseStage/getAttachById`,
       error: caseStageAttachResponse.error,
     });
-    return res.status(500).json({ error: caseStageAttachResponse.error });
+    return res.status(500).json({ error: "Error retrieving attachments" });
   }
 
   const attachments: any = [];
@@ -311,7 +311,7 @@ const getNewCaseNumber = async (req: any, res: any) => {
       model: `case/getNewCaseNumber`,
       error: caseResponse.error,
     });
-    return res.status(500).json({ error: caseResponse.error });
+    return res.status(500).json({ error: "Error generating new case number" });
   }
 
   createLogger.info({
@@ -348,7 +348,7 @@ const assignPartner = async (req: any, res: any) => {
       model: `caseStagePartner/assignPartner`,
       error: caseStageResponse.error,
     });
-    return res.status(500).json({ error: caseStageResponse.error });
+    return res.status(500).json({ error: "Error assigning partner" });
   }
 
   createLogger.info({
@@ -373,7 +373,7 @@ const getAssignedPartner = async (req: any, res: any) => {
       error: caseStageResponse.error,
     });
 
-    return res.status(500).json({ error: caseStageResponse.error });
+    return res.status(500).json({ error: "Error retrieving assigned partner" });
   }
 
   createLogger.info({
@@ -412,7 +412,7 @@ const assignSpecialist = async (req: any, res: any) => {
       model: `caseStageSpecialist/assignSpecialist`,
       error: caseStageResponse.error,
     });
-    return res.status(500).json({ error: caseStageResponse.error });
+    return res.status(500).json({ error: "Error assigning specialist" });
   }
 
   createLogger.info({
@@ -471,7 +471,7 @@ const reimburse = async (req: any, res: any) => {
       model: `caseStageResult/reimburse`,
       error: caseStageResponse.error,
     });
-    return res.status(500).json({ error: caseStageResponse.error });
+    return res.status(500).json({ error: "Error creating reimbursement" });
   }
 
   const caseReimburse = await CaseReimbursement.create(
@@ -487,7 +487,7 @@ const reimburse = async (req: any, res: any) => {
       model: `caseReimbursement/reimburse`,
       error: caseReimburse.error,
     });
-    return res.status(500).json({ error: caseReimburse.error });
+    return res.status(500).json({ error: "Error creating reimbursement" });
   }
 
   createLogger.info({
@@ -512,7 +512,7 @@ const getAssistanceData = async (req: any, res: any) => {
       model: `case/getAssistanceData`,
       error: response.error,
     });
-    return res.status(500).json({ error: response.error });
+    return res.status(500).json({ error: "Error retrieving assistance data" });
   }
 
   createLogger.info({
@@ -533,7 +533,7 @@ const getReimbursment = async (req: any, res: any) => {
       model: `caseStageResult/getReimbursment`,
       error: response.error,
     });
-    return res.status(500).json({ error: response.error });
+    return res.status(500).json({ error: "Error retrieving reimbursment" });
   }
 
   createLogger.info({
@@ -552,7 +552,7 @@ const getAllReimbursements = async (req: any, res: any) => {
       model: `caseStageResult/getAllReimbursements`,
       error: response.error,
     });
-    return res.status(500).json({ error: response.error });
+    return res.status(500).json({ error: "Error retrieving reimbursments" });
   }
 
   createLogger.info({
@@ -577,7 +577,9 @@ const updateReimbursementStatus = async (req: any, res: any) => {
       model: `caseStageResult/updateReimbursementStatus`,
       error: response.error,
     });
-    return res.status(500).json({ error: response.error });
+    return res
+      .status(500)
+      .json({ error: "Error updating reimbursment status" });
   }
 
   createLogger.info({
@@ -604,7 +606,7 @@ const createChatMessage = async (req: any, res: any) => {
       model: `caseChat/createChatMessage`,
       error: response.error,
     });
-    return res.status(500).json({ error: response.error });
+    return res.status(500).json({ error: "Error creating chat message" });
   }
 
   createLogger.info({
@@ -625,7 +627,7 @@ const getChatByCase = async (req: any, res: any) => {
       model: `caseChat/getChatByCase`,
       error: response.error,
     });
-    return res.status(500).json({ error: response.error });
+    return res.status(500).json({ error: "Error retrieving chat messages" });
   }
 
   createLogger.info({
