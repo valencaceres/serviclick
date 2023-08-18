@@ -35,7 +35,7 @@ const create = async (req: any, res: any) => {
       model: `assistance/${id ? "updateById" : "create"}`,
       error: assistanceResponse.error,
     });
-    res.status(500).json({ error: assistanceResponse.error });
+    res.status(500).json({ error: "Error creating assistance" });
     return;
   }
 
@@ -50,7 +50,7 @@ const create = async (req: any, res: any) => {
       model: "assistanceValue/deleteByAssistanceId",
       error: deleteValues.error,
     });
-    res.status(500).json({ error: deleteValues.error });
+    res.status(500).json({ error: "Error deleting values" });
     return;
   }
 
@@ -67,7 +67,7 @@ const create = async (req: any, res: any) => {
         model: "assistanceValue/create",
         error: addValue.error,
       });
-      res.status(500).json({ error: addValue.error });
+      res.status(500).json({ error: "Error creating values" });
       return;
     }
     line_order++;
@@ -82,7 +82,7 @@ const create = async (req: any, res: any) => {
       model: "assistanceSpecialty/deleteByAssistanceId",
       error: deleteSpecialties.error,
     });
-    res.status(500).json({ error: deleteSpecialties.error });
+    res.status(500).json({ error: "Error deleting specialties" });
     return;
   }
 
@@ -99,7 +99,7 @@ const create = async (req: any, res: any) => {
           model: "assistanceSpecialty/create",
           error: addSpecialty.error,
         });
-        res.status(500).json({ error: addSpecialty.error });
+        res.status(500).json({ error: "Error creating specialties" });
         return;
       }
     }
@@ -114,7 +114,7 @@ const create = async (req: any, res: any) => {
       model: "assistanceDocument/deleteByAssistanceId",
       error: deleteDocuments.error,
     });
-    res.status(500).json({ error: deleteDocuments.error });
+    res.status(500).json({ error: "Error deleting documents" });
     return;
   }
 
@@ -131,7 +131,7 @@ const create = async (req: any, res: any) => {
           model: "assistanceDocument/create",
           error: addDocument.error,
         });
-        res.status(500).json({ error: addDocument.error });
+        res.status(500).json({ error: "Error creating documents" });
         return;
       }
     }
