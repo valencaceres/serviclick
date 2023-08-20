@@ -12,7 +12,7 @@ const createSpecialty = async (req: any, res: any) => {
       model: "specialty/createSpecialty",
       error: specialtyResponse.error,
     });
-    res.status(500).json({ error: specialtyResponse.error });
+    res.status(500).json({ error: "Error creating specialty" });
     return;
   }
 
@@ -37,7 +37,7 @@ const updateSpecialty = async (req: any, res: any) => {
       model: "specialty/updateSpecialty",
       error: specialtyResponse.error,
     });
-    res.status(500).json({ error: specialtyResponse.error });
+    res.status(500).json({ error: "Error updating specialty" });
     return;
   }
 
@@ -57,7 +57,7 @@ const deleteSpecialty = async (req: any, res: any) => {
       model: "specialty/deleteSpecialty",
       error: specialtyResponse.error,
     });
-    res.status(500).json({ error: specialtyResponse.error });
+    res.status(500).json({ error: "Error deleting specialty" });
     return;
   }
 
@@ -76,7 +76,7 @@ const getAllSpecialties = async (req: any, res: any) => {
       model: "specialty/listFamilies",
       error: specialtyResponse.error,
     });
-    res.status(500).json({ error: specialtyResponse.error });
+    res.status(500).json({ error: "Error retrieving specialties" });
     return;
   }
 
@@ -96,7 +96,7 @@ const getSpecialty = async (req: any, res: any) => {
       model: "specialty/getSpecialty",
       error: specialtyResponse.error,
     });
-    res.status(500).json({ error: specialtyResponse.error });
+    res.status(500).json({ error: "Error retrieving specialty" });
     return;
   }
 
@@ -116,7 +116,7 @@ const getSpecialtiesByFamilyId = async (req: any, res: any) => {
       model: "specialty/getSpecialtiesByFamilyId",
       error: specialtyResponse.error,
     });
-    res.status(500).json({ error: specialtyResponse.error });
+    res.status(500).json({ error: "Error retrieving specialties" });
     return;
   }
 
@@ -135,7 +135,7 @@ const getFamilies = async (req: any, res: any) => {
       model: "specialty/getFamilies",
       error: specialtyResponse.error,
     });
-    res.status(500).json({ error: specialtyResponse.error });
+    res.status(500).json({ error: "Error retrieving families" });
     return;
   }
 

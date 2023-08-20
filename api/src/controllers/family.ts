@@ -13,7 +13,7 @@ const createFamily = async (req: any, res: any) => {
       model: "family/createFamily",
       error: familyResponse.error,
     });
-    res.status(500).json({ error: familyResponse.error });
+    res.status(500).json({ error: "Error creating family" });
     return;
   }
 
@@ -34,7 +34,7 @@ const updateFamily = async (req: any, res: any) => {
       model: "family/updateFamily",
       error: familyResponse.error,
     });
-    res.status(500).json({ error: familyResponse.error });
+    res.status(500).json({ error: "Error updating family" });
     return;
   }
 
@@ -54,7 +54,7 @@ const deleteFamily = async (req: any, res: any) => {
       model: "family/deleteFamily",
       error: familyResponse.error,
     });
-    res.status(500).json({ error: familyResponse.error });
+    res.status(500).json({ error: "Error deleting family" });
     return;
   }
 
@@ -73,7 +73,7 @@ const listFamilies = async (req: any, res: any) => {
       model: "family/listFamilies",
       error: familyResponse.error,
     });
-    res.status(500).json({ error: familyResponse.error });
+    res.status(500).json({ error: "Error listing families" });
     return;
   }
 
@@ -93,7 +93,7 @@ const getFamily = async (req: any, res: any) => {
       model: "family/getFamily",
       error: familyResponse.error,
     });
-    res.status(500).json({ error: familyResponse.error });
+    res.status(500).json({ error: "Error retrieving family" });
     return;
   }
 

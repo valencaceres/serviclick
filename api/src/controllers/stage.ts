@@ -12,7 +12,7 @@ const createStage = async (req: any, res: any) => {
       model: "stage/createStage",
       error: stageResponse.error,
     });
-    res.status(500).json({ error: stageResponse.error });
+    res.status(500).json({ error: "Error creating stage" });
     return;
   }
 
@@ -33,7 +33,7 @@ const updateStage = async (req: any, res: any) => {
       model: "stage/updateStage",
       error: stageResponse.error,
     });
-    res.status(500).json({ error: stageResponse.error });
+    res.status(500).json({ error: "Error updating stage" });
     return;
   }
 
@@ -53,7 +53,7 @@ const deleteStage = async (req: any, res: any) => {
       model: "stage/deleteStage",
       error: stageResponse.error,
     });
-    res.status(500).json({ error: stageResponse.error });
+    res.status(500).json({ error: "Error deleting stage" });
     return;
   }
 
@@ -72,7 +72,7 @@ const getAllStages = async (req: any, res: any) => {
       model: "stage/getAllStages",
       error: stageResponse.error,
     });
-    res.status(500).json({ error: stageResponse.error });
+    res.status(500).json({ error: "Error retrieving stages" });
     return;
   }
 
@@ -92,7 +92,7 @@ const getStage = async (req: any, res: any) => {
       model: "stage/getStage",
       error: stageResponse.error,
     });
-    res.status(500).json({ error: stageResponse.error });
+    res.status(500).json({ error: "Error retrieving stage" });
     return;
   }
 

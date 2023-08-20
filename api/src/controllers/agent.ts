@@ -10,7 +10,7 @@ const createAgent = async (req: any, res: any) => {
       model: "agent/createAgent",
       error: agentResponse.error,
     });
-    res.status(500).json({ error: agentResponse.error });
+    res.status(500).json({ error: "Error creating agent" });
     return;
   }
 
@@ -31,7 +31,7 @@ const updateAgent = async (req: any, res: any) => {
       model: "agent/updateAgent",
       error: agentResponse.error,
     });
-    res.status(500).json({ error: agentResponse.error });
+    res.status(500).json({ error: "Error updating agent" });
     return;
   }
 
@@ -51,7 +51,7 @@ const deleteAgent = async (req: any, res: any) => {
       model: "agent/deleteAgent",
       error: agentResponse.error,
     });
-    res.status(500).json({ error: agentResponse.error });
+    res.status(500).json({ error: "Error deleting agent" });
     return;
   }
 
@@ -71,7 +71,7 @@ const listAgents = async (req: any, res: any) => {
       model: "agent/listAgents",
       error: agentResponse.error,
     });
-    res.status(500).json({ error: agentResponse.error });
+    res.status(500).json({ error: "Error listing agents" });
     return;
   }
 

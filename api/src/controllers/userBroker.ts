@@ -31,7 +31,7 @@ const create = async (req: any, res: any) => {
       model: "userBroker/create",
       error: result.error,
     });
-    res.status(500).json({ error: result.error });
+    res.status(500).json({ error: "Error creating user broker" });
     return;
   }
 
@@ -51,7 +51,7 @@ const assignPassword = async (req: any, res: any) => {
       model: "userBroker/assignPassword",
       error: result.error,
     });
-    res.status(500).json({ error: result.error });
+    res.status(500).json({ error: "Error assigning password to user broker" });
     return;
   }
 
@@ -72,7 +72,7 @@ const validate = async (req: any, res: any) => {
         model: "userBroker/validate",
         error: result.error,
       });
-      res.status(500).json({ error: result.error });
+      res.status(500).json({ error: "Error retrieving user broker" });
       return;
     }
 
@@ -105,7 +105,7 @@ const validate = async (req: any, res: any) => {
       controller: "userBroker/validate",
       error: (e as Error).message,
     });
-    res.status(500).json({ error: (e as Error).message });
+    res.status(500).json({ error: "Error validating user broker" });
     return;
   }
 };
@@ -120,7 +120,7 @@ const getByEmail = async (req: any, res: any) => {
         model: "userBroker/getByEmail",
         error: result.error,
       });
-      res.status(500).json({ error: result.error });
+      res.status(500).json({ error: "Error retrieving user broker" });
       return;
     }
 
@@ -134,7 +134,7 @@ const getByEmail = async (req: any, res: any) => {
       controller: "userBroker/getByEmail",
       error: (e as Error).message,
     });
-    res.status(500).json({ error: (e as Error).message });
+    res.status(500).json({ error: "Error retrieving user broker" });
     return;
   }
 };
@@ -172,7 +172,7 @@ const updatePassword = async (req: any, res: any) => {
       model: "userBroker/validate",
       error: result.error,
     });
-    res.status(500).json({ error: result.error });
+    res.status(500).json({ error: "Error retrieving user broker" });
     return;
   }
 
@@ -207,7 +207,7 @@ const updatePassword = async (req: any, res: any) => {
       model: "userBroker/assignPassword",
       error: responseUpdatePassword.error,
     });
-    res.status(500).json({ error: responseUpdatePassword.error });
+    res.status(500).json({ error: "Error assigning password to user broker" });
     return;
   }
 

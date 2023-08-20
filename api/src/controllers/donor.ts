@@ -11,7 +11,7 @@ const getByRutController = async (req: any, res: any) => {
       model: "donor/getByRutModel",
       error: response.error,
     });
-    res.status(500).json({ error: response.error });
+    res.status(500).json({ error: "Error retrieving donor" });
     return;
   }
 
@@ -51,7 +51,7 @@ const createController = async (req: any, res: any) => {
       model: "donor/createModel",
       error: response.error,
     });
-    res.status(500).json({ error: response.error });
+    res.status(500).json({ error: "Error creating donor" });
     return;
   }
 

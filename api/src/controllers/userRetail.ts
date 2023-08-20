@@ -14,7 +14,7 @@ const assignPassword = async (req: any, res: any) => {
       model: "userRetail/assignPassword",
       error: result.error,
     });
-    res.status(500).json({ error: result.error });
+    res.status(500).json({ error: "Error assigning password to user retail" });
     return;
   }
 
@@ -35,7 +35,7 @@ const validate = async (req: any, res: any) => {
         model: "userRetail/validate",
         error: result.error,
       });
-      res.status(500).json({ error: result.error });
+      res.status(500).json({ error: "Error retrieving user retail" });
       return;
     }
 
@@ -68,7 +68,7 @@ const validate = async (req: any, res: any) => {
       controller: "userRetail/validate",
       error: (e as Error).message,
     });
-    res.status(500).json({ error: (e as Error).message });
+    res.status(500).json({ error: "Error validating user retail" });
     return;
   }
 };
@@ -83,7 +83,7 @@ const getByEmail = async (req: any, res: any) => {
         model: "userRetail/getByEmail",
         error: result.error,
       });
-      res.status(500).json({ error: result.error });
+      res.status(500).json({ error: "Error retrieving user retail" });
       return;
     }
 
@@ -97,7 +97,7 @@ const getByEmail = async (req: any, res: any) => {
       controller: "userRetail/getByEmail",
       error: (e as Error).message,
     });
-    res.status(500).json({ error: (e as Error).message });
+    res.status(500).json({ error: "Error retrieving user retail" });
     return;
   }
 };
@@ -135,7 +135,7 @@ const updatePassword = async (req: any, res: any) => {
       model: "userRetail/validate",
       error: result.error,
     });
-    res.status(500).json({ error: result.error });
+    res.status(500).json({ error: "Error retrieving user retail" });
     return;
   }
 
@@ -170,7 +170,7 @@ const updatePassword = async (req: any, res: any) => {
       model: "userRetail/assignPassword",
       error: responseUpdatePassword.error,
     });
-    res.status(500).json({ error: responseUpdatePassword.error });
+    res.status(500).json({ error: "Error assigning password to user retail" });
     return;
   }
 

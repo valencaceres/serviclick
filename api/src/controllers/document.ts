@@ -12,7 +12,7 @@ const createDocument = async (req: any, res: any) => {
       model: "document/createDocument",
       error: documentResponse.error,
     });
-    res.status(500).json({ error: documentResponse.error });
+    res.status(500).json({ error: "Error creating document" });
     return;
   }
 
@@ -33,7 +33,7 @@ const updateDocument = async (req: any, res: any) => {
       model: "document/updateDocument",
       error: documentResponse.error,
     });
-    res.status(500).json({ error: documentResponse.error });
+    res.status(500).json({ error: "Error updating document" });
     return;
   }
 
@@ -53,7 +53,7 @@ const deleteDocument = async (req: any, res: any) => {
       model: "document/deleteDocument",
       error: documentResponse.error,
     });
-    res.status(500).json({ error: documentResponse.error });
+    res.status(500).json({ error: "Error deleting document" });
     return;
   }
 
@@ -72,7 +72,7 @@ const getAllDocuments = async (req: any, res: any) => {
       model: "document/listFamilies",
       error: documentResponse.error,
     });
-    res.status(500).json({ error: documentResponse.error });
+    res.status(500).json({ error: "Error retrieving documents" });
     return;
   }
 
@@ -92,7 +92,7 @@ const getDocument = async (req: any, res: any) => {
       model: "document/getDocument",
       error: documentResponse.error,
     });
-    res.status(500).json({ error: documentResponse.error });
+    res.status(500).json({ error: "Error retrieving document" });
     return;
   }
 
@@ -112,7 +112,7 @@ const getDocumentsByFamilyId = async (req: any, res: any) => {
       model: "document/getDocumentsByFamilyId",
       error: documentResponse.error,
     });
-    res.status(500).json({ error: documentResponse.error });
+    res.status(500).json({ error: "Error retrieving documents" });
     return;
   }
 
@@ -131,7 +131,7 @@ const getFamilies = async (req: any, res: any) => {
       model: "document/getFamilies",
       error: documentResponse.error,
     });
-    res.status(500).json({ error: documentResponse.error });
+    res.status(500).json({ error: "Error retrieving families" });
     return;
   }
 

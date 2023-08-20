@@ -10,7 +10,7 @@ const getAllController = async (req: any, res: any) => {
       model: "status/getAllModel",
       error: statusResponse.error,
     });
-    res.status(500).json({ error: statusResponse.error });
+    res.status(500).json({ error: "Error retrieving status " });
     return;
   }
 

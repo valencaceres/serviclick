@@ -11,7 +11,7 @@ const create = async (req: any, res: any) => {
       model: "value/create",
       error: valueResponse.error,
     });
-    res.status(500).json({ error: valueResponse.error });
+    res.status(500).json({ error: "Error creating value" });
     return;
   }
 
@@ -37,7 +37,7 @@ const updateById = async (req: any, res: any) => {
       model: "value/updateById",
       error: valueResponse.error,
     });
-    res.status(500).json({ error: valueResponse.error });
+    res.status(500).json({ error: "Error updating value" });
     return;
   }
 
@@ -56,7 +56,7 @@ const getAll = async (req: any, res: any) => {
       model: "value/getAll",
       error: valueResponse.error,
     });
-    res.status(500).json({ error: valueResponse.error });
+    res.status(500).json({ error: "Error retrieving values" });
     return;
   }
 
@@ -76,7 +76,7 @@ const getById = async (req: any, res: any) => {
       model: "value/getById",
       error: valueResponse.error,
     });
-    res.status(500).json({ error: valueResponse.error });
+    res.status(500).json({ error: "Error retrieving value" });
     return;
   }
 
@@ -95,7 +95,7 @@ const getFamilies = async (req: any, res: any) => {
       model: "assistance/getFamilies",
       error: assistanceResponse.error,
     });
-    res.status(500).json({ error: assistanceResponse.error });
+    res.status(500).json({ error: "Error retrieving families" });
     return;
   }
 
@@ -115,7 +115,7 @@ const getByFamilyId = async (req: any, res: any) => {
       model: "value/getByFamilyId",
       error: assistanceResponse.error,
     });
-    res.status(500).json({ error: assistanceResponse.error });
+    res.status(500).json({ error: "Error retrieving value" });
     return;
   }
 

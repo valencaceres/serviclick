@@ -11,7 +11,7 @@ const create = async (req: any, res: any) => {
       model: "valueType/create",
       error: valueTypeResponse.error,
     });
-    res.status(500).json({ error: valueTypeResponse.error });
+    res.status(500).json({ error: "Error creating value type" });
     return;
   }
 
@@ -37,7 +37,7 @@ const updateById = async (req: any, res: any) => {
       model: "valueType/updateById",
       error: valueTypeResponse.error,
     });
-    res.status(500).json({ error: valueTypeResponse.error });
+    res.status(500).json({ error: "Error updating value type" });
     return;
   }
 
@@ -56,7 +56,7 @@ const getAll = async (req: any, res: any) => {
       model: "valueType/getAll",
       error: valueTypeResponse.error,
     });
-    res.status(500).json({ error: valueTypeResponse.error });
+    res.status(500).json({ error: "Error retrieving value types" });
     return;
   }
 
@@ -76,7 +76,7 @@ const getById = async (req: any, res: any) => {
       model: "valueType/getById",
       error: valueTypeResponse.error,
     });
-    res.status(500).json({ error: valueTypeResponse.error });
+    res.status(500).json({ error: "Error retrieving value type" });
     return;
   }
 

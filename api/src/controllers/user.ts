@@ -38,7 +38,7 @@ const create = async (req: any, res: any) => {
       model: "person/create",
       error: personResponse.error,
     });
-    res.status(500).json({ error: personResponse.error });
+    res.status(500).json({ error: "Error creating person" });
     return;
   }
 
@@ -50,7 +50,7 @@ const create = async (req: any, res: any) => {
       model: "user/create",
       error: userResponse.error,
     });
-    res.status(500).json({ error: userResponse.error });
+    res.status(500).json({ error: "Error creating user" });
     return;
   }
 
@@ -70,7 +70,7 @@ const deleteUserById = async (req: any, res: any) => {
       model: "person/deleteUserById",
       error: userResponse.error,
     });
-    res.status(500).json({ error: userResponse.error });
+    res.status(500).json({ error: "Error deleting user" });
     return;
   }
 
@@ -90,7 +90,7 @@ const assignPassword = async (req: any, res: any) => {
       model: "user/assignPassword",
       error: result.error,
     });
-    res.status(500).json({ error: result.error });
+    res.status(500).json({ error: "Error assigning password to user" });
     return;
   }
 
@@ -111,7 +111,7 @@ const validate = async (req: any, res: any) => {
         model: "user/validate",
         error: result.error,
       });
-      res.status(500).json({ error: result.error });
+      res.status(500).json({ error: "Error retrieving user" });
       return;
     }
 
@@ -144,7 +144,7 @@ const validate = async (req: any, res: any) => {
       controller: "user/validate",
       error: (e as Error).message,
     });
-    res.status(500).json({ error: (e as Error).message });
+    res.status(500).json({ error: "Error validating user" });
     return;
   }
 };
@@ -159,7 +159,7 @@ const getByRut = async (req: any, res: any) => {
         model: "user/getByRut",
         error: result.error,
       });
-      res.status(500).json({ error: result.error });
+      res.status(500).json({ error: "Error retrieving user" });
       return;
     }
 
@@ -173,7 +173,7 @@ const getByRut = async (req: any, res: any) => {
       controller: "user/getByEmail",
       error: (e as Error).message,
     });
-    res.status(500).json({ error: (e as Error).message });
+    res.status(500).json({ error: "Error retrieving user" });
     return;
   }
 };
@@ -188,7 +188,7 @@ const getByEmail = async (req: any, res: any) => {
         model: "user/getByEmail",
         error: result.error,
       });
-      res.status(500).json({ error: result.error });
+      res.status(500).json({ error: "Error retrieving user" });
       return;
     }
 
@@ -202,7 +202,7 @@ const getByEmail = async (req: any, res: any) => {
       controller: "user/getByEmail",
       error: (e as Error).message,
     });
-    res.status(500).json({ error: (e as Error).message });
+    res.status(500).json({ error: "Error retrieving user" });
     return;
   }
 };
@@ -216,7 +216,7 @@ const getAll = async (req: any, res: any) => {
         model: "user/getAll",
         error: result.error,
       });
-      res.status(500).json({ error: result.error });
+      res.status(500).json({ error: "Error retrieving users" });
       return;
     }
 
@@ -230,7 +230,7 @@ const getAll = async (req: any, res: any) => {
       controller: "user/getAll",
       error: (e as Error).message,
     });
-    res.status(500).json({ error: (e as Error).message });
+    res.status(500).json({ error: "Error retrieving users" });
     return;
   }
 };
@@ -245,7 +245,7 @@ const sendCredentials = async (req: any, res: any) => {
         model: "user/getByEmail",
         error: userResponse.error,
       });
-      res.status(500).json({ error: userResponse.error });
+      res.status(500).json({ error: "Error retrieving user" });
       return;
     }
 
@@ -263,7 +263,7 @@ const sendCredentials = async (req: any, res: any) => {
         model: "user/assignPassword",
         error: userPasswordResponse.error,
       });
-      res.status(500).json({ error: userPasswordResponse.error });
+      res.status(500).json({ error: "Error assigning password to user" });
       return;
     }
 
@@ -287,7 +287,7 @@ const sendCredentials = async (req: any, res: any) => {
       controller: "user/assignPassword",
       error: (e as Error).message,
     });
-    res.status(500).json({ error: (e as Error).message });
+    res.status(500).json({ error: "Error sending credentials" });
     return;
   }
 };
@@ -302,7 +302,7 @@ const updatePassword = async (req: any, res: any) => {
       model: "user/getByEmail",
       error: result.error,
     });
-    res.status(500).json({ error: result.error });
+    res.status(500).json({ error: "Error retrieving user" });
     return;
   }
 
@@ -334,7 +334,7 @@ const updatePassword = async (req: any, res: any) => {
       model: "user/assignPassword",
       error: responseUpdatePassword.error,
     });
-    res.status(500).json({ error: responseUpdatePassword.error });
+    res.status(500).json({ error: "Error assigning password" });
     return;
   }
 

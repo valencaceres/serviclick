@@ -39,7 +39,7 @@ const create = async (req: any, res: any) => {
       model: `person/create`,
       error: personResponse.error,
     });
-    res.status(500).json({ error: personResponse.error });
+    res.status(500).json({ error: "Error creating person" });
     return;
   }
 
@@ -52,7 +52,7 @@ const create = async (req: any, res: any) => {
       model: `specialist/create`,
       error: specialistResponse.error,
     });
-    res.status(500).json({ error: specialistResponse.error });
+    res.status(500).json({ error: "Error creating specialist" });
     return;
   }
 
@@ -67,7 +67,7 @@ const create = async (req: any, res: any) => {
       model: "specialistDistrict/deleteBySpecialistId",
       error: deleteDistricts.error,
     });
-    res.status(500).json({ error: deleteDistricts.error });
+    res.status(500).json({ error: "Error deleting specialist district" });
     return;
   }
 
@@ -82,7 +82,7 @@ const create = async (req: any, res: any) => {
         model: "specialistDistrict/create",
         error: addDistrict.error,
       });
-      res.status(500).json({ error: addDistrict.error });
+      res.status(500).json({ error: "Error creating specialist district" });
       return;
     }
   }
@@ -96,7 +96,7 @@ const create = async (req: any, res: any) => {
       model: "specialistSpecialty/deleteBySpecialistId",
       error: deleteSpecialtys.error,
     });
-    res.status(500).json({ error: deleteSpecialtys.error });
+    res.status(500).json({ error: "Error deleting specialist specialty" });
     return;
   }
 
@@ -111,7 +111,7 @@ const create = async (req: any, res: any) => {
         model: "specialistSpecialty/create",
         error: addSpecialty.error,
       });
-      res.status(500).json({ error: addSpecialty.error });
+      res.status(500).json({ error: "Error creating specialist specialty" });
       return;
     }
   }
@@ -124,7 +124,7 @@ const create = async (req: any, res: any) => {
   const responseGet = await functionGetById(specialist_id);
 
   if (!responseGet.success) {
-    res.status(500).json({ error: responseGet.error });
+    res.status(500).json({ error: "Error creating specialist" });
     return;
   }
 
@@ -140,7 +140,7 @@ const deleteById = async (req: any, res: any) => {
       model: "specialist/delete",
       error: specialistResponse.error,
     });
-    res.status(500).json({ error: specialistResponse.error });
+    res.status(500).json({ error: "Error deleting specialist" });
     return;
   }
 
@@ -159,7 +159,7 @@ const getAll = async (req: any, res: any) => {
       model: "specialist/getAll",
       error: specialistResponse.error,
     });
-    res.status(500).json({ error: specialistResponse.error });
+    res.status(500).json({ error: "Error retrieving specialists" });
     return;
   }
 
@@ -175,7 +175,7 @@ const getById = async (req: any, res: any) => {
   const responseGet = await functionGetById(id);
 
   if (!responseGet.success) {
-    res.status(500).json({ error: responseGet.error });
+    res.status(500).json({ error: "Error retrieving specialist" });
     return;
   }
 
@@ -192,7 +192,7 @@ const getByRut = async (req: any, res: any) => {
       model: "specialist/getByRut",
       error: specialistResponse.error,
     });
-    res.status(500).json({ error: specialistResponse.error });
+    res.status(500).json({ error: "Error retrieving specialist" });
     return;
   }
 
@@ -221,7 +221,7 @@ const getFamilies = async (req: any, res: any) => {
       model: "specialist/getFamilies",
       error: specialistResponse.error,
     });
-    res.status(500).json({ error: specialistResponse.error });
+    res.status(500).json({ error: "Error retrieving families" });
     return;
   }
 
@@ -241,7 +241,7 @@ const getAssistances = async (req: any, res: any) => {
       model: "specialist/getAssistances",
       error: specialistResponse.error,
     });
-    res.status(500).json({ error: specialistResponse.error });
+    res.status(500).json({ error: "Error retrieving assistances" });
     return;
   }
 
@@ -264,7 +264,7 @@ const getByFamilyAssistance = async (req: any, res: any) => {
       model: "specialist/getByFamilyAssistance",
       error: specialistResponse.error,
     });
-    res.status(500).json({ error: specialistResponse.error });
+    res.status(500).json({ error: "Error retrieving specialist" });
     return;
   }
 
@@ -284,7 +284,7 @@ const getBySpecialtyId = async (req: any, res: any) => {
       model: "specialist/getBySpecialtyId",
       error: specialistResponse.error,
     });
-    res.status(500).json({ error: specialistResponse.error });
+    res.status(500).json({ error: "Error retrieving specialist" });
     return;
   }
 
@@ -304,7 +304,7 @@ const getByName = async (req: any, res: any) => {
       model: "specialist/getByName",
       error: specialistResponse.error,
     });
-    res.status(500).json({ error: specialistResponse.error });
+    res.status(500).json({ error: "Error retrieving specialist" });
     return;
   }
 
@@ -328,7 +328,7 @@ const getByDistrict = async (req: any, res: any) => {
       model: "specialist/getByDistrict",
       error: specialistResponse.error,
     });
-    res.status(500).json({ error: specialistResponse.error });
+    res.status(500).json({ error: "Error retrieving specialist" });
 
     return;
   }

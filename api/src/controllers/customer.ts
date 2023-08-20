@@ -31,7 +31,7 @@ const create = async (req: any, res: any) => {
       model: "customer/create",
       error: customerResponse.error,
     });
-    res.status(500).json({ error: customerResponse.error });
+    res.status(500).json({ error: "Error creating customer" });
     return;
   }
 
@@ -47,7 +47,7 @@ const create = async (req: any, res: any) => {
       model: "customer/getByRutModel",
       error: response.error,
     });
-    res.status(500).json({ error: response.error });
+    res.status(500).json({ error: "Error retrieving customer" });
     return;
   }
 
@@ -67,7 +67,7 @@ const getByRutController = async (req: any, res: any) => {
       model: "customer/getByRutModel",
       error: response.error,
     });
-    res.status(500).json({ error: response.error });
+    res.status(500).json({ error: "Error retrieving customer" });
     return;
   }
 
