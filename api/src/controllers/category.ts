@@ -10,7 +10,7 @@ const getAll = async (req: any, res: any) => {
       model: "category/getAll",
       error: response.error,
     });
-    res.status(500).json({ error: response.error });
+    res.status(500).json({ error: "Error retrieving categories" });
     return;
   }
 

@@ -37,7 +37,7 @@ const uploadFile_BCI = async (req: any, res: any, next: any) => {
       model: "import/importSummary",
       error: responseImportSummary.error,
     });
-    return res.status(500).json({ error: responseImportSummary.error });
+    return res.status(500).json({ error: "Error creating import summary" });
   }
 
   const importSummary_id = responseImportSummary.data.id;
@@ -56,7 +56,7 @@ const uploadFile_BCI = async (req: any, res: any, next: any) => {
           model: "import/importBCI",
           error: responseImportBCI.error,
         });
-        return res.status(500).json({ error: responseImportBCI.error });
+        return res.status(500).json({ error: "Error creating importBCI" });
       }
     })
   );
@@ -77,7 +77,7 @@ const getAll = async (req: any, res: any) => {
       model: "import/getAll",
       error: response.error,
     });
-    res.status(500).json({ error: response.error });
+    res.status(500).json({ error: "Error retrieving imports summary" });
     return;
   }
 
@@ -98,7 +98,7 @@ const getById_BCI = async (req: any, res: any) => {
       model: "import/getById_BCI",
       error: response.error,
     });
-    res.status(500).json({ error: response.error });
+    res.status(500).json({ error: "Error retrieving importBCI" });
     return;
   }
 

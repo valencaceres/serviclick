@@ -10,7 +10,7 @@ const createChannel = async (req: any, res: any) => {
       model: "channel/createChannel",
       error: channelResponse.error,
     });
-    res.status(500).json({ error: channelResponse.error });
+    res.status(500).json({ error: "Error creating channel" });
     return;
   }
 
@@ -31,7 +31,7 @@ const updateChannel = async (req: any, res: any) => {
       model: "channel/updateChannel",
       error: channelResponse.error,
     });
-    res.status(500).json({ error: channelResponse.error });
+    res.status(500).json({ error: "Error updating channel" });
     return;
   }
 
@@ -51,7 +51,7 @@ const deleteChannel = async (req: any, res: any) => {
       model: "channel/deleteChannel",
       error: channelResponse.error,
     });
-    res.status(500).json({ error: channelResponse.error });
+    res.status(500).json({ error: "Error deleting channel" });
     return;
   }
 
@@ -70,7 +70,7 @@ const listChannels = async (req: any, res: any) => {
       model: "channel/listChannels",
       error: channelResponse.error,
     });
-    res.status(500).json({ error: channelResponse.error });
+    res.status(500).json({ error: "Error listing channels" });
     return;
   }
 

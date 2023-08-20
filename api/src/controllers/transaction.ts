@@ -19,7 +19,7 @@ const getActivesByRutAndProductIdController = async (req: any, res: any) => {
       model: "transaction/getActivesByRutAndProductIdModel",
       error: transactionResponse.error,
     });
-    res.status(500).json({ error: transactionResponse.error });
+    res.status(500).json({ error: "Error retrieving transactions" });
     return;
   }
 
@@ -46,7 +46,7 @@ const getByFiltersController = async (req: any, res: any) => {
       model: "transaction/getByFiltersModel",
       error: transactionResponse.error,
     });
-    res.status(500).json({ error: transactionResponse.error });
+    res.status(500).json({ error: "Error retrieving transactions" });
     return;
   }
 

@@ -9,7 +9,7 @@ const listAll = async (req: any, res: any) => {
       model: "district/listAll",
       error: districtResponse.error,
     });
-    res.status(500).json({ error: districtResponse.error });
+    res.status(500).json({ error: "Error listing districts" });
     return;
   }
 

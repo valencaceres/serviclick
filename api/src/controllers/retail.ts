@@ -45,7 +45,7 @@ const create = async (req: any, res: any) => {
         model: "retail/create",
         error: retailResponse.error,
       });
-      res.status(500).json({ error: retailResponse.error });
+      res.status(500).json({ error: "Error creating retail" });
       return;
     }
 
@@ -65,7 +65,7 @@ const create = async (req: any, res: any) => {
         model: "company/create",
         error: companyResponse.error,
       });
-      res.status(500).json({ error: companyResponse.error });
+      res.status(500).json({ error: "Error creating company" });
       return;
     }
 
@@ -81,7 +81,7 @@ const create = async (req: any, res: any) => {
           model: "retailLegalRepresentative/deleteByRetailId",
           error: deleteResponse.error,
         });
-        res.status(500).json({ error: deleteResponse.error });
+        res.status(500).json({ error: "Error deleting retail legal representative" });
         return;
       }
 
@@ -97,7 +97,7 @@ const create = async (req: any, res: any) => {
               model: "legalRepresentative/create",
               error: legalRepresentativeResponse.error,
             });
-            res.status(500).json({ error: legalRepresentativeResponse.error });
+            res.status(500).json({ error: "Error creating retail legal representative" });
             return;
           }
         }
@@ -114,7 +114,7 @@ const create = async (req: any, res: any) => {
           model: "retailProduct/deleteByRetailId",
           error: retailProductDelete.error,
         });
-        res.status(500).json({ error: retailProductDelete.error });
+        res.status(500).json({ error: "Error deleting retail product" });
         return;
       }
 
@@ -134,7 +134,7 @@ const create = async (req: any, res: any) => {
               model: "retailCampaign/create",
               error: retailCampaign.error,
             });
-            res.status(500).json({ error: retailCampaign.error });
+            res.status(500).json({ error: "Error creating retail campaign" });
             return;
           }
 
@@ -155,7 +155,7 @@ const create = async (req: any, res: any) => {
             controller: "product/createProductPlans",
             error: responsePlans.error,
           });
-          res.status(500).json({ error: responsePlans.error });
+          res.status(500).json({ error: "Error creating product plans" });
           return;
         }
 
@@ -173,7 +173,7 @@ const create = async (req: any, res: any) => {
             model: "retailProduct/create",
             error: retailProductResponse.error,
           });
-          res.status(500).json({ error: retailProductResponse.error });
+          res.status(500).json({ error: "Error creating retail product" });
           return;
         }
 
@@ -191,7 +191,7 @@ const create = async (req: any, res: any) => {
           model: "userRetail/inactiveAllByRetailId",
           error: retailProductInactive.error,
         });
-        res.status(500).json({ error: retailProductInactive.error });
+        res.status(500).json({ error: "Error deactivating users retail" });
         return;
       }
 
@@ -221,7 +221,7 @@ const create = async (req: any, res: any) => {
               model: "userRetail/create",
               error: userRetailResponse.error,
             });
-            res.status(500).json({ error: userRetailResponse.error });
+            res.status(500).json({ error: "Error creating user retail" });
             return;
           }
 
@@ -270,7 +270,7 @@ const create = async (req: any, res: any) => {
       controller: "retail/create",
       error: (error as Error).message,
     });
-    res.status(500).json({ error });
+    res.status(500).json({ error: "Error creating retail" });
     return;
   }
 };
@@ -284,7 +284,7 @@ const getAll = async (req: any, res: any) => {
         model: "retail/getAll",
         error: retailResponse.error,
       });
-      res.status(500).json({ error: retailResponse.error });
+      res.status(500).json({ error: "Error retrieving retails" });
       return;
     }
 
@@ -298,7 +298,7 @@ const getAll = async (req: any, res: any) => {
       controller: "retail/getAll",
       error: (error as Error).message,
     });
-    res.status(500).json({ error });
+    res.status(500).json({ error: "Error retrieving retails" });
     return;
   }
 };
@@ -368,7 +368,7 @@ const deleteById = async (req: any, res: any) => {
         model: "retail/deleteById",
         error: retailResponse.error,
       });
-      res.status(500).json({ error: retailResponse.error });
+      res.status(500).json({ error: "Error deleting retail" });
       return;
     }
 
@@ -382,7 +382,7 @@ const deleteById = async (req: any, res: any) => {
       controller: "retail/deleteById",
       error: (error as Error).message,
     });
-    res.status(500).json({ error });
+    res.status(500).json({ error: "Error deleting retail" });
     return;
   }
 };
@@ -399,7 +399,7 @@ const updateLogo = async (req: any, res: any) => {
         model: "retail/updateLogo",
         error: retailResponse.error,
       });
-      res.status(500).json({ error: retailResponse.error });
+      res.status(500).json({ error: "Error updating retail" });
       return;
     }
 
@@ -413,7 +413,7 @@ const updateLogo = async (req: any, res: any) => {
       controller: "retail/updateLogo",
       error: (error as Error).message,
     });
-    res.status(500).json({ error });
+    res.status(500).json({ error: "Error updating retail" });
     return;
   }
 };
@@ -429,7 +429,7 @@ const getFamiliesByRetailId = async (req: any, res: any) => {
         model: "retail/getFamiliesByRetailId",
         error: retailResponse.error,
       });
-      res.status(500).json({ error: retailResponse.error });
+      res.status(500).json({ error: "Error retrieving families" });
       return;
     }
 
@@ -443,7 +443,7 @@ const getFamiliesByRetailId = async (req: any, res: any) => {
       controller: "retail/getFamiliesByRetailId",
       error: (error as Error).message,
     });
-    res.status(500).json({ error });
+    res.status(500).json({ error: "Error retrieving families" });
     return;
   }
 };
@@ -462,7 +462,7 @@ const getProductsByRetailIdAndFamilyId = async (req: any, res: any) => {
         model: "retail/getProductsByRetailIdAndFamilyId",
         error: retailResponse.error,
       });
-      res.status(500).json({ error: retailResponse.error });
+      res.status(500).json({ error: "Error retrieving products" });
       return;
     }
 
@@ -476,7 +476,7 @@ const getProductsByRetailIdAndFamilyId = async (req: any, res: any) => {
       controller: "retail/getProductsByRetailIdAndFamilyId",
       error: (error as Error).message,
     });
-    res.status(500).json({ error });
+    res.status(500).json({ error: "Error retrieving products" });
     return;
   }
 };

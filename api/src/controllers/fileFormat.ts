@@ -12,7 +12,7 @@ const create = async (req: any, res: any) => {
       model: "fileFormat/deleteByLeadId",
       error: deleteResponse.error,
     });
-    res.status(500).json({ error: deleteResponse.error });
+    res.status(500).json({ error: "Error deleting file format" });
     return;
   }
 
@@ -37,7 +37,7 @@ const getAll = async (req: any, res: any) => {
       model: "fileFormat/getAll",
       error: fileFormatResponse.error,
     });
-    res.status(500).json({ error: fileFormatResponse.error });
+    res.status(500).json({ error: "Error retrieving files format" });
     return;
   }
 
@@ -57,7 +57,7 @@ const getByLeadId = async (req: any, res: any) => {
       model: "fileFormat/getByLeadId",
       error: fileFormatResponse.error,
     });
-    res.status(500).json({ error: fileFormatResponse.error });
+    res.status(500).json({ error: "Error retrieving file format" });
     return;
   }
 
@@ -77,7 +77,7 @@ const deleteByLeadId = async (req: any, res: any) => {
       model: "fileFormat/deleteByLeadId",
       error: fileFormatResponse.error,
     });
-    res.status(500).json({ error: fileFormatResponse.error });
+    res.status(500).json({ error: "Error deleting file format" });
     return;
   }
 

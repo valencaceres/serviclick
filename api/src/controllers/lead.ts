@@ -309,19 +309,16 @@ const sendPaymentLink = async (lead: LeadT, link: string = "") => {
 
   const href =
     link === ""
-      ? `https://web.serviclick.cl/payment/${
-          lead.customer.rut ? "customer" : "company"
-        }/${lead.product.product_id}?leadId=${lead.id}`
+      ? `https://web.serviclick.cl/payment/${lead.customer.rut ? "customer" : "company"
+      }/${lead.product.product_id}?leadId=${lead.id}`
       : link;
 
   const emailResponse = await sendMail(
     { name: "Bienvenido a ServiClick" },
     lead.customer.email || lead.company.email,
     `Link de pago para ${product.name}`,
-    `<b>Hola&nbsp;${
-      lead.company.rut ? lead.company.companyName : lead.customer.name
-    }</b><br/><br/>Queremos que seas parte de ServiClick y solo estás a un paso, te dejamos el link de pago para que puedas completar la adquisición de ${
-      product.name
+    `<b>Hola&nbsp;${lead.company.rut ? lead.company.companyName : lead.customer.name
+    }</b><br/><br/>Queremos que seas parte de ServiClick y solo estás a un paso, te dejamos el link de pago para que puedas completar la adquisición de ${product.name
     } y disfrutes de los beneficios que te brinda:<br/><br/><a href="${href}">Concluye tu proceso de pago haciendo click aquí</a><br/><br/>Por que sabemos de asistencias, nos enfocamos en resolver todas las necesidades que te ayuden a vivir más tranquilo y seguro.<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
     []
   );
@@ -353,10 +350,10 @@ const createSubscription = async (
     const name =
       customer.rut !== ""
         ? customer.name +
-          " " +
-          customer.paternalLastName +
-          " " +
-          customer.maternalLastName
+        " " +
+        customer.paternalLastName +
+        " " +
+        customer.maternalLastName
         : company.companyName;
     const address = contractor.address + ", " + contractor.district;
 
@@ -800,7 +797,7 @@ const getByIdController = async (req: any, res: any) => {
         model: "lead/getById",
         error: leadResponse.error,
       });
-      res.status(500).json({ error: leadResponse.error });
+      res.status(500).json({ error: "Error retrieving lead" });
       return;
     }
 
@@ -810,7 +807,7 @@ const getByIdController = async (req: any, res: any) => {
       controller: "lead/getById",
       error: (error as Error).message,
     });
-    res.status(500).json({ error });
+    res.status(500).json({ error: "Error retrieving lead" });
     return;
   }
 };
@@ -825,7 +822,7 @@ const getBySubscriptionIdController = async (req: any, res: any) => {
         model: "lead/getBySubscriptionId",
         error: leadResponse.error,
       });
-      res.status(500).json({ error: leadResponse.error });
+      res.status(500).json({ error: "Error retrieving lead" });
       return;
     }
 
@@ -835,7 +832,7 @@ const getBySubscriptionIdController = async (req: any, res: any) => {
       controller: "lead/getBySubscriptionIdController",
       error: (error as Error).message,
     });
-    res.status(500).json({ error });
+    res.status(500).json({ error: "Error retrieving lead" });
     return;
   }
 };
@@ -882,7 +879,7 @@ const getData = async (leadResponse: any, res: any) => {
         error: leadProductResponse.error,
       });
       res.status(500).json({
-        error: "leadProductModel: " + leadProductResponse.error,
+        error: "Error retrieving lead product",
       });
       return;
     }
@@ -895,7 +892,7 @@ const getData = async (leadResponse: any, res: any) => {
         error: leadInsuredResponse.error,
       });
       res.status(500).json({
-        error: "leadInsuredModel: " + leadInsuredResponse.error,
+        error: "Error retrieving lead insured",
       });
       return;
     }
@@ -908,7 +905,7 @@ const getData = async (leadResponse: any, res: any) => {
         error: leadBeneficiariesResponse.error,
       });
       res.status(500).json({
-        error: "leadBeneficiaryModel: " + leadBeneficiariesResponse.error,
+        error: "Error retrieving lead beneficiary",
       });
       return;
     }
@@ -929,7 +926,7 @@ const getData = async (leadResponse: any, res: any) => {
           error: responseValues.error,
         });
         res.status(500).json({
-          error: "leadProductValues: " + responseValues.error,
+          error: "Error retrieving lead product values",
         });
         return;
       }
@@ -1052,7 +1049,7 @@ const getData = async (leadResponse: any, res: any) => {
       controller: "lead/getData",
       error: (error as Error).message,
     });
-    res.status(500).json({ error });
+    res.status(500).json({ error: "Eror retrieving lead data" });
     return;
   }
 };
@@ -1067,7 +1064,7 @@ const getProductByInsuredIdController = async (req: any, res: any) => {
         model: "lead/getProductByInsuredId",
         error: leadResponse.error,
       });
-      res.status(500).json({ error: leadResponse.error });
+      res.status(500).json({ error: "Error retrieving lead product" });
       return;
     }
 
@@ -1081,7 +1078,7 @@ const getProductByInsuredIdController = async (req: any, res: any) => {
       controller: "lead/getProductByInsuredIdController",
       error: (error as Error).message,
     });
-    res.status(500).json({ error });
+    res.status(500).json({ error: "Error retrieving lead product" });
     return;
   }
 };
@@ -1320,7 +1317,7 @@ const addProduct = async (req: any, res: any) => {
       model: "addProduct",
       error: err,
     });
-    res.status(500).json({ error: err });
+    res.status(500).json({ error: "Error adding lead product" });
   }
 };
 
@@ -1586,9 +1583,9 @@ const addInsuredFromExcel = async (req: any, res: any) => {
               ...dataItem,
               values: dataItem.values
                 ? [
-                    ...dataItem.values,
-                    { id: field_id, value: xlsItem[xlsField] },
-                  ]
+                  ...dataItem.values,
+                  { id: field_id, value: xlsItem[xlsField] },
+                ]
                 : [{ id: field_id, value: xlsItem[xlsField] }],
             };
           } else {
@@ -1710,7 +1707,7 @@ const getContract = async (req: any, res: any) => {
     if ((e.message = "File not found")) {
       return res.status(404).json({ error: "File not found" });
     }
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: "Error retrieving contract" });
   }
 };
 

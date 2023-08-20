@@ -11,7 +11,7 @@ const getByLeadId = async (req: any, res: any) => {
       model: "field/getByLeadId",
       error: fieldResponse.error,
     });
-    res.status(500).json({ error: fieldResponse.error });
+    res.status(500).json({ error: "Error retrieving field" });
     return;
   }
 

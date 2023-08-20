@@ -71,7 +71,7 @@ const createProduct = async (req: any, res: any) => {
       model: "product/createProduct",
       error: productResponse.error,
     });
-    res.status(500).json({ error: productResponse.error });
+    res.status(500).json({ error: "Error creating product" });
     return;
   }
 
@@ -93,7 +93,7 @@ const createProduct = async (req: any, res: any) => {
       model: "productDescription/create",
       error: productDescriptionResponse.error,
     });
-    res.status(500).json({ error: productDescriptionResponse.error });
+    res.status(500).json({ error: "Error creating product description" });
     return;
   }
 
@@ -104,7 +104,7 @@ const createProduct = async (req: any, res: any) => {
       model: "productAssistance/getByProductId",
       error: existingAssistances.error,
     });
-    res.status(500).json({ error: existingAssistances.error });
+    res.status(500).json({ error: "Error retrieving product assistance" });
     return;
   }
 
@@ -125,7 +125,7 @@ const createProduct = async (req: any, res: any) => {
           model: "productAssistance/deleteById",
           error: deleteResponse.error,
         });
-        res.status(500).json({ error: deleteResponse.error });
+        res.status(500).json({ error: "Error deleting product assistance" });
         return;
       }
     }
@@ -149,7 +149,7 @@ const createProduct = async (req: any, res: any) => {
         model: "productAssistance/create",
         error: addValue.error,
       });
-      res.status(500).json({ error: addValue.error });
+      res.status(500).json({ error: "Error creating product assistance" });
       return;
     }
     line_order++;
@@ -168,7 +168,7 @@ const createProduct = async (req: any, res: any) => {
       error: productByIdResponse.error,
     });
 
-    res.status(500).json({ error: productByIdResponse.error });
+    res.status(500).json({ error: "Error retrieving product" });
     return;
   }
 
@@ -192,7 +192,7 @@ const createPlans = async (req: any, res: any) => {
       controller: "product/createProductPlans",
       error: responsePlans.error,
     });
-    res.status(500).json({ error: responsePlans.error });
+    res.status(500).json({ error: "Error creating product plans" });
     return;
   }
 
@@ -221,7 +221,7 @@ const assignPrices = async (req: any, res: any) => {
       controller: "product/createProductPlans",
       error: responsePlans.error,
     });
-    res.status(500).json({ error: responsePlans.error });
+    res.status(500).json({ error: "Error creating product plans" });
     return;
   }
 
@@ -270,7 +270,7 @@ const updateProduct = async (req: any, res: any) => {
         model: "product/updateProduct",
         error: productResponse.error,
       });
-      res.status(500).json({ error: productResponse.error });
+      res.status(500).json({ error: "Error updating product" });
       return;
     }
 
@@ -282,7 +282,7 @@ const updateProduct = async (req: any, res: any) => {
         model: "productFamily/deleteProductFamilyValues",
         error: deletedProductFamilyValues.error,
       });
-      res.status(500).json({ error: deletedProductFamilyValues.error });
+      res.status(500).json({ error: "Error deleting product family value" });
       return;
     }
 
@@ -294,7 +294,7 @@ const updateProduct = async (req: any, res: any) => {
         model: "productFamily/deleteProductCoverages",
         error: deletedProductCoverages.error,
       });
-      res.status(500).json({ error: deletedProductCoverages.error });
+      res.status(500).json({ error: "Error deleting product coverage" });
       return;
     }
 
@@ -327,7 +327,7 @@ const updateProduct = async (req: any, res: any) => {
       controller: "product/updateProduct",
       error: (e as Error).message,
     });
-    res.status(500).json({ error: (e as Error).message });
+    res.status(500).json({ error: "Error updating product" });
     return;
   }
 };
@@ -341,7 +341,7 @@ const deleteProduct = async (req: any, res: any) => {
       model: "product/deleteProduct",
       error: productResponse.error,
     });
-    res.status(500).json({ error: productResponse.error });
+    res.status(500).json({ error: "Error deleting product" });
     return;
   }
 
@@ -361,7 +361,7 @@ const listProducts = async (req: any, res: any) => {
       model: "product/listProducts",
       error: productResponse.error,
     });
-    res.status(500).json({ error: productResponse.error });
+    res.status(500).json({ error: "Error listing products" });
     return;
   }
 
@@ -411,7 +411,7 @@ const getProductByFamilyId = async (req: any, res: any) => {
       model: "product/getProductByFamilyId",
       error: productResponse.error,
     });
-    res.status(500).json({ error: productResponse.error });
+    res.status(500).json({ error: "Error retrieving product" });
     return;
   }
 
@@ -456,7 +456,7 @@ const getFamilies = async (req: any, res: any) => {
       error: productResponse.error,
     });
 
-    res.status(500).json({ error: productResponse.error });
+    res.status(500).json({ error: "Error retrieving product families" });
     return;
   }
 
@@ -478,7 +478,7 @@ const getById = async (req: any, res: any) => {
       error: productResponse.error,
     });
 
-    res.status(500).json({ error: productResponse.error });
+    res.status(500).json({ error: "Error retrieving product" });
     return;
   }
 
@@ -500,7 +500,7 @@ const getByIdWithPrices = async (req: any, res: any) => {
       error: productResponse.error,
     });
 
-    res.status(500).json({ error: productResponse.error });
+    res.status(500).json({ error: "Error retrieving product" });
     return;
   }
 
@@ -511,7 +511,7 @@ const getByIdWithPrices = async (req: any, res: any) => {
   //     model: "product/getProduct",
   //     error: productResponse.error,
   //   });
-  //   res.status(500).json({ error: productResponse.error });
+  //   res.status(500).json({ error: "Error retrieving product" });
   //   return;
   // }
 
@@ -522,7 +522,7 @@ const getByIdWithPrices = async (req: any, res: any) => {
   //     model: "product/listProductFamilyValues",
   //     error: productResponse.error,
   //   });
-  //   res.status(500).json({ error: productFamilyValuesResponse.error });
+  //   res.status(500).json({ error: "Errro listing product family" });
   //   return;
   // }
 
@@ -534,7 +534,7 @@ const getByIdWithPrices = async (req: any, res: any) => {
   //     model: "product/listProductCoverages",
   //     error: productResponse.error,
   //   });
-  //   res.status(500).json({ error: productCoveragesResponse.error });
+  //   res.status(500).json({ error: "Error listing product coverage" });
   //   return;
   // }
 
@@ -547,7 +547,7 @@ const getByIdWithPrices = async (req: any, res: any) => {
       model: "product/getByProductIdModel",
       error: productResponse.error,
     });
-    res.status(500).json({ error: productPlansResponse.error });
+    res.status(500).json({ error: "Error retrieving product plans" });
     return;
   }
 
@@ -698,9 +698,8 @@ const createProductPlans = async (
 
     createLogger.info({
       method: company_plan_id > 0 ? "patch" : "post",
-      url: `${config.reveniu.URL.plan}${
-        company_plan_id > 0 ? company_plan_id : ""
-      }`,
+      url: `${config.reveniu.URL.plan}${company_plan_id > 0 ? company_plan_id : ""
+        }`,
       data: {
         ...productPlanData,
         is_custom_amount: true,
@@ -738,8 +737,7 @@ const createProductPlans = async (
     const planResponseCustomer = await axios[
       customer_plan_id > 0 ? "patch" : "post"
     ](
-      `${config.reveniu.URL.plan}${
-        customer_plan_id > 0 ? customer_plan_id : ""
+      `${config.reveniu.URL.plan}${customer_plan_id > 0 ? customer_plan_id : ""
       }`,
       {
         ...productPlanData,
@@ -753,9 +751,8 @@ const createProductPlans = async (
 
     createLogger.info({
       method: customer_plan_id > 0 ? "patch" : "post",
-      url: `${config.reveniu.URL.plan}${
-        customer_plan_id > 0 ? customer_plan_id : ""
-      }`,
+      url: `${config.reveniu.URL.plan}${customer_plan_id > 0 ? customer_plan_id : ""
+        }`,
       data: {
         ...productPlanData,
         is_custom_amount: false,
@@ -875,7 +872,7 @@ const getByProductPlanId = async (req: any, res: any) => {
       error: productPlanResponse.error,
     });
 
-    res.status(500).json({ error: productPlanResponse.error });
+    res.status(500).json({ error: "Error retrieving product plans" });
     return;
   }
 
@@ -894,7 +891,7 @@ const getByProductPlanId = async (req: any, res: any) => {
       error: valueResponse.error,
     });
 
-    res.status(500).json({ error: valueResponse.error });
+    res.status(500).json({ error: "Error retrieving value" });
     return;
   }
 
@@ -955,7 +952,7 @@ const getAll = async (req: any, res: any) => {
       error: result.error,
     });
 
-    res.status(500).json({ error: result.error });
+    res.status(500).json({ error: "Error retrieving products" });
     return;
   }
 
@@ -978,7 +975,7 @@ const getByRetailRut = async (req: any, res: any) => {
       error: result.error,
     });
 
-    return res.status(500).json({ error: result.error });
+    return res.status(500).json({ error: "Error retrieving product" });
   }
 
   createLogger.info({
@@ -1000,7 +997,7 @@ const listByFamilies = async (req: any, res: any) => {
       error: result.error,
     });
 
-    res.status(500).json({ error: result.error });
+    res.status(500).json({ error: "Error listing product" });
     return;
   }
 

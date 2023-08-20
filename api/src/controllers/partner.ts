@@ -36,7 +36,7 @@ const create = async (req: any, res: any) => {
       model: `partner/create`,
       error: partnerResponse.error,
     });
-    res.status(500).json({ error: partnerResponse.error });
+    res.status(500).json({ error: "Error creating partner" });
     return;
   }
 
@@ -49,7 +49,7 @@ const create = async (req: any, res: any) => {
       model: `partnerSpecialty/deleteByPartnerId`,
       error: deleteSpecialties.error,
     });
-    res.status(500).json({ error: deleteSpecialties.error });
+    res.status(500).json({ error: "Error deleting partner specialty" });
     return;
   }
 
@@ -64,7 +64,7 @@ const create = async (req: any, res: any) => {
         model: `partnerSpecialty/create`,
         error: addSpecialty.error,
       });
-      res.status(500).json({ error: addSpecialty.error });
+      res.status(500).json({ error: "Error creating partner specialty" });
       return;
     }
   }
@@ -77,7 +77,7 @@ const create = async (req: any, res: any) => {
   const responseGet = await functionGetById(partner_id);
 
   if (!responseGet.success) {
-    res.status(500).json({ error: responseGet.error });
+    res.status(500).json({ error: "Error retrieving partner" });
     return;
   }
 
@@ -92,7 +92,7 @@ const getAll = async (req: any, res: any) => {
       model: `partner/getAll`,
       error: partnerResponse.error,
     });
-    res.status(500).json({ error: partnerResponse.error });
+    res.status(500).json({ error: "Error retrieving partners" });
     return;
   }
 
@@ -108,7 +108,7 @@ const getById = async (req: any, res: any) => {
       model: `partner/getById`,
       error: responseGet.error,
     });
-    res.status(500).json({ error: responseGet.error });
+    res.status(500).json({ error: "Error retrieving partner" });
     return;
   }
 
@@ -125,7 +125,7 @@ const getByRut = async (req: any, res: any) => {
       model: `partner/getByRut`,
       error: partnerResponse.error,
     });
-    res.status(500).json({ error: partnerResponse.error });
+    res.status(500).json({ error: "Error retrieving partner" });
     return;
   }
 
@@ -154,7 +154,7 @@ const getFamilies = async (req: any, res: any) => {
       model: `partner/getFamilies`,
       error: partnerResponse.error,
     });
-    res.status(500).json({ error: partnerResponse.error });
+    res.status(500).json({ error: "Error retrieving partner families" });
     return;
   }
 
@@ -175,7 +175,7 @@ const deletePartner: any = async (req: any, res: any) => {
       model: `partner/deletePartner`,
       error: partnerResponse.error,
     });
-    res.status(500).json({ error: partnerResponse.error });
+    res.status(500).json({ error: "Error deleting partner" });
     return;
   }
 
@@ -196,7 +196,7 @@ const getBySpecialtyId = async (req: any, res: any) => {
       model: `partner/getBySpecialtyId`,
       error: partnerResponse.error,
     });
-    res.status(500).json({ error: partnerResponse.error });
+    res.status(500).json({ error: "Error retrieving partner" });
     return;
   }
 
@@ -217,7 +217,7 @@ const getByName = async (req: any, res: any) => {
       model: `partner/getByName`,
       error: partnerResponse.error,
     });
-    res.status(500).json({ error: partnerResponse.error });
+    res.status(500).json({ error: "Error retrieving partner" });
     return;
   }
 
@@ -238,7 +238,7 @@ const getByFamilyId = async (req: any, res: any) => {
       model: `partner/getByFamilyId`,
       error: partnerResponse.error,
     });
-    res.status(500).json({ error: partnerResponse.error });
+    res.status(500).json({ error: "Error retrieving partner" });
     return;
   }
 

@@ -12,7 +12,7 @@ const getByProductId = async (req: any, res: any) => {
       model: "productDescription/getByProductId",
       error: productResponse.error,
     });
-    res.status(500).json({ error: productResponse.error });
+    res.status(500).json({ error: "Error retrieving product description" });
     return;
   }
 

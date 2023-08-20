@@ -22,7 +22,7 @@ const subscriptionActivated = async (req: any, res: any) => {
         model: "lead/getBySubscriptionId",
         error: leadResponse.error,
       });
-      res.status(500).json(leadResponse.error);
+      res.status(500).json({ error: "Error retrieving lead" });
       return;
     }
 
@@ -44,7 +44,7 @@ const subscriptionActivated = async (req: any, res: any) => {
         model: "lead/getProductsById",
         error: leadProductResponse.error,
       });
-      res.status(500).json(leadProductResponse.error);
+      res.status(500).json({ error: "Error retrieving products " });
       return;
     }
 
@@ -61,7 +61,7 @@ const subscriptionActivated = async (req: any, res: any) => {
         model: "productDescription/getByProductId",
         error: productDescriptionResponse.error,
       });
-      res.status(500).json(productDescriptionResponse.error);
+      res.status(500).json({ error: "Error retrieving product description" });
       return;
     }
 
@@ -74,7 +74,7 @@ const subscriptionActivated = async (req: any, res: any) => {
         model: "lead/getInsuredById",
         error: leadInsuredResponse.error,
       });
-      res.status(500).json(leadInsuredResponse.error);
+      res.status(500).json({ erorr: "Error retrieving insured" });
       return;
     }
 
@@ -86,7 +86,7 @@ const subscriptionActivated = async (req: any, res: any) => {
           model: "company/getByIdModel",
           error: companyResponse.error,
         });
-        res.status(500).json(companyResponse.error);
+        res.status(500).json({ error: "Error retrieving company" });
         return;
       }
 
@@ -106,7 +106,7 @@ const subscriptionActivated = async (req: any, res: any) => {
           model: responseDocuments.model,
           error: responseDocuments.error,
         });
-        res.status(500).json(responseDocuments.error);
+        res.status(500).json({ error: "Error creating documents" });
         return;
       }
 
@@ -120,7 +120,7 @@ const subscriptionActivated = async (req: any, res: any) => {
           model: "userCompany/create",
           error: userCompanyResponse.error,
         });
-        res.status(500).json(userCompanyResponse.error);
+        res.status(500).json({ error: "Error creating user company" });
         return;
       }
 
@@ -135,7 +135,7 @@ const subscriptionActivated = async (req: any, res: any) => {
           model: "userCompany/assignPassword",
           error: userCopmpanyResponse.error,
         });
-        res.status(500).json(userCopmpanyResponse.error);
+        res.status(500).json({ error: "Error assigning password to user company" });
         return;
       }
 
@@ -177,7 +177,7 @@ const subscriptionActivated = async (req: any, res: any) => {
           model: "email",
           error: emailResponse.error,
         });
-        res.status(500).json(emailResponse.error);
+        res.status(500).json({ error: "Error creating email response" });
         return;
       }
     }
@@ -194,7 +194,7 @@ const subscriptionActivated = async (req: any, res: any) => {
           model: "insured/getByIdModel",
           error: insuredResponse.error,
         });
-        res.status(500).json(insuredResponse.error);
+        res.status(500).json({ error: "Error retrieving insured" });
         return;
       }
 
@@ -214,7 +214,7 @@ const subscriptionActivated = async (req: any, res: any) => {
           model: responseDocuments.model,
           error: responseDocuments.error,
         });
-        res.status(500).json(responseDocuments.error);
+        res.status(500).json({ error: "Error creating  document" });
         return;
       }
 
@@ -296,7 +296,7 @@ const subscriptionActivated = async (req: any, res: any) => {
           model: "email",
           error: emailResponse.error,
         });
-        res.status(500).json(emailResponse.error);
+        res.status(500).json({ error: "Error creating email" });
         return;
       }
     });
@@ -315,7 +315,7 @@ const subscriptionActivated = async (req: any, res: any) => {
       controller: "webhook/subscriptionActivated",
       error: (e as Error).message,
     });
-    res.status(500).json((e as Error).message);
+    res.status(500).json({ error: "Error updating subscription" });
     return;
   }
 };
@@ -330,7 +330,7 @@ const generatePDF = async (req: any, res: any) => {
       model: "lead/getBySubscriptionId",
       error: leadResponse.error,
     });
-    res.status(500).json(leadResponse.error);
+    res.status(500).json({ error: "Error retrieving lead" });
     return;
   }
 
@@ -346,7 +346,7 @@ const generatePDF = async (req: any, res: any) => {
       model: "lead/getProductsById",
       error: leadProductResponse.error,
     });
-    res.status(500).json(leadProductResponse.error);
+    res.status(500).json({ error: "Error retrieving products" });
     return;
   }
 
@@ -359,7 +359,7 @@ const generatePDF = async (req: any, res: any) => {
       model: "lead/getInsuredById",
       error: leadInsuredResponse.error,
     });
-    res.status(500).json(leadInsuredResponse.error);
+    res.status(500).json({ error: "Error retrieving insured" });
     return;
   }
 
@@ -372,7 +372,7 @@ const generatePDF = async (req: any, res: any) => {
       model: "insured/getByIdModel",
       error: insuredResponse.error,
     });
-    res.status(500).json(insuredResponse.error);
+    res.status(500).json({ error: "Error retrieving insured" });
     return;
   }
 
@@ -387,7 +387,7 @@ const generatePDF = async (req: any, res: any) => {
       model: "productDescription/getByProductId",
       error: productDescriptionResponse.error,
     });
-    res.status(500).json(productDescriptionResponse.error);
+    res.status(500).json({ error: "Error retrieving product description" });
     return;
   }
 
@@ -407,7 +407,7 @@ const generatePDF = async (req: any, res: any) => {
       model: responseDocuments.model,
       error: responseDocuments.error,
     });
-    res.status(500).json(responseDocuments.error);
+    res.status(500).json({ error: "Error creating response document" });
     return;
   }
 
@@ -429,9 +429,8 @@ const generateDocuments = async (
   policy_startdate: string
 ) => {
   try {
-    const correlative = `${new Date().getFullYear()}-${
-      lead_id.split("-")[lead_id.split("-").length - 1]
-    }`;
+    const correlative = `${new Date().getFullYear()}-${lead_id.split("-")[lead_id.split("-").length - 1]
+      }`;
 
     createLogger.info({
       url: config.pdf.URL.contract,

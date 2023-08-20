@@ -11,7 +11,7 @@ const getByRut = async (req: any, res: any) => {
       model: "insured/getByRut",
       error: response.error,
     });
-    res.status(500).json({ error: response.error });
+    res.status(500).json({ error: "Error retrieving insured" });
     return;
   }
 
@@ -31,7 +31,7 @@ const getProfile = async (req: any, res: any) => {
       model: "insured/getProfile",
       error: response.error,
     });
-    res.status(500).json({ error: response.error });
+    res.status(500).json({ error: "Error retrieving insured profile" });
     return;
   }
 
@@ -72,7 +72,7 @@ const create = async (req: any, res: any) => {
       model: "insured/create",
       error: response.error,
     });
-    res.status(500).json({ error: response.error });
+    res.status(500).json({ error: "Error creating insured" });
     return;
   }
 
@@ -86,13 +86,13 @@ const create = async (req: any, res: any) => {
 const getById = async (req: any, res: any) => {
   const { id } = req.params;
   const response = await Insured.getById(id);
-  
+
   if (!response.success) {
     createLogger.error({
       model: "insured/getById",
       error: response.error,
     });
-    res.status(500).json({ error: response.error });
+    res.status(500).json({ error: "Error retrieving insured" });
     return;
   }
 

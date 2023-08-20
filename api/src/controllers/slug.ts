@@ -14,7 +14,7 @@ const getByCode = async (req: any, res: any) => {
       model: "slug/getByCode",
       error: slugResponse.error,
     });
-    res.status(500).json({ error: slugResponse.error });
+    res.status(500).json({ error: "Error retrieving slug" });
     return;
   }
 
@@ -30,7 +30,7 @@ const getByCode = async (req: any, res: any) => {
       model: `${channel_code}/getById`,
       error: agentResponse.error,
     });
-    res.status(500).json({ error: agentResponse.error });
+    res.status(500).json({ error: "Error retrieving retail data or broker data" });
     return;
   }
 

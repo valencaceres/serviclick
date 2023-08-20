@@ -11,7 +11,7 @@ const getByRut = async (req: any, res: any) => {
       model: "company/getByRutModel",
       error: response.error,
     });
-    res.status(500).json({ error: response.error });
+    res.status(500).json({ error: "Error retrieving company" });
     return;
   }
 
@@ -50,7 +50,7 @@ const create = async (req: any, res: any) => {
       model: "company/createModel",
       error: response.error,
     });
-    res.status(500).json({ error: response.error });
+    res.status(500).json({ error: "Error creating company" });
     return;
   }
 
@@ -70,7 +70,7 @@ const getProductsAndInsuredById = async (req: any, res: any) => {
       model: "company/getProductsAndInsuredByIdModel",
       error: response.error,
     });
-    res.status(500).json({ error: response.error });
+    res.status(500).json({ error: "Error retrieving products and insured" });
     return;
   }
 
@@ -89,7 +89,7 @@ const getAll = async (req: any, res: any) => {
       model: "company/getAll",
       error: companyResponse.error,
     });
-    res.status(500).json({ error: companyResponse.error });
+    res.status(500).json({ error: "Error retrieving companies" });
     return;
   }
 
@@ -105,7 +105,7 @@ const getLeadsByRut = async (req: any, res: any) => {
       model: "company/getLeadsByRut",
       error: response.error,
     });
-    res.status(500).json({ error: response.error });
+    res.status(500).json({ error: "Error retrieving leads" });
     return;
   }
 

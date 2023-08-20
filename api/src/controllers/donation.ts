@@ -51,7 +51,7 @@ const createController = async (req: any, res: any) => {
       model: "donation/createModel",
       error: response.error,
     });
-    res.status(500).json({ error: response.error });
+    res.status(500).json({ error: "Error creating donation" });
     return;
   }
 
@@ -68,7 +68,7 @@ const createController = async (req: any, res: any) => {
   //     model: "lead/createLeadModel",
   //     error: leadResponse.error,
   //   });
-  //   res.status(500).json({ error: "createLeadModel: " + leadResponse.error });
+  //   res.status(500).json({ error: "Error creating lead" });
   //   return;
   // }
 
@@ -159,7 +159,7 @@ const getByIdController = async (req: any, res: any) => {
       model: "donation/getByIdModel",
       error: response.error,
     });
-    res.status(500).json({ error: response.error });
+    res.status(500).json({ error: "Error retrieving donation" });
     return;
   }
 
@@ -179,7 +179,7 @@ const getBySubscriptionIdController = async (req: any, res: any) => {
       model: "donation/getBySubscriptionIdModel",
       error: response.error,
     });
-    res.status(500).json({ error: response.error });
+    res.status(500).json({ error: "Error retrieving donation" });
     return;
   }
 

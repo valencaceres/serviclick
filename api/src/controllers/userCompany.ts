@@ -13,7 +13,7 @@ const assignPassword = async (req: any, res: any) => {
       model: "userCompany/assignPassword",
       error: result.error,
     });
-    res.status(500).json({ error: result.error });
+    res.status(500).json({ error: "Error assigning password to user company" });
     return;
   }
 
@@ -34,7 +34,7 @@ const validate = async (req: any, res: any) => {
         model: "userCompany/getByEmail",
         error: result.error,
       });
-      res.status(500).json({ error: result.error });
+      res.status(500).json({ error: "Error retrieving user company" });
       return;
     }
 
@@ -58,7 +58,7 @@ const validate = async (req: any, res: any) => {
       controller: "userCompany/validate",
       error: (e as Error).message,
     });
-    res.status(500).json({ error: (e as Error).message });
+    res.status(500).json({ error: "Error validating user company" });
     return;
   }
 };
@@ -73,7 +73,7 @@ const getByEmail = async (req: any, res: any) => {
         model: "userCompany/getByEmail",
         error: result.error,
       });
-      res.status(500).json({ error: result.error });
+      res.status(500).json({ error: "Error retrieving user company" });
       return;
     }
 
@@ -87,7 +87,7 @@ const getByEmail = async (req: any, res: any) => {
       controller: "userCompany/getByEmail",
       error: (e as Error).message,
     });
-    res.status(500).json({ error: (e as Error).message });
+    res.status(500).json({ error: "Error retrieving user company" });
     return;
   }
 };

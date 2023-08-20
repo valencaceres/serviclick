@@ -13,7 +13,7 @@ const assignPassword = async (req: any, res: any) => {
       model: "userInsured/assignPassword",
       error: result.error,
     });
-    res.status(500).json({ error: result.error });
+    res.status(500).json({ error: "Error assigning password to user insured" });
     return;
   }
 
@@ -34,7 +34,7 @@ const validate = async (req: any, res: any) => {
         model: "userInsured/getByEmail",
         error: result.error,
       });
-      res.status(500).json({ error: result.error });
+      res.status(500).json({ error: "Error retrieving user insured" });
       return;
     }
 
@@ -58,7 +58,7 @@ const validate = async (req: any, res: any) => {
       controller: "userInsured/validate",
       error: (e as Error).message,
     });
-    res.status(500).json({ error: (e as Error).message });
+    res.status(500).json({ error: "Error validating user insured " });
     return;
   }
 };
@@ -73,7 +73,7 @@ const getByEmail = async (req: any, res: any) => {
         model: "userInsured/getByEmail",
         error: result.error,
       });
-      res.status(500).json({ error: result.error });
+      res.status(500).json({ error: "Error retrieving user insured" });
       return;
     }
 
@@ -87,7 +87,7 @@ const getByEmail = async (req: any, res: any) => {
       controller: "userInsured/getByEmail",
       error: (e as Error).message,
     });
-    res.status(500).json({ error: (e as Error).message });
+    res.status(500).json({ error: "Error retrieving user insured" });
     return;
   }
 };

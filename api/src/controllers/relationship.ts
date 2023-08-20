@@ -9,7 +9,7 @@ const getAll = async (req: any, res: any) => {
       model: "relationship/getAll",
       error: relationshipResponse.error,
     });
-    res.status(500).json({ error: relationshipResponse.error });
+    res.status(500).json({ error: "Error retrieving relationships" });
     return;
   }
 

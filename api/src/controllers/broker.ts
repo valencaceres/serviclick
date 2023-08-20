@@ -44,7 +44,7 @@ const createFull = async (req: any, res: any) => {
         model: "broker/create",
         error: brokerResponse.error,
       });
-      res.status(500).json({ error: brokerResponse.error });
+      res.status(500).json({ error: "Error creating broker" });
       return;
     }
 
@@ -60,7 +60,7 @@ const createFull = async (req: any, res: any) => {
           model: "brokerProduct/deleteByBrokerId",
           error: brokerProductDelete.error,
         });
-        res.status(500).json({ error: brokerProductDelete.error });
+        res.status(500).json({ error: "Error deleting broker" });
         return;
       }
 
@@ -88,7 +88,7 @@ const createFull = async (req: any, res: any) => {
             controller: "product/createProductPlans",
             error: responsePlans.error,
           });
-          res.status(500).json({ error: responsePlans.error });
+          res.status(500).json({ error: "Error creating product plans" });
           return;
         }
 
@@ -108,7 +108,7 @@ const createFull = async (req: any, res: any) => {
             model: "brokerProduct/create",
             error: brokerProductResponse.error,
           });
-          res.status(500).json({ error: brokerProductResponse.error });
+          res.status(500).json({ error: "Error creating broker product" });
           return;
         }
       }
@@ -124,7 +124,7 @@ const createFull = async (req: any, res: any) => {
           model: "userBroker/inactiveAllByBrokerId",
           error: brokerProductInactive.error,
         });
-        res.status(500).json({ error: brokerProductInactive.error });
+        res.status(500).json({ error: "Error deactivating broker product" });
         return;
       }
 
@@ -154,7 +154,7 @@ const createFull = async (req: any, res: any) => {
               model: "userBroker/create",
               error: userBrokerResponse.error,
             });
-            res.status(500).json({ error: userBrokerResponse.error });
+            res.status(500).json({ error: "Error creating user broker" });
             return;
           }
 
@@ -203,7 +203,7 @@ const createFull = async (req: any, res: any) => {
       controller: "broker/create",
       error: (error as Error).message,
     });
-    res.status(500).json({ error });
+    res.status(500).json({ error: "Error creating broker" });
     return;
   }
 };
@@ -241,7 +241,7 @@ const create = async (req: any, res: any) => {
         model: "broker/create",
         error: brokerResponse.error,
       });
-      res.status(500).json({ error: brokerResponse.error });
+      res.status(500).json({ error: "Error creating broker" });
       return;
     }
 
@@ -270,7 +270,7 @@ const create = async (req: any, res: any) => {
       controller: "broker/create",
       error: (error as Error).message,
     });
-    res.status(500).json({ error });
+    res.status(500).json({ error: "Error creating broker" });
     return;
   }
 };
@@ -284,7 +284,7 @@ const getAll = async (req: any, res: any) => {
         model: "broker/getAll",
         error: brokerResponse.error,
       });
-      res.status(500).json({ error: brokerResponse.error });
+      res.status(500).json({ error: "Error retrieving brokers" });
       return;
     }
 
@@ -298,7 +298,7 @@ const getAll = async (req: any, res: any) => {
       controller: "broker/getAll",
       error: (error as Error).message,
     });
-    res.status(500).json({ error });
+    res.status(500).json({ error: "Error retrieving brokers" });
     return;
   }
 };
@@ -368,7 +368,7 @@ const deleteById = async (req: any, res: any) => {
         model: "broker/deleteById",
         error: brokerResponse.error,
       });
-      res.status(500).json({ error: brokerResponse.error });
+      res.status(500).json({ error: "Error deleting broker" });
       return;
     }
 
@@ -382,7 +382,7 @@ const deleteById = async (req: any, res: any) => {
       controller: "broker/deleteById",
       error: (error as Error).message,
     });
-    res.status(500).json({ error });
+    res.status(500).json({ error: "Error deleting broker" });
     return;
   }
 };
@@ -399,7 +399,7 @@ const updateLogo = async (req: any, res: any) => {
         model: "broker/updateLogo",
         error: brokerResponse.error,
       });
-      res.status(500).json({ error: brokerResponse.error });
+      res.status(500).json({ error: "Error updating broker" });
       return;
     }
 
@@ -413,7 +413,7 @@ const updateLogo = async (req: any, res: any) => {
       controller: "broker/updateLogo",
       error: (error as Error).message,
     });
-    res.status(500).json({ error });
+    res.status(500).json({ error: "Error updating broker" });
     return;
   }
 };
@@ -429,7 +429,7 @@ const getFamiliesByBrokerId = async (req: any, res: any) => {
         model: "broker/getFamiliesByBrokerId",
         error: brokerResponse.error,
       });
-      res.status(500).json({ error: brokerResponse.error });
+      res.status(500).json({ error: "Error retrieving families" });
       return;
     }
 
@@ -443,7 +443,7 @@ const getFamiliesByBrokerId = async (req: any, res: any) => {
       controller: "broker/getFamiliesByBrokerId",
       error: (error as Error).message,
     });
-    res.status(500).json({ error });
+    res.status(500).json({ error: "Error retrieving families" });
     return;
   }
 };
@@ -462,7 +462,7 @@ const getProductsByBrokerIdAndFamilyId = async (req: any, res: any) => {
         model: "broker/getProductsByBrokerIdAndFamilyId",
         error: brokerResponse.error,
       });
-      res.status(500).json({ error: brokerResponse.error });
+      res.status(500).json({ error: "Error retrieving products" });
       return;
     }
 
@@ -476,7 +476,7 @@ const getProductsByBrokerIdAndFamilyId = async (req: any, res: any) => {
       controller: "broker/getProductsByBrokerIdAndFamilyId",
       error: (error as Error).message,
     });
-    res.status(500).json({ error });
+    res.status(500).json({ error: "Error retrieving products" });
     return;
   }
 };
@@ -492,7 +492,7 @@ const getCollectById = async (req: any, res: any) => {
         model: "broker/getCollectById",
         error: brokerResponse.error,
       });
-      res.status(500).json({ error: brokerResponse.error });
+      res.status(500).json({ error: "Error retrieving collect" });
       return;
     }
 
@@ -506,7 +506,7 @@ const getCollectById = async (req: any, res: any) => {
       controller: "broker/getCollectById",
       error: (error as Error).message,
     });
-    res.status(500).json({ error });
+    res.status(500).json({ error: "Error retrieving collect" });
     return;
   }
 };
@@ -536,7 +536,7 @@ const addProduct = async (req: any, res: any) => {
       controller: "product/createProductPlans",
       error: responsePlans.error,
     });
-    res.status(500).json({ error: responsePlans.error });
+    res.status(500).json({ error: "Error creating product plans" });
     return;
   }
 
@@ -561,7 +561,7 @@ const addProduct = async (req: any, res: any) => {
       model: "brokerProduct/create",
       error: brokerProductResponse.error,
     });
-    res.status(500).json({ error: brokerProductResponse.error });
+    res.status(500).json({ error: "Error creating broker product" });
     return;
   }
 
@@ -572,7 +572,7 @@ const addProduct = async (req: any, res: any) => {
       model: "brokerProduct/getByBrokerId",
       error: brokerProducts.error,
     });
-    res.status(500).json({ error: brokerProducts.error });
+    res.status(500).json({ error: "Error retrieving broker product" });
     return;
   }
 
@@ -592,7 +592,7 @@ const removeProduct = async (req: any, res: any) => {
       controller: "broker/removeProduct",
       error: responseBrokerProduct.error,
     });
-    res.status(500).json({ error: responseBrokerProduct.error });
+    res.status(500).json({ error: "Error removing product" });
     return;
   }
 
@@ -603,7 +603,7 @@ const removeProduct = async (req: any, res: any) => {
       model: "brokerProduct/getByBrokerId",
       error: brokerProducts.error,
     });
-    res.status(500).json({ error: brokerProducts.error });
+    res.status(500).json({ error: "Error retrieving broker product" });
     return;
   }
 
@@ -620,7 +620,7 @@ const getAgents = async (req: any, res: any) => {
       model: "brokerUser/getByBrokerId",
       error: response.error,
     });
-    res.status(500).json({ error: response.error });
+    res.status(500).json({ error: "Error retrieving broker user" });
     return;
   }
 

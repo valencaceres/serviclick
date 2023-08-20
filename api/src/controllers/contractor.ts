@@ -23,32 +23,32 @@ const create = async (req: any, res: any) => {
   const contractorResponse =
     type == "P"
       ? await Customer.createModel(
-          rut,
-          name,
-          paternalLastName,
-          maternalLastName,
-          address,
-          district,
-          email,
-          phone
-        )
+        rut,
+        name,
+        paternalLastName,
+        maternalLastName,
+        address,
+        district,
+        email,
+        phone
+      )
       : await Company.create(
-          rut,
-          companyName,
-          legalRepresentative,
-          line,
-          address,
-          district,
-          email,
-          phone
-        );
+        rut,
+        companyName,
+        legalRepresentative,
+        line,
+        address,
+        district,
+        email,
+        phone
+      );
 
   if (!contractorResponse.success) {
     createLogger.error({
       model: "contractor/create",
       error: contractorResponse.error,
     });
-    res.status(500).json({ error: contractorResponse.error });
+    res.status(500).json({ error: "Error creating contractor" });
     return;
   }
 
@@ -77,7 +77,7 @@ const getAll = async (req: any, res: any) => {
       model: "contractor/getAll",
       error: contractorResponse.error,
     });
-    res.status(500).json({ error: contractorResponse.error });
+    res.status(500).json({ error: "Error retrieving contractors" });
     return;
   }
 
@@ -101,7 +101,7 @@ const getByRut = async (req: any, res: any) => {
       model: "contractor/getByRut",
       error: contractorResponse.error,
     });
-    res.status(500).json({ error: contractorResponse.error });
+    res.status(500).json({ error: "Error retrieving contractor" });
     return;
   }
 
@@ -122,7 +122,7 @@ const getSubscriptionsById = async (req: any, res: any) => {
       model: "contractor/getSubscriptionsById",
       error: contractorResponse.error,
     });
-    res.status(500).json({ error: contractorResponse.error });
+    res.status(500).json({ error: "Error retrieving subscriptions" });
     return;
   }
 
@@ -143,7 +143,7 @@ const getById = async (req: any, res: any) => {
       model: "contractor/getById",
       error: contractorResponse.error,
     });
-    res.status(500).json({ error: contractorResponse.error });
+    res.status(500).json({ error: "Error retrieving contractor" });
     return;
   }
 
@@ -154,7 +154,7 @@ const getById = async (req: any, res: any) => {
       model: "contractor/getSubscriptionsById",
       error: subscriptionResponse.error,
     });
-    res.status(500).json({ error: subscriptionResponse.error });
+    res.status(500).json({ error: "Error retrieving subscription" });
     return;
   }
 
@@ -165,7 +165,7 @@ const getById = async (req: any, res: any) => {
       model: "contractor/getPaymentById",
       error: paymentResponse.error,
     });
-    res.status(500).json({ error: paymentResponse.error });
+    res.status(500).json({ error: "Error retrieving payment" });
     return;
   }
 
@@ -192,7 +192,7 @@ const getSubscriptionById = async (req: any, res: any) => {
       model: "model/getSubscriptionById",
       error: suscriptionResponse.error,
     });
-    res.status(500).json({ error: suscriptionResponse.error });
+    res.status(500).json({ error: "Error retrieving subscription" });
     return;
   }
 
@@ -203,7 +203,7 @@ const getSubscriptionById = async (req: any, res: any) => {
       model: "model/getInsuredBySubscriptionId",
       error: insuredResponse.error,
     });
-    res.status(500).json({ error: insuredResponse.error });
+    res.status(500).json({ error: "Error retrieving insured" });
     return;
   }
 
@@ -226,7 +226,7 @@ const getInsuredBySubscriptionId = async (req: any, res: any) => {
       model: "contractor/getInsuredBySubscriptionId",
       error: suscriptionResponse.error,
     });
-    res.status(500).json({ error: suscriptionResponse.error });
+    res.status(500).json({ error: "Error retrieving insured" });
     return;
   }
 
@@ -247,7 +247,7 @@ const getPaymentById = async (req: any, res: any) => {
       model: "model/getPaymentById",
       error: suscriptionResponse.error,
     });
-    res.status(500).json({ error: suscriptionResponse.error });
+    res.status(500).json({ error: "Error retrieving payment" });
     return;
   }
 
@@ -268,7 +268,7 @@ const getProductsByContractor = async (req: any, res: any) => {
       model: "contractor/getProductsByContractor",
       error: contractorResponse.error,
     });
-    res.status(500).json({ error: contractorResponse.error });
+    res.status(500).json({ error: "Error retrieving products" });
     return;
   }
 

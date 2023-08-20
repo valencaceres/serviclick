@@ -146,7 +146,7 @@ const create = async (req: any, res: any) => {
       model: "assistanceBenefit/deleteByAssistanceId",
       error: deleteBenefits.error,
     });
-    res.status(500).json({ error: deleteBenefits.error });
+    res.status(500).json({ error: "Error deleting benefits" });
     return;
   }
 
@@ -161,7 +161,7 @@ const create = async (req: any, res: any) => {
         model: "assistanceBenefit/create",
         error: addBenefit.error,
       });
-      res.status(500).json({ error: addBenefit.error });
+      res.status(500).json({ error: "Error creating benefits" });
       return;
     }
   }
@@ -175,7 +175,7 @@ const create = async (req: any, res: any) => {
       model: "assistanceExclusion/deleteByAssistanceId",
       error: deleteExclusions.error,
     });
-    res.status(500).json({ error: deleteExclusions.error });
+    res.status(500).json({ error: "Error deleting exclusion" });
     return;
   }
 
@@ -190,7 +190,7 @@ const create = async (req: any, res: any) => {
         model: "assistanceExclusion/create",
         error: addExclusion.error,
       });
-      res.status(500).json({ error: addExclusion.error });
+      res.status(500).json({ error: "Error creating exclusions" });
       return;
     }
   }
@@ -203,7 +203,7 @@ const create = async (req: any, res: any) => {
   const responseGet = await functionGetById(assistance_id);
 
   if (!responseGet.success) {
-    res.status(500).json({ error: responseGet.error });
+    res.status(500).json({ error: "Error retrieving asistance" });
     return;
   }
 
@@ -225,7 +225,7 @@ const updateById = async (req: any, res: any) => {
       model: "assistance/updateById",
       error: assistanceResponse.error,
     });
-    res.status(500).json({ error: assistanceResponse.error });
+    res.status(500).json({ error: "error updating asistance" });
     return;
   }
 
@@ -245,7 +245,7 @@ const deleteById = async (req: any, res: any) => {
       model: "assistance/delete",
       error: assistanceResponse.error,
     });
-    res.status(500).json({ error: assistanceResponse.error });
+    res.status(500).json({ error: "error deleting asistance" });
     return;
   }
 
@@ -264,7 +264,7 @@ const getAll = async (req: any, res: any) => {
       model: "assistance/getAll",
       error: assistanceResponse.error,
     });
-    res.status(500).json({ error: assistanceResponse.error });
+    res.status(500).json({ error: "Error retrieving assistances" });
     return;
   }
 
@@ -280,7 +280,7 @@ const getById = async (req: any, res: any) => {
   const responseGet = await functionGetById(id);
 
   if (!responseGet.success) {
-    res.status(500).json({ error: responseGet.error });
+    res.status(500).json({ error: "Error retrieving assistance" });
     return;
   }
 
@@ -295,7 +295,7 @@ const getFamilies = async (req: any, res: any) => {
       model: "assistance/getFamilies",
       error: assistanceResponse.error,
     });
-    res.status(500).json({ error: assistanceResponse.error });
+    res.status(500).json({ error: "Error retrieving families" });
     return;
   }
 
@@ -315,7 +315,7 @@ const getByFamilyId = async (req: any, res: any) => {
       model: "assistance/getByFamilyId",
       error: assistanceResponse.error,
     });
-    res.status(500).json({ error: assistanceResponse.error });
+    res.status(500).json({ error: "Error retrieving assistance" });
     return;
   }
 
@@ -341,7 +341,7 @@ const getValues = async (req: any, res: any) => {
       model: "assistanceValue/getByAssistanceId",
       error: assistanceResponse.error,
     });
-    res.status(500).json({ error: assistanceResponse.error });
+    res.status(500).json({ error: "Error retrieving assistance value" });
     return;
   }
 
@@ -367,7 +367,7 @@ const getValuesById = async (req: any, res: any) => {
       model: "assistanceValue/getByInsuredId",
       error: assistanceResponse.error,
     });
-    res.status(500).json({ error: assistanceResponse.error });
+    res.status(500).json({ error: "Error retrieving values" });
     return;
   }
 
@@ -389,7 +389,7 @@ const getDocumentsById = async (req: any, res: any) => {
       model: "assistanceDocument/getByAssistanceId",
       error: assistanceResponse.error,
     });
-    res.status(500).json({ error: assistanceResponse.error });
+    res.status(500).json({ error: "Error retrieving document" });
     return;
   }
 
@@ -417,7 +417,7 @@ const assignValue = async (req: any, res: any) => {
       model: "assistanceValue/assignValue",
       error: response.error,
     });
-    res.status(500).json({ error: response.error });
+    res.status(500).json({ error: "error creating lead product value" });
     return;
   }
 
