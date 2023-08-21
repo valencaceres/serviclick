@@ -12,8 +12,8 @@ export function LayoutButtons() {
 
   return (
     <div className="fixed bottom-2 right-2 z-50 flex flex-col gap-2">
-      <Link
-        href="https://api.whatsapp.com/send/?phone=56956451904&text&type=phone_number&app_absent=0"
+      {/* <Link
+        href={siteConfig.links.whatsapp}
         target="_blank"
         passHref
       >
@@ -42,7 +42,7 @@ export function LayoutButtons() {
             </g>
           </svg>
         </Button>
-      </Link>
+      </Link> */}
       {pathname !== "/companies" ? (
         <Link href="tel:6000860580" passHref>
           <Button className="h-16 w-16 rounded-full p-3 bg-[#3282FA] hover:bg-[#3282FA]/90 shadow-md">

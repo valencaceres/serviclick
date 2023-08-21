@@ -68,9 +68,9 @@ export const Details = () => {
           </AccordionTrigger>
           <AccordionContent>
             Forma parte de nuestra extensa red de colaboradores. Para más
-            información, contáctanos a través de nuestro WhatsApp al
-            +56956451904 y uno de nuestros ejecutivos estará encantado de
-            asistirte.
+            información, contáctanos al 600 0860 580
+            {/* través de nuestro WhatsApp al +56956451904 */} y uno de nuestros
+            ejecutivos estará encantado de asistirte.
           </AccordionContent>
         </AccordionItem>
       </Accordion>
