@@ -36,8 +36,9 @@ function FaqAccordion() {
               <AccordionContent>
                 <p>
                   Si deseas contratar nuestra asistencia, simplemente haz clic
-                  en el botón "¡Lo quiero!" o contáctanos a través de WhatsApp
-                  al número +56956451904.
+                  en el botón "¡Lo quiero!" o contáctanos al 600 0860 580.
+                  {/* través de WhatsApp
+                  al número +56956451904. */}
                 </p>
               </AccordionContent>
             </AccordionItem>
@@ -170,7 +171,8 @@ function FaqAccordion() {
               <AccordionContent>
                 <p>
                   Puedes comunicarte con nosotros de forma gratuita al 600 0860
-                  580 o a través de WhatsApp al +56 9 56451904.
+                  580.
+                  {/* o a través de WhatsApp al +56 9 56451904. */}
                 </p>
               </AccordionContent>
             </AccordionItem>
@@ -447,7 +449,8 @@ function FaqTabs() {
             <AccordionContent>
               <p>
                 Puedes comunicarte con nosotros de forma gratuita al 600 0860
-                580 o a través de WhatsApp al +56 9 56451904.
+                580.
+                {/*o a través de WhatsApp al +56 9 56451904. */}
               </p>
             </AccordionContent>
           </AccordionItem>
