@@ -330,8 +330,9 @@ function FaqTabs() {
             <AccordionContent>
               <p>
                 Si deseas contratar nuestra asistencia, simplemente haz clic en
-                el botón "¡Lo quiero!" o contáctanos a través de WhatsApp al
-                número +56956451904.
+                el botón "¡Lo quiero!" o contáctanos al 600 0860 580.
+                {/* través de WhatsApp al
+                número +56956451904. */}
               </p>
             </AccordionContent>
           </AccordionItem>
