@@ -3,7 +3,7 @@ import cors from "cors";
 import * as routes from "./routes";
 import { reqLogger } from "./middlewares/logger";
 import { allowedOrigins } from "./util/allowedOrigins";
-import createLogger from "../src/util/logger";
+import createLogger from "./util/logger";
 import { setSecurityHeaders } from "./middlewares/setSecurityHeaders";
 
 const corsOptions = {
