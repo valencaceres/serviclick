@@ -10,7 +10,19 @@ import isAdmin from "../middlewares/isAdmin";
 
 const TransactionRouter = Router();
 
-TransactionRouter.post("/getActivesByRutAndProductId", auth, isAuthenticated, isAdmin, getActivesByRutAndProductIdController);
-TransactionRouter.post("/getByFilters", auth, isAuthenticated, isAdmin, getByFiltersController);
+TransactionRouter.post(
+  "/getActivesByRutAndProductId",
+  auth,
+  isAuthenticated,
+  isAdmin,
+  getActivesByRutAndProductIdController
+);
+TransactionRouter.post(
+  "/getByFilters",
+  auth,
+  isAuthenticated,
+  isAdmin,
+  getByFiltersController
+);
 
 export default TransactionRouter;

@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
 import { config } from "../../utils/config";
+import { apiInstance } from "~/utils/api";
 
 export type TransactionT = {
   date: string;
@@ -67,25 +68,17 @@ export const getByFilters =
     period_id: string,
     status_id: string
   ) =>
-  (dispatch: any) => {
-    axios
-      .post(
-        `${config.server}/api/transaction/getByFilters`,
-        {
-          channel_id,
-          client_type,
-          rut,
-          period_id,
-          status_id,
-        },
-        {
-          headers: {
-            id: "06eed133-9874-4b3b-af60-198ee3e92cdc",
-          },
-        }
-      )
-      .then((response) => {
-        dispatch(setTransactionList(response.data));
-      })
-      .catch((error) => console.log(error));
+  async (dispatch: any) => {
+    try {
+      const { data } = await apiInstance.post(`/transaction/getByFilters`, {
+        channel_id,
+        client_type,
+        rut,
+        period_id,
+        status_id,
+      });
+      dispatch(setTransactionList(data));
+    } catch (error) {
+      console.log(error);
+    }
   };
