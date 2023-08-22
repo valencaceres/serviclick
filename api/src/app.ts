@@ -1,87 +1,92 @@
-import express from "express";
+import express, { Express } from "express";
 import cors from "cors";
-
-import { reqLogger } from "./middlewares/logger";
 import * as routes from "./routes";
+import { reqLogger } from "./middlewares/logger";
 import { allowedOrigins } from "./util/allowedOrigins";
+import createLogger from "../src/util/logger";
+import { setSecurityHeaders } from "./middlewares/setSecurityHeaders";
 
-class App {
-  public server: any;
+const corsOptions = {
+  preflightContinue: false,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  origin: (
+    origin: string | undefined,
+    callback: (err: Error | null, allow?: boolean) => void
+  ) => {
+    if (process.env.ENV !== "dev") {
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        createLogger.error({
+          controller: "CORS",
+          error: "Not allowed by CORS, origin: " + origin,
+        });
+        callback(null, false);
+      }
+    } else {
+      callback(null, true);
+    }
+  },
+  credentials: true,
+};
 
-  constructor() {
-    this.server = express();
-
-    this.middlewares();
-    this.routes();
-  }
-
-  middlewares() {
-    this.server.use(express.json());
-    this.server.use(
-      cors({
-        preflightContinue: true,
-        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-        origin:
-          process.env.ENV !== "dev"
-            ? function (origin, callback) {
-                if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-                  callback(null, true);
-                } else {
-                  callback(new Error("Not allowed by CORS"));
-                }
-              }
-            : true,
-        credentials: true,
-      })
-    );
-    this.server.use(express.urlencoded({ extended: false }));
-  }
-
-  routes() {
-    this.server.use("/api/slug", reqLogger, routes.SlugRouter);
-    this.server.use("/api/status", reqLogger, routes.StatusRouter);
-    this.server.use("/api/user", reqLogger, routes.UserRouter);
-    this.server.use("/api/userInsured", reqLogger, routes.UserInsuredRouter);
-    this.server.use("/api/userCompany", reqLogger, routes.UserCompanyRouter);
-    this.server.use("/api/channel", reqLogger, routes.ChannelRouter);
-    this.server.use("/api/family", reqLogger, routes.FamilyRouter);
-    this.server.use("/api/insured", reqLogger, routes.InsuredRouter);
-    this.server.use("/api/beneficiary", reqLogger, routes.BeneficiaryRouter);
-    this.server.use("/api/donor", reqLogger, routes.DonorRouter);
-    this.server.use("/api/donation", reqLogger, routes.DonationRouter);
-    this.server.use("/api/company", reqLogger, routes.CompanyRouter);
-    this.server.use("/api/customer", reqLogger, routes.CustomerRouter);
-    this.server.use("/api/product", reqLogger, routes.ProductRouter);
-    this.server.use("/api/lead", reqLogger, routes.LeadRouter);
-    this.server.use("/api/webhook", reqLogger, routes.WebHookRouter);
-    this.server.use("/api/transaction", reqLogger, routes.TransactionRouter);
-    this.server.use("/api/agent", reqLogger, routes.AgentRouter);
-    this.server.use(
-      "/api/productDescription",
-      reqLogger,
-      routes.ProductDescriptionRouter
-    );
-    this.server.use("/api/broker", reqLogger, routes.BrokerRouter);
-    this.server.use("/api/retail", reqLogger, routes.RetailRouter);
-    this.server.use("/api/userBroker", reqLogger, routes.UserBrokerRouter);
-    this.server.use("/api/userRetail", reqLogger, routes.UserRetailRouter);
-    this.server.use("/api/district", reqLogger, routes.DistrictRouter);
-    this.server.use("/api/assistance", reqLogger, routes.AssistanceRouter);
-    this.server.use("/api/value", reqLogger, routes.ValueRouter);
-    this.server.use("/api/valueType", reqLogger, routes.ValueTypeRouter);
-    this.server.use("/api/contractor", reqLogger, routes.ContractorRouter);
-    this.server.use("/api/specialty", reqLogger, routes.SpecialtyRouter);
-    this.server.use("/api/document", reqLogger, routes.DocumentRouter);
-    this.server.use("/api/stage", reqLogger, routes.StageRouter);
-    this.server.use("/api/specialist", reqLogger, routes.SpecialistRouter);
-    this.server.use("/api/relationship", reqLogger, routes.RelationshipRouter);
-    this.server.use("/api/partner", reqLogger, routes.PartnerRouter);
-    this.server.use("/api/import", reqLogger, routes.ImportRouter);
-    this.server.use("/api/case", reqLogger, routes.CaseRouter);
-    this.server.use("/api/category", reqLogger, routes.CategoryRouter);
-    this.server.use("/api/fileFormat", reqLogger, routes.FileFormatRouter);
-    this.server.use("/api/field", reqLogger, routes.FieldRouter);
-  }
+function initializeMiddlewares(server: Express) {
+  server.use(setSecurityHeaders);
+  server.use(express.json());
+  server.use(cors(corsOptions));
+  server.use(express.urlencoded({ extended: false }));
 }
 
-export default new App().server;
+const routeMappings = [
+  { path: "/api/slug", router: routes.SlugRouter },
+  { path: "/api/status", router: routes.StatusRouter },
+  { path: "/api/user", router: routes.UserRouter },
+  { path: "/api/userInsured", router: routes.UserInsuredRouter },
+  { path: "/api/userCompany", router: routes.UserCompanyRouter },
+  { path: "/api/channel", router: routes.ChannelRouter },
+  { path: "/api/family", router: routes.FamilyRouter },
+  { path: "/api/insured", router: routes.InsuredRouter },
+  { path: "/api/beneficiary", router: routes.BeneficiaryRouter },
+  { path: "/api/donor", router: routes.DonorRouter },
+  { path: "/api/donation", router: routes.DonationRouter },
+  { path: "/api/company", router: routes.CompanyRouter },
+  { path: "/api/customer", router: routes.CustomerRouter },
+  { path: "/api/product", router: routes.ProductRouter },
+  { path: "/api/lead", router: routes.LeadRouter },
+  { path: "/api/webhook", router: routes.WebHookRouter },
+  { path: "/api/transaction", router: routes.TransactionRouter },
+  { path: "/api/agent", router: routes.AgentRouter },
+  { path: "/api/productDescription", router: routes.ProductDescriptionRouter },
+  { path: "/api/broker", router: routes.BrokerRouter },
+  { path: "/api/retail", router: routes.RetailRouter },
+  { path: "/api/userBroker", router: routes.UserBrokerRouter },
+  { path: "/api/userRetail", router: routes.UserRetailRouter },
+  { path: "/api/district", router: routes.DistrictRouter },
+  { path: "/api/assistance", router: routes.AssistanceRouter },
+  { path: "/api/value", router: routes.ValueRouter },
+  { path: "/api/valueType", router: routes.ValueTypeRouter },
+  { path: "/api/contractor", router: routes.ContractorRouter },
+  { path: "/api/specialty", router: routes.SpecialtyRouter },
+  { path: "/api/document", router: routes.DocumentRouter },
+  { path: "/api/stage", router: routes.StageRouter },
+  { path: "/api/specialist", router: routes.SpecialistRouter },
+  { path: "/api/relationship", router: routes.RelationshipRouter },
+  { path: "/api/partner", router: routes.PartnerRouter },
+  { path: "/api/import", router: routes.ImportRouter },
+  { path: "/api/case", router: routes.CaseRouter },
+  { path: "/api/category", router: routes.CategoryRouter },
+  { path: "/api/fileFormat", router: routes.FileFormatRouter },
+  { path: "/api/field", router: routes.FieldRouter },
+];
+
+function initializeRoutes(server: Express) {
+  routeMappings.forEach((route) => {
+    server.use(route.path, reqLogger, route.router);
+  });
+}
+
+const server = express();
+initializeMiddlewares(server);
+initializeRoutes(server);
+
+export default server;
