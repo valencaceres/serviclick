@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 type UserRole = "user" | "moderator" | "admin";
 
 const roles: Record<UserRole, RegExp[]> = {
-  user: [/^\/$/, /^\/reports(\/.*)?$/],
+  user: [/^\/$/],
   moderator: [/^\/$/, /^\/reports(\/.*)?$/, /^\/channels(\/.*)?$/],
   admin: [/^\/$/, /^\/reports(\/.*)?$/, /^\/channels(\/.*)?$/],
 };
