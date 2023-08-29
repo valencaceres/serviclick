@@ -1,22 +1,19 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
+
+import { siteConfig } from "@/config/site"
 
 import { Button } from "../ui/button"
 import { Icons } from "./icons"
 
 export function LayoutButtons() {
   const pathname = usePathname()
-  const router = useRouter()
 
   return (
     <div className="fixed bottom-2 right-2 z-50 flex flex-col gap-2">
-      {/* <Link
-        href={siteConfig.links.whatsapp}
-        target="_blank"
-        passHref
-      >
+      <Link href={siteConfig.links.whatsapp} target="_blank" passHref>
         <Button className="h-16 w-16 rounded-full bg-[#25D366] hover:bg-[#25D366]/90 shadow-md">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -42,7 +39,7 @@ export function LayoutButtons() {
             </g>
           </svg>
         </Button>
-      </Link> */}
+      </Link>
       {pathname !== "/companies" ? (
         <Link href="tel:6000860580" passHref>
           <Button className="h-16 w-16 rounded-full p-3 bg-[#3282FA] hover:bg-[#3282FA]/90 shadow-md">
