@@ -63,29 +63,26 @@ const create: any = async (
         return { success: true, data: result.rows[0], error: null };
       }
       const exists = await pool.query(
-        `SELECT * FROM app.case WHERE ${
-          applicant.type === "B" || isInsured === false
-            ? "beneficiary_id"
-            : "insured_id"
+        `SELECT * FROM app.case WHERE ${applicant.type === "B" || isInsured === false
+          ? "beneficiary_id"
+          : "insured_id"
         } = $1 AND number = $2`,
         [applicant.id, number]
       );
 
       if (exists.rows.length > 0) {
         const result = await pool.query(
-          `UPDATE app.case SET type = $1, ${
-            applicant.type === "B" || isInsured === false
-              ? "beneficiary_id"
-              : "insured_id"
+          `UPDATE app.case SET type = $1, ${applicant.type === "B" || isInsured === false
+            ? "beneficiary_id"
+            : "insured_id"
           } = $2,
           company_id = $3,
           customer_id = $4,
           event_date = $6,
           event_location = $7
-          WHERE ${
-            applicant.type === "B" || isInsured === false
-              ? "beneficiary_id"
-              : "insured_id"
+          WHERE ${applicant.type === "B" || isInsured === false
+            ? "beneficiary_id"
+            : "insured_id"
           } = $2 AND number = $5 RETURNING *`,
           [
             applicant.type,
@@ -101,10 +98,9 @@ const create: any = async (
         return { success: true, data: result.rows[0], error: null };
       }
       const result = await pool.query(
-        `INSERT INTO app.case(type, ${
-          applicant.type === "B" || isInsured === false
-            ? "beneficiary_id"
-            : "insured_id"
+        `INSERT INTO app.case(type, ${applicant.type === "B" || isInsured === false
+          ? "beneficiary_id"
+          : "insured_id"
         }, company_id, customer_id, event_date, event_location) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
         [
           applicant.type,
@@ -121,10 +117,9 @@ const create: any = async (
 
     const resultCase = await pool.query(
       `SELECT * FROM app.case 
-      WHERE number = $1 AND ${
-        applicant.type === "B" || isInsured === false
-          ? "beneficiary_id"
-          : "insured_id"
+      WHERE number = $1 AND ${applicant.type === "B" || isInsured === false
+        ? "beneficiary_id"
+        : "insured_id"
       } = $2`,
       [number, applicant.id]
     );
@@ -132,10 +127,9 @@ const create: any = async (
     if (resultCase.rows.length > 0) {
       const result = await pool.query(
         `UPDATE app.case SET product_id = $1, assistance_id = $2, isactive = $3, company_id = $4, customer_id = $5, lead_id = $6, event_date = $9, event_location = $10
-        WHERE number = $7 AND ${
-          applicant.type === "B" || isInsured === false
-            ? "beneficiary_id"
-            : "insured_id"
+        WHERE number = $7 AND ${applicant.type === "B" || isInsured === false
+          ? "beneficiary_id"
+          : "insured_id"
         } = $8
         RETURNING *`,
         [
@@ -166,6 +160,7 @@ const getAll: any = async () => {
     const result = await pool.query(`
     SELECT cst.case_id,
         cas.number,
+        cas.createddate,
         sta.name as stage,
         prd.name as product,
         asi.name as assistance,
