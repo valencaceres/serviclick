@@ -580,11 +580,11 @@ export function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() && "selected"}
                   className={`${
                     onRowClick && "cursor-pointer"
-                  } even:bg-sky-50 hover:bg-gray-100`}
+                  } altura-fila even:bg-sky-50 hover:bg-gray-100`}
                   onClick={() => onRowClick && onRowClick(row.original)}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell className="p-1" key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
