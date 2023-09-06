@@ -16,14 +16,19 @@ const currencyFormat = (number: number) => {
 };
 
 const formatAmount = (amount: string, currency: string) => {
-  if (amount === "0") {
+  if (!amount || amount === "0" || amount === "") {
     return "";
   }
+
   if (currency === "P") {
     return `$${parseInt(amount).toLocaleString("en-US").replace(",", ".")}`;
-  } else {
+  }
+
+  if (currency === "U") {
     return `${amount} UF`;
   }
+
+  return `${parseInt(amount).toLocaleString("en-US").replace(",", ".")}`;
 };
 
 export { unFormatRut, formatRut, currencyFormat, formatAmount };

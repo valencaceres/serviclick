@@ -15,12 +15,11 @@ import {
   TableRow,
   TableCell,
   TableIcons,
-  TableCellEnd,
 } from "../../../ui/Table";
 import Icon from "../../../ui/Icon";
+import ModalWarning from "../../../ui/ModalWarning";
 
 import { useRetail } from "../../../../hooks";
-import ModalWarning from "../../../ui/ModalWarning";
 
 const RetailList = ({ editRetail, deleteRetail }: any) => {
   const { retail, setRetail, retailList, getAllRetails } = useRetail();
@@ -52,20 +51,18 @@ const RetailList = ({ editRetail, deleteRetail }: any) => {
         <ContentRow gap="10px" align="center">
           <InputText
             label="Texto a buscar"
-            width="475px"
+            width="375px"
             value={search}
             onChange={setSearch}
           />
           <ButtonIcon iconName="search" color="gray" />
         </ContentRow>
-        <Table width="528px">
+        <Table width="428px">
           <TableHeader>
             <TableCell width="70px" align="center">
               #
             </TableCell>
-            <TableCell width="370px">Nombre</TableCell>
-            <TableCell width="70px"></TableCell>
-            <TableCellEnd />
+            <TableCell width="350px">Nombre</TableCell>
           </TableHeader>
           <TableDetail>
             {retailList &&
@@ -75,8 +72,8 @@ const RetailList = ({ editRetail, deleteRetail }: any) => {
                   <TableCell width="70px" align="center">
                     {idx + 1}
                   </TableCell>
-                  <TableCell width="370px">{item.name}</TableCell>
-                  <TableCell width="70px">
+                  <TableCell width="350px">
+                    {item.name}
                     <TableIcons>
                       <Icon
                         iconName="edit"
@@ -98,8 +95,8 @@ const RetailList = ({ editRetail, deleteRetail }: any) => {
       </ContentCell>
       <ModalWarning
         showModal={showWarningDelete}
-        title="Eliminación de producto"
-        message={`Está seguro de eliminar ${retail.name}`}
+        title="Eliminación de Retail"
+        message={`Está seguro de eliminar el retail ${retail.name}`}
         setClosed={setClosedWarningDelete}
         iconName="warning"
         buttons={[

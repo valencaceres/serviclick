@@ -10,6 +10,7 @@ import * as ProductCoverage from "../models/productCoverage";
 import * as ProductFamilyValue from "../models/productFamilyValue";
 import * as ProductPlan from "../models/productPlan";
 import * as Value from "../models/value";
+import * as Plan from "../models/plan";
 
 type ProductT = {
   name: string;
@@ -681,37 +682,60 @@ const createProductPlans = async (
   let companyData: any = null;
   let customerData: any = null;
 
-  if (companyprice) {
-    const planResponseCompany = await axios[
-      company_plan_id > 0 ? "patch" : "post"
-    ](
-      `${config.reveniu.URL.plan}${company_plan_id > 0 ? company_plan_id : ""}`,
-      {
-        ...productPlanData,
-        is_custom_amount: true,
-        price: companyprice,
-      },
-      {
-        headers: config.reveniu.apiKey,
-      }
-    );
+  if (companyprice && companyprice > 0) {
+    let new_company_plan_id = company_plan_id > 0 ? company_plan_id : 0;
 
-    createLogger.info({
-      method: company_plan_id > 0 ? "patch" : "post",
-      url: `${config.reveniu.URL.plan}${company_plan_id > 0 ? company_plan_id : ""
+    if (customerprice && customerprice > 0) {
+      const planResponseCompany = await axios[
+        company_plan_id > 0 ? "patch" : "post"
+      ](
+        `${config.reveniu.URL.plan}${
+          company_plan_id > 0 ? company_plan_id : ""
         }`,
-      data: {
-        ...productPlanData,
-        is_custom_amount: true,
-        price: companyprice,
-      },
-      response: planResponseCompany.data,
-    });
+        {
+          ...productPlanData,
+          is_custom_amount: true,
+          price: companyprice,
+        },
+        {
+          headers: config.reveniu.apiKey,
+        }
+      );
+
+      new_company_plan_id = planResponseCompany.data.id;
+
+      createLogger.info({
+        method: company_plan_id > 0 ? "patch" : "post",
+        url: `${config.reveniu.URL.plan}${
+          company_plan_id > 0 ? company_plan_id : ""
+        }`,
+        data: {
+          ...productPlanData,
+          is_custom_amount: true,
+          price: companyprice,
+        },
+        response: planResponseCompany.data,
+      });
+    }
+
+    if (new_company_plan_id === 0) {
+      const responsePlan = await Plan.create();
+
+      if (!responsePlan.success) {
+        createLogger.error({
+          model: "plan/create",
+          error: responsePlan.error,
+        });
+        return { success: false, error: responsePlan.error };
+      }
+
+      new_company_plan_id = responsePlan.data.id;
+    }
 
     const productPlanCompanyResponse = await ProductPlan.createModel(
       id,
       agent_id,
-      planResponseCompany.data.id,
+      new_company_plan_id,
       "company",
       baseprice,
       companyprice,
@@ -728,16 +752,17 @@ const createProductPlans = async (
     }
 
     companyData = {
-      id: planResponseCompany.data.id,
-      price: planResponseCompany.data.price,
+      id: new_company_plan_id,
+      price: companyprice,
     };
   }
 
-  if (customerprice) {
+  if (customerprice && customerprice > 0) {
     const planResponseCustomer = await axios[
       customer_plan_id > 0 ? "patch" : "post"
     ](
-      `${config.reveniu.URL.plan}${customer_plan_id > 0 ? customer_plan_id : ""
+      `${config.reveniu.URL.plan}${
+        customer_plan_id > 0 ? customer_plan_id : ""
       }`,
       {
         ...productPlanData,
@@ -751,8 +776,9 @@ const createProductPlans = async (
 
     createLogger.info({
       method: customer_plan_id > 0 ? "patch" : "post",
-      url: `${config.reveniu.URL.plan}${customer_plan_id > 0 ? customer_plan_id : ""
-        }`,
+      url: `${config.reveniu.URL.plan}${
+        customer_plan_id > 0 ? customer_plan_id : ""
+      }`,
       data: {
         ...productPlanData,
         is_custom_amount: false,

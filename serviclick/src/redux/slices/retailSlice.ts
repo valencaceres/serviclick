@@ -1,15 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { apiInstance } from "../../utils/api";
+import { post, get, erase } from "../../utils/api";
 
 export type PriceT = {
+  base: number;
   customer: number;
   company: number;
-};
-
-export type LegalRepresentativeT = {
-  rut: string;
-  namer: string;
 };
 
 export type DiscountT = {
@@ -20,7 +16,7 @@ export type DiscountT = {
 
 export type ProductT = {
   product_id: string;
-  campaign: string;
+  name: string;
   price: PriceT;
   currency: string;
   discount: DiscountT;
@@ -39,6 +35,7 @@ export type RetailT = {
   id: string;
   rut: string;
   name: string;
+  legalRepresentative: string;
   line: string;
   fantasyName: string;
   address: string;
@@ -46,7 +43,6 @@ export type RetailT = {
   email: string;
   phone: string;
   logo: string;
-  legalRepresentatives: LegalRepresentativeT[];
   products: ProductT[];
   users: UserT[];
 };
@@ -55,7 +51,6 @@ export type StateT = {
   list: RetailT[];
   retail: RetailT;
   loading: boolean;
-  error: boolean;
 };
 
 const initialState: StateT = {
@@ -64,6 +59,7 @@ const initialState: StateT = {
     id: "",
     rut: "",
     name: "",
+    legalRepresentative: "",
     line: "",
     fantasyName: "",
     address: "",
@@ -71,12 +67,10 @@ const initialState: StateT = {
     email: "",
     phone: "",
     logo: "",
-    legalRepresentatives: [],
     products: [],
     users: [],
   },
   loading: false,
-  error: false,
 };
 
 export const retailSlice = createSlice({
@@ -85,25 +79,18 @@ export const retailSlice = createSlice({
   reducers: {
     setList: (state: StateT, action: PayloadAction<RetailT[]>) => {
       state.list = action.payload;
-      state.loading = false;
-      state.error = false;
     },
     setRetail: (state: StateT, action: PayloadAction<RetailT>) => {
       state.retail = action.payload;
-      state.loading = false;
-      state.error = false;
+    },
+    setProducts: (state: StateT, action: PayloadAction<ProductT[]>) => {
+      state.retail.products = action.payload;
     },
     setLogo: (state: StateT, action: PayloadAction<string>) => {
       state.retail.logo = action.payload;
-      state.loading = false;
-      state.error = false;
     },
     setLoading: (state: StateT, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
-    },
-    setError: (state: StateT, action: PayloadAction<boolean>) => {
-      state.error = action.payload;
-      state.loading = false;
     },
     resetRetail: (state: StateT) => {
       state.retail = initialState.retail;
@@ -121,7 +108,7 @@ export const {
   setList,
   setRetail,
   setLoading,
-  setError,
+  setProducts,
   setLogo,
   resetLogo,
   resetRetail,
@@ -131,61 +118,110 @@ export const {
 export default retailSlice.reducer;
 
 export const create = (values: RetailT) => async (dispatch: any) => {
-  try {
-    dispatch(setLoading(true));
-    const { data } = await apiInstance.post(`retail/create`, values);
-    dispatch(setRetail(data));
-  } catch (e) {
-    dispatch(setError(true));
+  const { success, data, error } = await post(`retail/create`, values);
+
+  if (!success) {
+    console.log(error);
+    return false;
   }
+
+  dispatch(setRetail(data));
+  dispatch(setLoading(false));
+  return true;
 };
 
 export const getById = (id: string) => async (dispatch: any) => {
-  try {
-    dispatch(setLoading(true));
-    const { data } = await apiInstance.get(`retail/getById/${id}`);
-    dispatch(setRetail(data));
-  } catch (e) {
-    dispatch(setError(true));
+  const { success, data, error } = await get(`retail/getById/${id}`);
+
+  if (!success) {
+    console.log(error);
+    return false;
   }
+
+  dispatch(setRetail(data));
+  dispatch(setLoading(false));
+  return true;
 };
 
 export const getByRut = (rut: string) => async (dispatch: any) => {
-  try {
-    dispatch(setLoading(true));
-    const { data } = await apiInstance.get(`retail/getByRut/${rut}`);
-    dispatch(setRetail(data));
-  } catch (e) {
-    dispatch(setError(true));
+  const { success, data, error } = await get(`retail/getByRut/${rut}`);
+
+  if (!success) {
+    console.log(error);
+    return false;
   }
+
+  dispatch(setRetail(data));
+  dispatch(setLoading(false));
+  return true;
 };
 
 export const getAll = () => async (dispatch: any) => {
-  try {
-    dispatch(setLoading(true));
-    const { data } = await apiInstance.get(`retail/getAll`);
-    dispatch(setList(data));
-  } catch (e) {
-    dispatch(setError(true));
+  const { success, data, error } = await get(`retail/getAll`);
+
+  if (!success) {
+    console.log(error);
+    return false;
   }
+
+  dispatch(setList(data));
+  dispatch(setLoading(false));
+  return true;
 };
 
 export const uploadLogo = (logo: any) => async (dispatch: any) => {
-  try {
-    dispatch(setLoading(true));
-    const { data } = await apiInstance.post(`retail/uploadLogo`, logo);
-    dispatch(setList(data));
-  } catch (e) {
-    dispatch(setError(true));
+  const { success, data, error } = await post(`retail/uploadLogo`, logo);
+
+  if (!success) {
+    console.log(error);
+    return false;
   }
+
+  dispatch(setList(data));
+  dispatch(setLoading(false));
+  return true;
 };
 
 export const deleteById = (id: string) => async (dispatch: any) => {
-  try {
-    dispatch(setLoading(true));
-    const { data } = await apiInstance.delete(`retail/deleteById/${id}`);
-    dispatch(setList(data));
-  } catch (e) {
-    dispatch(setError(true));
+  const { success, data, error } = await erase(`retail/deleteById/${id}`);
+
+  if (!success) {
+    console.log(error);
+    return false;
   }
+
+  dispatch(setLoading(false));
+  return true;
 };
+
+export const addProduct =
+  (id: string, product: ProductT, number: number) => async (dispatch: any) => {
+    const { success, data, error } = await post(`retail/addProduct`, {
+      retail_id: id,
+      ...product,
+    });
+
+    if (!success) {
+      return false;
+    }
+
+    dispatch(setProducts(data));
+    dispatch(setLoading(false));
+    return true;
+  };
+
+export const removeProduct =
+  (id: string, product_id: string) => async (dispatch: any) => {
+    const { success, data, error } = await post(`retail/removeProduct`, {
+      retail_id: id,
+      product_id,
+    });
+
+    if (!success) {
+      return false;
+    }
+
+    dispatch(setProducts(data));
+    dispatch(setLoading(false));
+    return true;
+  };

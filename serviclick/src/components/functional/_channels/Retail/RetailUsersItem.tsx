@@ -11,6 +11,9 @@ import { emailRegEx } from "../../../../utils/regEx";
 import { isValidRut } from "../../../../utils/validations";
 
 import styles from "./Retail.module.scss";
+import ButtonIcon from "../../../ui/ButtonIcon";
+
+import { useRetail } from "../../../../hooks";
 
 const RetailUsersItem = ({
   retailUserForm,
@@ -19,6 +22,8 @@ const RetailUsersItem = ({
   setShowModal,
   sendCredentials,
 }: any) => {
+  const { retail } = useRetail();
+
   const profileData = [
     { id: "S", name: "Vendedor" },
     { id: "A", name: "Administrador" },
@@ -116,13 +121,13 @@ const RetailUsersItem = ({
 
   useEffect(() => {
     setEnabledButton(
-      retailUserForm.rut.isValid &&
-        retailUserForm.name.isValid &&
-        retailUserForm.paternalLastName.isValid &&
-        retailUserForm.maternalLastName.isValid &&
-        retailUserForm.email.isValid &&
-        retailUserForm.profileCode.isValid &&
-        retailUserForm.profileName.isValid
+      retailUserForm?.rut.isValid &&
+        retailUserForm?.name.isValid &&
+        retailUserForm?.paternalLastName.isValid &&
+        retailUserForm?.maternalLastName.isValid &&
+        retailUserForm?.email.isValid &&
+        retailUserForm?.profileCode.isValid &&
+        retailUserForm?.profileName.isValid
     );
   }, [retailUserForm]);
 
@@ -136,15 +141,15 @@ const RetailUsersItem = ({
             maxLength={10}
             onFocus={handleFocusRut}
             onBlur={handleBlurRut}
-            value={retailUserForm.rut.value}
+            value={""}
             onChange={handleChangeRut}
-            isValid={retailUserForm.rut.isValid}
+            isValid={retailUserForm?.rut.isValid}
           />
           <ComboBox
             id="cmbProfile"
             label="Perfil"
             width="100%"
-            value={retailUserForm.profileCode.value}
+            value={""}
             onChange={handleChangeProfile}
             placeHolder=":: Seleccione Perfil ::"
             data={profileData}
@@ -155,33 +160,33 @@ const RetailUsersItem = ({
         <InputText
           label="Nombres"
           width="100%"
-          value={retailUserForm.name.value}
+          value={""}
           onChange={handleChangeName}
-          isValid={retailUserForm.name.isValid}
+          isValid={retailUserForm?.name.isValid}
         />
         <ContentRow gap="5px" className={styles.userForm}>
           <InputText
             label="Apellido paterno"
             width="100%"
-            value={retailUserForm.paternalLastName.value}
+            value={""}
             onChange={handleChangePaternalLastName}
-            isValid={retailUserForm.paternalLastName.isValid}
+            isValid={retailUserForm?.paternalLastName.isValid}
           />
           <InputText
             label="Apellido materno"
             width="100%"
-            value={retailUserForm.maternalLastName.value}
+            value={""}
             onChange={handleChangeMaternalLastName}
-            isValid={retailUserForm.maternalLastName.isValid}
+            isValid={retailUserForm?.maternalLastName.isValid}
           />
         </ContentRow>
         <ContentRow gap="5px">
           <InputText
             label="Correo electrónico"
             width="100%"
-            value={retailUserForm.email.value}
+            value={""}
             onChange={handleChangeEmail}
-            isValid={retailUserForm.email.isValid}
+            isValid={retailUserForm?.email.isValid}
           />
         </ContentRow>
       </ContentCell>

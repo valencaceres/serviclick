@@ -16,12 +16,22 @@ const RetailProductsItem = ({
 }: any) => {
   const { productList } = useProduct();
 
-  const [enabledButton, setEnabledButton] = useState(false);
+  const commisionTypeData = [
+    { id: "P", name: "Porcentaje" },
+    { id: "M", name: "Markup" },
+  ];
+
+  const currencyData = [
+    { id: "P", name: "Peso" },
+    { id: "U", name: "U.F." },
+  ];
 
   const discountItems = [
     { code: "p", text: "Porcentaje" },
     { code: "t", text: "Meses gratis" },
   ];
+
+  const [enabledButton, setEnabledButton] = useState(false);
 
   const handleChangeProduct = (event: any) => {
     setRetailProductForm({
@@ -37,40 +47,66 @@ const RetailProductsItem = ({
     });
   };
 
-  const handleChangeCampaing = (event: any) => {
+  // const handleChangeCommisionType = (event: any) => {
+  //   setRetailProductForm({
+  //     ...retailProductForm,
+  //     commisionTypeCode: {
+  //       value: event.target.value,
+  //       isValid: event.target.value !== "",
+  //     },
+  //   });
+  // };
+
+  // const handleChangeValue = (event: any) => {
+  //   setRetailProductForm({
+  //     ...retailProductForm,
+  //     value: {
+  //       value: event.target.value,
+  //       isValid: event.target.value !== "" && parseInt(event.target.value) > 0,
+  //     },
+  //   });
+  // };
+
+  const handleChangeBasePrice = (event: any) => {
     setRetailProductForm({
       ...retailProductForm,
-      campaign: {
+      baseprice: {
         value: event.target.value,
-        isValid: event.target.value !== "",
+        isValid: event.target.value !== "" && parseInt(event.target.value) > 0,
       },
     });
   };
 
-  const handleChangeNormalPrice = (event: any) => {
-    setRetailProductForm({
-      ...retailProductForm,
-      price: {
-        ...retailProductForm.price,
-        normal: {
-          value: event.target.value,
-          isValid:
-            event.target.value !== "" && parseInt(event.target.value) > 0,
-        },
-      },
-    });
-  };
+  // const handleChangeCustomerPrice = (event: any) => {
+  //   setRetailProductForm({
+  //     ...retailProductForm,
+  //     price: {
+  //       ...retailProductForm.price,
+  //       customer: {
+  //         value: event.target.value,
+  //         isValid:
+  //           event.target.value !== "" && parseInt(event.target.value) > 0,
+  //       },
+  //     },
+  //   });
+  // };
 
   const handleChangeCompanyPrice = (event: any) => {
     setRetailProductForm({
       ...retailProductForm,
       price: {
-        ...retailProductForm.price,
-        company: {
-          value: event.target.value,
-          isValid:
-            event.target.value !== "" && parseInt(event.target.value) > 0,
-        },
+        value: event.target.value,
+        isValid: event.target.value !== "" && parseInt(event.target.value) > 0,
+      },
+    });
+  };
+
+  const handleChangeCurrency = (event: any) => {
+    setRetailProductForm({
+      ...retailProductForm,
+      currency: {
+        value: event.target.value,
+        isValid: event.target.value !== "",
       },
     });
   };
@@ -135,7 +171,9 @@ const RetailProductsItem = ({
     setEnabledButton(
       retailProductForm.product_id.isValid &&
         retailProductForm.name.isValid &&
-        retailProductForm.price.company.isValid
+        retailProductForm.baseprice.isValid &&
+        retailProductForm.price.isValid &&
+        retailProductForm.currency.isValid
     );
   }, [retailProductForm]);
 
@@ -155,31 +193,66 @@ const RetailProductsItem = ({
           dataValue="id"
           dataText="name"
         />
-        {/* <InputText
-          label="Campaña"
-          width="450px"
-          value={retailProductForm.campaign.value}
-          onChange={handleChangeCampaing}
-          isValid={retailProductForm.campaign.isValid}
-        /> */}
-        <ContentRow gap="5px">
-          <InputText
-            label="Precio Normal ($)"
-            width="200px"
-            type="number"
-            maxLength={6}
-            value={retailProductForm.price.normal.value}
-            onChange={handleChangeNormalPrice}
-            isValid={retailProductForm.price.normal.isValid}
+        {/* <ContentRow gap="5px">
+          <ComboBox
+            id="cmbCommisionType"
+            label="Tipo de comisión"
+            width="100%"
+            value={retailProductForm.commisionTypeCode.value}
+            onChange={handleChangeCommisionType}
+            placeHolder=":: Seleccione Tipo ::"
+            data={commisionTypeData}
+            dataValue="id"
+            dataText="name"
           />
           <InputText
-            label="Precio Oferta ($)"
-            width="200px"
+            label="Valor"
+            width="100%"
             type="number"
             maxLength={6}
-            value={retailProductForm.price.company.value}
+            value={retailProductForm.value.value}
+            onChange={handleChangeValue}
+            isValid={retailProductForm.value.isValid}
+          />
+        </ContentRow> */}
+        <ContentRow gap="5px">
+          <InputText
+            label="Precio normal"
+            width="122px"
+            type="number"
+            maxLength={6}
+            value={retailProductForm.baseprice.value}
+            onChange={handleChangeBasePrice}
+            isValid={retailProductForm.baseprice.isValid}
+          />
+          {/* <InputText
+            label="Precio público ($)"
+            width="132px"
+            type="number"
+            maxLength={6}
+            value={retailProductForm.price.customer.value}
+            onChange={handleChangeCustomerPrice}
+            isValid={retailProductForm.price.customer.isValid}
+          /> */}
+          <InputText
+            label="Precio empresa"
+            width="122px"
+            type="number"
+            maxLength={6}
+            value={retailProductForm.price.value}
             onChange={handleChangeCompanyPrice}
-            isValid={retailProductForm.price.company.isValid}
+            isValid={retailProductForm.price.isValid}
+          />
+          <ComboBox
+            id="cmbCurrency"
+            label="Moneda"
+            width="152px"
+            value={retailProductForm.currency.value}
+            onChange={handleChangeCurrency}
+            placeHolder=":: Moneda ::"
+            data={currencyData}
+            dataValue="id"
+            dataText="name"
           />
         </ContentRow>
         <ContentRow gap="5px">

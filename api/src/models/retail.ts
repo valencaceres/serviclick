@@ -3,6 +3,7 @@ import pool from "../util/database";
 const create: any = async (
   rut: string,
   name: string,
+  legalrepresentative: string,
   line: string,
   fantasyName: string,
   address: string,
@@ -15,6 +16,7 @@ const create: any = async (
     const arrayValues = [
       rut,
       name,
+      legalrepresentative,
       line,
       fantasyName,
       address,
@@ -34,13 +36,14 @@ const create: any = async (
       query = `
         UPDATE  app.retail
         SET     name = $2,
-                line = $3,
-                fantasyname = $4,
-                address = $5,
-                district = $6,
-                email = $7,
-                phone = $8,
-                logo = $9,
+                legalrepresentative = $3,
+                line = $4,
+                fantasyname = $5,
+                address = $6,
+                district = $7,
+                email = $8,
+                phone = $9,
+                logo = $10,
                 isactive = true
         WHERE   rut = $1 RETURNING *`;
     } else {
@@ -48,6 +51,7 @@ const create: any = async (
         INSERT  INTO app.retail(
                 rut,
                 name,
+                legalrepresentative,
                 line,
                 fantasyname,
                 address,
@@ -55,13 +59,24 @@ const create: any = async (
                 email,
                 phone,
                 logo) 
-        VALUES( $1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`;
+        VALUES( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`;
     }
 
     const result = await pool.query(query, arrayValues);
-    const { id } = result.rows[0];
 
-    const { data } = await getById(id);
+    const data = {
+      id: result.rows[0].id,
+      rut: result.rows[0].rut,
+      name: result.rows[0].name,
+      legalRepresentative: result.rows[0].legalrepresentative,
+      line: result.rows[0].line,
+      fantasyName: result.rows[0].fantasyname,
+      address: result.rows[0].address,
+      district: result.rows[0].district,
+      email: result.rows[0].email,
+      phone: result.rows[0].phone,
+      logo: result.rows[0].logo,
+    };
 
     return { success: true, data, error: null };
   } catch (e) {
@@ -73,29 +88,26 @@ const getById: any = async (id: string) => {
   try {
     const result = await pool.query(
       `
-        SELECT  ret.id,
-                ret.rut,
-                ret.name,
-                ret.line,
-                ret.fantasyname,
-                ret.address,
-                ret.district,
-                ret.email,
-                ret.phone,
-                ret.logo,
-                leg.rut as legalrepresentative_rut,
-                leg.name as legalrepresentative_name
-        FROM    app.retail ret
-                  left outer join app.retaillegalrepresentative leg on ret.id = leg.retail_id
-        WHERE   ret.id = $1
-        ORDER   BY
-                leg.name`,
+        SELECT  id,
+                rut,
+                name,
+                legalrepresentative,
+                line,
+                fantasyname,
+                address,
+                district,
+                email,
+                phone,
+                logo
+        FROM    app.retail
+        WHERE   id = $1`,
       [id]
     );
 
     const {
       rut,
       name,
+      legalrepresentative,
       line,
       fantasyname,
       address,
@@ -103,12 +115,13 @@ const getById: any = async (id: string) => {
       email,
       phone,
       logo,
-    } = result.rows[0] || {};
+    } = result.rows[0] || [];
 
     const data = {
       id,
       rut,
       name,
+      legalRepresentative: legalrepresentative,
       line,
       fantasyName: fantasyname,
       address,
@@ -116,15 +129,9 @@ const getById: any = async (id: string) => {
       email,
       phone,
       logo,
-      legalRepresentatives: result.rows.map((item: any) => {
-        return {
-          rut: item.legalrepresentative_rut,
-          name: item.legalrepresentative_name,
-        };
-      }),
     };
 
-    return { success: true, data, error: null };
+    return { success: true, data: result.rows[0] ? data : null, error: null };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
   }
@@ -137,6 +144,7 @@ const getByRut: any = async (rut: string) => {
         SELECT  id,
                 rut,
                 name,
+                legalrepresentative,
                 line,
                 fantasyname,
                 address,
@@ -152,6 +160,7 @@ const getByRut: any = async (rut: string) => {
     const {
       id,
       name,
+      legalrepresentative,
       line,
       fantasyname,
       address,
@@ -159,12 +168,13 @@ const getByRut: any = async (rut: string) => {
       email,
       phone,
       logo,
-    } = result.rows[0] || {};
+    } = result.rows[0] || [];
 
     const data = {
       id,
       rut,
       name,
+      legalRepresentative: legalrepresentative,
       line,
       fantasyName: fantasyname,
       address,
@@ -172,12 +182,6 @@ const getByRut: any = async (rut: string) => {
       email,
       phone,
       logo,
-      legalRepresentatives: result.rows.map((item: any) => {
-        return {
-          rut: item.legalrepresentative_rut,
-          name: item.legalrepresentative_name,
-        };
-      }),
     };
 
     return { success: true, data, error: null };
@@ -193,6 +197,7 @@ const getAll: any = async () => {
         SELECT  id,
                 rut,
                 name,
+                legalrepresentative,
                 line,
                 fantasyname,
                 address,
@@ -208,6 +213,7 @@ const getAll: any = async () => {
         id,
         rut,
         name,
+        legalrepresentative,
         line,
         fantasyname,
         address,
@@ -219,6 +225,7 @@ const getAll: any = async () => {
         id,
         rut,
         name,
+        legalRepresentative: legalrepresentative,
         line,
         fantasyName: fantasyname,
         address,
@@ -270,7 +277,8 @@ const getFamiliesByRetailId: any = async (id: string) => {
         from	  app.product pro
                   inner join app.family fam on pro.family_id = fam.id
                   inner join app.retailproduct bpr on pro.id = bpr.product_id
-        where	  bpr.retail_id = $1`,
+        where	  bpr.retail_id = $1 and
+                bpr.isActive is true`,
       [id]
     );
 
@@ -299,27 +307,83 @@ const getProductsByRetailIdAndFamilyId: any = async (
                 pro.name,
                 pro.currency,
                 pro.frequency,
-                bpr.companyprice
+                bpr.companyprice,
+                bpr.customerprice
         from    app.product pro
                   inner join app.family fam on pro.family_id = fam.id
                   inner join app.retailproduct bpr on pro.id = bpr.product_id
         where   bpr.retail_id = $1 and
-                fam.id = $2`,
+                fam.id = $2 and
+                bpr.isActive is true`,
       [id, family_id]
     );
 
     const data = result.rows.map((row) => {
-      const { id, name, companyprice, currency, frequency } = row;
+      const { id, name, companyprice, customerprice, currency, frequency } =
+        row;
       return {
         id,
         name,
         currency,
         frequency,
-        price: { C: companyprice },
+        price: { P: customerprice, C: companyprice },
       };
     });
 
     return { success: true, data, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+const getCollectById: any = async (id: string) => {
+  try {
+    const result = await pool.query(
+      `
+      select	customer_name,
+              customer_email,
+              customer_phone,
+              '' as executive_name,
+              product_name,
+              to_char(incorporation, 'DD-MM-YYYY') as incorporation,
+              fee_value,
+              free_months,
+              fees - free_months as fees_charged,
+              fee_value * (fees - free_months) as charged,
+              paid,
+              case when (fee_value * (fees - free_months)) - paid > 0 then (fee_value * (fees - free_months)) - paid else 0 end as balance
+      from 	(
+              select	max(age.name) as channel_name,
+                      max(bro.name) as retail_name,
+                      max(concat(cus.name,' ', cus.paternallastname, ' ', cus.maternallastname)) as customer_name,
+                      max(cus.email) as customer_email,
+                      max(cus.phone) as customer_phone,
+                      max(pro.name) as product_name,
+                      min(case when pay.date is null then sub.date else pay.date end) as incorporation,
+                      max(lpr.price) as fee_value,
+                      max(case when ppl.discount_type = 't' and ppl.discount_cicles > 0 then ppl.discount_cicles else 0 end) as free_months,
+                      (extract(month from age(now(), min(case when pay.date is null then sub.date else pay.date end))) + 1) as fees,
+                      sum(case when pay.amount is null then 0 else pay.amount end) paid
+              from	  app.lead lea
+                        left outer join app.agent age on lea.agent_id = age.id
+                        left outer join app.retail bro on lea.agent_id = bro.id
+                        left outer join app.customer cus on lea.customer_id = cus.id
+                        left outer join app.leadproduct lpr on lea.id = lpr.lead_id
+                        left outer join app.productplan ppl on lpr.productplan_id = ppl.plan_id
+                        left outer join app.product pro on lpr.product_id = pro.id
+                        left outer join app.subscription sub on lea.subscription_id = sub.subscription_id
+                        left outer join app.payment pay on pay.subscription_id = sub.subscription_id
+              where   not lea.policy_id is null and
+                      lea.agent_id = $1
+              group  	by
+                      sub.subscription_id) as report
+      order 	by
+              customer_name,
+              product_name`,
+      [id]
+    );
+
+    return { success: true, data: result.rows, error: null };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
   }
@@ -334,4 +398,5 @@ export {
   deleteById,
   getFamiliesByRetailId,
   getProductsByRetailIdAndFamilyId,
+  getCollectById,
 };

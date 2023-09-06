@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useRouter } from "next/router";
 
 import { ContentCell, ContentRow } from "../../../layout/Content";
 import InputText from "../../../ui/InputText";
@@ -10,15 +11,21 @@ import { rutValidate } from "../../../../utils/validations";
 import { useRetail, useDistrict } from "../../../../hooks";
 
 import styles from "./Retail.module.scss";
-import ComboBox from "../../../ui/ComboBox";
+import ButtonIcon from "~/components/ui/ButtonIcon";
+import ComboBox from "~/components/ui/ComboBox";
 
 const RetailForm = ({
+  isDisabledRetailForm,
   retailForm,
   setRetailForm,
-  setEnableButtonSave,
+  editForm,
 }: any) => {
-  const { list } = useDistrict();
+  const router = useRouter();
+
   const { retail, setRetail, getRetailByRut } = useRetail();
+  const { list: districtList } = useDistrict();
+
+  const [enableButtonSave, setEnableButtonSave] = useState(false);
 
   const ref = useRef<HTMLInputElement>(null);
 
@@ -62,6 +69,16 @@ const RetailForm = ({
     setRetailForm({
       ...retailForm,
       name: {
+        value: event.target.value,
+        isValid: event.target.value !== "",
+      },
+    });
+  };
+
+  const handleChangeLegalRepresentative = (event: any) => {
+    setRetailForm({
+      ...retailForm,
+      legalRepresentative: {
         value: event.target.value,
         isValid: event.target.value !== "",
       },
@@ -134,10 +151,14 @@ const RetailForm = ({
   };
 
   useEffect(() => {
-    if (retail.rut !== "") {
+    if (retail.id !== "") {
       setRetailForm({
         rut: { value: retail.rut, isValid: true },
         name: { value: retail.name, isValid: true },
+        legalRepresentative: {
+          value: retail.legalRepresentative,
+          isValid: true,
+        },
         line: { value: retail.line, isValid: true },
         fantasyName: { value: retail.fantasyName, isValid: true },
         address: { value: retail.address, isValid: true },
@@ -152,19 +173,28 @@ const RetailForm = ({
   useEffect(() => {
     const isValid =
       retailForm.rut.isValid &&
+      retailForm.rut.value !== "" &&
       retailForm.name.isValid &&
+      retailForm.name.value !== "" &&
+      retailForm.legalRepresentative.isValid &&
       retailForm.line.isValid &&
       retailForm.fantasyName.isValid &&
+      retailForm.fantasyName.value !== "" &&
       retailForm.address.isValid &&
+      retailForm.address.value !== "" &&
       retailForm.district.isValid &&
+      retailForm.district.value !== "" &&
       retailForm.email.isValid &&
-      retailForm.phone.isValid;
+      retailForm.email.value !== "" &&
+      retailForm.phone.isValid &&
+      retailForm.phone.value;
 
     if (isValid) {
       setRetail({
         ...retail,
         rut: retailForm.rut.value,
         name: retailForm.name.value,
+        legalRepresentative: retailForm.legalRepresentative.value,
         line: retailForm.line.value,
         fantasyName: retailForm.fantasyName.value,
         address: retailForm.address.value,
@@ -190,6 +220,7 @@ const RetailForm = ({
           value={retailForm?.rut.value}
           onChange={handleChangeRut}
           isValid={retailForm?.rut.isValid}
+          disabled={retail.id !== ""}
         />
         <InputText
           label="Razón Social"
@@ -198,6 +229,7 @@ const RetailForm = ({
           value={retailForm?.name.value}
           onChange={handleChangeName}
           isValid={retailForm?.name.isValid}
+          disabled={isDisabledRetailForm}
         />
         <InputText
           label="Giro"
@@ -206,6 +238,7 @@ const RetailForm = ({
           value={retailForm?.line.value}
           onChange={handleChangeLine}
           isValid={retailForm?.line.isValid}
+          disabled={isDisabledRetailForm}
         />
         <InputText
           label="Nombre de fantasía"
@@ -214,6 +247,16 @@ const RetailForm = ({
           value={retailForm?.fantasyName.value}
           onChange={handleChangeFantasyName}
           isValid={retailForm?.fantasyName.isValid}
+          disabled={isDisabledRetailForm}
+        />
+        <InputText
+          label="Representante Legal"
+          width="100%"
+          maxLength={50}
+          value={retailForm?.legalRepresentative.value}
+          onChange={handleChangeLegalRepresentative}
+          isValid={retailForm?.legalRepresentative.isValid}
+          disabled={isDisabledRetailForm}
         />
         <InputText
           label="Dirección"
@@ -222,35 +265,58 @@ const RetailForm = ({
           value={retailForm?.address.value}
           onChange={handleChangeAddress}
           isValid={retailForm?.address.isValid}
+          disabled={isDisabledRetailForm}
         />
+        {/* <InputText
+          label="Comuna"
+          width="100%"
+          maxLength={250}
+          value={retailForm?.district.value}
+          onChange={handleChangeDistrict}
+          isValid={retailForm?.district.isValid}
+          disabled={isDisabledRetailForm}
+        /> */}
         <ComboBox
           label="Comuna"
           width="100%"
           value={retailForm?.district.value}
           onChange={handleChangeDistrict}
-          placeHolder=":: Seleccione comuna ::"
-          data={list}
+          placeHolder="Seleccione comuna"
+          data={districtList}
           dataValue="district_name"
           dataText="district_name"
+          enabled={!isDisabledRetailForm}
         />
-        <InputText
-          label="Correo"
-          width="100%"
-          type="email"
-          maxLength={250}
-          value={retailForm?.email.value}
-          onChange={handleChangeEmail}
-          isValid={retailForm?.email.isValid}
-        />
-        <InputText
-          label="Teléfono"
-          width="100%"
-          type="tel"
-          maxLength={9}
-          value={retailForm?.phone.value}
-          onChange={handleChangePhone}
-          isValid={retailForm?.phone.isValid}
-        />
+        <ContentRow gap="5px">
+          <InputText
+            label="Correo"
+            width="100%"
+            type="email"
+            maxLength={250}
+            value={retailForm?.email.value}
+            onChange={handleChangeEmail}
+            isValid={retailForm?.email.isValid}
+            disabled={isDisabledRetailForm}
+          />
+        </ContentRow>
+        <ContentRow gap="5px" align="space-between">
+          <InputText
+            label="Teléfono"
+            width="50%"
+            type="tel"
+            maxLength={9}
+            value={retailForm?.phone.value}
+            onChange={handleChangePhone}
+            isValid={retailForm?.phone.isValid}
+            disabled={isDisabledRetailForm}
+          />
+          <ButtonIcon
+            iconName={isDisabledRetailForm ? "edit" : "save"}
+            color="gray"
+            onClick={editForm}
+            disabled={isDisabledRetailForm ? false : !enableButtonSave}
+          />
+        </ContentRow>
       </ContentCell>
     </ContentRow>
   );

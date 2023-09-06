@@ -8,16 +8,20 @@ import RetailUsers from "./RetailUsers";
 import RetailProductsItem from "./RetailProductsItem";
 import RetailUsersItem from "./RetailUsersItem";
 
-import { ContentCell, ContentRow } from "../../../layout/Content";
-
 import {
-  LoadingMessage,
-  SuccessMessage,
-  ErrorMessage,
-} from "../../../ui/ModalMessage";
+  ContentCell,
+  ContentRow,
+  ContentCellSummary,
+} from "../../../layout/Content";
+
 import ModalWindow from "../../../ui/ModalWindow";
+import { Modal } from "../../../ui/Modal";
+import Icon from "../../../ui/Icon";
+import ModalWarning from "../../../ui/ModalWarning";
 
 import { useRetail } from "../../../../hooks";
+
+import styles from "./Retail.module.scss";
 
 interface IFormFieldString {
   value: string;
@@ -32,6 +36,7 @@ interface IFormFieldNumber {
 interface IRetailForm {
   rut: IFormFieldString;
   name: IFormFieldString;
+  legalRepresentative: IFormFieldString;
   line: IFormFieldString;
   fantasyName: IFormFieldString;
   address: IFormFieldString;
@@ -44,11 +49,10 @@ interface IRetailForm {
 interface IRetailProductForm {
   product_id: IFormFieldString;
   name: IFormFieldString;
-  campaign: IFormFieldString;
-  price: {
-    normal: IFormFieldNumber;
-    company: IFormFieldNumber;
-  };
+  baseprice: IFormFieldNumber;
+  price: IFormFieldNumber;
+  commisionTypeCode: IFormFieldString;
+  value: IFormFieldNumber;
   currency: IFormFieldString;
   discount: {
     type: IFormFieldString;
@@ -67,32 +71,45 @@ interface IRetailUserForm {
   profileName: IFormFieldString;
 }
 
-const RetailDetail = ({ setEnableButtonSave, isSaving, setIsSaving }: any) => {
+const RetailDetail = () => {
   const router = useRouter();
 
-  const { retail, setRetail, retailLoading, retailError } = useRetail();
+  const {
+    retail,
+    setRetail,
+    loading: retailLoading,
+    createRetail,
+    addProduct,
+    removeProduct,
+  } = useRetail();
 
   const initialDataRetailForm: IRetailForm = {
-    rut: { value: "", isValid: false },
-    name: { value: "", isValid: false },
-    line: { value: "", isValid: false },
-    fantasyName: { value: "", isValid: false },
-    address: { value: "", isValid: false },
-    district: { value: "", isValid: false },
-    email: { value: "", isValid: false },
-    phone: { value: "", isValid: false },
-    logo: { value: "", isValid: false },
+    rut: { value: "", isValid: true },
+    name: { value: "", isValid: true },
+    legalRepresentative: {
+      value: "",
+      isValid: true,
+    },
+    line: { value: "", isValid: true },
+    fantasyName: { value: "", isValid: true },
+    address: { value: "", isValid: true },
+    district: { value: "", isValid: true },
+    email: { value: "", isValid: true },
+    phone: { value: "", isValid: true },
+    logo: { value: "", isValid: true },
   };
 
   const initialDataRetailProductForm: IRetailProductForm = {
     product_id: { value: "", isValid: false },
     name: { value: "", isValid: true },
-    campaign: { value: "", isValid: true },
-    price: {
-      normal: { value: 0, isValid: false },
-      company: { value: 0, isValid: false },
+    baseprice: { value: 0, isValid: false },
+    price: { value: 0, isValid: false },
+    commisionTypeCode: {
+      value: "",
+      isValid: false,
     },
-    currency: { value: "", isValid: true },
+    value: { value: 0, isValid: false },
+    currency: { value: "", isValid: false },
     discount: {
       type: { value: "", isValid: true },
       percent: { value: 0, isValid: true },
@@ -120,6 +137,22 @@ const RetailDetail = ({ setEnableButtonSave, isSaving, setIsSaving }: any) => {
   );
   const [showModalProducts, setShowModalProducts] = useState(false);
   const [showModalUsers, setShowModalUsers] = useState(false);
+  const [isDisabledRetailForm, setIsDisabledRetailForm] = useState(true);
+  const [productToDelete, setProductToDelete] = useState({ id: "", name: "" });
+  const [showWarningDeleteProduct, setShowWarningDeleteProduct] =
+    useState(false);
+
+  const setClosedWarningDeleteProduct = () => {
+    setShowWarningDeleteProduct(false);
+  };
+
+  const handleClickEditForm = () => {
+    if (isDisabledRetailForm) {
+      setIsDisabledRetailForm(false);
+      return;
+    }
+    createRetail(retail);
+  };
 
   const handleClickAddNewProduct = () => {
     setRetailProductForm(initialDataRetailProductForm);
@@ -130,11 +163,13 @@ const RetailDetail = ({ setEnableButtonSave, isSaving, setIsSaving }: any) => {
     setRetailProductForm({
       product_id: { value: item.product_id, isValid: true },
       name: { value: item.name, isValid: true },
-      campaign: { value: item.campaign, isValid: true },
-      price: {
-        normal: { value: item.price.normal, isValid: true },
-        company: { value: item.price.company, isValid: true },
+      baseprice: { value: item.baseprice, isValid: true },
+      price: { value: item.price, isValid: true },
+      commisionTypeCode: {
+        value: item.commisionTypeCode,
+        isValid: true,
       },
+      value: { value: item.value, isValid: true },
       currency: { value: item.currency, isValid: true },
       discount: {
         type: { value: item.discount.type, isValid: true },
@@ -146,15 +181,13 @@ const RetailDetail = ({ setEnableButtonSave, isSaving, setIsSaving }: any) => {
   };
 
   const handleClickDeleteProduct = (item: any) => {
-    setRetailProductForm(initialDataRetailProductForm);
-    setRetail({
-      ...retail,
-      products: [
-        ...retail.products.filter(
-          (product: any) => product.product_id !== item.product_id
-        ),
-      ],
-    });
+    setProductToDelete({ id: item.product_id, name: item.name });
+    setShowWarningDeleteProduct(true);
+  };
+
+  const handleClickDeleteProductOK = () => {
+    removeProduct(retail.id, productToDelete.id);
+    setShowWarningDeleteProduct(false);
   };
 
   const handleClickAddNewUser = () => {
@@ -184,30 +217,28 @@ const RetailDetail = ({ setEnableButtonSave, isSaving, setIsSaving }: any) => {
   };
 
   const handleClickSaveProduct = () => {
-    setRetail({
-      ...retail,
-      products: [
-        ...retail.products.filter(
-          (product: any) =>
-            product.product_id !== retailProductForm.product_id.value
-        ),
-        {
-          product_id: retailProductForm.product_id.value,
-          name: retailProductForm.name.value,
-          campaign: retailProductForm.campaign.value,
-          price: {
-            normal: retailProductForm.price.normal.value,
-            company: retailProductForm.price.company.value,
-          },
-          currency: "P",
-          discount: {
-            type: retailProductForm.discount.type.value,
-            percent: retailProductForm.discount.percent.value,
-            cicles: retailProductForm.discount.cicles.value,
-          },
+    addProduct(
+      retail.id,
+      {
+        product_id: retailProductForm.product_id.value,
+        name: retailProductForm.name.value,
+        price: {
+          base: retailProductForm.baseprice.value,
+          customer: 0,
+          company: retailProductForm.price.value,
         },
-      ],
-    });
+        currency: retailProductForm.currency.value,
+        discount: {
+          type:
+            retailProductForm.discount.type.value == ""
+              ? "n"
+              : retailProductForm.discount.type.value,
+          percent: retailProductForm.discount.percent.value,
+          cicles: retailProductForm.discount.cicles.value,
+        },
+      },
+      1
+    );
   };
 
   const handleClickSaveUser = () => {
@@ -232,12 +263,6 @@ const RetailDetail = ({ setEnableButtonSave, isSaving, setIsSaving }: any) => {
 
   const handleClickSendCredentials = () => {};
 
-  const handleCallbakAfterError = () => {};
-
-  useEffect(() => {
-    setIsSaving(false);
-  }, []);
-
   useEffect(() => {
     if (retail.rut === "") {
       setRetailForm(initialDataRetailForm);
@@ -250,9 +275,10 @@ const RetailDetail = ({ setEnableButtonSave, isSaving, setIsSaving }: any) => {
         <ContentCell gap="5px">
           <RetailLogo />
           <RetailForm
+            isDisabledRetailForm={isDisabledRetailForm}
             retailForm={retailForm}
             setRetailForm={setRetailForm}
-            setEnableButtonSave={setEnableButtonSave}
+            editForm={handleClickEditForm}
           />
         </ContentCell>
         <ContentCell gap="20px">
@@ -273,7 +299,8 @@ const RetailDetail = ({ setEnableButtonSave, isSaving, setIsSaving }: any) => {
       <ModalWindow
         showModal={showModalProducts}
         title="Producto"
-        setClosed={() => setShowModalProducts(false)}>
+        setClosed={() => setShowModalProducts(false)}
+      >
         <RetailProductsItem
           saveProduct={handleClickSaveProduct}
           retailProductForm={retailProductForm}
@@ -284,7 +311,8 @@ const RetailDetail = ({ setEnableButtonSave, isSaving, setIsSaving }: any) => {
       <ModalWindow
         showModal={showModalUsers}
         title="User"
-        setClosed={() => setShowModalUsers(false)}>
+        setClosed={() => setShowModalUsers(false)}
+      >
         <RetailUsersItem
           saveUser={handleClickSaveUser}
           retailUserForm={retailUserForm}
@@ -293,23 +321,26 @@ const RetailDetail = ({ setEnableButtonSave, isSaving, setIsSaving }: any) => {
           sendCredentials={handleClickSendCredentials}
         />
       </ModalWindow>
-      {retailLoading ? (
-        <LoadingMessage showModal={retailLoading} />
-      ) : retailError ? (
-        <ErrorMessage
-          showModal={retailError}
-          callback={handleCallbakAfterError}>
-          Ha ocurrido un error al intentar registrar
-        </ErrorMessage>
-      ) : isSaving ? (
-        <SuccessMessage
-          showModal={!retailError}
-          callback={handleCallbakAfterError}>
-          Se ha registrado la información correctamente
-        </SuccessMessage>
-      ) : (
-        <p></p>
-      )}
+      <Modal showModal={retailLoading}>
+        <div className={styles.message}>
+          <Icon iconName="refresh" />
+          Por favor espere
+        </div>
+      </Modal>
+      <ModalWarning
+        showModal={showWarningDeleteProduct}
+        title="Eliminación de Producto asociado a Retail"
+        message={`Está seguro de eliminar el producto ${productToDelete.name}`}
+        setClosed={setClosedWarningDeleteProduct}
+        iconName="warning"
+        buttons={[
+          { text: "No", function: setClosedWarningDeleteProduct },
+          {
+            text: "Si",
+            function: () => handleClickDeleteProductOK(),
+          },
+        ]}
+      />
     </Fragment>
   );
 };

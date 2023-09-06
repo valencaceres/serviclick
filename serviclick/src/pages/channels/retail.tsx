@@ -9,11 +9,11 @@ import {
   RetailList,
 } from "../../components/functional/_channels/Retail";
 
-import { useUI, useRetail, useProduct } from "../../hooks";
+import { useUI, useRetail, useProduct, useDistrict } from "../../hooks";
 
 import { channels } from "../../data/masters";
 
-const Web = () => {
+const RetailPage = () => {
   const router = useRouter();
 
   const { setTitleUI } = useUI();
@@ -24,12 +24,10 @@ const Web = () => {
     reset,
     createRetail,
     retail,
-    retailLoading,
+    loading: retailLoading,
   } = useRetail();
   const { getAllProducts } = useProduct();
-
-  const [enableSave, setEnableSave] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
+  const { listAllDistrict } = useDistrict();
 
   const handleClickHome = () => {
     router.push("/");
@@ -57,12 +55,12 @@ const Web = () => {
   };
 
   const handleClickSave = () => {
-    setIsSaving(true);
     createRetail(retail);
   };
 
   useEffect(() => {
     setTitleUI(channels.retail.name);
+    listAllDistrict();
     getAllRetails();
     getAllProducts("020579a3-8461-45ec-994b-ad22ff8e3275");
   }, []);
@@ -76,21 +74,11 @@ const Web = () => {
 
   return router.isReady && router.query.id ? (
     <Fragment>
-      <RetailDetail
-        setEnableButtonSave={setEnableSave}
-        isSaving={isSaving}
-        setIsSaving={setIsSaving}
-      />
+      <RetailDetail />
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />
         <ButtonIcon iconName="arrow_back" onClick={handleClickBack} />
         <ButtonIcon iconName="add" onClick={handleClickNew} />
-        <ButtonIcon
-          iconName="save"
-          onClick={handleClickSave}
-          disabled={!enableSave}
-          loading={retailLoading}
-        />
       </FloatMenu>
     </Fragment>
   ) : (
@@ -108,4 +96,4 @@ const Web = () => {
   );
 };
 
-export default Web;
+export default RetailPage;

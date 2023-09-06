@@ -232,10 +232,28 @@ const getByRetailId: any = async (retail_id: string) => {
   }
 };
 
+const updateProfileCode = async (
+  agentId: string,
+  retailId: string,
+  profileCode: string
+) => {
+  try {
+    const result = await pool.query(
+      `UPDATE app.retailuser SET profilecode = $1 WHERE user_id = $2 AND retail_id = $3`,
+      [profileCode, agentId, retailId]
+    );
+
+    return { success: true, data: result.rows[0] };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 export {
   create,
   inactiveAllByRetailId,
   assignPassword,
   getByEmail,
   getByRetailId,
+  updateProfileCode,
 };
