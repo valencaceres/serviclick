@@ -330,7 +330,7 @@ const CaseFormService = ({ thisCase }: any) => {
                         )
                       : (
                           parseInt(selectedAssistance?.amount!) *
-                          ufValue.serie[0].valor
+                          ufValue?.serie[0].valor
                         ).toLocaleString("es-CL", {
                           style: "currency",
                           currency: "CLP",

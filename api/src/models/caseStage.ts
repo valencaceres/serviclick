@@ -39,6 +39,40 @@ const create: any = async (
   }
 };
 
+const update: any = async (
+  case_id: string,
+  stage_id: string,
+  user_id: string,
+  description?: string
+) => {
+  try {
+    const caseStage = await pool.query(
+      `SELECT * FROM app.casestage 
+      WHERE case_id = $1 
+      AND stage_id = $2`,
+      [case_id, stage_id]
+    );
+
+    if (caseStage.rowCount > 0) {
+      const result = await pool.query(
+        `UPDATE app.casestage
+        SET description = $4
+        WHERE case_id = $1
+        AND stage_id = $2
+        AND user_id = $3
+        RETURNING *`,
+        [case_id, stage_id, user_id, description]
+      );
+
+      return { success: true, data: result.rows[0], error: null };
+    } else {
+      return { success: false, data: null, error: "Case stage not found" };
+    }
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 const getById = async (id: string) => {
   try {
     const result = await pool.query(
@@ -144,4 +178,4 @@ const getById = async (id: string) => {
   }
 };
 
-export { create, getById };
+export { create, getById, update };

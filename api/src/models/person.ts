@@ -57,7 +57,8 @@ const create: any = async (
                 birthdate)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`;
     }
-
+    console.log(query)
+    console.log(arrayValues)
     const result = await pool.query(query, arrayValues);
 
     const { id } = result.rows[0];

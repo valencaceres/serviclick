@@ -12,7 +12,7 @@ import * as CaseChat from "../models/caseChat";
 import * as Insured from "../models/insured";
 import * as Beneficiary from "../models/beneficiary";
 import { fetchClerkUser } from "../util/clerkUserData";
-
+import { Request, Response } from 'express';
 const create = async (req: any, res: any) => {
   const {
     applicant,
@@ -130,6 +130,143 @@ const create = async (req: any, res: any) => {
     .json({ success: true, data: caseResponse.data, error: null });
 };
 
+const update = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const {
+    applicant,
+    company_id,
+    customer_id,
+    isInsured,
+    number,
+    product_id,
+    assistance_id,
+    description,
+    stage_id,
+    user_id,
+    beneficiary_id,
+    isactive,
+    lead_id,
+    event_date,
+    event_location,
+  } = req.body;
+
+  try {
+
+    // Validación de parámetros requeridos
+    if (!id) {
+      return res.status(400).json({ error: "Falta el parámetro 'id'" });
+    }
+
+    if (!applicant || (!applicant.rut && !applicant.name)) {
+      return res.status(400).json({ error: "Se requiere información del solicitante" });
+    }
+    // Actualización del solicitante
+    if (applicant?.type === "C") {
+      if (isInsured === true) {
+        const applicantResponse = await Insured.update(
+          id,
+          applicant.rut,
+          applicant.name,
+          applicant.paternalLastName,
+          applicant.maternalLastName,
+          applicant.birthDate,
+          applicant.address,
+          applicant.district,
+          applicant.email,
+          applicant.phone
+        );
+        if (!applicantResponse.success) {
+          createLogger.error({
+            model: `person/update`,
+            error: applicantResponse.error,
+          });
+          return res.status(500).json({ error: "Error actualizando o creando la persona asegurada" });
+        }
+
+        applicant.id = applicantResponse.data.id;
+      } else if (isInsured === false) {
+        console.log(beneficiary_id, applicant);
+        const applicantResponse = await Beneficiary.updateModel(
+          beneficiary_id,
+          applicant.rut,
+          applicant.name,
+          applicant.paternalLastName,
+          applicant.maternalLastName,
+          applicant.birthDate,
+          applicant.address,
+          applicant.district,
+          applicant.email,
+          applicant.phone
+        );
+
+        if (!applicantResponse.success) {
+          createLogger.error({
+            model: `person/update`,
+            error: applicantResponse.error,
+          });
+          return res.status(500).json({ error: "Error actualizando o creando la persona beneficiaria" });
+        }
+
+        applicant.id = applicantResponse.data.id;
+      }
+    }
+    // Actualización del caso
+    const caseResponse = await Case.update(
+      id,
+      applicant,
+      company_id,
+      customer_id,
+      isInsured,
+      number,
+      product_id,
+      assistance_id,
+      isactive,
+      beneficiary_id,
+      lead_id,
+      event_date,
+      event_location
+    );
+    if (!caseResponse.success) {
+      createLogger.error({
+        model: `case/update`,
+        error: caseResponse.error,
+      });
+      return res.status(500).json({ error: "Error actualizando el caso" });
+    }
+
+    // Actualización de la etapa del caso
+    const caseStageResponse = await CaseStage.update(
+      stage_id,
+      stage_id,
+      user_id,
+      description
+    );
+
+    if (!caseStageResponse.success) {
+      createLogger.error({
+        model: `caseStage/update`,
+        error: caseStageResponse.error,
+      });
+      return res.status(500).json({ error: "Error actualizando la etapa del caso" });
+    }
+
+    createLogger.info({
+      model: `case/update`,
+      message: `Caso actualizado exitosamente`,
+    });
+
+    return res.status(200).json({ success: true, message: "Caso actualizado exitosamente" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Error actualizando el caso" });
+  }
+};
+
+
+
+
+
+
 const getAll = async (req: any, res: any) => {
   const caseResponse = await Case.getAll();
 
@@ -192,29 +329,29 @@ const uploadDocument = async (req: any, res: any) => {
 const getBeneficiaryByRut = async (req: any, res: any) => {
   const { rut } = req.params;
 
-  const beneficaryResponse = await Case.getBeneficiaryData(rut);
+  const beneficiaryResponse = await Case.getBeneficiaryData(rut);
 
-  if (!beneficaryResponse.success) {
+  if (!beneficiaryResponse.success) {
     createLogger.error({
       model: `case/getBeneficiaryData`,
-      error: beneficaryResponse.error,
+      error: beneficiaryResponse.error,
     });
     return res.status(500).json({ error: "Error retrieving beneficiary data" });
   }
 
-  if (beneficaryResponse.error === "Beneficiary not found") {
+  if (beneficiaryResponse.error === "Beneficiary not found") {
     createLogger.info({
       controller: `case/getBeneficiaryByRut`,
       message: `OK - Beneficiary not found`,
     });
-    return res.status(200).json(beneficaryResponse.data);
+    return res.status(200).json(beneficiaryResponse.data);
   }
 
   createLogger.info({
     controller: `case/getBeneficiaryByRut`,
     message: `OK - Beneficiary found`,
   });
-  return res.status(200).json(beneficaryResponse.data);
+  return res.status(200).json(beneficiaryResponse.data);
 };
 
 const getCaseById = async (req: any, res: any) => {
@@ -241,7 +378,7 @@ const getCaseById = async (req: any, res: any) => {
   if (!caseResponse.data) {
     createLogger.info({
       controller: `case/getById`,
-      message: `OK - Case not found`,
+      message: `OK - Case not found `,
     });
     return res.status(200).json(caseResponse.data);
   }
@@ -263,7 +400,7 @@ const getCaseById = async (req: any, res: any) => {
   );
   createLogger.info({
     controller: `case/getById`,
-    message: `OK - Case found`,
+    message: `OK - Case found `,
   });
 
   return res.status(200).json(caseResponse.data);
@@ -640,6 +777,7 @@ const getChatByCase = async (req: any, res: any) => {
 
 export {
   create,
+  update,
   uploadDocument,
   getAll,
   getBeneficiaryByRut,

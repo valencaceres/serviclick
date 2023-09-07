@@ -155,6 +155,86 @@ const create: any = async (
   }
 };
 
+const update: any = async (
+  id: string,
+  applicant: IApplicant,
+  number?: number,
+  product_id?: string,
+  assistance_id?: string,
+  isactive?: boolean,
+  isInsured?: boolean,
+  company_id?: string,
+  customer_id?: string,
+  beneficiary_id?: string,
+  lead_id?: string,
+  event_date?: Date,
+  event_location?: string
+) => {
+  try {
+    console.log(
+      id,
+      applicant,
+      number,
+      product_id,
+      assistance_id,
+      isactive,
+      isInsured,
+      company_id,
+      customer_id,
+      beneficiary_id,
+      lead_id,
+      event_date,
+      event_location
+    )
+    const columnToUpdate = isInsured === false ? 'beneficiary_id' : 'insured_id';
+
+    const resultCase = await pool.query(
+      `SELECT * FROM app.case 
+      WHERE number = $1 AND ${columnToUpdate} = $2`,
+      [number, applicant.id]
+    );
+
+    if (resultCase.rows.length > 0) {
+      const result = await pool.query(
+        `UPDATE app.case SET 
+          product_id = $1, 
+          assistance_id = $2, 
+          isactive = $3, 
+          company_id = $4, 
+          customer_id = $5, 
+          lead_id = $6, 
+          event_date = $9, 
+          event_location = $10
+        WHERE 
+          number = $7 
+          AND ${columnToUpdate} = $8
+        RETURNING *`,
+        [
+          product_id,
+          assistance_id,
+          isactive,
+          company_id,
+          customer_id,
+          lead_id,
+          number,
+          applicant.id,
+          event_date,
+          event_location,
+        ]
+      );
+
+      return { success: true, data: result.rows[0], error: null };
+    } else {
+      return { success: false, data: null, error: "Case not found" };
+    }
+  } catch (error) {
+    console.error(error);
+    return { success: false, data: null, error: "Error updating case" };
+  }
+};
+
+
+
 const getAll: any = async () => {
   try {
     const result = await pool.query(`
@@ -359,6 +439,7 @@ const getAssistanceData: any = async (
 
 export {
   create,
+  update,
   getAll,
   getBeneficiaryData,
   getNewCaseNumber,
