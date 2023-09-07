@@ -1,13 +1,13 @@
 import FileFormatList from "./FileFormatList";
 import FileFormatDetail from "./FileFormatDetail";
-import FileFormatSubscriptions from "./FileFormatSubscriptions";
+import FileFormatProducts from "./FileFormatProducts";
 import FileFormatFields from "./FileFormatFields";
 import FileFormatFieldsList from "./FileFormatFieldsList";
 
 export {
   FileFormatList,
   FileFormatDetail,
-  FileFormatSubscriptions,
+  FileFormatProducts,
   FileFormatFields,
   FileFormatFieldsList,
 };

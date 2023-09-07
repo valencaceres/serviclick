@@ -10,4 +10,5 @@ export const allowedOrigins = [
   "https://accounts.serviclick.cl",
   "https://clerk.serviclick.cl",
   "https://alianza.serviclick.cl",
+  "http://localhost:3010",
 ];

@@ -5,13 +5,13 @@ import { ContentCell, ContentRow } from "../../../layout/Content";
 import { Section } from "../../../ui/Section";
 import InputText from "../../../ui/InputText";
 
-import { FileFormatSubscriptions, FileFormatFields } from ".";
+import { FileFormatProducts, FileFormatFields } from ".";
 
 import { unFormatRut, formatRut } from "../../../../utils/format";
 import { rutRegEx } from "../../../../utils/regEx";
 import { rutValidate } from "../../../../utils/validations";
 
-import { useCompany, useField } from "../../../../hooks";
+import { useRetail, useField } from "../../../../hooks";
 import { resetFileFormat } from "~/redux/slices/fileFormatSlice";
 
 export interface IFieldFormString {
@@ -44,12 +44,12 @@ const FileFormatDetail = () => {
     phone: { value: "", isValid: true },
   };
 
-  const { getCompanyLeadsByRut, company, resetCompany } = useCompany();
+  const { getRetailByRut, retail, resetRetail } = useRetail();
   const { resetField } = useField();
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [formData, setFormData] = useState<ICustomerForm>(initialDataForm);
-  const [lead, setLead] = useState<any>(null);
+  const [product, setProduct] = useState<any>(null);
 
   const isValidRut = (rut: string) => {
     return (
@@ -69,7 +69,7 @@ const FileFormatDetail = () => {
         isValid: isValidRut(event.target.value),
       },
     });
-    getCompanyLeadsByRut(event.target.value);
+    getRetailByRut(event.target.value);
     setIsProcessing(true);
   };
 
@@ -85,45 +85,45 @@ const FileFormatDetail = () => {
         isValid: isValidRut(event.target.value),
       },
     });
-    resetCompany();
+    resetRetail();
     resetFileFormat();
-    setLead(null);
+    setProduct(null);
   };
 
   useEffect(() => {
     if (router.isReady) {
       const { id } = router.query;
       if (id && id !== "new") {
-        getCompanyLeadsByRut(id.toString());
+        getRetailByRut(id.toString());
         setIsProcessing(true);
       }
     }
   }, [router]);
 
   useEffect(() => {
-    resetCompany();
+    resetRetail();
     resetField();
     setFormData(initialDataForm);
   }, []);
 
   useEffect(() => {
-    if (company.id && isProcessing) {
+    if (retail.id && isProcessing) {
       setFormData({
-        rut: { value: company.rut, isValid: true },
-        companyName: { value: company.companyname, isValid: true },
+        rut: { value: retail.rut, isValid: true },
+        companyName: { value: retail.name, isValid: true },
         legalRepresentative: {
-          value: company.legalRepresentative,
+          value: retail.legalRepresentative,
           isValid: true,
         },
-        line: { value: company.line, isValid: true },
-        address: { value: company.address, isValid: true },
-        district: { value: company.district, isValid: true },
-        email: { value: company.email, isValid: true },
-        phone: { value: company.phone, isValid: true },
+        line: { value: retail.line, isValid: true },
+        address: { value: retail.address, isValid: true },
+        district: { value: retail.district, isValid: true },
+        email: { value: retail.email, isValid: true },
+        phone: { value: retail.phone, isValid: true },
       });
       setIsProcessing(false);
     }
-  }, [company.id, isProcessing]);
+  }, [retail.id, isProcessing]);
 
   return (
     <Fragment>
@@ -183,8 +183,11 @@ const FileFormatDetail = () => {
             </ContentCell>
           </ContentCell>
           <ContentCell gap="5px">
-            <Section title="Suscripciones" width="375px" />
-            <FileFormatSubscriptions leads={company.leads} setLead={setLead} />
+            <Section title="Productos" width="375px" />
+            <FileFormatProducts
+              products={retail.products}
+              setProduct={setProduct}
+            />
           </ContentCell>
         </ContentRow>
         <ContentCell gap="5px">
@@ -192,7 +195,7 @@ const FileFormatDetail = () => {
           <InputText
             label="Producto"
             width="720px"
-            value={lead?.product_name || ""}
+            value={product?.name || ""}
             disabled={true}
           />
           <FileFormatFields />
