@@ -6,7 +6,6 @@ import multer from "multer";
 import auth from "../middlewares/auth";
 import {
   create,
-  /*   update, */
   uploadDocument,
   getAll,
   getBeneficiaryByRut,
@@ -30,8 +29,7 @@ import isAuthenticated from "../middlewares/isAuthenticated";
 const CaseRouter = Router();
 
 CaseRouter.post("/create", auth, create);
-/* CaseRouter.put("/update/:id", auth, update)
- */CaseRouter.post(
+CaseRouter.post(
   "/uploadDocument",
   auth,
   fileUpload({
