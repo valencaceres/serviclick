@@ -105,7 +105,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
   const { data: stageData } = useQueryStage().useGetAll();
   const { mutate: createCase } = useQueryCase().useCreate();
   const { data: newCaseNumber } = useQueryCase().useGetNewCaseNumber();
-  const { mutate: updateCase } = useQueryCase().useUpdate();
+  /*   const { mutate: updateCase } = useQueryCase().useUpdate(); */
   const { data, isLoading } = useQueryCase().useGetBeneficiaryByRut(rut);
 
   const isValidRut = (rut: string) => {
@@ -189,54 +189,6 @@ const BeneficiaryForm = ({ thisCase }: any) => {
               ? `/case/${response.data.id}/datos titular`
               : `/case/${response.data.id}/registro de servicio`;
           router.push(route);
-        },
-      }
-    );
-  };
-  console.log(rut);
-  console.log(data);
-  console.log(isLoading);
-  const update = async () => {
-    updateCase(
-      {
-        applicant: {
-          type: isNewBeneficiary ? "C" : isInsured === "isInsured" ? "I" : "B",
-          rut,
-          name,
-          paternalLastName,
-          maternalLastName,
-          birthDate: birthdate,
-          address,
-          district,
-          email,
-          phone,
-        },
-        id: case_id,
-        company_id: !client ? data?.company_id : client,
-        customer_id: data?.customer_id,
-        isInsured: isInsured === "isInsured",
-        beneficiary_id: isNewBeneficiary
-          ? null
-          : isInsured === "isInsured"
-          ? null
-          : data?.beneficiary.id,
-        number: thisCase !== null ? thisCase?.case_number : newCaseNumber,
-        stage_id: stage,
-        user_id: user?.id,
-        lead_id: thisCase?.lead_id,
-        event_date: thisCase?.event_date,
-        event_location: thisCase?.event_location,
-      },
-      {
-        onSuccess: (response) => {
-          const route =
-            isInsured === "isBeneficiary"
-              ? `/case/${response.data.id}/datos titular`
-              : `/case/${response.data.id}/registro de servicio`;
-          router.push(route);
-        },
-        onError: (err) => {
-          console.log(err);
         },
       }
     );
@@ -438,13 +390,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
             </p>
           </ContentCell>
         ) : null}
-        <form
-          onSubmit={
-            router.pathname === "/case/new"
-              ? handleSubmit(send)
-              : handleSubmit(update)
-          }
-        >
+        <form onSubmit={handleSubmit(send)}>
           <ContentCell gap="5px">
             <div className="flex gap-2">
               <div className="flex w-full flex-col">

@@ -78,71 +78,7 @@ const create: any = async (
   }
 };
 
-const update: any = async (
-  rut: string,
-  name: string,
-  paternalLastName: string,
-  maternalLastName: string,
-  birthDate: string,
-  address: string,
-  district: string,
-  email: string,
-  phone: string
-) => {
-  try {
-    const arrayValues = [
-      name,
-      paternalLastName || "",
-      maternalLastName || "",
-      birthDate,
-      address || "",
-      district || "",
-      email,
-      phone || "",
-      rut,
-    ];
-    const resultInsured = await pool.query(
-      "SELECT 1 FROM app.insured WHERE rut = $1",
-      [rut]
-    );
-    if (resultInsured.rows.length === 0) {
-      return { success: false, data: null, error: "Insured not found" };
-    }
 
-    const query = `
-      UPDATE  app.insured
-      SET     name = $1,
-              paternallastname = $2,
-              maternallastname = $3,
-              birthdate = $4,
-              address = $5,
-              district = $6,
-              email = $7,
-              phone = $8
-      WHERE   rut = $9
-      RETURNING *`;
-    const result = await pool.query(query, arrayValues);
-    console.log(query)
-    console.log(arrayValues)
-    const data = {
-      id: result.rows[0].id,
-      rut: result.rows[0].rut,
-      name: result.rows[0].name,
-      paternalLastName: result.rows[0].paternallastname,
-      maternalLastName: result.rows[0].maternallastname,
-      birthDate: result.rows[0].birthdate,
-      address: result.rows[0].address,
-      district: result.rows[0].district,
-      email: result.rows[0].email,
-      phone: result.rows[0].phone,
-    };
-
-    return { success: true, data, error: null };
-  } catch (e) {
-    console.log(e)
-    return { success: false, data: null, error: (e as Error).message };
-  }
-};
 
 
 
@@ -249,4 +185,4 @@ const getProfile: any = async (rut: string) => {
   }
 };
 
-export { create, getByRut, getById, getProfile, update };
+export { create, getByRut, getById, getProfile };

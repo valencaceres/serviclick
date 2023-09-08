@@ -32,7 +32,7 @@ const create = async (req: any, res: any) => {
     event_location,
   } = req.body;
 
-  if (applicant?.type === "C" && isInsured === true) {
+  if ((applicant?.type === "C" && isInsured === true) || applicant?.type === "I") {
     const applicantResponse = await Insured.create(
       applicant.rut,
       applicant.name,
@@ -56,7 +56,7 @@ const create = async (req: any, res: any) => {
     applicant.id = applicantResponse.data.id;
   }
 
-  if (applicant?.type === "C" && isInsured === false) {
+  if ((applicant?.type === "C" && isInsured === false) || applicant?.type === "B") {
     const applicantResponse = await Beneficiary.createModel(
       applicant.rut,
       applicant.name,
@@ -129,141 +129,6 @@ const create = async (req: any, res: any) => {
     .status(200)
     .json({ success: true, data: caseResponse.data, error: null });
 };
-
-const update = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const {
-    applicant,
-    company_id,
-    customer_id,
-    isInsured,
-    number,
-    product_id,
-    assistance_id,
-    description,
-    stage_id,
-    user_id,
-    beneficiary_id,
-    isactive,
-    lead_id,
-    event_date,
-    event_location,
-  } = req.body;
-
-  try {
-
-    // Validación de parámetros requeridos
-    if (!id) {
-      return res.status(400).json({ error: "Falta el parámetro 'id'" });
-    }
-
-    if (!applicant || (!applicant.rut && !applicant.name)) {
-      return res.status(400).json({ error: "Se requiere información del solicitante" });
-    }
-    // Actualización del solicitante
-    if (applicant?.type === "C") {
-      if (isInsured === true) {
-        const applicantResponse = await Insured.update(
-          id,
-          applicant.rut,
-          applicant.name,
-          applicant.paternalLastName,
-          applicant.maternalLastName,
-          applicant.birthDate,
-          applicant.address,
-          applicant.district,
-          applicant.email,
-          applicant.phone
-        );
-        if (!applicantResponse.success) {
-          createLogger.error({
-            model: `person/update`,
-            error: applicantResponse.error,
-          });
-          return res.status(500).json({ error: "Error actualizando o creando la persona asegurada" });
-        }
-
-        applicant.id = applicantResponse.data.id;
-      } else if (isInsured === false) {
-        console.log(beneficiary_id, applicant);
-        const applicantResponse = await Beneficiary.updateModel(
-          beneficiary_id,
-          applicant.rut,
-          applicant.name,
-          applicant.paternalLastName,
-          applicant.maternalLastName,
-          applicant.birthDate,
-          applicant.address,
-          applicant.district,
-          applicant.email,
-          applicant.phone
-        );
-
-        if (!applicantResponse.success) {
-          createLogger.error({
-            model: `person/update`,
-            error: applicantResponse.error,
-          });
-          return res.status(500).json({ error: "Error actualizando o creando la persona beneficiaria" });
-        }
-
-        applicant.id = applicantResponse.data.id;
-      }
-    }
-    // Actualización del caso
-    const caseResponse = await Case.update(
-      id,
-      applicant,
-      company_id,
-      customer_id,
-      isInsured,
-      number,
-      product_id,
-      assistance_id,
-      isactive,
-      beneficiary_id,
-      lead_id,
-      event_date,
-      event_location
-    );
-    if (!caseResponse.success) {
-      createLogger.error({
-        model: `case/update`,
-        error: caseResponse.error,
-      });
-      return res.status(500).json({ error: "Error actualizando el caso" });
-    }
-
-    // Actualización de la etapa del caso
-    const caseStageResponse = await CaseStage.update(
-      stage_id,
-      stage_id,
-      user_id,
-      description
-    );
-
-    if (!caseStageResponse.success) {
-      createLogger.error({
-        model: `caseStage/update`,
-        error: caseStageResponse.error,
-      });
-      return res.status(500).json({ error: "Error actualizando la etapa del caso" });
-    }
-
-    createLogger.info({
-      model: `case/update`,
-      message: `Caso actualizado exitosamente`,
-    });
-
-    return res.status(200).json({ success: true, message: "Caso actualizado exitosamente" });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: "Error actualizando el caso" });
-  }
-};
-
-
-
 
 
 
@@ -777,7 +642,6 @@ const getChatByCase = async (req: any, res: any) => {
 
 export {
   create,
-  update,
   uploadDocument,
   getAll,
   getBeneficiaryByRut,

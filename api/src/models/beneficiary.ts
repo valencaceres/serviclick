@@ -69,65 +69,7 @@ const createModel: any = async (
   }
 };
 
-const updateModel: any = async (
-  rut: string,
-  name: string,
-  paternalLastName: string,
-  maternalLastName: string,
-  birthDate: string,
-  address: string,
-  district: string,
-  email: string,
-  phone: string,
-  relationship?: string
-) => {
-  try {
-    const arrayValues = [
-      rut,
-      name,
-      paternalLastName,
-      maternalLastName,
-      birthDate,
-      address,
-      district,
-      email,
-      phone,
-      relationship,
-    ];
 
-    const resultBeneficiary = await pool.query(
-      "SELECT 1 FROM app.beneficiary WHERE rut = $1",
-      [rut]
-    );
-    let query: string;
-    if (resultBeneficiary.rows.length > 0) {
-      query = `
-        UPDATE  app.beneficiary
-        SET     name = $2,
-                paternallastname = $3,
-                maternallastname = $4,
-                birthdate = $5,
-                address = $6,
-                district = $7,
-                email = $8,
-                phone = $9,
-                relationship = $10
-        WHERE   rut = $1 RETURNING *`;
-    } else {
-      return { success: false, data: null, error: "Beneficiary not found" };
-    }
-    console.log(query)
-    console.log(arrayValues)
-
-    const result = await pool.query(query, arrayValues);
-
-    const updatedBeneficiary = await getByRutModel(rut);
-
-    return updatedBeneficiary;
-  } catch (e) {
-    return { success: false, data: null, error: (e as Error).message };
-  }
-};
 
 
 const getByRutModel: any = async (rut: string) => {
@@ -183,4 +125,4 @@ const getByRutModel: any = async (rut: string) => {
   }
 };
 
-export { createModel, getByRutModel, updateModel };
+export { createModel, getByRutModel };

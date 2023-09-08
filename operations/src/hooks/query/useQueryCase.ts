@@ -8,11 +8,7 @@ const createCase = async (caseData: any) => {
   const { data } = await apiInstance.post(`/case/create`, caseData);
   return data;
 };
-const updateCase = async (updatedData: any) => {
-  console.log(updatedData)
-  const { data } = await apiInstance.put(`/case/update/${updatedData.id}`, updatedData);
-  return data;
-};
+
 
 const getBeneficiaryByRut = async (rut: string) => {
   const { data } = await apiInstance.get(`/case/getBeneficiaryByRut/${rut}`);
@@ -143,13 +139,6 @@ const useCreate = () => {
   });
 };
 
-const useUpdate = () => {
-  return useMutation(["case"], (updatedData: any) => updateCase(updatedData), {
-    onSuccess: () => {
-      queryClient.invalidateQueries(["case"]);
-    },
-  });
-};
 
 const useUploadDocument = () => {
   return useMutation(["case"], uploadDocument, {
@@ -264,7 +253,6 @@ const useGetBeneficiaryByRut = (rut: string) => {
 const useQueryCase = () => {
   return {
     useCreate,
-    useUpdate,
     useGetAll,
     useGetById,
     useUploadDocument,
