@@ -9,7 +9,6 @@ const createCase = async (caseData: any) => {
   return data;
 };
 
-
 const getBeneficiaryByRut = async (rut: string) => {
   const { data } = await apiInstance.get(`/case/getBeneficiaryByRut/${rut}`);
 
@@ -138,7 +137,6 @@ const useCreate = () => {
     },
   });
 };
-
 
 const useUploadDocument = () => {
   return useMutation(["case"], uploadDocument, {
