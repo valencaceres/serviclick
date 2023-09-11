@@ -12,7 +12,7 @@ import * as CaseChat from "../models/caseChat";
 import * as Insured from "../models/insured";
 import * as Beneficiary from "../models/beneficiary";
 import { fetchClerkUser } from "../util/clerkUserData";
-import { Request, Response } from 'express';
+
 const create = async (req: any, res: any) => {
   const {
     applicant,

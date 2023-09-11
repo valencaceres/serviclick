@@ -69,9 +69,6 @@ const createModel: any = async (
   }
 };
 
-
-
-
 const getByRutModel: any = async (rut: string) => {
   try {
     const result = await pool.query(

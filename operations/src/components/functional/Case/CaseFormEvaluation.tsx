@@ -10,7 +10,6 @@ import {
   useQueryStage,
 } from "../../../hooks/query";
 import TextArea from "../../ui/TextArea/TextArea";
-import ComboBox from "../../ui/ComboBox";
 import { decisions } from "../../../data/masters";
 import { useUser } from "@clerk/nextjs";
 import { CaseDescription } from "./CaseDescription";
@@ -133,6 +132,16 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
     }
   }, [router, thisCase]);
 
+  const handleButtonClick = (option: any) => {
+    setEvaluation(option);
+  };
+  const isButtonDisabled =
+    !thisCase?.is_active ||
+    thisCase.stages.find(
+      (stage: { stage: string }) => stage.stage === "Evaluación del evento"
+    ) ||
+    evaluationExists;
+
   return (
     <form
       action=""
@@ -151,25 +160,7 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
             disabled={true}
             height="110px"
           />
-          <ComboBox
-            label="Decisión de evaluación"
-            placeHolder="Seleccione decisión"
-            data={decisions}
-            width="525px"
-            value={evaluation}
-            enabled={
-              thisCase?.is_active &&
-              !thisCase.stages.find(
-                (stage: any) => stage.stage === "Evaluación del evento"
-              ) &&
-              !evaluationExists
-                ? true
-                : false
-            }
-            onChange={(e: any) => setEvaluation(e.target.value)}
-            dataText="name"
-            dataValue="name"
-          />
+
           <TextArea
             value={justification}
             onChange={(e: any) => setJustification(e.target.value)}
@@ -180,9 +171,16 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
           />
           {error && <p className="text-md text-red-500">{error}</p>}
         </ContentCell>
-        <Button disabled={thisCase?.is_active ? false : true}>
-          Registrar evaluación
-        </Button>
+        {decisions.map((option, index) => (
+          <Button
+            key={index}
+            onClick={() => handleButtonClick(option.name)}
+            className={evaluation === option.name ? "selected " : ""}
+            disabled={isButtonDisabled}
+          >
+            {option.name}
+          </Button>
+        ))}
       </ContentCell>
     </form>
   );

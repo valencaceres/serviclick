@@ -56,7 +56,6 @@ export default CaseFormNew;
 
 const BeneficiaryForm = ({ thisCase }: any) => {
   const router = useRouter();
-  const { case_id } = router.query;
 
   const {
     reset,
@@ -105,7 +104,6 @@ const BeneficiaryForm = ({ thisCase }: any) => {
   const { data: stageData } = useQueryStage().useGetAll();
   const { mutate: createCase } = useQueryCase().useCreate();
   const { data: newCaseNumber } = useQueryCase().useGetNewCaseNumber();
-  /*   const { mutate: updateCase } = useQueryCase().useUpdate(); */
   const { data, isLoading } = useQueryCase().useGetBeneficiaryByRut(rut);
 
   const isValidRut = (rut: string) => {

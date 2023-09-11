@@ -78,10 +78,6 @@ const create: any = async (
   }
 };
 
-
-
-
-
 const getByRut: any = async (rut: string) => {
   try {
     const result = await pool.query(

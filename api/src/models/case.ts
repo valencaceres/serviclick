@@ -155,10 +155,6 @@ const create: any = async (
   }
 };
 
-
-
-
-
 const getAll: any = async () => {
   try {
     const result = await pool.query(`

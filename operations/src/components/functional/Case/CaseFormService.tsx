@@ -389,7 +389,9 @@ const CaseFormService = ({ thisCase }: any) => {
               <InputText
                 label="Fecha del evento"
                 value={
-                  eventDate ? eventDate.toISOString().substring(0, 10) : ""
+                  eventDate instanceof Date && !isNaN(eventDate.getTime())
+                    ? eventDate.toISOString().substring(0, 10)
+                    : ""
                 }
                 type="date"
                 width="234px"
