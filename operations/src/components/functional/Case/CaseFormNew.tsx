@@ -104,6 +104,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
   const { data: stageData } = useQueryStage().useGetAll();
   const { mutate: createCase } = useQueryCase().useCreate();
   const { data: newCaseNumber } = useQueryCase().useGetNewCaseNumber();
+
   const { data, isLoading } = useQueryCase().useGetBeneficiaryByRut(rut);
 
   const isValidRut = (rut: string) => {
@@ -149,6 +150,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
       return false;
     }
   };
+
   const send = async () => {
     createCase(
       {
@@ -310,6 +312,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
       }
     }
   }, [data, thisCase]);
+
   useEffect(() => {
     if (thisCase) {
       const stageName = thisCase?.stages?.find(

@@ -130,8 +130,6 @@ const create = async (req: any, res: any) => {
     .json({ success: true, data: caseResponse.data, error: null });
 };
 
-
-
 const getAll = async (req: any, res: any) => {
   const caseResponse = await Case.getAll();
 
@@ -243,7 +241,7 @@ const getCaseById = async (req: any, res: any) => {
   if (!caseResponse.data) {
     createLogger.info({
       controller: `case/getById`,
-      message: `OK - Case not found `,
+      message: `OK - Case not found`,
     });
     return res.status(200).json(caseResponse.data);
   }
@@ -265,7 +263,7 @@ const getCaseById = async (req: any, res: any) => {
   );
   createLogger.info({
     controller: `case/getById`,
-    message: `OK - Case found `,
+    message: `OK - Case found`,
   });
 
   return res.status(200).json(caseResponse.data);
