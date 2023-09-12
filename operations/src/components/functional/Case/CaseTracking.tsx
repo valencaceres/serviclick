@@ -302,14 +302,14 @@ const CaseTracking = ({ thisCase }: any) => {
     if (assignedPartner) {
       setScheduledDate(assignedPartner?.scheduled_date?.split("T")[0]);
       setScheduledTime(assignedPartner?.scheduled_time);
-      setConfirmDate(assignedPartner?.confirmed_date?.split("T")[0]);
-      setConfirmTime(assignedPartner?.confirmed_time);
+      setConfirmDate(assignedPartner?.scheduled_date?.split("T")[0]);
+      setConfirmTime(assignedPartner?.scheduled_time);
     }
     if (assignedSpecialist) {
       setScheduledDate(assignedSpecialist?.scheduled_date?.split("T")[0]);
       setScheduledTime(assignedSpecialist?.scheduled_time);
-      setConfirmDate(assignedSpecialist?.confirmed_date?.split("T")[0]);
-      setConfirmTime(assignedSpecialist?.confirmed_time);
+      setConfirmDate(assignedSpecialist?.scheduled_date?.split("T")[0]);
+      setConfirmTime(assignedSpecialist?.scheduled_time);
     }
   }, [stages, stage, assignedPartner, assignedSpecialist, thisCase?.stages]);
 

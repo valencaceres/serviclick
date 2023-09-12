@@ -32,7 +32,7 @@ const create = async (req: any, res: any) => {
     event_location,
   } = req.body;
 
-  if (applicant?.type === "C" && isInsured === true) {
+  if ((applicant?.type === "C" && isInsured === true) || applicant?.type === "I") {
     const applicantResponse = await Insured.create(
       applicant.rut,
       applicant.name,
@@ -56,7 +56,7 @@ const create = async (req: any, res: any) => {
     applicant.id = applicantResponse.data.id;
   }
 
-  if (applicant?.type === "C" && isInsured === false) {
+  if ((applicant?.type === "C" && isInsured === false) || applicant?.type === "B") {
     const applicantResponse = await Beneficiary.createModel(
       applicant.rut,
       applicant.name,
@@ -192,29 +192,29 @@ const uploadDocument = async (req: any, res: any) => {
 const getBeneficiaryByRut = async (req: any, res: any) => {
   const { rut } = req.params;
 
-  const beneficaryResponse = await Case.getBeneficiaryData(rut);
+  const beneficiaryResponse = await Case.getBeneficiaryData(rut);
 
-  if (!beneficaryResponse.success) {
+  if (!beneficiaryResponse.success) {
     createLogger.error({
       model: `case/getBeneficiaryData`,
-      error: beneficaryResponse.error,
+      error: beneficiaryResponse.error,
     });
     return res.status(500).json({ error: "Error retrieving beneficiary data" });
   }
 
-  if (beneficaryResponse.error === "Beneficiary not found") {
+  if (beneficiaryResponse.error === "Beneficiary not found") {
     createLogger.info({
       controller: `case/getBeneficiaryByRut`,
       message: `OK - Beneficiary not found`,
     });
-    return res.status(200).json(beneficaryResponse.data);
+    return res.status(200).json(beneficiaryResponse.data);
   }
 
   createLogger.info({
     controller: `case/getBeneficiaryByRut`,
     message: `OK - Beneficiary found`,
   });
-  return res.status(200).json(beneficaryResponse.data);
+  return res.status(200).json(beneficiaryResponse.data);
 };
 
 const getCaseById = async (req: any, res: any) => {
