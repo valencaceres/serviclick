@@ -52,6 +52,7 @@ const CaseFormNew = ({ thisCase }: any) => {
     </div>
   );
 };
+
 export default CaseFormNew;
 
 const BeneficiaryForm = ({ thisCase }: any) => {
