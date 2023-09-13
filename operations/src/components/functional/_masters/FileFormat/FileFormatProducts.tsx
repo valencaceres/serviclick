@@ -12,7 +12,7 @@ import {
 
 import { useField, useFileFormat } from "~/hooks";
 
-const FileFormatSubscriptions = ({ leads, setLead }: any) => {
+const FileFormatProducts = ({ products, setProduct }: any) => {
   const { getFieldByLeadId } = useField();
   const { setFileFormat, fileFormat, getFileFormatByLeadId } = useFileFormat();
 
@@ -22,7 +22,7 @@ const FileFormatSubscriptions = ({ leads, setLead }: any) => {
     getFileFormatByLeadId(item.lead_id);
     setFileFormat({ ...fileFormat, lead_id: item.lead_id });
     getFieldByLeadId(item.lead_id);
-    setLead(item);
+    setProduct(item);
   };
 
   return (
@@ -33,13 +33,13 @@ const FileFormatSubscriptions = ({ leads, setLead }: any) => {
           <TableCellEnd />
         </TableHeader>
         <TableDetail>
-          {leads.map((item: any, idx: number) => (
+          {products?.map((item: any, idx: number) => (
             <TableRow
               key={idx}
               link={true}
               onClick={() => handleSubscriptionClick(item)}
             >
-              <TableCell width="360px">{item.product_name}</TableCell>
+              <TableCell width="360px">{item.name}</TableCell>
             </TableRow>
           ))}
         </TableDetail>
@@ -48,4 +48,4 @@ const FileFormatSubscriptions = ({ leads, setLead }: any) => {
   );
 };
 
-export default FileFormatSubscriptions;
+export default FileFormatProducts;
