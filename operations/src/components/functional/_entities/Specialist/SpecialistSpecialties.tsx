@@ -64,7 +64,8 @@ const SpecialistSpecialties = ({ setShowSpecialitiesModal }: any) => {
         </Table>
         <ContentRow align="space-between">
           <ContentCellSummary
-            color={specialist.specialties.length > 0 ? "blue" : "#959595"}>
+            color={specialist.specialties.length > 0 ? "blue" : "#959595"}
+          >
             {specialist.specialties.length > 0
               ? `${specialist.specialties.length} ${
                   specialist.specialties.length === 1

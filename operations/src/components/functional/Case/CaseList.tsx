@@ -79,7 +79,7 @@ const columns: ColumnDef<Case>[] = [
         hour: "2-digit",
         minute: "2-digit",
       });
-      const formattedDate = `${month}/${day}/${year} ${hoursAndMinutes}`;
+      const formattedDate = `${day}/${month}/${year} ${hoursAndMinutes}`;
       return (
         <div className="max-w-[140px] truncate font-oswald  font-light ">
           {" "}
