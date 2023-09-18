@@ -20,11 +20,18 @@ import { useSpecialist } from "../../../../store/hooks";
 
 const SpecialistDistricts = ({ setShowDistrictsModal }: any) => {
   const { listAllDistrict } = useDistrict();
-  const { specialist } = useSpecialist();
+  const { specialist, setSpecialist } = useSpecialist();
 
   const handleClickAddDistrict = () => {
     listAllDistrict();
     setShowDistrictsModal(true);
+  };
+
+  const handleDeleteDistricts = (idx: number) => {
+    const updateDistricts = [...specialist.districts];
+    updateDistricts.splice(idx, 1);
+
+    setSpecialist({ ...specialist, districts: updateDistricts });
   };
 
   return (
@@ -40,7 +47,12 @@ const SpecialistDistricts = ({ setShowDistrictsModal }: any) => {
             <TableRow key={idx}>
               <TableCell width="200px">{item.district_name}</TableCell>
               <TableCell width="40px" align="center">
-                <Icon iconName="delete" />
+                <Icon
+                  iconName="delete"
+                  onClick={() => {
+                    handleDeleteDistricts(idx);
+                  }}
+                />
               </TableCell>
             </TableRow>
           ))}
@@ -48,7 +60,8 @@ const SpecialistDistricts = ({ setShowDistrictsModal }: any) => {
       </Table>
       <ContentRow align="space-between">
         <ContentCellSummary
-          color={specialist.districts.length > 0 ? "blue" : "#959595"}>
+          color={specialist.districts.length > 0 ? "blue" : "#959595"}
+        >
           {specialist.districts.length > 0
             ? `${specialist.districts.length} ${
                 specialist.districts.length === 1 ? "comuna" : "comunas"
