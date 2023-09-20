@@ -95,7 +95,9 @@ const columns: ColumnDef<Case>[] = [
     cell: ({ row }) => {
       return (
         <div className="max-w-[140px] truncate  font-oswald  font-light capitalize ">
-          {row.original.contractor_name?.toLowerCase()}
+          {row.original.contractor_name
+            ? row.original.contractor_name.toLowerCase()
+            : "Sin cliente asignado"}
         </div>
       );
     },

@@ -36,8 +36,8 @@ const createModel: any = async (
         plan_id,
         plan_amount,
         last_payment_date &&
-        status === "0" &&
-        moment(last_payment_date).isValid()
+          status === "0" &&
+          moment(last_payment_date).isValid()
           ? moment(last_payment_date).local().format()
           : null,
       ]
@@ -67,8 +67,8 @@ const createModel: any = async (
           plan_id,
           plan_amount,
           last_payment_date &&
-          status === "0" &&
-          moment(last_payment_date).isValid()
+            status === "0" &&
+            moment(last_payment_date).isValid()
             ? moment(last_payment_date).local().format()
             : null,
           subscription_id,
@@ -95,8 +95,8 @@ const createModel: any = async (
           plan_id,
           plan_amount,
           last_payment_date &&
-          status === "0" &&
-          moment(last_payment_date).isValid()
+            status === "0" &&
+            moment(last_payment_date).isValid()
             ? moment(last_payment_date).local().format()
             : null,
         ]
@@ -116,11 +116,12 @@ const create: any = async (
   try {
     // Genera una subscription_id encontrando el máximo subscription_id de la base de datos.
     const { rows } = await pool.query(
-      `SELECT MAX(subscription_id)
+      `SELECT MAX(subscription_id) AS max_subscription_id
       FROM app.subscription
       WHERE subscription_id < 74000`
     );
-    const subscription_id = rows[0].max + 1;
+    const maxSubscriptionId = rows[0]?.max_subscription_id;
+    const subscription_id = maxSubscriptionId + 1;
 
     // Determina la fecha. Si se pasa customDate, formatearla; de lo contrario, usar la fecha actual.
     const dateToFormat = customDate ? new Date(customDate) : new Date();

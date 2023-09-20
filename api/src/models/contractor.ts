@@ -44,7 +44,6 @@ const create: any = async (
   id: string,
   rut: string,
   name: string,
-  companyName: string,
   legalRepresentative: string,
   line: string,
   paternalLastName: string,
@@ -61,7 +60,6 @@ const create: any = async (
       id,
       rut,
       name,
-      companyName,
       legalRepresentative,
       line,
       paternalLastName,
@@ -76,7 +74,7 @@ const create: any = async (
     const resultCustomer = await pool.query(
       type === "P"
         ? "SELECT 1 FROM app.customer WHERE rut = $1"
-        : "SELECT 1 FROM app.company WHERE rut = $1",
+        : "SELECT 1 FROM app.retail WHERE rut = $1",
       [rut]
     );
 
@@ -96,10 +94,10 @@ const create: any = async (
                     phone = $14
             WHERE   rut = $3 RETURNING *`
           : `
-            UPDATE  app.company
-            SET     companyname = $5
-                    legalrepresentative = $6,
-                    line = $7,
+            UPDATE  app.retail
+            SET     name = $4, 
+                    legalrepresentative = $5,
+                    line = $6,
                     address = $11,
                     district = $12,
                     email = $13,
@@ -111,7 +109,7 @@ const create: any = async (
           ? `
             INSERT  INTO app.customer(
                     rut,
-                    name,
+                    name, 
                     paternallastname,
                     maternallastname,
                     birthdate,
@@ -121,16 +119,16 @@ const create: any = async (
                     phone) 
             VALUES( $3, $4, $8, $9, $10, $11, $12, $13, $14) RETURNING *`
           : `
-            INSERT  INTO app.company(
+            INSERT  INTO app.retail(
                     rut,
-                    companyname,
+                    name, 
                     legalrepresentative,
                     line,
                     address,
                     district,
                     email,
                     phone) 
-            VALUES( $3, $5, $6, $7, $11, $12, $13, $14) RETURNING *`;
+            VALUES( $3, $4, $5, $6, $11, $12, $13, $14) RETURNING *`;
     }
 
     const result = await pool.query(query, arrayValues);
@@ -138,7 +136,7 @@ const create: any = async (
     const data = {
       id: result.rows[0].id,
       rut: result.rows[0].rut,
-      name: result.rows[0].name || result.rows[0].companyname || "",
+      name: result.rows[0].name || "",
       legalrepresentative: result.rows[0].legalrepresentative || "",
       paternalLastName: result.rows[0].paternalLastName || "",
       maternalLastName: result.rows[0].maternalLastName || "",
@@ -164,17 +162,16 @@ const getAll: any = async (
   try {
     const _where =
       contractorType !== "" || active || nameLike !== ""
-        ? ` ${
-            contractorType && contractorType !== ""
-              ? `and type = '${contractorType}'`
-              : ""
-          } ${active ? `and active_product > 0` : ""} ${
-            nameLike && nameLike !== ""
-              ? `and lower(name) like '%${nameLike.toLowerCase()}%'`
-              : ""
-          }`
+        ? ` ${contractorType && contractorType !== ""
+          ? `and type = '${contractorType}'`
+          : ""
+        } ${active ? `and active_product > 0` : ""} ${nameLike && nameLike !== ""
+          ? `and lower(name) like '%${nameLike.toLowerCase()}%'`
+          : ""
+        }`
         : ``;
-
+    console.log("holasdsadasdsadasdsa")
+    console.log(_where)
     const result = await pool.query(_selectAll(_where));
 
     return { success: true, data: result.rows, error: null };
@@ -182,6 +179,7 @@ const getAll: any = async (
     return { success: false, data: null, error: (e as Error).message };
   }
 };
+
 
 const getById: any = async (id: string) => {
   try {
@@ -191,7 +189,6 @@ const getById: any = async (id: string) => {
       id: result.rows[0].id,
       type: result.rows[0].type,
       rut: result.rows[0].rut,
-      companyName: result.rows[0].companyname,
       name: result.rows[0].name,
       paternalLastName: result.rows[0].paternallastname,
       maternalLastName: result.rows[0].maternallastname,
@@ -217,37 +214,35 @@ const getByRut: any = async (rut: string, type: string) => {
     const data =
       result.rows.length > 0
         ? {
-            id: result.rows[0].id,
-            type,
-            rut: result.rows[0].rut,
-            companyName: result.rows[0].companyname,
-            name: result.rows[0].name,
-            paternalLastName: result.rows[0].paternallastname,
-            maternalLastName: result.rows[0].maternallastname,
-            legalRepresentative: result.rows[0].legalrepresentative,
-            line: result.rows[0].line,
-            birthDate: result.rows[0].birthdate,
-            address: result.rows[0].address,
-            district: result.rows[0].district,
-            email: result.rows[0].email,
-            phone: result.rows[0].phone,
-          }
+          id: result.rows[0].id,
+          type,
+          rut: result.rows[0].rut,
+          name: result.rows[0].name,
+          paternalLastName: result.rows[0].paternallastname,
+          maternalLastName: result.rows[0].maternallastname,
+          legalRepresentative: result.rows[0].legalrepresentative,
+          line: result.rows[0].line,
+          birthDate: result.rows[0].birthdate,
+          address: result.rows[0].address,
+          district: result.rows[0].district,
+          email: result.rows[0].email,
+          phone: result.rows[0].phone,
+        }
         : {
-            id: "",
-            type,
-            rut,
-            companyName: "",
-            name: "",
-            paternalLastName: "",
-            maternalLastName: "",
-            legalRepresentative: "",
-            line: "",
-            birthDate: "",
-            address: "",
-            district: "",
-            email: "",
-            phone: "",
-          };
+          id: "",
+          type,
+          rut,
+          name: "",
+          paternalLastName: "",
+          maternalLastName: "",
+          legalRepresentative: "",
+          line: "",
+          birthDate: "",
+          address: "",
+          district: "",
+          email: "",
+          phone: "",
+        };
 
     return { success: true, data, error: null };
   } catch (e) {
@@ -279,24 +274,24 @@ const getSubscriptionById: any = async (id: string) => {
     const result = await pool.query(_selectSubscription, [id]);
     const data = result.rows.length
       ? {
-          subscription_id: result.rows[0].subscription_id,
-          name: result.rows[0].product_name,
-          frequency: result.rows[0].product_frequency,
-          price: result.rows[0].product_price,
-          currency_code: result.rows[0].product_currency_code,
-          createDate: result.rows[0].policy_createdate,
-          startDate: result.rows[0].policy_startdate,
-          assistances: result.rows.map((item: any) => {
-            return {
-              name: item.assistance_name,
-              amount: item.assistance_amount,
-              currency: item.assistance_currency,
-              maximum: item.assistance_maximum,
-              events: item.assistance_events,
-              lack: item.assistance_lack,
-            };
-          }),
-        }
+        subscription_id: result.rows[0].subscription_id,
+        name: result.rows[0].product_name,
+        frequency: result.rows[0].product_frequency,
+        price: result.rows[0].product_price,
+        currency_code: result.rows[0].product_currency_code,
+        createDate: result.rows[0].policy_createdate,
+        startDate: result.rows[0].policy_startdate,
+        assistances: result.rows.map((item: any) => {
+          return {
+            name: item.assistance_name,
+            amount: item.assistance_amount,
+            currency: item.assistance_currency,
+            maximum: item.assistance_maximum,
+            events: item.assistance_events,
+            lack: item.assistance_lack,
+          };
+        }),
+      }
       : [];
 
     return {
@@ -399,29 +394,49 @@ const getPaymentById: any = async (id: string) => {
 const getProductsByContractor = async (id: string) => {
   try {
     const result = await pool.query(
-      `select 	pro.id,
-                                        lea.id as lead_id,
-                                        lea.subscription_id,
-                                        pro.name,
-                                        to_char(pol.createdate, 'YYYY-MM-DD') as created_at,
-                                        asi.family_id,
-                                        asi.id as assistance_id,
-                                        asi.name as assistance_name,
-                                        pas.amount as assistance_amount,
-                                        pas.currency as assistance_currency,
-                                        pas.events as assistance_events,
-                                        pas.lack as assistance_lack,
-                                        pas.maximum as assistance_maximum
-                                    from 	app.lead lea
-                                                inner join app.leadproduct lpr on lea.id = lpr.lead_id
-                                                inner join app.policy pol on lea.policy_id = pol.id
-                                                inner join app.product pro on lpr.product_id = pro.id
-                                                inner join app.productassistance pas on pro.id = pas.product_id
-                                                inner join app.assistance asi on asi.id = pas.assistance_id 
-                                    where 	(lea.customer_id = $1 or lea.company_id = $1)
-                                    order 	by
-                                        pol.createdate,
-                                        pro.name`,
+      `SELECT 
+    id,
+    lead_id,
+    subscription_id,
+    name,
+    created_at,
+    family_id,
+    assistance_id,
+    assistance_name,
+    assistance_amount,
+    assistance_currency,
+    assistance_events,
+    assistance_lack,
+    assistance_maximum
+FROM (
+    SELECT DISTINCT
+        pro.id,
+        lea.id as lead_id,
+        lea.subscription_id,
+        pro.name,
+        to_char(pol.createdate, 'YYYY-MM-DD') as created_at,
+        asi.family_id,
+        asi.id as assistance_id,
+        asi.name as assistance_name,
+        pas.amount as assistance_amount,
+        pas.currency as assistance_currency,
+        pas.events as assistance_events,
+        pas.lack as assistance_lack,
+        pas.maximum as assistance_maximum
+    FROM app.lead lea
+    INNER JOIN app.leadproduct lpr ON lea.id = lpr.lead_id
+    INNER JOIN app.policy pol ON lea.policy_id = pol.id
+    INNER JOIN app.product pro ON lpr.product_id = pro.id
+    INNER JOIN app.productassistance pas ON pro.id = pas.product_id
+    INNER JOIN app.assistance asi ON asi.id = pas.assistance_id
+    INNER JOIN app.retailproduct rp ON rp.product_id = pro.id
+    INNER JOIN app.retail retail ON retail.id = rp.retail_id
+    INNER JOIN app.productplan p ON p.agent_id = retail.id 
+    WHERE (lea.agent_id =  $1 OR lea.customer_id = $1 )
+) AS subquery
+ORDER BY
+    created_at,
+    name;`,
       [id]
     );
 

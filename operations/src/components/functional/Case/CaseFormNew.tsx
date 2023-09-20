@@ -168,7 +168,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
           email,
           phone,
         },
-        company_id: !client ? data?.company_id : client,
+        retail_id: !client ? data?.retail_id : client,
         customer_id: data?.customer_id,
         isInsured: isInsured === "isInsured",
         beneficiary_id: isNewBeneficiary
@@ -725,6 +725,7 @@ const ClientSelect = ({
     contractorType: "C",
     active: true,
   });
+  console.log(data);
 
   return (
     <Select

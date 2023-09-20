@@ -1,14 +1,13 @@
 import createLogger from "../util/logger";
 import * as Contractor from "../models/contractor";
 import * as Customer from "../models/customer";
-import * as Company from "../models/company";
+import * as Retail from "../models/retail";
 
 const create = async (req: any, res: any) => {
   const {
     type,
     rut,
     name,
-    companyName,
     legalRepresentative,
     line,
     paternalLastName,
@@ -32,9 +31,9 @@ const create = async (req: any, res: any) => {
         email,
         phone
       )
-      : await Company.create(
+      : await Retail.create(
         rut,
-        companyName,
+        name,
         legalRepresentative,
         line,
         address,
@@ -94,7 +93,7 @@ const getByRut = async (req: any, res: any) => {
   const contractorResponse =
     type === "P"
       ? await Customer.getByRutModel(rut)
-      : await Company.getByRut(rut);
+      : await Retail.getByRut(rut);
 
   if (!contractorResponse.success) {
     createLogger.error({
@@ -260,7 +259,6 @@ const getPaymentById = async (req: any, res: any) => {
 
 const getProductsByContractor = async (req: any, res: any) => {
   const { id } = req.params;
-
   const contractorResponse = await Contractor.getProductsByContractor(id);
 
   if (!contractorResponse.success) {

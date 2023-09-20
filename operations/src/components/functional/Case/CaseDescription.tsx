@@ -7,6 +7,8 @@ export const CaseDescription = ({ thisCase }: any) => {
   const { data: contractor, isLoading } = useQueryContractor().useGetById(
     thisCase?.contractor_id
   );
+  console.log(thisCase);
+  console.log(contractor);
 
   return (
     <ContentCell gap="5px">
@@ -16,7 +18,7 @@ export const CaseDescription = ({ thisCase }: any) => {
           value={
             isLoading
               ? "Cargando..."
-              : contractor?.companyName ||
+              : contractor?.name ||
                 contractor?.name + " " + contractor?.paternalLastName
           }
           className="capitalize"
