@@ -11,6 +11,7 @@ import {
   getInsuredBySubscriptionId,
   getPaymentById,
   getProductsByContractor,
+  getByBeneficiaryId
 } from "../controllers/contractor";
 import isAuthenticated from "../middlewares/isAuthenticated";
 import isAdmin from "../middlewares/isAdmin";
@@ -26,5 +27,7 @@ ContractorRouter.get("/getSubscriptionById/:id", auth, getSubscriptionById);
 ContractorRouter.get("/getInsuredBySubscriptionId/:id", auth, getInsuredBySubscriptionId);
 ContractorRouter.get("/getPaymentById/:id", auth, getPaymentById);
 ContractorRouter.get("/getProductsByContractor/:id", auth, getProductsByContractor);
+ContractorRouter.get("/getByBeneficiaryId/:id", auth, isAuthenticated, isAdmin, getByBeneficiaryId);
+
 
 export default ContractorRouter;

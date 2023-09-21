@@ -8,6 +8,7 @@ import {
   _selectSubscription,
   _selectInsured,
   _selectPayment,
+  _selectBeneficiaryId,
 } from "../queries/contractor";
 
 interface IBeneficiary {
@@ -170,8 +171,6 @@ const getAll: any = async (
           : ""
         }`
         : ``;
-    console.log("holasdsadasdsadasdsa")
-    console.log(_where)
     const result = await pool.query(_selectAll(_where));
 
     return { success: true, data: result.rows, error: null };
@@ -470,6 +469,21 @@ ORDER BY
   }
 };
 
+const getByBeneficiaryId: any = async (id: string) => {
+  try {
+    const result = await pool.query(_selectBeneficiaryId(id));
+
+    const data = {
+      id: result.rows[0].id,
+      name: result.rows[0].name,
+    };
+
+    return { success: true, data, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 export {
   create,
   getAll,
@@ -480,4 +494,5 @@ export {
   getInsuredBySubscriptionId,
   getPaymentById,
   getProductsByContractor,
+  getByBeneficiaryId
 };

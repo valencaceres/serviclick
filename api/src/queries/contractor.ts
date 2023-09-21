@@ -1,12 +1,11 @@
-export const _selectAll = (_where: string) => `
-SELECT r.id, r.rut, r.name, r.line, r.address, r.district, r.email, r.phone
-FROM app.retail AS r
-WHERE r.id IN (
-    SELECT DISTINCT rp.retail_id
-    FROM app.retailproduct AS rp
-    WHERE rp.product_id IS NOT NULL AND rp.isactive = true
-)
-`;
+export const _selectAll = (_where: string) => `SELECT    DISTINCT
+ret.id,
+ret.name
+FROM     app.productplan pla
+    inner join app.retail ret on pla.agent_id = ret.id
+    inner join app.lead lea on pla.agent_id = lea.agent_id and not lea.policy_id is null
+order    by
+ret.name`;
 
 export const _selectById = (_id: string) => `
 select  id,
@@ -205,3 +204,27 @@ export const _selectPayment = `
         order 	by
                 createdate,
                 product_name`;
+
+export const _selectBeneficiaryId = (id: string) => `
+SELECT DISTINCT
+ret.id,
+ret.name
+FROM app.productplan pla
+INNER JOIN app.lead lea ON pla.agent_id = lea.agent_id AND NOT lea.policy_id IS NULL
+INNER JOIN app.leadinsured lin ON lea.id = lin.lead_id AND lin.insured_id = '${id}' 
+INNER JOIN app.retail ret ON pla.agent_id = ret.id
+
+UNION ALL
+
+SELECT DISTINCT
+cus.id as id,
+CONCAT(cus.name, ' ', cus.paternallastname, ' ', cus.maternallastname) as name
+FROM app.productplan pla
+INNER JOIN app.lead lea ON pla.agent_id = lea.agent_id AND NOT lea.policy_id IS NULL
+INNER JOIN app.leadinsured lin ON lea.id = lin.lead_id AND lin.insured_id = '${id}'  
+INNER JOIN app.customer cus ON lea.customer_id = cus.id
+LEFT OUTER JOIN app.broker bro ON lea.agent_id = bro.id
+LEFT OUTER JOIN app.agent age ON lea.agent_id = age.id
+WHERE NOT bro.id IS NULL OR NOT age.id IS NULL
+ORDER BY name
+`;
