@@ -38,6 +38,7 @@ const CaseNotes = ({ thisCase }: any) => {
 
   const { data: messages } = useQueryCase().useGetChatByCase(case_id as string);
   const { mutate: createMessage } = useQueryCase().useCreateChatMessage();
+
   const thisCaseStage = thisCase?.stages.find(
     (s: any) => s.stage.toLowerCase() === stage
   );
