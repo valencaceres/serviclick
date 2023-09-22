@@ -42,6 +42,7 @@ const CaseNotes = ({ thisCase }: any) => {
   const thisCaseStage = thisCase?.stages.find(
     (s: any) => s.stage.toLowerCase() === stage
   );
+
   const handleCreate = () => {
     createMessage(
       {
