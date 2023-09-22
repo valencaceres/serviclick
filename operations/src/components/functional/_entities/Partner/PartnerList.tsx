@@ -143,10 +143,10 @@ const PartnerList = ({ editPartner, deletePartner, isSaving }: any) => {
             color={partnerList.length > 0 ? "blue" : "#959595"}
           >
             {partnerList.length === 0
-              ? "No hay convenios"
+              ? "No hay alianzas"
               : partnerList.length === 1
-              ? "1 convenio"
-              : `${partnerList.length} convenios`}
+              ? "1 alianza"
+              : `${partnerList.length} alianzas`}
           </ContentCellSummary>
         </ContentRow>
       </ContentCell>

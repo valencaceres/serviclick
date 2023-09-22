@@ -116,7 +116,7 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
       setDescription(findStageByStage("Registro de servicio")?.description);
       const evaluationStages = [
         "Solicitud reembolso",
-        "Designación de convenio",
+        "Designación de alianza",
         "Designación de especialista",
         "Descuento IMED",
       ];

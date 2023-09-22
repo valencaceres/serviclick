@@ -41,7 +41,7 @@ const routes = [
     subRoutes: [
       { text: "Clientes", route: "/entities/contractor" },
       { text: "Especialistas", route: "/entities/specialist" },
-      { text: "Convenios", route: "/entities/partner" },
+      { text: "Alianzas", route: "/entities/partner" },
       { text: "Operadores" },
     ],
   },

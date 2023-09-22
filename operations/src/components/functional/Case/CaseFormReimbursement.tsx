@@ -196,10 +196,10 @@ const CaseFormReimbursement = ({ thisCase }: any) => {
                         width="260px"
                         value={
                           thisCase?.stages.find(
-                            (s: any) => s.name === "Designación de convenio"
+                            (s: any) => s.name === "Designación de alianza"
                           )
                             ? thisCase?.stages.find(
-                                (s: any) => s.name === "Designación de convenio"
+                                (s: any) => s.name === "Designación de alianza"
                               )?.scheduled_date
                             : scheduledDate
                         }
@@ -211,10 +211,10 @@ const CaseFormReimbursement = ({ thisCase }: any) => {
                         width="260px"
                         value={
                           thisCase?.stages.find(
-                            (s: any) => s.name === "Designación de convenio"
+                            (s: any) => s.name === "Designación de alianza"
                           )
                             ? thisCase?.stages.find(
-                                (s: any) => s.name === "Designación de convenio"
+                                (s: any) => s.name === "Designación de alianza"
                               )?.scheduled_time
                             : scheduledTime
                         }

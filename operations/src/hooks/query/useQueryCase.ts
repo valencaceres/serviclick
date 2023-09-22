@@ -117,6 +117,16 @@ const createChatMessage = async (messageData: any) => {
   return data;
 };
 
+const getUserByClerkId = async (ids: string[]) => {
+  try {
+    const { data } = await apiInstance.post(`/user/getByIds`, { ids });
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const getChatByCase = async (case_id: string) => {
   const { data } = await apiInstance.get(`/case/getChatByCase/${case_id}`);
   return data;
@@ -247,6 +257,9 @@ const useGetBeneficiaryByRut = (rut: string) => {
     enabled: rut?.length > 10,
   });
 };
+const useGetUserByClerkId = (ids: string[]) => {
+  return useQuery(["user", ids], () => getUserByClerkId(ids));
+};
 
 const useQueryCase = () => {
   return {
@@ -268,6 +281,7 @@ const useQueryCase = () => {
     useCreateChatMessage,
     useGetChatByCase,
     useGetBeneficiaryByRut,
+    useGetUserByClerkId
   };
 };
 

@@ -81,7 +81,7 @@ const PartnerPage = () => {
   };
 
   useEffect(() => {
-    setTitleUI("Convenios");
+    setTitleUI("Alianzas");
     listAllDistrict();
     getPartnersFamilies();
     getAllPartners();
@@ -89,7 +89,7 @@ const PartnerPage = () => {
 
   useEffect(() => {
     resetPartner();
-    setTitleUI(router.query?.id ? "Convenio" : "Convenios");
+    setTitleUI(router.query?.id ? "Alianza" : "Alianzas");
     if (router.query?.id) {
       if (router.query.id !== "" && router.query.id !== "new") {
         getPartnerById(router.query.id?.toString());

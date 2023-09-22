@@ -40,7 +40,7 @@ const CaseTracking = ({ thisCase }: any) => {
   const { data: stages } = useQueryStage().useGetAll();
   const { data: assignedPartner } = useQueryCase().useGetAssignedPartner(
     thisCase?.case_id,
-    stages?.find((s: any) => s?.name === "Designación de convenio")?.id
+    stages?.find((s: any) => s?.name === "Designación de alianza")?.id
   );
   const { data: assignedSpecialist } = useQueryCase().useGetAssignedSpecialist(
     thisCase?.case_id,
@@ -67,7 +67,7 @@ const CaseTracking = ({ thisCase }: any) => {
     (s: any) =>
       s.stage === "Solicitud reembolso" ||
       s.stage === "Designación de especialista" ||
-      s.stage === "Designación de convenio" ||
+      s.stage === "Designación de alianza" ||
       s.stage === "Descuento IMED"
   )?.stage;
 
@@ -120,7 +120,7 @@ const CaseTracking = ({ thisCase }: any) => {
               {
                 case_id: thisCase?.case_id,
                 casestage_id: stages.find(
-                  (s: any) => s.name === "Designación de convenio"
+                  (s: any) => s.name === "Designación de alianza"
                 )?.id,
                 partner_id: assignedPartner?.partner_id,
                 scheduled_date: assignedPartner?.scheduled_date,
@@ -187,7 +187,7 @@ const CaseTracking = ({ thisCase }: any) => {
               {
                 case_id: thisCase?.case_id,
                 casestage_id: stages.find(
-                  (s: any) => s.name === "Designación de convenio"
+                  (s: any) => s.name === "Designación de alianza"
                 )?.id,
                 partner_id: assignedPartner?.partner_id,
                 scheduled_date: confirmDate,
@@ -323,7 +323,7 @@ const CaseTracking = ({ thisCase }: any) => {
         <ContentCell gap="5px">
           {thisCase?.stages?.find(
             (s: any) =>
-              s.stage === "Designación de convenio" ||
+              s.stage === "Designación de alianza" ||
               s.stage === "Designación de especialista"
           ) ? (
             <ContentCell gap="5px">
@@ -332,7 +332,7 @@ const CaseTracking = ({ thisCase }: any) => {
               </h2>
               {assignedPartner && (
                 <InputText
-                  label="Convenio"
+                  label="Alianza"
                   value={assignedPartner?.name}
                   type="text"
                   disabled={true}

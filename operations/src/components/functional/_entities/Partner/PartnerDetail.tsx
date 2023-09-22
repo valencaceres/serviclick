@@ -34,7 +34,7 @@ const PartnerDetail = ({ setEnableSave }: any) => {
         setClosed={() => {
           setShowSpecialitiesListModal(false);
         }}
-        title="Convenios"
+        title="Alianzas"
       >
         <PartnerSpecialtiesList setShow={setShowSpecialitiesListModal} />
       </ModalWindow>

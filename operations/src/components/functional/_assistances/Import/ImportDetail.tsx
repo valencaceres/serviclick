@@ -38,7 +38,7 @@ const ImportDetail = () => {
         <Table>
           <TableHeader>
             <TableCell width="102px" align="center">
-              Convenio
+              Alianza
             </TableCell>
             <TableCell width="112px">Rut</TableCell>
             <TableCell width="238px">Asegurado</TableCell>

@@ -31,7 +31,7 @@ const CaseFormResolution = ({ thisCase }: any) => {
   );
   const { data: assignedPartner } = useQueryCase().useGetAssignedPartner(
     thisCase?.case_id,
-    stages?.find((s: any) => s?.name === "Designación de convenio")?.id
+    stages?.find((s: any) => s?.name === "Designación de alianza")?.id
   );
   const { data: assignedSpecialist } = useQueryCase().useGetAssignedSpecialist(
     thisCase?.case_id,
@@ -269,7 +269,7 @@ const CaseFormResolution = ({ thisCase }: any) => {
                 )}
                 {assignedPartner && (
                   <InputText
-                    label="Convenio"
+                    label="alianza"
                     value={assignedPartner?.name}
                     type="text"
                     disabled={true}
