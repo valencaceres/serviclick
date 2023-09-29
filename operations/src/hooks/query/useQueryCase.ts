@@ -91,6 +91,18 @@ const getAssistanceData = async (
   return data;
 };
 
+const discountAssistanceData = async (
+  insured_id: string,
+  assistance_id: string,
+  product_id: string
+) => {
+  const { data } = await apiInstance.put(
+    `/case/discountAssistanceData/${insured_id}/${assistance_id}/${product_id}`
+  );
+  return data;
+};
+
+
 const getReimbursment = async (case_id: string) => {
   const { data } = await apiInstance.get(`/case/getReimbursment/${case_id}`);
   return data;
@@ -228,6 +240,17 @@ const useGetAssistanceData = (
   );
 };
 
+const useDiscountAssistanceData = (
+  insured_id: string,
+  assistance_id: string,
+  product_id: string
+) => {
+  return useMutation(
+    ["case", insured_id, assistance_id, product_id],
+    () => discountAssistanceData(insured_id, assistance_id, product_id),
+  );
+};
+
 const useGetReimbursment = (case_id: string) => {
   return useQuery(["caseReimburse", case_id], () => getReimbursment(case_id), {
     enabled: !!case_id,
@@ -275,6 +298,7 @@ const useQueryCase = () => {
     useGetAssignedSpecialist,
     useReimburse,
     useGetAssistanceData,
+    useDiscountAssistanceData,
     useGetReimbursment,
     useGetAllReimbursements,
     useUpdateReimbursementStatus,

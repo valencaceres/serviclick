@@ -10,6 +10,7 @@ import {
   useQueryContractor,
   useQueryStage,
   useQueryUF,
+  useQueryAssistances,
 } from "../../../hooks/query";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
@@ -42,6 +43,19 @@ const CaseFormResolution = ({ thisCase }: any) => {
   );
 
   const { mutate: updateCase } = useQueryCase().useCreate();
+
+  const { data: assistanceData } = useQueryCase().useGetAssistanceData(
+    thisCase?.insured_id,
+    thisCase?.assistance_id,
+    thisCase?.product_id
+  );
+
+  const { mutate: discountAssistanceData } =
+    useQueryCase().useDiscountAssistanceData(
+      thisCase?.insured_id,
+      thisCase?.assistance_id,
+      thisCase?.product_id
+    );
 
   const handleRate = (e: any) => {
     e.preventDefault();
@@ -87,6 +101,7 @@ const CaseFormResolution = ({ thisCase }: any) => {
               onSuccess: () => {
                 router.push(`/case/${thisCase?.case_id}/calificación`);
                 queryClient.invalidateQueries(["case", thisCase?.case_id]);
+                discountAssistanceData();
               },
             }
           );
@@ -118,6 +133,7 @@ const CaseFormResolution = ({ thisCase }: any) => {
         onSuccess: () => {
           router.push(`/case`);
           queryClient.invalidateQueries(["case", thisCase?.case_id]);
+          discountAssistanceData();
         },
       }
     );
