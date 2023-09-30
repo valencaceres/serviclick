@@ -573,6 +573,8 @@ const addLeadFromExcel = async (req: any, res: any) => {
       row++;
     }
 
+    let dataResult = { total: 0, error: 0 };
+
     await Promise.all(
       data.map(async (item) => {
         const contents = await addInsuredFromExcelItem(productPlan_id, item);
@@ -582,17 +584,19 @@ const addLeadFromExcel = async (req: any, res: any) => {
             model: "retail/addInsuredFromExcelItem",
             error: contents.error,
           });
-          return res.status(500).json({ error: "Error adding insured" });
+          // return res.status(500).json({ error: "Error adding insured" });
+          dataResult.error++;
         }
+        dataResult.total++;
       })
     );
 
     createLogger.info({
       controller: "retail/addLeadFromExcel",
-      message: "OK",
+      message: dataResult,
     });
 
-    return res.status(200).json("ok");
+    return res.status(200).json(dataResult);
   } catch (error) {
     const errorResponse = { success: false, error };
     res.json(errorResponse);
