@@ -303,6 +303,19 @@ export const getOnlyProductById =
     }
   };
 
+export const getByProductPlanId =
+  (productPlan_id: string) => async (dispatch: any) => {
+    try {
+      dispatch(setLoading(true));
+      const { data } = await apiInstance.get(
+        `/product/getByProductPlanId/${productPlan_id}`
+      );
+      dispatch(setProduct(data));
+    } catch (e) {
+      dispatch(setError(true));
+    }
+  };
+
 export const getFamilies = () => async (dispatch: any) => {
   try {
     dispatch(setLoading(true));

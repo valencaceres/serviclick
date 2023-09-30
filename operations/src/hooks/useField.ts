@@ -8,8 +8,8 @@ const useField = () => {
     (state) => state.fieldSlice
   );
 
-  const getFieldByLeadId = (lead_id: string) => {
-    dispatch(FieldSlice.getFieldsByLeadId(lead_id));
+  const getFieldByProductPlanId = (productPlan_id: string) => {
+    dispatch(FieldSlice.getFieldByProductPlanId(productPlan_id));
   };
 
   const resetField = () => {
@@ -17,7 +17,7 @@ const useField = () => {
   };
 
   return {
-    getFieldByLeadId,
+    getFieldByProductPlanId,
     resetField,
     field,
     fieldList: list,
