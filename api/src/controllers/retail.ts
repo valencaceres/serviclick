@@ -576,8 +576,21 @@ const addLeadFromExcel = async (req: any, res: any) => {
     await Promise.all(
       data.map(async (item) => {
         const contents = await addInsuredFromExcelItem(productPlan_id, item);
+
+        if (!contents.success) {
+          createLogger.error({
+            model: "retail/addInsuredFromExcelItem",
+            error: contents.error,
+          });
+          return res.status(500).json({ error: "Error adding insured" });
+        }
       })
     );
+
+    createLogger.info({
+      controller: "retail/addLeadFromExcel",
+      message: "OK",
+    });
 
     return res.status(200).json("ok");
   } catch (error) {
@@ -625,8 +638,13 @@ const addInsuredFromExcelItem = async (productPlan_id: string, item: any) => {
     return { success: false, data: null, error: retailCustomerResponse.error };
   }
 
-  retailCustomerResponse.data &&
-    (lead_id = retailCustomerResponse.data.lead_id);
+  if (retailCustomerResponse.data) {
+    lead_id = retailCustomerResponse.data.lead_id;
+    createLogger.info({
+      controller: "retail/addInsuredFromExcelItem",
+      message: `Lead ${lead_id} will be updated`,
+    });
+  }
 
   if (!retailCustomerResponse.data) {
     const productPlanResponse = await ProductPlan.getById(productPlan_id);
@@ -714,6 +732,11 @@ const addInsuredFromExcelItem = async (productPlan_id: string, item: any) => {
     }
 
     lead_id = leadResponse.data?.id || "";
+
+    createLogger.info({
+      controller: "retail/addInsuredFromExcelItem",
+      message: `Lead ${lead_id} inserted`,
+    });
   }
 
   const policyResponse = await Policy.create(
@@ -730,6 +753,11 @@ const addInsuredFromExcelItem = async (productPlan_id: string, item: any) => {
     });
     return { success: false, data: null, error: policyResponse.error };
   }
+
+  createLogger.info({
+    model: "policy/create",
+    message: `${policyResponse.data?.id} inserted/updated`,
+  });
 
   return { success: true, data: policyResponse.data, error: null };
 };
