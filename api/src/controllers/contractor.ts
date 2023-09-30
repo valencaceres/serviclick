@@ -23,25 +23,25 @@ const create = async (req: any, res: any) => {
   const contractorResponse =
     type == "P"
       ? await Customer.createModel(
-        rut,
-        name,
-        paternalLastName,
-        maternalLastName,
-        address,
-        district,
-        email,
-        phone
-      )
+          rut,
+          name,
+          paternalLastName,
+          maternalLastName,
+          address,
+          district,
+          email,
+          phone
+        )
       : await Company.create(
-        rut,
-        companyName,
-        legalRepresentative,
-        line,
-        address,
-        district,
-        email,
-        phone
-      );
+          rut,
+          companyName,
+          legalRepresentative,
+          line,
+          address,
+          district,
+          email,
+          phone
+        );
 
   if (!contractorResponse.success) {
     createLogger.error({
@@ -64,10 +64,11 @@ const create = async (req: any, res: any) => {
 };
 
 const getAll = async (req: any, res: any) => {
-  const { contractorType, active, nameLike } = req.body;
+  const { contractorType, active, rut, nameLike } = req.body;
 
   const contractorResponse = await Contractor.getAll(
     contractorType,
+    rut,
     active,
     nameLike
   );

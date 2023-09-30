@@ -1,10 +1,14 @@
 import { Router } from "express";
 
 import auth from "../middlewares/auth";
-import { getByLeadId } from "../controllers/field";
+import { getByProductPlanId } from "../controllers/field";
 
 const FieldRouter = Router();
 
-FieldRouter.get("/getByLeadId/:lead_id", auth, getByLeadId);
+FieldRouter.get(
+  "/getByProductPlanId/:productPlan_id",
+  auth,
+  getByProductPlanId
+);
 
 export default FieldRouter;

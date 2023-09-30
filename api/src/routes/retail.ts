@@ -1,4 +1,5 @@
 import { Router } from "express";
+import multer from "multer";
 
 import auth from "../middlewares/auth";
 import {
@@ -6,6 +7,8 @@ import {
   addProduct,
   removeProduct,
   getAll,
+  getBySearchValues,
+  getCustomersByRetailIdAndProductId,
   getById,
   getByRut,
   updateLogo,
@@ -15,9 +18,12 @@ import {
   getCollectById,
   getAgents,
   updateAgent,
+  addLeadFromExcel,
 } from "../controllers/retail";
 import isAuthenticated from "../middlewares/isAuthenticated";
 import isAdmin from "../middlewares/isAdmin";
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 const RetailRouter = Router();
 
@@ -25,6 +31,12 @@ RetailRouter.post("/create", auth, isAuthenticated, isAdmin, create);
 RetailRouter.post("/addProduct", auth, isAuthenticated, isAdmin, addProduct);
 RetailRouter.post("/removeProduct", auth, isAuthenticated, removeProduct);
 RetailRouter.get("/getAll", auth, getAll);
+RetailRouter.post("/getBySearchValues", auth, getBySearchValues);
+RetailRouter.get(
+  "/getCustomersByRetailIdAndProductId/:retail_id/:productPlan_id",
+  auth,
+  getCustomersByRetailIdAndProductId
+);
 RetailRouter.get("/getById/:id", auth, getById);
 RetailRouter.get("/getByRut/:rut", auth, getByRut);
 RetailRouter.get("/getFamiliesByRetailId/:id", auth, getFamiliesByRetailId);
@@ -49,6 +61,14 @@ RetailRouter.put(
   isAuthenticated,
   isAdmin,
   updateAgent
+);
+RetailRouter.post(
+  "/addLeadFromExcel",
+  auth,
+  isAuthenticated,
+  isAdmin,
+  upload.single("file"),
+  addLeadFromExcel
 );
 
 export default RetailRouter;

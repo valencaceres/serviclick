@@ -1,211 +1,21 @@
+import xlsx from "xlsx";
+
 import createLogger from "../util/logger";
 import { generateGenericPassword } from "../util/user";
-import { sendMail } from "../util/email";
+import { fillEmptyEmail, sendMail } from "../util/email";
+import { updateClerkUser } from "../util/clerkUserData";
+import { formatRut } from "../util/rut";
 
 import * as Retail from "../models/retail";
 import * as RetailProduct from "../models/retailProduct";
 import * as UserRetail from "../models/userRetail";
+import * as FileFormat from "../models/fileFormat";
+import * as ProductPlan from "../models/productPlan";
+import * as Policy from "../models/policy";
+
+import * as Lead from "../controllers/lead";
+
 import * as Product from "./product";
-import { updateClerkUser } from "../util/clerkUserData";
-
-// const createFull = async (req: any, res: any) => {
-//   try {
-//     const {
-//       rut,
-//       name,
-//       legalRepresentative,
-//       line,
-//       fantasyName,
-//       address,
-//       district,
-//       email,
-//       phone,
-//       logo,
-//       products,
-//       users,
-//     } = req.body;
-
-//     const retailResponse = await Retail.create(
-//       rut,
-//       name,
-//       legalRepresentative,
-//       line,
-//       fantasyName,
-//       address,
-//       district,
-//       email,
-//       phone,
-//       logo
-//     );
-
-//     if (!retailResponse.success) {
-//       createLogger.error({
-//         model: "retail/create",
-//         error: retailResponse.error,
-//       });
-//       res.status(500).json({ error: "Error creating retail" });
-//       return;
-//     }
-
-//     const { id: retail_id, rut: retail_rut } = retailResponse.data;
-
-//     if (products.length > 0) {
-//       // // const retailProductDelete = await RetailProduct.deleteByRetailId(
-//       // //   retail_id
-//       // // );
-
-//       // if (!retailProductDelete.success) {
-//       //   createLogger.error({
-//       //     model: "retailProduct/deleteByRetailId",
-//       //     error: retailProductDelete.error,
-//       //   });
-//       //   res.status(500).json({ error: "Error deleting retail" });
-//       //   return;
-//       // }
-
-//       for (const product of products) {
-//         const {
-//           product_id,
-//           price,
-//           commisionTypeCode,
-//           value,
-//           currency,
-//           discount,
-//         } = product;
-
-//         const responsePlans = await Product.createProductPlans(
-//           product_id,
-//           retail_id,
-//           price.base || null,
-//           price.customer,
-//           price.company,
-//           discount
-//         );
-
-//         if (!responsePlans.success) {
-//           createLogger.error({
-//             controller: "product/createProductPlans",
-//             error: responsePlans.error,
-//           });
-//           res.status(500).json({ error: "Error creating product plans" });
-//           return;
-//         }
-
-//         const retailProductResponse = await RetailProduct.create(
-//           retail_id,
-//           product_id,
-//           responsePlans.data?.customer.id | 0,
-//           responsePlans.data?.company.id | 0,
-//           price,
-//           commisionTypeCode,
-//           value,
-//           currency
-//         );
-
-//         if (!retailProductResponse.success) {
-//           createLogger.error({
-//             model: "retailProduct/create",
-//             error: retailProductResponse.error,
-//           });
-//           res.status(500).json({ error: "Error creating retail product" });
-//           return;
-//         }
-//       }
-//     }
-
-//     if (users.length > 0) {
-//       const retailProductInactive = await UserRetail.inactiveAllByRetailId(
-//         retail_id
-//       );
-
-//       if (!retailProductInactive.success) {
-//         createLogger.error({
-//           model: "userRetail/inactiveAllByRetailId",
-//           error: retailProductInactive.error,
-//         });
-//         res.status(500).json({ error: "Error deactivating retail product" });
-//         return;
-//       }
-
-//       await Promise.all(
-//         users.map(async (user: any) => {
-//           const {
-//             rut,
-//             name,
-//             paternalLastName,
-//             maternalLastName,
-//             email,
-//             profileCode,
-//           } = user;
-
-//           const userRetailResponse = await UserRetail.create(
-//             retail_id,
-//             rut,
-//             name,
-//             paternalLastName,
-//             maternalLastName,
-//             email,
-//             profileCode
-//           );
-
-//           if (!userRetailResponse.success) {
-//             createLogger.error({
-//               model: "userRetail/create",
-//               error: userRetailResponse.error,
-//             });
-//             res.status(500).json({ error: "Error creating user retail" });
-//             return;
-//           }
-
-//           const responseSendCredentials = await sendCredentials(
-//             retail_rut,
-//             email,
-//             false
-//           );
-
-//           if (!responseSendCredentials.success) {
-//             createLogger.error({
-//               model: responseSendCredentials.model,
-//               error: responseSendCredentials.error,
-//             });
-//             res
-//               .status(responseSendCredentials.status)
-//               .json({ error: responseSendCredentials.error });
-//             return;
-//           }
-//         })
-//       );
-//     }
-
-//     const { success, model, data, error, status } = await getRetailDataById(
-//       retail_id
-//     );
-
-//     if (!success) {
-//       createLogger.error({
-//         model,
-//         error,
-//       });
-//       res.status(status).json({ error });
-//       return;
-//     }
-
-//     createLogger.info({
-//       controller: "retail/create",
-//       message: "OK",
-//     });
-
-//     res.status(status).json(data);
-//     return;
-//   } catch (error) {
-//     createLogger.error({
-//       controller: "retail/create",
-//       error: (error as Error).message,
-//     });
-//     res.status(500).json({ error: "Error creating retail" });
-//     return;
-//   }
-// };
 
 const create = async (req: any, res: any) => {
   try {
@@ -349,6 +159,61 @@ const getByRut = async (req: any, res: any) => {
   } catch (error) {
     createLogger.error({
       controller: "retail/getById",
+      error: (error as Error).message,
+    });
+    res.status(500).json((error as Error).message);
+    return;
+  }
+};
+
+const getBySearchValues = async (req: any, res: any) => {
+  try {
+    const { rut, name } = req.body;
+
+    const retailResponse = await Retail.getBySearchValues(rut, name);
+
+    if (!retailResponse.success) {
+      createLogger.error({
+        model: "retail/getBySearchValues",
+        error: retailResponse.error,
+      });
+      res.status(500).json(retailResponse.error);
+      return;
+    }
+
+    res.status(200).json(retailResponse.data);
+  } catch (error) {
+    createLogger.error({
+      controller: "retail/getBySearchValues",
+      error: (error as Error).message,
+    });
+    res.status(500).json((error as Error).message);
+    return;
+  }
+};
+
+const getCustomersByRetailIdAndProductId = async (req: any, res: any) => {
+  try {
+    const { retail_id, productPlan_id } = req.params;
+
+    const retailResponse = await Retail.getCustomersByRetailIdAndProductId(
+      retail_id,
+      productPlan_id
+    );
+
+    if (!retailResponse.success) {
+      createLogger.error({
+        model: "retail/getCustomersByRetailIdAndProductId",
+        error: retailResponse.error,
+      });
+      res.status(500).json(retailResponse.error);
+      return;
+    }
+
+    res.status(200).json(retailResponse.data);
+  } catch (error) {
+    createLogger.error({
+      controller: "retail/getCustomersByRetailIdAndProductId",
       error: (error as Error).message,
     });
     res.status(500).json((error as Error).message);
@@ -642,6 +507,85 @@ const updateAgent = async (req: any, res: any) => {
   return res.status(200).json(profileCode);
 };
 
+const addLeadFromExcel = async (req: any, res: any) => {
+  try {
+    const { productPlan_id } = req.body;
+    const file = req.file;
+
+    const fileFormatResponse = await FileFormat.getByProductPlanId(
+      productPlan_id
+    );
+
+    if (!fileFormatResponse.success) {
+      createLogger.error({
+        model: "fileformat/getByProductPlanId",
+        error: fileFormatResponse.error,
+      });
+      return res.status(500).json({ error: "Error retrieving file format" });
+    }
+
+    const fields = fileFormatResponse.data;
+
+    const workbook = xlsx.read(file.buffer, { type: "buffer" });
+    const sheet_name_list = workbook.SheetNames;
+    const xlsData = xlsx.utils.sheet_to_json(
+      workbook.Sheets[sheet_name_list[0]],
+      {
+        raw: false,
+        dateNF: "yyyy-mm-dd",
+      }
+    );
+
+    let data = [];
+    let row = 0;
+
+    for (const xlsItem of xlsData) {
+      if (row === 1000) {
+        break;
+      }
+      if (isRecord(xlsItem)) {
+        let count = 0;
+        let dataItem: any = {};
+
+        for (const xlsField in xlsItem) {
+          const { field_db_name, field_type, field_id } = fields[count];
+
+          if (field_type === "value") {
+            dataItem = {
+              ...dataItem,
+              values: dataItem.values
+                ? [
+                    ...dataItem.values,
+                    { value_id: field_id, value: xlsItem[xlsField] },
+                  ]
+                : [{ value_id: field_id, value: xlsItem[xlsField] }],
+            };
+          } else {
+            dataItem = {
+              ...dataItem,
+              [field_db_name]: xlsItem[xlsField],
+            };
+          }
+          count++;
+        }
+        data.push(dataItem);
+      }
+      row++;
+    }
+
+    await Promise.all(
+      data.map(async (item) => {
+        const contents = await addInsuredFromExcelItem(productPlan_id, item);
+      })
+    );
+
+    return res.status(200).json("ok");
+  } catch (error) {
+    const errorResponse = { success: false, error };
+    res.json(errorResponse);
+  }
+};
+
 export {
   create,
   addProduct,
@@ -649,6 +593,8 @@ export {
   getById,
   getByRut,
   getAll,
+  getBySearchValues,
+  getCustomersByRetailIdAndProductId,
   updateLogo,
   deleteById,
   getFamiliesByRetailId,
@@ -656,6 +602,136 @@ export {
   getCollectById,
   getAgents,
   updateAgent,
+  addLeadFromExcel,
+};
+
+function isRecord(obj: unknown): obj is Record<string, any> {
+  return typeof obj === "object" && obj !== null;
+}
+
+const addInsuredFromExcelItem = async (productPlan_id: string, item: any) => {
+  let lead_id: string | null = null;
+
+  const retailCustomerResponse = await Retail.getCustomerByRut(
+    productPlan_id,
+    formatRut(item.rut)
+  );
+
+  if (!retailCustomerResponse.success) {
+    createLogger.error({
+      model: "retail/getCustomerByRut",
+      error: retailCustomerResponse.error,
+    });
+    return { success: false, data: null, error: retailCustomerResponse.error };
+  }
+
+  retailCustomerResponse.data &&
+    (lead_id = retailCustomerResponse.data.lead_id);
+
+  if (!retailCustomerResponse.data) {
+    const productPlanResponse = await ProductPlan.getById(productPlan_id);
+
+    if (!productPlanResponse.success) {
+      createLogger.error({
+        model: "productPlan/getById",
+        error: productPlanResponse.error,
+      });
+      return { success: false, data: null, error: productPlanResponse.error };
+    }
+
+    const { product_id, plan_id, price, frequency, agent_id, currency } =
+      productPlanResponse.data;
+
+    const leadData = {
+      agent_id: agent_id,
+      company: {
+        address: "",
+        companyName: "",
+        district: "",
+        email: "",
+        id: "",
+        legalRepresentative: "",
+        line: "",
+        phone: "",
+        rut: "",
+      },
+      customer: {
+        id: (item?.id || "").trim(),
+        rut: item.rut ? formatRut(item.rut) : "",
+        name: (item?.name || "").trim(),
+        paternalLastName: (item?.paternalLastName || "").trim(),
+        maternalLastName: (item?.maternalLastName || "").trim(),
+        address: (item?.address || "").trim(),
+        district: (item?.district || "").trim(),
+        email:
+          item.email && item.email !== ""
+            ? item.email.trim()
+            : fillEmptyEmail(item.rut),
+        birthDate: (item?.birthDate || "").trim(),
+        phone: (item?.phone || "").trim(),
+      },
+      date: "",
+      id: "",
+      insured: [
+        {
+          id: (item?.id || "").trim(),
+          rut: item.rut ? formatRut(item.rut) : "",
+          name: (item?.name || "").trim(),
+          paternalLastName: (item?.paternalLastName || "").trim(),
+          maternalLastName: (item?.maternalLastName || "").trim(),
+          address: (item?.address || "").trim(),
+          district: (item?.district || "").trim(),
+          email:
+            item.email && item.email !== ""
+              ? item.email.trim()
+              : fillEmptyEmail(item.rut),
+          phone: (item?.phone || "").trim(),
+          birthDate: item.birthDate ? item.birthDate.trim() : null,
+          beneficiaries: [],
+          values: item.values,
+        },
+      ],
+      product: {
+        currency_code: currency,
+        frequency_code: frequency,
+        id: product_id,
+        price: price,
+        productPlan_id: plan_id,
+      },
+      isActive: false,
+      send: false,
+      subscription: false,
+    };
+
+    const leadResponse = await Lead.create(leadData);
+
+    if (!leadResponse.success) {
+      createLogger.error({
+        model: "lead/create",
+        error: leadResponse.error,
+      });
+      return { success: false, data: null, error: leadResponse.error };
+    }
+
+    lead_id = leadResponse.data?.id || "";
+  }
+
+  const policyResponse = await Policy.create(
+    null,
+    item.initialDate || null,
+    item.endDate || null,
+    lead_id || null
+  );
+
+  if (!policyResponse.success) {
+    createLogger.error({
+      model: "policy/create",
+      error: policyResponse.error,
+    });
+    return { success: false, data: null, error: policyResponse.error };
+  }
+
+  return { success: true, data: policyResponse.data, error: null };
 };
 
 export const getRetailDataById = async (id: string) => {
@@ -919,3 +995,202 @@ export const sendCredentials = async (
     };
   }
 };
+
+// const createFull = async (req: any, res: any) => {
+//   try {
+//     const {
+//       rut,
+//       name,
+//       legalRepresentative,
+//       line,
+//       fantasyName,
+//       address,
+//       district,
+//       email,
+//       phone,
+//       logo,
+//       products,
+//       users,
+//     } = req.body;
+
+//     const retailResponse = await Retail.create(
+//       rut,
+//       name,
+//       legalRepresentative,
+//       line,
+//       fantasyName,
+//       address,
+//       district,
+//       email,
+//       phone,
+//       logo
+//     );
+
+//     if (!retailResponse.success) {
+//       createLogger.error({
+//         model: "retail/create",
+//         error: retailResponse.error,
+//       });
+//       res.status(500).json({ error: "Error creating retail" });
+//       return;
+//     }
+
+//     const { id: retail_id, rut: retail_rut } = retailResponse.data;
+
+//     if (products.length > 0) {
+//       // // const retailProductDelete = await RetailProduct.deleteByRetailId(
+//       // //   retail_id
+//       // // );
+
+//       // if (!retailProductDelete.success) {
+//       //   createLogger.error({
+//       //     model: "retailProduct/deleteByRetailId",
+//       //     error: retailProductDelete.error,
+//       //   });
+//       //   res.status(500).json({ error: "Error deleting retail" });
+//       //   return;
+//       // }
+
+//       for (const product of products) {
+//         const {
+//           product_id,
+//           price,
+//           commisionTypeCode,
+//           value,
+//           currency,
+//           discount,
+//         } = product;
+
+//         const responsePlans = await Product.createProductPlans(
+//           product_id,
+//           retail_id,
+//           price.base || null,
+//           price.customer,
+//           price.company,
+//           discount
+//         );
+
+//         if (!responsePlans.success) {
+//           createLogger.error({
+//             controller: "product/createProductPlans",
+//             error: responsePlans.error,
+//           });
+//           res.status(500).json({ error: "Error creating product plans" });
+//           return;
+//         }
+
+//         const retailProductResponse = await RetailProduct.create(
+//           retail_id,
+//           product_id,
+//           responsePlans.data?.customer.id | 0,
+//           responsePlans.data?.company.id | 0,
+//           price,
+//           commisionTypeCode,
+//           value,
+//           currency
+//         );
+
+//         if (!retailProductResponse.success) {
+//           createLogger.error({
+//             model: "retailProduct/create",
+//             error: retailProductResponse.error,
+//           });
+//           res.status(500).json({ error: "Error creating retail product" });
+//           return;
+//         }
+//       }
+//     }
+
+//     if (users.length > 0) {
+//       const retailProductInactive = await UserRetail.inactiveAllByRetailId(
+//         retail_id
+//       );
+
+//       if (!retailProductInactive.success) {
+//         createLogger.error({
+//           model: "userRetail/inactiveAllByRetailId",
+//           error: retailProductInactive.error,
+//         });
+//         res.status(500).json({ error: "Error deactivating retail product" });
+//         return;
+//       }
+
+//       await Promise.all(
+//         users.map(async (user: any) => {
+//           const {
+//             rut,
+//             name,
+//             paternalLastName,
+//             maternalLastName,
+//             email,
+//             profileCode,
+//           } = user;
+
+//           const userRetailResponse = await UserRetail.create(
+//             retail_id,
+//             rut,
+//             name,
+//             paternalLastName,
+//             maternalLastName,
+//             email,
+//             profileCode
+//           );
+
+//           if (!userRetailResponse.success) {
+//             createLogger.error({
+//               model: "userRetail/create",
+//               error: userRetailResponse.error,
+//             });
+//             res.status(500).json({ error: "Error creating user retail" });
+//             return;
+//           }
+
+//           const responseSendCredentials = await sendCredentials(
+//             retail_rut,
+//             email,
+//             false
+//           );
+
+//           if (!responseSendCredentials.success) {
+//             createLogger.error({
+//               model: responseSendCredentials.model,
+//               error: responseSendCredentials.error,
+//             });
+//             res
+//               .status(responseSendCredentials.status)
+//               .json({ error: responseSendCredentials.error });
+//             return;
+//           }
+//         })
+//       );
+//     }
+
+//     const { success, model, data, error, status } = await getRetailDataById(
+//       retail_id
+//     );
+
+//     if (!success) {
+//       createLogger.error({
+//         model,
+//         error,
+//       });
+//       res.status(status).json({ error });
+//       return;
+//     }
+
+//     createLogger.info({
+//       controller: "retail/create",
+//       message: "OK",
+//     });
+
+//     res.status(status).json(data);
+//     return;
+//   } catch (error) {
+//     createLogger.error({
+//       controller: "retail/create",
+//       error: (error as Error).message,
+//     });
+//     res.status(500).json({ error: "Error creating retail" });
+//     return;
+//   }
+// };
