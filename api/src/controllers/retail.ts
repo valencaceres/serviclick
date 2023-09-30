@@ -540,9 +540,9 @@ const addLeadFromExcel = async (req: any, res: any) => {
     let row = 0;
 
     for (const xlsItem of xlsData) {
-      if (row === 1000) {
-        break;
-      }
+      // if (row === 1000) {
+      //   break;
+      // }
       if (isRecord(xlsItem)) {
         let count = 0;
         let dataItem: any = {};

@@ -1,12 +1,9 @@
 import { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
 
-import RetailForm from "./RetailForm";
 import RetailProduct from "./RetailProduct";
 import RetailInsured from "./RetailInsured";
-import RetailBeneficiaries from "./RetailBeneficiaries";
 import RetailProductList from "./RetailProductList";
-import RetailSubscription from "./RetailSubscription";
 
 import { ContentCell, ContentRow } from "../../../layout/Content";
 
