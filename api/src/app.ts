@@ -32,9 +32,9 @@ const corsOptions = {
 
 function initializeMiddlewares(server: Express) {
   server.use(setSecurityHeaders);
-  server.use(express.json({ limit: "10mb" }));
+  server.use(express.json());
   server.use(cors(corsOptions));
-  server.use(express.urlencoded({ limit: "10mb", extended: false }));
+  server.use(express.urlencoded({ extended: false }));
 }
 
 const routeMappings = [
