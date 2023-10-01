@@ -23,7 +23,13 @@ import {
 import isAuthenticated from "../middlewares/isAuthenticated";
 import isAdmin from "../middlewares/isAdmin";
 
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fieldNameSize: 300,
+    fileSize: 1048576, // 10 Mb
+  },
+});
 
 const RetailRouter = Router();
 
