@@ -352,10 +352,7 @@ const getByClerkId = async (req: any, res: any) => {
     if (!Array.isArray(ids)) {
       return res.status(400).json({ success: false, data: null, error: "Invalid input" });
     }
-    console.log("askljdlaslkjdaslkdlk")
     const results = await Promise.all(ids.map((id: any) => fetchClerkUser(id)));
-    console.log("sadskljadjklñsadljk")
-    console.log(results)
     // Filtra los resultados para eliminar los elementos nulos o no válidos
     const validResults = results.filter(result => result);
 

@@ -164,15 +164,13 @@ const getAll: any = async (
   try {
     const _where =
       contractorType !== "" || active || nameLike !== ""
-        ? ` ${
-            contractorType && contractorType !== ""
-              ? `and type = '${contractorType}'`
-              : ""
-          } ${active ? `and active_product > 0` : ""} ${
-            nameLike && nameLike !== ""
-              ? `and lower(name) like '%${nameLike.toLowerCase()}%'`
-              : ""
-          }`
+        ? ` ${contractorType && contractorType !== ""
+          ? `and type = '${contractorType}'`
+          : ""
+        } ${active ? `and active_product > 0` : ""} ${nameLike && nameLike !== ""
+          ? `and lower(name) like '%${nameLike.toLowerCase()}%'`
+          : ""
+        }`
         : ``;
 
     const result = await pool.query(_selectAll(_where));
@@ -217,37 +215,37 @@ const getByRut: any = async (rut: string, type: string) => {
     const data =
       result.rows.length > 0
         ? {
-            id: result.rows[0].id,
-            type,
-            rut: result.rows[0].rut,
-            companyName: result.rows[0].companyname,
-            name: result.rows[0].name,
-            paternalLastName: result.rows[0].paternallastname,
-            maternalLastName: result.rows[0].maternallastname,
-            legalRepresentative: result.rows[0].legalrepresentative,
-            line: result.rows[0].line,
-            birthDate: result.rows[0].birthdate,
-            address: result.rows[0].address,
-            district: result.rows[0].district,
-            email: result.rows[0].email,
-            phone: result.rows[0].phone,
-          }
+          id: result.rows[0].id,
+          type,
+          rut: result.rows[0].rut,
+          companyName: result.rows[0].companyname,
+          name: result.rows[0].name,
+          paternalLastName: result.rows[0].paternallastname,
+          maternalLastName: result.rows[0].maternallastname,
+          legalRepresentative: result.rows[0].legalrepresentative,
+          line: result.rows[0].line,
+          birthDate: result.rows[0].birthdate,
+          address: result.rows[0].address,
+          district: result.rows[0].district,
+          email: result.rows[0].email,
+          phone: result.rows[0].phone,
+        }
         : {
-            id: "",
-            type,
-            rut,
-            companyName: "",
-            name: "",
-            paternalLastName: "",
-            maternalLastName: "",
-            legalRepresentative: "",
-            line: "",
-            birthDate: "",
-            address: "",
-            district: "",
-            email: "",
-            phone: "",
-          };
+          id: "",
+          type,
+          rut,
+          companyName: "",
+          name: "",
+          paternalLastName: "",
+          maternalLastName: "",
+          legalRepresentative: "",
+          line: "",
+          birthDate: "",
+          address: "",
+          district: "",
+          email: "",
+          phone: "",
+        };
 
     return { success: true, data, error: null };
   } catch (e) {
@@ -279,24 +277,24 @@ const getSubscriptionById: any = async (id: string) => {
     const result = await pool.query(_selectSubscription, [id]);
     const data = result.rows.length
       ? {
-          subscription_id: result.rows[0].subscription_id,
-          name: result.rows[0].product_name,
-          frequency: result.rows[0].product_frequency,
-          price: result.rows[0].product_price,
-          currency_code: result.rows[0].product_currency_code,
-          createDate: result.rows[0].policy_createdate,
-          startDate: result.rows[0].policy_startdate,
-          assistances: result.rows.map((item: any) => {
-            return {
-              name: item.assistance_name,
-              amount: item.assistance_amount,
-              currency: item.assistance_currency,
-              maximum: item.assistance_maximum,
-              events: item.assistance_events,
-              lack: item.assistance_lack,
-            };
-          }),
-        }
+        subscription_id: result.rows[0].subscription_id,
+        name: result.rows[0].product_name,
+        frequency: result.rows[0].product_frequency,
+        price: result.rows[0].product_price,
+        currency_code: result.rows[0].product_currency_code,
+        createDate: result.rows[0].policy_createdate,
+        startDate: result.rows[0].policy_startdate,
+        assistances: result.rows.map((item: any) => {
+          return {
+            name: item.assistance_name,
+            amount: item.assistance_amount,
+            currency: item.assistance_currency,
+            maximum: item.assistance_maximum,
+            events: item.assistance_events,
+            lack: item.assistance_lack,
+          };
+        }),
+      }
       : [];
 
     return {

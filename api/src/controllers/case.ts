@@ -523,6 +523,35 @@ const getAssistanceData = async (req: any, res: any) => {
   return res.status(200).json(response.data);
 };
 
+const discountAssistanceData = async (req: any, res: any) => {
+  const { insured_id, assistance_id, product_id } = req.params;
+
+  const response = await Case.discountAssistanceData(
+    insured_id,
+    assistance_id,
+    product_id
+  );
+
+  if (!response.success) {
+    createLogger.error({
+      model: `case/discountAssistanceData`,
+      error: response.error,
+    });
+    return res.status(500).json({ error: response.error });
+  }
+
+  createLogger.info({
+    controller: `case/discountAssistanceData`,
+    message: `OK - Assistance data discounted`,
+  });
+
+  if ('data' in response) {
+    return res.status(200).json(response.data);
+  } else {
+    return res.status(200).json({ message: response.message });
+  }
+};
+
 const getReimbursment = async (req: any, res: any) => {
   const { case_id } = req.params;
 
@@ -652,6 +681,7 @@ export {
   getAssignedSpecialist,
   reimburse,
   getAssistanceData,
+  discountAssistanceData,
   getReimbursment,
   getAllReimbursements,
   updateReimbursementStatus,

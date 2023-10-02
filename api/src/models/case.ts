@@ -357,10 +357,65 @@ const getAssistanceData: any = async (
   }
 };
 
+const discountAssistanceData = async (
+  insured_id: string,
+  assistance_id: string,
+  product_id: string
+): Promise<{ success: boolean; message?: string; error?: string }> => {
+  try {
+    // Obtener el valor actual de used_events y remaining_events
+    const result = await pool.query(
+      `UPDATE app.productassistance pa
+       SET 
+          events = events - 1
+
+       FROM ( 
+           SELECT pas.id,
+                  max(pas.events) as max_events,
+                  sum(case when csr.amount > 0 and (crm.status = 'Pendiente' or crm.status = 'Aprobado') then 1 else 0 end) as used_events
+           FROM app.case cas
+               LEFT JOIN app.casestage cst ON cst.case_id = cas.id
+               LEFT JOIN app.casestageresult csr ON cst.id = csr.casestage_id
+               LEFT JOIN app.casereimbursment crm ON csr.id = crm.casestageresult_id
+               INNER JOIN app.assistance asi ON cas.assistance_id = asi.id
+               INNER JOIN app.productassistance pas ON asi.id = pas.assistance_id
+               INNER JOIN app.product pro ON pas.product_id = pro.id and cas.product_id = pro.id
+           WHERE cas.insured_id = $1
+               AND cas.assistance_id = $2
+               AND cas.product_id = $3
+           GROUP BY pas.id
+       ) AS subquery
+       WHERE pa.id = subquery.id
+       RETURNING *`,
+      [insured_id, assistance_id, product_id]
+    );
+
+    console.log(result.rows);
+
+    if (result.rows.length > 0) {
+      return {
+        success: true,
+        message: "Event discounted successfully",
+      };
+    } else {
+      return {
+        success: false,
+        error: "No events available to discount",
+      };
+    }
+  } catch (e) {
+    return {
+      success: false,
+      error: (e as Error).message,
+    };
+  }
+};
+
 export {
   create,
   getAll,
   getBeneficiaryData,
   getNewCaseNumber,
   getAssistanceData,
+  discountAssistanceData
 };

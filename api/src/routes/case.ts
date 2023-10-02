@@ -18,6 +18,7 @@ import {
   getAssignedSpecialist,
   reimburse,
   getAssistanceData,
+  discountAssistanceData,
   getReimbursment,
   getAllReimbursements,
   updateReimbursementStatus,
@@ -60,6 +61,11 @@ CaseRouter.get(
   "/getAssistanceData/:insured_id/:assistance_id/:product_id",
   auth,
   getAssistanceData
+);
+CaseRouter.put(
+  "/discountAssistanceData/:insured_id/:assistance_id/:product_id",
+  auth,
+  discountAssistanceData
 );
 CaseRouter.get("/getReimbursment/:case_id", auth, getReimbursment);
 CaseRouter.get("/getAllReimbursements", auth, getAllReimbursements);
