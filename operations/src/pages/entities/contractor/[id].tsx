@@ -19,11 +19,11 @@ const ContractorDetailPage = () => {
   );
 
   const handleClickHome = () => {
-    router.push("/entities/contractor");
+    router.push("/");
   };
 
   const handleClickBack = () => {
-    router.back();
+    router.push("/entities/contractor");
   };
 
   useEffect(() => {

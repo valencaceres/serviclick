@@ -101,28 +101,34 @@ const removeByProductId: any = async (
 const getByRetailId: any = async (retail_id: string) => {
   try {
     const result = await pool.query(
-      `
-      SELECT  brp.product_id,
-              pro.name,
-              pro.beneficiaries,
-              des.promotional,
-              ppl.baseprice,
-              ppl.price,
-              brp.currency,
-              ppl.id as productplan_id,
-              ppl.discount_type,
-              ppl.discount_percent,
-              ppl.discount_cicles,
-              ppl.plan_id as plan_id
-        FROM  app.retailProduct brp
+      `SELECT brp.product_id,
+              max(brp.number) as number,
+              max(pro.name) as name,
+              max(pro.beneficiaries) as beneficiaries,
+              max(des.promotional) as promotional,
+              max(ppl.baseprice) as baseprice,
+              max(ppl.price) as price,
+              max(ppl.frequency) as frequency,
+              max(brp.currency) as currency,
+              max(ppl.id :: text) as productplan_id,
+              max(ppl.discount_type) as discount_type,
+              max(ppl.discount_percent) as discount_percent,
+              max(ppl.discount_cicles) as discount_cicles,
+              max(ppl.plan_id) as plan_id,
+              sum(case when lea.policy_id is null then 0 else 1 end) as subscriptions
+       FROM   app.retailProduct brp
                 inner join app.product pro on brp.product_id = pro.id
                 left outer join app.productdescription des on pro.id = des.product_id
                 left outer join app.productplan ppl on pro.id = ppl.product_id and brp.plan_id = ppl.plan_id
-        WHERE brp.retail_id = $1 and
+                left outer join app.leadproduct lpr on ppl.plan_id = lpr.productplan_id
+                left outer join app.lead lea on lpr.lead_id = lea.id
+       WHERE  brp.retail_id = $1 and
               brp.isactive is true
-        ORDER BY
-              brp.number,
-              pro.name`,
+       GROUP  BY
+              brp.product_id
+       ORDER  BY
+              max(brp.number),
+              max(pro.name)`,
       [retail_id]
     );
 
@@ -135,11 +141,13 @@ const getByRetailId: any = async (retail_id: string) => {
         baseprice,
         price,
         currency,
+        frequency,
         productplan_id,
         discount_type,
         discount_percent,
         discount_cicles,
         plan_id,
+        subscriptions,
       } = row;
 
       return {
@@ -150,6 +158,7 @@ const getByRetailId: any = async (retail_id: string) => {
         baseprice,
         price,
         currency,
+        frequency,
         productplan_id,
         plan_id,
         discount: {
@@ -157,6 +166,7 @@ const getByRetailId: any = async (retail_id: string) => {
           percent: discount_percent,
           cicles: discount_cicles,
         },
+        subscriptions,
       };
     });
 

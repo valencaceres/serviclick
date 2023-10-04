@@ -22,10 +22,11 @@ const useContractor = () => {
 
   const getAllContractors = (
     contractorType: string,
+    rut: string,
     nameLike: string,
     active: boolean
   ) => {
-    dispatch(ContractorSlice.getAll(contractorType, nameLike, active));
+    dispatch(ContractorSlice.getAll(contractorType, rut, nameLike, active));
   };
 
   const getContractorById = (id: string) => {

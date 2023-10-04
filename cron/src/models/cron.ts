@@ -1,6 +1,7 @@
 import moment from "moment";
 
 import pool from "../util/database";
+import createLogger from "../util/logger";
 
 const getAll: any = async () => {
   try {

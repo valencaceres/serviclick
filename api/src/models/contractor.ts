@@ -158,19 +158,20 @@ const create: any = async (
 
 const getAll: any = async (
   contractorType: string,
+  rut: string,
   active: boolean,
   nameLike: string
 ) => {
   try {
     const _where =
-      contractorType !== "" || active || nameLike !== ""
+      contractorType !== "" || active || nameLike !== "" || rut !== ""
         ? ` ${contractorType && contractorType !== ""
           ? `and type = '${contractorType}'`
           : ""
-        } ${active ? `and active_product > 0` : ""} ${nameLike && nameLike !== ""
+        } ${active ? `and active_product > 0` : `and active_product > 0`} ${nameLike && nameLike !== ""
           ? `and lower(name) like '%${nameLike.toLowerCase()}%'`
           : ""
-        }`
+        } ${rut && rut !== "" ? `and rut = '${rut}'` : ""}`
         : ``;
 
     const result = await pool.query(_selectAll(_where));

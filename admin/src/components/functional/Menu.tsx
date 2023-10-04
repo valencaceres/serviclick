@@ -26,7 +26,7 @@ const routes = [
   },
   {
     text: "Operaciones",
-    roles: ["admin"],
+    roles: ["admin", "user"],
     subRoutes: [
       {
         text: "Reembolsos",
@@ -35,6 +35,10 @@ const routes = [
       {
         text: "Descuentos IMED",
         route: "/operations/imed",
+      },
+      {
+        text: "Operadores",
+        route: "/operations/users",
       },
     ],
   },

@@ -6,6 +6,8 @@ const useRetail = () => {
 
   const {
     retail,
+    customers,
+    selectedProduct,
     list: retailList,
     loading: retailLoading,
     error: retailError,
@@ -27,8 +29,23 @@ const useRetail = () => {
     dispatch(Retail.getAll());
   };
 
+  const getBySearchValues = (rut: string, name: string) => {
+    dispatch(Retail.getBySearchValues(rut, name));
+  };
+
+  const getCustomersByRetailIdAndProductId = (
+    retaail_id: string,
+    product_id: string
+  ) => {
+    dispatch(Retail.getCustomersByRetailIdAndProductId(retaail_id, product_id));
+  };
+
   const uploadLogo = (logo: any) => {
     dispatch(Retail.uploadLogo(logo));
+  };
+
+  const uploadExcel = (excel: any) => {
+    dispatch(Retail.uploadExcel(excel));
   };
 
   const deleteRetailById = (id: string) => {
@@ -47,6 +64,10 @@ const useRetail = () => {
     dispatch(Retail.setLogo(base64));
   };
 
+  const setSelectedProduct = (product: any) => {
+    dispatch(Retail.setSelectedProduct(product));
+  };
+
   const resetRetail = () => {
     dispatch(Retail.resetRetail());
   };
@@ -62,17 +83,23 @@ const useRetail = () => {
   return {
     createRetail,
     getAllRetails,
+    getBySearchValues,
+    getCustomersByRetailIdAndProductId,
     getRetailById,
     getRetailByRut,
     uploadLogo,
+    uploadExcel,
     deleteRetailById,
     setRetailList,
     setRetail,
     setRetailLogo,
+    setRetailSelectedProduct: setSelectedProduct,
     resetLogo,
     resetRetail,
     reset,
     retail,
+    retailProductCustomers: customers,
+    retailSelectedProduct: selectedProduct,
     retailList,
     retailLoading,
     retailError,

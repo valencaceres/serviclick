@@ -1,14 +1,14 @@
 import pool from "../util/database";
 
-import { queryGetByLeadId } from "../queries/field";
+import { queryGetByProductPlanId } from "../queries/field";
 
-const getByLeadId: any = async (lead_id: string) => {
+const getByProductPlanId: any = async (productPlan_id: string) => {
   try {
-    const result = await pool.query(queryGetByLeadId, [lead_id]);
+    const result = await pool.query(queryGetByProductPlanId, [productPlan_id]);
     return { success: true, data: result.rows, error: null };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
   }
 };
 
-export { getByLeadId };
+export { getByProductPlanId };

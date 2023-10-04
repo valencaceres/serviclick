@@ -25,17 +25,58 @@ const upload = multer({ storage: multer.memoryStorage() });
 const LeadRouter = Router();
 
 LeadRouter.post("/create", auth, createController);
-LeadRouter.post("/addBeneficiaries", auth, isAuthenticated, isAdmin, addBeneficiariesController);
+LeadRouter.post(
+  "/addBeneficiaries",
+  auth,
+  isAuthenticated,
+  isAdmin,
+  addBeneficiariesController
+);
 LeadRouter.get("/getById/:id", auth, getByIdController);
-LeadRouter.get("/getBySubscriptionId/:subscription_id", auth, getBySubscriptionIdController);
-LeadRouter.get("/getProductByInsuredId/:insured_id", auth, isAuthenticated, isAdmin, getProductByInsuredIdController);
-LeadRouter.get("/getProductValuesByInsuredId/:lead_id/:product_id/:insured_id", auth, isAuthenticated, isAdmin, getProductValuesByInsuredId);
+LeadRouter.get(
+  "/getBySubscriptionId/:subscription_id",
+  auth,
+  getBySubscriptionIdController
+);
+LeadRouter.get(
+  "/getProductByInsuredId/:insured_id",
+  auth,
+  isAuthenticated,
+  isAdmin,
+  getProductByInsuredIdController
+);
+LeadRouter.get(
+  "/getProductValuesByInsuredId/:lead_id/:product_id/:insured_id",
+  auth,
+  isAuthenticated,
+  isAdmin,
+  getProductValuesByInsuredId
+);
 LeadRouter.post("/addProduct", auth, isAuthenticated, isAdmin, addProduct);
 LeadRouter.post("/addInsured", auth, isAuthenticated, isAdmin, addInsured);
-LeadRouter.post("/addBeneficiary", auth, isAuthenticated, isAdmin, addBeneficiary);
+LeadRouter.post(
+  "/addBeneficiary",
+  auth,
+  isAuthenticated,
+  isAdmin,
+  addBeneficiary
+);
 LeadRouter.get("/getStatistics", auth, isAuthenticated, isAdmin, getStatistics);
-LeadRouter.get("/getContract/:lead_id", auth, isAuthenticated, isAdmin, getContract);
-LeadRouter.post("/addInsuredFromExcel", auth, isAuthenticated, isAdmin, upload.single("file"), addInsuredFromExcel);
+LeadRouter.get(
+  "/getContract/:lead_id",
+  auth,
+  isAuthenticated,
+  isAdmin,
+  getContract
+);
+LeadRouter.post(
+  "/addInsuredFromExcel",
+  auth,
+  isAuthenticated,
+  isAdmin,
+  upload.single("file"),
+  addInsuredFromExcel
+); // TODO: Eliminar
 LeadRouter.post("/addFromCase", auth, addFromCase);
 
 export default LeadRouter;

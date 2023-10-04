@@ -75,12 +75,15 @@ export const {
 
 export default fieldSlice.reducer;
 
-export const getFieldsByLeadId = (lead_id: string) => async (dispatch: any) => {
-  try {
-    dispatch(setIsLoading(true));
-    const { data } = await apiInstance.get(`/field/getByLeadId/${lead_id}`);
-    dispatch(setFieldList(data));
-  } catch (e) {
-    dispatch(setError((e as Error).message));
-  }
-};
+export const getFieldByProductPlanId =
+  (productPlan_id: string) => async (dispatch: any) => {
+    try {
+      dispatch(setIsLoading(true));
+      const { data } = await apiInstance.get(
+        `/field/getByProductPlanId/${productPlan_id}`
+      );
+      dispatch(setFieldList(data));
+    } catch (e) {
+      dispatch(setError((e as Error).message));
+    }
+  };

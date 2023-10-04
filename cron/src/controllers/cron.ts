@@ -1,6 +1,7 @@
 import moment from "moment";
 
 import createLogger from "../util/logger";
+
 import * as cronModel from "../models/cron";
 import * as Subscription from "../models/subscription";
 import * as Lead from "../models/lead";
@@ -8,7 +9,6 @@ import * as Payment from "../models/payment";
 import * as Policy from "../models/policy";
 
 import config from "../util/config";
-import axiosMonitored from "../util/axios";
 import { apiReveniu, apiServiClick } from "../util/api";
 
 interface IPayment {
@@ -51,7 +51,7 @@ const process = async () => {
 
         if (!leadResponse.success) {
           createLogger.error({
-            model: `lead/getPolicyBySubscriptionId`,
+            model: `lead/getDiscountBySubscriptionId`,
             error: leadResponse.error,
           });
           return;
@@ -77,7 +77,7 @@ const process = async () => {
 
           if (!policyResponse.success) {
             createLogger.error({
-              model: `policy/create`,
+              model: `policy/create (1)`,
               error: policyResponse.error,
             });
             return;
@@ -87,6 +87,14 @@ const process = async () => {
             "/webHook/subscriptionActivated",
             { subscription_id }
           );
+
+          if (paymentReveniuResponse.status !== 200) {
+            createLogger.error({
+              url: `https://api.serviclick.cl/api/webHook/subscriptionActivated`,
+              error: paymentReveniuResponse.statusText,
+            });
+            return;
+          }
         }
 
         const cronResponse = await cronModel.process(cron_id);
@@ -100,7 +108,7 @@ const process = async () => {
         }
 
         createLogger.info({
-          model: "reveniu/createPaymentModel",
+          model: "cron/process",
           message: {
             subscription_id,
             date: cronResponse.data.processingdate,
@@ -134,6 +142,14 @@ const process = async () => {
         const paymentReveniuResponse = await apiReveniu.get(
           `/subscriptions/${subscription_id}/payments`
         );
+
+        if (paymentReveniuResponse.status !== 200) {
+          createLogger.error({
+            url: `${config.reveniu.URL.base}/subscriptions/${subscription_id}/payments`,
+            error: paymentReveniuResponse.statusText,
+          });
+          return;
+        }
 
         const { payments } = paymentReveniuResponse.data;
 
@@ -213,7 +229,7 @@ const process = async () => {
               }
 
               createLogger.info({
-                model: "reveniu/createPaymentModel",
+                model: "cron/process",
                 message: {
                   subscription_id,
                   date: payment.date,
@@ -254,7 +270,7 @@ const process = async () => {
 
           if (!policyResponse.success) {
             createLogger.error({
-              model: `policy/create`,
+              model: `policy/create (2)`,
               error: policyResponse.error,
             });
             return;
@@ -264,6 +280,14 @@ const process = async () => {
             "/webHook/subscriptionActivated",
             { subscription_id }
           );
+
+          if (paymentReveniuResponse.status !== 200) {
+            createLogger.error({
+              url: `https://api.serviclick.cl/api/webHook/subscriptionActivated`,
+              error: paymentReveniuResponse.statusText,
+            });
+            return;
+          }
         }
 
         subscriptions.push({ subscription_id: subscription_id, payments });
