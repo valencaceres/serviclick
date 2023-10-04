@@ -26,30 +26,30 @@ export default authMiddleware({
       return NextResponse.next();
     }
 
-    /*  const userRoles = (auth.sessionClaims as any).publicMeta?.roles;
-     if (!userRoles) {
-       if (req.nextUrl.pathname !== "/unauthorized") {
-         const redirectURL = new URL("/unauthorized", req.url);
-         return NextResponse.redirect(redirectURL);
-       }
-     } else {
-       // Check if user has the "admin" role and the required permission for it
-       const userRoleInOperaciones = userRoles["admin"];
-       if (userRoleInOperaciones && roles[userRoleInOperaciones as UserRole]) {
-         const rolePermissions = roles[userRoleInOperaciones as UserRole];
-         for (const permission of rolePermissions) {
-           if (permission.test(req.nextUrl.pathname)) {
-             return NextResponse.next();
-           }
-         }
-       }
-     }
- 
-     // If user's role doesn't provide access to the route, redirect to unauthorized page
-     if (req.nextUrl.pathname !== "/unauthorized") {
-       const redirectURL = new URL("/unauthorized", req.url);
-       return NextResponse.redirect(redirectURL);
-     } */
+    const userRoles = (auth.sessionClaims as any).publicMeta?.roles;
+    if (!userRoles) {
+      if (req.nextUrl.pathname !== "/unauthorized") {
+        const redirectURL = new URL("/unauthorized", req.url);
+        return NextResponse.redirect(redirectURL);
+      }
+    } else {
+      // Check if user has the "admin" role and the required permission for it
+      const userRoleInOperaciones = userRoles["admin"];
+      if (userRoleInOperaciones && roles[userRoleInOperaciones as UserRole]) {
+        const rolePermissions = roles[userRoleInOperaciones as UserRole];
+        for (const permission of rolePermissions) {
+          if (permission.test(req.nextUrl.pathname)) {
+            return NextResponse.next();
+          }
+        }
+      }
+    }
+
+    // If user's role doesn't provide access to the route, redirect to unauthorized page
+    if (req.nextUrl.pathname !== "/unauthorized") {
+      const redirectURL = new URL("/unauthorized", req.url);
+      return NextResponse.redirect(redirectURL);
+    }
   },
 });
 

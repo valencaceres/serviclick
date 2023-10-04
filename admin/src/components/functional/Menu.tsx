@@ -26,7 +26,7 @@ const routes = [
   },
   {
     text: "Operaciones",
-    roles: ["admin", "user"],
+    roles: ["admin"],
     subRoutes: [
       {
         text: "Reembolsos",
