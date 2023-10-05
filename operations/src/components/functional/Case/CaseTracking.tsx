@@ -61,10 +61,11 @@ const CaseTracking = ({ thisCase }: any) => {
     thisCase?.contractor_id
   );
   const { data: insured } = useQueryInsured().useGetById(thisCase?.insured_id);
+
   const { data: customerAccount } =
-    useQueryInsured().useGetCustomerAccountByInsuredRut(insured.rut);
-  /*  const { mutate: updateCase } = useQueryCase().useCreate();  */
-  console.log(customerAccount);
+    useQueryInsured().useGetCustomerAccountByInsuredRut(insured?.rut);
+  const { mutate: updateCustomerAccount } =
+    useQueryInsured().useUpdateCustomerAccount();
   const { mutate: updateCase } = useQueryCase().useCreate();
   const { mutate: assignPartner } = useQueryCase().useAssignPartner();
   const { mutate: assignSpecialist } = useQueryCase().useAssignSpecialist();
@@ -252,8 +253,22 @@ const CaseTracking = ({ thisCase }: any) => {
             },
             {
               onSuccess: () => {
-                queryClient.invalidateQueries(["case", thisCase?.case_id]);
-                router.push(`/case/${thisCase?.case_id}/resolución`);
+                updateCustomerAccount(
+                  {
+                    rut: insured?.rut,
+                    bank: bankName,
+                    account_number: bankNumber,
+                  },
+                  {
+                    onSuccess: () => {
+                      queryClient.invalidateQueries([
+                        "case",
+                        thisCase?.case_id,
+                      ]);
+                      router.push(`/case/${thisCase?.case_id}/resolución`);
+                    },
+                  }
+                );
               },
             }
           );
@@ -319,6 +334,18 @@ const CaseTracking = ({ thisCase }: any) => {
       setConfirmTime(assignedSpecialist?.scheduled_time);
     }
   }, [stages, stage, assignedPartner, assignedSpecialist, thisCase?.stages]);
+
+  useEffect(() => {
+    if (customerAccount) {
+      if (customerAccount.bank && customerAccount.account_number) {
+        setBankNumber(customerAccount.account_number);
+        setBankName(customerAccount.bank);
+      } else {
+        setBankNumber("");
+        setBankName("");
+      }
+    }
+  }, [customerAccount]);
 
   return (
     <form>

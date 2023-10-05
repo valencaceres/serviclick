@@ -53,8 +53,7 @@ const DashboardPage = () => {
     setTitleUI("Dashboard");
   }, []);
   const { data } = useQueryCase().useGetStatistics();
-  console.log(data);
-  let totalReimbursmentAmount = data.casesReimbursment.reduce(
+  let totalReimbursmentAmount = data?.casesReimbursment.reduce(
     (total: any, item: any) => {
       return total + item.totalReimbursmentsAmount;
     },
@@ -75,7 +74,7 @@ const DashboardPage = () => {
           </CardHeader>
           <CardContent>
             <h2 className="text-2xl font-bold">
-              {data?.totalCases[0].totalCases} Casos
+              {data?.totalCases[0]?.totalCases} Casos
             </h2>
           </CardContent>
         </Card>
@@ -88,7 +87,7 @@ const DashboardPage = () => {
           </CardHeader>
           <CardContent>
             <h2 className="text-2xl font-bold">
-              {data?.totalCases[0].totalActiveCases} Casos activos
+              {data?.totalCases[0]?.totalActiveCases} Casos activos
             </h2>
           </CardContent>
         </Card>
@@ -101,7 +100,7 @@ const DashboardPage = () => {
           </CardHeader>
           <CardContent>
             <h2 className="text-2xl font-bold">
-              {data?.totalCases[0].totalInactiveCases} Casos cerrados
+              {data?.totalCases[0]?.totalInactiveCases} Casos cerrados
             </h2>
           </CardContent>
         </Card>

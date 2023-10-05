@@ -28,6 +28,7 @@ const createModel: any = async (
     );
 
     let query: string;
+    let isCustomerNew: boolean = false;
     if (resultCustomer.rows.length > 0) {
       query = `
         UPDATE  app.customer
@@ -51,6 +52,8 @@ const createModel: any = async (
                 email,
                 phone) 
         VALUES( $1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`;
+
+      isCustomerNew = true;
     }
     const result = await pool.query(query, arrayValues);
 
@@ -65,7 +68,16 @@ const createModel: any = async (
       email: result.rows[0].email,
       phone: result.rows[0].phone,
     };
-
+    if (isCustomerNew) {
+      await pool.query(
+        `
+        INSERT INTO app.customeraccount (customer_id)
+        VALUES ($1)
+        RETURNING *
+      `,
+        [data.id]
+      );
+    }
     return { success: true, data, error: null };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };

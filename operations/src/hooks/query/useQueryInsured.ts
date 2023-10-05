@@ -1,6 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, QueryClient } from "@tanstack/react-query";
 
 import { apiInstance } from "~/utils/api";
+
+const queryClient = new QueryClient();
 
 const getByRut = async (rut: string) => {
   const { data } = await apiInstance.get(`/insured/getByRut/${rut}`);
@@ -46,8 +48,21 @@ const useGetCustomerAccountByInsuredRut = (rut: string) => {
   );
 }
 
+const updateCustomerAccount = async (customerAccountData: any) => {
+  const { data } = await apiInstance.put(`/customer/updateCustomerAccount`, customerAccountData);
+  return data;
+};
+
+const useUpdateCustomerAccount = () => {
+  return useMutation(["customer"], updateCustomerAccount, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["customer"]);
+    },
+  });
+};
+
 const useQueryInsured = () => {
-  return { useGetByRut, useGetById, useGetCustomerAccountByInsuredRut };
+  return { useGetByRut, useGetById, useGetCustomerAccountByInsuredRut, useUpdateCustomerAccount };
 }
 
 export default useQueryInsured;

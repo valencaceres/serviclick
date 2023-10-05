@@ -11,6 +11,7 @@ import * as CaseReimbursement from "../models/caseReimbursement";
 import * as CaseChat from "../models/caseChat";
 import * as Insured from "../models/insured";
 import * as Beneficiary from "../models/beneficiary";
+import * as Customer from "../models/customer";
 import { fetchClerkUser } from "../util/clerkUserData";
 
 const create = async (req: any, res: any) => {
@@ -45,10 +46,22 @@ const create = async (req: any, res: any) => {
       applicant.phone
     );
 
-    if (!applicantResponse.success) {
+    const customerResponse = await Customer.createModel(
+      applicant.rut,
+      applicant.name,
+      applicant.paternalLastName,
+      applicant.maternalLastName,
+      applicant.birthDate,
+      applicant.address,
+      applicant.district,
+      applicant.email,
+      applicant.phone
+    )
+
+    if (!applicantResponse.success || !customerResponse.success) {
       createLogger.error({
         model: `person/create`,
-        error: applicantResponse.error,
+        error: applicantResponse.error || customerResponse.error,
       });
       return res.status(500).json({ error: "Error creating person" });
     }

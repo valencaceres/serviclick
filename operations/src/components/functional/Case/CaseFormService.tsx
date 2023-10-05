@@ -171,7 +171,6 @@ const CaseFormService = ({ thisCase }: any) => {
       setUniqueAssistances([]);
     }
   }, [data?.products, selectedProduct]);
-
   const handleProductChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const productId = event.target.value;
     const product = relatedProducts.find((p: any) => p.id === productId);
