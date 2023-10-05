@@ -164,6 +164,11 @@ const CaseFormSpecialist = ({ thisCase }: any) => {
             dataValue="id"
             enabled={thisCase?.is_active === true ? true : false}
           />
+          {specialist?.length === 0 && (
+            <p className="font-bold text-red-800 ">
+              No ahi ningun especialista disponible para este servicio
+            </p>
+          )}
           {specialists?.length > 0 && (
             <ComboBox
               label="Especialista"

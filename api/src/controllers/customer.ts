@@ -78,7 +78,48 @@ const getByRutController = async (req: any, res: any) => {
   res.status(200).json(response.data);
 };
 
-export { create, getByRutController };
+const getCustomerAccountByRut = async (req: any, res: any) => {
+  const { rut } = req.params;
+  const response = await Customer.getCustomerAccountByRut(rut);
+
+  if (!response.success) {
+    createLogger.error({
+      model: "customer/getCustomerAccountByRut",
+      error: response.error,
+    });
+    res.status(500).json({ error: "Error retrieving customer account" });
+    return;
+  }
+
+  createLogger.info({
+    controller: "customer",
+    message: "OK",
+  });
+  res.status(200).json(response.data);
+};
+
+const updateCustomerAccount = async (req: any, res: any) => {
+  const { rut, bank, account_number } = req.body;
+  const response = await Customer.updateCustomerAccount(rut, bank, account_number);
+  console.log(req.body)
+  if (!response?.success) {
+    createLogger.error({
+      model: "customer/updateCustomerAccount",
+      error: response?.error,
+    });
+    res.status(500).json({ error: "Error updating customer account" });
+    return;
+  }
+
+  createLogger.info({
+    controller: "customer",
+    message: "OK",
+  });
+  res.status(200).json(response.data);
+};
+
+
+export { create, getByRutController, getCustomerAccountByRut, updateCustomerAccount };
 
 const getByRut = async (rut: string) => {
   const response = await Customer.getByRutModel(rut);

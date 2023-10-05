@@ -28,6 +28,7 @@ const createModel: any = async (
     );
 
     let query: string;
+    let isCustomerNew: boolean = false;
     if (resultCustomer.rows.length > 0) {
       query = `
         UPDATE  app.customer
@@ -51,6 +52,8 @@ const createModel: any = async (
                 email,
                 phone) 
         VALUES( $1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`;
+
+      isCustomerNew = true;
     }
     const result = await pool.query(query, arrayValues);
 
@@ -65,7 +68,16 @@ const createModel: any = async (
       email: result.rows[0].email,
       phone: result.rows[0].phone,
     };
-
+    if (isCustomerNew) {
+      await pool.query(
+        `
+        INSERT INTO app.customeraccount (customer_id)
+        VALUES ($1)
+        RETURNING *
+      `,
+        [data.id]
+      );
+    }
     return { success: true, data, error: null };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
@@ -132,4 +144,92 @@ const getByRutModel: any = async (rut: string) => {
   }
 };
 
-export { createModel, getByRutModel };
+const getCustomerAccountByRut: any = async (rut: string) => {
+  try {
+    const result = await pool.query(
+      `
+      SELECT
+      c.id AS customer_id,
+      c.rut as customer_rut,
+      ca.bank as bank,
+      ca.accountnumber as account_number
+    FROM
+      app.customer c
+    JOIN
+      app.customeraccount ca ON c.id = ca.customer_id
+    WHERE
+      c.rut = $1;`,
+      [rut]
+    );
+
+    const {
+      customer_id,
+      customer_rut,
+      bank,
+      account_number,
+    } = result.rows[0] || {
+      customer_id: "",
+      customer_rut: "",
+      bank: "",
+      account_number: "",
+    };
+
+    const data = {
+      customer_id,
+      customer_rut,
+      bank,
+      account_number,
+
+    };
+
+    return { success: true, data, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+const updateCustomerAccount = async (rut: string, bank: string, account_number: string) => {
+  try {
+    const selectResult = await pool.query(
+      `
+      SELECT
+        c.id AS customer_id,
+        c.rut as customer_rut,
+        ca.bank as bank,
+        ca.accountnumber as account_number
+      FROM
+        app.customer c
+      JOIN
+        app.customeraccount ca ON c.id = ca.customer_id
+      WHERE
+        c.rut = $1;
+      `,
+      [rut]
+    );
+    if (selectResult.rows.length > 0) {
+      const customer_id = selectResult.rows[0].customer_id;
+
+      const updateResult = await pool.query(
+        `
+        UPDATE app.customeraccount
+        SET
+          bank = $2,
+          accountnumber = $3
+        WHERE
+          customer_id = $1
+        RETURNING *; 
+        `,
+        [customer_id, bank, account_number]
+      );
+      if (updateResult.rows.length > 0) {
+        return { success: true, data: updateResult.rows[0], error: null };
+      } else {
+        console.log("No records found for update");
+        return { success: false, data: null, error: "No records found for update" };
+      }
+    }
+  } catch (e: any) {
+    return { success: false, data: null, error: e.message };
+  }
+};
+export { createModel, getByRutModel, getCustomerAccountByRut, updateCustomerAccount };

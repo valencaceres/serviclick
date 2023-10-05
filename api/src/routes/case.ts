@@ -18,11 +18,13 @@ import {
   getAssignedSpecialist,
   reimburse,
   getAssistanceData,
+  discountAssistanceData,
   getReimbursment,
   getAllReimbursements,
   updateReimbursementStatus,
   createChatMessage,
   getChatByCase,
+  getStatistics,
 } from "../controllers/case";
 import isAuthenticated from "../middlewares/isAuthenticated";
 
@@ -61,6 +63,11 @@ CaseRouter.get(
   auth,
   getAssistanceData
 );
+CaseRouter.put(
+  "/discountAssistanceData/:insured_id/:assistance_id/:product_id",
+  auth,
+  discountAssistanceData
+);
 CaseRouter.get("/getReimbursment/:case_id", auth, getReimbursment);
 CaseRouter.get("/getAllReimbursements", auth, getAllReimbursements);
 CaseRouter.put(
@@ -71,5 +78,5 @@ CaseRouter.put(
 );
 CaseRouter.post("/createChatMessage", auth, isAuthenticated, createChatMessage);
 CaseRouter.get("/getChatByCase/:case_id", auth, getChatByCase);
-
+CaseRouter.get("/getStatistics", auth, getStatistics);
 export default CaseRouter;

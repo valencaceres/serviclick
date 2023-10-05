@@ -5,6 +5,7 @@ import {
   caseStageRouter,
   caseStageAttachRouter,
 } from "./routers/case";
+import { userRouter } from "./routers/users"
 
 /**
  * This is the primary router for your server.
@@ -16,6 +17,7 @@ export const appRouter = createTRPCRouter({
   case: caseRouter,
   caseStage: caseStageRouter,
   caseStageAttach: caseStageAttachRouter,
+  users: userRouter
 });
 
 // export type definition of API

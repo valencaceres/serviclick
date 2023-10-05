@@ -36,6 +36,10 @@ const routes = [
         text: "Descuentos IMED",
         route: "/operations/imed",
       },
+      {
+        text: "Operadores",
+        route: "/operations/users",
+      },
     ],
   },
 ];

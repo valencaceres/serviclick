@@ -123,8 +123,8 @@ const CaseFormPartner = ({ thisCase }: any) => {
         <CaseDescription thisCase={thisCase} />
         <ContentCell gap="20px">
           <ComboBox
-            label="Convenio"
-            placeHolder="Seleccione convenio"
+            label="Alianza"
+            placeHolder="Seleccione alianza"
             data={partners}
             width="525px"
             value={partner}

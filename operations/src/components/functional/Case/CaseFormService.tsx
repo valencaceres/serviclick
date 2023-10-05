@@ -1,14 +1,14 @@
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { useQueryClient } from "@tanstack/react-query";
-
+import { Document, Page } from "react-pdf";
 import ComboBox from "../../ui/ComboBox";
 import { ContentCell, ContentRow } from "../../layout/Content";
 import { LoadingMessage } from "../../ui/LoadingMessage";
 import InputText from "../../ui/InputText";
 import TextArea from "../../ui/TextArea/TextArea";
 import CaseServiceTable from "./CaseServiceTable";
-
+import { Modal, Window } from "~/components/ui/Modal";
 import {
   useQueryAssistances,
   useQueryCase,
@@ -16,12 +16,13 @@ import {
   useQueryLead,
   useQueryStage,
   useQueryUF,
+  useQueryProduct,
 } from "../../../hooks/query";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import { Button } from "~/components/ui/ButtonC";
 import { useDistrict } from "~/hooks";
-
+import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 interface IAssistance {
   id: string;
   name: string;
@@ -40,6 +41,8 @@ interface IProduct {
   name: string;
   assistance: IAssistance;
   created_at: string;
+  start_date: string;
+  end_date: string;
 }
 
 const CaseFormService = ({ thisCase }: any) => {
@@ -57,9 +60,12 @@ const CaseFormService = ({ thisCase }: any) => {
   const [stage, setStage] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [formValues, setFormValues] = useState<{ [key: string]: any }>({});
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const productId = selectedProduct?.id ?? "";
 
   const { list: districtList } = useDistrict();
   const { user } = useUser();
+  const isAdmin = user?.publicMetadata?.roles?.operaciones === "admin";
 
   const { data: ufValue } = useQueryUF().useGetUFValue();
   const { data: stageData } = useQueryStage().useGetAll();
@@ -75,19 +81,46 @@ const CaseFormService = ({ thisCase }: any) => {
     useQueryContractor().useGetById(thisCase?.contractor_id);
   const { data: contractorSubscriptions } =
     useQueryContractor().useGetProductsByContractor(thisCase?.contractor_id);
+  const { data: pdfProductPlan } =
+    useQueryProduct().useGetContractByProductPlanId(
+      /*    productId,
+      thisCase?.contractor_id */
+      "1a6d08b0-f27a-4de0-8e1d-855bead4282f",
+      "7ea804e5-6de1-4e60-affc-f5b31af90ba3"
+    );
+  console.log(pdfProductPlan);
   const { mutate: updateCase } = useQueryCase().useCreate();
   const { mutate: assignValue } = useQueryAssistances().useAssignValue();
   const { mutate: createLead } = useQueryLead().useAddFromCase();
 
+  /*   const pdfBase64 = Buffer.from(pdfProductPlan).toString("base64");
+  const pdfDataUrl = `data:application/pdf;base64,${pdfBase64}`;
+  console.log(pdfDataUrl); */
+  console.log(contractorSubscriptions);
   const selectedProductCreatedAt = useMemo(() => {
     const date = new Date(selectedProduct?.created_at || "");
-    return date.toLocaleDateString("es-CL", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
-  }, [selectedProduct]);
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
 
+    return `${day}/${month}/${year}`;
+  }, [selectedProduct]);
+  const selectedProductStartDate = useMemo(() => {
+    const date = new Date(selectedProduct?.start_date || "");
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  }, [selectedProduct]);
+  const selectedProductEndDate = useMemo(() => {
+    const date = new Date(selectedProduct?.end_date || "");
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  }, [selectedProduct]);
   useEffect(() => {
     if (!data) {
       const productsMap = new Map(
@@ -137,7 +170,6 @@ const CaseFormService = ({ thisCase }: any) => {
       setUniqueAssistances([]);
     }
   }, [data?.products, selectedProduct]);
-
   const handleProductChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const productId = event.target.value;
     const product = relatedProducts.find((p: any) => p.id === productId);
@@ -179,8 +211,11 @@ const CaseFormService = ({ thisCase }: any) => {
     if (currentEventDate) setEventDate(new Date(currentEventDate));
     if (currentDistrict) setDistrict(currentDistrict);
   }, [currentDescription, currentDistrict, currentEventDate, currentStage]);
-
   const handleAddService = () => {
+    if (thisCase?.assistance_id !== null && !isAdmin) {
+      router.push(`/case/${thisCase?.case_id}/evaluación del evento`);
+      return;
+    }
     if (selectedAssistance && selectedProduct && description) {
       setError(null);
       for (const key in formValues) {
@@ -249,6 +284,10 @@ const CaseFormService = ({ thisCase }: any) => {
     }
   }, [thisCase, relatedProducts, uniqueAssistances]);
 
+  const closeModal = () => {
+    setModalIsOpen(false);
+  };
+
   return (
     <div>
       <ContentCell gap="10px">
@@ -273,7 +312,11 @@ const CaseFormService = ({ thisCase }: any) => {
             placeHolder="Seleccione producto"
             width="525px"
             value={selectedProduct?.id || ""}
-            enabled={thisCase?.is_active || !thisCase ? true : false}
+            enabled={
+              thisCase?.is_active ||
+              (!thisCase ? true : false) ||
+              !(thisCase?.assistance_id !== null && !isAdmin)
+            }
             onChange={handleProductChange}
             data={relatedProducts}
             dataText="name"
@@ -371,13 +414,54 @@ const CaseFormService = ({ thisCase }: any) => {
               <h2 className="text-xl font-semibold text-secondary-500">
                 {selectedProduct?.name}
               </h2>
-              <p className="text-secondary-500">
-                Fecha de adquisición:{" "}
-                <span className="font-semibold">
-                  {selectedProductCreatedAt}
-                </span>
-              </p>
+              <div className="flex gap-2">
+                <p className="text-secondary-500">
+                  Fecha de adquisición:{" "}
+                  <span className="font-semibold">
+                    {selectedProductCreatedAt}
+                  </span>
+                </p>
+              </div>
+              {selectedProduct?.start_date != null && (
+                <div className="flex gap-2">
+                  <p className="text-secondary-500">
+                    Fecha de inicio:{" "}
+                    <span className="font-semibold">
+                      {selectedProductStartDate}
+                    </span>
+                  </p>
+                  {selectedProduct?.end_date != null && (
+                    <p className="text-secondary-500">
+                      Fecha de termino:{" "}
+                      <span className="font-semibold">
+                        {selectedProductEndDate}
+                      </span>
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
+            {/*      {pdfProductPlan && (
+              <>
+                {" "}
+                <Button
+                  disabled={
+                    selectedProduct != null && selectedAssistance ? false : true
+                  }
+                  type="button"
+                  onClick={() => setModalIsOpen(true)}
+                >
+                  Ver Contrato
+                </Button>
+                <Modal showModal={modalIsOpen}>
+                  <Window title="Contrato" setClosed={closeModal}></Window>
+                  <Document file={pdfDataUrl}>
+                    <Page pageNumber={1} />
+                  </Document>
+                  <Button onClick={closeModal}>Cerrar</Button>
+                </Modal>
+              </>
+            )} */}
             <CaseServiceTable
               product={selectedProduct}
               assistance={selectedAssistance}
@@ -411,7 +495,10 @@ const CaseFormService = ({ thisCase }: any) => {
             </ContentRow>
             <TextArea
               value={description}
-              disabled={thisCase?.is_active ? false : true}
+              disabled={
+                (thisCase?.is_active ? false : true) ||
+                (thisCase.assistance_id !== null && !isAdmin)
+              }
               onChange={(e: any) => setDescription(e.target.value)}
               label="Descripción del evento"
               width="525px"

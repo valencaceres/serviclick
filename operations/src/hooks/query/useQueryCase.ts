@@ -20,6 +20,11 @@ const getAll = async () => {
   return data;
 };
 
+const getStatistics = async () => {
+  const { data } = await apiInstance.get(`/case/getStatistics`);
+  return data;
+};
+
 const getCaseById = async (id: string) => {
   const { data } = await apiInstance.get(`/case/getById/${id}`);
 
@@ -91,6 +96,18 @@ const getAssistanceData = async (
   return data;
 };
 
+const discountAssistanceData = async (
+  insured_id: string,
+  assistance_id: string,
+  product_id: string
+) => {
+  const { data } = await apiInstance.put(
+    `/case/discountAssistanceData/${insured_id}/${assistance_id}/${product_id}`
+  );
+  return data;
+};
+
+
 const getReimbursment = async (case_id: string) => {
   const { data } = await apiInstance.get(`/case/getReimbursment/${case_id}`);
   return data;
@@ -117,6 +134,16 @@ const createChatMessage = async (messageData: any) => {
   return data;
 };
 
+const getUserByClerkId = async (ids: string[]) => {
+  try {
+    const { data } = await apiInstance.post(`/user/getByIds`, { ids });
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const getChatByCase = async (case_id: string) => {
   const { data } = await apiInstance.get(`/case/getChatByCase/${case_id}`);
   return data;
@@ -124,6 +151,10 @@ const getChatByCase = async (case_id: string) => {
 
 const useGetAll = () => {
   return useQuery(["cases"], getAll);
+};
+
+const useGetStatistics = () => {
+  return useQuery(["cases"], getStatistics);
 };
 
 const useGetById = (id: string) => {
@@ -218,6 +249,17 @@ const useGetAssistanceData = (
   );
 };
 
+const useDiscountAssistanceData = (
+  insured_id: string,
+  assistance_id: string,
+  product_id: string
+) => {
+  return useMutation(
+    ["case", insured_id, assistance_id, product_id],
+    () => discountAssistanceData(insured_id, assistance_id, product_id),
+  );
+};
+
 const useGetReimbursment = (case_id: string) => {
   return useQuery(["caseReimburse", case_id], () => getReimbursment(case_id), {
     enabled: !!case_id,
@@ -247,6 +289,9 @@ const useGetBeneficiaryByRut = (rut: string) => {
     enabled: rut?.length > 10,
   });
 };
+const useGetUserByClerkId = (ids: string[]) => {
+  return useQuery(["user", ids], () => getUserByClerkId(ids));
+};
 
 const useQueryCase = () => {
   return {
@@ -262,12 +307,15 @@ const useQueryCase = () => {
     useGetAssignedSpecialist,
     useReimburse,
     useGetAssistanceData,
+    useDiscountAssistanceData,
     useGetReimbursment,
     useGetAllReimbursements,
     useUpdateReimbursementStatus,
     useCreateChatMessage,
     useGetChatByCase,
     useGetBeneficiaryByRut,
+    useGetUserByClerkId,
+    useGetStatistics,
   };
 };
 

@@ -58,7 +58,7 @@ export const years = [
 export const decisions = [
   {
     id: 1,
-    name: "Designación de convenio",
+    name: "Designación de alianza",
   },
   {
     id: 2,

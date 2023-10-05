@@ -6,7 +6,7 @@ import { sendMail } from "../util/email";
 
 import * as User from "../models/user";
 import * as Person from "../models/person";
-
+import { fetchClerkUser } from "../util/clerkUserData";
 import { IPerson } from "../interfaces/person";
 
 const create = async (req: any, res: any) => {
@@ -346,6 +346,26 @@ const updatePassword = async (req: any, res: any) => {
   res.status(200).json("OK");
 };
 
+const getByClerkId = async (req: any, res: any) => {
+  try {
+    const { ids } = req.body;
+    if (!Array.isArray(ids)) {
+      return res.status(400).json({ success: false, data: null, error: "Invalid input" });
+    }
+    const results = await Promise.all(ids.map((id: any) => fetchClerkUser(id)));
+    // Filtra los resultados para eliminar los elementos nulos o no válidos
+    const validResults = results.filter(result => result);
+
+    if (validResults.length > 0) {
+      return res.status(200).json({ success: true, data: validResults });
+    } else {
+      return res.status(500).json({ success: false, data: null, error: "Error retrieving users" });
+    }
+  } catch (e) {
+    return res.status(500).json({ success: false, data: null, error: "Error retrieving users" });
+  }
+};
+
 export {
   create,
   deleteUserById,
@@ -356,4 +376,5 @@ export {
   getAll,
   sendCredentials,
   updatePassword,
+  getByClerkId
 };

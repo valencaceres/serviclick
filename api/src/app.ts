@@ -5,6 +5,7 @@ import { reqLogger } from "./middlewares/logger";
 import { allowedOrigins } from "./util/allowedOrigins";
 import createLogger from "./util/logger";
 import { setSecurityHeaders } from "./middlewares/setSecurityHeaders";
+import path from "path";
 
 const corsOptions = {
   preflightContinue: false,
@@ -83,6 +84,11 @@ function initializeRoutes(server: Express) {
   routeMappings.forEach((route) => {
     server.use(route.path, reqLogger, route.router);
   });
+
+  const rutaVirtual = '/files/pdf/products';
+  const rutaFisica = path.join(__dirname, '..', 'productplans_pdfs');
+  server.use(rutaVirtual, express.static(rutaFisica));
+
 }
 
 const server = express();

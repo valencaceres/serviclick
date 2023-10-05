@@ -62,7 +62,6 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
       },
     });
   };
-
   const handleContinue = () => {
     updateCase(
       {

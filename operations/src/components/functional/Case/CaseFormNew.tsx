@@ -106,6 +106,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
   const { data: newCaseNumber } = useQueryCase().useGetNewCaseNumber();
 
   const { data, isLoading } = useQueryCase().useGetBeneficiaryByRut(rut);
+  const isAdmin = user?.publicMetadata?.roles?.operaciones === "admin";
   const { data: retail } = useQueryContractor().useGetByBeneficiaryId(
     data?.insured?.id
   );
@@ -417,7 +418,9 @@ const BeneficiaryForm = ({ thisCase }: any) => {
                   placeholder="Rut"
                   maxLength={9}
                   disabled={
-                    isLoading || thisCase?.is_active || !thisCase === true
+                    isLoading ||
+                    (thisCase?.is_active && isAdmin) ||
+                    !thisCase === true
                       ? false
                       : true
                   }
@@ -438,7 +441,9 @@ const BeneficiaryForm = ({ thisCase }: any) => {
                   id="birthDate"
                   placeholder="Fecha de nacimiento"
                   disabled={
-                    isLoading || thisCase?.is_active || !thisCase === true
+                    isLoading ||
+                    (thisCase?.is_active && isAdmin) ||
+                    !thisCase === true
                       ? false
                       : true
                   }
@@ -462,7 +467,9 @@ const BeneficiaryForm = ({ thisCase }: any) => {
                 id="name"
                 placeholder="Nombres"
                 disabled={
-                  isLoading || thisCase?.is_active || !thisCase === true
+                  isLoading ||
+                  (thisCase?.is_active && isAdmin) ||
+                  !thisCase === true
                     ? false
                     : true
                 }
@@ -489,7 +496,9 @@ const BeneficiaryForm = ({ thisCase }: any) => {
                   id="paternalLastName"
                   placeholder="Apellido paterno"
                   disabled={
-                    isLoading || thisCase?.is_active || !thisCase === true
+                    isLoading ||
+                    (thisCase?.is_active && isAdmin) ||
+                    !thisCase === true
                       ? false
                       : true
                   }
@@ -517,7 +526,9 @@ const BeneficiaryForm = ({ thisCase }: any) => {
                   id="maternalLastName"
                   placeholder="Apellido materno"
                   disabled={
-                    isLoading || thisCase?.is_active || !thisCase === true
+                    isLoading ||
+                    (thisCase?.is_active && isAdmin) ||
+                    !thisCase === true
                       ? false
                       : true
                   }
@@ -543,7 +554,9 @@ const BeneficiaryForm = ({ thisCase }: any) => {
                 id="address"
                 placeholder="Dirección"
                 disabled={
-                  isLoading || thisCase?.is_active || !thisCase === true
+                  isLoading ||
+                  (thisCase?.is_active && isAdmin) ||
+                  !thisCase === true
                     ? false
                     : true
                 }
@@ -562,6 +575,13 @@ const BeneficiaryForm = ({ thisCase }: any) => {
                 onValueChange={(value) => {
                   setValue("district", value);
                 }}
+                disabled={
+                  isLoading ||
+                  (thisCase?.is_active && isAdmin) ||
+                  !thisCase === true
+                    ? false
+                    : true
+                }
               >
                 <SelectTrigger className="h-10 rounded-sm border-dusty-gray border-opacity-40 py-6">
                   <SelectValue placeholder="Seleccione comuna" />
@@ -600,7 +620,9 @@ const BeneficiaryForm = ({ thisCase }: any) => {
                   id="email"
                   placeholder="Correo electrónico"
                   disabled={
-                    isLoading || thisCase?.is_active || !thisCase === true
+                    isLoading ||
+                    (thisCase?.is_active && isAdmin) ||
+                    !thisCase === true
                       ? false
                       : true
                   }
@@ -626,7 +648,9 @@ const BeneficiaryForm = ({ thisCase }: any) => {
                   id="phone"
                   placeholder="Teléfono"
                   disabled={
-                    isLoading || thisCase?.is_active || !thisCase === true
+                    isLoading ||
+                    (thisCase?.is_active && isAdmin) ||
+                    !thisCase === true
                       ? false
                       : true
                   }

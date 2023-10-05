@@ -11,6 +11,7 @@ import {
   getAll,
   sendCredentials,
   updatePassword,
+  getByClerkId
 } from "../controllers/user";
 import isAuthenticated from "../middlewares/isAuthenticated";
 import isAdmin from "../middlewares/isAdmin";
@@ -26,5 +27,6 @@ UserRouter.get("/getByEmail/:email", auth, getByEmail);
 UserRouter.get("/getAll/", auth, getAll);
 UserRouter.post("/sendCredentials", auth, isAuthenticated, isAdmin, sendCredentials);
 UserRouter.post("/updatePassword", auth, isAuthenticated, isAdmin, updatePassword);
+UserRouter.post("/getByIds", auth, getByClerkId);
 
 export default UserRouter;

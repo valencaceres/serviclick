@@ -11,6 +11,9 @@ import * as ProductFamilyValue from "../models/productFamilyValue";
 import * as ProductPlan from "../models/productPlan";
 import * as Value from "../models/value";
 import * as Plan from "../models/plan";
+import fs from "fs";
+import dirPath from "path";
+
 
 type ProductT = {
   name: string;
@@ -689,8 +692,7 @@ const createProductPlans = async (
       const planResponseCompany = await axios[
         company_plan_id > 0 ? "patch" : "post"
       ](
-        `${config.reveniu.URL.plan}${
-          company_plan_id > 0 ? company_plan_id : ""
+        `${config.reveniu.URL.plan}${company_plan_id > 0 ? company_plan_id : ""
         }`,
         {
           ...productPlanData,
@@ -706,9 +708,8 @@ const createProductPlans = async (
 
       createLogger.info({
         method: company_plan_id > 0 ? "patch" : "post",
-        url: `${config.reveniu.URL.plan}${
-          company_plan_id > 0 ? company_plan_id : ""
-        }`,
+        url: `${config.reveniu.URL.plan}${company_plan_id > 0 ? company_plan_id : ""
+          }`,
         data: {
           ...productPlanData,
           is_custom_amount: true,
@@ -761,8 +762,7 @@ const createProductPlans = async (
     const planResponseCustomer = await axios[
       customer_plan_id > 0 ? "patch" : "post"
     ](
-      `${config.reveniu.URL.plan}${
-        customer_plan_id > 0 ? customer_plan_id : ""
+      `${config.reveniu.URL.plan}${customer_plan_id > 0 ? customer_plan_id : ""
       }`,
       {
         ...productPlanData,
@@ -776,9 +776,8 @@ const createProductPlans = async (
 
     createLogger.info({
       method: customer_plan_id > 0 ? "patch" : "post",
-      url: `${config.reveniu.URL.plan}${
-        customer_plan_id > 0 ? customer_plan_id : ""
-      }`,
+      url: `${config.reveniu.URL.plan}${customer_plan_id > 0 ? customer_plan_id : ""
+        }`,
       data: {
         ...productPlanData,
         is_custom_amount: false,
@@ -1035,6 +1034,31 @@ const listByFamilies = async (req: any, res: any) => {
   return res.status(200).json(result.data);
 };
 
+const getPdfContractById = async (req: any, res: any) => {
+  try {
+    const { product_id, agent_id } = req.params;
+    const result = await ProductPlan.getByProductIdModel(product_id, agent_id);
+    const filteredData = result?.data?.filter((item: any) => item.type === 'customer');
+    const rutaVirtual = `/files/pdf/products/${filteredData[0]?.id}.pdf`;
+
+    const response = await axios.get(`http://localhost:3001${rutaVirtual}`, { responseType: 'arraybuffer' });
+
+    if (response.status === 200) {
+      res.setHeader('Content-Type', 'application/pdf');
+      res.send(response.data);
+    } else {
+      res.status(404).json({ error: 'PDF not found' });
+    }
+
+    createLogger.info({
+      controller: 'products/getPdfContractById',
+      message: 'OK',
+    });
+  } catch (error) {
+    console.error('Error en el controlador getPdfContractById:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 export {
   createProduct,
   createPlans,
@@ -1051,4 +1075,5 @@ export {
   getByProductPlanId,
   getByRetailRut,
   listByFamilies,
+  getPdfContractById,
 };

@@ -356,10 +356,194 @@ const getAssistanceData: any = async (
   }
 };
 
+const discountAssistanceData = async (
+  insured_id: string,
+  assistance_id: string,
+  product_id: string
+): Promise<{ success: boolean; message?: string; error?: string }> => {
+  try {
+    // Obtener el valor actual de used_events y remaining_events
+    const result = await pool.query(
+      `UPDATE app.productassistance pa
+       SET 
+          events = events - 1
+
+       FROM ( 
+           SELECT pas.id,
+                  max(pas.events) as max_events,
+                  sum(case when csr.amount > 0 and (crm.status = 'Pendiente' or crm.status = 'Aprobado') then 1 else 0 end) as used_events
+           FROM app.case cas
+               LEFT JOIN app.casestage cst ON cst.case_id = cas.id
+               LEFT JOIN app.casestageresult csr ON cst.id = csr.casestage_id
+               LEFT JOIN app.casereimbursment crm ON csr.id = crm.casestageresult_id
+               INNER JOIN app.assistance asi ON cas.assistance_id = asi.id
+               INNER JOIN app.productassistance pas ON asi.id = pas.assistance_id
+               INNER JOIN app.product pro ON pas.product_id = pro.id and cas.product_id = pro.id
+           WHERE cas.insured_id = $1
+               AND cas.assistance_id = $2
+               AND cas.product_id = $3
+           GROUP BY pas.id
+       ) AS subquery
+       WHERE pa.id = subquery.id
+       RETURNING *`,
+      [insured_id, assistance_id, product_id]
+    );
+
+    console.log(result.rows);
+
+    if (result.rows.length > 0) {
+      return {
+        success: true,
+        message: "Event discounted successfully",
+      };
+    } else {
+      return {
+        success: false,
+        error: "No events available to discount",
+      };
+    }
+  } catch (e) {
+    return {
+      success: false,
+      error: (e as Error).message,
+    };
+  }
+};
+
+const getMonthlyCases: any = async () => {
+  try {
+    const monthNames = [
+      "Ene",
+      "Feb",
+      "Mar",
+      "Abr",
+      "May",
+      "Jun",
+      "Jul",
+      "Ago",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dic",
+    ];
+
+    const result = await pool.query(
+      `SELECT
+      EXTRACT(YEAR FROM cas.createddate) AS year,
+      EXTRACT(MONTH FROM cas.createddate) AS month,
+      COUNT(1) AS total_cases,
+      COUNT(CASE WHEN cas.isactive = true THEN 1 END) AS active_cases,
+      COUNT(CASE WHEN cas.isactive = false THEN 1 END) AS inactive_cases
+  FROM
+      app.case cas
+  GROUP BY
+      EXTRACT(YEAR FROM cas.createddate),
+      EXTRACT(MONTH FROM cas.createddate)
+  ORDER BY
+      EXTRACT(YEAR FROM cas.createddate) ASC,
+      EXTRACT(MONTH FROM cas.createddate) ASC;
+      `
+    );
+
+    let data = result.rows.map((item) => {
+      const monthYear = `${monthNames[item.month - 1]}, ${item.year}`;
+      return {
+        monthYear: monthYear,
+        cases: parseInt(item.total_cases),
+        activeCases: parseInt(item.active_cases),
+        inactiveCases: parseInt(item.inactive_cases),
+      };
+    });
+
+    return { success: true, data, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+const getCasesReimbursment: any = async () => {
+  try {
+    const monthNames = [
+      "Ene",
+      "Feb",
+      "Mar",
+      "Abr",
+      "May",
+      "Jun",
+      "Jul",
+      "Ago",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dic",
+    ];
+
+    const result = await pool.query(
+      `SELECT
+      EXTRACT(YEAR FROM cas.createddate) AS year,
+      EXTRACT(MONTH FROM cas.createddate) AS month,
+      COUNT(reimb.id) AS total_reimbursements,
+      SUM(COALESCE(reimb.amount, 0) + COALESCE(reimb.imed_amount, 0)) AS total_reimbursement_amount
+    FROM
+      app.casereimbursment reimb
+      INNER JOIN app.case cas ON reimb.case_id = cas.id
+    GROUP BY
+      EXTRACT(YEAR FROM cas.createddate),
+      EXTRACT(MONTH FROM cas.createddate)
+    ORDER BY
+      EXTRACT(YEAR FROM cas.createddate) ASC,
+      EXTRACT(MONTH FROM cas.createddate) ASC;
+        `
+    );
+
+    let data = result.rows.map((item) => {
+      const monthYear = `${monthNames[item.month - 1]}, ${item.year}`;
+      return {
+        monthYear: monthYear,
+        totalReimbursments: parseInt(item.total_reimbursements),
+        totalReimbursmentsAmount: parseInt(item.total_reimbursement_amount),
+      };
+    });
+
+    return { success: true, data, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+const getTotalCases: any = async () => {
+  try {
+    const result = await pool.query(
+      `SELECT
+      COUNT(1) AS total_cases,
+      COUNT(CASE WHEN cas.isactive = true THEN 1 END) AS active_cases,
+      COUNT(CASE WHEN cas.isactive = false THEN 1 END) AS inactive_cases
+  FROM
+      app.case cas;
+        `
+    );
+
+    let data = result.rows.map((item) => {
+      return {
+        totalCases: parseInt(item.total_cases),
+        totalInactiveCases: parseInt(item.inactive_cases),
+        totalActiveCases: parseInt(item.active_cases),
+      };
+    });
+    return { success: true, data, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+
 export {
   create,
   getAll,
   getBeneficiaryData,
   getNewCaseNumber,
   getAssistanceData,
+  discountAssistanceData,
+  getMonthlyCases,
+  getCasesReimbursment,
+  getTotalCases,
 };

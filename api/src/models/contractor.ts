@@ -163,14 +163,16 @@ const getAll: any = async (
 ) => {
   try {
     const _where =
-      contractorType !== "" || active || nameLike !== ""
-        ? ` ${contractorType && contractorType !== ""
-          ? `and type = '${contractorType}'`
-          : ""
-        } ${active ? `and active_product > 0` : ""} ${nameLike && nameLike !== ""
-          ? `and lower(name) like '%${nameLike.toLowerCase()}%'`
-          : ""
-        }`
+      contractorType !== "" || active || nameLike !== "" || rut !== ""
+        ? ` ${
+            contractorType && contractorType !== ""
+              ? `and type = '${contractorType}'`
+              : ""
+          } ${active ? `and active_product > 0` : `and active_product > 0`} ${
+            nameLike && nameLike !== ""
+              ? `and lower(name) like '%${nameLike.toLowerCase()}%'`
+              : ""
+          } ${rut && rut !== "" ? `and rut = '${rut}'` : ""}`
         : ``;
     const result = await pool.query(_selectAll(_where));
 
@@ -179,7 +181,6 @@ const getAll: any = async (
     return { success: false, data: null, error: (e as Error).message };
   }
 };
-
 
 const getById: any = async (id: string) => {
   try {
@@ -214,35 +215,37 @@ const getByRut: any = async (rut: string, type: string) => {
     const data =
       result.rows.length > 0
         ? {
-          id: result.rows[0].id,
-          type,
-          rut: result.rows[0].rut,
-          name: result.rows[0].name,
-          paternalLastName: result.rows[0].paternallastname,
-          maternalLastName: result.rows[0].maternallastname,
-          legalRepresentative: result.rows[0].legalrepresentative,
-          line: result.rows[0].line,
-          birthDate: result.rows[0].birthdate,
-          address: result.rows[0].address,
-          district: result.rows[0].district,
-          email: result.rows[0].email,
-          phone: result.rows[0].phone,
-        }
+            id: result.rows[0].id,
+            type,
+            rut: result.rows[0].rut,
+            companyName: result.rows[0].companyname,
+            name: result.rows[0].name,
+            paternalLastName: result.rows[0].paternallastname,
+            maternalLastName: result.rows[0].maternallastname,
+            legalRepresentative: result.rows[0].legalrepresentative,
+            line: result.rows[0].line,
+            birthDate: result.rows[0].birthdate,
+            address: result.rows[0].address,
+            district: result.rows[0].district,
+            email: result.rows[0].email,
+            phone: result.rows[0].phone,
+          }
         : {
-          id: "",
-          type,
-          rut,
-          name: "",
-          paternalLastName: "",
-          maternalLastName: "",
-          legalRepresentative: "",
-          line: "",
-          birthDate: "",
-          address: "",
-          district: "",
-          email: "",
-          phone: "",
-        };
+            id: "",
+            type,
+            rut,
+            companyName: "",
+            name: "",
+            paternalLastName: "",
+            maternalLastName: "",
+            legalRepresentative: "",
+            line: "",
+            birthDate: "",
+            address: "",
+            district: "",
+            email: "",
+            phone: "",
+          };
 
     return { success: true, data, error: null };
   } catch (e) {
@@ -274,24 +277,24 @@ const getSubscriptionById: any = async (id: string) => {
     const result = await pool.query(_selectSubscription, [id]);
     const data = result.rows.length
       ? {
-        subscription_id: result.rows[0].subscription_id,
-        name: result.rows[0].product_name,
-        frequency: result.rows[0].product_frequency,
-        price: result.rows[0].product_price,
-        currency_code: result.rows[0].product_currency_code,
-        createDate: result.rows[0].policy_createdate,
-        startDate: result.rows[0].policy_startdate,
-        assistances: result.rows.map((item: any) => {
-          return {
-            name: item.assistance_name,
-            amount: item.assistance_amount,
-            currency: item.assistance_currency,
-            maximum: item.assistance_maximum,
-            events: item.assistance_events,
-            lack: item.assistance_lack,
-          };
-        }),
-      }
+          subscription_id: result.rows[0].subscription_id,
+          name: result.rows[0].product_name,
+          frequency: result.rows[0].product_frequency,
+          price: result.rows[0].product_price,
+          currency_code: result.rows[0].product_currency_code,
+          createDate: result.rows[0].policy_createdate,
+          startDate: result.rows[0].policy_startdate,
+          assistances: result.rows.map((item: any) => {
+            return {
+              name: item.assistance_name,
+              amount: item.assistance_amount,
+              currency: item.assistance_currency,
+              maximum: item.assistance_maximum,
+              events: item.assistance_events,
+              lack: item.assistance_lack,
+            };
+          }),
+        }
       : [];
 
     return {
@@ -394,49 +397,31 @@ const getPaymentById: any = async (id: string) => {
 const getProductsByContractor = async (id: string) => {
   try {
     const result = await pool.query(
-      `SELECT 
-    id,
-    lead_id,
-    subscription_id,
-    name,
-    created_at,
-    family_id,
-    assistance_id,
-    assistance_name,
-    assistance_amount,
-    assistance_currency,
-    assistance_events,
-    assistance_lack,
-    assistance_maximum
-FROM (
-    SELECT DISTINCT
-        pro.id,
-        lea.id as lead_id,
-        lea.subscription_id,
-        pro.name,
-        to_char(pol.createdate, 'YYYY-MM-DD') as created_at,
-        asi.family_id,
-        asi.id as assistance_id,
-        asi.name as assistance_name,
-        pas.amount as assistance_amount,
-        pas.currency as assistance_currency,
-        pas.events as assistance_events,
-        pas.lack as assistance_lack,
-        pas.maximum as assistance_maximum
-    FROM app.lead lea
-    INNER JOIN app.leadproduct lpr ON lea.id = lpr.lead_id
-    INNER JOIN app.policy pol ON lea.policy_id = pol.id
-    INNER JOIN app.product pro ON lpr.product_id = pro.id
-    INNER JOIN app.productassistance pas ON pro.id = pas.product_id
-    INNER JOIN app.assistance asi ON asi.id = pas.assistance_id
-    INNER JOIN app.retailproduct rp ON rp.product_id = pro.id
-    INNER JOIN app.retail retail ON retail.id = rp.retail_id
-    INNER JOIN app.productplan p ON p.agent_id = retail.id 
-    WHERE (lea.agent_id =  $1 OR lea.customer_id = $1 )
-) AS subquery
-ORDER BY
-    created_at,
-    name;`,
+      `select 	pro.id,
+                                        lea.id as lead_id,
+                                        lea.subscription_id,
+                                        pro.name,
+                                        to_char(pol.createdate, 'YYYY-MM-DD') as created_at,
+                                        asi.family_id,
+                                        asi.id as assistance_id,
+                                        asi.name as assistance_name,
+                                        pas.amount as assistance_amount,
+                                        pas.currency as assistance_currency,
+                                        pas.events as assistance_events,
+                                        pas.lack as assistance_lack,
+                                        pas.maximum as assistance_maximum,
+                                        pol.startdate as start_date,
+                                        pol.enddate as end_date
+                                    from 	app.lead lea
+                                                inner join app.leadproduct lpr on lea.id = lpr.lead_id
+                                                inner join app.policy pol on lea.policy_id = pol.id
+                                                inner join app.product pro on lpr.product_id = pro.id
+                                                inner join app.productassistance pas on pro.id = pas.product_id
+                                                inner join app.assistance asi on asi.id = pas.assistance_id 
+                                    where 	(lea.customer_id = $1 or lea.company_id = $1)
+                                    order 	by
+                                        pol.createdate,
+                                        pro.name`,
       [id]
     );
 
@@ -450,6 +435,8 @@ ORDER BY
       subscription_id: item.subscription_id,
       name: item.name,
       created_at: item.created_at,
+      start_date: item.start_date,
+      end_date: item.end_date,
       family_id: item.family_id,
       assistances: result.rows
         .filter((row: any) => row.id === item.id)
@@ -495,5 +482,5 @@ export {
   getInsuredBySubscriptionId,
   getPaymentById,
   getProductsByContractor,
-  getByBeneficiaryId
+  getByBeneficiaryId,
 };

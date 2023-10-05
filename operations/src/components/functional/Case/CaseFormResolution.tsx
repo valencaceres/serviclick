@@ -10,6 +10,8 @@ import {
   useQueryContractor,
   useQueryStage,
   useQueryUF,
+  useQueryAssistances,
+  useQueryInsured,
 } from "../../../hooks/query";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
@@ -21,6 +23,8 @@ const CaseFormResolution = ({ thisCase }: any) => {
   const router = useRouter();
   const [action, setAction] = useState<string>("");
   const [comment, setComment] = useState<string>("");
+  const [bankNumber, setBankNumber] = useState<string>("");
+  const [bankName, setBankName] = useState<string>("");
   const { data: stages } = useQueryStage().useGetAll();
 
   const queryClient = useQueryClient();
@@ -31,7 +35,7 @@ const CaseFormResolution = ({ thisCase }: any) => {
   );
   const { data: assignedPartner } = useQueryCase().useGetAssignedPartner(
     thisCase?.case_id,
-    stages?.find((s: any) => s?.name === "Designación de convenio")?.id
+    stages?.find((s: any) => s?.name === "Designación de alianza")?.id
   );
   const { data: assignedSpecialist } = useQueryCase().useGetAssignedSpecialist(
     thisCase?.case_id,
@@ -40,8 +44,25 @@ const CaseFormResolution = ({ thisCase }: any) => {
   const { data: contractor } = useQueryContractor().useGetById(
     thisCase?.contractor_id
   );
+  const { data: insured } = useQueryInsured().useGetById(thisCase?.insured_id);
+
+  const { data: customerAccount } =
+    useQueryInsured().useGetCustomerAccountByInsuredRut(insured?.rut);
 
   const { mutate: updateCase } = useQueryCase().useCreate();
+
+  const { data: assistanceData } = useQueryCase().useGetAssistanceData(
+    thisCase?.insured_id,
+    thisCase?.assistance_id,
+    thisCase?.product_id
+  );
+
+  const { mutate: discountAssistanceData } =
+    useQueryCase().useDiscountAssistanceData(
+      thisCase?.insured_id,
+      thisCase?.assistance_id,
+      thisCase?.product_id
+    );
 
   const handleRate = (e: any) => {
     e.preventDefault();
@@ -87,6 +108,7 @@ const CaseFormResolution = ({ thisCase }: any) => {
               onSuccess: () => {
                 router.push(`/case/${thisCase?.case_id}/calificación`);
                 queryClient.invalidateQueries(["case", thisCase?.case_id]);
+                discountAssistanceData();
               },
             }
           );
@@ -118,6 +140,7 @@ const CaseFormResolution = ({ thisCase }: any) => {
         onSuccess: () => {
           router.push(`/case`);
           queryClient.invalidateQueries(["case", thisCase?.case_id]);
+          discountAssistanceData();
         },
       }
     );
@@ -139,6 +162,18 @@ const CaseFormResolution = ({ thisCase }: any) => {
       );
     }
   }, [thisCase]);
+
+  useEffect(() => {
+    if (customerAccount) {
+      if (customerAccount.bank && customerAccount.account_number) {
+        setBankNumber(customerAccount.account_number);
+        setBankName(customerAccount.bank);
+      } else {
+        setBankNumber("");
+        setBankName("");
+      }
+    }
+  }, [customerAccount]);
 
   return (
     <form>
@@ -185,6 +220,29 @@ const CaseFormResolution = ({ thisCase }: any) => {
                   width="260px"
                 />
               </ContentRow>
+              <ContentCell gap="5px">
+                <h2 className="text-xl font-semibold text-teal-blue">
+                  Datos Bancarios
+                </h2>
+                <ContentRow gap="5px">
+                  <div className="flex flex-col gap-[20px]">
+                    <InputText
+                      label={"Numero de cuenta"}
+                      value={bankNumber}
+                      type="number"
+                      width="525px"
+                      disabled={true}
+                    />
+                    <InputText
+                      label={"Banco"}
+                      value={bankName}
+                      type="text"
+                      width="525px"
+                      disabled={true}
+                    />
+                  </div>
+                </ContentRow>
+              </ContentCell>
               {thisReimbursement?.status === "Aprobado" && (
                 <ContentRow gap="5px">
                   <>
@@ -269,7 +327,7 @@ const CaseFormResolution = ({ thisCase }: any) => {
                 )}
                 {assignedPartner && (
                   <InputText
-                    label="Convenio"
+                    label="alianza"
                     value={assignedPartner?.name}
                     type="text"
                     disabled={true}

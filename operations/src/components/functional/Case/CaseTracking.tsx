@@ -10,6 +10,7 @@ import {
   useQueryContractor,
   useQueryStage,
   useQueryUF,
+  useQueryInsured,
 } from "../../../hooks/query";
 import TextArea from "../../ui/TextArea/TextArea";
 import ComboBox from "../../ui/ComboBox";
@@ -34,13 +35,15 @@ const CaseTracking = ({ thisCase }: any) => {
   const [evaluation, setEvaluation] = useState<string>("");
   const [refundAmount, setRefundAmount] = useState<number | null>(null);
   const [imedDiscount, setImedDiscount] = useState<number | null>(null);
+  const [bankNumber, setBankNumber] = useState<string>("");
+  const [bankName, setBankName] = useState<string>("");
 
   const { user } = useUser();
   const { data: ufValue } = useQueryUF().useGetUFValue();
   const { data: stages } = useQueryStage().useGetAll();
   const { data: assignedPartner } = useQueryCase().useGetAssignedPartner(
     thisCase?.case_id,
-    stages?.find((s: any) => s?.name === "Designación de convenio")?.id
+    stages?.find((s: any) => s?.name === "Designación de alianza")?.id
   );
   const { data: assignedSpecialist } = useQueryCase().useGetAssignedSpecialist(
     thisCase?.case_id,
@@ -57,7 +60,12 @@ const CaseTracking = ({ thisCase }: any) => {
   const { data: contractor } = useQueryContractor().useGetById(
     thisCase?.contractor_id
   );
+  const { data: insured } = useQueryInsured().useGetById(thisCase?.insured_id);
 
+  const { data: customerAccount } =
+    useQueryInsured().useGetCustomerAccountByInsuredRut(insured?.rut);
+  const { mutate: updateCustomerAccount } =
+    useQueryInsured().useUpdateCustomerAccount();
   const { mutate: updateCase } = useQueryCase().useCreate();
   const { mutate: assignPartner } = useQueryCase().useAssignPartner();
   const { mutate: assignSpecialist } = useQueryCase().useAssignSpecialist();
@@ -67,7 +75,7 @@ const CaseTracking = ({ thisCase }: any) => {
     (s: any) =>
       s.stage === "Solicitud reembolso" ||
       s.stage === "Designación de especialista" ||
-      s.stage === "Designación de convenio" ||
+      s.stage === "Designación de alianza" ||
       s.stage === "Descuento IMED"
   )?.stage;
 
@@ -120,7 +128,7 @@ const CaseTracking = ({ thisCase }: any) => {
               {
                 case_id: thisCase?.case_id,
                 casestage_id: stages.find(
-                  (s: any) => s.name === "Designación de convenio"
+                  (s: any) => s.name === "Designación de alianza"
                 )?.id,
                 partner_id: assignedPartner?.partner_id,
                 scheduled_date: assignedPartner?.scheduled_date,
@@ -187,7 +195,7 @@ const CaseTracking = ({ thisCase }: any) => {
               {
                 case_id: thisCase?.case_id,
                 casestage_id: stages.find(
-                  (s: any) => s.name === "Designación de convenio"
+                  (s: any) => s.name === "Designación de alianza"
                 )?.id,
                 partner_id: assignedPartner?.partner_id,
                 scheduled_date: confirmDate,
@@ -245,8 +253,22 @@ const CaseTracking = ({ thisCase }: any) => {
             },
             {
               onSuccess: () => {
-                queryClient.invalidateQueries(["case", thisCase?.case_id]);
-                router.push(`/case/${thisCase?.case_id}/resolución`);
+                updateCustomerAccount(
+                  {
+                    rut: insured?.rut,
+                    bank: bankName,
+                    account_number: bankNumber,
+                  },
+                  {
+                    onSuccess: () => {
+                      queryClient.invalidateQueries([
+                        "case",
+                        thisCase?.case_id,
+                      ]);
+                      router.push(`/case/${thisCase?.case_id}/resolución`);
+                    },
+                  }
+                );
               },
             }
           );
@@ -283,7 +305,7 @@ const CaseTracking = ({ thisCase }: any) => {
       }
     );
   };
-
+  console.log(insured);
   useEffect(() => {
     const previousEvaluation = thisCase?.stages.find(
       (s: any) => s?.stage === "Resolución"
@@ -313,6 +335,18 @@ const CaseTracking = ({ thisCase }: any) => {
     }
   }, [stages, stage, assignedPartner, assignedSpecialist, thisCase?.stages]);
 
+  useEffect(() => {
+    if (customerAccount) {
+      if (customerAccount.bank && customerAccount.account_number) {
+        setBankNumber(customerAccount.account_number);
+        setBankName(customerAccount.bank);
+      } else {
+        setBankNumber("");
+        setBankName("");
+      }
+    }
+  }, [customerAccount]);
+
   return (
     <form>
       <ContentCell gap="10px">
@@ -323,7 +357,7 @@ const CaseTracking = ({ thisCase }: any) => {
         <ContentCell gap="5px">
           {thisCase?.stages?.find(
             (s: any) =>
-              s.stage === "Designación de convenio" ||
+              s.stage === "Designación de alianza" ||
               s.stage === "Designación de especialista"
           ) ? (
             <ContentCell gap="5px">
@@ -332,7 +366,7 @@ const CaseTracking = ({ thisCase }: any) => {
               </h2>
               {assignedPartner && (
                 <InputText
-                  label="Convenio"
+                  label="Alianza"
                   value={assignedPartner?.name}
                   type="text"
                   disabled={true}
@@ -623,6 +657,31 @@ const CaseTracking = ({ thisCase }: any) => {
                     width="234px"
                     disabled
                   />
+                </ContentRow>
+              </ContentCell>
+              <ContentCell gap="5px">
+                <h2 className="text-xl font-semibold text-teal-blue">
+                  Datos Bancarios
+                </h2>
+                <ContentRow gap="5px">
+                  <div className="flex flex-col gap-[20px]">
+                    <InputText
+                      label={"Numero de cuenta"}
+                      value={bankNumber}
+                      type="number"
+                      width="525px"
+                      disabled={thisCase?.is_active === true ? false : true}
+                      onChange={(e: any) => setBankNumber(e.target.value)}
+                    />
+                    <InputText
+                      label={"Banco"}
+                      value={bankName}
+                      type="text"
+                      width="525px"
+                      disabled={thisCase?.is_active === true ? false : true}
+                      onChange={(e: any) => setBankName(e.target.value)}
+                    />
+                  </div>
                 </ContentRow>
               </ContentCell>
               <ContentCell gap="5px">

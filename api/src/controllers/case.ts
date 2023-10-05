@@ -11,6 +11,7 @@ import * as CaseReimbursement from "../models/caseReimbursement";
 import * as CaseChat from "../models/caseChat";
 import * as Insured from "../models/insured";
 import * as Beneficiary from "../models/beneficiary";
+import * as Customer from "../models/customer";
 import { fetchClerkUser } from "../util/clerkUserData";
 
 const create = async (req: any, res: any) => {
@@ -45,10 +46,22 @@ const create = async (req: any, res: any) => {
       applicant.phone
     );
 
-    if (!applicantResponse.success) {
+    const customerResponse = await Customer.createModel(
+      applicant.rut,
+      applicant.name,
+      applicant.paternalLastName,
+      applicant.maternalLastName,
+      applicant.birthDate,
+      applicant.address,
+      applicant.district,
+      applicant.email,
+      applicant.phone
+    )
+
+    if (!applicantResponse.success || !customerResponse.success) {
       createLogger.error({
         model: `person/create`,
-        error: applicantResponse.error,
+        error: applicantResponse.error || customerResponse.error,
       });
       return res.status(500).json({ error: "Error creating person" });
     }
@@ -523,6 +536,35 @@ const getAssistanceData = async (req: any, res: any) => {
   return res.status(200).json(response.data);
 };
 
+const discountAssistanceData = async (req: any, res: any) => {
+  const { insured_id, assistance_id, product_id } = req.params;
+
+  const response = await Case.discountAssistanceData(
+    insured_id,
+    assistance_id,
+    product_id
+  );
+
+  if (!response.success) {
+    createLogger.error({
+      model: `case/discountAssistanceData`,
+      error: response.error,
+    });
+    return res.status(500).json({ error: response.error });
+  }
+
+  createLogger.info({
+    controller: `case/discountAssistanceData`,
+    message: `OK - Assistance data discounted`,
+  });
+
+  if ('data' in response) {
+    return res.status(200).json(response.data);
+  } else {
+    return res.status(200).json({ message: response.message });
+  }
+};
+
 const getReimbursment = async (req: any, res: any) => {
   const { case_id } = req.params;
 
@@ -638,6 +680,54 @@ const getChatByCase = async (req: any, res: any) => {
   return res.status(200).json(response.data);
 };
 
+const getStatistics = async (req: any, res: any) => {
+  const monthlyCases = await Case.getMonthlyCases();
+
+  if (!monthlyCases.success) {
+    createLogger.error({
+      model: "case/getMonthlyCases",
+      error: monthlyCases.error,
+    });
+    res.status(500).json({ error: "Error retrieving monthly cases" });
+    return;
+  }
+
+  const casesReimbursment = await Case.getCasesReimbursment();
+
+  if (!casesReimbursment.success) {
+    createLogger.error({
+      model: "case/getCasesReimbursment",
+      error: casesReimbursment.error,
+    });
+    res.status(500).json({ error: "Error retrieving case reimbursment" });
+    return;
+  }
+  const getTotalCases = await Case.getTotalCases();
+
+  if (!getTotalCases.success) {
+    createLogger.error({
+      model: "case/getTotalCases",
+      error: getTotalCases.error,
+    });
+    res.status(500).json({ error: "Error retrieving total cases" });
+    return;
+  }
+
+  const statistics = {
+    monthlyCases: monthlyCases.data,
+    casesReimbursment: casesReimbursment.data,
+    totalCases: getTotalCases.data
+  };
+
+  createLogger.info({
+    controller: "case/getStatistics",
+    message: "OK",
+  });
+
+  res.status(200).json(statistics);
+};
+
+
 export {
   create,
   uploadDocument,
@@ -652,9 +742,11 @@ export {
   getAssignedSpecialist,
   reimburse,
   getAssistanceData,
+  discountAssistanceData,
   getReimbursment,
   getAllReimbursements,
   updateReimbursementStatus,
   createChatMessage,
   getChatByCase,
+  getStatistics
 };

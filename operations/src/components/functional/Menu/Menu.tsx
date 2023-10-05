@@ -48,8 +48,13 @@ const routes = [
   },
   {
     text: "Asistencia",
-    roles: ["user", "moderator", "admin"],
+    roles: ["moderator", "admin"],
     subRoutes: [{ text: "Casos", route: "/case" }],
+  },
+  {
+    text: "Reportes",
+    roles: ["user", "moderator", "admin"],
+    subRoutes: [{ text: "Dashboard", route: "/dashboard" }],
   },
 ];
 

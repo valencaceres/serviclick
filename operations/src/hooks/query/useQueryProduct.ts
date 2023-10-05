@@ -29,6 +29,17 @@ const getById = async (id: string) => {
   return data;
 };
 
+const getContractByProductPlanId = async (product_id: string, agent_id: string) => {
+  const { data } = await apiInstance.get(`/product/getContract/${product_id}/${agent_id}`)
+  return data;
+}
+
+const useGetContractByProductPlanId = (product_id: string, agent_id: string) => {
+  return useQuery(["product", product_id, agent_id], () => getContractByProductPlanId(product_id, agent_id), {
+    enabled: !!product_id,
+  })
+}
+
 const useGetById = (id: string) => {
   return useQuery(["product", id], () => getById(id), {
     enabled: !!id,
@@ -62,6 +73,7 @@ const useQueryProduct = () => {
     useCreate,
     useListProducts,
     useGetByRetailRut,
+    useGetContractByProductPlanId
   };
 };
 
