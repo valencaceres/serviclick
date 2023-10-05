@@ -16,7 +16,7 @@ export const CaseDescription = ({ thisCase }: any) => {
           value={
             isLoading
               ? "Cargando..."
-              : contractor?.companyName ||
+              : contractor?.name ||
                 contractor?.name + " " + contractor?.paternalLastName
           }
           className="capitalize"

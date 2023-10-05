@@ -16,7 +16,7 @@ import { fetchClerkUser } from "../util/clerkUserData";
 const create = async (req: any, res: any) => {
   const {
     applicant,
-    company_id,
+    retail_id,
     customer_id,
     isInsured,
     number,
@@ -87,7 +87,7 @@ const create = async (req: any, res: any) => {
     assistance_id,
     isactive,
     isInsured,
-    company_id,
+    retail_id,
     customer_id,
     beneficiary_id,
     lead_id,

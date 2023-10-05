@@ -1,139 +1,110 @@
 export const _selectAll = (_where: string) => `
-    select  max(type) as type,
-            id,
-            max(rut) as rut,
-            max(name) as name,
-            max(address) as address,
-            max(district) as district,
-            max(email) as email,
-            max(phone) as phone,
-            sum(active_product) as quantity
-    from (  select  'C' as type,
-                    com.id,
-                    com.rut,
-                    com.companyname as name,
-                    com.address,
-                    com.district,
-                    com.email,
-                    com.phone,
-                    case when not pol.id is null then 1 else 0 end as active_product
-            from        app.company com
-                        left outer join app.lead lea on lea.company_id = com.id and lea.paymenttype_code in ('A', 'I')
-                        left outer join app.policy pol on lea.policy_id = pol.id
-                        
-            union   all
-            
-            select  'C' as type,
-                    com.id,
-                    com.rut,
-                    com.companyname as name,
-                    com.address,
-                    com.district,
-                    com.email,
-                    com.phone,
-                    case when not pol.id is null then 1 else 0 end as active_product
-            from 	app.company com
-                        left outer join app.lead lea on lea.company_id = com.id
-                        left outer join app.subscription sus on lea.subscription_id = sus.subscription_id
-                        left outer join app.policy pol on lea.policy_id = pol.id
-                        
-            union   all
-                    
-            select  'P' as type,
-                    cus.id,
-                    cus.rut,
-                    concat(cus.name, ' ', cus.paternallastname, ' ', cus.maternallastname) as name,
-                    cus.address,
-                    cus.district,
-                    cus.email,
-                    cus.phone,
-                    case when not pol.id is null then 1 else 0 end as active_product
-            from 	app.customer cus
-                        left outer join app.lead lea on lea.customer_id = cus.id and lea.paymenttype_code in ('A', 'I')
-                        left outer join app.policy pol on lea.policy_id = pol.id
-                        
-            union   all
-                        
-            select  'P' as type,
-                    cus.id,
-                    cus.rut,
-                    concat(cus.name, ' ', cus.paternallastname, ' ', cus.maternallastname) as name,
-                    cus.address,
-                    cus.district,
-                    cus.email,
-                    cus.phone,
-                    case when not pol.id is null then 1 else 0 end as active_product
-            from 	app.customer cus
-                        left outer join app.lead lea on lea.customer_id = cus.id
-                        left outer join app.subscription sus on lea.subscription_id = sus.subscription_id
-                        left outer join app.policy pol on lea.policy_id = pol.id) as contractor
-    where   active_product >= 0 ${_where}
-    group   by
-            id
-    order   by
-            name`;
+SELECT
+    max(type) as type,
+    id,
+    max(rut) as rut,
+    max(name) as name,
+    max(address) as address,
+    max(district) as district,
+    max(email) as email,
+    max(phone) as phone,
+    sum(active_product) as quantity
+FROM
+    (
+        SELECT
+            'C' as type,
+            ret.id,
+            ret.rut,
+            ret.name,
+            ret.address,
+            ret.district,
+            ret.email,
+            ret.phone,
+            CASE WHEN NOT pol.id IS NULL THEN 1 ELSE 0 END AS active_product
+        FROM
+            app.productplan pla
+            INNER JOIN app.retail ret ON pla.agent_id = ret.id
+            INNER JOIN app.lead lea ON pla.agent_id = lea.agent_id AND NOT lea.policy_id IS NULL
+            LEFT OUTER JOIN app.policy pol ON lea.policy_id = pol.id
+        
+        UNION ALL
+        
+        SELECT
+            'C' as type,
+            ret.id,
+            ret.rut,
+            ret.name,
+            ret.address,
+            ret.district,
+            ret.email,
+            ret.phone,
+            CASE WHEN NOT pol.id IS NULL THEN 1 ELSE 0 END AS active_product
+        FROM
+            app.productplan pla
+            INNER JOIN app.retail ret ON pla.agent_id = ret.id
+            INNER JOIN app.lead lea ON pla.agent_id = lea.agent_id AND NOT lea.policy_id IS NULL
+            LEFT OUTER JOIN app.policy pol ON lea.policy_id = pol.id
+        
+        UNION ALL
+        
+        SELECT
+            'P' as type,
+            cus.id,
+            cus.rut,
+            CONCAT(cus.name, ' ', cus.paternallastname, ' ', cus.maternallastname) as name,
+            cus.address,
+            cus.district,
+            cus.email,
+            cus.phone,
+            CASE WHEN NOT pol.id IS NULL THEN 1 ELSE 0 END AS active_product
+        FROM
+            app.customer cus
+            LEFT OUTER JOIN app.lead lea ON lea.customer_id = cus.id AND lea.paymenttype_code IN ('A', 'I')
+            LEFT OUTER JOIN app.policy pol ON lea.policy_id = pol.id
+        
+        UNION ALL
+        
+        SELECT
+            'P' as type,
+            cus.id,
+            cus.rut,
+            CONCAT(cus.name, ' ', cus.paternallastname, ' ', cus.maternallastname) as name,
+            cus.address,
+            cus.district,
+            cus.email,
+            cus.phone,
+            CASE WHEN NOT pol.id IS NULL THEN 1 ELSE 0 END AS active_product
+        FROM
+            app.customer cus
+            LEFT OUTER JOIN app.lead lea ON lea.customer_id = cus.id
+            LEFT OUTER JOIN app.subscription sus ON lea.subscription_id = sus.subscription_id
+            LEFT OUTER JOIN app.policy pol ON lea.policy_id = pol.id
+    ) as contractor
+WHERE
+    active_product >= 0 ${_where}
+GROUP BY
+    id
+ORDER BY
+    name`;
 
 export const _selectById = (_id: string) => `
-            select  id,
-                    max(type) as type,
-                    max(rut) as rut,
-                    max(companyname) as companyname,
-                    max(name) as name,
-                    max(paternallastname) as paternallastname,
-                    max(maternallastname) as maternallastname,
-                    max(legalrepresentative) as legalrepresentative,
-                    max(line) as line,
-                    max(birthdate) as birthdate,
-                    max(address) as address,
-                    max(district) as district,
-                    max(email) as email,
-                    max(phone) as phone
-            from (  select  'C' as type,
-                            id,
-                            rut,
-                            companyname,
-                            '' as name,
-                            '' as paternallastname,
-                            '' as maternallastname,
-                            legalrepresentative,
-                            line,
-                            '' as birthdate,
-                            address,
-                            district,
-                            email,
-                            phone
-                    from    app.company
-                    where   id = '${_id}'
-                                
-                    union   all
-                            
-                    select  'P' as type,
-                            id,
-                            rut,
-                            '' as companyname,
-                            name,
-                            paternallastname,
-                            maternallastname,
-                            '' as legalrepresentative,
-                            '' as line,
-                            to_char(birthdate, 'YYYY-MM-DD') AS birthdate,
-                            address,
-                            district,
-                            email,
-                            phone
-                    from 	app.customer
-                    where   id = '${_id}') as contractor
-            group   by
-                    id
-            order   by
-                    name`;
-
-export const _selectByRut = (_rut: string, _type: string) =>
-  _type === "C"
-    ? ` select 	id,
+select  id,
+        max(type) as type,
+        max(rut) as rut,
+        max(name) as name,
+        max(paternallastname) as paternallastname,
+        max(maternallastname) as maternallastname,
+        max(legalrepresentative) as legalrepresentative,
+        max(line) as line,
+        max(birthdate) as birthdate,
+        max(address) as address,
+        max(district) as district,
+        max(email) as email,
+        max(phone) as phone
+from (  select  'C' as type,
+                id,
                 rut,
-                companyname,
-                '' as name,
+                name,
                 '' as paternallastname,
                 '' as maternallastname,
                 legalrepresentative,
@@ -143,11 +114,49 @@ export const _selectByRut = (_rut: string, _type: string) =>
                 district,
                 email,
                 phone
-        from 	app.company
-        where   rut = '${_rut}'`
-    : ` select 	id,
+        from    app.retail
+        where   id = '${_id}'
+                    
+        union   all
+                
+        select  'P' as type,
+                id,
                 rut,
-                '' as companyname,
+                name,
+                paternallastname,
+                maternallastname,
+                '' as legalrepresentative,
+                '' as line,
+                to_char(birthdate, 'YYYY-MM-DD') AS birthdate,
+                address,
+                district,
+                email,
+                phone
+        from 	app.customer
+        where   id = '${_id}') as contractor
+group   by
+        id
+order   by
+        name`;
+
+export const _selectByRut = (_rut: string, _type: string) =>
+        _type === "C"
+                ? ` select 	id,
+                rut,
+                name,
+                '' as paternallastname,
+                '' as maternallastname,
+                legalrepresentative,
+                line,
+                '' as birthdate,
+                address,
+                district,
+                email,
+                phone
+        from 	app.retail
+        where   rut = '${_rut}'`
+                : ` select 	id,
+                rut,
                 name,
                 paternallastname,
                 maternallastname,
@@ -170,7 +179,7 @@ export const _selectSubscriptions = `
                         inner join app.leadproduct lpr on lea.id = lpr.lead_id
                         inner join app.policy pol on lea.policy_id = pol.id
                         inner join app.product pro on lpr.product_id = pro.id
-        where 	(lea.customer_id = $1 or lea.company_id = $1)
+        where 	(lea.agent_id =  $1 OR lea.customer_id = $1)
         order 	by
                 pol.createdate,
                 pro.name`;
@@ -266,12 +275,36 @@ export const _selectPayment = `
                                         sum(pay.amount) as amount
                                 from	app.payment pay
                                                 inner join app.lead lea on pay.subscription_id = lea.subscription_id
-                                where 	(lea.customer_id = $1 or lea.company_id = $1)
+                                where 	(lea.agent_id =  $1 OR lea.customer_id = $1)
                                 group 	by
                                         pay.subscription_id) pay on lea.subscription_id = pay.subscription_id
-        where 	(lea.customer_id = $1 or lea.company_id = $1)
+        where 	(lea.agent_id =  $1 OR lea.customer_id = $1)
         group 	by
                 lea.subscription_id
         order 	by
                 createdate,
                 product_name`;
+
+export const _selectBeneficiaryId = (id: string) => `
+SELECT DISTINCT
+ret.id,
+ret.name
+FROM app.productplan pla
+INNER JOIN app.lead lea ON pla.agent_id = lea.agent_id AND NOT lea.policy_id IS NULL
+INNER JOIN app.leadinsured lin ON lea.id = lin.lead_id AND lin.insured_id = '${id}' 
+INNER JOIN app.retail ret ON pla.agent_id = ret.id
+
+UNION ALL
+
+SELECT DISTINCT
+cus.id as id,
+CONCAT(cus.name, ' ', cus.paternallastname, ' ', cus.maternallastname) as name
+FROM app.productplan pla
+INNER JOIN app.lead lea ON pla.agent_id = lea.agent_id AND NOT lea.policy_id IS NULL
+INNER JOIN app.leadinsured lin ON lea.id = lin.lead_id AND lin.insured_id = '${id}'  
+INNER JOIN app.customer cus ON lea.customer_id = cus.id
+LEFT OUTER JOIN app.broker bro ON lea.agent_id = bro.id
+LEFT OUTER JOIN app.agent age ON lea.agent_id = age.id
+WHERE NOT bro.id IS NULL OR NOT age.id IS NULL
+ORDER BY name
+`;

@@ -1,14 +1,13 @@
 import createLogger from "../util/logger";
 import * as Contractor from "../models/contractor";
 import * as Customer from "../models/customer";
-import * as Company from "../models/company";
+import * as Retail from "../models/retail";
 
 const create = async (req: any, res: any) => {
   const {
     type,
     rut,
     name,
-    companyName,
     legalRepresentative,
     line,
     paternalLastName,
@@ -23,25 +22,25 @@ const create = async (req: any, res: any) => {
   const contractorResponse =
     type == "P"
       ? await Customer.createModel(
-          rut,
-          name,
-          paternalLastName,
-          maternalLastName,
-          address,
-          district,
-          email,
-          phone
-        )
-      : await Company.create(
-          rut,
-          companyName,
-          legalRepresentative,
-          line,
-          address,
-          district,
-          email,
-          phone
-        );
+        rut,
+        name,
+        paternalLastName,
+        maternalLastName,
+        address,
+        district,
+        email,
+        phone
+      )
+      : await Retail.create(
+        rut,
+        name,
+        legalRepresentative,
+        line,
+        address,
+        district,
+        email,
+        phone
+      );
 
   if (!contractorResponse.success) {
     createLogger.error({
@@ -95,7 +94,7 @@ const getByRut = async (req: any, res: any) => {
   const contractorResponse =
     type === "P"
       ? await Customer.getByRutModel(rut)
-      : await Company.getByRut(rut);
+      : await Retail.getByRut(rut);
 
   if (!contractorResponse.success) {
     createLogger.error({
@@ -261,7 +260,6 @@ const getPaymentById = async (req: any, res: any) => {
 
 const getProductsByContractor = async (req: any, res: any) => {
   const { id } = req.params;
-
   const contractorResponse = await Contractor.getProductsByContractor(id);
 
   if (!contractorResponse.success) {
@@ -280,6 +278,27 @@ const getProductsByContractor = async (req: any, res: any) => {
   res.status(200).json(contractorResponse.data);
 };
 
+const getByBeneficiaryId = async (req: any, res: any) => {
+  const { id } = req.params;
+
+  const contractorResponse = await Contractor.getByBeneficiaryId(id);
+
+  if (!contractorResponse.success) {
+    createLogger.error({
+      model: "model/getByBeneficiaryId",
+      error: contractorResponse.error,
+    });
+    res.status(500).json({ error: "Error retrieving payment" });
+    return;
+  }
+
+  createLogger.info({
+    controller: "contractor/getByBeneficiaryId",
+    message: "OK",
+  });
+  res.status(200).json(contractorResponse.data);
+};
+
 export {
   create,
   getAll,
@@ -290,4 +309,5 @@ export {
   getInsuredBySubscriptionId,
   getPaymentById,
   getProductsByContractor,
+  getByBeneficiaryId
 };
