@@ -109,7 +109,9 @@ const BeneficiaryForm = ({ thisCase }: any) => {
 
   const { data: insuredByRut, isLoading: isLoadingRut } =
     useQueryInsured().useGetByRut(rut);
-
+  const { data: retail } = useQueryContractor().useGetByBeneficiaryId(
+    insuredByRut?.id
+  );
   const { data: contractor, isLoading: isLoadingContractor } =
     useQueryContractor().useGetById(thisCase?.contractor_id);
 
@@ -173,7 +175,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
           email,
           phone,
         },
-        company_id: client !== "" ? client : null,
+        retail_id: client !== "" ? client : null,
         customer_id: contractor?.type === "P" ? contractor?.id : null,
         isInsured: isInsured === "isInsured",
         beneficiary_id: thisCase?.beneficiary_id,
@@ -218,10 +220,10 @@ const BeneficiaryForm = ({ thisCase }: any) => {
       );
 
       if (contractor?.type !== "P") {
-        setClient(thisCase?.contractor_id);
+        setClient(retail?.id);
       }
     },
-    [setValue, contractor, thisCase, setClient]
+    [setValue, contractor, thisCase, setClient, retail?.id]
   );
 
   useEffect(() => {
@@ -581,6 +583,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
                 value={client}
                 setValue={setClient}
                 thisCase={thisCase}
+                retailId={retail?.id}
               />
             )}
             <div className="mt-6 flex gap-2">
@@ -609,10 +612,12 @@ const ClientSelect = ({
   value,
   setValue,
   thisCase,
+  retailId,
 }: {
   value: string;
   setValue: React.Dispatch<React.SetStateAction<string>>;
   thisCase: any;
+  retailId: string;
 }) => {
   const { data } = useQueryContractor().useGetAll({
     contractorType: "C",
@@ -624,7 +629,7 @@ const ClientSelect = ({
       value={value}
       onValueChange={setValue}
       defaultValue=""
-      disabled={thisCase?.contractor_id}
+      disabled={thisCase?.contractor_id || (value != "" && value === retailId)}
     >
       <SelectTrigger>
         <SelectValue placeholder="Seleccione un cliente" />

@@ -15,7 +15,7 @@ const create: any = async (
   assistance_id?: string,
   isactive?: boolean,
   isInsured?: boolean,
-  company_id?: string,
+  retail_id?: string,
   customer_id?: string,
   beneficiary_id?: string,
   lead_id?: string,
@@ -32,10 +32,10 @@ const create: any = async (
 
         if (exists.rows.length > 0) {
           const result = await pool.query(
-            `UPDATE app.case SET insured_id = $1, company_id = $2, customer_id = $3, event_date = $6, event_location = $7 WHERE beneficiary_id = $4 AND number = $5 RETURNING *`,
+            `UPDATE app.case SET insured_id = $1, retail_id = $2, customer_id = $3, event_date = $6, event_location = $7 WHERE beneficiary_id = $4 AND number = $5 RETURNING *`,
             [
               applicant.id,
-              company_id,
+              retail_id,
               customer_id,
               beneficiary_id,
               number,
@@ -48,11 +48,11 @@ const create: any = async (
         }
 
         const result = await pool.query(
-          `INSERT INTO app.case (insured_id, beneficiary_id, company_id, customer_id, type, event_date, event_location) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+          `INSERT INTO app.case (insured_id, beneficiary_id, retail_id, customer_id, type, event_date, event_location) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
           [
             applicant.id,
             beneficiary_id,
-            company_id,
+            retail_id,
             customer_id,
             applicant.type,
             event_date,
@@ -76,7 +76,7 @@ const create: any = async (
             ? "beneficiary_id"
             : "insured_id"
           } = $2,
-          company_id = $3,
+          retail_id = $3,
           customer_id = $4,
           event_date = $6,
           event_location = $7
@@ -87,7 +87,7 @@ const create: any = async (
           [
             applicant.type,
             applicant.id,
-            company_id,
+            retail_id,
             customer_id,
             number,
             event_date,
@@ -101,11 +101,11 @@ const create: any = async (
         `INSERT INTO app.case(type, ${applicant.type === "B" || isInsured === false
           ? "beneficiary_id"
           : "insured_id"
-        }, company_id, customer_id, event_date, event_location) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+        }, retail_id, customer_id, event_date, event_location) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
         [
           applicant.type,
           applicant.id,
-          company_id,
+          retail_id,
           customer_id,
           event_date,
           event_location,
@@ -126,7 +126,7 @@ const create: any = async (
 
     if (resultCase.rows.length > 0) {
       const result = await pool.query(
-        `UPDATE app.case SET product_id = $1, assistance_id = $2, isactive = $3, company_id = $4, customer_id = $5, lead_id = $6, event_date = $9, event_location = $10
+        `UPDATE app.case SET product_id = $1, assistance_id = $2, isactive = $3, retail_id = $4, customer_id = $5, lead_id = $6, event_date = $9, event_location = $10
         WHERE number = $7 AND ${applicant.type === "B" || isInsured === false
           ? "beneficiary_id"
           : "insured_id"
@@ -136,7 +136,7 @@ const create: any = async (
           product_id,
           assistance_id,
           isactive,
-          company_id,
+          retail_id,
           customer_id,
           lead_id,
           number,
@@ -180,9 +180,9 @@ const getAll: any = async () => {
           ELSE per.rut 
           END as rut,
         CASE
-          WHEN comp.companyname IS NOT NULL THEN comp.companyname 
+          WHEN r.name IS NOT NULL THEN r.name 
           ELSE CONCAT_WS(' ', cust.name, cust.paternallastname)
-      END as contractor_name
+        END as contractor_name
     FROM app.casestage cst
     INNER JOIN (
       SELECT case_id, MAX(sta.number) AS max_number
@@ -197,7 +197,7 @@ const getAll: any = async () => {
     LEFT OUTER JOIN app.beneficiary ben ON ben.id = cas.beneficiary_id
     LEFT OUTER JOIN app.insured ins ON ins.id = cas.insured_id
     LEFT OUTER JOIN app.person per ON per.id = cas.insured_id
-    LEFT OUTER JOIN app.company comp ON comp.id = cas.company_id
+    LEFT OUTER JOIN app.retail r ON r.id = cas.retail_id 
     LEFT OUTER JOIN app.customer cust ON cust.id = cas.customer_id
     ORDER BY cas.number desc
     `);
@@ -207,7 +207,6 @@ const getAll: any = async () => {
     return { success: false, data: null, error: (e as Error).message };
   }
 };
-
 const getBeneficiaryData: any = async (rut: string) => {
   try {
     const result = await pool.query(_getBeneficiaryData, [rut]);
@@ -215,7 +214,7 @@ const getBeneficiaryData: any = async (rut: string) => {
     if (result.rows.length > 0) {
       const data: IData = {
         customer_id: result.rows[0].customer_id,
-        company_id: result.rows[0].company_id,
+        retail_id: result.rows[0].retail_id,
         insured: {
           type: "I",
           id: result.rows[0].insured_id,

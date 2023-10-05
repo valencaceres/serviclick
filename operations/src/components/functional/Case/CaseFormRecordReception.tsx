@@ -71,7 +71,7 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
         number: thisCase?.case_number,
         product_id: thisCase?.product_id,
         assistance_id: thisCase?.assistance_id,
-        company_id: contractor?.type === "C" ? thisCase?.contractor_id : null,
+        retail_id: contractor?.type === "C" ? thisCase?.contractor_id : null,
         customer_id: contractor?.type === "P" ? thisCase?.contractor_id : null,
         stage_id:
           stages?.find((s: any) => s.name === "Recepción de antecedentes")
@@ -92,7 +92,7 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
               number: thisCase?.case_number,
               product_id: thisCase?.product_id,
               assistance_id: thisCase?.assistance_id,
-              company_id:
+              retail_id:
                 contractor?.type === "C" ? thisCase?.contractor_id : null,
               customer_id:
                 contractor?.type === "P" ? thisCase?.contractor_id : null,

@@ -1,6 +1,6 @@
 export interface IData {
   customer_id: string;
-  company_id: string;
+  retail_id: string;
   insured: IInsured;
   beneficiary: IBeneficiary;
   products: IProduct[];

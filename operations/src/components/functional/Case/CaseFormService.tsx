@@ -79,7 +79,6 @@ const CaseFormService = ({ thisCase }: any) => {
   const { data } = useQueryCase().useGetBeneficiaryByRut(thisCase?.rut);
   const { data: contractor, isLoading: isLoadingContractor } =
     useQueryContractor().useGetById(thisCase?.contractor_id);
-
   const { data: contractorSubscriptions } =
     useQueryContractor().useGetProductsByContractor(thisCase?.contractor_id);
   const { data: pdfProductPlan } =
@@ -246,7 +245,7 @@ const CaseFormService = ({ thisCase }: any) => {
           product_id: selectedProduct?.id,
           assistance_id: selectedAssistance?.id,
           beneficiary_id: thisCase?.beneficiary_id,
-          company_id: contractor?.type === "C" ? thisCase?.contractor_id : null,
+          retail_id: contractor?.type === "C" ? thisCase?.contractor_id : null,
           customer_id:
             contractor?.type === "P" ? thisCase?.contractor_id : null,
           stage_id: stage,
@@ -301,7 +300,7 @@ const CaseFormService = ({ thisCase }: any) => {
                 value={
                   isLoadingContractor
                     ? "Cargando..."
-                    : contractor?.companyName ||
+                    : contractor?.name ||
                       `${contractor?.name} ${contractor?.paternalLastName}`
                 }
                 disabled

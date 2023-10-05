@@ -30,7 +30,6 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
   const { data: contractor } = useQueryContractor().useGetById(
     thisCase?.contractor_id
   );
-
   const { mutate: updateCase } = useQueryCase().useCreate();
 
   const findStageByName = (name: string) =>
@@ -50,7 +49,7 @@ const CaseFormEvaluation = ({ thisCase }: any) => {
     product_id: thisCase?.product_id,
     assistance_id: thisCase?.assistance_id,
     stage_id: findStageByName(stageName)?.id || "",
-    company_id: contractor?.type === "C" ? thisCase?.contractor_id : null,
+    retail_id: contractor?.type === "C" ? thisCase?.contractor_id : null,
     customer_id: contractor?.type === "P" ? thisCase?.contractor_id : null,
     user_id: user?.id,
     description,

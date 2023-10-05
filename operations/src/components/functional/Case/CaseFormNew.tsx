@@ -99,7 +99,6 @@ const BeneficiaryForm = ({ thisCase }: any) => {
   const [client, setClient] = useState<any>("");
   const [prevRut, setPrevRut] = useState<string>("");
   const prevDataRef = useRef();
-
   const { list: districtList } = useDistrict();
   const { user } = useUser();
   const { data: stageData } = useQueryStage().useGetAll();
@@ -108,6 +107,9 @@ const BeneficiaryForm = ({ thisCase }: any) => {
 
   const { data, isLoading } = useQueryCase().useGetBeneficiaryByRut(rut);
   const isAdmin = user?.publicMetadata?.roles?.operaciones === "admin";
+  const { data: retail } = useQueryContractor().useGetByBeneficiaryId(
+    data?.insured?.id
+  );
   const isValidRut = (rut: string) => {
     if (
       (rutRegEx.test(unFormatRut(rut)) &&
@@ -151,7 +153,6 @@ const BeneficiaryForm = ({ thisCase }: any) => {
       return false;
     }
   };
-
   const send = async () => {
     createCase(
       {
@@ -168,7 +169,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
           email,
           phone,
         },
-        company_id: !client ? data?.company_id : client,
+        retail_id: !client ? data?.retail_id : client,
         customer_id: data?.customer_id,
         isInsured: isInsured === "isInsured",
         beneficiary_id: isNewBeneficiary
@@ -260,8 +261,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
         value as IInitialValues[keyof IInitialValues]
       )
     );
-
-    setClient(newData.contractor_id);
+    setClient(retail?.id);
   };
 
   useEffect(() => {
@@ -709,6 +709,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
                     value={client}
                     setValue={setClient}
                     thisCase={thisCase}
+                    retailId={retail?.id}
                   />
                   {client && <Button className="mt-4 w-full">Continuar</Button>}
                 </>
@@ -728,6 +729,16 @@ const BeneficiaryForm = ({ thisCase }: any) => {
               {isSubmitting ? "Enviando..." : "Continuar"}
             </Button>
           ) : null}
+          {!isNewBeneficiary && isInsured === "isInsured" && client && (
+            <>
+              <ClientSelect
+                value={client}
+                setValue={setClient}
+                thisCase={thisCase}
+                retailId={retail?.id}
+              />
+            </>
+          )}
         </form>
       </ContentCell>
       <LoadingMessage />
@@ -739,22 +750,23 @@ const ClientSelect = ({
   value,
   setValue,
   thisCase,
+  retailId,
 }: {
   value: string;
   setValue: React.Dispatch<React.SetStateAction<string>>;
   thisCase: any;
+  retailId: string;
 }) => {
   const { data } = useQueryContractor().useGetAll({
     contractorType: "C",
     active: true,
   });
-
   return (
     <Select
       value={value}
       onValueChange={setValue}
       defaultValue=""
-      disabled={thisCase}
+      disabled={thisCase || (value != "" && value === retailId)}
     >
       <SelectTrigger>
         <SelectValue placeholder="Seleccione un cliente" />

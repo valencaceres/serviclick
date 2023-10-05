@@ -112,7 +112,7 @@ const ContractorCompanyForm = ({
   const send = () => {
     const data = {
       rut,
-      companyName: name,
+      name,
       legalRepresentative,
       line,
       address,
@@ -137,7 +137,7 @@ const ContractorCompanyForm = ({
   useEffect(() => {
     if (contractor?.type !== "") {
       setValue("rut", contractor?.rut);
-      setValue("name", contractor?.companyName);
+      setValue("name", contractor?.name);
       setValue("legalRepresentative", contractor?.legalRepresentative);
       setValue("line", contractor?.line);
       setValue("address", contractor?.address);
@@ -147,7 +147,7 @@ const ContractorCompanyForm = ({
     }
     if (contractorData) {
       setValue("rut", contractorData?.rut);
-      setValue("name", contractorData?.companyName);
+      setValue("name", contractorData?.name);
       setValue("legalRepresentative", contractorData?.legalRepresentative);
       setValue("line", contractorData?.line);
       setValue("address", contractorData?.address);

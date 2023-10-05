@@ -185,7 +185,7 @@ export function DataTable<TData, TValue>({
           phone: person?.phone,
         },
         customer_id: customer?.customer_id,
-        company_id: customer?.company_id,
+        retail_id: customer?.retail_id,
         isInsured: customer?.insured?.rut === rutInput ? true : false,
         beneficiary_id:
           customer?.insured?.rut === rutInput
@@ -208,7 +208,7 @@ export function DataTable<TData, TValue>({
                 product_id: productId,
                 assistance_id: null,
                 beneficiary_id: res?.data.beneficiary_id,
-                company_id: res?.data.company_id,
+                retail_id: res?.data.retail_id,
                 customer_id: res?.data.customer_id,
                 stage_id: stages.find(
                   (stage: any) => stage.name === "Registro de servicio"
@@ -234,7 +234,7 @@ export function DataTable<TData, TValue>({
                 number: res.data.number,
                 beneficiary_id: res?.data.beneficiary_id,
                 isInsured: false,
-                company_id: res?.data.company_id,
+                retail_id: res?.data.retail_id,
                 customer_id: res?.data.customer_id,
                 stage_id: stages.find(
                   (stage: any) => stage.name === "Datos Titular"
@@ -254,7 +254,7 @@ export function DataTable<TData, TValue>({
                       product_id: productId,
                       assistance_id: null,
                       beneficiary_id: res?.data.beneficiary_id,
-                      company_id: res?.data.company_id,
+                      retail_id: res?.data.retail_id,
                       customer_id: res?.data.customer_id,
                       stage_id: stages.find(
                         (stage: any) => stage.name === "Registro de servicio"
