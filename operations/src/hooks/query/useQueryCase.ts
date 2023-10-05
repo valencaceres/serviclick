@@ -20,6 +20,11 @@ const getAll = async () => {
   return data;
 };
 
+const getStatistics = async () => {
+  const { data } = await apiInstance.get(`/case/getStatistics`);
+  return data;
+};
+
 const getCaseById = async (id: string) => {
   const { data } = await apiInstance.get(`/case/getById/${id}`);
 
@@ -146,6 +151,10 @@ const getChatByCase = async (case_id: string) => {
 
 const useGetAll = () => {
   return useQuery(["cases"], getAll);
+};
+
+const useGetStatistics = () => {
+  return useQuery(["cases"], getStatistics);
 };
 
 const useGetById = (id: string) => {
@@ -305,7 +314,8 @@ const useQueryCase = () => {
     useCreateChatMessage,
     useGetChatByCase,
     useGetBeneficiaryByRut,
-    useGetUserByClerkId
+    useGetUserByClerkId,
+    useGetStatistics,
   };
 };
 

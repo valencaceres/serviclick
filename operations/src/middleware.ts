@@ -11,11 +11,12 @@ const roles: Record<UserRole, RegExp[]> = {
     /^\/case(\/.*)?$/,
     /^\/masters(\/.*)?$/,
     /^\/entities(\/.*)?$/,
+    /^\/dashboard(\/.*)?$/,
   ],
 };
 
 export default authMiddleware({
-  publicRoutes: ["/sign-in/[[...index]]", "/unauthorized"],
+  publicRoutes: ["/sign-in/[[...index]]", "/unauthorized",],
   afterAuth(auth, req, evt) {
     if (!auth.userId && !auth.isPublicRoute) {
       return redirectToSignIn({ returnBackUrl: req.url });

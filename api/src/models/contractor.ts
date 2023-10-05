@@ -410,7 +410,9 @@ const getProductsByContractor = async (id: string) => {
                                         pas.currency as assistance_currency,
                                         pas.events as assistance_events,
                                         pas.lack as assistance_lack,
-                                        pas.maximum as assistance_maximum
+                                        pas.maximum as assistance_maximum,
+                                        pol.startdate as start_date,
+                                        pol.enddate as end_date
                                     from 	app.lead lea
                                                 inner join app.leadproduct lpr on lea.id = lpr.lead_id
                                                 inner join app.policy pol on lea.policy_id = pol.id
@@ -434,6 +436,8 @@ const getProductsByContractor = async (id: string) => {
       subscription_id: item.subscription_id,
       name: item.name,
       created_at: item.created_at,
+      start_date: item.start_date,
+      end_date: item.end_date,
       family_id: item.family_id,
       assistances: result.rows
         .filter((row: any) => row.id === item.id)

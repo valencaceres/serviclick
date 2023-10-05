@@ -22,8 +22,7 @@ import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import { Button } from "~/components/ui/ButtonC";
 import { useDistrict } from "~/hooks";
-import format from "date-fns/format";
-import parse from "date-fns/parse";
+import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 interface IAssistance {
   id: string;
   name: string;
@@ -42,6 +41,8 @@ interface IProduct {
   name: string;
   assistance: IAssistance;
   created_at: string;
+  start_date: string;
+  end_date: string;
 }
 
 const CaseFormService = ({ thisCase }: any) => {
@@ -93,10 +94,30 @@ const CaseFormService = ({ thisCase }: any) => {
   const { mutate: assignValue } = useQueryAssistances().useAssignValue();
   const { mutate: createLead } = useQueryLead().useAddFromCase();
 
+  /*   const pdfBase64 = Buffer.from(pdfProductPlan).toString("base64");
+  const pdfDataUrl = `data:application/pdf;base64,${pdfBase64}`;
+  console.log(pdfDataUrl); */
+  console.log(contractorSubscriptions);
   const selectedProductCreatedAt = useMemo(() => {
     const date = new Date(selectedProduct?.created_at || "");
     const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Se suma 1 porque los meses comienzan desde 0
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  }, [selectedProduct]);
+  const selectedProductStartDate = useMemo(() => {
+    const date = new Date(selectedProduct?.start_date || "");
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  }, [selectedProduct]);
+  const selectedProductEndDate = useMemo(() => {
+    const date = new Date(selectedProduct?.end_date || "");
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
     const year = date.getFullYear();
 
     return `${day}/${month}/${year}`;
@@ -402,15 +423,27 @@ const CaseFormService = ({ thisCase }: any) => {
                     {selectedProductCreatedAt}
                   </span>
                 </p>
-                {/*   <p className="text-red-900">
-                  Fecha de vencimiento:{" "}
-                  <span className="font-semibold">
-                    {selectedProductCreatedAt}
-                  </span>
-                </p> */}
               </div>
+              {selectedProduct?.start_date != null && (
+                <div className="flex gap-2">
+                  <p className="text-secondary-500">
+                    Fecha de inicio:{" "}
+                    <span className="font-semibold">
+                      {selectedProductStartDate}
+                    </span>
+                  </p>
+                  {selectedProduct?.end_date != null && (
+                    <p className="text-secondary-500">
+                      Fecha de termino:{" "}
+                      <span className="font-semibold">
+                        {selectedProductEndDate}
+                      </span>
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
-            {pdfProductPlan && (
+            {/*      {pdfProductPlan && (
               <>
                 {" "}
                 <Button
@@ -424,14 +457,13 @@ const CaseFormService = ({ thisCase }: any) => {
                 </Button>
                 <Modal showModal={modalIsOpen}>
                   <Window title="Contrato" setClosed={closeModal}></Window>
-                  <Document file={{ data: pdfProductPlan }}>
+                  <Document file={pdfDataUrl}>
                     <Page pageNumber={1} />
                   </Document>
                   <Button onClick={closeModal}>Cerrar</Button>
                 </Modal>
               </>
-            )}
-
+            )} */}
             <CaseServiceTable
               product={selectedProduct}
               assistance={selectedAssistance}

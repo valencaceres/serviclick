@@ -667,6 +667,54 @@ const getChatByCase = async (req: any, res: any) => {
   return res.status(200).json(response.data);
 };
 
+const getStatistics = async (req: any, res: any) => {
+  const monthlyCases = await Case.getMonthlyCases();
+
+  if (!monthlyCases.success) {
+    createLogger.error({
+      model: "case/getMonthlyCases",
+      error: monthlyCases.error,
+    });
+    res.status(500).json({ error: "Error retrieving monthly cases" });
+    return;
+  }
+
+  const casesReimbursment = await Case.getCasesReimbursment();
+
+  if (!casesReimbursment.success) {
+    createLogger.error({
+      model: "case/getCasesReimbursment",
+      error: casesReimbursment.error,
+    });
+    res.status(500).json({ error: "Error retrieving case reimbursment" });
+    return;
+  }
+  const getTotalCases = await Case.getTotalCases();
+
+  if (!getTotalCases.success) {
+    createLogger.error({
+      model: "case/getTotalCases",
+      error: getTotalCases.error,
+    });
+    res.status(500).json({ error: "Error retrieving total cases" });
+    return;
+  }
+
+  const statistics = {
+    monthlyCases: monthlyCases.data,
+    casesReimbursment: casesReimbursment.data,
+    totalCases: getTotalCases.data
+  };
+
+  createLogger.info({
+    controller: "case/getStatistics",
+    message: "OK",
+  });
+
+  res.status(200).json(statistics);
+};
+
+
 export {
   create,
   uploadDocument,
@@ -687,4 +735,5 @@ export {
   updateReimbursementStatus,
   createChatMessage,
   getChatByCase,
+  getStatistics
 };

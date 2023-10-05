@@ -10,6 +10,7 @@ import {
   useQueryContractor,
   useQueryStage,
   useQueryUF,
+  useQueryInsured,
 } from "../../../hooks/query";
 import TextArea from "../../ui/TextArea/TextArea";
 import ComboBox from "../../ui/ComboBox";
@@ -34,6 +35,8 @@ const CaseTracking = ({ thisCase }: any) => {
   const [evaluation, setEvaluation] = useState<string>("");
   const [refundAmount, setRefundAmount] = useState<number | null>(null);
   const [imedDiscount, setImedDiscount] = useState<number | null>(null);
+  const [bankNumber, setBankNumber] = useState<string>("");
+  const [bankName, setBankName] = useState<string>("");
 
   const { user } = useUser();
   const { data: ufValue } = useQueryUF().useGetUFValue();
@@ -57,7 +60,11 @@ const CaseTracking = ({ thisCase }: any) => {
   const { data: contractor } = useQueryContractor().useGetById(
     thisCase?.contractor_id
   );
-
+  const { data: insured } = useQueryInsured().useGetById(thisCase?.insured_id);
+  const { data: customerAccount } =
+    useQueryInsured().useGetCustomerAccountByInsuredRut(insured.rut);
+  /*  const { mutate: updateCase } = useQueryCase().useCreate();  */
+  console.log(customerAccount);
   const { mutate: updateCase } = useQueryCase().useCreate();
   const { mutate: assignPartner } = useQueryCase().useAssignPartner();
   const { mutate: assignSpecialist } = useQueryCase().useAssignSpecialist();
@@ -283,7 +290,7 @@ const CaseTracking = ({ thisCase }: any) => {
       }
     );
   };
-
+  console.log(insured);
   useEffect(() => {
     const previousEvaluation = thisCase?.stages.find(
       (s: any) => s?.stage === "Resolución"
@@ -623,6 +630,31 @@ const CaseTracking = ({ thisCase }: any) => {
                     width="234px"
                     disabled
                   />
+                </ContentRow>
+              </ContentCell>
+              <ContentCell gap="5px">
+                <h2 className="text-xl font-semibold text-teal-blue">
+                  Datos Bancarios
+                </h2>
+                <ContentRow gap="5px">
+                  <div className="flex flex-col gap-[20px]">
+                    <InputText
+                      label={"Numero de cuenta"}
+                      value={bankNumber}
+                      type="number"
+                      width="525px"
+                      disabled={thisCase?.is_active === true ? false : true}
+                      onChange={(e: any) => setBankNumber(e.target.value)}
+                    />
+                    <InputText
+                      label={"Banco"}
+                      value={bankName}
+                      type="text"
+                      width="525px"
+                      disabled={thisCase?.is_active === true ? false : true}
+                      onChange={(e: any) => setBankName(e.target.value)}
+                    />
+                  </div>
                 </ContentRow>
               </ContentCell>
               <ContentCell gap="5px">

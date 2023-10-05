@@ -11,9 +11,9 @@ const useGetByRut = (rut: string) => {
   return useQuery(
     ["insured", rut],
     () => getByRut(rut), {
-      enabled: rut?.length >= 10,
-      retry: false,
-    }
+    enabled: rut?.length >= 10,
+    retry: false,
+  }
   );
 }
 
@@ -26,13 +26,28 @@ const useGetById = (id: string) => {
   return useQuery(
     ["insured", id],
     () => getById(id), {
-      enabled: !!id,
-    }
+    enabled: !!id,
+  }
+  );
+}
+
+const getCustomerAccountByInsuredRut = async (rut: string) => {
+  const { data } = await apiInstance.get(`/customer/getCustomerAccount/${rut}`);
+  return data;
+}
+
+const useGetCustomerAccountByInsuredRut = (rut: string) => {
+  return useQuery(
+    ["insured", rut],
+    () => getCustomerAccountByInsuredRut(rut), {
+    enabled: rut?.length >= 10,
+    retry: false,
+  }
   );
 }
 
 const useQueryInsured = () => {
-  return { useGetByRut, useGetById };
+  return { useGetByRut, useGetById, useGetCustomerAccountByInsuredRut };
 }
 
 export default useQueryInsured;

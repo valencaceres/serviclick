@@ -40,14 +40,21 @@ const routes = [
     roles: ["admin"],
     subRoutes: [
       { text: "Especialistas", route: "/entities/specialist" },
-      { text: "Alianzas", route: "/entities/partner" },
-      { text: "Operadores" },
+      { text: "Convenios", route: "/entities/partner" },
+      { text: "Clientes", route: "/entities/contractor" },
+      { text: "Empresas", route: "/entities/retail" },
+      // { text: "Operadores" },
     ],
   },
   {
     text: "Asistencia",
-    roles: ["user", "moderator", "admin"],
+    roles: ["moderator", "admin"],
     subRoutes: [{ text: "Casos", route: "/case" }],
+  },
+  {
+    text: "Reportes",
+    roles: ["user", "moderator", "admin"],
+    subRoutes: [{ text: "Dashboard", route: "/dashboard" }],
   },
 ];
 
