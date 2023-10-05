@@ -39,10 +39,11 @@ const routes = [
     text: "Entidades",
     roles: ["admin"],
     subRoutes: [
-      { text: "Clientes", route: "/entities/contractor" },
       { text: "Especialistas", route: "/entities/specialist" },
       { text: "Convenios", route: "/entities/partner" },
-      { text: "Operadores" },
+      { text: "Clientes", route: "/entities/contractor" },
+      { text: "Empresas", route: "/entities/retail" },
+      // { text: "Operadores" },
     ],
   },
   {

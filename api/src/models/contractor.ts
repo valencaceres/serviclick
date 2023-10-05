@@ -157,6 +157,7 @@ const create: any = async (
 
 const getAll: any = async (
   contractorType: string,
+  rut: string,
   active: boolean,
   nameLike: string
 ) => {

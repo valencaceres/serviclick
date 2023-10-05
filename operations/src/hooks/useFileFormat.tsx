@@ -12,16 +12,16 @@ const useFileFormat = () => {
     dispatch(FileFormatSlice.createFileFormat(fileFormat));
   };
 
-  const getFileFormatByLeadId = (lead_id: string) => {
-    dispatch(FileFormatSlice.getFileFormatByLeadId(lead_id));
+  const getFileFormatByProductPlanId = (productPlan_id: string) => {
+    dispatch(FileFormatSlice.getFileFormatByProductPlanId(productPlan_id));
   };
 
   const getAllFileFormat = () => {
     dispatch(FileFormatSlice.getAllFileFormat());
   };
 
-  const deleteFileFormatByLeadId = (lead_id: string) => {
-    dispatch(FileFormatSlice.deleteFileFormatByLeadId(lead_id));
+  const deleteFileFormatByProductPlanId = (productPlan_id: string) => {
+    dispatch(FileFormatSlice.deleteFileFormatByProductPlanId(productPlan_id));
   };
 
   const setFileFormat = (fileFormat: any) => {
@@ -34,9 +34,9 @@ const useFileFormat = () => {
 
   return {
     createFileFormat,
-    getFileFormatByLeadId,
+    getFileFormatByProductPlanId,
     getAllFileFormat,
-    deleteFileFormatByLeadId,
+    deleteFileFormatByProductPlanId,
     setFileFormat,
     resetFileFormat,
     fileFormat,

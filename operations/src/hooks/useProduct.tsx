@@ -125,6 +125,10 @@ const useProduct = () => {
     dispatch(Product.getOnlyProductById(id));
   };
 
+  const getByProductPlanId = (productPlan_id: string) => {
+    dispatch(Product.getByProductPlanId(productPlan_id));
+  };
+
   const getProductFamilies = () => {
     dispatch(Product.getFamilies());
   };
@@ -153,6 +157,7 @@ const useProduct = () => {
     getAllProducts,
     getOnlyProductById,
     getProductById,
+    getByProductPlanId,
     getProductByFamilyId,
     getProductFamilies,
     setProductList,

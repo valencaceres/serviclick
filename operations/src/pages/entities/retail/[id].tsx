@@ -1,38 +1,33 @@
-import { useState, useEffect, Fragment } from "react";
+import { useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
 
 import FloatMenu from "../../../components/ui/FloatMenu";
 import ButtonIcon from "../../../components/ui/ButtonIcon";
 
-import { ContractorDetail } from "../../../components/functional/_entities/Contractor";
+import { RetailDetail } from "../../../components/functional/_entities/Retail";
 
 import { useUI } from "../../../hooks";
-import { useQueryContractor } from "~/hooks/query";
 
-const ContractorDetailPage = () => {
+const RetailPage = () => {
   const router = useRouter();
 
   const { setTitleUI } = useUI();
-
-  const { data: contractor } = useQueryContractor().useGetById(
-    router.query.id as string
-  );
 
   const handleClickHome = () => {
     router.push("/");
   };
 
   const handleClickBack = () => {
-    router.push("/entities/contractor");
+    router.push("/entities/retail");
   };
 
   useEffect(() => {
-    setTitleUI("Cliente");
+    setTitleUI("Empresa");
   }, []);
 
   return (
     <Fragment>
-      <ContractorDetail contractor={contractor} />
+      <RetailDetail />
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />
         <ButtonIcon iconName="arrow_back" onClick={handleClickBack} />
@@ -41,4 +36,4 @@ const ContractorDetailPage = () => {
   );
 };
 
-export default ContractorDetailPage;
+export default RetailPage;

@@ -127,12 +127,13 @@ export const create =
   };
 
 export const getAll =
-  (contractorType: string, nameLike: string, active: boolean) =>
+  (contractorType: string, rut: string, nameLike: string, active: boolean) =>
   async (dispatch: any) => {
     try {
       dispatch(setLoading(true));
       const { data } = await apiInstance.post(`/contractor/getAll`, {
         contractorType,
+        rut,
         nameLike,
         active,
       });

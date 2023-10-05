@@ -7,8 +7,6 @@ export const CaseDescription = ({ thisCase }: any) => {
   const { data: contractor, isLoading } = useQueryContractor().useGetById(
     thisCase?.contractor_id
   );
-  console.log(thisCase);
-  console.log(contractor);
 
   return (
     <ContentCell gap="5px">

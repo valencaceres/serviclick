@@ -334,7 +334,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
       }
     }
   }, [stageData, thisCase, data, isNewBeneficiary]);
-  console.log(client);
+
   return (
     <div>
       <ContentCell gap="10px">

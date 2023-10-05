@@ -1,5 +1,10 @@
 import pool from "../util/database";
 
+import {
+  _getBySearchValues,
+  _getCustomersByRetailIdAndProductId,
+} from "../queries/retail";
+
 const create: any = async (
   rut: string,
   name: string,
@@ -241,6 +246,83 @@ const getAll: any = async () => {
   }
 };
 
+const getBySearchValues: any = async (rut: string, name: string) => {
+  try {
+    const result = await pool.query(_getBySearchValues(rut, name));
+    return { success: true, data: result.rows, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+const getCustomersByRetailIdAndProductId: any = async (
+  retail_id: string,
+  productPlan_id: string
+) => {
+  try {
+    const result = await pool.query(_getCustomersByRetailIdAndProductId, [
+      retail_id,
+      productPlan_id,
+    ]);
+
+    const data = result.rows.map((row) => {
+      const {
+        customer_id,
+        customer_rut,
+        customer_name,
+        customer_paternallastname,
+        customer_maternallastname,
+        customer_address,
+        customer_district,
+        customer_phone,
+        customer_email,
+        insured_id,
+        insured_rut,
+        insured_name,
+        insured_paternallastname,
+        insured_maternallastname,
+        insured_address,
+        insured_district,
+        insured_phone,
+        insured_email,
+        insured_birthdate,
+        createdate,
+        initialdate,
+        enddate,
+      } = row;
+
+      return {
+        customer_id,
+        customer_rut,
+        customer_name,
+        customer_paternalLastName: customer_paternallastname,
+        customer_maternalLastName: customer_maternallastname,
+        customer_address,
+        customer_district,
+        customer_phone,
+        customer_email,
+        insured_id,
+        insured_rut,
+        insured_name,
+        insured_paternalLastName: insured_paternallastname,
+        insured_maternalLastName: insured_maternallastname,
+        insured_address,
+        insured_district,
+        insured_phone,
+        insured_email,
+        insured_birthDate: insured_birthdate,
+        createDate: createdate,
+        initialDate: initialdate,
+        endDate: enddate,
+      };
+    });
+
+    return { success: true, data, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 const deleteById: any = async (id: string) => {
   try {
     const result = await pool.query(
@@ -389,6 +471,30 @@ const getCollectById: any = async (id: string) => {
   }
 };
 
+const getCustomerByRut: any = async (productPlan_id: string, rut: string) => {
+  try {
+    const result = await pool.query(
+      ` select	lea.id as lead_id
+        from 	  app.retail ret
+                inner join app.lead lea on ret.id = lea.agent_id and not lea.policy_id is null
+                inner join app.leadproduct lpr on lea.id = lpr.lead_id
+                inner join app.customer cus on lea.customer_id = cus.id
+                inner join app.productplan ppl on ret.id = ppl.agent_id and lpr.productplan_id = ppl.plan_id
+        where 	ppl.id = $1 and
+                cus.rut = $2`,
+      [productPlan_id, rut]
+    );
+
+    return {
+      success: true,
+      data: result.rows.length > 0 ? result.rows[0] : null,
+      error: null,
+    };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 export {
   create,
   getById,
@@ -399,4 +505,7 @@ export {
   getFamiliesByRetailId,
   getProductsByRetailIdAndFamilyId,
   getCollectById,
+  getBySearchValues,
+  getCustomersByRetailIdAndProductId,
+  getCustomerByRut,
 };

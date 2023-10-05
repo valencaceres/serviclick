@@ -3,9 +3,9 @@ import createLogger from "../util/logger";
 import * as FileFormat from "../models/fileFormat";
 
 const create = async (req: any, res: any) => {
-  const { lead_id, fields } = req.body;
+  const { productPlan_id, fields } = req.body;
 
-  const deleteResponse = await FileFormat.deleteByLeadId(lead_id);
+  const deleteResponse = await FileFormat.deleteByProductPlanId(productPlan_id);
 
   if (!deleteResponse.success) {
     createLogger.error({
@@ -19,7 +19,7 @@ const create = async (req: any, res: any) => {
   let index = 0;
   for (const field of fields) {
     const contents = await FileFormat.create(
-      lead_id,
+      productPlan_id,
       field.field_id,
       index + 1
     );
@@ -48,9 +48,11 @@ const getAll = async (req: any, res: any) => {
   res.status(200).json(fileFormatResponse.data);
 };
 
-const getByLeadId = async (req: any, res: any) => {
-  const { lead_id } = req.params;
-  const fileFormatResponse = await FileFormat.getByLeadId(lead_id);
+const getByProductPlanId = async (req: any, res: any) => {
+  const { productPlan_id } = req.params;
+  const fileFormatResponse = await FileFormat.getByProductPlanId(
+    productPlan_id
+  );
 
   if (!fileFormatResponse.success) {
     createLogger.error({
@@ -68,9 +70,11 @@ const getByLeadId = async (req: any, res: any) => {
   res.status(200).json(fileFormatResponse.data);
 };
 
-const deleteByLeadId = async (req: any, res: any) => {
-  const { lead_id } = req.params;
-  const fileFormatResponse = await FileFormat.deleteByLeadId(lead_id);
+const deleteByProductPlanId = async (req: any, res: any) => {
+  const { productPlan_id } = req.params;
+  const fileFormatResponse = await FileFormat.deleteByProductPlanId(
+    productPlan_id
+  );
 
   if (!fileFormatResponse.success) {
     createLogger.error({
@@ -88,4 +92,4 @@ const deleteByLeadId = async (req: any, res: any) => {
   res.status(200).json(fileFormatResponse.data);
 };
 
-export { create, getAll, getByLeadId, deleteByLeadId };
+export { create, getAll, getByProductPlanId, deleteByProductPlanId };

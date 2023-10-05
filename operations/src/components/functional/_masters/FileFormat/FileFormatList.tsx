@@ -43,16 +43,19 @@ const FileFormatList = () => {
           </TableHeader>
           <TableDetail>
             {fileFormatList.map((item: any, idx: number) => (
-              <TableRow key={idx} onClick={() => handleClickRow(item.rut)}>
+              <TableRow
+                key={idx}
+                onClick={() => handleClickRow(item.retail_rut)}
+              >
                 <TableCell
                   width="140px"
                   align="center"
                   className={styles.tableCell}
                 >
-                  {item.rut}
+                  {item.retail_rut}
                 </TableCell>
                 <TableCell width="545px" className={styles.tableCell}>
-                  {item.companyname}
+                  {item.retail_name}
                 </TableCell>
               </TableRow>
             ))}

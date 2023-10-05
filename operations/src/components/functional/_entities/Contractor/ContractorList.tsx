@@ -21,8 +21,12 @@ import {
 import Icon from "../../../ui/Icon";
 
 import ModalWarning from "../../../ui/ModalWarning";
-import ComboBox from "../../../ui/ComboBox";
+// import ComboBox from "../../../ui/ComboBox";
 import { LoadingMessage } from "../../../ui/LoadingMessage";
+
+import { unFormatRut, formatRut } from "../../../../utils/format";
+import { numberRegEx, rutRegEx, emailRegEx } from "../../../../utils/regEx";
+import { rutValidate } from "../../../../utils/validations";
 
 import { useUI, useContractor } from "../../../../hooks";
 import ModalWindow from "../../../ui/ModalWindow";
@@ -47,6 +51,7 @@ const ContractorList = ({
 
   const initialDataSearch = {
     type: filters?.type || "",
+    rut: filters?.rut || "",
     name: filters?.name || "",
     status: filters?.status || "A",
   };
@@ -77,16 +82,34 @@ const ContractorList = ({
     setSearch({ ...search, type: e.target.value });
   };
 
+  const handleChangeRut = (e: any) => {
+    setSearch({ ...search, rut: e.target.value, name: "" });
+  };
+
+  const handleBlurRut = (e: any) => {
+    e.target.value = formatRut(e.target.value);
+    setSearch({ ...search, rut: e.target.value });
+  };
+
+  const handleFocusRut = (event: any) => {
+    event.target.value = unFormatRut(event.target.value);
+  };
+
   const handleChangeName = (e: any) => {
-    setSearch({ ...search, name: e.target.value });
+    setSearch({ ...search, rut: "", name: e.target.value });
   };
 
   const handleClickSearch = () => {
-    getAllContractors(search.type, search.name, search.status === "A");
+    getAllContractors(
+      search.type,
+      search.rut,
+      search.name,
+      search.status === "A"
+    );
   };
 
   useEffect(() => {
-    if (search.type || search.name || search.status) {
+    if (search.type || search.rut || search.name || search.status) {
       setFiltersUI(search);
     }
   }, [search]);
@@ -95,7 +118,7 @@ const ContractorList = ({
     <Fragment>
       <ContentCell gap="5px" className="fade-in-fwd">
         <ContentRow gap="5px" align="center">
-          <ComboBox
+          {/* <ComboBox
             label="Tipo cliente"
             width="200px"
             value={search.type}
@@ -104,10 +127,18 @@ const ContractorList = ({
             data={dataContractorType}
             dataValue="id"
             dataText="name"
+          /> */}
+          <InputText
+            label="Rut"
+            width="150px"
+            value={search.rut}
+            onChange={handleChangeRut}
+            onBlur={handleBlurRut}
+            onFocus={handleFocusRut}
           />
           <InputText
-            label="Texto a buscar"
-            width="585px"
+            label="Nombre a buscar"
+            width="635px"
             value={search.name}
             onChange={handleChangeName}
           />

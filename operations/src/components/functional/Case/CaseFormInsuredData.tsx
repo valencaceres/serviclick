@@ -293,7 +293,6 @@ const BeneficiaryForm = ({ thisCase }: any) => {
       );
     }
   }, [stages, stage, router.query.stage]);
-  console.log(client);
 
   return (
     <div>

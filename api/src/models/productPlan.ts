@@ -136,10 +136,23 @@ const getProductById: any = async (id: string) => {
 const getById: any = async (id: string) => {
   try {
     const result = await pool.query(
-      `
-      SELECT *
-      FROM app.productplan
-      WHERE id = $1`,
+      ` SELECT	ppl.id,
+                ppl.createdate,
+                ppl.product_id,
+                ppl.plan_id,
+                ppl.type,
+                ppl.price,
+                ppl.frequency,
+                ppl.agent_id,
+                ppl.discount_type,
+                ppl.discount_percent,
+                ppl.discount_cicles,
+                ppl.baseprice,
+                pro.name,
+                pro.currency
+        FROM	  app.productplan ppl
+                  inner join app.product pro on ppl.product_id = pro.id
+        WHERE   ppl.id = $1`,
       [id]
     );
 

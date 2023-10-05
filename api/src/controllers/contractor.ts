@@ -63,10 +63,11 @@ const create = async (req: any, res: any) => {
 };
 
 const getAll = async (req: any, res: any) => {
-  const { contractorType, active, nameLike } = req.body;
+  const { contractorType, active, rut, nameLike } = req.body;
 
   const contractorResponse = await Contractor.getAll(
     contractorType,
+    rut,
     active,
     nameLike
   );

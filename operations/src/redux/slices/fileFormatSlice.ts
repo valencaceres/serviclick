@@ -16,7 +16,7 @@ export interface IFileFormatListItem {
 }
 
 export interface IFileFormat {
-  lead_id: string;
+  productPlan_id: string;
   fields: IFieldFormat[];
 }
 
@@ -30,7 +30,7 @@ type StateT = {
 
 const initialState: StateT = {
   list: [],
-  fileFormat: { lead_id: "", fields: [] },
+  fileFormat: { productPlan_id: "", fields: [] },
   isLoading: false,
   isError: false,
   error: "",
@@ -95,14 +95,14 @@ export const createFileFormat =
     }
   };
 
-export const getFileFormatByLeadId =
-  (lead_id: string) => async (dispatch: any) => {
+export const getFileFormatByProductPlanId =
+  (productPlan_id: string) => async (dispatch: any) => {
     try {
       dispatch(setIsLoading(true));
       const { data } = await apiInstance.get(
-        `/fileFormat/getByLeadId/${lead_id}`
+        `/fileFormat/getByProductPlanId/${productPlan_id}`
       );
-      dispatch(setFileFormat({ lead_id, fields: data }));
+      dispatch(setFileFormat({ productPlan_id, fields: data }));
     } catch (e) {
       dispatch(setError((e as Error).message));
     }
@@ -118,12 +118,12 @@ export const getAllFileFormat = () => async (dispatch: any) => {
   }
 };
 
-export const deleteFileFormatByLeadId =
-  (lead_id: string) => async (dispatch: any) => {
+export const deleteFileFormatByProductPlanId =
+  (productPlan_id: string) => async (dispatch: any) => {
     try {
       dispatch(setIsLoading(true));
       const { data } = await apiInstance.delete(
-        `/fileFormat/deleteByLeadId/${lead_id}`
+        `/fileFormat/deleteByProductPlanId/${productPlan_id}`
       );
       dispatch(getAllFileFormat());
     } catch (e) {

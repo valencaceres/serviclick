@@ -309,16 +309,19 @@ const sendPaymentLink = async (lead: LeadT, link: string = "") => {
 
   const href =
     link === ""
-      ? `https://web.serviclick.cl/payment/${lead.customer.rut ? "customer" : "company"
-      }/${lead.product.product_id}?leadId=${lead.id}`
+      ? `https://web.serviclick.cl/payment/${
+          lead.customer.rut ? "customer" : "company"
+        }/${lead.product.product_id}?leadId=${lead.id}`
       : link;
 
   const emailResponse = await sendMail(
     { name: "Bienvenido a ServiClick" },
     lead.customer.email || lead.company.email,
     `Link de pago para ${product.name}`,
-    `<b>Hola&nbsp;${lead.company.rut ? lead.company.companyName : lead.customer.name
-    }</b><br/><br/>Queremos que seas parte de ServiClick y solo estás a un paso, te dejamos el link de pago para que puedas completar la adquisición de ${product.name
+    `<b>Hola&nbsp;${
+      lead.company.rut ? lead.company.companyName : lead.customer.name
+    }</b><br/><br/>Queremos que seas parte de ServiClick y solo estás a un paso, te dejamos el link de pago para que puedas completar la adquisición de ${
+      product.name
     } y disfrutes de los beneficios que te brinda:<br/><br/><a href="${href}">Concluye tu proceso de pago haciendo click aquí</a><br/><br/>Por que sabemos de asistencias, nos enfocamos en resolver todas las necesidades que te ayuden a vivir más tranquilo y seguro.<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
     []
   );
@@ -350,10 +353,10 @@ const createSubscription = async (
     const name =
       customer.rut !== ""
         ? customer.name +
-        " " +
-        customer.paternalLastName +
-        " " +
-        customer.maternalLastName
+          " " +
+          customer.paternalLastName +
+          " " +
+          customer.maternalLastName
         : company.companyName;
     const address = contractor.address + ", " + contractor.district;
 
@@ -612,7 +615,7 @@ const addMultipleInsured = async (
   }
 };
 
-const create = async (lead: any) => {
+export const create = async (lead: any) => {
   try {
     const {
       id,
@@ -1583,9 +1586,9 @@ const addInsuredFromExcel = async (req: any, res: any) => {
               ...dataItem,
               values: dataItem.values
                 ? [
-                  ...dataItem.values,
-                  { id: field_id, value: xlsItem[xlsField] },
-                ]
+                    ...dataItem.values,
+                    { id: field_id, value: xlsItem[xlsField] },
+                  ]
                 : [{ id: field_id, value: xlsItem[xlsField] }],
             };
           } else {

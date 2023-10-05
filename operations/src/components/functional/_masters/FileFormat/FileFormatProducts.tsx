@@ -13,15 +13,16 @@ import {
 import { useField, useFileFormat } from "~/hooks";
 
 const FileFormatProducts = ({ products, setProduct }: any) => {
-  const { getFieldByLeadId } = useField();
-  const { setFileFormat, fileFormat, getFileFormatByLeadId } = useFileFormat();
+  const { getFieldByProductPlanId } = useField();
+  const { setFileFormat, fileFormat, getFileFormatByProductPlanId } =
+    useFileFormat();
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handleSubscriptionClick = (item: any) => {
-    getFileFormatByLeadId(item.lead_id);
-    setFileFormat({ ...fileFormat, lead_id: item.lead_id });
-    getFieldByLeadId(item.lead_id);
+    getFileFormatByProductPlanId(item.productplan_id);
+    setFileFormat({ ...fileFormat, productPlan_id: item.productplan_id });
+    getFieldByProductPlanId(item.productplan_id);
     setProduct(item);
   };
 

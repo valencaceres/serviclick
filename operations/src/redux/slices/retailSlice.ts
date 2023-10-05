@@ -9,9 +9,12 @@ export type PriceT = {
 
 export type ProductT = {
   product_id: string;
+  productplan_id: string;
+  name: string;
   campaign: string;
   price: PriceT;
   currency: string;
+  frequency: string;
 };
 
 export type UserT = {
@@ -21,6 +24,31 @@ export type UserT = {
   maternalLastName: string;
   email: string;
   profileCode: string;
+};
+
+export type CustomerT = {
+  customer_id: string;
+  customer_rut: string;
+  customer_name: string;
+  customer_paternalLastName: string;
+  customer_maternalLastName: string;
+  customer_address: string;
+  customer_district: string;
+  customer_phone: string;
+  customer_email: string;
+  insured_id: string;
+  insured_rut: string;
+  insured_name: string;
+  insured_paternalLastName: string;
+  insured_maternalLastName: string;
+  insured_address: string;
+  insured_district: string;
+  insured_phone: string;
+  insured_email: string;
+  insured_birthDate: string;
+  createDate: string;
+  initialDate: string;
+  endDate: string;
 };
 
 export type RetailT = {
@@ -35,11 +63,14 @@ export type RetailT = {
   phone: string;
   logo: string;
   products: ProductT[];
+  insured: number;
   users: UserT[];
 };
 
 export type StateT = {
   list: RetailT[];
+  customers: CustomerT[];
+  selectedProduct: ProductT | null;
   retail: RetailT;
   loading: boolean;
   error: boolean;
@@ -47,6 +78,8 @@ export type StateT = {
 
 const initialState: StateT = {
   list: [],
+  customers: [],
+  selectedProduct: null,
   retail: {
     id: "",
     rut: "",
@@ -59,6 +92,7 @@ const initialState: StateT = {
     phone: "",
     logo: "",
     products: [],
+    insured: 0,
     users: [],
   },
   loading: false,
@@ -86,6 +120,14 @@ export const retailSlice = createSlice({
       state.loading = false;
       state.error = false;
     },
+    setCustomers: (state: StateT, action: PayloadAction<CustomerT[]>) => {
+      state.customers = action.payload;
+      state.loading = false;
+      state.error = false;
+    },
+    setSelectedProduct: (state: StateT, action: PayloadAction<ProductT>) => {
+      state.selectedProduct = action.payload;
+    },
     setLogo: (state: StateT, action: PayloadAction<string>) => {
       state.retail.logo = action.payload;
       state.loading = false;
@@ -110,6 +152,8 @@ export const retailSlice = createSlice({
 export const {
   setList,
   setRetail,
+  setCustomers,
+  setSelectedProduct,
   setLoading,
   setError,
   setLogo,
@@ -160,11 +204,48 @@ export const getAll = () => async (dispatch: any) => {
   }
 };
 
+export const getBySearchValues =
+  (rut: string, name: string) => async (dispatch: any) => {
+    try {
+      dispatch(setLoading(true));
+      const { data } = await apiInstance.post(`retail/getBySearchValues`, {
+        rut,
+        name,
+      });
+      dispatch(setList(data));
+    } catch (e) {
+      dispatch(setError(true));
+    }
+  };
+
+export const getCustomersByRetailIdAndProductId =
+  (retail_id: string, product_id: string) => async (dispatch: any) => {
+    try {
+      dispatch(setLoading(true));
+      const { data } = await apiInstance.get(
+        `retail/getCustomersByRetailIdAndProductId/${retail_id}/${product_id}`
+      );
+      dispatch(setCustomers(data));
+    } catch (e) {
+      dispatch(setError(true));
+    }
+  };
+
 export const uploadLogo = (logo: any) => async (dispatch: any) => {
   try {
     dispatch(setLoading(true));
     const { data } = await apiInstance.post(`retail/uploadLogo`, logo);
     dispatch(setList(data));
+  } catch (e) {
+    dispatch(setError(true));
+  }
+};
+
+export const uploadExcel = (excel: any) => async (dispatch: any) => {
+  try {
+    dispatch(setLoading(true));
+    const { data } = await apiInstance.post(`retail/addLeadFromExcel`, excel);
+    dispatch(setLoading(false));
   } catch (e) {
     dispatch(setError(true));
   }

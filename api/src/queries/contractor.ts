@@ -1,11 +1,91 @@
-export const _selectAll = (_where: string) => `SELECT    DISTINCT
-ret.id,
-ret.name
-FROM     app.productplan pla
-    inner join app.retail ret on pla.agent_id = ret.id
-    inner join app.lead lea on pla.agent_id = lea.agent_id and not lea.policy_id is null
-order    by
-ret.name`;
+export const _selectAll = (_where: string) => `
+SELECT
+    max(type) as type,
+    id,
+    max(rut) as rut,
+    max(name) as name,
+    max(address) as address,
+    max(district) as district,
+    max(email) as email,
+    max(phone) as phone,
+    sum(active_product) as quantity
+FROM
+    (
+        SELECT
+            'C' as type,
+            ret.id,
+            ret.rut,
+            ret.name,
+            ret.address,
+            ret.district,
+            ret.email,
+            ret.phone,
+            CASE WHEN NOT pol.id IS NULL THEN 1 ELSE 0 END AS active_product
+        FROM
+            app.productplan pla
+            INNER JOIN app.retail ret ON pla.agent_id = ret.id
+            INNER JOIN app.lead lea ON pla.agent_id = lea.agent_id AND NOT lea.policy_id IS NULL
+            LEFT OUTER JOIN app.policy pol ON lea.policy_id = pol.id
+        
+        UNION ALL
+        
+        SELECT
+            'C' as type,
+            ret.id,
+            ret.rut,
+            ret.name,
+            ret.address,
+            ret.district,
+            ret.email,
+            ret.phone,
+            CASE WHEN NOT pol.id IS NULL THEN 1 ELSE 0 END AS active_product
+        FROM
+            app.productplan pla
+            INNER JOIN app.retail ret ON pla.agent_id = ret.id
+            INNER JOIN app.lead lea ON pla.agent_id = lea.agent_id AND NOT lea.policy_id IS NULL
+            LEFT OUTER JOIN app.policy pol ON lea.policy_id = pol.id
+        
+        UNION ALL
+        
+        SELECT
+            'P' as type,
+            cus.id,
+            cus.rut,
+            CONCAT(cus.name, ' ', cus.paternallastname, ' ', cus.maternallastname) as name,
+            cus.address,
+            cus.district,
+            cus.email,
+            cus.phone,
+            CASE WHEN NOT pol.id IS NULL THEN 1 ELSE 0 END AS active_product
+        FROM
+            app.customer cus
+            LEFT OUTER JOIN app.lead lea ON lea.customer_id = cus.id AND lea.paymenttype_code IN ('A', 'I')
+            LEFT OUTER JOIN app.policy pol ON lea.policy_id = pol.id
+        
+        UNION ALL
+        
+        SELECT
+            'P' as type,
+            cus.id,
+            cus.rut,
+            CONCAT(cus.name, ' ', cus.paternallastname, ' ', cus.maternallastname) as name,
+            cus.address,
+            cus.district,
+            cus.email,
+            cus.phone,
+            CASE WHEN NOT pol.id IS NULL THEN 1 ELSE 0 END AS active_product
+        FROM
+            app.customer cus
+            LEFT OUTER JOIN app.lead lea ON lea.customer_id = cus.id
+            LEFT OUTER JOIN app.subscription sus ON lea.subscription_id = sus.subscription_id
+            LEFT OUTER JOIN app.policy pol ON lea.policy_id = pol.id
+    ) as contractor
+WHERE
+    active_product >= 0 ${_where}
+GROUP BY
+    id
+ORDER BY
+    name`;
 
 export const _selectById = (_id: string) => `
 select  id,
