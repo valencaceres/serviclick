@@ -101,7 +101,6 @@ const getCustomerAccountByRut = async (req: any, res: any) => {
 const updateCustomerAccount = async (req: any, res: any) => {
   const { rut, bank, account_number } = req.body;
   const response = await Customer.updateCustomerAccount(rut, bank, account_number);
-  console.log(req.body)
   if (!response?.success) {
     createLogger.error({
       model: "customer/updateCustomerAccount",

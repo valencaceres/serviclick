@@ -389,8 +389,6 @@ const discountAssistanceData = async (
       [insured_id, assistance_id, product_id]
     );
 
-    console.log(result.rows);
-
     if (result.rows.length > 0) {
       return {
         success: true,

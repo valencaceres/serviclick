@@ -53,7 +53,7 @@ const DashboardPage = () => {
     setTitleUI("Dashboard");
   }, []);
   const { data } = useQueryCase().useGetStatistics();
-  let totalReimbursmentAmount = data?.casesReimbursment.reduce(
+  let totalReimbursmentAmount = data?.casesReimbursment?.reduce(
     (total: any, item: any) => {
       return total + item.totalReimbursmentsAmount;
     },
@@ -73,9 +73,11 @@ const DashboardPage = () => {
             </div>
           </CardHeader>
           <CardContent>
-            <h2 className="text-2xl font-bold">
-              {data?.totalCases[0]?.totalCases} Casos
-            </h2>
+            {data && data.totalCases && data.totalCases[0] && (
+              <h2 className="text-2xl font-bold">
+                {data.totalCases[0].totalCases} Casos
+              </h2>
+            )}
           </CardContent>
         </Card>
         <Card className="w-full max-w-sm hover:bg-slate-50">
@@ -87,7 +89,11 @@ const DashboardPage = () => {
           </CardHeader>
           <CardContent>
             <h2 className="text-2xl font-bold">
-              {data?.totalCases[0]?.totalActiveCases} Casos activos
+              {data?.totalCases &&
+              data.totalCases[0]?.totalActiveCases !== undefined
+                ? data.totalCases[0].totalActiveCases
+                : "Sin datos disponibles"}{" "}
+              Casos activos
             </h2>
           </CardContent>
         </Card>
@@ -100,7 +106,11 @@ const DashboardPage = () => {
           </CardHeader>
           <CardContent>
             <h2 className="text-2xl font-bold">
-              {data?.totalCases[0]?.totalInactiveCases} Casos cerrados
+              {data?.totalCases &&
+              data.totalCases[0]?.totalInactiveCases !== undefined
+                ? data.totalCases[0].totalInactiveCases
+                : "Sin datos disponibles"}{" "}
+              Casos cerrados
             </h2>
           </CardContent>
         </Card>

@@ -139,6 +139,14 @@ const getByRut = async (req: any, res: any) => {
 
   const responseGet = await functionGetById(partnerResponse.data.id);
 
+  if (!responseGet.success) {
+    createLogger.error({
+      model: `partner/getById`,
+      error: responseGet.error,
+    });
+    res.status(500).json({ error: "Error retrieving partner" });
+    return;
+  }
   createLogger.info({
     controller: `partner/getByRut`,
     message: `OK - Get Partner by Rut`,

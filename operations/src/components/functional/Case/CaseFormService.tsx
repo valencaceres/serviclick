@@ -88,7 +88,6 @@ const CaseFormService = ({ thisCase }: any) => {
       "1a6d08b0-f27a-4de0-8e1d-855bead4282f",
       "7ea804e5-6de1-4e60-affc-f5b31af90ba3"
     );
-  console.log(pdfProductPlan);
   const { mutate: updateCase } = useQueryCase().useCreate();
   const { mutate: assignValue } = useQueryAssistances().useAssignValue();
   const { mutate: createLead } = useQueryLead().useAddFromCase();
@@ -96,7 +95,7 @@ const CaseFormService = ({ thisCase }: any) => {
   /*   const pdfBase64 = Buffer.from(pdfProductPlan).toString("base64");
   const pdfDataUrl = `data:application/pdf;base64,${pdfBase64}`;
   console.log(pdfDataUrl); */
-  console.log(contractorSubscriptions);
+
   const selectedProductCreatedAt = useMemo(() => {
     const date = new Date(selectedProduct?.created_at || "");
     const day = date.getDate().toString().padStart(2, "0");

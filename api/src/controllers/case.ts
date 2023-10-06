@@ -550,7 +550,7 @@ const discountAssistanceData = async (req: any, res: any) => {
       model: `case/discountAssistanceData`,
       error: response.error,
     });
-    return res.status(500).json({ error: response.error });
+    return res.status(500).json({ error: "error discounting assistance data" });
   }
 
   createLogger.info({

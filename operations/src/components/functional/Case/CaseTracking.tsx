@@ -305,7 +305,7 @@ const CaseTracking = ({ thisCase }: any) => {
       }
     );
   };
-  console.log(insured);
+
   useEffect(() => {
     const previousEvaluation = thisCase?.stages.find(
       (s: any) => s?.stage === "Resolución"
@@ -497,6 +497,29 @@ const CaseTracking = ({ thisCase }: any) => {
                       onChange={(e: any) => setRefundAmount(e.target.value)}
                     />
                   </ContentRow>
+                  <ContentCell gap="5px">
+                    <h2 className="text-xl font-semibold text-teal-blue">
+                      Datos Bancarios
+                    </h2>
+                    <ContentRow gap="5px">
+                      <div className="flex flex-col gap-[20px]">
+                        <InputText
+                          label={"Numero de cuenta"}
+                          value={bankNumber}
+                          type="number"
+                          width="525px"
+                          onChange={(e: any) => setBankNumber(e.target.value)}
+                        />
+                        <InputText
+                          label={"Banco"}
+                          value={bankName}
+                          type="text"
+                          width="525px"
+                          onChange={(e: any) => setBankName(e.target.value)}
+                        />
+                      </div>
+                    </ContentRow>
+                  </ContentCell>
                   <Button
                     type="button"
                     disabled={thisCase?.is_active ? false : true}
@@ -670,7 +693,6 @@ const CaseTracking = ({ thisCase }: any) => {
                       value={bankNumber}
                       type="number"
                       width="525px"
-                      disabled={thisCase?.is_active === true ? false : true}
                       onChange={(e: any) => setBankNumber(e.target.value)}
                     />
                     <InputText
@@ -678,7 +700,6 @@ const CaseTracking = ({ thisCase }: any) => {
                       value={bankName}
                       type="text"
                       width="525px"
-                      disabled={thisCase?.is_active === true ? false : true}
                       onChange={(e: any) => setBankName(e.target.value)}
                     />
                   </div>
