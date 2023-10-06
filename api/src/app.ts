@@ -6,6 +6,7 @@ import { allowedOrigins } from "./util/allowedOrigins";
 import createLogger from "./util/logger";
 import { setSecurityHeaders } from "./middlewares/setSecurityHeaders";
 import path from "path";
+import helmet from "helmet";
 
 const corsOptions = {
   preflightContinue: false,
@@ -36,6 +37,7 @@ function initializeMiddlewares(server: Express) {
   server.use(express.json());
   server.use(cors(corsOptions));
   server.use(express.urlencoded({ extended: false }));
+  server.use(helmet());
 }
 
 const routeMappings = [
