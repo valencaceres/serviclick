@@ -53,7 +53,7 @@ const DashboardPage = () => {
     setTitleUI("Dashboard");
   }, []);
   const { data } = useQueryCase().useGetStatistics();
-  let totalReimbursmentAmount = data?.casesReimbursment.reduce(
+  let totalReimbursmentAmount = data?.casesReimbursment?.reduce(
     (total: any, item: any) => {
       return total + item.totalReimbursmentsAmount;
     },
