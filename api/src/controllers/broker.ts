@@ -171,7 +171,7 @@ const createFull = async (req: any, res: any) => {
             });
             res
               .status(responseSendCredentials.status)
-              .json({ error: responseSendCredentials.error });
+              .json({ error: "Error sending credentials" });
             return;
           }
         })
@@ -187,7 +187,7 @@ const createFull = async (req: any, res: any) => {
         model,
         error,
       });
-      res.status(status).json({ error });
+      res.status(status).json({ error: "error retrieving broker" });
       return;
     }
 
@@ -254,7 +254,7 @@ const create = async (req: any, res: any) => {
         model,
         error,
       });
-      res.status(status).json({ error });
+      res.status(status).json({ error: "error retrieving broker" });
       return;
     }
 
@@ -313,7 +313,7 @@ const getById = async (req: any, res: any) => {
         model,
         error,
       });
-      res.status(status).json({ error });
+      res.status(status).json({ error: "error retrieving broker" });
       return;
     }
 
@@ -324,7 +324,7 @@ const getById = async (req: any, res: any) => {
       controller: "broker/getById",
       error: (error as Error).message,
     });
-    res.status(500).json((error as Error).message);
+    res.status(500).json({ error: "error retrieving broker" });
     return;
   }
 };
@@ -341,7 +341,7 @@ const getByRut = async (req: any, res: any) => {
         model,
         error,
       });
-      res.status(status).json({ error });
+      res.status(status).json({ error: "error retrieving broker" });
       return;
     }
 
@@ -352,7 +352,7 @@ const getByRut = async (req: any, res: any) => {
       controller: "broker/getById",
       error: (error as Error).message,
     });
-    res.status(500).json((error as Error).message);
+    res.status(500).json({ error: "error retrieving broker" });
     return;
   }
 };
@@ -677,7 +677,7 @@ export const getBrokerDataById = async (id: string) => {
         success: false,
         model: "broker/getById",
         data: null,
-        error: brokerResponse.error,
+        error: "error retrieving broker",
         status: 500,
       };
     }
@@ -687,7 +687,7 @@ export const getBrokerDataById = async (id: string) => {
         success: true,
         model: "broker/getById",
         data: {},
-        error: brokerResponse.error,
+        error: "error retrieving broker",
         status: 404,
       };
     }
@@ -699,7 +699,7 @@ export const getBrokerDataById = async (id: string) => {
         success: false,
         model: "brokerProduct/getByBrokerId",
         data: null,
-        error: brokerProductResponse.error,
+        error: "error retrieving broker",
         status: 500,
       };
     }
@@ -711,7 +711,7 @@ export const getBrokerDataById = async (id: string) => {
         success: false,
         model: "userBroker/getByBrokerId",
         data: null,
-        error: userBrokerResponse.error,
+        error: "error retrieving broker",
         status: 500,
       };
     }
@@ -757,7 +757,7 @@ export const getBrokerDataById = async (id: string) => {
       success: false,
       model: "broker/getById",
       data: null,
-      error: (e as Error).message,
+      error: "error retrieving broker",
       status: 500,
     };
   }
@@ -772,7 +772,7 @@ const getBrokerDataByRut = async (rut: string) => {
         success: false,
         model: "broker/getById",
         data: null,
-        error: brokerResponse.error,
+        error: "error retrieving broker",
         status: 500,
       };
     }
@@ -782,7 +782,7 @@ const getBrokerDataByRut = async (rut: string) => {
         success: true,
         model: "broker/getById",
         data: {},
-        error: brokerResponse.error,
+        error: "error retrieving broker",
         status: 404,
       };
     }
@@ -807,7 +807,7 @@ const getBrokerDataByRut = async (rut: string) => {
         success: false,
         model: "brokerProduct/getByBrokerId",
         data: null,
-        error: brokerProductResponse.error,
+        error: "error retrieving product broker",
         status: 500,
       };
     }
@@ -819,7 +819,7 @@ const getBrokerDataByRut = async (rut: string) => {
         success: false,
         model: "userBroker/getByBrokerId",
         data: null,
-        error: userBrokerResponse.error,
+        error: "error retrieving  user broker",
         status: 500,
       };
     }
@@ -852,7 +852,7 @@ const getBrokerDataByRut = async (rut: string) => {
       success: false,
       model: "broker/getById",
       data: null,
-      error: (e as Error).message,
+      error: "error retrieving   broker",
       status: 500,
     };
   }
@@ -871,7 +871,7 @@ export const sendCredentials = async (
         success: false,
         model: "userBroker/getByEmail",
         data: null,
-        error: userBrokerResponse.error,
+        error: "error retrieving user  broker",
         status: 500,
       };
     }
@@ -891,7 +891,7 @@ export const sendCredentials = async (
           success: false,
           model: "userBroker/assignPassword",
           data: null,
-          error: userBrokerPasswordResponse.error,
+          error: "error retrieving assigning password",
           status: 500,
         };
       }
@@ -924,7 +924,7 @@ export const sendCredentials = async (
       success: false,
       model: "broker/sendCredentials",
       data: null,
-      error: (e as Error).message,
+      error: "error sending credentials",
       status: 500,
     };
   }

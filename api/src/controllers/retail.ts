@@ -63,7 +63,7 @@ const create = async (req: any, res: any) => {
         model,
         error,
       });
-      res.status(status).json({ error });
+      res.status(status).json({ error: "error retrieving retail" });
       return;
     }
 
@@ -133,7 +133,7 @@ const getById = async (req: any, res: any) => {
       controller: "retail/getById",
       error: (error as Error).message,
     });
-    res.status(500).json((error as Error).message);
+    res.status(500).json({ error: "error retrieving retail" });
     return;
   }
 };
@@ -161,7 +161,7 @@ const getByRut = async (req: any, res: any) => {
       controller: "retail/getById",
       error: (error as Error).message,
     });
-    res.status(500).json((error as Error).message);
+    res.status(500).json({ error: "error retrieving retail" });
     return;
   }
 };
@@ -177,7 +177,7 @@ const getBySearchValues = async (req: any, res: any) => {
         model: "retail/getBySearchValues",
         error: retailResponse.error,
       });
-      res.status(500).json(retailResponse.error);
+      res.status(500).json({ erorr: "error retrieving retail" });
       return;
     }
 
@@ -187,7 +187,7 @@ const getBySearchValues = async (req: any, res: any) => {
       controller: "retail/getBySearchValues",
       error: (error as Error).message,
     });
-    res.status(500).json((error as Error).message);
+    res.status(500).json({ error: "error retrieving retail" });
     return;
   }
 };
@@ -206,7 +206,7 @@ const getCustomersByRetailIdAndProductId = async (req: any, res: any) => {
         model: "retail/getCustomersByRetailIdAndProductId",
         error: retailResponse.error,
       });
-      res.status(500).json(retailResponse.error);
+      res.status(500).json({ error: "error retrieving customer" });
       return;
     }
 
@@ -216,7 +216,7 @@ const getCustomersByRetailIdAndProductId = async (req: any, res: any) => {
       controller: "retail/getCustomersByRetailIdAndProductId",
       error: (error as Error).message,
     });
-    res.status(500).json((error as Error).message);
+    res.status(500).json({ error: "error retrieving customers" });
     return;
   }
 };
@@ -555,9 +555,9 @@ const addLeadFromExcel = async (req: any, res: any) => {
               ...dataItem,
               values: dataItem.values
                 ? [
-                    ...dataItem.values,
-                    { value_id: field_id, value: xlsItem[xlsField] },
-                  ]
+                  ...dataItem.values,
+                  { value_id: field_id, value: xlsItem[xlsField] },
+                ]
                 : [{ value_id: field_id, value: xlsItem[xlsField] }],
             };
           } else {

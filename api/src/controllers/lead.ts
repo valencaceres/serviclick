@@ -309,19 +309,16 @@ const sendPaymentLink = async (lead: LeadT, link: string = "") => {
 
   const href =
     link === ""
-      ? `https://web.serviclick.cl/payment/${
-          lead.customer.rut ? "customer" : "company"
-        }/${lead.product.product_id}?leadId=${lead.id}`
+      ? `https://web.serviclick.cl/payment/${lead.customer.rut ? "customer" : "company"
+      }/${lead.product.product_id}?leadId=${lead.id}`
       : link;
 
   const emailResponse = await sendMail(
     { name: "Bienvenido a ServiClick" },
     lead.customer.email || lead.company.email,
     `Link de pago para ${product.name}`,
-    `<b>Hola&nbsp;${
-      lead.company.rut ? lead.company.companyName : lead.customer.name
-    }</b><br/><br/>Queremos que seas parte de ServiClick y solo estás a un paso, te dejamos el link de pago para que puedas completar la adquisición de ${
-      product.name
+    `<b>Hola&nbsp;${lead.company.rut ? lead.company.companyName : lead.customer.name
+    }</b><br/><br/>Queremos que seas parte de ServiClick y solo estás a un paso, te dejamos el link de pago para que puedas completar la adquisición de ${product.name
     } y disfrutes de los beneficios que te brinda:<br/><br/><a href="${href}">Concluye tu proceso de pago haciendo click aquí</a><br/><br/>Por que sabemos de asistencias, nos enfocamos en resolver todas las necesidades que te ayuden a vivir más tranquilo y seguro.<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
     []
   );
@@ -353,10 +350,10 @@ const createSubscription = async (
     const name =
       customer.rut !== ""
         ? customer.name +
-          " " +
-          customer.paternalLastName +
-          " " +
-          customer.maternalLastName
+        " " +
+        customer.paternalLastName +
+        " " +
+        customer.maternalLastName
         : company.companyName;
     const address = contractor.address + ", " + contractor.district;
 
@@ -744,14 +741,14 @@ const createController = async (req: any, res: any) => {
   });
 
   if (!success || !data) {
-    res.status(500).json(error || "");
+    res.status(500).json({ error: "error creating lead" });
     return;
   }
 
   if (send) {
     const emailResponse = await sendPaymentLink(data, link);
     if (!emailResponse.success) {
-      res.status(500).json(emailResponse.error);
+      res.status(500).json({ error: "error sending payment link" });
       return;
     }
 
@@ -759,7 +756,7 @@ const createController = async (req: any, res: any) => {
     if (!responseLeadUpdate.success) {
       res
         .status(500)
-        .json({ error: "updateLeadPaymentType: " + responseLeadUpdate.error });
+        .json({ error: "error updating lead payment type " });
       return;
     }
   }
@@ -776,7 +773,7 @@ const createController = async (req: any, res: any) => {
     if (!subscriptionResponse.success) {
       res
         .status(500)
-        .json({ error: "createSubscription: " + subscriptionResponse.error });
+        .json({ error: "error creating subscription " });
       return;
     }
 
@@ -1099,7 +1096,7 @@ const addBeneficiariesController = async (req: any, res: any) => {
       model: "lead/addBeneficiariesData",
       error: responseBeneficiaries.error,
     });
-    res.status(500).json(responseBeneficiaries.error);
+    res.status(500).json({ error: "error adding beneficiaries data" });
     return;
   }
 
@@ -1123,7 +1120,7 @@ const getProductValuesByInsuredId = async (req: any, res: any) => {
       model: "leadProductValues/getByInsuredId",
       error: responseProductValues.error,
     });
-    res.status(500).json(responseProductValues.error);
+    res.status(500).json({ error: "error getting lead products values" });
     return;
   }
 
@@ -1237,7 +1234,7 @@ const addProduct = async (req: any, res: any) => {
         model: "policy/create",
         error: policyError,
       });
-      return res.status(500).json(policyError);
+      return res.status(500).json({ error: "error creating policy" });
     }
 
     const { id: policy_id } = policyData;
@@ -1260,7 +1257,7 @@ const addProduct = async (req: any, res: any) => {
         model: "subscription/create",
         error: subscriptionError,
       });
-      return res.status(500).json(subscriptionError);
+      return res.status(500).json({ error: "error creating subscription" });
     }
 
     const {
@@ -1283,7 +1280,7 @@ const addProduct = async (req: any, res: any) => {
         model: "lead/create",
         error: leadError,
       });
-      return res.status(500).json(leadError);
+      return res.status(500).json({ error: "error creating lead" });
     }
 
     const { id: lead_id } = leadData;
@@ -1306,7 +1303,7 @@ const addProduct = async (req: any, res: any) => {
         model: "leadProduct/createModel",
         error: leadProductError,
       });
-      return res.status(500).json(leadProductError);
+      return res.status(500).json({ error: "error creating lead product" });
     }
 
     createLogger.info({
@@ -1344,7 +1341,7 @@ const addInsured = async (req: any, res: any) => {
       model: "insured/create",
       error: insuredResponse.error,
     });
-    res.status(500).json(insuredResponse.error);
+    res.status(500).json({ error: "error creating insured" });
     return;
   }
 
@@ -1358,7 +1355,7 @@ const addInsured = async (req: any, res: any) => {
       error: leadResponse.error,
     });
 
-    res.status(500).json(leadResponse.error);
+    res.status(500).json({ error: "error retrieving lead" });
     return;
   }
 
@@ -1374,7 +1371,7 @@ const addInsured = async (req: any, res: any) => {
       model: "leadInsured/createModel",
       error: leadInsuredResponse.error,
     });
-    res.status(500).json(leadInsuredResponse.error);
+    res.status(500).json({ error: "error creating lead insured" });
     return;
   }
 
@@ -1407,7 +1404,7 @@ const addBeneficiary = async (req: any, res: any) => {
       model: "beneficiary/createModel",
       error: beneficiaryResponse.error,
     });
-    res.status(500).json(beneficiaryResponse.error);
+    res.status(500).json({ error: "error creating beneficiary" });
     return;
   }
 
@@ -1421,7 +1418,7 @@ const addBeneficiary = async (req: any, res: any) => {
       error: leadResponse.error,
     });
 
-    res.status(500).json(leadResponse.error);
+    res.status(500).json({ erorr: "error retrieving lead" });
     return;
   }
 
@@ -1438,7 +1435,7 @@ const addBeneficiary = async (req: any, res: any) => {
       model: "leadBeneficiary/createModel",
       error: leadBeneficiaryResponse.error,
     });
-    res.status(500).json(leadBeneficiaryResponse.error);
+    res.status(500).json({ error: "error creating lead beneficiary" });
     return;
   }
 
@@ -1461,7 +1458,7 @@ const addFromCase = async (req: any, res: any) => {
       error: leadResponse.error,
     });
 
-    res.status(500).json(leadResponse.error);
+    res.status(500).json({ error: "error retrieving lead" });
     return;
   }
 
@@ -1477,7 +1474,7 @@ const addFromCase = async (req: any, res: any) => {
       model: "leadInsured/createModel",
       error: leadInsuredResponse.error,
     });
-    res.status(500).json(leadInsuredResponse.error);
+    res.status(500).json({ error: "error creating lead insured" });
     return;
   }
 
@@ -1503,7 +1500,7 @@ const addFromCase = async (req: any, res: any) => {
       model: "leadBeneficiary/createModel",
       error: leadBeneficiaryResponse.error,
     });
-    res.status(500).json();
+    res.status(500).json({ error: "error creating lead beneficiary" });
     return;
   }
 
@@ -1539,7 +1536,7 @@ const addInsuredFromExcel = async (req: any, res: any) => {
         model: "lead/getBySubscriptionId",
         error: leadDataResponse.error,
       });
-      res.status(500).json(leadDataResponse.error);
+      res.status(500).json({ error: "error retrieving lead" });
       return;
     }
 
@@ -1552,7 +1549,7 @@ const addInsuredFromExcel = async (req: any, res: any) => {
         model: "leadProduct/getByLeadId",
         error: leadProductResponse.error,
       });
-      res.status(500).json(leadProductResponse.error);
+      res.status(500).json({ error: "error retrieving lead product" });
       return;
     }
 
@@ -1565,7 +1562,7 @@ const addInsuredFromExcel = async (req: any, res: any) => {
         model: "fileFormat/getBySubscriptionId",
         error: fileFormatResponse.error,
       });
-      res.status(500).json(fileFormatResponse.error);
+      res.status(500).json({ error: "error retrieving file format" });
       return;
     }
 
@@ -1586,9 +1583,9 @@ const addInsuredFromExcel = async (req: any, res: any) => {
               ...dataItem,
               values: dataItem.values
                 ? [
-                    ...dataItem.values,
-                    { id: field_id, value: xlsItem[xlsField] },
-                  ]
+                  ...dataItem.values,
+                  { id: field_id, value: xlsItem[xlsField] },
+                ]
                 : [{ id: field_id, value: xlsItem[xlsField] }],
             };
           } else {
@@ -1654,7 +1651,7 @@ const getStatistics = async (req: any, res: any) => {
       model: "lead/getMonthlySubscriptions",
       error: monthlySubscriptions.error,
     });
-    res.status(500).json(monthlySubscriptions.error);
+    res.status(500).json({ error: "error retrieving lead monthly subscriptions" });
     return;
   }
 
@@ -1665,7 +1662,7 @@ const getStatistics = async (req: any, res: any) => {
       model: "lead/getTotalCollected",
       error: totalCollected.error,
     });
-    res.status(500).json(totalCollected.error);
+    res.status(500).json({ error: "error retrieving lead total collected" });
     return;
   }
 
@@ -1676,7 +1673,7 @@ const getStatistics = async (req: any, res: any) => {
       model: "lead/getChannelCollected",
       error: channelCollected.error,
     });
-    res.status(500).json(channelCollected.error);
+    res.status(500).json({ error: "error retrieving lead channels collectedx" });
     return;
   }
 
