@@ -305,7 +305,7 @@ const CaseTracking = ({ thisCase }: any) => {
       }
     );
   };
-  console.log(insured);
+
   useEffect(() => {
     const previousEvaluation = thisCase?.stages.find(
       (s: any) => s?.stage === "Resolución"
