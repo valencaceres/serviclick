@@ -7,7 +7,7 @@ export const userRouter = createTRPCRouter({
 	getAll: publicProcedure
 		.query(async () => {
 			const users = await clerkClient.users.getUserList();
-			console.log(users);
+
 			if (!users || users.length === 0) {
 				throw new TRPCError({
 					code: "NOT_FOUND",
