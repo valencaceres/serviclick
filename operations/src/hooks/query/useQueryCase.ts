@@ -293,6 +293,21 @@ const useGetUserByClerkId = (ids: string[]) => {
   return useQuery(["user", ids], () => getUserByClerkId(ids));
 };
 
+const createCaseSummary = async (caseSummaryData: any) => {
+  const { data } = await apiInstance.post(`/case/createCaseSummary`, caseSummaryData);
+  return data;
+};
+
+const useCreateCaseSummary = () => {
+  return useMutation(["casesummary"], createCaseSummary, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["casesummary"]);
+    },
+  });
+};
+
+
+
 const useQueryCase = () => {
   return {
     useCreate,
@@ -316,6 +331,7 @@ const useQueryCase = () => {
     useGetBeneficiaryByRut,
     useGetUserByClerkId,
     useGetStatistics,
+    useCreateCaseSummary
   };
 };
 

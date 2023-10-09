@@ -25,6 +25,9 @@ const CaseFormResolution = ({ thisCase }: any) => {
   const [comment, setComment] = useState<string>("");
   const [bankNumber, setBankNumber] = useState<string>("");
   const [bankName, setBankName] = useState<string>("");
+  const [amountSpecialist, setAmountSpecialist] = useState<string>("");
+  const [extraAmount, setExtraAmount] = useState<string>("");
+  const [commentSummary, setCommentSummary] = useState<string>("");
   const { data: stages } = useQueryStage().useGetAll();
 
   const queryClient = useQueryClient();
@@ -56,13 +59,13 @@ const CaseFormResolution = ({ thisCase }: any) => {
     thisCase?.assistance_id,
     thisCase?.product_id
   );
-
   const { mutate: discountAssistanceData } =
     useQueryCase().useDiscountAssistanceData(
       thisCase?.insured_id,
       thisCase?.assistance_id,
       thisCase?.product_id
     );
+  const { mutate: createCaseSummary } = useQueryCase().useCreateCaseSummary();
 
   const handleRate = (e: any) => {
     e.preventDefault();
@@ -138,9 +141,21 @@ const CaseFormResolution = ({ thisCase }: any) => {
       },
       {
         onSuccess: () => {
-          router.push(`/case`);
-          queryClient.invalidateQueries(["case", thisCase?.case_id]);
-          discountAssistanceData();
+          createCaseSummary(
+            {
+              case_id: thisCase?.case_id,
+              amount: amountSpecialist,
+              extraamount: extraAmount,
+              comment: commentSummary,
+            },
+            {
+              onSuccess: () => {
+                router.push(`/case`);
+                queryClient.invalidateQueries(["case", thisCase?.case_id]);
+                discountAssistanceData();
+              },
+            }
+          );
         },
       }
     );
@@ -174,7 +189,23 @@ const CaseFormResolution = ({ thisCase }: any) => {
       }
     }
   }, [customerAccount]);
-
+  useEffect(() => {
+    if (thisReimbursement) {
+      if (
+        thisReimbursement.casesummary_amount &&
+        thisReimbursement.casesummary_extraamount &&
+        thisReimbursement.casesummary_comment
+      ) {
+        setAmountSpecialist(thisReimbursement.casesummary_amount);
+        setExtraAmount(thisReimbursement.casesummary_extraamount);
+        setCommentSummary(thisReimbursement.casesummary_comment);
+      } else {
+        setAmountSpecialist("0");
+        setExtraAmount("0");
+        setCommentSummary("");
+      }
+    }
+  }, [thisReimbursement]);
   return (
     <form>
       <ContentCell gap="20px">
@@ -243,39 +274,88 @@ const CaseFormResolution = ({ thisCase }: any) => {
                   </div>
                 </ContentRow>
               </ContentCell>
+              {thisReimbursement?.status === "Pendiente" && (
+                <p className="text-red-600">
+                  {" "}
+                  Debe de aprobarse el reembolso para proseguir
+                </p>
+              )}
               {thisReimbursement?.status === "Aprobado" && (
-                <ContentRow gap="5px">
-                  <>
-                    {thisReimbursement?.imed_amount !== null && (
+                <>
+                  <ContentRow gap="5px">
+                    <>
+                      {thisReimbursement?.imed_amount !== null && (
+                        <InputText
+                          label="Descuento IMED"
+                          value={thisReimbursement?.imed_amount?.toLocaleString(
+                            "es-CL",
+                            {
+                              style: "currency",
+                              currency: "CLP",
+                            }
+                          )}
+                          type="text"
+                          disabled={true}
+                          width="260px"
+                        />
+                      )}
                       <InputText
-                        label="Descuento IMED"
-                        value={thisReimbursement?.imed_amount.toLocaleString(
-                          "es-CL",
-                          {
-                            style: "currency",
-                            currency: "CLP",
-                          }
-                        )}
+                        label="Reembolso ServiClick"
+                        value={
+                          thisReimbursement?.serviclick_amount
+                            ? thisReimbursement.serviclick_amount.toLocaleString(
+                                "es-CL",
+                                {
+                                  style: "currency",
+                                  currency: "CLP",
+                                }
+                              )
+                            : 0
+                        }
                         type="text"
                         disabled={true}
                         width="260px"
                       />
-                    )}
-                    <InputText
-                      label="Reembolso ServiClick"
-                      value={thisReimbursement?.serviclick_amount.toLocaleString(
-                        "es-CL",
-                        {
-                          style: "currency",
-                          currency: "CLP",
-                        }
-                      )}
-                      type="text"
-                      disabled={true}
-                      width="260px"
-                    />
-                  </>
-                </ContentRow>
+                    </>
+                  </ContentRow>
+                  {thisCase?.is_active === false && (
+                    <>
+                      <ContentRow gap="5px">
+                        <>
+                          <InputText
+                            label="Gastos especialista"
+                            value={amountSpecialist}
+                            type="number"
+                            onChange={(e: any) =>
+                              setAmountSpecialist(e.target.value)
+                            }
+                            width="260px"
+                          />
+                          <InputText
+                            label="Gastos Extras"
+                            value={extraAmount}
+                            type="number"
+                            width="260px"
+                            onChange={(e: any) =>
+                              setExtraAmount(e.target.value)
+                            }
+                          />
+                        </>
+                      </ContentRow>
+                      <ContentRow gap="5px">
+                        <TextArea
+                          label="Observaciones de gastos extras"
+                          width="525px"
+                          height="100px"
+                          value={commentSummary}
+                          onChange={(e: any) =>
+                            setCommentSummary(e.target.value)
+                          }
+                        />
+                      </ContentRow>
+                    </>
+                  )}
+                </>
               )}
               {thisReimbursement?.comment && (
                 <ContentRow gap="5px">
@@ -300,12 +380,16 @@ const CaseFormResolution = ({ thisCase }: any) => {
                     disabled={thisCase?.is_active === true ? false : true}
                     onChange={(e: any) => setComment(e.target.value)}
                   />
-                  <Button
-                    onClick={handleClose}
-                    disabled={thisCase?.is_active ? false : true}
-                  >
-                    Cerrar caso
-                  </Button>
+                  {thisCase?.is_active === true ? (
+                    <Button
+                      onClick={handleClose}
+                      disabled={thisCase?.is_active === true ? false : true}
+                    >
+                      Cerrar caso
+                    </Button>
+                  ) : (
+                    <Button onClick={handleClose}>Actualizar caso</Button>
+                  )}
                 </ContentCell>
               )}
             </ContentCell>

@@ -633,30 +633,39 @@ const updateReimbursementStatus = async (req: any, res: any) => {
 };
 
 const createChatMessage = async (req: any, res: any) => {
-  const { case_id, casestage_id, message, user_id, type } = req.body;
+  try {
+    const { case_id, casestage_id, message, user_id, type } = req.body;
 
-  const response = await CaseChat.create(
-    case_id,
-    casestage_id,
-    user_id,
-    message,
-    type
-  );
+    const response = await CaseChat.create(
+      case_id,
+      casestage_id,
+      user_id,
+      message,
+      type
+    );
 
-  if (!response.success) {
-    createLogger.error({
-      model: `caseChat/createChatMessage`,
-      error: response.error,
+    if (!response.success) {
+      createLogger.error({
+        model: `caseChat/createChatMessage`,
+        error: response.error,
+      });
+      return res.status(500).json({ error: "Error creating chat message" });
+    }
+
+    createLogger.info({
+      controller: `case/createChatMessage`,
+      message: `OK - Chat message created`,
     });
+
+    return res.status(200).json(response.data);
+  } catch (e) {
+    createLogger.error({
+      model: `case/createChatMessage`,
+      error: (e as Error).message,
+    });
+
     return res.status(500).json({ error: "Error creating chat message" });
   }
-
-  createLogger.info({
-    controller: `case/createChatMessage`,
-    message: `OK - Chat message created`,
-  });
-
-  return res.status(200).json(response.data);
 };
 
 const getChatByCase = async (req: any, res: any) => {
@@ -727,7 +736,45 @@ const getStatistics = async (req: any, res: any) => {
   res.status(200).json(statistics);
 };
 
+const createCaseSummary = async (req: any, res: any) => {
+  try {
+    const {
+      case_id,
+      amount,
+      extraamount,
+      comment
+    } = req.body;
 
+    const caseSummaryResponse = await Case.createCaseSummary(
+      case_id,
+      amount,
+      extraamount,
+      comment
+    );
+
+    if (!caseSummaryResponse.success) {
+      createLogger.error({
+        model: `caseSummary/createCaseSummary`,
+        error: caseSummaryResponse.error,
+      });
+      return res.status(500).json({ error: "Error creating case summary" });
+    }
+
+    createLogger.info({
+      controller: `case/createCaseSummary`,
+      message: `OK - case summary created`,
+    });
+
+    return res.status(200).json(caseSummaryResponse.data);
+  } catch (e) {
+    createLogger.error({
+      controller: `case/createCaseSummary`,
+      error: (e as Error).message,
+    });
+
+    return res.status(500).json({ error: "Error creating case summary" });
+  }
+};
 export {
   create,
   uploadDocument,
@@ -748,5 +795,6 @@ export {
   updateReimbursementStatus,
   createChatMessage,
   getChatByCase,
-  getStatistics
+  getStatistics,
+  createCaseSummary
 };

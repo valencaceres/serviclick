@@ -46,19 +46,23 @@ const getByCase: any = async (case_id: string) => {
   try {
     const result = await pool.query(
       `SELECT 
-        csr.id,
-        csr.amount,
-        csr.currency,
-        csr.uf_value,
-        csr.case_id,
-        csr.casestage_id,
-        cr.imed_amount,
-        cr.amount as serviclick_amount,
-        cr.comment,
-        cr.status
-      FROM app.casestageresult AS csr
-      INNER JOIN app.casereimbursment AS cr ON cr.casestageresult_id = csr.id
-      WHERE csr.case_id = $1`,
+      csr.id,
+      csr.amount,
+      csr.currency,
+      csr.uf_value,
+      csr.case_id,
+      csr.casestage_id,
+      cr.imed_amount,
+      cr.amount as serviclick_amount,
+      cr.comment,
+      cr.status,
+      cs.amount as casesummary_amount,
+      cs.extraAmount as casesummary_extraAmount,
+      cs.comment as casesummary_comment
+  FROM app.casestageresult AS csr
+  INNER JOIN app.casereimbursment AS cr ON cr.casestageresult_id = csr.id
+  LEFT JOIN app.casesummary AS cs ON cs.case_id = csr.case_id
+  WHERE csr.case_id = $1;`,
       [case_id]
     );
 

@@ -534,6 +534,47 @@ const getTotalCases: any = async () => {
 };
 
 
+const createCaseSummary: any = async (
+  case_id: string,
+  amount: string,
+  extraamount?: string,
+  comment?: string,
+) => {
+  try {
+    const caseSummary = await pool.query(
+      `SELECT * FROM app.casesummary
+      WHERE case_id = $1`,
+      [case_id]
+    );
+
+    if (caseSummary.rowCount > 0) {
+      const result = await pool.query(
+        `UPDATE app.casesummary
+        SET amount = $1,
+        extraamount = $2,
+        comment = $3
+        WHERE case_id = $4
+        RETURNING *`,
+        [amount, extraamount, comment, case_id]
+      );
+
+      return { success: true, data: result.rows[0], error: null };
+    }
+
+    const result = await pool.query(
+      `INSERT INTO app.casesummary(case_id, amount, extraamount, comment)
+        VALUES ($1, $2, $3, $4) RETURNING *`,
+      [case_id, amount, extraamount, comment]
+    );
+
+    return { success: true, data: result.rows[0], error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+
+
 export {
   create,
   getAll,
@@ -544,4 +585,5 @@ export {
   getMonthlyCases,
   getCasesReimbursment,
   getTotalCases,
+  createCaseSummary
 };

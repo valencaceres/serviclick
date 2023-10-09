@@ -1,4 +1,4 @@
-import express, { Express } from "express";
+import express, { Express, Request, Response, NextFunction } from "express";
 import cors from "cors";
 import * as routes from "./routes";
 import { reqLogger } from "./middlewares/logger";
@@ -86,6 +86,19 @@ function initializeRoutes(server: Express) {
   routeMappings.forEach((route) => {
     server.use(route.path, reqLogger, route.router);
   });
+
+  server.use(
+    (err: any, req: Request, res: Response, next: NextFunction) => {
+      if (
+        err instanceof SyntaxError &&
+        err.message.includes("JSON")
+      ) {
+        return res.status(400).json({ error: "Json Request Format is invalid" });
+      }
+
+      return res.status(500).json({ error: "Internal server error" });
+    }
+  );
 
   const rutaVirtual = '/files/pdf/products';
   const rutaFisica = path.join(__dirname, '..', 'productplans_pdfs');
