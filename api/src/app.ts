@@ -37,7 +37,21 @@ function initializeMiddlewares(server: Express) {
   server.use(express.json());
   server.use(cors(corsOptions));
   server.use(express.urlencoded({ extended: false }));
-  server.use(helmet());
+  server.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+        },
+      },
+      referrerPolicy: { policy: "strict-origin-when-cross-origin" },
+      frameguard: { action: "sameorigin" },
+      xssFilter: true,
+      noSniff: true,
+      hsts: { maxAge: 31536000, includeSubDomains: true },
+    })
+  );
 }
 
 const routeMappings = [
