@@ -1,5 +1,6 @@
 import Image from "next/image"
 
+import HeadPages from "@/components/functional/HeadPage"
 import AssistanceSuggestionForm from "@/components/functional/people/assistance-suggestion-form"
 import Faq from "@/components/functional/people/faq"
 import { Interests } from "@/components/functional/people/interests"
@@ -29,6 +30,11 @@ export default async function PeoplePage() {
   return (
     <>
       <section className="relative h-[550px] flex items-center px-20">
+        <HeadPages
+          title="Selecciona area de asistencia "
+          description="Selecciona area de asistencia "
+        />
+
         <video
           style={{
             objectFit: "cover",
