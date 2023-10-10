@@ -28,7 +28,7 @@ const nextConfig = {
             key: "Content-Security-Policy",
             value:
               "default-src 'self';" +
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://clever-cheetah-42.clerk.accounts.dev;" +
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://clever-cheetah-42.clerk.accounts.dev https://clerk.serviclick.cl;" +
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com;" +
               "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com data:;" +
               "img-src * data:;" +
