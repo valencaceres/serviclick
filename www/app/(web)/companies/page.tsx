@@ -30,8 +30,8 @@ export default async function CompaniesPage() {
     <>
       <section className="relative h-[550px] flex items-center px-20">
         <HeadPages
-          title="Cotizacion empresa "
-          description="  Cotiza la asistencia para tu empresa"
+          title="Cotizacion empresa"
+          description="Cotiza la asistencia para tu empresa"
         />
         <video
           style={{
