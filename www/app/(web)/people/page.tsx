@@ -31,8 +31,8 @@ export default async function PeoplePage() {
     <>
       <section className="relative h-[550px] flex items-center px-20">
         <HeadPages
-          title="Selecciona area de asistencia"
-          description="Selecciona area de asistencia"
+          title="Selecciona área de asistencia"
+          description="Selecciona área de asistencia"
         />
 
         <video
