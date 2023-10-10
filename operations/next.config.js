@@ -32,7 +32,7 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com;" +
               "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com data:;" +
               "img-src * data:;" +
-              "connect-src 'self' http://localhost:* https://clever-cheetah-42.clerk.accounts.dev https://arriving-egret-56.clerk.accounts.dev https://clerk.serviclick.cl https://api.serviclick.cl;" +
+              "connect-src 'self'  https://clever-cheetah-42.clerk.accounts.dev https://arriving-egret-56.clerk.accounts.dev https://clerk.serviclick.cl https://api.serviclick.cl;" +
               "worker-src 'self' blob:;",
           },
           {
