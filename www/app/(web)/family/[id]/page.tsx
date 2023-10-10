@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import HeadPages from "@/components/functional/HeadPage"
 
 export default async function Page({ params }: { params: { id: string } }) {
   const responseFamilies = await fetch(
@@ -85,6 +86,14 @@ export default async function Page({ params }: { params: { id: string } }) {
   return (
     <>
       <section className="relative h-[450px] flex items-center px-20 pb-20">
+        <HeadPages
+          title={`Contrata - ${
+            (uniqueAssistancesArray[0] as any)?.product_name
+          }`}
+          description={`Contrata - ${
+            (uniqueAssistancesArray[0] as any)?.product_name
+          }`}
+        />
         <Image
           src={`/families/${params.id}.jpg`}
           alt={"Familia " + params.id}
@@ -94,16 +103,18 @@ export default async function Page({ params }: { params: { id: string } }) {
         />
         <div className="z-10 w-full flex lg:items-end lg:justify-center gap-6 lg:gap-16 flex-col lg:flex-row items-center justify-end h-full">
           {uniqueAssistancesArray?.map((assistance: any) => (
-            <Link href={`#${assistance.product_name}`} passHref>
-              <Button
-                type="button"
-                key={assistance.product_id}
-                variant="secondary"
-                className="text-xl py-8 px-6 hover:bg-secondary/90 bg-secondary/90 lg:bg-secondary uppercase w-96"
-              >
-                {assistance.product_name}
-              </Button>
-            </Link>
+            <>
+              <Link href={`#${assistance.product_name}`} passHref>
+                <Button
+                  type="button"
+                  key={assistance.product_id}
+                  variant="secondary"
+                  className="text-xl py-8 px-6 hover:bg-secondary/90 bg-secondary/90 lg:bg-secondary uppercase w-96"
+                >
+                  {assistance.product_name}
+                </Button>
+              </Link>
+            </>
           ))}
         </div>
         <div className="bg-black absolute w-full h-full z-5 top-0 right-0 bg-opacity-30"></div>

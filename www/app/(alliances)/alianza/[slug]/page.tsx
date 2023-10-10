@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import HeadPages from "@/components/functional/HeadPage"
 
 export default async function Page({ params }: { params: { slug: string } }) {
   const responseFamilies = await fetch(
@@ -22,6 +23,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
       cache: "no-store",
     }
   )
+
   const families = await responseFamilies.json()
 
   const assistances = families.filter(
@@ -82,10 +84,13 @@ export default async function Page({ params }: { params: { slug: string } }) {
 
   const uniqueAssistancesArray = Object.values(uniqueAssistances)
 
-  console.log(families)
   return (
     <>
       <section className="relative h-[600px] flex items-center px-20">
+        <HeadPages
+          title={`Alianza - ${families[0].agent_name}`}
+          description={`Alianza - ${families[0].agent_name}`}
+        />
         <video
           style={{
             objectFit: "cover",

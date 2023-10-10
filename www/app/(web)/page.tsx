@@ -1,5 +1,6 @@
 import "swiper/css"
 import "swiper/css/navigation"
+import HeadPages from "@/components/functional/HeadPage"
 import { Alliances } from "@/components/functional/home/alliances"
 import { AssistancesCarousel } from "@/components/functional/home/assistances-carousel"
 import { Clients } from "@/components/functional/home/clients"

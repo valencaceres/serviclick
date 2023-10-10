@@ -477,6 +477,7 @@ const listByFamilies = async (agent: string) => {
                           ppl.id AS productplan_id,
                           ppl.price,
                           age.fantasyname AS agent_slug,
+                          age.name AS agent_name,
                           asi.id AS assistance_id,
                           asi.name AS coverage_name,
                           pas.amount AS coverage_amount,

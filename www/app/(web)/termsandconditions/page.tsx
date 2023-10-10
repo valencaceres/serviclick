@@ -1,6 +1,12 @@
+import HeadPages from "@/components/functional/HeadPage"
+
 export default async function TermsPage() {
   return (
     <section className="container py-8 max-w-5xl flex flex-col gap-8">
+      <HeadPages
+        title="Términos y condiciones"
+        description="Términos y condiciones"
+      />
       <h1 className="text-xl font-bold uppercase">MHM SERVICIOS SPA.</h1>
       <div className="flex flex-col gap-2">
         <h2 className="uppercase">
