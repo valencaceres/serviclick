@@ -15,6 +15,42 @@ const nextConfig = {
       },
     ],
   },
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=31536000; includeSubDomains",
+          },
+          {
+            key: "Content-Security-Policy",
+            value:
+              "default-src 'self';" +
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://clever-cheetah-42.clerk.accounts.dev;" +
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com;" +
+              "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com data:;" +
+              "img-src * data:;" +
+              "connect-src 'self' http://localhost:* https://clever-cheetah-42.clerk.accounts.dev;" +
+              "worker-src 'self' blob:;",
+          },
+          {
+            key: "X-Frame-Options",
+            value: "SAMEORIGIN",
+          },
+          {
+            key: "X-Content-Type-Options",
+            value: "nosniff",
+          },
+          {
+            key: "Referrer-Policy",
+            value: "strict-origin-when-cross-origin",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;
