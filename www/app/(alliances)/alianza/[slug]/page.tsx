@@ -88,7 +88,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
     <>
       <section className="relative h-[600px] flex items-center px-20">
         <HeadPages
-          title={`Allianza - ${families[0].agent_name}`}
+          title={`Alianza - ${families[0].agent_name}`}
           description={`Alianza - ${families[0].agent_name}`}
         />
         <video
