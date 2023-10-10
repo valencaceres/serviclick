@@ -26,7 +26,14 @@ const nextConfig = {
           },
           {
             key: "Content-Security-Policy",
-            value: "directives aquí",
+            value:
+              "default-src 'self';" +
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://clever-cheetah-42.clerk.accounts.dev;" +
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com;" +
+              "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com data:;" +
+              "img-src * data:;" +
+              "connect-src 'self' http://localhost:* https://clever-cheetah-42.clerk.accounts.dev;" +
+              "worker-src 'self' blob:;",
           },
           {
             key: "X-Frame-Options",
@@ -39,10 +46,6 @@ const nextConfig = {
           {
             key: "Referrer-Policy",
             value: "strict-origin-when-cross-origin",
-          },
-          {
-            key: "Permissions-Policy",
-            value: "features aquí",
           },
         ],
       },
