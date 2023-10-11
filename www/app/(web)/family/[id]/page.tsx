@@ -84,7 +84,6 @@ export default async function Page({ params }: { params: { id: string } }) {
   }, {})
 
   const uniqueAssistancesArray = Object.values(uniqueAssistances)
-  console.log((uniqueAssistancesArray[0] as any)?.product_name)
   meta = {
     title: {
       default: `Contrata - ${(uniqueAssistancesArray[0] as any)?.product_name}`,
