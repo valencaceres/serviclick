@@ -1,8 +1,26 @@
-import HeadPages from "@/components/functional/HeadPage"
+import { Metadata } from "next"
+
 import AssistanceQuoteForm from "@/components/functional/companies/assistance-quote-form"
 import { Details } from "@/components/functional/companies/details"
 
 import { GrupoMHM } from "../aboutus/page"
+
+export const metadata: Metadata = {
+  title: {
+    default: "Cotizacion empresa",
+    template: `%s - ${"Cotizacion empresa"}`,
+  },
+  description: "Cotiza la asistencia para tu empresa",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "white" },
+    { media: "(prefers-color-scheme: dark)", color: "black" },
+  ],
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon-16x16.png",
+    apple: "/apple-touch-icon.png",
+  },
+}
 
 export default async function CompaniesPage() {
   const responseFamilies = await fetch(
@@ -29,10 +47,6 @@ export default async function CompaniesPage() {
   return (
     <>
       <section className="relative h-[550px] flex items-center px-20">
-        <HeadPages
-          title="Cotizacion empresa"
-          description="Cotiza la asistencia para tu empresa"
-        />
         <video
           style={{
             objectFit: "cover",

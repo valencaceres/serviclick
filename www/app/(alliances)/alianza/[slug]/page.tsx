@@ -1,3 +1,4 @@
+import { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
 
@@ -11,7 +12,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import HeadPages from "@/components/functional/HeadPage"
+
+let meta: Metadata
 
 export default async function Page({ params }: { params: { slug: string } }) {
   const responseFamilies = await fetch(
@@ -83,14 +85,25 @@ export default async function Page({ params }: { params: { slug: string } }) {
   }, {})
 
   const uniqueAssistancesArray = Object.values(uniqueAssistances)
-
+  meta = {
+    title: {
+      default: `Alianza - ${families[0].agent_name}`,
+      template: `%s - Alianza - ${families[0].agent_name}`,
+    },
+    description: `Alianza - ${families[0].agent_name}`,
+    themeColor: [
+      { media: "(prefers-color-scheme: light)", color: "white" },
+      { media: "(prefers-color-scheme: dark)", color: "black" },
+    ],
+    icons: {
+      icon: "/favicon.ico",
+      shortcut: "/favicon-16x16.png",
+      apple: "/apple-touch-icon.png",
+    },
+  }
   return (
     <>
       <section className="relative h-[600px] flex items-center px-20">
-        <HeadPages
-          title={`Alianza - ${families[0].agent_name}`}
-          description={`Alianza - ${families[0].agent_name}`}
-        />
         <video
           style={{
             objectFit: "cover",
@@ -338,3 +351,4 @@ export default async function Page({ params }: { params: { slug: string } }) {
     </>
   )
 }
+export { meta as metadata }

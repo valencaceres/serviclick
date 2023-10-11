@@ -1,9 +1,26 @@
+import { Metadata } from "next"
 import Image from "next/image"
 
-import HeadPages from "@/components/functional/HeadPage"
 import AssistanceSuggestionForm from "@/components/functional/people/assistance-suggestion-form"
 import Faq from "@/components/functional/people/faq"
 import { Interests } from "@/components/functional/people/interests"
+
+export const metadata: Metadata = {
+  title: {
+    default: "Selecciona área de asistencia",
+    template: `%s - ${"Selecciona área de asistencia"}`,
+  },
+  description: "Selecciona área de asistencia",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "white" },
+    { media: "(prefers-color-scheme: dark)", color: "black" },
+  ],
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon-16x16.png",
+    apple: "/apple-touch-icon.png",
+  },
+}
 
 export default async function PeoplePage() {
   const responseFamilies = await fetch(
@@ -30,11 +47,6 @@ export default async function PeoplePage() {
   return (
     <>
       <section className="relative h-[550px] flex items-center px-20">
-        <HeadPages
-          title="Selecciona área de asistencia"
-          description="Selecciona área de asistencia"
-        />
-
         <video
           style={{
             objectFit: "cover",
