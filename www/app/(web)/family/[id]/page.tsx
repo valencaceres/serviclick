@@ -1,3 +1,4 @@
+import { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
 
@@ -10,7 +11,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import HeadPages from "@/components/functional/HeadPage"
+
+let meta: Metadata
 
 export default async function Page({ params }: { params: { id: string } }) {
   const responseFamilies = await fetch(
@@ -82,18 +84,30 @@ export default async function Page({ params }: { params: { id: string } }) {
   }, {})
 
   const uniqueAssistancesArray = Object.values(uniqueAssistances)
-
+  console.log((uniqueAssistancesArray[0] as any)?.product_name)
+  meta = {
+    title: {
+      default: `Contrata - ${(uniqueAssistancesArray[0] as any)?.product_name}`,
+      template: `%s - Contrata - ${
+        (uniqueAssistancesArray[0] as any)?.product_name
+      }`,
+    },
+    description: `Contrata - ${
+      (uniqueAssistancesArray[0] as any)?.product_name
+    }`,
+    themeColor: [
+      { media: "(prefers-color-scheme: light)", color: "white" },
+      { media: "(prefers-color-scheme: dark)", color: "black" },
+    ],
+    icons: {
+      icon: "/favicon.ico",
+      shortcut: "/favicon-16x16.png",
+      apple: "/apple-touch-icon.png",
+    },
+  }
   return (
     <>
       <section className="relative h-[450px] flex items-center px-20 pb-20">
-        <HeadPages
-          title={`Contrata - ${
-            (uniqueAssistancesArray[0] as any)?.product_name
-          }`}
-          description={`Contrata - ${
-            (uniqueAssistancesArray[0] as any)?.product_name
-          }`}
-        />
         <Image
           src={`/families/${params.id}.jpg`}
           alt={"Familia " + params.id}
@@ -328,3 +342,4 @@ export default async function Page({ params }: { params: { id: string } }) {
     </>
   )
 }
+export { meta as metadata }

@@ -12,23 +12,6 @@ import { SiteHeader } from "@/components/functional/site-header"
 import { TailwindIndicator } from "@/components/functional/tailwind-indicator"
 import { ThemeProvider } from "@/components/functional/theme-provider"
 
-export const metadata: Metadata = {
-  title: {
-    default: siteConfig.name,
-    template: `%s - ${siteConfig.name}`,
-  },
-  description: siteConfig.description,
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "white" },
-    { media: "(prefers-color-scheme: dark)", color: "black" },
-  ],
-  icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon-16x16.png",
-    apple: "/apple-touch-icon.png",
-  },
-}
-
 interface LandingLayoutProps {
   children: React.ReactNode
 }

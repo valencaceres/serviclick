@@ -1,11 +1,29 @@
 import "swiper/css"
 import "swiper/css/navigation"
-import HeadPages from "@/components/functional/HeadPage"
+import { Metadata } from "next"
+
 import { Alliances } from "@/components/functional/home/alliances"
 import { AssistancesCarousel } from "@/components/functional/home/assistances-carousel"
 import { Clients } from "@/components/functional/home/clients"
 import { HeroCarousel } from "@/components/functional/home/hero-carousel"
 import { News } from "@/components/functional/home/news"
+
+export const metadata: Metadata = {
+  title: {
+    default: "Serviclick - Todas las soluciones en la palma de tu mano",
+    template: `%s - ${"Soluciones en la palma de tu mano."}`,
+  },
+  description: "Soluciones en la palma de tu mano.",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "white" },
+    { media: "(prefers-color-scheme: dark)", color: "black" },
+  ],
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon-16x16.png",
+    apple: "/apple-touch-icon.png",
+  },
+}
 
 export default async function IndexPage() {
   const responseCategories = await fetch(

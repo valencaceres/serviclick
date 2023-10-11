@@ -1,14 +1,30 @@
+import { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
-import HeadPages from "@/components/functional/HeadPage"
+
+export const metadata: Metadata = {
+  title: {
+    default: "Sobre nosotros",
+    template: `%s - ${"Sobre nosotros"}`,
+  },
+  description: "Sobre nosotros",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "white" },
+    { media: "(prefers-color-scheme: dark)", color: "black" },
+  ],
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon-16x16.png",
+    apple: "/apple-touch-icon.png",
+  },
+}
 
 export default function AboutUsPage() {
   return (
     <>
       <section className="relative h-[450px] flex items-center px-20">
-        <HeadPages title="Sobre nosotros" description="Sobre nosotros" />
         <Image
           src="/quienessomos.jpeg"
           alt="Quienes somos"
