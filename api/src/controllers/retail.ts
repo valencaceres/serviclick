@@ -16,7 +16,9 @@ import * as Policy from "../models/policy";
 import * as Lead from "../controllers/lead";
 
 import * as Product from "./product";
+import ioClient from "socket.io-client";
 
+const socket = ioClient(`${process.env.SOCKET_API_URL}`);
 const create = async (req: any, res: any) => {
   try {
     const {
@@ -31,7 +33,6 @@ const create = async (req: any, res: any) => {
       phone,
       logo,
     } = req.body;
-
     const retailResponse = await Retail.create(
       rut,
       name,
@@ -509,13 +510,14 @@ const updateAgent = async (req: any, res: any) => {
 
 const addLeadFromExcel = async (req: any, res: any) => {
   try {
-    const { productPlan_id } = req.body;
+    const { productPlan_id, retail_id } = req.body;
     const file = req.file;
 
     const fileFormatResponse = await FileFormat.getByProductPlanId(
       productPlan_id
     );
 
+    console.log(productPlan_id);
     if (!fileFormatResponse.success) {
       createLogger.error({
         model: "fileformat/getByProductPlanId",
@@ -538,7 +540,12 @@ const addLeadFromExcel = async (req: any, res: any) => {
 
     let data = [];
     let row = 0;
-
+    console.log(fileFormatResponse.data);
+    socket.emit("summary", {
+      retail_id: retail_id,
+      productPlan_id: productPlan_id,
+      total: xlsData.length,
+    });
     for (const xlsItem of xlsData) {
       // if (row === 1000) {
       //   break;
@@ -555,9 +562,9 @@ const addLeadFromExcel = async (req: any, res: any) => {
               ...dataItem,
               values: dataItem.values
                 ? [
-                  ...dataItem.values,
-                  { value_id: field_id, value: xlsItem[xlsField] },
-                ]
+                    ...dataItem.values,
+                    { value_id: field_id, value: xlsItem[xlsField] },
+                  ]
                 : [{ value_id: field_id, value: xlsItem[xlsField] }],
             };
           } else {
@@ -570,6 +577,7 @@ const addLeadFromExcel = async (req: any, res: any) => {
         }
         data.push(dataItem);
       }
+
       row++;
     }
 
@@ -639,6 +647,12 @@ const addInsuredFromExcelItem = async (productPlan_id: string, item: any) => {
       model: "retail/getCustomerByRut",
       error: retailCustomerResponse.error,
     });
+    socket.emit("row", {
+      retail_id: retailCustomerResponse.data.retail_id,
+      productPlan_id: productPlan_id,
+      status: false,
+    });
+
     return { success: false, data: null, error: retailCustomerResponse.error };
   }
 
@@ -658,6 +672,12 @@ const addInsuredFromExcelItem = async (productPlan_id: string, item: any) => {
         model: "productPlan/getById",
         error: productPlanResponse.error,
       });
+      socket.emit("row", {
+        retail_id: retailCustomerResponse.data.retail_id,
+        productPlan_id: productPlan_id,
+        status: false,
+      });
+
       return { success: false, data: null, error: productPlanResponse.error };
     }
 
@@ -732,6 +752,12 @@ const addInsuredFromExcelItem = async (productPlan_id: string, item: any) => {
         model: "lead/create",
         error: leadResponse.error,
       });
+      socket.emit("row", {
+        retail_id: retailCustomerResponse.data.retail_id,
+        productPlan_id: productPlan_id,
+        status: false,
+      });
+
       return { success: false, data: null, error: leadResponse.error };
     }
 
@@ -757,7 +783,11 @@ const addInsuredFromExcelItem = async (productPlan_id: string, item: any) => {
     });
     return { success: false, data: null, error: policyResponse.error };
   }
-
+  socket.emit("row", {
+    retail_id: retailCustomerResponse.data.retail_id,
+    productPlan_id: productPlan_id,
+    status: true,
+  });
   createLogger.info({
     model: "policy/create",
     message: `${policyResponse.data?.id} inserted/updated`,

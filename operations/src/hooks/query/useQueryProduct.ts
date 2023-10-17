@@ -24,21 +24,45 @@ const useGetAll = () => {
   });
 };
 
+const getAllRetails = async () => {
+  const { data } = await apiInstance.get(`/retail/getAll`);
+  return data;
+};
+
+const useGetAllRetails = () => {
+  return useQuery({
+    queryKey: ["retails"],
+    queryFn: getAllRetails,
+  });
+};
+
 const getById = async (id: string) => {
   const { data } = await apiInstance.get(`/product/getById/${id}`);
   return data;
 };
 
-const getContractByProductPlanId = async (product_id: string, agent_id: string) => {
-  const { data } = await apiInstance.get(`/product/getContract/${product_id}/${agent_id}`)
+const getContractByProductPlanId = async (
+  product_id: string,
+  agent_id: string
+) => {
+  const { data } = await apiInstance.get(
+    `/product/getContract/${product_id}/${agent_id}`
+  );
   return data;
-}
+};
 
-const useGetContractByProductPlanId = (product_id: string, agent_id: string) => {
-  return useQuery(["product", product_id, agent_id], () => getContractByProductPlanId(product_id, agent_id), {
-    enabled: !!product_id,
-  })
-}
+const useGetContractByProductPlanId = (
+  product_id: string,
+  agent_id: string
+) => {
+  return useQuery(
+    ["product", product_id, agent_id],
+    () => getContractByProductPlanId(product_id, agent_id),
+    {
+      enabled: !!product_id,
+    }
+  );
+};
 
 const useGetById = (id: string) => {
   return useQuery(["product", id], () => getById(id), {
@@ -73,7 +97,8 @@ const useQueryProduct = () => {
     useCreate,
     useListProducts,
     useGetByRetailRut,
-    useGetContractByProductPlanId
+    useGetContractByProductPlanId,
+    useGetAllRetails,
   };
 };
 

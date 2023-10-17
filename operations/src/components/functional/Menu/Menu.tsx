@@ -56,6 +56,11 @@ const routes = [
     roles: ["admin"],
     subRoutes: [{ text: "Dashboard", route: "/dashboard" }],
   },
+  {
+    text: "Gestión de Subidas",
+    roles: ["admin"],
+    subRoutes: [{ text: "Subidas", route: "/uploads-insured" }],
+  },
 ];
 
 interface MenuProps {

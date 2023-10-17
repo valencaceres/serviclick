@@ -12,6 +12,7 @@ const roles: Record<UserRole, RegExp[]> = {
     /^\/masters(\/.*)?$/,
     /^\/entities(\/.*)?$/,
     /^\/dashboard(\/.*)?$/,
+    /^\/uploads-insured(\/.*)?$/,
   ],
 };
 

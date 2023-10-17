@@ -474,14 +474,22 @@ const getCollectById: any = async (id: string) => {
 const getCustomerByRut: any = async (productPlan_id: string, rut: string) => {
   try {
     const result = await pool.query(
-      ` select	lea.id as lead_id
-        from 	  app.retail ret
-                inner join app.lead lea on ret.id = lea.agent_id and not lea.policy_id is null
-                inner join app.leadproduct lpr on lea.id = lpr.lead_id
-                inner join app.customer cus on lea.customer_id = cus.id
-                inner join app.productplan ppl on ret.id = ppl.agent_id and lpr.productplan_id = ppl.plan_id
-        where 	ppl.id = $1 and
-                cus.rut = $2`,
+      ` SELECT
+      lea.id as lead_id,
+      ret.id as retail_id
+    FROM
+      app.retail ret
+    INNER JOIN
+      app.lead lea ON ret.id = lea.agent_id AND NOT lea.policy_id IS NULL
+    INNER JOIN
+      app.leadproduct lpr ON lea.id = lpr.lead_id
+    INNER JOIN
+      app.customer cus ON lea.customer_id = cus.id
+    INNER JOIN
+      app.productplan ppl ON ret.id = ppl.agent_id AND lpr.productplan_id = ppl.plan_id
+    WHERE
+      ppl.id = $1 AND
+      cus.rut = $2;`,
       [productPlan_id, rut]
     );
 

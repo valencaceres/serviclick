@@ -53,13 +53,13 @@ const FileFormatFields = () => {
           <TableDetail>
             {fileFormat.fields.map((field, idx: number) => (
               <TableRow key={idx} link={true}>
-                <TableCell width="403px">{field.field_name}</TableCell>
-                <TableCell width="250px">{field.field_format}</TableCell>
+                <TableCell width="403px">{field?.field_name}</TableCell>
+                <TableCell width="250px">{field?.field_format}</TableCell>
                 <TableCell width="50px" align="center">
                   <TableIcons>
                     <Icon
                       iconName="delete"
-                      onClick={() => handleDeleteField(field.field_id)}
+                      onClick={() => handleDeleteField(field?.field_id)}
                     />
                   </TableIcons>
                 </TableCell>

@@ -41,8 +41,8 @@ const RetailInsured = () => {
     const formData = new FormData();
 
     formData.append("file", file);
-    formData.append("fileName", file.name);
-    formData.append("retail_id", retail.id);
+    formData.append("fileName", file?.name);
+    formData.append("retail_id", retail?.id);
     formData.append(
       "productPlan_id",
       retailSelectedProduct?.productplan_id || ""
@@ -50,7 +50,7 @@ const RetailInsured = () => {
 
     uploadExcel(formData);
   };
-
+  console.log(retailSelectedProduct?.productplan_id);
   return (
     <Fragment>
       <ContentCell gap="5px">

@@ -8,6 +8,7 @@ import { setSecurityHeaders } from "./middlewares/setSecurityHeaders";
 import path from "path";
 import helmet from "helmet";
 
+
 const corsOptions = {
   preflightContinue: false,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
@@ -117,7 +118,6 @@ function initializeRoutes(server: Express) {
   const rutaVirtual = '/files/pdf/products';
   const rutaFisica = path.join(__dirname, '..', 'productplans_pdfs');
   server.use(rutaVirtual, express.static(rutaFisica));
-
 }
 
 const server = express();

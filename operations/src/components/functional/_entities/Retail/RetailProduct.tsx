@@ -45,7 +45,7 @@ const RetailProduct = () => {
           width="150px"
           value={formatAmount(
             retailSelectedProduct && retailSelectedProduct.price
-              ? retailSelectedProduct?.price?.customer.toString() || "0"
+              ? retailSelectedProduct?.price?.customer?.toString() || "0"
               : "0",
             retailSelectedProduct?.currency || ""
           )}

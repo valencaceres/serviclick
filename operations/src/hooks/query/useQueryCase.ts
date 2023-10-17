@@ -107,7 +107,6 @@ const discountAssistanceData = async (
   return data;
 };
 
-
 const getReimbursment = async (case_id: string) => {
   const { data } = await apiInstance.get(`/case/getReimbursment/${case_id}`);
   return data;
@@ -254,9 +253,8 @@ const useDiscountAssistanceData = (
   assistance_id: string,
   product_id: string
 ) => {
-  return useMutation(
-    ["case", insured_id, assistance_id, product_id],
-    () => discountAssistanceData(insured_id, assistance_id, product_id),
+  return useMutation(["case", insured_id, assistance_id, product_id], () =>
+    discountAssistanceData(insured_id, assistance_id, product_id)
   );
 };
 
@@ -294,7 +292,10 @@ const useGetUserByClerkId = (ids: string[]) => {
 };
 
 const createCaseSummary = async (caseSummaryData: any) => {
-  const { data } = await apiInstance.post(`/case/createCaseSummary`, caseSummaryData);
+  const { data } = await apiInstance.post(
+    `/case/createCaseSummary`,
+    caseSummaryData
+  );
   return data;
 };
 
@@ -305,8 +306,6 @@ const useCreateCaseSummary = () => {
     },
   });
 };
-
-
 
 const useQueryCase = () => {
   return {
@@ -331,7 +330,7 @@ const useQueryCase = () => {
     useGetBeneficiaryByRut,
     useGetUserByClerkId,
     useGetStatistics,
-    useCreateCaseSummary
+    useCreateCaseSummary,
   };
 };
 
