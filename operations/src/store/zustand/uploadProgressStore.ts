@@ -24,9 +24,7 @@ const useSocketStore = create<SocketState>(() => ({
   rowData: null,
 }));
 
-/* const socket = io(`${process.env.SOCKET_API_URL}`);
- */
-const socket = io("http://localhost:3017");
+const socket = io(`${process.env.NEXT_PUBLIC_SOCKET_API_URL}`);
 
 socket.on("summaryResponse", (data: SummaryResponseData) => {
   useSocketStore.setState({ summaryData: data });
