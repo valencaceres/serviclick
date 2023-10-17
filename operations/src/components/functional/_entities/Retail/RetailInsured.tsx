@@ -50,7 +50,6 @@ const RetailInsured = () => {
 
     uploadExcel(formData);
   };
-  console.log(retailSelectedProduct?.productplan_id);
   return (
     <Fragment>
       <ContentCell gap="5px">

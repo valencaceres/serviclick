@@ -517,7 +517,6 @@ const addLeadFromExcel = async (req: any, res: any) => {
       productPlan_id
     );
 
-    console.log(productPlan_id);
     if (!fileFormatResponse.success) {
       createLogger.error({
         model: "fileformat/getByProductPlanId",
@@ -540,7 +539,6 @@ const addLeadFromExcel = async (req: any, res: any) => {
 
     let data = [];
     let row = 0;
-    console.log(fileFormatResponse.data);
     socket.emit("summary", {
       retail_id: retail_id,
       productPlan_id: productPlan_id,
