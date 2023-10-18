@@ -169,7 +169,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
           email,
           phone,
         },
-        retail_id: !client ? data?.retail_id : client,
+        retail_id: !client ? retail?.id : client,
         customer_id: data?.customer_id,
         isInsured: isInsured === "isInsured",
         beneficiary_id: isNewBeneficiary
