@@ -63,26 +63,29 @@ const create: any = async (
         return { success: true, data: result.rows[0], error: null };
       }
       const exists = await pool.query(
-        `SELECT * FROM app.case WHERE ${applicant.type === "B" || isInsured === false
-          ? "beneficiary_id"
-          : "insured_id"
+        `SELECT * FROM app.case WHERE ${
+          applicant.type === "B" || isInsured === false
+            ? "beneficiary_id"
+            : "insured_id"
         } = $1 AND number = $2`,
         [applicant.id, number]
       );
 
       if (exists.rows.length > 0) {
         const result = await pool.query(
-          `UPDATE app.case SET type = $1, ${applicant.type === "B" || isInsured === false
-            ? "beneficiary_id"
-            : "insured_id"
+          `UPDATE app.case SET type = $1, ${
+            applicant.type === "B" || isInsured === false
+              ? "beneficiary_id"
+              : "insured_id"
           } = $2,
           retail_id = $3,
           customer_id = $4,
           event_date = $6,
           event_location = $7
-          WHERE ${applicant.type === "B" || isInsured === false
-            ? "beneficiary_id"
-            : "insured_id"
+          WHERE ${
+            applicant.type === "B" || isInsured === false
+              ? "beneficiary_id"
+              : "insured_id"
           } = $2 AND number = $5 RETURNING *`,
           [
             applicant.type,
@@ -98,9 +101,10 @@ const create: any = async (
         return { success: true, data: result.rows[0], error: null };
       }
       const result = await pool.query(
-        `INSERT INTO app.case(type, ${applicant.type === "B" || isInsured === false
-          ? "beneficiary_id"
-          : "insured_id"
+        `INSERT INTO app.case(type, ${
+          applicant.type === "B" || isInsured === false
+            ? "beneficiary_id"
+            : "insured_id"
         }, retail_id, customer_id, event_date, event_location) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
         [
           applicant.type,
@@ -117,9 +121,10 @@ const create: any = async (
 
     const resultCase = await pool.query(
       `SELECT * FROM app.case 
-      WHERE number = $1 AND ${applicant.type === "B" || isInsured === false
-        ? "beneficiary_id"
-        : "insured_id"
+      WHERE number = $1 AND ${
+        applicant.type === "B" || isInsured === false
+          ? "beneficiary_id"
+          : "insured_id"
       } = $2`,
       [number, applicant.id]
     );
@@ -127,9 +132,10 @@ const create: any = async (
     if (resultCase.rows.length > 0) {
       const result = await pool.query(
         `UPDATE app.case SET product_id = $1, assistance_id = $2, isactive = $3, retail_id = $4, customer_id = $5, lead_id = $6, event_date = $9, event_location = $10
-        WHERE number = $7 AND ${applicant.type === "B" || isInsured === false
-          ? "beneficiary_id"
-          : "insured_id"
+        WHERE number = $7 AND ${
+          applicant.type === "B" || isInsured === false
+            ? "beneficiary_id"
+            : "insured_id"
         } = $8
         RETURNING *`,
         [
@@ -533,12 +539,11 @@ const getTotalCases: any = async () => {
   }
 };
 
-
 const createCaseSummary: any = async (
   case_id: string,
   amount: string,
   extraamount?: string,
-  comment?: string,
+  comment?: string
 ) => {
   try {
     const caseSummary = await pool.query(
@@ -546,6 +551,8 @@ const createCaseSummary: any = async (
       WHERE case_id = $1`,
       [case_id]
     );
+
+    let updatedCaseSummary;
 
     if (caseSummary.rowCount > 0) {
       const result = await pool.query(
@@ -558,22 +565,53 @@ const createCaseSummary: any = async (
         [amount, extraamount, comment, case_id]
       );
 
-      return { success: true, data: result.rows[0], error: null };
+      updatedCaseSummary = result.rows[0];
+    } else {
+      const result = await pool.query(
+        `INSERT INTO app.casesummary(case_id, amount, extraamount, comment)
+        VALUES ($1, $2, $3, $4)
+        RETURNING *`,
+        [case_id, amount, extraamount, comment]
+      );
+
+      updatedCaseSummary = result.rows[0];
     }
 
-    const result = await pool.query(
-      `INSERT INTO app.casesummary(case_id, amount, extraamount, comment)
-        VALUES ($1, $2, $3, $4) RETURNING *`,
-      [case_id, amount, extraamount, comment]
+    const caseStageResult = await pool.query(
+      `SELECT amount, available FROM app.casestageresult
+      WHERE case_id = $1`,
+      [case_id]
     );
 
-    return { success: true, data: result.rows[0], error: null };
+    if (caseStageResult.rowCount > 0) {
+      const { amount: casestageresult_amount, available } =
+        caseStageResult.rows[0];
+
+      const newAvailable =
+        available -
+        casestageresult_amount -
+        updatedCaseSummary.amount -
+        updatedCaseSummary.extraamount;
+
+      await pool.query(
+        `UPDATE app.casestageresult
+        SET available = $1
+        WHERE case_id = $2`,
+        [newAvailable, case_id]
+      );
+
+      return { success: true, data: updatedCaseSummary, error: null };
+    }
+
+    return {
+      success: false,
+      data: null,
+      error: "No se encontró el caso (case_id).",
+    };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
   }
 };
-
-
 
 export {
   create,
@@ -585,5 +623,5 @@ export {
   getMonthlyCases,
   getCasesReimbursment,
   getTotalCases,
-  createCaseSummary
+  createCaseSummary,
 };

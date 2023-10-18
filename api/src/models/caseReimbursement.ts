@@ -4,6 +4,7 @@ const create: any = async (
   case_id: string,
   casestageresult_id: string,
   user_id?: string,
+  amount?: string,
   status?: "Pendiente" | "Aprobado" | "Rechazado",
   imed_amount?: number
 ) => {
@@ -20,20 +21,21 @@ const create: any = async (
         `UPDATE app.casereimbursment
         SET user_id = $1,
             status = $2,
-            imed_amount = $5
+            imed_amount = $5,
+            amount= $6
         WHERE case_id = $3
         AND casestageresult_id = $4
         RETURNING *`,
-        [user_id, status, case_id, casestageresult_id, imed_amount]
+        [user_id, status, case_id, casestageresult_id, imed_amount, amount]
       );
 
       return { success: true, data: result.rows[0], error: null };
     }
 
     const result = await pool.query(
-      `INSERT INTO app.casereimbursment(case_id, casestageresult_id, user_id, status, imed_amount)
-        VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-      [case_id, casestageresult_id, user_id, status, imed_amount]
+      `INSERT INTO app.casereimbursment(case_id, casestageresult_id, user_id, status, imed_amount, amount)
+        VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+      [case_id, casestageresult_id, user_id, status, imed_amount, amount]
     );
 
     return { success: true, data: result.rows[0], error: null };
