@@ -538,7 +538,6 @@ const getTotalCases: any = async () => {
     return { success: false, data: null, error: (e as Error).message };
   }
 };
-
 const createCaseSummary: any = async (
   case_id: string,
   amount: string,
@@ -546,6 +545,25 @@ const createCaseSummary: any = async (
   comment?: string
 ) => {
   try {
+    const caseReimbursement = await pool.query(
+      `SELECT amount FROM app.casereimbursment
+      WHERE case_id = $1`,
+      [case_id]
+    );
+    let amountReimbursment;
+    if (caseReimbursement.rowCount > 0) {
+      const reimbursementAmount = caseReimbursement.rows[0].amount;
+
+      amountReimbursment = String(Number(amount) - reimbursementAmount);
+
+      await pool.query(
+        `UPDATE app.casereimbursment
+        SET amount = 0
+        WHERE case_id = $1`,
+        [case_id]
+      );
+    }
+
     const caseSummary = await pool.query(
       `SELECT * FROM app.casesummary
       WHERE case_id = $1`,
@@ -583,13 +601,13 @@ const createCaseSummary: any = async (
       [case_id]
     );
 
-    if (caseStageResult.rowCount > 0) {
+    if (caseStageResult.rowCount > 0 && amountReimbursment !== undefined) {
       const { amount: casestageresult_amount, available } =
         caseStageResult.rows[0];
 
       const newAvailable =
         available -
-        casestageresult_amount -
+        Number(amountReimbursment) * -1 -
         updatedCaseSummary.amount -
         updatedCaseSummary.extraamount;
 
@@ -606,7 +624,7 @@ const createCaseSummary: any = async (
     return {
       success: false,
       data: null,
-      error: "No se encontró el caso (case_id).",
+      error: "case id not found",
     };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
