@@ -286,7 +286,7 @@ const CaseFormService = ({ thisCase }: any) => {
   const closeModal = () => {
     setModalIsOpen(false);
   };
-  console.log(selectedAssistance?.events, assistanceData);
+
   return (
     <div>
       <ContentCell gap="10px">
