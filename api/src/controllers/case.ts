@@ -33,7 +33,10 @@ const create = async (req: any, res: any) => {
     event_location,
   } = req.body;
 
-  if ((applicant?.type === "C" && isInsured === true) || applicant?.type === "I") {
+  if (
+    (applicant?.type === "C" && isInsured === true) ||
+    applicant?.type === "I"
+  ) {
     const applicantResponse = await Insured.create(
       applicant.rut,
       applicant.name,
@@ -56,7 +59,7 @@ const create = async (req: any, res: any) => {
       applicant.district,
       applicant.email,
       applicant.phone
-    )
+    );
 
     if (!applicantResponse.success || !customerResponse.success) {
       createLogger.error({
@@ -69,7 +72,10 @@ const create = async (req: any, res: any) => {
     applicant.id = applicantResponse.data.id;
   }
 
-  if ((applicant?.type === "C" && isInsured === false) || applicant?.type === "B") {
+  if (
+    (applicant?.type === "C" && isInsured === false) ||
+    applicant?.type === "B"
+  ) {
     const applicantResponse = await Beneficiary.createModel(
       applicant.rut,
       applicant.name,
@@ -558,7 +564,7 @@ const discountAssistanceData = async (req: any, res: any) => {
     message: `OK - Assistance data discounted`,
   });
 
-  if ('data' in response) {
+  if ("data" in response) {
     return res.status(200).json(response.data);
   } else {
     return res.status(200).json({ message: response.message });
@@ -725,7 +731,7 @@ const getStatistics = async (req: any, res: any) => {
   const statistics = {
     monthlyCases: monthlyCases.data,
     casesReimbursment: casesReimbursment.data,
-    totalCases: getTotalCases.data
+    totalCases: getTotalCases.data,
   };
 
   createLogger.info({
@@ -738,12 +744,7 @@ const getStatistics = async (req: any, res: any) => {
 
 const createCaseSummary = async (req: any, res: any) => {
   try {
-    const {
-      case_id,
-      amount,
-      extraamount,
-      comment
-    } = req.body;
+    const { case_id, amount, extraamount, comment } = req.body;
 
     const caseSummaryResponse = await Case.createCaseSummary(
       case_id,
@@ -796,5 +797,5 @@ export {
   createChatMessage,
   getChatByCase,
   getStatistics,
-  createCaseSummary
+  createCaseSummary,
 };

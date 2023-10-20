@@ -61,7 +61,7 @@ const getById = async (id: string) => {
               FAM.id AS family_id,
               CAS.lead_id,
               CST.user_id,
-              COALESCE(CAS.customer_id, CAS.retail_id) AS contractor_id,
+              COALESCE(CAS.retail_id, CAS.customer_id) AS contractor_id,
               CASE WHEN BEN.name IS NOT NULL THEN BEN.name
               WHEN INS.name IS NOT NULL THEN INS.name
               ELSE PER.name END AS applicant_name,

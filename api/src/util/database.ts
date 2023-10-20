@@ -24,6 +24,7 @@ const pool = new Pool({
   password: dbPassword,
   port: 5432,
   keepAlive: true,
+  max: 20,
   ssl:
     process.env.ENV === "dev"
       ? false

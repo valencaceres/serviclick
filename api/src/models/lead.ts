@@ -2,6 +2,50 @@ import { format } from "date-fns";
 
 import pool from "../util/database";
 
+const upsert = async (
+  productPlanId: string,
+  rut: string,
+  name: string,
+  paternalLastName: string,
+  maternalLastName: string,
+  address: string,
+  district: string,
+  email: string,
+  phone: string,
+  birthDate: string,
+  initialDate: string,
+  endDate: string
+): Promise<{
+  success: boolean;
+  data: { lead_id: string; policy_id: string } | null;
+  error: string | null;
+}> => {
+  try {
+    const result = await pool.query(
+      `select lead_id,
+              policy_id
+      from    app.lead_upsert($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+      [
+        productPlanId,
+        rut,
+        name,
+        paternalLastName,
+        maternalLastName,
+        address,
+        district,
+        email,
+        phone,
+        birthDate,
+        initialDate,
+        endDate,
+      ]
+    );
+    return { success: true, data: result.rows[0], error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 const createModel: any = async (
   id: string,
   customer_id: string,
@@ -367,6 +411,7 @@ const getChannelCollected: any = async () => {
 };
 
 export {
+  upsert,
   createModel,
   updatePaymentTypeCode,
   registerSubscriptionModel,

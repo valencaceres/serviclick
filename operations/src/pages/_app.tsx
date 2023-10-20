@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Provider } from "react-redux";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -20,9 +21,21 @@ import type { AppProps } from "next/app";
 import { esES } from "@clerk/localizations";
 import { Toaster } from "~/components/ui/Toaster";
 
+import { useSocket, useRetail } from "../store/hooks";
+
 const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const { connect, on } = useSocket();
+  const { setRetailDataLoading } = useRetail();
+
+  useEffect(() => {
+    connect();
+    on("rowResponse", (data: any) => {
+      setRetailDataLoading(JSON.parse(data));
+    });
+  }, []);
+
   return (
     <ClerkProvider {...pageProps} localization={esES}>
       <QueryClientProvider client={queryClient}>

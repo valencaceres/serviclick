@@ -1,4 +1,5 @@
 import { Fragment, useState } from "react";
+import { useRouter } from "next/router";
 
 import {
   ContentCell,
@@ -24,6 +25,8 @@ import ModalWindow from "~/components/ui/ModalWindow";
 import InputText from "~/components/ui/InputText";
 
 const RetailInsured = () => {
+  const router = useRouter();
+
   const {
     retail,
     retailProductCustomers,
@@ -41,14 +44,15 @@ const RetailInsured = () => {
     const formData = new FormData();
 
     formData.append("file", file);
-    formData.append("fileName", file.name);
-    formData.append("retail_id", retail.id);
+    formData.append("fileName", file?.name);
+    formData.append("retail_id", retail?.id);
     formData.append(
       "productPlan_id",
       retailSelectedProduct?.productplan_id || ""
     );
 
     uploadExcel(formData);
+    router.push("/uploads-insured");
   };
 
   return (

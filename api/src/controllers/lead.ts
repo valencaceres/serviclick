@@ -309,16 +309,19 @@ const sendPaymentLink = async (lead: LeadT, link: string = "") => {
 
   const href =
     link === ""
-      ? `https://web.serviclick.cl/payment/${lead.customer.rut ? "customer" : "company"
-      }/${lead.product.product_id}?leadId=${lead.id}`
+      ? `https://web.serviclick.cl/payment/${
+          lead.customer.rut ? "customer" : "company"
+        }/${lead.product.product_id}?leadId=${lead.id}`
       : link;
 
   const emailResponse = await sendMail(
     { name: "Bienvenido a ServiClick" },
     lead.customer.email || lead.company.email,
     `Link de pago para ${product.name}`,
-    `<b>Hola&nbsp;${lead.company.rut ? lead.company.companyName : lead.customer.name
-    }</b><br/><br/>Queremos que seas parte de ServiClick y solo estás a un paso, te dejamos el link de pago para que puedas completar la adquisición de ${product.name
+    `<b>Hola&nbsp;${
+      lead.company.rut ? lead.company.companyName : lead.customer.name
+    }</b><br/><br/>Queremos que seas parte de ServiClick y solo estás a un paso, te dejamos el link de pago para que puedas completar la adquisición de ${
+      product.name
     } y disfrutes de los beneficios que te brinda:<br/><br/><a href="${href}">Concluye tu proceso de pago haciendo click aquí</a><br/><br/>Por que sabemos de asistencias, nos enfocamos en resolver todas las necesidades que te ayuden a vivir más tranquilo y seguro.<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
     []
   );
@@ -350,10 +353,10 @@ const createSubscription = async (
     const name =
       customer.rut !== ""
         ? customer.name +
-        " " +
-        customer.paternalLastName +
-        " " +
-        customer.maternalLastName
+          " " +
+          customer.paternalLastName +
+          " " +
+          customer.maternalLastName
         : company.companyName;
     const address = contractor.address + ", " + contractor.district;
 
@@ -715,6 +718,40 @@ export const create = async (lead: any) => {
   }
 };
 
+export const upsert = async (lead: any) => {
+  const {
+    productPlanId,
+    rut,
+    name,
+    paternalLastName,
+    maternalLastName,
+    address,
+    district,
+    email,
+    phone,
+    birthDate,
+    initialDate,
+    endDate,
+  } = lead;
+
+  let { success, data, error } = await Lead.upsert(
+    productPlanId,
+    rut,
+    name,
+    paternalLastName,
+    maternalLastName,
+    address,
+    district,
+    email,
+    phone,
+    birthDate,
+    initialDate,
+    endDate
+  );
+
+  return { success, data, error };
+};
+
 const createController = async (req: any, res: any) => {
   const {
     id,
@@ -754,9 +791,7 @@ const createController = async (req: any, res: any) => {
 
     const responseLeadUpdate = await updateLeadPaymentType(data.id, "L");
     if (!responseLeadUpdate.success) {
-      res
-        .status(500)
-        .json({ error: "error updating lead payment type " });
+      res.status(500).json({ error: "error updating lead payment type " });
       return;
     }
   }
@@ -771,9 +806,7 @@ const createController = async (req: any, res: any) => {
     );
 
     if (!subscriptionResponse.success) {
-      res
-        .status(500)
-        .json({ error: "error creating subscription " });
+      res.status(500).json({ error: "error creating subscription " });
       return;
     }
 
@@ -1583,9 +1616,9 @@ const addInsuredFromExcel = async (req: any, res: any) => {
               ...dataItem,
               values: dataItem.values
                 ? [
-                  ...dataItem.values,
-                  { id: field_id, value: xlsItem[xlsField] },
-                ]
+                    ...dataItem.values,
+                    { id: field_id, value: xlsItem[xlsField] },
+                  ]
                 : [{ id: field_id, value: xlsItem[xlsField] }],
             };
           } else {
@@ -1651,7 +1684,9 @@ const getStatistics = async (req: any, res: any) => {
       model: "lead/getMonthlySubscriptions",
       error: monthlySubscriptions.error,
     });
-    res.status(500).json({ error: "error retrieving lead monthly subscriptions" });
+    res
+      .status(500)
+      .json({ error: "error retrieving lead monthly subscriptions" });
     return;
   }
 
@@ -1673,7 +1708,9 @@ const getStatistics = async (req: any, res: any) => {
       model: "lead/getChannelCollected",
       error: channelCollected.error,
     });
-    res.status(500).json({ error: "error retrieving lead channels collectedx" });
+    res
+      .status(500)
+      .json({ error: "error retrieving lead channels collectedx" });
     return;
   }
 

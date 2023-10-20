@@ -286,7 +286,7 @@ const CaseFormService = ({ thisCase }: any) => {
   const closeModal = () => {
     setModalIsOpen(false);
   };
-
+  console.log(selectedAssistance?.events, assistanceData);
   return (
     <div>
       <ContentCell gap="10px">
@@ -413,6 +413,13 @@ const CaseFormService = ({ thisCase }: any) => {
               <h2 className="text-xl font-semibold text-secondary-500">
                 {selectedProduct?.name}
               </h2>
+              {assistanceData
+                ? Number(assistanceData?.remaining_events) <= 0
+                : Number(selectedAssistance?.events) <= 0 && (
+                    <h2 className="text-xl font-semibold text-red-500">
+                      Sin eventos restantes
+                    </h2>
+                  )}
               <div className="flex gap-2">
                 <p className="text-secondary-500">
                   Fecha de adquisición:{" "}
@@ -506,12 +513,17 @@ const CaseFormService = ({ thisCase }: any) => {
             {error && <p className="text-sm text-red-500">{error}</p>}
           </>
         ) : null}
-        <Button
-          disabled={thisCase?.is_active && selectedAssistance ? false : true}
-          onClick={handleAddService}
-        >
-          Continuar
-        </Button>
+        {(!assistanceData || Number(assistanceData?.remaining_events) > 0) &&
+          (!selectedAssistance || Number(selectedAssistance?.events) > 0) && (
+            <Button
+              disabled={
+                thisCase?.is_active && selectedAssistance ? false : true
+              }
+              onClick={handleAddService}
+            >
+              Continuar
+            </Button>
+          )}
       </ContentCell>
       <LoadingMessage />
     </div>

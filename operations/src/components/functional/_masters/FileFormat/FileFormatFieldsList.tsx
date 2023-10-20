@@ -26,9 +26,9 @@ const FileFormatFieldsList = ({ setShowModal }: any) => {
         ...fileFormat.fields,
         {
           id: "",
-          field_id: field.id,
-          field_name: field.name,
-          field_format: field.format,
+          field_id: field?.id,
+          field_name: field?.name,
+          field_format: field?.format,
         },
       ],
     });
