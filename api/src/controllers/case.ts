@@ -49,24 +49,31 @@ const create = async (req: any, res: any) => {
       applicant.phone
     );
 
+    if (!applicantResponse.success) {
+      createLogger.error({
+        model: `insured/create(1)`,
+        error: applicantResponse.error,
+      });
+      return res.status(500).json({ error: "Error creating insured" });
+    }
+
     const customerResponse = await Customer.createModel(
       applicant.rut,
       applicant.name,
       applicant.paternalLastName,
       applicant.maternalLastName,
-      applicant.birthDate,
       applicant.address,
       applicant.district,
       applicant.email,
       applicant.phone
     );
 
-    if (!applicantResponse.success || !customerResponse.success) {
+    if (!customerResponse.success) {
       createLogger.error({
-        model: `person/create`,
-        error: applicantResponse.error || customerResponse.error,
+        model: `insured/customer`,
+        error: customerResponse.error,
       });
-      return res.status(500).json({ error: "Error creating person" });
+      return res.status(500).json({ error: "Error creating customer" });
     }
 
     applicant.id = applicantResponse.data.id;
@@ -90,10 +97,10 @@ const create = async (req: any, res: any) => {
 
     if (!applicantResponse.success) {
       createLogger.error({
-        model: `person/create`,
+        model: `beneficiary/create`,
         error: applicantResponse.error,
       });
-      return res.status(500).json({ error: "Error creating person" });
+      return res.status(500).json({ error: "Error creating beneficiary" });
     }
 
     applicant.id = applicantResponse.data.id;
