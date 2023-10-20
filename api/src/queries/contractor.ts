@@ -140,8 +140,8 @@ order   by
         name`;
 
 export const _selectByRut = (_rut: string, _type: string) =>
-        _type === "C"
-                ? ` select 	id,
+  _type === "C"
+    ? ` select 	id,
                 rut,
                 name,
                 '' as paternallastname,
@@ -155,7 +155,7 @@ export const _selectByRut = (_rut: string, _type: string) =>
                 phone
         from 	app.retail
         where   rut = '${_rut}'`
-                : ` select 	id,
+    : ` select 	id,
                 rut,
                 name,
                 paternallastname,
@@ -266,7 +266,7 @@ export const _selectPayment = `
                         inner join app.leadproduct lpr on lea.id = lpr.lead_id
                         inner join app.policy pol on lea.policy_id = pol.id
                         inner join app.product pro on lpr.product_id = pro.id
-                        inner join app.productplan pla on pro.id = pla.product_id and lea.agent_id = pla.agent_id and pla.type = case when lea.company_id is null then 'customer' else 'company' end
+                        inner join app.productplan pla on pro.id = pla.product_id and lea.agent_id = pla.agent_id -- and pla.type = case when lea.company_id is null then 'customer' else 'company' end
                         inner join app.frequency fre on pla.frequency = fre.code
                         inner join app.leadinsured lin on lea.id = lin.lead_id
                         inner join (
