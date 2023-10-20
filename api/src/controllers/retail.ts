@@ -18,7 +18,6 @@ import * as Lead from "../controllers/lead";
 import * as Product from "./product";
 import ioClient from "socket.io-client";
 
-const socket = ioClient(`${process.env.SOCKET_API_URL}`);
 const create = async (req: any, res: any) => {
   try {
     const {
@@ -510,6 +509,8 @@ const updateAgent = async (req: any, res: any) => {
 
 const addLeadFromExcel = async (req: any, res: any) => {
   try {
+    const socket = ioClient(`${process.env.SOCKET_API_URL}`);
+
     const { productPlan_id, retail_id } = req.body;
     const file = req.file;
 
@@ -539,15 +540,8 @@ const addLeadFromExcel = async (req: any, res: any) => {
 
     let data = [];
     let row = 0;
-    socket.emit("summary", {
-      retail_id: retail_id,
-      productPlan_id: productPlan_id,
-      total: xlsData.length,
-    });
+
     for (const xlsItem of xlsData) {
-      // if (row === 1000) {
-      //   break;
-      // }
       if (isRecord(xlsItem)) {
         let count = 0;
         let dataItem: any = {};
@@ -581,30 +575,50 @@ const addLeadFromExcel = async (req: any, res: any) => {
 
     let dataResult = { total: 0, error: 0 };
 
-    await Promise.all(
-      data.map(async (item) => {
-        const contents = await addInsuredFromExcelItem(productPlan_id, item);
+    const promiseExcel = <any>[];
 
-        if (!contents.success) {
-          createLogger.error({
-            model: "retail/addInsuredFromExcelItem",
-            error: contents.error,
-          });
-          // return res.status(500).json({ error: "Error adding insured" });
-          dataResult.error++;
-        }
-        dataResult.total++;
-      })
-    );
+    // socket.emit("summary", {
+    //   retail_id: retail_id,
+    //   productPlan_id: productPlan_id,
+    //   total: xlsData.length,
+    // });
 
-    createLogger.info({
-      controller: "retail/addLeadFromExcel",
-      message: dataResult,
+    data.map(async (item, idx: number) => {
+      const rowSummary = { total: xlsData.length, count: idx + 1 };
+      promiseExcel.push(
+        addInsuredFromExcelItem(socket, productPlan_id, item, rowSummary)
+      );
     });
 
+    // const resultExcel = Promise.all(promiseExcel);
+
+    // await Promise.all(
+    //   data.map(async (item) => {
+    //     const contents = await addInsuredFromExcelItem(productPlan_id, item);
+
+    //     if (!contents.success) {
+    //       createLogger.error({
+    //         model: "retail/addInsuredFromExcelItem",
+    //         error: contents.error,
+    //       });
+    //       dataResult.error++;
+    //     }
+    //     dataResult.total++;
+    //   })
+    // );
+
+    // createLogger.info({
+    //   controller: "retail/addLeadFromExcel",
+    //   message: dataResult,
+    // });
+
     return res.status(200).json(dataResult);
-  } catch (error) {
-    const errorResponse = { success: false, error };
+  } catch (e) {
+    createLogger.error({
+      controller: "retail/addLeadFromExcel",
+      message: (e as Error).message,
+    });
+    const errorResponse = { success: false, error: (e as Error).message };
     res.json(errorResponse);
   }
 };
@@ -632,7 +646,82 @@ function isRecord(obj: unknown): obj is Record<string, any> {
   return typeof obj === "object" && obj !== null;
 }
 
-const addInsuredFromExcelItem = async (productPlan_id: string, item: any) => {
+const addInsuredFromExcelItem = async (
+  socket: any,
+  productPlan_id: string,
+  item: any,
+  rowSummary: any
+) => {
+  const { total, count } = rowSummary;
+
+  const data = {
+    productPlanId: productPlan_id,
+    rut: item.rut ? formatRut(item.rut) : "",
+    name: (item?.name || "").trim(),
+    paternalLastName: (item?.paternalLastName || "").trim(),
+    maternalLastName: (item?.maternalLastName || "").trim(),
+    address: (item?.address || "").trim(),
+    district: (item?.district || "").trim(),
+    email:
+      item.email && item.email !== ""
+        ? item.email.trim()
+        : fillEmptyEmail(item.rut),
+    phone: (item?.phone || "").trim(),
+    birthDate: (item?.birthDate || "").trim(),
+    initialDate: item.initialDate || "",
+    endDate: item.endDate || "",
+  };
+
+  const resultLead = await Lead.upsert(data);
+
+  if (!resultLead.success) {
+    createLogger.error({
+      model: "lead/upsert",
+      error: resultLead.error,
+    });
+
+    socket.emit(
+      "row",
+      JSON.stringify({
+        productPlan_id,
+        total,
+        count,
+        success: false,
+        error: resultLead.error,
+      })
+    );
+
+    return { success: false, data: null, error: resultLead.error };
+  }
+
+  const { lead_id, policy_id } = resultLead.data || {};
+
+  socket.emit(
+    "row",
+    JSON.stringify({
+      productPlan_id,
+      total,
+      count,
+      success: true,
+      lead_id,
+      policy_id,
+    })
+  );
+
+  // createLogger.info({
+  //   model: "lead/upsert",
+  //   message: `${resultLead.data?.lead_id} inserted/updated`,
+  // });
+
+  return { success: true, data: "OK", error: null };
+};
+
+const __addInsuredFromExcelItem = async (
+  socket: any,
+  productPlan_id: string,
+  item: any,
+  rowSummary: any
+) => {
   let lead_id: string | null = null;
 
   const retailCustomerResponse = await Retail.getCustomerByRut(
@@ -645,11 +734,12 @@ const addInsuredFromExcelItem = async (productPlan_id: string, item: any) => {
       model: "retail/getCustomerByRut",
       error: retailCustomerResponse.error,
     });
-    socket.emit("row", {
-      retail_id: retailCustomerResponse.data.retail_id,
-      productPlan_id: productPlan_id,
-      status: false,
-    });
+
+    // socket.emit("row", {
+    //   retail_id: retailCustomerResponse.data.retail_id,
+    //   productPlan_id: productPlan_id,
+    //   status: false,
+    // });
 
     return { success: false, data: null, error: retailCustomerResponse.error };
   }
@@ -670,11 +760,12 @@ const addInsuredFromExcelItem = async (productPlan_id: string, item: any) => {
         model: "productPlan/getById",
         error: productPlanResponse.error,
       });
-      socket.emit("row", {
-        retail_id: retailCustomerResponse.data.retail_id,
-        productPlan_id: productPlan_id,
-        status: false,
-      });
+
+      // socket.emit("row", {
+      //   retail_id: retailCustomerResponse.data.retail_id,
+      //   productPlan_id: productPlan_id,
+      //   status: false,
+      // });
 
       return { success: false, data: null, error: productPlanResponse.error };
     }
@@ -750,11 +841,12 @@ const addInsuredFromExcelItem = async (productPlan_id: string, item: any) => {
         model: "lead/create",
         error: leadResponse.error,
       });
-      socket.emit("row", {
-        retail_id: retailCustomerResponse.data.retail_id,
-        productPlan_id: productPlan_id,
-        status: false,
-      });
+
+      // socket.emit("row", {
+      //   retail_id: retailCustomerResponse.data.retail_id,
+      //   productPlan_id: productPlan_id,
+      //   status: false,
+      // });
 
       return { success: false, data: null, error: leadResponse.error };
     }
@@ -781,11 +873,9 @@ const addInsuredFromExcelItem = async (productPlan_id: string, item: any) => {
     });
     return { success: false, data: null, error: policyResponse.error };
   }
-  socket.emit("row", {
-    retail_id: retailCustomerResponse.data.retail_id,
-    productPlan_id: productPlan_id,
-    status: true,
-  });
+
+  socket.emit("row", JSON.stringify(rowSummary));
+
   createLogger.info({
     model: "policy/create",
     message: `${policyResponse.data?.id} inserted/updated`,

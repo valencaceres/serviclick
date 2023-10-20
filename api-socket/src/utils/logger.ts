@@ -14,7 +14,7 @@ export default createLogger({
   transports: [
     new transports.File({
       maxsize: 512000,
-      filename: `${__dirname}/../logs/log-api-${datetoString()}.log`,
+      filename: `${__dirname}/../logs/log-api-socket-${datetoString()}.log`,
     }),
     new transports.Console({ level: "debug" }),
   ],

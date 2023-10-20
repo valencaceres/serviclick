@@ -162,12 +162,8 @@ const getCustomerAccountByRut: any = async (rut: string) => {
       [rut]
     );
 
-    const {
-      customer_id,
-      customer_rut,
-      bank,
-      account_number,
-    } = result.rows[0] || {
+    const { customer_id, customer_rut, bank, account_number } = result
+      .rows[0] || {
       customer_id: "",
       customer_rut: "",
       bank: "",
@@ -179,7 +175,6 @@ const getCustomerAccountByRut: any = async (rut: string) => {
       customer_rut,
       bank,
       account_number,
-
     };
 
     return { success: true, data, error: null };
@@ -188,7 +183,11 @@ const getCustomerAccountByRut: any = async (rut: string) => {
   }
 };
 
-const updateCustomerAccount = async (rut: string, bank: string, account_number: string) => {
+const updateCustomerAccount = async (
+  rut: string,
+  bank: string,
+  account_number: string
+) => {
   try {
     const selectResult = await pool.query(
       `
@@ -225,11 +224,20 @@ const updateCustomerAccount = async (rut: string, bank: string, account_number: 
         return { success: true, data: updateResult.rows[0], error: null };
       } else {
         console.log("No records found for update");
-        return { success: false, data: null, error: "No records found for update" };
+        return {
+          success: false,
+          data: null,
+          error: "No records found for update",
+        };
       }
     }
   } catch (e: any) {
     return { success: false, data: null, error: e.message };
   }
 };
-export { createModel, getByRutModel, getCustomerAccountByRut, updateCustomerAccount };
+export {
+  createModel,
+  getByRutModel,
+  getCustomerAccountByRut,
+  updateCustomerAccount,
+};

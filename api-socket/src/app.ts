@@ -3,6 +3,8 @@ import http from "http"; // Importa el módulo http
 import cors from "cors";
 import { Server } from "socket.io"; // Importa el módulo socket.io
 
+import createLogger from "./utils/logger";
+
 class App {
   public server: any;
   public io: any;
@@ -37,21 +39,41 @@ class App {
     });
 
     this.io.on("connection", (socket: any) => {
+      createLogger.info({
+        on: "connection",
+        message: `User connected`,
+      });
+
       socket.on("row", (data: any) => {
+        createLogger.info({
+          on: "row",
+          data,
+        });
         socket.broadcast.emit("rowResponse", data);
       });
 
       socket.on("summary", (data: any) => {
+        createLogger.info({
+          on: "summary",
+          data,
+        });
         socket.broadcast.emit("summaryResponse", data);
       });
 
-      socket.on("disconnect", () => {});
+      socket.on("disconnect", () => {
+        createLogger.info({
+          on: "disconect",
+          message: `User disconnected`,
+        });
+      });
     });
 
     const PORT = process.env.HTTP_PORT;
     httpServer.listen(PORT, () => {
-      console.log(`HTTP server listening on
-      http://localhost:${PORT}`);
+      createLogger.info({
+        on: "init",
+        message: `server listening on http://localhost:${PORT}`,
+      });
     });
   }
 }

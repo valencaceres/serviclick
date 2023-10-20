@@ -1,4 +1,5 @@
 import { Fragment, useState } from "react";
+import { useRouter } from "next/router";
 
 import {
   ContentCell,
@@ -24,6 +25,8 @@ import ModalWindow from "~/components/ui/ModalWindow";
 import InputText from "~/components/ui/InputText";
 
 const RetailInsured = () => {
+  const router = useRouter();
+
   const {
     retail,
     retailProductCustomers,
@@ -49,7 +52,9 @@ const RetailInsured = () => {
     );
 
     uploadExcel(formData);
+    router.push("/uploads-insured");
   };
+
   return (
     <Fragment>
       <ContentCell gap="5px">
