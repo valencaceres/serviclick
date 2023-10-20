@@ -482,7 +482,7 @@ const reimburse = async (req: any, res: any) => {
     uf_value,
     available,
   } = req.body;
-
+  console.log(req.body);
   const caseStageResponse = await CaseStageResult.create(
     case_id,
     casestage_id,
@@ -504,6 +504,7 @@ const reimburse = async (req: any, res: any) => {
     case_id,
     caseStageResponse.data.id,
     null,
+    amount,
     "Pendiente",
     imed_amount
   );
