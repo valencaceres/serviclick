@@ -1,6 +1,8 @@
 import pool from "../util/database";
 
 import {
+  _getById,
+  _getAll,
   _getBeneficiaryData,
   _getApplicantByRut,
   _getServicesAndValues,
@@ -166,54 +168,35 @@ const create: any = async (
   }
 };
 
-const getAll: any = async () => {
+const getById: any = async (id: string) => {
   try {
-    const result = await pool.query(`
-    SELECT cst.case_id,
-        cas.number,
-        cas.createddate,
-        sta.name as stage,
-        prd.name as product,
-        asi.name as assistance,
-        CASE 
-          WHEN ben.name IS NOT NULL THEN ben.name 
-          WHEN ins.name IS NOT NULL THEN ins.name 
-          ELSE per.name 
-          END as name,
-        CASE 
-          WHEN ben.paternallastname IS NOT NULL THEN ben.paternallastname 
-          WHEN ins.paternallastname IS NOT NULL THEN ins.paternallastname 
-          ELSE per.paternallastname 
-          END as lastname,
-        CASE 
-          WHEN ben.rut IS NOT NULL THEN ben.rut 
-          WHEN ins.rut IS NOT NULL THEN ins.rut 
-          ELSE per.rut 
-          END as rut,
-        CASE
-          WHEN r.name IS NOT NULL THEN r.name 
-          ELSE CONCAT_WS(' ', cust.name, cust.paternallastname)
-        END as contractor_name
-    FROM app.casestage cst
-    INNER JOIN (
-      SELECT case_id, MAX(sta.number) AS max_number
-      FROM app.casestage cst
-      INNER JOIN app.stage sta ON cst.stage_id = sta.id
-      GROUP BY case_id
-    ) latest_stages ON cst.case_id = latest_stages.case_id
-    INNER JOIN app.stage sta ON cst.stage_id = sta.id AND sta.number = latest_stages.max_number
-    INNER JOIN app.case cas ON cas.id = cst.case_id
-    LEFT OUTER JOIN app.product prd ON prd.id = cas.product_id
-    LEFT OUTER JOIN app.assistance asi ON asi.id = cas.assistance_id
-    LEFT OUTER JOIN app.beneficiary ben ON ben.id = cas.beneficiary_id
-    LEFT OUTER JOIN app.insured ins ON ins.id = cas.insured_id
-    LEFT OUTER JOIN app.person per ON per.id = cas.insured_id
-    LEFT OUTER JOIN app.retail r ON r.id = cas.retail_id 
-    LEFT OUTER JOIN app.customer cust ON cust.id = cas.customer_id
-    ORDER BY cas.number desc
-    `);
+    const result = await pool.query(_getById, [id]);
 
-    return { success: true, data: result.rows, error: null };
+    return { success: true, data: result.rows[0].case_get_by_id, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+const getAll: any = async (
+  retail_id: string,
+  applicant_rut: string,
+  applicant_name: string,
+  stage_id: string
+) => {
+  try {
+    const result = await pool.query(_getAll, [
+      retail_id,
+      applicant_rut,
+      applicant_name,
+      stage_id,
+    ]);
+
+    return {
+      success: true,
+      data: result.rows[0].case_get_all || [],
+      error: null,
+    };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
   }
@@ -725,6 +708,7 @@ const upsert: any = async (
 
 export {
   create,
+  getById,
   getAll,
   getBeneficiaryData,
   getNewCaseNumber,

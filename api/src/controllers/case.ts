@@ -157,7 +157,14 @@ const create = async (req: any, res: any) => {
 };
 
 const getAll = async (req: any, res: any) => {
-  const caseResponse = await Case.getAll();
+  const { retail_id, applicant_rut, applicant_name, stage_id } = req.query;
+
+  const caseResponse = await Case.getAll(
+    retail_id,
+    applicant_rut,
+    applicant_name,
+    stage_id
+  );
 
   if (!caseResponse.success) {
     createLogger.error({
@@ -246,7 +253,7 @@ const getBeneficiaryByRut = async (req: any, res: any) => {
 const getCaseById = async (req: any, res: any) => {
   const { id } = req.params;
 
-  const caseResponse = await CaseStage.getById(id);
+  const caseResponse = await Case.getById(id);
 
   if (!caseResponse.success) {
     createLogger.error({
@@ -256,37 +263,6 @@ const getCaseById = async (req: any, res: any) => {
     return res.status(500).json({ error: "Error retrieving case" });
   }
 
-  if (caseResponse.error === "Case not found") {
-    createLogger.info({
-      controller: `case/getById`,
-      message: `OK - Case not found`,
-    });
-    return res.status(200).json(caseResponse.data);
-  }
-
-  if (!caseResponse.data) {
-    createLogger.info({
-      controller: `case/getById`,
-      message: `OK - Case not found`,
-    });
-    return res.status(200).json(caseResponse.data);
-  }
-
-  // Fetch user data for each stage
-  const stagesWithUserDataPromises = caseResponse?.data?.stages.map(
-    async (stage: any) => {
-      const user = await fetchClerkUser(stage.user_id);
-
-      return {
-        ...stage,
-        user,
-      };
-    }
-  );
-
-  caseResponse.data.stages = await Promise.all(
-    stagesWithUserDataPromises ?? []
-  );
   createLogger.info({
     controller: `case/getById`,
     message: `OK - Case found`,
