@@ -1,6 +1,11 @@
 import pool from "../util/database";
 
-import { _getBeneficiaryData } from "../queries/case";
+import {
+  _getBeneficiaryData,
+  _getApplicantByRut,
+  _getServicesAndValues,
+  _upsert,
+} from "../queries/case";
 import { IData } from "../interfaces/case";
 
 interface IApplicant {
@@ -213,6 +218,7 @@ const getAll: any = async () => {
     return { success: false, data: null, error: (e as Error).message };
   }
 };
+
 const getBeneficiaryData: any = async (rut: string) => {
   try {
     const result = await pool.query(_getBeneficiaryData, [rut]);
@@ -464,6 +470,7 @@ const getMonthlyCases: any = async () => {
     return { success: false, data: null, error: (e as Error).message };
   }
 };
+
 const getCasesReimbursment: any = async () => {
   try {
     const monthNames = [
@@ -538,6 +545,7 @@ const getTotalCases: any = async () => {
     return { success: false, data: null, error: (e as Error).message };
   }
 };
+
 const createCaseSummary: any = async (
   case_id: string,
   amount: string,
@@ -631,6 +639,81 @@ const createCaseSummary: any = async (
   }
 };
 
+const getApplicantByRut: any = async (rut: string) => {
+  try {
+    const caseApplicant = await pool.query(_getApplicantByRut, [rut]);
+    return {
+      success: true,
+      data: caseApplicant.rows[0].case_get_applicant_by_rut,
+      error: null,
+    };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+const getServicesAndValues: any = async (
+  insured_id: string,
+  beneficiary_id: string,
+  retail_id: string,
+  customer_id: string,
+  product_id: string,
+  assistance_id: string
+) => {
+  try {
+    const caseServices = await pool.query(_getServicesAndValues, [
+      insured_id,
+      beneficiary_id,
+      retail_id,
+      customer_id,
+      product_id,
+      assistance_id,
+    ]);
+    return {
+      success: true,
+      data: caseServices.rows[0].case_get_services_and_values,
+      error: null,
+    };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+const upsert: any = async (
+  case_id: string,
+  user_id: string,
+  type: string,
+  insured_id: string,
+  beneficiary_id: string,
+  customer_id: string,
+  retail_id: string,
+  event_date: string,
+  event_district: string,
+  event_description: string
+) => {
+  try {
+    const caseUpsert = await pool.query(_upsert, [
+      case_id,
+      user_id,
+      type,
+      insured_id,
+      beneficiary_id,
+      customer_id,
+      retail_id,
+      event_date,
+      event_district,
+      event_description,
+    ]);
+    return {
+      success: true,
+      data: caseUpsert.rows[0].case_upsert,
+      error: null,
+    };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 export {
   create,
   getAll,
@@ -642,4 +725,7 @@ export {
   getCasesReimbursment,
   getTotalCases,
   createCaseSummary,
+  getApplicantByRut,
+  getServicesAndValues,
+  upsert,
 };

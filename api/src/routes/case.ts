@@ -25,7 +25,10 @@ import {
   createChatMessage,
   getChatByCase,
   getStatistics,
-  createCaseSummary
+  createCaseSummary,
+  getApplicantByRut,
+  getServicesAndValues,
+  upsert,
 } from "../controllers/case";
 import isAuthenticated from "../middlewares/isAuthenticated";
 
@@ -81,5 +84,8 @@ CaseRouter.post("/createChatMessage", auth, isAuthenticated, createChatMessage);
 CaseRouter.get("/getChatByCase/:case_id", auth, getChatByCase);
 CaseRouter.get("/getStatistics", auth, getStatistics);
 CaseRouter.post("/createCaseSummary", auth, createCaseSummary);
+CaseRouter.get("/getApplicantByRut/:rut", auth, getApplicantByRut);
+CaseRouter.post("/getServicesAndValues", auth, getServicesAndValues);
+CaseRouter.post("/upsert", auth, upsert);
 
 export default CaseRouter;

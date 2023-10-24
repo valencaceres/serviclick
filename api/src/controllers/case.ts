@@ -784,6 +784,115 @@ const createCaseSummary = async (req: any, res: any) => {
     return res.status(500).json({ error: "Error creating case summary" });
   }
 };
+
+const getApplicantByRut = async (req: any, res: any) => {
+  try {
+    const { rut } = req.params;
+
+    const caseApplicant = await Case.getApplicantByRut(rut);
+
+    if (!caseApplicant.success) {
+      createLogger.error({
+        model: `case/getApplicantByRut`,
+        error: caseApplicant.error,
+      });
+      return res.status(500).json({ error: "Error creating case summary" });
+    }
+
+    createLogger.info({
+      controller: `case/getApplicantByRut`,
+      message: `OK - case summary created`,
+    });
+
+    return res.status(200).json(caseApplicant.data);
+  } catch (e) {
+    createLogger.error({
+      controller: `case/getApplicantByRut`,
+      error: (e as Error).message,
+    });
+
+    return res.status(500).json({ error: "Error creating case summary" });
+  }
+};
+
+const getServicesAndValues = async (req: any, res: any) => {
+  const {
+    insured_id,
+    beneficiary_id,
+    retail_id,
+    customer_id,
+    product_id,
+    assistance_id,
+  } = req.body;
+
+  const response = await Case.getServicesAndValues(
+    insured_id,
+    beneficiary_id,
+    retail_id,
+    customer_id,
+    product_id,
+    assistance_id
+  );
+
+  if (!response.success) {
+    createLogger.error({
+      model: `case/getServicesAndValues`,
+      error: response.error,
+    });
+    return res.status(500).json({ error: "Error retrieving services" });
+  }
+
+  createLogger.info({
+    controller: `case/getServicesAndValues`,
+    message: `OK - Services found`,
+  });
+
+  return res.status(200).json(response.data);
+};
+
+const upsert = async (req: any, res: any) => {
+  const {
+    case_id,
+    user_id,
+    type,
+    insured_id,
+    beneficiary_id,
+    customer_id,
+    retail_id,
+    event_date,
+    event_district,
+    event_description,
+  } = req.body;
+
+  const response = await Case.upsert(
+    case_id,
+    user_id,
+    type,
+    insured_id,
+    beneficiary_id,
+    customer_id,
+    retail_id,
+    event_date,
+    event_district,
+    event_description
+  );
+
+  if (!response.success) {
+    createLogger.error({
+      model: `case/upsert`,
+      error: response.error,
+    });
+    return res.status(500).json({ error: "Error inserting/updating case" });
+  }
+
+  createLogger.info({
+    controller: `case/upsert`,
+    message: `OK - Services found`,
+  });
+
+  return res.status(200).json(response.data);
+};
+
 export {
   create,
   uploadDocument,
@@ -806,4 +915,7 @@ export {
   getChatByCase,
   getStatistics,
   createCaseSummary,
+  getApplicantByRut,
+  getServicesAndValues,
+  upsert,
 };

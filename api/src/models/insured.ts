@@ -181,4 +181,39 @@ const getProfile: any = async (rut: string) => {
   }
 };
 
-export { create, getByRut, getById, getProfile };
+const upsert: any = async (
+  rut: string,
+  name: string,
+  paternalLastName: string,
+  maternalLastName: string,
+  address: string,
+  district: string,
+  email: string,
+  phone: string,
+  birthDate: string
+) => {
+  try {
+    const arrayValues = [
+      rut,
+      name,
+      paternalLastName,
+      maternalLastName,
+      address,
+      district,
+      email,
+      phone,
+      birthDate,
+    ];
+
+    const resultInsured = await pool.query(
+      `SELECT app.insured_upsert($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+      arrayValues
+    );
+
+    return { success: true, data: resultInsured.rows[0], error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+export { create, getByRut, getById, getProfile, upsert };
