@@ -687,6 +687,10 @@ const upsert: any = async (
   beneficiary_id: string,
   customer_id: string,
   retail_id: string,
+  product_id: string,
+  assistance_id: string,
+  lead_id: string,
+  values: any,
   event_date: string,
   event_district: string,
   event_description: string
@@ -700,10 +704,15 @@ const upsert: any = async (
       beneficiary_id,
       customer_id,
       retail_id,
+      product_id,
+      assistance_id,
+      lead_id,
+      values,
       event_date,
       event_district,
       event_description,
     ]);
+
     return {
       success: true,
       data: caseUpsert.rows[0].case_upsert,

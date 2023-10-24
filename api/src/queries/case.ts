@@ -57,4 +57,4 @@ export const _getApplicantByRut = `select app.case_get_applicant_by_rut($1);`;
 
 export const _getServicesAndValues = `select app.case_get_services_and_values($1, $2, $3, $4, $5, $6);`;
 
-export const _upsert = `select app.case_upsert($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);`;
+export const _upsert = `select app.case_upsert($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14);`;
