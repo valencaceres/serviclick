@@ -10,6 +10,15 @@ import {
   IStatusItem,
 } from "../../interfaces/case";
 
+interface ICaseServices {
+  insured_id: string;
+  beneficiary_id: string | null;
+  retail_id: string | null;
+  customer_id: string;
+  product_id: string;
+  assistance_id: string | null;
+}
+
 interface caseState {
   caseValue: ICase;
   caseData: ICaseData;
@@ -28,6 +37,8 @@ interface caseState {
     stage_id: string
   ) => void;
   getById: (id: string) => void;
+  getApplicantByRut: (rut: string) => void;
+  getServicesAndValues: (data: ICaseServices) => void;
   upsert: (data: ICaseData) => void;
   reset: () => void;
 }
@@ -142,6 +153,39 @@ export const caseStore = create<caseState>((set) => ({
       set((state) => ({ ...state, isLoading: true }));
       const { data } = await apiInstance.get(`/case/getById/${id}`);
       set((state) => ({ ...state, caseValue: data, isLoading: false }));
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
+  },
+
+  getApplicantByRut: async (rut: string) => {
+    try {
+      set((state) => ({ ...state, isLoading: true }));
+      const { data } = await apiInstance.get(`/case/getApplicantByRut/${rut}`);
+      set((state) => ({ ...state, caseData: data, isLoading: false }));
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
+  },
+
+  getServicesAndValues: async (data: ICaseServices) => {
+    try {
+      set((state) => ({ ...state, isLoading: true }));
+      const { data: response } = await apiInstance.post(
+        `/case/getServicesAndValues`,
+        data
+      );
+      set((state) => ({ ...state, caseData: response, isLoading: false }));
     } catch (e) {
       set((state) => ({
         ...state,
