@@ -7,6 +7,8 @@ import {
   _getApplicantByRut,
   _getServicesAndValues,
   _upsert,
+  _getRetails,
+  _getStatus,
 } from "../queries/case";
 import { IData } from "../interfaces/case";
 
@@ -673,10 +675,33 @@ const upsert: any = async (
   product_id: string,
   assistance_id: string,
   lead_id: string,
-  values: any,
-  event_date: string,
-  event_district: string,
-  event_description: string
+  values: { id: string; value: string }[],
+  event: { date: string; district: string; description: string },
+  files: { document_id: string; file_tag: string }[],
+  procedure_id: string,
+  refund_amount: number,
+  specialist: {
+    specialist_id: string;
+    specialty_id: string;
+    district_id: string;
+    scheduled_date: string;
+    scheduled_time: string;
+    confirmed: boolean;
+    completed: boolean;
+    qualification_id: string;
+    comment: string;
+  },
+  alliance: {
+    partner_id: string;
+    specialty_id: string;
+    scheduled_date: string;
+    scheduled_time: string;
+    confirmed: boolean;
+    completed: boolean;
+    qualification_id: string;
+    comment: string;
+  },
+  cost: { fixed: number; extra: number }
 ) => {
   try {
     const caseUpsert = await pool.query(_upsert, [
@@ -691,9 +716,13 @@ const upsert: any = async (
       assistance_id,
       lead_id,
       values,
-      event_date,
-      event_district,
-      event_description,
+      event,
+      files,
+      procedure_id,
+      refund_amount,
+      specialist,
+      alliance,
+      cost,
     ]);
 
     return {
@@ -701,6 +730,26 @@ const upsert: any = async (
       data: caseUpsert.rows[0].case_upsert,
       error: null,
     };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+const getRetails: any = async () => {
+  try {
+    const result = await pool.query(_getRetails);
+
+    return { success: true, data: result.rows, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+const getStatus = async () => {
+  try {
+    const result = await pool.query(_getStatus);
+
+    return { success: true, data: result.rows, error: null };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
   }
@@ -721,4 +770,6 @@ export {
   getApplicantByRut,
   getServicesAndValues,
   upsert,
+  getRetails,
+  getStatus,
 };

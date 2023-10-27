@@ -94,6 +94,8 @@ const routeMappings = [
   { path: "/api/category", router: routes.CategoryRouter },
   { path: "/api/fileFormat", router: routes.FileFormatRouter },
   { path: "/api/field", router: routes.FieldRouter },
+  { path: "/api/procedure", router: routes.ProcedureRouter },
+  { path: "/api/qualification", router: routes.QualificationRouter },
 ];
 
 function initializeRoutes(server: Express) {

@@ -37,6 +37,8 @@ import CaseRouter from "./case";
 import CategoryRouter from "./category";
 import FileFormatRouter from "./fileFormat";
 import FieldRouter from "./field";
+import ProcedureRouter from "./procedure";
+import QualificationRouter from "./qualification";
 
 export {
   SlugRouter,
@@ -78,4 +80,6 @@ export {
   CategoryRouter,
   FileFormatRouter,
   FieldRouter,
+  ProcedureRouter,
+  QualificationRouter,
 };

@@ -9,7 +9,7 @@ import {
   uploadDocument,
   getAll,
   getBeneficiaryByRut,
-  getCaseById,
+  getById,
   getAttachById,
   getNewCaseNumber,
   assignPartner,
@@ -29,6 +29,8 @@ import {
   getApplicantByRut,
   getServicesAndValues,
   upsert,
+  getRetails,
+  getStatus,
 } from "../controllers/case";
 import isAuthenticated from "../middlewares/isAuthenticated";
 
@@ -45,8 +47,10 @@ CaseRouter.post(
   uploadDocument
 );
 CaseRouter.get("/getAll", auth, getAll);
+CaseRouter.get("/getRetails", auth, getRetails);
+CaseRouter.get("/getStatus", auth, getStatus);
 CaseRouter.get("/getBeneficiaryByRut/:rut", auth, getBeneficiaryByRut);
-CaseRouter.get("/getById/:id", auth, getCaseById);
+CaseRouter.get("/getById/:id", auth, getById);
 CaseRouter.get("/getAttachById/:case_id/:casestage_id", auth, getAttachById);
 CaseRouter.get("/getNewCaseNumber", auth, getNewCaseNumber);
 CaseRouter.post("/assignPartner", auth, isAuthenticated, assignPartner);

@@ -250,7 +250,7 @@ const getBeneficiaryByRut = async (req: any, res: any) => {
   return res.status(200).json(beneficiaryResponse.data);
 };
 
-const getCaseById = async (req: any, res: any) => {
+const getById = async (req: any, res: any) => {
   const { id } = req.params;
 
   const caseResponse = await Case.getById(id);
@@ -839,9 +839,13 @@ const upsert = async (req: any, res: any) => {
     assistance_id,
     lead_id,
     values,
-    event_date,
-    event_district,
-    event_description,
+    event,
+    files,
+    procedure_id,
+    refund_amount,
+    specialist,
+    alliance,
+    cost,
   } = req.body;
 
   const response = await Case.upsert(
@@ -856,9 +860,13 @@ const upsert = async (req: any, res: any) => {
     assistance_id,
     lead_id,
     values,
-    event_date,
-    event_district,
-    event_description
+    event,
+    files,
+    procedure_id,
+    refund_amount,
+    specialist,
+    alliance,
+    cost
   );
 
   if (!response.success) {
@@ -877,12 +885,50 @@ const upsert = async (req: any, res: any) => {
   return res.status(200).json(response.data);
 };
 
+const getRetails = async (req: any, res: any) => {
+  const response = await Case.getRetails();
+
+  if (!response.success) {
+    createLogger.error({
+      model: `case/getRetails`,
+      error: response.error,
+    });
+    return res.status(500).json({ error: "Error retrieving retails" });
+  }
+
+  createLogger.info({
+    controller: `case/getRetails`,
+    message: `OK - Retails found`,
+  });
+
+  return res.status(200).json(response.data);
+};
+
+const getStatus = async (req: any, res: any) => {
+  const response = await Case.getStatus();
+
+  if (!response.success) {
+    createLogger.error({
+      model: `case/getStatus`,
+      error: response.error,
+    });
+    return res.status(500).json({ error: "Error retrieving status" });
+  }
+
+  createLogger.info({
+    controller: `case/getStatus`,
+    message: `OK - Status found`,
+  });
+
+  return res.status(200).json(response.data);
+};
+
 export {
   create,
   uploadDocument,
   getAll,
   getBeneficiaryByRut,
-  getCaseById,
+  getById,
   getAttachById,
   getNewCaseNumber,
   assignPartner,
@@ -902,4 +948,6 @@ export {
   getApplicantByRut,
   getServicesAndValues,
   upsert,
+  getRetails,
+  getStatus,
 };
