@@ -7,6 +7,7 @@ const useCase = () => {
     caseList,
     retailList,
     statusList,
+
     isLoading,
     isError,
     error,
@@ -21,7 +22,17 @@ const useCase = () => {
     error: state.error,
   }));
 
-  const { getRetails, getStatus, getAll, getById, getApplicantByRut, getServicesAndValues, upsert, reset } = caseStore();
+  const {
+    getRetails,
+    getStatus,
+    getAll,
+    getById,
+    getApplicantByRut,
+    getServicesAndValues,
+    upsert,
+    reset,
+    upsertApplicant,
+  } = caseStore();
 
   return {
     caseValue,
@@ -38,6 +49,7 @@ const useCase = () => {
     getById,
     getApplicantByRut,
     getServicesAndValues,
+    upsertApplicant,
     upsert,
     reset,
   };

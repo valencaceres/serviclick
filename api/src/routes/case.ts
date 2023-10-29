@@ -46,7 +46,7 @@ CaseRouter.post(
   }),
   uploadDocument
 );
-CaseRouter.get("/getAll", auth, getAll);
+CaseRouter.get("/getAll", getAll);
 CaseRouter.get("/getRetails", auth, getRetails);
 CaseRouter.get("/getStatus", auth, getStatus);
 CaseRouter.get("/getBeneficiaryByRut/:rut", auth, getBeneficiaryByRut);

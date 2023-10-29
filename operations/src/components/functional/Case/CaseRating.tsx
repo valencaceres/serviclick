@@ -17,11 +17,11 @@ const CaseRating = ({ thisCase }: any) => {
       );
     }
   }, [thisCase]);
-
+  //
   return (
     <form>
       <ContentCell gap="20px">
-      <CaseDescription thisCase={thisCase} />
+        <CaseDescription thisCase={thisCase} />
         <ContentCell gap="5px">
           <TextArea
             label="Comentario"

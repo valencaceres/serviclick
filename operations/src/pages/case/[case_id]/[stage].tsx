@@ -10,7 +10,7 @@ import ButtonIcon from "~/components/ui/ButtonIcon";
 import { useUI } from "~/hooks";
 import CaseFormRecordReception from "~/components/functional/Case/CaseFormRecordReception";
 import CaseFormEvaluation from "~/components/functional/Case/CaseFormEvaluation";
-import CaseFormNew from "~/components/functional/Case/CaseFormNew";
+import ApplicantFormNew from "~/components/functional/Case/CaseFormNew";
 import CaseFormPartner from "~/components/functional/Case/CaseFormPartner";
 import CaseFormSpecialist from "~/components/functional/Case/CaseFormSpecialist";
 import CaseTracking from "~/components/functional/Case/CaseTracking";
@@ -26,8 +26,8 @@ import CaseFormInsuredData from "~/components/functional/Case/CaseFormInsuredDat
 import CaseFormIMED from "~/components/functional/Case/CaseFormIMED";
 
 const stageComponents = {
-  apertura: CaseFormNew,
-  contención: CaseFormNew,
+  apertura: ApplicantFormNew,
+  contención: ApplicantFormNew,
   "datos titular": CaseFormInsuredData,
   "registro de servicio": CaseFormService,
   "recepción de antecedentes": CaseFormRecordReception,
@@ -83,6 +83,8 @@ const CaseStepPage = () => {
 
   const handleClickHome = () => router.push("/");
   const handleClickBack = () => router.push("/case");
+  const handleClickSave = () => router.push("/case");
+
   const setClosed = () => setShowModal(false);
 
   useEffect(() => {
@@ -108,6 +110,12 @@ const CaseStepPage = () => {
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />
         <ButtonIcon iconName="arrow_back" onClick={handleClickBack} />
+        <ButtonIcon
+          iconName="save"
+          onClick={() => {
+            handleClickSave();
+          }}
+        />
       </FloatMenu>
       <Modal showModal={showModal}>
         <Window setClosed={setClosed}>

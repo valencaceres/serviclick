@@ -136,20 +136,27 @@ export interface ICase {
   procedure_id: string | null;
   refund: IRefund | null;
   specialist: ISpecialist | null;
+  refund_amount: number | null;
+  retails: any | null;
+  is_active: boolean | null;
+  user_id: string | null;
   alliance: IAlliance | null;
   cost: ICost | null;
   history: IHistory[] | null;
+  products: any | null;
+  case_number: number | null;
 }
 
 export interface ICaseData {
   case_id: string | null;
   user_id: string | null;
   type: string | null;
-  insured_id: string | null;
-  beneficiary: string | null;
-  customer_id: string | null;
-  retail_id: string | null;
-  product_id: string | null;
+  insured: any | null;
+  beneficiary: any | null;
+  customer: any | null;
+  retail: any | null;
+  retails: any | null;
+  products: any | null;
   assistance_id: string | null;
   lead_id: string | null;
   values: IValue[] | null;
@@ -160,6 +167,10 @@ export interface ICaseData {
   specialist: ISpecialist | null;
   alliance: IAlliance | null;
   cost: ICost | null;
+  is_active: boolean | null;
+  case_number: number | null;
+  history: any | null;
+  product: any;
 }
 
 export interface ICaseItem {

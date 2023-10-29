@@ -22,7 +22,9 @@ import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import { Button } from "~/components/ui/ButtonC";
 import { useDistrict } from "~/hooks";
+import { useUI } from "~/hooks";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
+import { useCase } from "~/store/hooks/useCase";
 interface IAssistance {
   id: string;
   name: string;
@@ -45,9 +47,23 @@ interface IProduct {
   end_date: string;
 }
 
-const CaseFormService = ({ thisCase }: any) => {
+const CaseFormService = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const {
+    caseData,
+    getRetails,
+    getServicesAndValues,
+    retailList,
+    upsert,
+    isLoading,
+    getApplicantByRut,
+  } = useCase();
+  console.log(caseData);
+  useEffect(() => {
+    getRetails();
+    getApplicantByRut(caseData?.insured?.rut);
+  }, []);
 
   const [uniqueAssistances, setUniqueAssistances] = useState<any>([]);
   const [selectedAssistance, setSelectedAssistance] =
@@ -62,32 +78,41 @@ const CaseFormService = ({ thisCase }: any) => {
   const [formValues, setFormValues] = useState<{ [key: string]: any }>({});
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const productId = selectedProduct?.id ?? "";
-
-  const { list: districtList } = useDistrict();
+  const { data: newCaseNumber } = useQueryCase().useGetNewCaseNumber();
+  console.log(productId);
   const { user } = useUser();
   const isAdmin = user?.publicMetadata?.roles?.operaciones === "admin";
 
   const { data: ufValue } = useQueryUF().useGetUFValue();
   const { data: stageData } = useQueryStage().useGetAll();
+  const isSingleProduct = caseData?.products?.length === 1;
 
   const { data: assistanceData } = useQueryCase().useGetAssistanceData(
-    thisCase?.insured_id,
+    caseData?.insured?.id,
     selectedAssistance?.id as string,
     selectedProduct?.id as string
   );
+  const { setTitleUI, filters } = useUI();
 
-  const { data } = useQueryCase().useGetBeneficiaryByRut(thisCase?.rut);
-  const { data: contractor, isLoading: isLoadingContractor } =
-    useQueryContractor().useGetById(thisCase?.contractor_id);
+  useEffect(() => {
+    setTitleUI(
+      `Caso N°${
+        router.pathname === "/assistance/case/product" ? newCaseNumber : 1
+      }`
+    );
+  }, [router, newCaseNumber]);
+  const contractorId = caseData?.retail?.id || caseData?.customer?.id;
+
   const { data: contractorSubscriptions } =
-    useQueryContractor().useGetProductsByContractor(thisCase?.contractor_id);
-  const { data: pdfProductPlan } =
-    useQueryProduct().useGetContractByProductPlanId(
-      /*    productId,
-      thisCase?.contractor_id */
+    useQueryContractor().useGetProductsByContractor(contractorId);
+  console.log(contractorSubscriptions);
+  /*   const { data: pdfProductPlan } =
+   useQueryProduct().useGetContractByProductPlanId(
+    productId,
+      thisCase?.contractor_id 
       "1a6d08b0-f27a-4de0-8e1d-855bead4282f",
       "7ea804e5-6de1-4e60-affc-f5b31af90ba3"
-    );
+    );  */
   const { mutate: updateCase } = useQueryCase().useCreate();
   const { mutate: assignValue } = useQueryAssistances().useAssignValue();
   const { mutate: createLead } = useQueryLead().useAddFromCase();
@@ -96,32 +121,8 @@ const CaseFormService = ({ thisCase }: any) => {
   const pdfDataUrl = `data:application/pdf;base64,${pdfBase64}`;
   console.log(pdfDataUrl); */
 
-  const selectedProductCreatedAt = useMemo(() => {
-    const date = new Date(selectedProduct?.created_at || "");
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const year = date.getFullYear();
-
-    return `${day}/${month}/${year}`;
-  }, [selectedProduct]);
-  const selectedProductStartDate = useMemo(() => {
-    const date = new Date(selectedProduct?.start_date || "");
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const year = date.getFullYear();
-
-    return `${day}/${month}/${year}`;
-  }, [selectedProduct]);
-  const selectedProductEndDate = useMemo(() => {
-    const date = new Date(selectedProduct?.end_date || "");
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const year = date.getFullYear();
-
-    return `${day}/${month}/${year}`;
-  }, [selectedProduct]);
   useEffect(() => {
-    if (!data) {
+    if (!caseData) {
       const productsMap = new Map(
         contractorSubscriptions?.map((subscription: any) => [
           subscription.id,
@@ -132,14 +133,14 @@ const CaseFormService = ({ thisCase }: any) => {
       return;
     }
     const productsMap = new Map(
-      data?.products.map((product: any) => [product.id, product])
+      caseData?.products?.map((product: any) => [product.id, product])
     );
     setRelatedProducts(Array.from(productsMap.values()));
-  }, [contractorSubscriptions, data]);
+  }, [contractorSubscriptions, caseData]);
 
   useEffect(() => {
     if (selectedProduct) {
-      if (!data) {
+      if (!caseData) {
         const assistancesMap = new Map();
         contractorSubscriptions
           ?.filter(
@@ -154,7 +155,7 @@ const CaseFormService = ({ thisCase }: any) => {
         return;
       }
       const assistancesMap = new Map(
-        data?.products
+        caseData?.products
           .filter((product: any) => product.id === selectedProduct?.id)
           .map((product: any) => [
             product.assistance.id,
@@ -168,7 +169,7 @@ const CaseFormService = ({ thisCase }: any) => {
       }
       setUniqueAssistances([]);
     }
-  }, [data?.products, selectedProduct]);
+  }, [caseData?.products, selectedProduct]);
   const handleProductChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const productId = event.target.value;
     const product = relatedProducts.find((p: any) => p.id === productId);
@@ -184,185 +185,137 @@ const CaseFormService = ({ thisCase }: any) => {
       uniqueAssistances.find((a: any) => a.id === assistanceId) || null;
     setSelectedAssistance(assistance);
   };
-
-  const currentStage = useMemo(() => {
-    return (
-      stageData?.find((s: any) => s.name === "Registro de servicio")?.id || ""
-    );
-  }, [stageData]);
-
-  const currentDescription = useMemo(() => {
-    return thisCase?.stages.find((s: any) => s.stage === "Registro de servicio")
-      ?.description;
-  }, [thisCase]);
-
-  const currentEventDate = useMemo(() => {
-    return thisCase?.event_date;
-  }, [thisCase]);
-
-  const currentDistrict = useMemo(() => {
-    return thisCase?.event_location;
-  }, [thisCase]);
-
   useEffect(() => {
-    if (currentStage) setStage(currentStage);
-    if (currentDescription) setDescription(currentDescription);
-    if (currentEventDate) setEventDate(new Date(currentEventDate));
-    if (currentDistrict) setDistrict(currentDistrict);
-  }, [currentDescription, currentDistrict, currentEventDate, currentStage]);
-  const handleAddService = () => {
-    if (thisCase?.assistance_id !== null && !isAdmin) {
-      router.push(`/case/${thisCase?.case_id}/evaluación del evento`);
-      return;
-    }
-    if (selectedAssistance && selectedProduct && description) {
-      setError(null);
-      for (const key in formValues) {
-        assignValue({
-          lead_id: selectedProduct?.lead_id,
-          product_id: selectedProduct?.id,
-          insured_id: thisCase?.insured_id,
-          value_id: key,
-          value: formValues[key],
-        });
-      }
-      if (!data) {
-        createLead({
-          subscription_id: selectedProduct?.subscription_id,
-          beneficiary_id: thisCase?.beneficiary_id,
-          insured_id: thisCase?.insured_id,
-        });
-      }
-      return updateCase(
-        {
-          applicant: {
-            id: thisCase?.insured_id
-              ? thisCase?.insured_id
-              : thisCase?.beneficiary_id,
-          },
-          number: thisCase?.case_number,
-          product_id: selectedProduct?.id,
-          assistance_id: selectedAssistance?.id,
-          beneficiary_id: thisCase?.beneficiary_id,
-          retail_id: contractor?.type === "C" ? thisCase?.contractor_id : null,
-          customer_id:
-            contractor?.type === "P" ? thisCase?.contractor_id : null,
-          stage_id: stage,
-          user_id: user?.id,
-          description,
-          isactive: true,
-          lead_id: selectedProduct?.lead_id,
-          event_date: eventDate,
-          event_location: district,
-        },
-        {
-          onSuccess: () => {
-            router.push(`/case/${thisCase?.case_id}/evaluación del evento`);
-            queryClient.invalidateQueries(["assistanceValueById"]);
-            queryClient.invalidateQueries(["case", thisCase?.case_id]);
-          },
-        }
-      );
-    }
-    setError("Debe completar todos los campos");
-  };
-
-  useEffect(() => {
-    if (thisCase?.product_id) {
+    if (caseData?.product?.id) {
       const product = relatedProducts.find(
-        (p: any) => p.id === thisCase.product_id
+        (p: any) => p.id === caseData?.product?.id
       );
       setSelectedProduct(product || null);
 
-      if (thisCase?.assistance_id) {
+      if (caseData?.assistance_id) {
         const assistance = uniqueAssistances.find(
-          (a: any) => a.id === thisCase.assistance_id
+          (a: any) => a.id === caseData.assistance_id
         );
         setSelectedAssistance(assistance || null);
       }
     }
-  }, [thisCase, relatedProducts, uniqueAssistances]);
+  }, [caseData, relatedProducts, uniqueAssistances]);
+
+  const handleAddService = () => {
+    console.log("ola");
+  };
 
   const closeModal = () => {
     setModalIsOpen(false);
   };
-  console.log(selectedAssistance?.events, assistanceData);
   return (
     <div>
-      <ContentCell gap="10px">
+      <ContentCell gap="5px">
         <ContentCell gap="5px">
-          {thisCase?.contractor_id && contractor && (
-            <Link href={`/entities/contractor/${contractor?.id}`} passHref>
-              <InputText
-                label="Cliente"
-                className="capitalize"
-                value={
-                  isLoadingContractor
-                    ? "Cargando..."
-                    : contractor?.name ||
-                      `${contractor?.name} ${contractor?.paternalLastName}`
-                }
-                disabled
-              />
-            </Link>
-          )}
+          <ContentCell gap="20px">
+            <div className="flex flex-col gap-[5px]">
+              {caseData?.customer && caseData?.customer ? (
+                <InputText
+                  label="Cliente"
+                  className="capitalize"
+                  value={
+                    isLoading
+                      ? "Cargando..."
+                      : caseData?.customer?.name ||
+                        `${caseData?.customer?.name} ${caseData?.customer?.paternalLastName}`
+                  }
+                  disabled
+                />
+              ) : (
+                <InputText
+                  label="Titular"
+                  className="capitalize"
+                  value={
+                    isLoading
+                      ? "Cargando..."
+                      : caseData?.insured?.name ||
+                        `${caseData?.insured?.name} ${caseData?.insured?.paternalLastName}`
+                  }
+                  disabled
+                />
+              )}
+              {caseData?.retail && caseData?.retail && (
+                <InputText
+                  label="Empresa"
+                  className="capitalize"
+                  value={
+                    isLoading
+                      ? "Cargando..."
+                      : caseData?.retail?.name || `${caseData?.retail?.name} `
+                  }
+                  disabled
+                />
+              )}
+
+              {caseData?.beneficiary?.name && (
+                <InputText
+                  label="Beneficiario"
+                  className="capitalize"
+                  value={
+                    isLoading
+                      ? "Cargando..."
+                      : caseData?.beneficiary?.name ||
+                        `${caseData?.beneficiary?.name} ${caseData?.beneficiary?.paternalLastName}`
+                  }
+                  disabled
+                />
+              )}
+            </div>
+            <div>
+              {isSingleProduct ? (
+                <InputText
+                  label="Producto"
+                  type="text"
+                  value={caseData.products[0].name}
+                  disabled={true}
+                />
+              ) : (
+                <ComboBox
+                  label="Producto"
+                  placeHolder="Seleccione producto"
+                  width="525px"
+                  value={selectedProduct?.id || ""}
+                  enabled={
+                    caseData?.is_active ||
+                    (!caseData ? true : false) ||
+                    !(caseData?.assistance_id !== null && !isAdmin)
+                  }
+                  onChange={handleProductChange}
+                  data={relatedProducts}
+                  dataText="name"
+                  dataValue="id"
+                />
+              )}
+            </div>
+          </ContentCell>
           <ComboBox
-            label="Producto"
-            placeHolder="Seleccione producto"
+            label="Servicio"
+            placeHolder="Seleccione servicio"
             width="525px"
-            value={selectedProduct?.id || ""}
-            enabled={
-              thisCase?.is_active ||
-              (!thisCase ? true : false) ||
-              !(thisCase?.assistance_id !== null && !isAdmin)
-            }
-            onChange={handleProductChange}
-            data={relatedProducts}
+            value={selectedAssistance?.id || ""}
+            enabled={caseData?.is_active || !caseData ? true : false}
+            onChange={handleAssistanceChange}
+            data={uniqueAssistances}
             dataText="name"
             dataValue="id"
           />
-          {selectedProduct && (
-            <ComboBox
-              label="Servicio"
-              placeHolder="Seleccione servicio"
-              width="525px"
-              value={selectedAssistance?.id || ""}
-              enabled={thisCase?.is_active || !thisCase ? true : false}
-              onChange={handleAssistanceChange}
-              data={uniqueAssistances}
-              dataText="name"
-              dataValue="id"
-            />
-          )}
-
-          {selectedAssistance ? (
-            <>
-              <ContentRow gap="5px">
-                <InputText
-                  label={
-                    selectedAssistance?.currency === "U"
-                      ? "Monto Disponible (UF)"
-                      : "Monto Disponible ($)"
-                  }
-                  value={
-                    assistanceData
-                      ? selectedAssistance?.currency === "P"
-                        ? assistanceData?.remaining_amount.toLocaleString(
-                            "es-CL",
-                            {
-                              style: "currency",
-                              currency: "CLP",
-                            }
-                          )
-                        : (
-                            assistanceData?.remaining_amount *
-                            ufValue?.serie[0].valor
-                          ).toLocaleString("es-CL", {
-                            style: "currency",
-                            currency: "CLP",
-                          })
-                      : selectedAssistance?.currency === "P"
-                      ? parseInt(selectedAssistance?.amount).toLocaleString(
+          <>
+            <ContentRow gap="5px">
+              <InputText
+                label={
+                  selectedAssistance?.currency === "U"
+                    ? "Monto Autorizado (UF)"
+                    : "Monto Autorizado ($)"
+                }
+                value={
+                  assistanceData
+                    ? selectedAssistance?.currency === "P"
+                      ? assistanceData?.remaining_amount.toLocaleString(
                           "es-CL",
                           {
                             style: "currency",
@@ -370,160 +323,124 @@ const CaseFormService = ({ thisCase }: any) => {
                           }
                         )
                       : (
-                          parseInt(selectedAssistance?.amount!) *
+                          assistanceData?.remaining_amount *
                           ufValue?.serie[0].valor
                         ).toLocaleString("es-CL", {
                           style: "currency",
                           currency: "CLP",
                         })
-                  }
-                  type="text"
-                  width={`${
-                    Number(selectedAssistance?.events) !== 0 ? "152px" : "286px"
-                  }`}
-                  disabled
-                />
-                {Number(selectedAssistance?.events) !== 0 && (
-                  <InputText
-                    label="Eventos restantes"
-                    value={
-                      assistanceData
-                        ? assistanceData?.remaining_events
-                        : selectedAssistance?.events
-                    }
-                    type="number"
-                    width="129px"
-                    disabled
-                  />
-                )}
+                    : selectedAssistance?.currency === "P"
+                    ? parseInt(selectedAssistance?.amount).toLocaleString(
+                        "es-CL",
+                        {
+                          style: "currency",
+                          currency: "CLP",
+                        }
+                      )
+                    : (
+                        parseInt(selectedAssistance?.amount!) *
+                        ufValue?.serie[0].valor
+                      ).toLocaleString("es-CL", {
+                        style: "currency",
+                        currency: "CLP",
+                      })
+                }
+                type="text"
+                width={`${
+                  Number(selectedAssistance?.events) !== 0 ? "152px" : "286px"
+                }`}
+                disabled
+              />
+              {Number(selectedAssistance?.events) !== 0 && (
                 <InputText
-                  label="Límite"
-                  value={selectedAssistance?.maximum || "No hay información"}
-                  type="text"
-                  width="234px"
+                  label="Eventos"
+                  value={
+                    assistanceData
+                      ? assistanceData?.remaining_events
+                      : selectedAssistance?.events
+                  }
+                  type="number"
+                  width="129px"
                   disabled
                 />
-              </ContentRow>
-            </>
-          ) : null}
-        </ContentCell>
-        {selectedAssistance ? (
-          <>
-            <div className="flex flex-col gap-1">
-              <h2 className="text-xl font-semibold text-secondary-500">
-                {selectedProduct?.name}
-              </h2>
-              {assistanceData
-                ? Number(assistanceData?.remaining_events) <= 0
-                : Number(selectedAssistance?.events) <= 0 && (
-                    <h2 className="text-xl font-semibold text-red-500">
-                      Sin eventos restantes
-                    </h2>
-                  )}
-              <div className="flex gap-2">
-                <p className="text-secondary-500">
-                  Fecha de adquisición:{" "}
-                  <span className="font-semibold">
-                    {selectedProductCreatedAt}
-                  </span>
-                </p>
-              </div>
-              {selectedProduct?.start_date != null && (
-                <div className="flex gap-2">
-                  <p className="text-secondary-500">
-                    Fecha de inicio:{" "}
-                    <span className="font-semibold">
-                      {selectedProductStartDate}
-                    </span>
-                  </p>
-                  {selectedProduct?.end_date != null && (
-                    <p className="text-secondary-500">
-                      Fecha de termino:{" "}
-                      <span className="font-semibold">
-                        {selectedProductEndDate}
-                      </span>
-                    </p>
-                  )}
-                </div>
               )}
-            </div>
-            {/*      {pdfProductPlan && (
-              <>
-                {" "}
-                <Button
-                  disabled={
-                    selectedProduct != null && selectedAssistance ? false : true
-                  }
-                  type="button"
-                  onClick={() => setModalIsOpen(true)}
-                >
-                  Ver Contrato
-                </Button>
-                <Modal showModal={modalIsOpen}>
-                  <Window title="Contrato" setClosed={closeModal}></Window>
-                  <Document file={pdfDataUrl}>
-                    <Page pageNumber={1} />
-                  </Document>
-                  <Button onClick={closeModal}>Cerrar</Button>
-                </Modal>
-              </>
-            )} */}
-            <CaseServiceTable
-              product={selectedProduct}
-              assistance={selectedAssistance}
-              formValues={formValues}
-              setFormValues={setFormValues}
-            />
+              <InputText
+                label="Límite"
+                value={selectedAssistance?.maximum || "No hay información"}
+                type="text"
+                width="234px"
+                disabled
+              />{" "}
+            </ContentRow>
             <ContentRow gap="5px">
               <InputText
-                label="Fecha del evento"
-                value={
-                  eventDate instanceof Date && !isNaN(eventDate.getTime())
-                    ? eventDate.toISOString().substring(0, 10)
-                    : ""
+                label={
+                  selectedAssistance?.currency === "U"
+                    ? "Monto Utilizado (UF)"
+                    : "Monto Utilizado ($)"
                 }
-                type="date"
-                width="234px"
-                onChange={(e: any) => setEventDate(new Date(e.target.value))}
-                disabled={thisCase?.is_active ? false : true}
+                value={
+                  assistanceData
+                    ? selectedAssistance?.currency === "P"
+                      ? assistanceData?.remaining_amount.toLocaleString(
+                          "es-CL",
+                          {
+                            style: "currency",
+                            currency: "CLP",
+                          }
+                        )
+                      : (
+                          assistanceData?.remaining_amount *
+                          ufValue?.serie[0].valor
+                        ).toLocaleString("es-CL", {
+                          style: "currency",
+                          currency: "CLP",
+                        })
+                    : selectedAssistance?.currency === "P"
+                    ? parseInt(selectedAssistance?.amount).toLocaleString(
+                        "es-CL",
+                        {
+                          style: "currency",
+                          currency: "CLP",
+                        }
+                      )
+                    : (
+                        parseInt(selectedAssistance?.amount!) *
+                        ufValue?.serie[0].valor
+                      ).toLocaleString("es-CL", {
+                        style: "currency",
+                        currency: "CLP",
+                      })
+                }
+                type="text"
+                width={`${
+                  Number(selectedAssistance?.events) !== 0 ? "152px" : "286px"
+                }`}
+                disabled
               />
-              <ComboBox
-                label="Comuna del evento"
-                placeHolder="Seleccione comuna"
-                width="286px"
-                data={districtList}
-                dataText="district_name"
-                dataValue="district_name"
-                value={district}
-                onChange={(e: any) => setDistrict(e.target.value)}
-                enabled={thisCase?.is_active ? true : false}
-              />
+              {Number(selectedAssistance?.events) !== 0 && (
+                <InputText
+                  label="Eventos utilizados"
+                  value={
+                    assistanceData
+                      ? assistanceData?.remaining_events
+                      : selectedAssistance?.events
+                  }
+                  type="number"
+                  width="129px"
+                  disabled
+                />
+              )}
             </ContentRow>
-            <TextArea
-              value={description}
-              disabled={
-                (thisCase?.is_active ? false : true) ||
-                (thisCase.assistance_id !== null && !isAdmin)
-              }
-              onChange={(e: any) => setDescription(e.target.value)}
-              label="Descripción del evento"
-              width="525px"
-              height="110px"
-            />
-            {error && <p className="text-sm text-red-500">{error}</p>}
           </>
-        ) : null}
-        {(!assistanceData || Number(assistanceData?.remaining_events) > 0) &&
-          (!selectedAssistance || Number(selectedAssistance?.events) > 0) && (
-            <Button
-              disabled={
-                thisCase?.is_active && selectedAssistance ? false : true
-              }
-              onClick={handleAddService}
-            >
-              Continuar
-            </Button>
-          )}
+        </ContentCell>
+
+        <CaseServiceTable
+          product={selectedProduct}
+          assistance={selectedAssistance}
+          formValues={formValues}
+          setFormValues={setFormValues}
+        />
       </ContentCell>
       <LoadingMessage />
     </div>

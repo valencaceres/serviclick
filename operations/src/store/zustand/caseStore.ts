@@ -41,6 +41,7 @@ interface caseState {
   getServicesAndValues: (data: ICaseServices) => void;
   upsert: (data: ICaseData) => void;
   reset: () => void;
+  upsertApplicant: (data: ICaseData, isBeneficiary: boolean) => Promise<void>;
 }
 
 const initialCase: ICase = {
@@ -48,6 +49,7 @@ const initialCase: ICase = {
   type: null,
   lead_id: null,
   policy: null,
+  user_id: null,
   retail: null,
   customer: null,
   insured: null,
@@ -59,21 +61,27 @@ const initialCase: ICase = {
   files: null,
   procedure_id: null,
   refund: null,
+  is_active: null,
+  refund_amount: null,
+  retails: null,
   specialist: null,
   alliance: null,
   cost: null,
   history: null,
+  case_number: null,
+  products: null,
 };
 
 const initialCaseData: ICaseData = {
   case_id: null,
   user_id: null,
   type: null,
-  insured_id: null,
+  insured: null,
   beneficiary: null,
-  customer_id: null,
-  retail_id: null,
-  product_id: null,
+  customer: null,
+  retail: null,
+  retails: null,
+  products: null,
   assistance_id: null,
   lead_id: null,
   values: null,
@@ -84,6 +92,10 @@ const initialCaseData: ICaseData = {
   specialist: null,
   alliance: null,
   cost: null,
+  is_active: true,
+  case_number: null,
+  history: null,
+  product: null,
 };
 
 export const caseStore = create<caseState>((set) => ({
@@ -126,16 +138,16 @@ export const caseStore = create<caseState>((set) => ({
     }
   },
 
-  getAll: async (
-    retail_id: string,
-    applicant_rut: string,
-    applicant_name: string,
-    stage_id: string
-  ) => {
+  /*   retail_id: string,
+  applicant_rut: string,
+  applicant_name: string,
+  stage_id: string */
+  getAll: async () => {
     try {
       set((state) => ({ ...state, isLoading: true }));
       const { data } = await apiInstance.get(
-        `/case/getAll?retail_id=${retail_id}&applicant_rut=${applicant_rut}&applicant_name=${applicant_name}&stage_id=${stage_id}`
+        `/case/getAll`
+        /* ?retail_id=${retail_id}&applicant_rut=${applicant_rut}&applicant_name=${applicant_name}&stage_id=${stage_id} */
       );
       set((state) => ({ ...state, caseList: data, isLoading: false }));
     } catch (e) {
@@ -168,6 +180,26 @@ export const caseStore = create<caseState>((set) => ({
       set((state) => ({ ...state, isLoading: true }));
       const { data } = await apiInstance.get(`/case/getApplicantByRut/${rut}`);
       set((state) => ({ ...state, caseData: data, isLoading: false }));
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
+  },
+  upsertApplicant: async (data: ICaseData, isBeneficiary: boolean) => {
+    try {
+      const endpoint = isBeneficiary
+        ? "/beneficiary/upsert"
+        : "/insured/upsert";
+      const beneficiary = isBeneficiary ? data.beneficiary : data.insured;
+      const response = await apiInstance.post(endpoint, beneficiary);
+      console.log(data);
+      set({ caseData: data, isLoading: false });
+
+      return response.data;
     } catch (e) {
       set((state) => ({
         ...state,

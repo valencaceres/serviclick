@@ -1,10 +1,4 @@
-import React, {
-  Dispatch,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { Dispatch, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { useUser } from "@clerk/nextjs";
 
@@ -22,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/Select";
+import { RadioGroup, RadioGroupItem } from "~/components/ui/RadioGroup";
 
 import { unFormatRut, formatRut } from "../../../utils/format";
 import { rutRegEx, emailRegEx } from "../../../utils/regEx";
@@ -31,15 +26,26 @@ import {
   useQueryCase,
   useQueryStage,
   useQueryContractor,
-  useQueryInsured,
 } from "../../../hooks/query";
 import { useForm } from "react-hook-form";
 import { Input } from "~/components/ui/Input";
 import { getDateTime } from "~/utils/dateAndTime";
-import { useQueryClient } from "@tanstack/react-query";
 import { useDistrict } from "~/hooks";
+import ComboBox from "~/components/ui/ComboBox";
 
-const CaseFormInsuredData = ({ thisCase }: any) => {
+interface IInitialValues {
+  rut: string;
+  birthdate: string;
+  name: string;
+  paternalLastName: string;
+  maternalLastName: string;
+  address: string;
+  district: string | undefined;
+  email: string;
+  phone: string;
+}
+
+const CaseFormNew = ({ thisCase }: any) => {
   return (
     <div>
       <BeneficiaryForm thisCase={thisCase} />
@@ -47,12 +53,10 @@ const CaseFormInsuredData = ({ thisCase }: any) => {
   );
 };
 
-export default CaseFormInsuredData;
+export default CaseFormNew;
 
 const BeneficiaryForm = ({ thisCase }: any) => {
   const router = useRouter();
-
-  const queryClient = useQueryClient();
 
   const {
     reset,
@@ -71,7 +75,7 @@ const BeneficiaryForm = ({ thisCase }: any) => {
     paternalLastName: string;
     maternalLastName: string;
     address: string;
-    district: string;
+    district: string | undefined;
     email: string;
     phone: string;
   }>({
@@ -92,29 +96,20 @@ const BeneficiaryForm = ({ thisCase }: any) => {
   const [dateTime, setDateTime] = useState("");
   const [isNewBeneficiary, setIsNewBeneficiary] = useState<boolean>(false);
   const [isInsured, setIsInsured] = useState<string>("isInsured");
-  const [client, setClient] = useState<string>("");
+  const [client, setClient] = useState<any>("");
   const [prevRut, setPrevRut] = useState<string>("");
-
   const prevDataRef = useRef();
-
   const { list: districtList } = useDistrict();
   const { user } = useUser();
-  const { data: stages } = useQueryStage().useGetAll();
-  const { mutate: updateCase } = useQueryCase().useCreate();
+  const { data: stageData } = useQueryStage().useGetAll();
+  const { mutate: createCase } = useQueryCase().useCreate();
   const { data: newCaseNumber } = useQueryCase().useGetNewCaseNumber();
 
-  const { data: insured, isLoading } = useQueryInsured().useGetById(
-    thisCase?.insured_id
-  );
-
-  const { data: insuredByRut, isLoading: isLoadingRut } =
-    useQueryInsured().useGetByRut(rut);
+  const { data, isLoading } = useQueryCase().useGetBeneficiaryByRut(rut);
+  const isAdmin = user?.publicMetadata?.roles?.operaciones === "admin";
   const { data: retail } = useQueryContractor().useGetByBeneficiaryId(
-    insuredByRut?.id
+    data?.insured?.id
   );
-  const { data: contractor, isLoading: isLoadingContractor } =
-    useQueryContractor().useGetById(thisCase?.contractor_id);
-
   const isValidRut = (rut: string) => {
     if (
       (rutRegEx.test(unFormatRut(rut)) &&
@@ -158,13 +153,12 @@ const BeneficiaryForm = ({ thisCase }: any) => {
       return false;
     }
   };
-
   const send = async () => {
-    updateCase(
+    createCase(
       {
         applicant: {
-          type: isNewBeneficiary ? "C" : thisCase?.beneficiary_id ? "B" : "I",
-          id: isNewBeneficiary ? null : insured?.id || insuredByRut?.id,
+          type: isNewBeneficiary ? "C" : isInsured === "isInsured" ? "I" : "B",
+          id: isNewBeneficiary ? null : data?.insured.id,
           rut,
           name,
           paternalLastName,
@@ -175,68 +169,36 @@ const BeneficiaryForm = ({ thisCase }: any) => {
           email,
           phone,
         },
-        retail_id: client !== "" ? client : null,
-        customer_id: contractor?.type === "P" ? contractor?.id : null,
+        retail_id: !client ? retail?.id : client,
+        customer_id: data?.customer_id,
         isInsured: isInsured === "isInsured",
-        beneficiary_id: thisCase?.beneficiary_id,
+        beneficiary_id: isNewBeneficiary
+          ? null
+          : isInsured === "isInsured"
+          ? null
+          : data?.beneficiary.id,
         number: thisCase !== null ? thisCase?.case_number : newCaseNumber,
         stage_id: stage,
         user_id: user?.id,
         lead_id: thisCase?.lead_id,
+        event_date: thisCase?.event_date,
+        event_location: thisCase?.event_location,
       },
       {
         onSuccess: (response) => {
-          router.push(`/case/${response.data.id}/registro de servicio`);
-          queryClient.invalidateQueries(["case", thisCase?.case_id]);
+          const route =
+            isInsured === "isBeneficiary"
+              ? `/case/${response.data.id}/datos titular`
+              : `/case/${response.data.id}/registro de servicio`;
+          router.push(route);
         },
       }
     );
   };
 
-  const setInitialValues = useCallback(
-    (newData: any) => {
-      const formatDate = (dateString: string) => {
-        const date = new Date(dateString);
-        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
-          2,
-          "0"
-        )}-${String(date.getDate()).padStart(2, "0")}`;
-      };
-
-      const initialValues = {
-        rut: newData?.rut,
-        birthdate: formatDate(newData?.birthDate),
-        name: newData?.name,
-        paternalLastName: newData?.paternalLastName,
-        maternalLastName: newData?.maternalLastName,
-        address: newData?.address,
-        district: newData?.district,
-        email: newData?.email,
-        phone: newData?.phone,
-      };
-
-      Object.entries(initialValues).forEach(([key, value]) =>
-        setValue(key as keyof typeof initialValues, value)
-      );
-
-      if (contractor?.type !== "P") {
-        setClient(retail?.id);
-      }
-    },
-    [setValue, contractor, thisCase, setClient, retail?.id]
-  );
-
-  useEffect(() => {
-    setDateTime(getDateTime());
-
-    if (router.pathname === "/case/new") {
-      setIsNewBeneficiary(false);
-      reset();
-    }
-  }, [reset, router]);
-
-  const resetForm = useCallback(() => {
-    reset({
+  const setInitialValues = (newData: any, isThisCase: any) => {
+    let initialValues: IInitialValues = {
+      rut: rut,
       birthdate: "",
       name: "",
       paternalLastName: "",
@@ -245,58 +207,138 @@ const BeneficiaryForm = ({ thisCase }: any) => {
       district: undefined,
       email: "",
       phone: "",
-    });
-  }, [reset]);
+    };
 
-  useEffect(() => {
-    if (thisCase?.insured_id) {
-      if (insured) {
-        setIsNewBeneficiary(false);
-        setInitialValues(insured);
+    if (isThisCase) {
+      initialValues = {
+        rut: newData.rut,
+        birthdate: newData.birthdate?.split("T")[0],
+        name: newData.applicant_name,
+        paternalLastName: newData.applicant_lastname,
+        maternalLastName: newData.applicant_maternallastname,
+        address: newData.applicant_address,
+        district: newData.applicant_district,
+        email: newData.applicant_email,
+        phone: newData.applicant_phone,
+      };
+    } else {
+      if (rut === newData.insured?.rut) {
+        setIsInsured("isInsured");
+        initialValues = {
+          rut: newData.insured?.rut,
+          birthdate: new Date(newData.insured?.birthdate)
+            .toISOString()
+            .split("T")[0],
+          name: newData.insured?.name,
+          paternalLastName: newData.insured?.paternallastname,
+          maternalLastName: newData.insured?.maternallastname,
+          address: newData.insured?.address,
+          district: newData.insured?.district,
+          email: newData.insured?.email,
+          phone: newData.insured?.phone,
+        };
+      } else if (rut === newData.beneficiary?.rut) {
+        setIsInsured("isBeneficiary");
+        initialValues = {
+          rut: newData.beneficiary?.rut,
+          birthdate: new Date(newData.beneficiary?.birthdate)
+            .toISOString()
+            .split("T")[0],
+          name: newData.beneficiary?.name,
+          paternalLastName: newData.beneficiary?.paternallastname,
+          maternalLastName: newData.beneficiary?.maternallastname,
+          address: newData.beneficiary?.address,
+          district: newData.beneficiary?.district,
+          email: newData.beneficiary?.email,
+          phone: newData.beneficiary?.phone,
+        };
       }
     }
-  }, [insured, setInitialValues, thisCase]);
 
-  // Update the form state when there is no insured_id and insuredByRut changes
+    Object.entries(initialValues).forEach(([key, value]) =>
+      setValue(
+        key as keyof IInitialValues,
+        value as IInitialValues[keyof IInitialValues]
+      )
+    );
+    setClient(retail?.id);
+  };
+
   useEffect(() => {
-    if (!thisCase?.insured_id) {
-      if (insuredByRut && rut?.length >= 10) {
-        prevDataRef.current = insuredByRut;
-        setPrevRut(rut);
-        setIsNewBeneficiary(false);
-        setInitialValues(insuredByRut);
-      }
+    setDateTime(getDateTime());
+
+    if (router.pathname === "/case/new") {
+      setIsNewBeneficiary(false);
+      reset();
     }
-  }, [insuredByRut, isLoadingRut, rut, setInitialValues, thisCase]);
+  }, [router]);
 
-  // Update the form state when there is no insured_id and rut changes
   useEffect(() => {
-    if (!thisCase?.insured_id) {
-      if (!insuredByRut && rut?.length >= 10 && rut !== prevRut) {
-        setPrevRut(rut);
+    prevDataRef.current = data;
+
+    if (thisCase) {
+      if (thisCase?.type === "C") {
         setIsNewBeneficiary(true);
-        resetForm();
+      } else {
+        setIsNewBeneficiary(false);
+      }
+      if (thisCase?.insured_id && !thisCase?.beneficiary_id) {
+        setIsInsured("isInsured");
+      } else {
+        setIsInsured("isBeneficiary");
+      }
+      setInitialValues(thisCase, true);
+    } else {
+      if (data) {
+        setPrevRut(rut);
+        setInitialValues(data, false);
+        setIsNewBeneficiary(false);
+      } else if (
+        !data &&
+        rut?.length >= 10 &&
+        (prevDataRef.current !== data || rut !== prevRut)
+      ) {
+        setIsNewBeneficiary(true);
+        setPrevRut(rut);
+        reset({
+          birthdate: "",
+          name: "",
+          paternalLastName: "",
+          maternalLastName: "",
+          address: "",
+          district: "",
+          email: "",
+          phone: "",
+        });
       }
     }
-  }, [insuredByRut, prevRut, resetForm, rut, thisCase]);
+  }, [data, thisCase]);
 
   useEffect(() => {
-    if (contractor && contractor?.type === "P") {
-      setInitialValues(contractor);
+    if (thisCase) {
+      const stageName = thisCase?.stages?.find(
+        (s: any) => s.stage === "Contención"
+      )
+        ? "Contención"
+        : "Apertura";
+      const stageId = stageData?.find((s: any) => s.name === stageName)?.id;
+      setStage(stageId || "");
+    } else {
+      if (isNewBeneficiary) {
+        const stageId = stageData?.find(
+          (s: any) => s.name === "Contención"
+        )?.id;
+        setStage(stageId || "");
+      } else if (data?.beneficiary) {
+        const stageId = stageData?.find((s: any) => s.name === "Apertura")?.id;
+        setStage(stageId || "");
+      }
     }
-  }, [contractor, setInitialValues]);
-
-  useEffect(() => {
-    if (stages) {
-      setStage(
-        stages.find((s: any) => s.name.toLowerCase() === router.query.stage)?.id
-      );
-    }
-  }, [stages, stage, router.query.stage]);
+  }, [stageData, thisCase, data, isNewBeneficiary]);
 
   return (
     <div>
-      <ContentCell gap="20px">
+      <ContentCell gap="10px">
         <ContentRow gap="5px">
           <InputText
             label="N° Caso"
@@ -317,14 +359,36 @@ const BeneficiaryForm = ({ thisCase }: any) => {
             width="260px"
           />
         </ContentRow>
-        <h2 className="text-xl font-semibold text-secondary-500">
-          Datos del titular
-        </h2>
+        {data && isInsured === "isBeneficiary" && (
+          <ContentCell gap="2px">
+            <ContentRow gap="5px">
+              <h2 className="w-[260px] text-xl font-semibold text-secondary-500">
+                Datos de carga
+              </h2>
+              <InputText
+                label="Relación"
+                value={
+                  data?.beneficiary?.relationship || "Sin relación asignada"
+                }
+                type="text"
+                disabled={true}
+                width="260px"
+              />
+            </ContentRow>
+          </ContentCell>
+        )}
+        {data && isInsured === "isInsured" && (
+          <ContentCell gap="2px">
+            <h2 className="text-xl font-semibold text-secondary-500">
+              Datos del titular
+            </h2>
+          </ContentCell>
+        )}
         {isNewBeneficiary ? (
           <ContentCell gap="2px">
             <h2 className="font-semibold text-red-500">Contención</h2>
             <p className="text-sm text-secondary-500">
-              El titular no existe, por favor ingrese los datos
+              El beneficiario no existe, por favor ingrese los datos
             </p>
           </ContentCell>
         ) : null}
@@ -354,7 +418,9 @@ const BeneficiaryForm = ({ thisCase }: any) => {
                   placeholder="Rut"
                   maxLength={9}
                   disabled={
-                    isLoading || thisCase?.is_active || !thisCase === true
+                    isLoading ||
+                    (thisCase?.is_active && isAdmin) ||
+                    !thisCase === true
                       ? false
                       : true
                   }
@@ -375,7 +441,9 @@ const BeneficiaryForm = ({ thisCase }: any) => {
                   id="birthDate"
                   placeholder="Fecha de nacimiento"
                   disabled={
-                    isLoading || thisCase?.is_active || !thisCase === true
+                    isLoading ||
+                    (thisCase?.is_active && isAdmin) ||
+                    !thisCase === true
                       ? false
                       : true
                   }
@@ -399,7 +467,9 @@ const BeneficiaryForm = ({ thisCase }: any) => {
                 id="name"
                 placeholder="Nombres"
                 disabled={
-                  isLoading || thisCase?.is_active || !thisCase === true
+                  isLoading ||
+                  (thisCase?.is_active && isAdmin) ||
+                  !thisCase === true
                     ? false
                     : true
                 }
@@ -417,12 +487,27 @@ const BeneficiaryForm = ({ thisCase }: any) => {
                 >
                   Apellido paterno
                 </Label>
-                <InputText
-                  label="Relación"
-                  value={paternalLastName}
+                <Input
+                  errorText={errors.paternalLastName?.message}
+                  {...register("paternalLastName", {
+                    required: "Este campo es requerido",
+                  })}
                   type="text"
-                  disabled={true}
-                  width="260px"
+                  id="paternalLastName"
+                  placeholder="Apellido paterno"
+                  disabled={
+                    isLoading ||
+                    (thisCase?.is_active && isAdmin) ||
+                    !thisCase === true
+                      ? false
+                      : true
+                  }
+                  className={`w-full ${
+                    errors.paternalLastName?.message?.length
+                      ? "border-red-500"
+                      : ""
+                  }`}
+                  value={paternalLastName}
                 />
               </div>
               <div className="flex w-full flex-col">
@@ -441,7 +526,9 @@ const BeneficiaryForm = ({ thisCase }: any) => {
                   id="maternalLastName"
                   placeholder="Apellido materno"
                   disabled={
-                    isLoading || thisCase?.is_active || !thisCase === true
+                    isLoading ||
+                    (thisCase?.is_active && isAdmin) ||
+                    !thisCase === true
                       ? false
                       : true
                   }
@@ -467,7 +554,9 @@ const BeneficiaryForm = ({ thisCase }: any) => {
                 id="address"
                 placeholder="Dirección"
                 disabled={
-                  isLoading || thisCase?.is_active || !thisCase === true
+                  isLoading ||
+                  (thisCase?.is_active && isAdmin) ||
+                  !thisCase === true
                     ? false
                     : true
                 }
@@ -486,7 +575,13 @@ const BeneficiaryForm = ({ thisCase }: any) => {
                 onValueChange={(value) => {
                   setValue("district", value);
                 }}
-                defaultValue={insured?.district || district}
+                disabled={
+                  isLoading ||
+                  (thisCase?.is_active && isAdmin) ||
+                  !thisCase === true
+                    ? false
+                    : true
+                }
               >
                 <SelectTrigger className="h-10 rounded-sm border-dusty-gray border-opacity-40 py-6">
                   <SelectValue placeholder="Seleccione comuna" />
@@ -525,7 +620,9 @@ const BeneficiaryForm = ({ thisCase }: any) => {
                   id="email"
                   placeholder="Correo electrónico"
                   disabled={
-                    isLoading || thisCase?.is_active || !thisCase === true
+                    isLoading ||
+                    (thisCase?.is_active && isAdmin) ||
+                    !thisCase === true
                       ? false
                       : true
                   }
@@ -551,7 +648,9 @@ const BeneficiaryForm = ({ thisCase }: any) => {
                   id="phone"
                   placeholder="Teléfono"
                   disabled={
-                    isLoading || thisCase?.is_active || !thisCase === true
+                    isLoading ||
+                    (thisCase?.is_active && isAdmin) ||
+                    !thisCase === true
                       ? false
                       : true
                   }
@@ -564,30 +663,82 @@ const BeneficiaryForm = ({ thisCase }: any) => {
               </div>
             </div>
           </ContentCell>
-          <div className="mt-4">
-            {contractor?.type !== "P" && (
+          {isNewBeneficiary && (
+            <>
+              <RadioGroup
+                value={isInsured}
+                onValueChange={setIsInsured}
+                className="flex w-full items-center gap-2 py-4"
+                defaultValue=""
+                disabled={thisCase}
+              >
+                <Label
+                  className={`w-full cursor-pointer rounded-md bg-dusty-gray-50 px-4 py-2 text-center text-lg  ${
+                    isInsured === "isInsured"
+                      ? "bg-teal-blue text-dusty-gray-50"
+                      : "text-dusty-gray-800 hover:bg-dusty-gray-100"
+                  }`}
+                  htmlFor="isInsured"
+                >
+                  <RadioGroupItem
+                    className="hidden"
+                    id="isInsured"
+                    value="isInsured"
+                  />
+                  Titular
+                </Label>
+                <Label
+                  className={`w-full cursor-pointer rounded-md bg-dusty-gray-50 px-4 py-2 text-center text-lg ${
+                    isInsured === "isBeneficiary"
+                      ? "bg-teal-blue text-dusty-gray-50"
+                      : "text-dusty-gray-800 hover:bg-dusty-gray-100"
+                  }`}
+                  htmlFor="isBeneficiary"
+                >
+                  <RadioGroupItem
+                    className="hidden"
+                    id="isBeneficiary"
+                    value="isBeneficiary"
+                  />
+                  Carga
+                </Label>
+              </RadioGroup>
+              {isInsured === "isInsured" && (
+                <>
+                  <ClientSelect
+                    value={client}
+                    setValue={setClient}
+                    thisCase={thisCase}
+                    retailId={retail?.id}
+                  />
+                  {client && <Button className="mt-4 w-full">Continuar</Button>}
+                </>
+              )}
+              {isInsured === "isBeneficiary" && (
+                <Button className="mt-4 w-full">Continuar</Button>
+              )}
+            </>
+          )}
+          {!isNewBeneficiary ? (
+            <Button
+              className="my-6 w-full"
+              disabled={
+                isSubmitting || thisCase?.is_active || !thisCase ? false : true
+              }
+            >
+              {isSubmitting ? "Enviando..." : "Continuar"}
+            </Button>
+          ) : null}
+          {!isNewBeneficiary && isInsured === "isInsured" && client && (
+            <>
               <ClientSelect
                 value={client}
                 setValue={setClient}
                 thisCase={thisCase}
                 retailId={retail?.id}
               />
-            )}
-            <div className="mt-6 flex gap-2">
-              <Button
-                className="w-full"
-                disabled={
-                  isSubmitting ||
-                  !thisCase?.is_active ||
-                  (client === "" && contractor?.type !== "P")
-                    ? true
-                    : false
-                }
-              >
-                {isSubmitting ? "Enviando..." : "Continuar"}
-              </Button>
-            </div>
-          </div>
+            </>
+          )}
         </form>
       </ContentCell>
       <LoadingMessage />
@@ -610,13 +761,12 @@ const ClientSelect = ({
     contractorType: "C",
     active: true,
   });
-
   return (
     <Select
       value={value}
       onValueChange={setValue}
       defaultValue=""
-      disabled={thisCase?.contractor_id || (value != "" && value === retailId)}
+      disabled={thisCase || (value != "" && value === retailId)}
     >
       <SelectTrigger>
         <SelectValue placeholder="Seleccione un cliente" />

@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { useRouter } from "next/router";
 
 import {
@@ -17,23 +17,28 @@ import {
 } from "../../ui/Table";
 import Icon from "../../ui/Icon";
 import { LoadingMessage } from "../../ui/LoadingMessage";
-
-import { useQueryCase, useQueryLead } from "../../../hooks/query";
+import { useQueryLead } from "~/hooks/query";
+import { useCase } from "~/store/hooks/useCase";
 import Button from "../../ui/Button";
 import Link from "next/link";
 
 const CaseStageList = ({ showModal, setShowModal }: any) => {
   const router = useRouter();
-  const { case_id } = router.query;
+  const id = router.query.id;
 
-  const { data } = useQueryCase().useGetById(case_id as string);
+  const { getById, caseData } = useCase();
+  useEffect(() => {
+    if (typeof id === "string") {
+      getById(id);
+    }
+  }, [id]);
 
   const {
     data: contract,
     isError,
     isLoading,
     isFetching,
-  } = useQueryLead().useGetContract(data?.lead_id);
+  } = useQueryLead().useGetContract(caseData?.lead_id ?? "");
 
   return (
     <Fragment>
@@ -50,7 +55,7 @@ const CaseStageList = ({ showModal, setShowModal }: any) => {
             <TableCellEnd />
           </TableHeader>
           <TableDetail>
-            {data?.stages
+            {caseData?.history
               ?.filter(
                 (stage: any) =>
                   stage.stage !== "Solicitud reembolso" &&
@@ -80,7 +85,7 @@ const CaseStageList = ({ showModal, setShowModal }: any) => {
                         onClick={() => {
                           router.push(
                             `/case/${
-                              data?.case_id
+                              caseData?.case_id
                             }/${stage.stage.toLowerCase()}`
                           );
                         }}
@@ -93,13 +98,13 @@ const CaseStageList = ({ showModal, setShowModal }: any) => {
         </Table>
         <ContentRow className="justify-between">
           <ContentCellSummary
-            color={data?.stages?.length > 0 ? "blue" : "#959595"}
+            color={caseData?.history?.length > 0 ? "blue" : "#959595"}
           >
-            {data?.stages?.length === 0
+            {caseData?.history?.length === 0
               ? "No hay acciones"
-              : data?.stages?.length === 1
+              : caseData?.history?.length === 1
               ? "1 acción"
-              : `${data?.stages?.length} acciones`}
+              : `${caseData?.history?.length} acciones`}
           </ContentCellSummary>
           <div className="flex gap-2">
             {contract && !isError && !isLoading && !isFetching && (

@@ -1,11 +1,11 @@
 import { useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
 
-import FloatMenu from "../../components/ui/FloatMenu";
-import ButtonIcon from "../../components/ui/ButtonIcon";
+import FloatMenu from "~/components/ui/FloatMenu";
+import ButtonIcon from "~/components/ui/ButtonIcon";
 
-import { useUI } from "../../hooks";
-import { CaseList } from "../../components/functional/Case";
+import { useUI } from "~/hooks";
+import { CaseList } from "~/components/functional/Case";
 
 const CasePage = () => {
   const router = useRouter();

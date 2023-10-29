@@ -109,7 +109,19 @@ const CaseFormRefund = () => {
   const handleAddSpecialist = async () => {
     try {
       upsert({
-        alliance: caseValue.alliance,
+        alliance: {
+          confirmed: confirmHour,
+          completed: confirmVisit,
+          comment: comment,
+          partner_id: specialist,
+          partner_name: "prueba",
+          qualification_id: selectedQualification?.id as string,
+          qualification_name: selectedQualification?.name as string,
+          scheduled_date: scheduledDate,
+          scheduled_time: scheduledTime,
+          specialty_id: caseValue.specialist?.specialty_id as string,
+          specialty_name: caseValue.specialist?.specialty_name as string,
+        },
         assistance_id: caseValue?.assistance?.id ?? "",
         beneficiary: caseValue?.beneficiary,
         case_number: caseValue?.case_number,
@@ -266,7 +278,7 @@ const CaseFormRefund = () => {
         <div className="flex flex-col gap-[5px]">
           <div className="flex flex-col gap-[5px]">
             <InputText
-              value="Envio de especialista"
+              value="Designación de alianza"
               label="Procedimiento"
               disabled={true}
             />
