@@ -154,7 +154,7 @@ const CaseFormService = () => {
               <InputText
                 label="Producto"
                 type="text"
-                value={caseValue.product?.name || ""}
+                value={caseValue?.product?.name || ""}
                 disabled={true}
               />
             </div>
@@ -162,7 +162,7 @@ const CaseFormService = () => {
           <InputText
             label="Servicio"
             type="text"
-            value={caseValue.assistance?.name || ""}
+            value={caseValue?.assistance?.name || ""}
             disabled={true}
           />
 
@@ -170,7 +170,7 @@ const CaseFormService = () => {
             <ContentRow gap="5px">
               <InputText
                 label={
-                  caseValue.assistance?.assigned?.currency === "U"
+                  caseValue?.assistance?.assigned?.currency === "U"
                     ? "Monto Autorizado (UF)"
                     : "Monto Autorizado ($)"
                 }
@@ -189,18 +189,18 @@ const CaseFormService = () => {
                 }
                 type="text"
                 width={`${
-                  Number(caseValue.assistance?.assigned.events) !== 0
+                  Number(caseValue?.assistance?.assigned.events) !== 0
                     ? "152px"
                     : "286px"
                 }`}
                 disabled
               />
-              {Number(caseValue.assistance?.assigned.events) !== 0 && (
+              {Number(caseValue?.assistance?.assigned.events) !== 0 && (
                 <InputText
                   label="Eventos"
                   value={
                     caseValue
-                      ? (caseValue.assistance?.assigned.events ?? 0).toString()
+                      ? (caseValue?.assistance?.assigned.events ?? 0).toString()
                       : "0"
                   }
                   type="number"
@@ -211,7 +211,8 @@ const CaseFormService = () => {
               <InputText
                 label="Límite"
                 value={
-                  caseValue.assistance?.assigned.maximum || "No hay información"
+                  caseValue?.assistance?.assigned.maximum ||
+                  "No hay información"
                 }
                 type="text"
                 width="234px"
@@ -221,7 +222,7 @@ const CaseFormService = () => {
             <ContentRow gap="5px">
               <InputText
                 label={
-                  caseValue.assistance?.assigned.currency === "U"
+                  caseValue?.assistance?.assigned.currency === "U"
                     ? "Monto Utilizado (UF)"
                     : "Monto Utilizado ($)"
                 }
@@ -238,13 +239,13 @@ const CaseFormService = () => {
                 }
                 type="text"
                 width={`${
-                  Number(caseValue.assistance?.assigned.events) !== 0
+                  Number(caseValue?.assistance?.assigned.events) !== 0
                     ? "152px"
                     : "286px"
                 }`}
                 disabled
               />
-              {Number(caseValue.assistance?.assigned.events) !== 0 && (
+              {Number(caseValue?.assistance?.assigned.events) !== 0 && (
                 <InputText
                   label="Eventos utilizados"
                   value={
@@ -262,9 +263,9 @@ const CaseFormService = () => {
         </ContentCell>
 
         <CaseServiceTable
-          product={caseValue.product}
-          assistance={caseValue.assistance}
-          formValues={caseValue.values}
+          product={caseValue?.product}
+          assistance={caseValue?.assistance}
+          formValues={caseValue?.values}
           setFormValues={setFormValues}
         />
       </ContentCell>

@@ -92,12 +92,12 @@ const CaseFormRefund = () => {
       setConfirmHour(true);
     }
     if (
-      caseValue.specialist?.qualification_id &&
-      caseValue.specialist.qualification_name
+      caseValue?.specialist?.qualification_id &&
+      caseValue?.specialist.qualification_name
     ) {
       setSelectedQualification({
-        id: caseValue.specialist.qualification_id,
-        name: caseValue.specialist.qualification_name,
+        id: caseValue?.specialist.qualification_id,
+        name: caseValue?.specialist.qualification_name,
       });
     }
   }, [
@@ -119,8 +119,8 @@ const CaseFormRefund = () => {
           qualification_name: selectedQualification?.name as string,
           scheduled_date: scheduledDate,
           scheduled_time: scheduledTime,
-          specialty_id: caseValue.specialist?.specialty_id as string,
-          specialty_name: caseValue.specialist?.specialty_name as string,
+          specialty_id: caseValue?.specialist?.specialty_id as string,
+          specialty_name: caseValue?.specialist?.specialty_name as string,
         },
         assistance_id: caseValue?.assistance?.id ?? "",
         beneficiary: caseValue?.beneficiary,
@@ -128,7 +128,7 @@ const CaseFormRefund = () => {
         case_id: idCase as string,
         cost: caseValue?.cost,
         customer: caseValue?.customer,
-        event: caseValue.event,
+        event: caseValue?.event,
         files: caseValue?.files,
         history: caseValue?.history,
         insured: caseValue?.insured,
@@ -153,8 +153,8 @@ const CaseFormRefund = () => {
           scheduled_time: scheduledTime,
           specialist_id: specialist,
           specialist_name: "",
-          specialty_id: caseValue.specialist?.specialty_id as string,
-          specialty_name: caseValue.specialist?.specialty_name as string,
+          specialty_id: caseValue?.specialist?.specialty_id as string,
+          specialty_name: caseValue?.specialist?.specialty_name as string,
         },
         type: caseValue?.type,
         user_id: user?.id as string,

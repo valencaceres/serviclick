@@ -59,14 +59,14 @@ const CaseFormRefund = () => {
   const handleAddRefound = async () => {
     try {
       upsert({
-        alliance: caseValue.alliance,
+        alliance: caseValue?.alliance,
         assistance_id: caseValue?.assistance?.id ?? "",
         beneficiary: caseValue?.beneficiary,
         case_number: caseValue?.case_number,
         case_id: idCase as string,
         cost: caseValue?.cost,
         customer: caseValue?.customer,
-        event: caseValue.event,
+        event: caseValue?.event,
         files: caseValue?.files,
         history: caseValue?.history,
         insured: caseValue?.insured,
@@ -182,14 +182,14 @@ const CaseFormRefund = () => {
           <ContentRow gap="5px">
             <InputText
               label={
-                caseValue.assistance?.assigned?.currency === "U"
+                caseValue?.assistance?.assigned?.currency === "U"
                   ? "Monto Disponible (UF)"
                   : "Monto Disponible ($)"
               }
               value={
-                caseValue.assistance?.assigned
-                  ? caseValue.assistance?.assigned?.currency === "P"
-                    ? caseValue.assistance?.assigned.amount.toLocaleString(
+                caseValue?.assistance?.assigned
+                  ? caseValue?.assistance?.assigned?.currency === "P"
+                    ? caseValue?.assistance?.assigned.amount.toLocaleString(
                         "es-CL",
                         {
                           style: "currency",
@@ -197,14 +197,14 @@ const CaseFormRefund = () => {
                         }
                       )
                     : (
-                        caseValue.assistance?.assigned.amount *
+                        caseValue?.assistance?.assigned.amount *
                         ufValue?.serie[0].valor
                       ).toLocaleString("es-CL", {
                         style: "currency",
                         currency: "CLP",
                       })
-                  : caseValue.assistance?.assigned?.currency === "P"
-                  ? (caseValue.assistance?.assigned?.amount).toLocaleString(
+                  : caseValue?.assistance?.assigned?.currency === "P"
+                  ? (caseValue?.assistance?.assigned?.amount).toLocaleString(
                       "es-CL",
                       {
                         style: "currency",
@@ -212,7 +212,7 @@ const CaseFormRefund = () => {
                       }
                     )
                   : (
-                      caseValue.assistance?.assigned?.amount! *
+                      caseValue?.assistance?.assigned?.amount! *
                       ufValue?.serie[0].valor
                     ).toLocaleString("es-CL", {
                       style: "currency",
@@ -221,18 +221,18 @@ const CaseFormRefund = () => {
               }
               type="text"
               width={`${
-                Number(caseValue.assistance?.assigned?.events) !== 0
+                Number(caseValue?.assistance?.assigned?.events) !== 0
                   ? "152px"
                   : "286px"
               }`}
               disabled
             />
-            {Number(caseValue.assistance?.assigned?.events) !== 0 && (
+            {Number(caseValue?.assistance?.assigned?.events) !== 0 && (
               <InputText
                 label="Eventos restantes"
                 value={
-                  caseValue.assistance?.assigned?.events
-                    ? caseValue.assistance?.assigned?.events.toString()
+                  caseValue?.assistance?.assigned?.events
+                    ? caseValue?.assistance?.assigned?.events.toString()
                     : "0"
                 }
                 type="number"
@@ -243,7 +243,7 @@ const CaseFormRefund = () => {
             <InputText
               label="Límite"
               value={
-                caseValue.assistance?.assigned?.maximum || "No hay información"
+                caseValue?.assistance?.assigned?.maximum || "No hay información"
               }
               type="text"
               width="234px"
@@ -251,7 +251,7 @@ const CaseFormRefund = () => {
             />{" "}
           </ContentRow>
           <ContentRow gap="5px">
-            {caseValue?.refund?.amount && caseValue.refund.status ? (
+            {caseValue?.refund?.amount && caseValue?.refund.status ? (
               <>
                 <InputText
                   label="Monto solicitado ($)"
