@@ -124,6 +124,17 @@ const AssistanceCasePage = () => {
       next: () => router.push(`/assistance/case`),
       back: () => router.push(`/assistance/case/attachment/${urlID}`),
     },
+    alliance: {
+      onLoad: () =>
+        setTitleUI(
+          `Caso${
+            caseValue.case_id ? " N°" + caseValue.case_number.toString() : ""
+          } - Designación de alianza`
+        ),
+      save: () => SaveEvent(),
+      next: () => router.push(`/assistance/case`),
+      back: () => router.push(`/assistance/case/attachment/${urlID}`),
+    },
   };
 
   const { setTitleUI } = useUI();

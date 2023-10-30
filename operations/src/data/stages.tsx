@@ -4,6 +4,7 @@ import {
   CaseProduct,
   CaseEvent,
 } from "~/components/functional/_assistances/Case";
+import CaseAlliance from "~/components/functional/_assistances/Case/CaseAlliance";
 import CaseAttachment from "~/components/functional/_assistances/Case/CaseAttachment";
 import CaseImed from "~/components/functional/_assistances/Case/CaseImed";
 import CaseRefund from "~/components/functional/_assistances/Case/CaseRefund";
@@ -96,8 +97,16 @@ export const stagePages = {
       />
     ),
   },
-  // specialist: { component: <CaseSpecialist /> },
-  // alliance: { component: <CaseAlliance /> },
+  alliance: {
+    component: (
+      <CaseAlliance
+        setIsEnabledSave={(isEnabled: boolean): void => {
+          throw new Error("Function not implemented.");
+        }}
+        itWasFound={false}
+      />
+    ),
+  },
   // cost: { component: <CaseCost /> },
   // close: { component: <CaseClose /> },
   // reopen: { component: <CaseReopen /> },

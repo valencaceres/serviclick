@@ -9,7 +9,7 @@ import { useToast } from "~/components/ui/use-toast";
 import { useQueryCase } from "~/hooks/query";
 import { useQueryClient } from "@tanstack/react-query";
 import TextArea from "~/components/ui/TextArea/TextArea";
-import { useSpecialist } from "~/store/hooks";
+import { usePartner } from "~/store/hooks";
 import { useQualification } from "~/store/hooks";
 
 interface ICaseEventProps {
@@ -17,11 +17,11 @@ interface ICaseEventProps {
   itWasFound: boolean;
 }
 
-const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
+const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   const { caseValue, setCase } = useCase();
   const queryClient = useQueryClient();
   const { list: districtList } = useDistrict();
-  const { specialistList } = useSpecialist();
+  const { partnerList } = usePartner();
   const { qualificationList } = useQualification();
 
   const [applicant, setApplicant] = useState<IApplicant>();
@@ -131,7 +131,7 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
         <ContentCell gap="5px">
           <ContentCell gap="5px">
             <InputText
-              value="Envio de especialista"
+              value="Designación de alianza"
               label="Procedimiento"
               disabled={true}
             />
@@ -148,13 +148,13 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                 dataText="district_name"
                 dataValue="id"
               />
-              {specialistList?.length > 0 && (
+              {partnerList?.length > 0 && (
                 <ComboBox
                   label="Especialista"
                   placeHolder="Seleccione especialista"
-                  data={specialistList}
+                  data={partnerList}
                   width="525px"
-                  value={caseValue.specialist ?? ""}
+                  value={caseValue.alliance?.partner_name ?? ""}
                   onChange={handleChange}
                   dataText="name"
                   dataValue="id"
@@ -165,13 +165,13 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
             <>
               <InputText
                 label="Especialista"
-                value={caseValue?.specialist?.specialist_name}
+                value={caseValue?.alliance?.partner_name ?? ""}
                 type="text"
                 disabled={true}
               />
               <InputText
                 label="Especialidad"
-                value={caseValue?.specialist?.specialty_name}
+                value={caseValue?.alliance?.specialty_name ?? ""}
                 type="text"
                 disabled={true}
               />
@@ -187,20 +187,20 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                 type="date"
                 width="160px"
                 minDate={minDate.toISOString().split("T")[0]}
-                value={caseValue?.specialist?.scheduled_date ?? ""}
+                value={caseValue?.alliance?.scheduled_date ?? ""}
                 onChange={handleChange}
               />
               <InputText
                 label="Hora de visita"
                 type="time"
                 width="100px"
-                value={caseValue?.specialist?.scheduled_time ?? ""}
+                value={caseValue?.alliance?.scheduled_time ?? ""}
                 onChange={handleChange}
                 minTime="09:00"
                 maxTime="20:00"
               />
             </ContentRow>
-            {caseValue.specialist?.confirmed === false && (
+            {caseValue.alliance?.confirmed === false && (
               <div className="mr-12 flex  h-6 gap-[10px] font-bold ">
                 <p
                   className="cursor-pointer border-b-2 border-blue-500 text-blue-500"
@@ -216,8 +216,8 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                 </p>
               </div>
             )}
-            {caseValue.specialist?.completed === false &&
-              caseValue.specialist.confirmed === false && (
+            {caseValue.alliance?.completed === false &&
+              caseValue.alliance.confirmed === false && (
                 <div className="mr-12 flex  h-6 gap-[10px] font-bold ">
                   <p
                     className="cursor-pointer border-b-2 border-blue-500 text-blue-500"
@@ -234,7 +234,7 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                 </div>
               )}
           </ContentRow>
-          {caseValue.specialist?.completed === false ? (
+          {caseValue.alliance?.completed === false ? (
             <TextArea
               value={caseValue?.refund?.comment ?? ""}
               onChange={handleChange}
@@ -249,7 +249,7 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                 placeHolder="Seleccione calificación"
                 data={qualificationList || []}
                 width="525px"
-                value={caseValue.specialist?.qualification_name ?? ""}
+                value={caseValue.alliance?.qualification_name ?? ""}
                 onChange={handleChange}
                 dataText="name"
                 dataValue="id"
@@ -265,7 +265,7 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
           )}
         </ContentCell>
         {caseValue.assistance?.assigned.amount &&
-          caseValue.specialist?.completed === true && (
+          caseValue.alliance?.completed === true && (
             <>
               <ContentCell gap="5px">
                 <ContentRow className="flex flex-row justify-between">
@@ -297,7 +297,7 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                   />
                 </ContentRow>
                 <TextArea
-                  value={caseValue.specialist.comment}
+                  value={caseValue.alliance?.comment ?? ""}
                   onChange={handleChange}
                   label="Justificación"
                   width="525px"
@@ -311,4 +311,4 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   );
 };
 
-export default CaseSpecialist;
+export default CaseAlliance;
