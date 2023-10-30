@@ -38,6 +38,7 @@ import ComboBox from "~/components/ui/ComboBox";
 import CheckBox from "~/components/ui/CheckBox";
 import { format, parseISO } from "date-fns";
 import { useCase } from "~/store/hooks/useCase";
+import { applicantStore } from "~/store/zustand/applicantStore";
 interface IInitialValues {
   rut: string;
   birthdate: string;
@@ -107,14 +108,8 @@ const BeneficiaryForm = () => {
   const prevDataRef = useRef();
   const { list: districtList } = useDistrict();
   const { data: newCaseNumber } = useQueryCase().useGetNewCaseNumber();
-  const {
-    getApplicantByRut,
-    caseData,
-    upsertApplicant,
-    isLoading,
-    caseValue,
-    getById,
-  } = useCase();
+  const { isLoading, caseValue, getById } = useCase();
+  const { getApplicantByRut, caseData, upsertApplicant } = applicantStore();
   const { user } = useUser();
   useEffect(() => {
     getById(router.query.id as string);

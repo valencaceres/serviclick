@@ -37,11 +37,9 @@ interface caseState {
     stage_id: string
   ) => void;
   getById: (id: string) => void;
-  getApplicantByRut: (rut: string) => void;
   getServicesAndValues: (data: ICaseServices) => void;
   upsert: (data: ICaseData) => void;
   reset: () => void;
-  upsertApplicant: (data: ICaseData, isBeneficiary: boolean) => Promise<void>;
 }
 
 const initialCase: ICase = {
@@ -165,41 +163,6 @@ export const caseStore = create<caseState>((set) => ({
       set((state) => ({ ...state, isLoading: true }));
       const { data } = await apiInstance.get(`/case/getById/${id}`);
       set((state) => ({ ...state, caseValue: data, isLoading: false }));
-    } catch (e) {
-      set((state) => ({
-        ...state,
-        isLoading: false,
-        isError: true,
-        error: (e as Error).message,
-      }));
-    }
-  },
-
-  getApplicantByRut: async (rut: string) => {
-    try {
-      set((state) => ({ ...state, isLoading: true }));
-      const { data } = await apiInstance.get(`/case/getApplicantByRut/${rut}`);
-      set((state) => ({ ...state, caseData: data, isLoading: false }));
-    } catch (e) {
-      set((state) => ({
-        ...state,
-        isLoading: false,
-        isError: true,
-        error: (e as Error).message,
-      }));
-    }
-  },
-  upsertApplicant: async (data: ICaseData, isBeneficiary: boolean) => {
-    try {
-      const endpoint = isBeneficiary
-        ? "/beneficiary/upsert"
-        : "/insured/upsert";
-      const beneficiary = isBeneficiary ? data.beneficiary : data.insured;
-      const response = await apiInstance.post(endpoint, beneficiary);
-      console.log(data);
-      set({ caseData: data, isLoading: false });
-
-      return response.data;
     } catch (e) {
       set((state) => ({
         ...state,

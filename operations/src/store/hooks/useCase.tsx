@@ -27,11 +27,9 @@ const useCase = () => {
     getStatus,
     getAll,
     getById,
-    getApplicantByRut,
     getServicesAndValues,
     upsert,
     reset,
-    upsertApplicant,
   } = caseStore();
 
   return {
@@ -47,9 +45,7 @@ const useCase = () => {
     getStatus,
     getAll,
     getById,
-    getApplicantByRut,
     getServicesAndValues,
-    upsertApplicant,
     upsert,
     reset,
   };

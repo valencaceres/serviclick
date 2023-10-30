@@ -1,15 +1,21 @@
 import { applicantStore } from "../zustand/applicantStore";
 
 const useApplicant = () => {
-  const { data, isLoading, isError, error, getApplicantData, upsertApplicant } =
-    applicantStore.getState();
-
-  return {
-    data,
+  const {
+    caseData,
     isLoading,
     isError,
     error,
-    getApplicantData,
+    getApplicantByRut,
+    upsertApplicant,
+  } = applicantStore.getState();
+
+  return {
+    caseData,
+    isLoading,
+    isError,
+    error,
+    getApplicantByRut,
     upsertApplicant,
   };
 };
