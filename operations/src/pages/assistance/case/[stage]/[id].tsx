@@ -70,10 +70,59 @@ const AssistanceCasePage = () => {
         ),
     },
     event: {
-      onLoad: () => {},
-      save: () => {},
-      next: () => {},
+      onLoad: () =>
+        setTitleUI(
+          `Caso${
+            caseValue.case_id ? " N°" + caseValue.case_number.toString() : ""
+          } - datos del evento`
+        ),
+      save: () => SaveEvent(),
+      next: () => router.push(`/assistance/case/attachment/${urlID}`),
       back: () => router.push(`/assistance/case/product/${urlID}`),
+    },
+    attachment: {
+      onLoad: () =>
+        setTitleUI(
+          `Caso${
+            caseValue.case_id ? " N°" + caseValue.case_number.toString() : ""
+          } - Antecedentes (adjuntos)`
+        ),
+      save: () => SaveEvent(),
+      next: () => router.push(`/assistance/case/attachment/${urlID}`),
+      back: () => router.push(`/assistance/case/event/${urlID}`),
+    },
+    refund: {
+      onLoad: () =>
+        setTitleUI(
+          `Caso${
+            caseValue.case_id ? " N°" + caseValue.case_number.toString() : ""
+          } - Reembolso`
+        ),
+      save: () => SaveEvent(),
+      next: () => router.push(`/assistance/case`),
+      back: () => router.push(`/assistance/case/attachment/${urlID}`),
+    },
+    imed: {
+      onLoad: () =>
+        setTitleUI(
+          `Caso${
+            caseValue.case_id ? " N°" + caseValue.case_number.toString() : ""
+          } - Devolución IMED`
+        ),
+      save: () => SaveEvent(),
+      next: () => router.push(`/assistance/case`),
+      back: () => router.push(`/assistance/case/attachment/${urlID}`),
+    },
+    specialist: {
+      onLoad: () =>
+        setTitleUI(
+          `Caso${
+            caseValue.case_id ? " N°" + caseValue.case_number.toString() : ""
+          } - Envío de especialista`
+        ),
+      save: () => SaveEvent(),
+      next: () => router.push(`/assistance/case`),
+      back: () => router.push(`/assistance/case/attachment/${urlID}`),
     },
   };
 
@@ -108,6 +157,11 @@ const AssistanceCasePage = () => {
   };
 
   const SaveProduct = () => {
+    console.log(caseValue);
+    caseUpsert(caseValue);
+  };
+
+  const SaveEvent = () => {
     console.log(caseValue);
     caseUpsert(caseValue);
   };

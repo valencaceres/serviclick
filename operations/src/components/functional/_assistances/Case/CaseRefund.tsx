@@ -1,29 +1,21 @@
-import React, { Fragment, useEffect, useState } from "react";
-import { ContentCell, ContentRow } from "~/components/layout/Content";
-import {
-  ComboBox,
-  InputText,
-  Table,
-  TableCell,
-  TableCellEnd,
-  TableCellText,
-  TableDetail,
-  TableHeader,
-  TableRow,
-} from "~/components/ui";
-import TextArea from "~/components/ui/TextArea/TextArea";
-import { useDistrict } from "~/hooks";
-import { IApplicant } from "~/interfaces/applicant";
+import React, { useState, useEffect, Fragment } from "react";
+
+import { ContentCell, ContentRow } from "../../../layout/Content";
+
+import { InputText } from "~/components/ui";
+
 import { useCase } from "~/store/hooks";
 
-interface ICaseEventProps {
+import { IApplicant } from "../../../../interfaces/applicant";
+
+interface ICaseProductProps {
   setIsEnabledSave: (isEnabled: boolean) => void;
   itWasFound: boolean;
 }
 
-const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
+const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
   const { caseValue, setCase } = useCase();
-  const { list: districtList } = useDistrict();
+
   const [applicant, setApplicant] = useState<IApplicant>();
 
   const handleChange = (e: any) => {
@@ -34,11 +26,12 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
       default:
         setCase({
           ...caseValue,
-          event: { [id]: value },
+          refund: { [id]: value },
         });
         return;
     }
   };
+
   useEffect(() => {
     if (caseValue) {
       const applicant =
@@ -49,6 +42,7 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
     }
     setIsEnabledSave(true);
   }, []);
+
   return (
     <ContentCell gap="20px">
       <ContentCell gap="5px">
@@ -122,43 +116,86 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                 disabled={itWasFound}
               />
             </Fragment>
-          )}{" "}
+          )}
         </ContentCell>
+
         <ContentCell gap="5px">
+          <InputText value="Reembolso" label="Procedimiento" disabled={true} />
           <ContentRow gap="5px">
             <InputText
-              label="Fecha del evento"
-              value={caseValue?.event?.date || ""}
-              id="date"
-              type="date"
-              width="234px"
-              onChange={handleChange}
+              id="assistance"
+              label="Monto autorizado ($)"
+              type="text"
+              value={caseValue.assistance.assigned.amount.toString()}
+              width="190px"
+              disabled={itWasFound}
             />
-
-            <ComboBox
-              id="location"
-              label="Comuna"
-              value={caseValue ? caseValue?.event?.location || "" : ""}
-              placeHolder=":: Seleccione una comuna ::"
-              onChange={handleChange}
-              data={districtList}
-              dataValue={"district_name"}
-              dataText={"district_name"}
-              width="290px"
+            <InputText
+              id="events"
+              label="Eventos"
+              type="text"
+              value={caseValue.assistance.assigned.events.toString()}
+              width="120px"
+              disabled={itWasFound}
+            />
+            <InputText
+              id="limit"
+              label="Límite"
+              type="text"
+              value={caseValue.assistance.assigned.maximum.toString()}
+              width="210px"
+              disabled={itWasFound}
             />
           </ContentRow>
-          <TextArea
-            id="description"
-            value={caseValue?.event?.description || ""}
-            onChange={handleChange}
-            label="Descripción del evento"
-            width="530px"
-            height="110px"
-          />
+
+          <ContentRow gap="5px">
+            {caseValue?.refund?.amount && caseValue.refund.status ? (
+              <>
+                <InputText
+                  label="Monto solicitado ($)"
+                  value={(caseValue?.refund?.amount).toLocaleString("es-CL", {
+                    style: "currency",
+                    currency: "CLP",
+                  })}
+                  type="text"
+                  width="260px"
+                  disabled={true}
+                />
+                <InputText
+                  label="Monto solicitado ($)"
+                  value={caseValue?.refund?.status}
+                  type="text"
+                  width="260px"
+                  disabled={true}
+                />
+              </>
+            ) : (
+              <InputText
+                label="Monto solicitado ($)"
+                value={
+                  caseValue && caseValue.refund?.amount
+                    ? caseValue.product.id || ""
+                    : ""
+                }
+                type="number"
+                width="260px"
+                onChange={handleChange}
+              />
+            )}
+          </ContentRow>
+          {caseValue?.refund?.comment && (
+            <InputText
+              label="Motivo"
+              value={caseValue?.refund?.comment}
+              type="text"
+              width="260px"
+              disabled={true}
+            />
+          )}
         </ContentCell>
       </ContentCell>
     </ContentCell>
   );
 };
 
-export default CaseEvent;
+export default CaseRefund;

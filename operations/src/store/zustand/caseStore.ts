@@ -31,6 +31,7 @@ interface caseState {
   isError: boolean;
   error: string;
   setCase: (data: ICase) => void;
+  getApplicantByRut: (rut: string) => void;
   getRetails: () => void;
   getStatus: () => void;
   getAll: (
@@ -196,7 +197,6 @@ export const caseStore = create<caseState>((set) => ({
     }
   },
 
-<<<<<<< HEAD
   getApplicantByRut: async (rut: string) => {
     try {
       set((state) => ({ ...state, isLoading: true }));
@@ -221,8 +221,6 @@ export const caseStore = create<caseState>((set) => ({
     }
   },
 
-=======
->>>>>>> 3ca24ac1e26422b30ecac96c7e4368735a22310f
   getServicesAndValues: async (data: ICaseServices) => {
     try {
       set((state) => ({ ...state, isLoading: true }));

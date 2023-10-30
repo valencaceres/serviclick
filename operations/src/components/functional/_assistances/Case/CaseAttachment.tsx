@@ -1,44 +1,65 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { ContentCell, ContentRow } from "~/components/layout/Content";
-import {
-  ComboBox,
-  InputText,
-  Table,
-  TableCell,
-  TableCellEnd,
-  TableCellText,
-  TableDetail,
-  TableHeader,
-  TableRow,
-} from "~/components/ui";
-import TextArea from "~/components/ui/TextArea/TextArea";
+import { ContentCell } from "~/components/layout/Content";
+import { ComboBox, InputText } from "~/components/ui";
 import { useDistrict } from "~/hooks";
 import { IApplicant } from "~/interfaces/applicant";
 import { useCase } from "~/store/hooks";
+import CaseDocumentsTable from "../../Case/CaseDocumentsTable";
+import { useToast } from "~/components/ui/use-toast";
+import { useQueryCase } from "~/hooks/query";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ICaseEventProps {
   setIsEnabledSave: (isEnabled: boolean) => void;
   itWasFound: boolean;
 }
 
-const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
+const CaseAttachment = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   const { caseValue, setCase } = useCase();
+  const queryClient = useQueryClient();
   const { list: districtList } = useDistrict();
+  const { mutate: uploadDocuments, isLoading } =
+    useQueryCase().useUploadDocument();
   const [applicant, setApplicant] = useState<IApplicant>();
+  const [selectedProcedure, setSelectedProcedure] = useState("");
+  const { toast } = useToast();
 
-  const handleChange = (e: any) => {
-    const value = e.target.value;
-    const id = e.target.id;
-    console.log(value);
-    switch (id) {
-      default:
-        setCase({
-          ...caseValue,
-          event: { [id]: value },
-        });
-        return;
-    }
+  const handleProcedureChange = (event: any) => {
+    const selectedValue = event.target.value;
+    setSelectedProcedure(selectedValue);
   };
+
+  const handleSubmit = (file: any, documentId: any) => {
+    const formData = new FormData();
+    formData.append("case_id", caseValue?.case_id as string);
+    formData.append("document_id", documentId.toString());
+    formData.append("files", file);
+
+    uploadDocuments(formData, {
+      onSuccess: () => {
+        toast({
+          title: "Documento subido correctamente",
+          description: "Se ha subido correctamente el documento.",
+        });
+        queryClient.invalidateQueries(["case"]);
+      },
+      onError: () => {
+        toast({
+          title: "Error al subir documentos",
+          description:
+            "Ha ocurrido un error al subir los documentos, por favor intenta nuevamente.",
+          variant: "destructive",
+        });
+      },
+    });
+  };
+  const procedures = [
+    { id: "alliance", name: "Designación de alianza" },
+    { id: "specialist", name: "Envío de especialista" },
+    { id: "imed", name: "Descuento Imed" },
+    { id: "refund", name: "Reembolso" },
+  ];
+
   useEffect(() => {
     if (caseValue) {
       const applicant =
@@ -125,40 +146,25 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
           )}{" "}
         </ContentCell>
         <ContentCell gap="5px">
-          <ContentRow gap="5px">
-            <InputText
-              label="Fecha del evento"
-              value={caseValue?.event?.date || ""}
-              id="date"
-              type="date"
-              width="234px"
-              onChange={handleChange}
-            />
-
-            <ComboBox
-              id="location"
-              label="Comuna"
-              value={caseValue ? caseValue?.event?.location || "" : ""}
-              placeHolder=":: Seleccione una comuna ::"
-              onChange={handleChange}
-              data={districtList}
-              dataValue={"district_name"}
-              dataText={"district_name"}
-              width="290px"
-            />
-          </ContentRow>
-          <TextArea
-            id="description"
-            value={caseValue?.event?.description || ""}
-            onChange={handleChange}
-            label="Descripción del evento"
-            width="530px"
-            height="110px"
+          <ComboBox
+            label="Procedimiento"
+            placeHolder="Seleccione el procedimiento"
+            width="525px"
+            value={selectedProcedure}
+            onChange={handleProcedureChange}
+            data={procedures}
+            dataText="name"
+            dataValue="id"
           />
+          {/*      <CaseDocumentsTable
+            thisStage={"attachment"}
+            handleSubmit={handleSubmit}
+            caseValue={caseValue}
+          /> */}
         </ContentCell>
       </ContentCell>
     </ContentCell>
   );
 };
 
-export default CaseEvent;
+export default CaseAttachment;

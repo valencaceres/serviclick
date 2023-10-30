@@ -4,6 +4,10 @@ import {
   CaseProduct,
   CaseEvent,
 } from "~/components/functional/_assistances/Case";
+import CaseAttachment from "~/components/functional/_assistances/Case/CaseAttachment";
+import CaseImed from "~/components/functional/_assistances/Case/CaseImed";
+import CaseRefund from "~/components/functional/_assistances/Case/CaseRefund";
+import CaseSpecialist from "~/components/functional/_assistances/Case/CaseSpecialist";
 
 interface IStagePages {
   [key: string]: {
@@ -52,9 +56,46 @@ export const stagePages = {
       />
     ),
   },
-  // attachment: { component: <CaseAttachment /> },
-  // refund: { component: <CaseRefund /> },
-  // imed: { component: <CaseIMED /> },
+  attachment: {
+    component: (
+      <CaseAttachment
+        setIsEnabledSave={(isEnabled: boolean): void => {
+          throw new Error("Function not implemented.");
+        }}
+        itWasFound={false}
+      />
+    ),
+  },
+  refund: {
+    component: (
+      <CaseRefund
+        setIsEnabledSave={(isEnabled: boolean): void => {
+          throw new Error("Function not implemented.");
+        }}
+        itWasFound={false}
+      />
+    ),
+  },
+  imed: {
+    component: (
+      <CaseImed
+        setIsEnabledSave={(isEnabled: boolean): void => {
+          throw new Error("Function not implemented.");
+        }}
+        itWasFound={false}
+      />
+    ),
+  },
+  specialist: {
+    component: (
+      <CaseSpecialist
+        setIsEnabledSave={(isEnabled: boolean): void => {
+          throw new Error("Function not implemented.");
+        }}
+        itWasFound={false}
+      />
+    ),
+  },
   // specialist: { component: <CaseSpecialist /> },
   // alliance: { component: <CaseAlliance /> },
   // cost: { component: <CaseCost /> },

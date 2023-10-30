@@ -11,7 +11,6 @@ import {
 import Icon from "../../ui/Icon";
 import { useRouter } from "next/router";
 import { useQueryAssistances, useQueryCase } from "../../../hooks/query";
-import { useCase } from "../../../store/hooks/useCase";
 import Link from "next/link";
 
 const CaseDocumentsTable = ({ caseValue, thisStage, handleSubmit }: any) => {
