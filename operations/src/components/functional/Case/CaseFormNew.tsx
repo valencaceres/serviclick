@@ -37,8 +37,16 @@ import {
   useQueryContractor,
 } from "../../../hooks/query";
 import { useDistrict } from "~/hooks";
+<<<<<<< HEAD
 import { useCase } from "~/store/hooks";
 
+=======
+import ComboBox from "~/components/ui/ComboBox";
+import CheckBox from "~/components/ui/CheckBox";
+import { format, parseISO } from "date-fns";
+import { useCase } from "~/store/hooks/useCase";
+import { applicantStore } from "~/store/zustand/applicantStore";
+>>>>>>> 3ca24ac1e26422b30ecac96c7e4368735a22310f
 interface IInitialValues {
   rut: string;
   birthdate: string;
@@ -108,7 +116,12 @@ const BeneficiaryForm = () => {
   const prevDataRef = useRef();
   const { list: districtList } = useDistrict();
   const { data: newCaseNumber } = useQueryCase().useGetNewCaseNumber();
+<<<<<<< HEAD
   const { getApplicantByRut, isLoading, caseValue, getById } = useCase();
+=======
+  const { isLoading, caseValue, getById } = useCase();
+  const { getApplicantByRut, caseData, upsertApplicant } = applicantStore();
+>>>>>>> 3ca24ac1e26422b30ecac96c7e4368735a22310f
   const { user } = useUser();
   const { upsert: upsertApplicant } = useApplicant();
 

@@ -6,9 +6,12 @@ import CaseStageList from "~/components/functional/Case/CaseStageList";
 
 import CaseForm from "~/components/functional/Case/CaseFormNew";
 import { ContentCell } from "~/components/layout/Content";
+import { Modal, Window } from "~/components/ui/Modal";
+import CaseNotes from "~/components/functional/Case/CaseChat";
 const Applicant = () => {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
+  const setClosed = () => setShowModal(false);
 
   return (
     <Fragment>
@@ -18,6 +21,11 @@ const Applicant = () => {
           <CaseStageList setShowModal={setShowModal} showModal={showModal} />
         </ContentCell>
       </ContentHalfRow>
+      <Modal showModal={showModal}>
+        <Window setClosed={setClosed}>
+          <CaseNotes />
+        </Window>
+      </Modal>
     </Fragment>
   );
 };

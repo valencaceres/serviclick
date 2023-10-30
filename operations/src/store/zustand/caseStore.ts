@@ -40,7 +40,6 @@ interface caseState {
     stage_id: string
   ) => void;
   getById: (id: string) => void;
-  getApplicantByRut: (rut: string) => void;
   getServicesAndValues: (data: ICaseServices) => void;
   upsert: (data: ICase) => void;
   resetNoRut: (applicantCode: "insured" | "beneficiary", rut: string) => void;
@@ -197,6 +196,7 @@ export const caseStore = create<caseState>((set) => ({
     }
   },
 
+<<<<<<< HEAD
   getApplicantByRut: async (rut: string) => {
     try {
       set((state) => ({ ...state, isLoading: true }));
@@ -221,6 +221,8 @@ export const caseStore = create<caseState>((set) => ({
     }
   },
 
+=======
+>>>>>>> 3ca24ac1e26422b30ecac96c7e4368735a22310f
   getServicesAndValues: async (data: ICaseServices) => {
     try {
       set((state) => ({ ...state, isLoading: true }));
