@@ -1,12 +1,13 @@
 import React, { Dispatch, useEffect, useRef, useState, Fragment } from "react";
 import { useRouter } from "next/router";
 import { clerkClient, useUser } from "@clerk/nextjs";
-import { useApplicant } from "~/store/hooks/useApplicant";
-import { ContentCell, ContentRow } from "../../layout/Content";
-import { LoadingMessage } from "../../ui/LoadingMessage";
-import { useUI } from "~/hooks";
+import { useForm } from "react-hook-form";
+import { format, parseISO } from "date-fns";
 
-import InputText from "../../ui/InputText";
+import { ContentCell, ContentRow } from "../../layout/Content";
+
+import { LoadingMessage } from "~/components/ui/LoadingMessage";
+import InputText from "~/components/ui/InputText";
 import { Label } from "~/components/ui/Label";
 import FloatMenu from "~/components/ui/FloatMenu";
 import ButtonIcon from "~/components/ui/ButtonIcon";
@@ -20,24 +21,24 @@ import {
   SelectValue,
 } from "~/components/ui/Select";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/RadioGroup";
+import { Input } from "~/components/ui/Input";
+import ComboBox from "~/components/ui/ComboBox";
+import CheckBox from "~/components/ui/CheckBox";
 
-import { unFormatRut, formatRut } from "../../../utils/format";
-import { rutRegEx, emailRegEx } from "../../../utils/regEx";
-import { rutValidate } from "../../../utils/validations";
+import { unFormatRut, formatRut, rutValidate } from "~/utils/rut";
+import { rutRegEx, emailRegEx } from "~/utils/regEx";
+import { getDateTime } from "~/utils/dateAndTime";
 
+import { useApplicant } from "~/store/hooks";
+import { useUI } from "~/hooks";
 import {
   useQueryCase,
   useQueryStage,
   useQueryContractor,
 } from "../../../hooks/query";
-import { useForm } from "react-hook-form";
-import { Input } from "~/components/ui/Input";
-import { getDateTime } from "~/utils/dateAndTime";
 import { useDistrict } from "~/hooks";
-import ComboBox from "~/components/ui/ComboBox";
-import CheckBox from "~/components/ui/CheckBox";
-import { format, parseISO } from "date-fns";
-import { useCase } from "~/store/hooks/useCase";
+import { useCase } from "~/store/hooks";
+
 interface IInitialValues {
   rut: string;
   birthdate: string;
@@ -107,19 +108,10 @@ const BeneficiaryForm = () => {
   const prevDataRef = useRef();
   const { list: districtList } = useDistrict();
   const { data: newCaseNumber } = useQueryCase().useGetNewCaseNumber();
-  const {
-    getApplicantByRut,
-    caseData,
-    upsertApplicant,
-    isLoading,
-    caseValue,
-    getById,
-  } = useCase();
+  const { getApplicantByRut, isLoading, caseValue, getById } = useCase();
   const { user } = useUser();
-  useEffect(() => {
-    getById(router.query.id as string);
-    getApplicantByRut(caseValue.insured?.rut ?? "");
-  }, []);
+  const { upsert: upsertApplicant } = useApplicant();
+
   const { setTitleUI, filters } = useUI();
   const isAdmin = user?.publicMetadata?.roles?.operaciones === "admin";
 
@@ -194,61 +186,12 @@ const BeneficiaryForm = () => {
   } else {
     isBeneficiary = false;
   }
+
   const send = async () => {
     try {
       const response = await upsertApplicant(
-        {
-          alliance: caseData.alliance,
-          assistance_id: caseData.assistance_id,
-          case_id: null,
-          cost: caseData.cost,
-          customer: caseData.customer,
-          event: caseData.event,
-          values: caseData.values,
-          files: caseData.files,
-          insured:
-            role === "I"
-              ? {
-                  rut,
-                  name,
-                  paternalLastName,
-                  maternalLastName,
-                  birthDate: birthdate,
-                  address,
-                  district,
-                  email,
-                  phone,
-                }
-              : caseData.insured,
-          beneficiary:
-            role === "B" || role === "C"
-              ? {
-                  rut,
-                  name,
-                  paternalLastName,
-                  maternalLastName,
-                  birthDate: birthdate,
-                  address,
-                  district,
-                  email,
-                  phone,
-                }
-              : caseData.beneficiary,
-          lead_id: caseData.lead_id,
-          procedure_id: caseData.procedure_id,
-          products: caseData.products,
-          refund_amount: caseData.refund_amount,
-          retail: caseData.retail,
-          retails: caseData.retails,
-          specialist: caseData.specialist,
-          type: role,
-          is_active: true,
-          user_id: user?.id ?? "",
-          history: caseData.history,
-          case_number: newCaseNumber,
-          product: caseData.product,
-        },
-        isBeneficiary
+        caseValue.type,
+        caseValue.type === "I" ? caseValue.insured : caseValue.beneficiary
       );
 
       if (response !== undefined) {
@@ -337,6 +280,23 @@ const BeneficiaryForm = () => {
       )
     );
   };
+
+  const handleClickHome = () => {
+    router.push("/");
+  };
+
+  const handleClickBack = () => {
+    router.back();
+  };
+  const handleClickSave = () => {
+    send();
+  };
+
+  useEffect(() => {
+    getById(router.query.id as string);
+    getApplicantByRut(caseValue.insured?.rut ?? "");
+  }, []);
+
   useEffect(() => {
     setDateTime(getDateTime());
 
@@ -345,12 +305,13 @@ const BeneficiaryForm = () => {
       reset();
     }
   }, [router, reset]);
+
   useEffect(() => {
-    if (caseData) {
+    if (caseValue) {
       setPrevRut(rut);
-      setInitialValues(caseData);
+      setInitialValues(caseValue);
       setIsNewBeneficiary(false);
-    } else if (!caseData && rut?.length >= 10) {
+    } else if (!caseValue && rut?.length >= 10) {
       setIsNewBeneficiary(true);
       setPrevRut(rut);
       reset({
@@ -365,17 +326,6 @@ const BeneficiaryForm = () => {
       });
     }
   }, [caseData, rut, prevRut]);
-
-  const handleClickHome = () => {
-    router.push("/");
-  };
-
-  const handleClickBack = () => {
-    router.back();
-  };
-  const handleClickSave = () => {
-    send();
-  };
 
   useEffect(() => {
     if (caseData) {

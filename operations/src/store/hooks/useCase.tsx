@@ -2,27 +2,29 @@ import { caseStore } from "../zustand/caseStore";
 
 const useCase = () => {
   const {
-    caseValue,
-    caseData,
+    case: caseValue,
     caseList,
     retailList,
     statusList,
-
+    products,
+    assistances,
     isLoading,
     isError,
     error,
   } = caseStore((state) => ({
-    caseValue: state.caseValue,
-    caseData: state.caseData,
+    case: state.case,
     caseList: state.caseList,
     retailList: state.retailList,
     statusList: state.statusList,
+    products: state.products,
+    assistances: state.assistances,
     isLoading: state.isLoading,
     isError: state.isError,
     error: state.error,
   }));
 
   const {
+    setCase,
     getRetails,
     getStatus,
     getAll,
@@ -30,29 +32,31 @@ const useCase = () => {
     getApplicantByRut,
     getServicesAndValues,
     upsert,
+    resetNoRut,
     reset,
-    upsertApplicant,
   } = caseStore();
 
   return {
     caseValue,
-    caseData,
     caseList,
     retailList,
     statusList,
+    products,
+    assistances,
     isLoading,
     isError,
     error,
+    setCase,
     getRetails,
     getStatus,
     getAll,
     getById,
     getApplicantByRut,
     getServicesAndValues,
-    upsertApplicant,
     upsert,
+    resetNoRut,
     reset,
   };
 };
 
-export { useCase };
+export default useCase;

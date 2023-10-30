@@ -23,7 +23,7 @@ import { Button } from "~/components/ui/ButtonC";
 import { useDistrict } from "~/hooks";
 import { useUI } from "~/hooks";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
-import { useCase } from "~/store/hooks/useCase";
+import { useCase } from "~/store/hooks";
 import ButtonIcon from "~/components/ui/ButtonIcon";
 import FloatMenu from "~/components/ui/FloatMenu";
 interface IAssistance {
@@ -118,7 +118,7 @@ const CaseFormService = () => {
                     isLoading
                       ? "Cargando..."
                       : caseValue?.insured?.name ||
-                        `${caseValue?.insured?.name} ${caseValue?.insured?.paternallastname}`
+                        `${caseValue?.insured?.name} ${caseValue?.insured?.paternalLastName}`
                   }
                   disabled
                 />
@@ -144,7 +144,7 @@ const CaseFormService = () => {
                     isLoading
                       ? "Cargando..."
                       : caseValue?.beneficiary?.name ||
-                        `${caseValue?.beneficiary?.name} ${caseValue?.beneficiary?.paternallastname}`
+                        `${caseValue?.beneficiary?.name} ${caseValue?.beneficiary?.paternalLastName}`
                   }
                   disabled
                 />

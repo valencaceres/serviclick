@@ -4,13 +4,16 @@ import { useRouter } from "next/router";
 import FloatMenu from "~/components/ui/FloatMenu";
 import ButtonIcon from "~/components/ui/ButtonIcon";
 
-import { useUI } from "~/hooks";
 import { CaseList } from "~/components/functional/Case";
+
+import { useUI } from "~/hooks";
+import { useCase } from "~/store/hooks";
 
 const CasePage = () => {
   const router = useRouter();
 
   const { setTitleUI, filters } = useUI();
+  const { reset } = useCase();
 
   const handleClickHome = () => {
     router.push("/");
@@ -19,7 +22,8 @@ const CasePage = () => {
   const handleClickRefresh = () => {};
 
   const handleClickNew = () => {
-    router.push("/assistance/case/applicant");
+    reset();
+    router.push("/assistance/case/applicant/new");
   };
 
   useEffect(() => {

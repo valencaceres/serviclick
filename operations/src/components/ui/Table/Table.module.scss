@@ -101,6 +101,23 @@
         overflow: hidden;
         text-overflow: ellipsis;
 
+        b {
+          font-size: 18px;
+          font-weight: 200;
+          color: $dark-gray-color;
+          font-family: Oswald;
+          font-weight: 300;
+        }
+
+        .inputText {
+          background-color: transparent;
+          width: 100%;
+
+          &:focus {
+            background-color: rgb(247, 247, 241);
+          }
+        }
+
         @media screen and (min-width: 1200px) {
           height: 35px;
         }

@@ -21,4 +21,4 @@ const useQualification = () => {
   };
 };
 
-export { useQualification };
+export default useQualification;

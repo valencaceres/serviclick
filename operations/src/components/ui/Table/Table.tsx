@@ -73,6 +73,18 @@ const TableCellEnd = () => {
   return <div className={styles.cellEnd}></div>;
 };
 
+const TableCellText = ({ placeholder, value, onChange }: any) => {
+  return (
+    <input
+      type="text"
+      placeholder={placeholder}
+      value={value}
+      className={styles.inputText}
+      onChange={onChange}
+    />
+  );
+};
+
 export {
   Table,
   TableHeader,
@@ -82,4 +94,5 @@ export {
   TableCellWide,
   TableIcons,
   TableCellEnd,
+  TableCellText,
 };

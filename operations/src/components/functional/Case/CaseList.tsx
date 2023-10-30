@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { Row, type ColumnDef } from "@tanstack/react-table";
-import { useCase } from "~/store/hooks/useCase";
+import { useCase } from "~/store/hooks";
 import { DataTable } from "~/components/functional/Case/DataTable/DataTable";
 import { DataTableColumnHeader } from "~/components/functional/Case/DataTable/DataTableColumnHeader";
 import { ICaseItem } from "~/interfaces/case";
@@ -10,11 +10,11 @@ const CaseList = () => {
 
   const { getAll, caseList } = useCase();
   useEffect(() => {
-    getAll();
+    getAll("", "", "", "");
   }, [getAll]);
   if (!caseList) return null;
   const handleViewCase = ({ id, stage_name }: ICaseItem) => {
-    router.push(`/case/${id}/${stage_name.toLowerCase()}`);
+    router.push(`/assistance/case/applicant/${id}`);
   };
 
   return (

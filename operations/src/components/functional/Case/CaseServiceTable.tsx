@@ -12,7 +12,7 @@ import {
 } from "../../ui/Table";
 import Icon from "../../ui/Icon";
 
-import { useCase } from "~/store/hooks/useCase";
+import { useCase } from "~/store/hooks";
 import { useQueryAssistances, useQueryCase } from "../../../hooks/query";
 
 import { useRouter } from "next/router";
@@ -28,12 +28,12 @@ const CaseServiceTable = ({
 
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  const { caseData, getById } = useCase();
+  const { caseValue, getById } = useCase();
   const { data: assistanceValues } = useQueryAssistances().useGetValues(
     assistance?.id
   );
   const { data: insuredValues } = useQueryAssistances().useGetValuesById(
-    caseData?.insured?.id,
+    caseValue?.insured?.id,
     assistance?.id,
     product?.id
   );
@@ -45,8 +45,8 @@ const CaseServiceTable = ({
     const newValueInput = e.target.elements.newValue;
     assignValue(
       {
-        lead_id: caseData?.lead_id,
-        product_id: caseData?.product.id,
+        lead_id: caseValue?.lead_id,
+        product_id: caseValue?.product.id,
         insured_id: data?.insured_id,
         value_id: data?.value_id,
         value: newValueInput.value,
@@ -87,7 +87,7 @@ const CaseServiceTable = ({
                           handleSubmit(e, {
                             lead_id: product?.lead_id,
                             product_id: product?.id,
-                            insured_id: caseData?.insured?.id,
+                            insured_id: caseValue?.insured?.id,
                             value_id: item.id,
                           })
                         }
@@ -138,7 +138,7 @@ const CaseServiceTable = ({
                       handleSubmit(e, {
                         lead_id: product?.lead_id,
                         product_id: product?.id,
-                        insured_id: caseData?.insured?.id,
+                        insured_id: caseValue?.insured?.id,
                         value_id: item.id,
                       })
                     }

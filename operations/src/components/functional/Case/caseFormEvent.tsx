@@ -24,7 +24,7 @@ import { Button } from "~/components/ui/ButtonC";
 import { useDistrict } from "~/hooks";
 import { useUI } from "~/hooks";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
-import { useCase } from "~/store/hooks/useCase";
+import { useCase } from "~/store/hooks";
 import ButtonIcon from "~/components/ui/ButtonIcon";
 import FloatMenu from "~/components/ui/FloatMenu";
 
@@ -32,7 +32,6 @@ const CaseFormService = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const {
-    caseData,
     caseValue,
     getRetails,
     getById,
@@ -72,40 +71,6 @@ const CaseFormService = () => {
     setDescription(caseValue.event?.description || "");
   }, [caseValue]);
 
-  const handleAddService = async () => {
-    try {
-      upsert({
-        alliance: caseValue.alliance,
-        assistance_id: caseValue?.assistance?.id ?? "",
-        beneficiary: caseValue?.beneficiary,
-        case_number: caseValue?.case_number,
-        case_id: idCase as string,
-        cost: caseValue?.cost,
-        customer: caseValue?.customer,
-        event: { date: eventDateSend, description, location: district },
-        files: caseValue?.files,
-        history: caseValue?.history,
-        insured: caseValue?.insured,
-        is_active: caseValue?.is_active,
-        lead_id: caseValue?.lead_id,
-        procedure_id: caseValue?.procedure_id,
-        product: caseValue?.product,
-        products: caseValue?.products,
-        refund_amount: caseValue?.refund_amount,
-        retail: caseValue?.retail,
-        retails: caseValue?.retails,
-        specialist: caseValue?.specialist,
-        type: caseValue?.type,
-        user_id: null,
-        values: caseValue?.values,
-      });
-
-      router.push(`/assistance/case/attachment/${idCase}`);
-    } catch (e) {
-      setError("Faltaron campos");
-    }
-  };
-
   const closeModal = () => {
     setModalIsOpen(false);
   };
@@ -115,9 +80,6 @@ const CaseFormService = () => {
 
   const handleClickBack = () => {
     router.push(`/assistance/case/product/${idCase as string}`);
-  };
-  const handleClickSave = () => {
-    handleAddService();
   };
   return (
     <div className="w-1/2 lg:w-2/6">
@@ -130,7 +92,7 @@ const CaseFormService = () => {
               value={
                 isLoading
                   ? "Cargando..."
-                  : caseData?.customer?.name || `${caseValue?.customer?.name} `
+                  : caseValue?.customer?.name || `${caseValue?.customer?.name} `
               }
               disabled
             />
@@ -142,7 +104,7 @@ const CaseFormService = () => {
                 isLoading
                   ? "Cargando..."
                   : caseValue?.insured?.name ||
-                    `${caseValue?.insured?.name} ${caseValue?.insured?.paternallastname}`
+                    `${caseValue?.insured?.name} ${caseValue?.insured?.paternalLastName}`
               }
               disabled
             />
@@ -168,7 +130,7 @@ const CaseFormService = () => {
                 isLoading
                   ? "Cargando..."
                   : caseValue?.beneficiary?.name ||
-                    `${caseValue?.beneficiary?.name} ${caseValue?.beneficiary?.paternallastname}`
+                    `${caseValue?.beneficiary?.name} ${caseValue?.beneficiary?.paternalLastName}`
               }
               disabled
             />
@@ -228,12 +190,7 @@ const CaseFormService = () => {
         <FloatMenu>
           <ButtonIcon iconName="home" onClick={handleClickHome} />
           <ButtonIcon iconName="arrow_back" onClick={handleClickBack} />
-          <ButtonIcon
-            iconName="save"
-            onClick={() => {
-              handleClickSave();
-            }}
-          />
+          <ButtonIcon iconName="save" onClick={() => {}} />
         </FloatMenu>
       </Fragment>
     </div>

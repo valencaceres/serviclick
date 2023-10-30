@@ -1,3 +1,5 @@
+import { IApplicant } from "./applicant";
+
 interface IPolicy {
   id: string;
   startDate: string;
@@ -6,6 +8,7 @@ interface IPolicy {
 
 interface IRetail {
   id: string;
+  rut: string;
   name: string;
 }
 
@@ -15,26 +18,12 @@ interface ICustomer {
   name: string;
 }
 
-interface IApplicant {
-  type: string;
-  id: string;
-  rut: string;
-  name: string;
-  paternallastname: string;
-  maternallastname: string;
-  address: string;
-  district: string;
-  email: string;
-  phone: string;
-  birthdate: string;
-}
-
-interface IProduct {
+export interface IProduct {
   id: string;
   name: string;
 }
 
-interface IAssistance {
+export interface IAssistance {
   id: string;
   name: string;
   assigned: {
@@ -114,63 +103,37 @@ interface ICost {
 }
 
 interface IHistory {
+  code: string;
   date: string;
+  time: string;
   user: string;
   name: string;
 }
 
 export interface ICase {
-  case_id: string | null;
-  type: string | null;
-  lead_id: string | null;
-  policy: IPolicy | null;
+  case_id: string;
+  user_id: string;
+  date: string;
+  time: string;
+  case_number: number;
+  type: "I" | "B" | "C";
+  lead_id: string;
+  policy: IPolicy;
   retail: IRetail | null;
-  customer: ICustomer | null;
-  insured: IApplicant | null;
+  customer: ICustomer;
+  insured: IApplicant;
   beneficiary: IApplicant | null;
-  product: IProduct | null;
-  assistance: IAssistance | null;
+  product: IProduct;
+  assistance: IAssistance;
   values: IValue[] | null;
   event: IEvent | null;
   files: IFile[] | null;
   procedure_id: string | null;
   refund: IRefund | null;
   specialist: ISpecialist | null;
-  refund_amount: number | null;
-  retails: any | null;
-  is_active: boolean | null;
-  user_id: string | null;
   alliance: IAlliance | null;
   cost: ICost | null;
-  history: IHistory[] | null;
-  products: any | null;
-  case_number: number | null;
-}
-
-export interface ICaseData {
-  case_id: string | null;
-  user_id: string | null;
-  type: string | null;
-  insured: any | null;
-  beneficiary: any | null;
-  customer: any | null;
-  retail: any | null;
-  retails: any | null;
-  products: any | null;
-  assistance_id: string | null;
-  lead_id: string | null;
-  values: IValue[] | null;
-  event: IEvent | null;
-  files: IFile[] | null;
-  procedure_id: string | null;
-  refund_amount: number | null;
-  specialist: ISpecialist | null;
-  alliance: IAlliance | null;
-  cost: ICost | null;
-  is_active: boolean | null;
-  case_number: number | null;
-  history: any | null;
-  product: any;
+  history: IHistory[];
 }
 
 export interface ICaseItem {

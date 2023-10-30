@@ -75,10 +75,10 @@ const CaseStepPage = () => {
       ? router.query.stage[0]
       : router.query.stage
   ) as StageKeys | undefined;
-  const { data: thisCase, isLoading } = useQueryCase().useGetById(
-    case_id as string
-  );
-  const number = thisCase?.case_number;
+  // const { data: thisCase, isLoading } = useQueryCase().useGetById(
+  //   case_id as string
+  // );
+  // const number = thisCase?.case_number;
   const StageComponent = stage ? stageComponents[stage] : null;
 
   const handleClickHome = () => router.push("/");
@@ -87,22 +87,22 @@ const CaseStepPage = () => {
 
   const setClosed = () => setShowModal(false);
 
-  useEffect(() => {
-    if (stage) {
-      setTitleUI(
-        `${
-          isLoading
-            ? "Cargando..."
-            : `${stageNames[stage]} | Caso ${number ?? stageNames[stage]}`
-        }`
-      );
-    }
-  }, [router, thisCase, stage]);
+  // useEffect(() => {
+  //   if (stage) {
+  //     setTitleUI(
+  //       `${
+  //         isLoading
+  //           ? "Cargando..."
+  //           : `${stageNames[stage]} | Caso ${number ?? stageNames[stage]}`
+  //       }`
+  //     );
+  //   }
+  // }, [router, thisCase, stage]);
 
   return (
     <Fragment>
       <ContentHalfRow>
-        {StageComponent && <StageComponent thisCase={thisCase} />}
+        {/* {StageComponent && <StageComponent thisCase={thisCase} />} */}
         <ContentCell gap="20px">
           <CaseStageList setShowModal={setShowModal} showModal={showModal} />
         </ContentCell>
@@ -119,7 +119,7 @@ const CaseStepPage = () => {
       </FloatMenu>
       <Modal showModal={showModal}>
         <Window setClosed={setClosed}>
-          <CaseNotes thisCase={thisCase} />
+          {/* <CaseNotes thisCase={thisCase} /> */}
         </Window>
       </Modal>
     </Fragment>
