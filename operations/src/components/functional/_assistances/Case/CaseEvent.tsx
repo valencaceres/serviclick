@@ -15,7 +15,6 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   const { caseValue, setCase } = useCase();
   const { list: districtList } = useDistrict();
   const [applicant, setApplicant] = useState<IApplicant>();
-  console.log(caseValue);
 
   const handleChange = (e: any) => {
     const value = e.target.value;

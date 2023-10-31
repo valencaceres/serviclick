@@ -90,10 +90,7 @@ const AssistanceCasePage = () => {
       save: () => SaveEvent(),
       next: () =>
         router.push(`/assistance/case/attachment/${caseValue?.case_id}`),
-      back: () =>
-        router.push(
-          `/assistance/case/${caseValue.procedure_id}/${caseValue.case_id}`
-        ),
+      back: () => router.push(`/assistance/case/event/${caseValue.case_id}`),
     },
     refund: {
       onLoad: () =>

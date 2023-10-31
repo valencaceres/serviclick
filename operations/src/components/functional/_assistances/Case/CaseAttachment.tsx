@@ -33,7 +33,7 @@ const CaseAttachment = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   const handleChange = (e: any) => {
     const value = e.target.value;
     const id = e.target.id;
-    console.log(caseValue);
+
     setCase({
       ...caseValue,
       [id]: value,
@@ -87,7 +87,7 @@ const CaseAttachment = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
     }
     setThisStage(foundStageCode);
   }, [stageList, stage]);
-
+  console.log(procedureList);
   return (
     <ContentCell gap="20px">
       <ContentCell gap="5px">
