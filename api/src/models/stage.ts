@@ -51,7 +51,7 @@ const getStage: any = async (stage_id: string) => {
 const getAllStages: any = async (values: any) => {
   try {
     const result = await pool.query(
-      "SELECT id, name FROM app.stage WHERE isactive is true ORDER BY number"
+      "SELECT id, name, code FROM app.stage WHERE isactive is true ORDER BY number"
     );
     return { success: true, data: result.rows, error: null };
   } catch (e) {

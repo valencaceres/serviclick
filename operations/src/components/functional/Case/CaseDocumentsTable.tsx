@@ -9,13 +9,11 @@ import {
   TableCellEnd,
 } from "../../ui/Table";
 import Icon from "../../ui/Icon";
-import { useRouter } from "next/router";
 import { useQueryAssistances, useQueryCase } from "../../../hooks/query";
 import Link from "next/link";
 
 const CaseDocumentsTable = ({ caseValue, thisStage, handleSubmit }: any) => {
   const [assistance, setAssistance] = useState<any>(null);
-  const router = useRouter();
 
   useEffect(() => {
     if (caseValue) {

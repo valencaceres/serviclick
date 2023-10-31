@@ -2,16 +2,16 @@ import { create } from "zustand";
 
 import { apiInstance } from "../../utils/api";
 
-interface procedureState {
-  procedureList: { id: string; name: string }[];
+interface stageState {
+  stageList: { id: string; name: string; code: string }[];
   isLoading: boolean;
   isError: boolean;
   error: string;
   getAll: () => void;
 }
 
-export const procedureStore = create<procedureState>((set) => ({
-  procedureList: [],
+export const stageStore = create<stageState>((set) => ({
+  stageList: [],
   isLoading: false,
   isError: false,
   error: "",
@@ -19,8 +19,8 @@ export const procedureStore = create<procedureState>((set) => ({
   getAll: async () => {
     try {
       set((state) => ({ ...state, isLoading: true }));
-      const { data } = await apiInstance.get(`/procedure/getAll`);
-      set((state) => ({ ...state, procedureList: data, isLoading: false }));
+      const { data } = await apiInstance.get(`/stage/getAll`);
+      set((state) => ({ ...state, stageList: data, isLoading: false }));
     } catch (e) {
       set((state) => ({
         ...state,

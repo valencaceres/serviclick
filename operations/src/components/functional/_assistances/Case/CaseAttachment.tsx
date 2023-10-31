@@ -7,8 +7,10 @@ import { useCase } from "~/store/hooks";
 import CaseDocumentsTable from "../../Case/CaseDocumentsTable";
 import { useProcedure } from "~/store/hooks";
 import { useToast } from "~/components/ui/use-toast";
-import { useQueryCase } from "~/hooks/query";
+import { useQueryAssistances } from "~/hooks/query";
 import { useQueryClient } from "@tanstack/react-query";
+import useStage from "~/store/hooks/useStage";
+import { useRouter } from "next/router";
 
 interface ICaseEventProps {
   setIsEnabledSave: (isEnabled: boolean) => void;
@@ -17,19 +19,21 @@ interface ICaseEventProps {
 
 const CaseAttachment = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   const { caseValue, setCase } = useCase();
+  const router = useRouter();
   const queryClient = useQueryClient();
-  const { list: districtList } = useDistrict();
+  const { stage } = router.query;
+  const { getAll: getStages, stageList } = useStage();
   const { procedureList, getAll } = useProcedure();
   const { mutate: uploadDocuments, isLoading } =
-    useQueryCase().useUploadDocument();
+    useQueryAssistances().useUploadDocument();
   const [applicant, setApplicant] = useState<IApplicant>();
-  const [selectedProcedure, setSelectedProcedure] = useState("");
+  const [thisStage, setThisStage] = useState<string>("");
+
   const { toast } = useToast();
-  console.log(procedureList);
   const handleChange = (e: any) => {
     const value = e.target.value;
     const id = e.target.id;
-
+    console.log(caseValue);
     setCase({
       ...caseValue,
       [id]: value,
@@ -61,6 +65,7 @@ const CaseAttachment = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   };
   useEffect(() => {
     getAll();
+    getStages();
     if (caseValue) {
       const applicant =
         caseValue?.type === "I" ? caseValue.insured : caseValue.beneficiary;
@@ -70,6 +75,19 @@ const CaseAttachment = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
     }
     setIsEnabledSave(true);
   }, []);
+  useEffect(() => {
+    let foundStageCode = "";
+    if (stageList) {
+      const foundStage = stageList.find(
+        (s: any) => s.code.toLowerCase() === stage
+      );
+      if (foundStage) {
+        foundStageCode = foundStage.code;
+      }
+    }
+    setThisStage(foundStageCode);
+  }, [stageList, stage]);
+
   return (
     <ContentCell gap="20px">
       <ContentCell gap="5px">
@@ -157,11 +175,11 @@ const CaseAttachment = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
             dataText="name"
             dataValue="id"
           />
-          {/*      <CaseDocumentsTable
-            thisStage={"attachment"}
+          <CaseDocumentsTable
+            thisStage={thisStage}
             handleSubmit={handleSubmit}
             caseValue={caseValue}
-          /> */}
+          />
         </ContentCell>
       </ContentCell>
     </ContentCell>
