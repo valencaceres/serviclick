@@ -1,7 +1,7 @@
 import { IApplicant } from "./applicant";
 
 interface IPolicy {
-  id: string;
+  id: string | null;
   startDate: string;
   endDate: string;
 }
@@ -111,7 +111,7 @@ interface IHistory {
 }
 
 export interface ICase {
-  case_id: string;
+  case_id: string | null;
   user_id: string;
   date: string;
   time: string;

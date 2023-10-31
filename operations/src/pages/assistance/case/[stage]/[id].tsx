@@ -61,7 +61,7 @@ const AssistanceCasePage = () => {
           } - datos del servicio`
         ),
       save: () => SaveProduct(),
-      next: () => router.push(`/assistance/case/event/${urlID}`),
+      next: () => router.push(`#`),
       back: () =>
         router.push(
           `/assistance/case/${
@@ -88,8 +88,12 @@ const AssistanceCasePage = () => {
           } - Antecedentes (adjuntos)`
         ),
       save: () => SaveEvent(),
-      next: () => router.push(`/assistance/case/attachment/${urlID}`),
-      back: () => router.push(`/assistance/case/event/${urlID}`),
+      next: () =>
+        router.push(`/assistance/case/attachment/${caseValue?.case_id}`),
+      back: () =>
+        router.push(
+          `/assistance/case/${caseValue.procedure_id}/${caseValue.case_id}`
+        ),
     },
     refund: {
       onLoad: () =>
@@ -100,7 +104,8 @@ const AssistanceCasePage = () => {
         ),
       save: () => SaveEvent(),
       next: () => router.push(`/assistance/case`),
-      back: () => router.push(`/assistance/case/attachment/${urlID}`),
+      back: () =>
+        router.push(`/assistance/case/attachment/${caseValue.case_id}`),
     },
     imed: {
       onLoad: () =>
@@ -111,7 +116,8 @@ const AssistanceCasePage = () => {
         ),
       save: () => SaveEvent(),
       next: () => router.push(`/assistance/case`),
-      back: () => router.push(`/assistance/case/attachment/${urlID}`),
+      back: () =>
+        router.push(`/assistance/case/attachment/${caseValue.case_id}`),
     },
     specialist: {
       onLoad: () =>
@@ -122,7 +128,8 @@ const AssistanceCasePage = () => {
         ),
       save: () => SaveEvent(),
       next: () => router.push(`/assistance/case`),
-      back: () => router.push(`/assistance/case/attachment/${urlID}`),
+      back: () =>
+        router.push(`/assistance/case/attachment/${caseValue.case_id}`),
     },
     alliance: {
       onLoad: () =>
@@ -133,7 +140,8 @@ const AssistanceCasePage = () => {
         ),
       save: () => SaveEvent(),
       next: () => router.push(`/assistance/case`),
-      back: () => router.push(`/assistance/case/attachment/${urlID}`),
+      back: () =>
+        router.push(`/assistance/case/attachment/${caseValue.case_id}`),
     },
   };
 
@@ -149,7 +157,7 @@ const AssistanceCasePage = () => {
   } = useCase();
 
   const [isEnabledSave, setIsEnabledSave] = useState<boolean>(false);
-  const [urlID, setUrlID] = useState<string>("new");
+  const [urlID, setUrlID] = useState<string | null>(null);
   const [itWasFound, setItWasFound] = useState(false);
   const [stageKey, setStageKey] = useState<Stage>("applicant");
 
@@ -197,11 +205,11 @@ const AssistanceCasePage = () => {
 
   useEffect(() => {
     setItWasFound(false);
-    if (caseValue.case_id !== "") {
+    if (caseValue.case_id !== null) {
       setItWasFound(true);
+      setUrlID(caseValue.case_id ?? null);
     }
   }, [caseValue]);
-
   useEffect(() => {
     if (router.isReady) {
       const { id, stage } = router.query;

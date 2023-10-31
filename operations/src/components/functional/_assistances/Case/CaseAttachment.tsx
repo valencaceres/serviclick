@@ -5,6 +5,7 @@ import { useDistrict } from "~/hooks";
 import { IApplicant } from "~/interfaces/applicant";
 import { useCase } from "~/store/hooks";
 import CaseDocumentsTable from "../../Case/CaseDocumentsTable";
+import { useProcedure } from "~/store/hooks";
 import { useToast } from "~/components/ui/use-toast";
 import { useQueryCase } from "~/hooks/query";
 import { useQueryClient } from "@tanstack/react-query";
@@ -18,17 +19,22 @@ const CaseAttachment = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   const { caseValue, setCase } = useCase();
   const queryClient = useQueryClient();
   const { list: districtList } = useDistrict();
+  const { procedureList, getAll } = useProcedure();
   const { mutate: uploadDocuments, isLoading } =
     useQueryCase().useUploadDocument();
   const [applicant, setApplicant] = useState<IApplicant>();
   const [selectedProcedure, setSelectedProcedure] = useState("");
   const { toast } = useToast();
+  console.log(procedureList);
+  const handleChange = (e: any) => {
+    const value = e.target.value;
+    const id = e.target.id;
 
-  const handleProcedureChange = (event: any) => {
-    const selectedValue = event.target.value;
-    setSelectedProcedure(selectedValue);
+    setCase({
+      ...caseValue,
+      [id]: value,
+    });
   };
-
   const handleSubmit = (file: any, documentId: any) => {
     const formData = new FormData();
     formData.append("case_id", caseValue?.case_id as string);
@@ -53,14 +59,8 @@ const CaseAttachment = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
       },
     });
   };
-  const procedures = [
-    { id: "alliance", name: "Designación de alianza" },
-    { id: "specialist", name: "Envío de especialista" },
-    { id: "imed", name: "Descuento Imed" },
-    { id: "refund", name: "Reembolso" },
-  ];
-
   useEffect(() => {
+    getAll();
     if (caseValue) {
       const applicant =
         caseValue?.type === "I" ? caseValue.insured : caseValue.beneficiary;
@@ -148,11 +148,12 @@ const CaseAttachment = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
         <ContentCell gap="5px">
           <ComboBox
             label="Procedimiento"
+            id="procedure_id"
             placeHolder="Seleccione el procedimiento"
             width="525px"
-            value={selectedProcedure}
-            onChange={handleProcedureChange}
-            data={procedures}
+            value={caseValue.procedure_id ?? ""}
+            onChange={handleChange}
+            data={procedureList}
             dataText="name"
             dataValue="id"
           />

@@ -48,7 +48,7 @@ interface caseState {
 }
 
 const initialCase: ICase = {
-  case_id: "",
+  case_id: null,
   case_number: 0,
   user_id: "",
   date: "",
@@ -56,7 +56,7 @@ const initialCase: ICase = {
   type: "I",
   lead_id: "",
   policy: {
-    id: "",
+    id: null,
     startDate: "",
     endDate: "",
   },
@@ -235,9 +235,9 @@ export const caseStore = create<caseState>((set) => ({
       set((state) => ({
         ...state,
         assistances,
-        lead_id,
         case: {
           ...state.case,
+          lead_id,
           values,
           assistance: assistance || state.case.assistance,
         },
@@ -258,7 +258,7 @@ export const caseStore = create<caseState>((set) => ({
       set((state) => ({ ...state, isLoading: true }));
 
       const { data: response } = await apiInstance.post(`/case/upsert`, data);
-
+      console.log(response);
       set((state) => ({ ...state, caseValue: response, isLoading: false }));
     } catch (e) {
       set((state) => ({

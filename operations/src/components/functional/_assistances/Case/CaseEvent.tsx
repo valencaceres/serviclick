@@ -1,16 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { ContentCell, ContentRow } from "~/components/layout/Content";
-import {
-  ComboBox,
-  InputText,
-  Table,
-  TableCell,
-  TableCellEnd,
-  TableCellText,
-  TableDetail,
-  TableHeader,
-  TableRow,
-} from "~/components/ui";
+import { ComboBox, InputText } from "~/components/ui";
 import TextArea from "~/components/ui/TextArea/TextArea";
 import { useDistrict } from "~/hooks";
 import { IApplicant } from "~/interfaces/applicant";
@@ -25,19 +15,20 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   const { caseValue, setCase } = useCase();
   const { list: districtList } = useDistrict();
   const [applicant, setApplicant] = useState<IApplicant>();
+  console.log(caseValue);
 
   const handleChange = (e: any) => {
     const value = e.target.value;
     const id = e.target.id;
-    console.log(value);
-    switch (id) {
-      default:
-        setCase({
-          ...caseValue,
-          event: { [id]: value },
-        });
-        return;
-    }
+    setCase({
+      ...caseValue,
+      event: {
+        date: caseValue.event?.date || "",
+        location: caseValue.event?.location || "",
+        description: caseValue.event?.description || "",
+        [id]: value,
+      },
+    });
   };
   useEffect(() => {
     if (caseValue) {
@@ -54,7 +45,6 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
       <ContentCell gap="5px">
         {caseValue.retail?.rut !== caseValue.customer.rut && (
           <InputText
-            id="retail"
             label="Empresa"
             type="text"
             value={caseValue ? caseValue.retail?.name || "" : ""}
@@ -64,7 +54,6 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
         )}
         {caseValue.customer.rut !== caseValue.insured.rut && (
           <InputText
-            id="customer"
             label="Titular"
             type="text"
             value={caseValue ? caseValue.customer?.name || "" : ""}
@@ -74,7 +63,6 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
         )}
         {caseValue.type === "C" && (
           <InputText
-            id="insured"
             label="Titular"
             type="text"
             value={
@@ -88,7 +76,6 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
           />
         )}
         <InputText
-          id="applicant"
           label="Beneficiario"
           type="text"
           value={
@@ -106,7 +93,6 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
           {caseValue.case_id !== "" && (
             <Fragment>
               <InputText
-                id="product"
                 label="Producto"
                 type="text"
                 value={caseValue.product.name}
@@ -114,7 +100,6 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                 disabled={itWasFound}
               />
               <InputText
-                id="assistance"
                 label="Asistencia"
                 type="text"
                 value={caseValue.assistance.name}

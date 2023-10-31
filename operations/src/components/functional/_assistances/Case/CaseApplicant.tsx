@@ -91,28 +91,18 @@ const CaseApplicant = ({
       case "rut":
         resetNoRut(applicantType, value);
         setIsValidField({ ...isValidField, [id]: isValidRut(value) });
-        return;
+        break;
       case "phone":
-        setCase({
-          ...caseValue,
-          [applicantType]: { ...caseValue[applicantType], [id]: value },
-        });
         setIsValidField({ ...isValidField, [id]: isValidPhone(value) });
-        return;
+        break;
       case "email":
-        setCase({
-          ...caseValue,
-          [applicantType]: { ...caseValue[applicantType], [id]: value },
-        });
         setIsValidField({ ...isValidField, [id]: isValidEmail(value) });
-        return;
-      default:
-        setCase({
-          ...caseValue,
-          [applicantType]: { ...caseValue[applicantType], [id]: value },
-        });
-        return;
+        break;
     }
+    setCase({
+      ...caseValue,
+      [applicantType]: { ...caseValue[applicantType], [id]: value },
+    });
   };
 
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
