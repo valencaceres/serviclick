@@ -23,22 +23,13 @@ const CaseAttachment = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   const queryClient = useQueryClient();
   const { stage } = router.query;
   const { getAll: getStages, stageList } = useStage();
-  const { procedureList, getAll } = useProcedure();
   const { mutate: uploadDocuments, isLoading } =
     useQueryAssistances().useUploadDocument();
   const [applicant, setApplicant] = useState<IApplicant>();
   const [thisStage, setThisStage] = useState<string>("");
 
   const { toast } = useToast();
-  const handleChange = (e: any) => {
-    const value = e.target.value;
-    const id = e.target.id;
 
-    setCase({
-      ...caseValue,
-      [id]: value,
-    });
-  };
   const handleSubmit = (file: any, documentId: any) => {
     const formData = new FormData();
     formData.append("case_id", caseValue?.case_id as string);
@@ -63,8 +54,8 @@ const CaseAttachment = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
       },
     });
   };
+
   useEffect(() => {
-    getAll();
     getStages();
     if (caseValue) {
       const applicant =
@@ -75,6 +66,7 @@ const CaseAttachment = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
     }
     setIsEnabledSave(true);
   }, []);
+
   useEffect(() => {
     let foundStageCode = "";
     if (stageList) {
@@ -87,7 +79,7 @@ const CaseAttachment = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
     }
     setThisStage(foundStageCode);
   }, [stageList, stage]);
-  console.log(procedureList);
+
   return (
     <ContentCell gap="20px">
       <ContentCell gap="5px">
@@ -98,7 +90,6 @@ const CaseAttachment = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
             type="text"
             value={caseValue ? caseValue.retail?.name || "" : ""}
             width="530px"
-            disabled={itWasFound}
           />
         )}
         {caseValue.customer.rut !== caseValue.insured.rut && (
@@ -108,12 +99,10 @@ const CaseAttachment = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
             type="text"
             value={caseValue ? caseValue.customer?.name || "" : ""}
             width="530px"
-            disabled={itWasFound}
           />
         )}
         {caseValue.type === "C" && (
           <InputText
-            id="insured"
             label="Titular"
             type="text"
             value={
@@ -123,11 +112,9 @@ const CaseAttachment = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                 : ""
             }
             width="530px"
-            disabled={itWasFound}
           />
         )}
         <InputText
-          id="applicant"
           label="Beneficiario"
           type="text"
           value={
@@ -137,7 +124,6 @@ const CaseAttachment = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
               : ""
           }
           width="530px"
-          disabled={itWasFound}
         />
       </ContentCell>
       <ContentCell gap="20px">
@@ -164,17 +150,6 @@ const CaseAttachment = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
           )}{" "}
         </ContentCell>
         <ContentCell gap="5px">
-          <ComboBox
-            label="Procedimiento"
-            id="procedure_id"
-            placeHolder="Seleccione el procedimiento"
-            width="525px"
-            value={caseValue.procedure_id ?? ""}
-            onChange={handleChange}
-            data={procedureList}
-            dataText="name"
-            dataValue="id"
-          />
           <CaseDocumentsTable
             thisStage={thisStage}
             handleSubmit={handleSubmit}

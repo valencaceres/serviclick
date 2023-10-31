@@ -4,8 +4,6 @@ import { ComboBox, InputText } from "~/components/ui";
 import { useDistrict } from "~/hooks";
 import { IApplicant } from "~/interfaces/applicant";
 import { useCase } from "~/store/hooks";
-import { useToast } from "~/components/ui/use-toast";
-import { useQueryClient } from "@tanstack/react-query";
 import TextArea from "~/components/ui/TextArea/TextArea";
 import { useSpecialist } from "~/store/hooks";
 import { useQualification } from "~/store/hooks";
@@ -17,31 +15,48 @@ interface ICaseEventProps {
 
 const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   const { caseValue, setCase } = useCase();
-  const queryClient = useQueryClient();
   const { list: districtList } = useDistrict();
-  const { specialistList } = useSpecialist();
-  const { qualificationList } = useQualification();
+  const { specialistList, getByDistrict } = useSpecialist();
+  const { qualificationList, getAll } = useQualification();
 
   const [applicant, setApplicant] = useState<IApplicant>();
   const [confirmHour, setConfirmHour] = useState(false);
   const [confirmVisit, setConfirmVisit] = useState(false);
-  const { toast } = useToast();
+  const [district, setDistrict] = useState<string>("");
 
   const minDate = new Date();
   const handleChange = (e: any) => {
     const value = e.target.value;
     const id = e.target.id;
-    console.log(value);
-    switch (id) {
-      default:
-        setCase({
-          ...caseValue,
-          assistance: { [id]: value },
-        });
-        return;
-    }
+    setCase({
+      ...caseValue,
+      specialist: {
+        completed: confirmVisit,
+        confirmed: confirmHour,
+        scheduled_date: caseValue.specialist?.scheduled_date || "",
+        scheduled_time: caseValue.specialist?.scheduled_time || "",
+        comment: caseValue.specialist?.comment || "",
+        district_id: caseValue.specialist?.district_id || "",
+        district_name: caseValue.specialist?.district_name || "",
+        specialist_id: caseValue.specialist?.specialist_id || "",
+        specialist_name: caseValue.specialist?.specialist_name || "",
+        specialty_id: caseValue.specialist?.specialty_id || "",
+        specialty_name: caseValue.specialist?.specialty_name || "",
+        qualification_id: caseValue.specialist?.qualification_id || "",
+        qualification_name: caseValue.specialist?.qualification_name || "",
+        [id]: value,
+      },
+      cost: {
+        amount: caseValue.cost?.amount || 0,
+        extra: caseValue.cost?.extra || 0,
+        comment: caseValue.cost?.comment || "",
+        [id]: value,
+      },
+    });
   };
+
   useEffect(() => {
+    getAll();
     if (caseValue) {
       const applicant =
         caseValue?.type === "I" ? caseValue.insured : caseValue.beneficiary;
@@ -51,6 +66,20 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
     }
     setIsEnabledSave(true);
   }, []);
+
+  useEffect(() => {
+    if (caseValue.specialist) {
+      setConfirmHour(caseValue.specialist.confirmed);
+      setConfirmVisit(caseValue.specialist.completed);
+    }
+  }, [caseValue]);
+
+  useEffect(() => {
+    if (district) {
+      getByDistrict(district, caseValue.assistance.id);
+    }
+  }, [district]);
+
   return (
     <ContentCell gap="20px">
       <ContentCell gap="5px">
@@ -61,7 +90,6 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
             type="text"
             value={caseValue ? caseValue.retail?.name || "" : ""}
             width="530px"
-            disabled={itWasFound}
           />
         )}
         {caseValue.customer.rut !== caseValue.insured.rut && (
@@ -71,12 +99,10 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
             type="text"
             value={caseValue ? caseValue.customer?.name || "" : ""}
             width="530px"
-            disabled={itWasFound}
           />
         )}
         {caseValue.type === "C" && (
           <InputText
-            id="insured"
             label="Titular"
             type="text"
             value={
@@ -86,11 +112,9 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                 : ""
             }
             width="530px"
-            disabled={itWasFound}
           />
         )}
         <InputText
-          id="applicant"
           label="Beneficiario"
           type="text"
           value={
@@ -100,7 +124,6 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
               : ""
           }
           width="530px"
-          disabled={itWasFound}
         />
       </ContentCell>
       <ContentCell gap="20px">
@@ -134,42 +157,50 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
               disabled={true}
             />
           </ContentCell>
-          {caseValue.specialist === null ? (
-            <ContentRow gap="5px">
+          {caseValue.alliance === null ? (
+            <>
               <ComboBox
-                label="Comuna de atención"
-                placeHolder="Seleccione comuna"
-                value={caseValue?.event?.location ?? ""}
+                id="district_id"
+                label="Comuna"
+                value={
+                  caseValue ? caseValue.specialist?.district_name || "" : ""
+                }
+                placeHolder=":: Seleccione una comuna ::"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setDistrict(e.target.value)
+                }
                 data={districtList}
-                onChange={handleChange}
-                width="525px"
-                dataText="district_name"
-                dataValue="id"
+                dataValue={"district_name"}
+                dataText={"district_name"}
+                width="535px"
               />
-              {specialistList?.length > 0 && (
-                <ComboBox
-                  label="Especialista"
-                  placeHolder="Seleccione especialista"
-                  data={specialistList}
-                  width="525px"
-                  value={caseValue.specialist ?? ""}
-                  onChange={handleChange}
-                  dataText="name"
-                  dataValue="id"
-                />
-              )}
-            </ContentRow>
+              <ContentRow gap="5px">
+                {specialistList?.length > 0 && (
+                  <ComboBox
+                    label="Especialista"
+                    placeHolder="Seleccione especialista"
+                    data={specialistList}
+                    id="specialist_id"
+                    width="525px"
+                    value={caseValue.specialist?.specialist_id ?? ""}
+                    onChange={handleChange}
+                    dataText="name"
+                    dataValue="id"
+                  />
+                )}
+              </ContentRow>
+            </>
           ) : (
             <>
               <InputText
-                label="Especialista"
-                value={caseValue?.specialist?.specialist_name}
+                label="Comuna del evento"
+                value={caseValue?.specialist?.district_name ?? ""}
                 type="text"
                 disabled={true}
               />
               <InputText
-                label="Especialidad"
-                value={caseValue?.specialist?.specialty_name}
+                label="Especialista"
+                value={caseValue?.specialist?.specialist_name ?? ""}
                 type="text"
                 disabled={true}
               />
@@ -184,9 +215,10 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                 label="Fecha de visita"
                 type="date"
                 width="160px"
-                minDate={minDate.toISOString().split("T")[0]}
+                minDate={minDate?.toISOString().split("T")[0]}
                 value={caseValue?.specialist?.scheduled_date ?? ""}
                 onChange={handleChange}
+                id="scheduled_date"
               />
               <InputText
                 label="Hora de visita"
@@ -196,9 +228,10 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                 onChange={handleChange}
                 minTime="09:00"
                 maxTime="20:00"
+                id="scheduled_time"
               />
             </ContentRow>
-            {caseValue.specialist?.confirmed === false && (
+            {confirmHour === false && (
               <div className="mr-12 flex  h-6 gap-[10px] font-bold ">
                 <p
                   className="cursor-pointer border-b-2 border-blue-500 text-blue-500"
@@ -214,96 +247,104 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                 </p>
               </div>
             )}
-            {caseValue.specialist?.completed === false &&
-              caseValue.specialist.confirmed === false && (
-                <div className="mr-12 flex  h-6 gap-[10px] font-bold ">
-                  <p
-                    className="cursor-pointer border-b-2 border-blue-500 text-blue-500"
-                    onClick={() => setConfirmVisit(true)}
-                  >
-                    Realizada
-                  </p>
-                  <p
-                    className="cursor-pointer border-b-2 border-blue-500 text-blue-500 "
-                    onClick={() => setConfirmVisit(false)}
-                  >
-                    No Realizada
-                  </p>
-                </div>
-              )}
+            {confirmVisit === false && confirmHour === true && (
+              <div className="mr-12 flex  h-6 gap-[10px] font-bold ">
+                <p
+                  className="cursor-pointer border-b-2 border-blue-500 text-blue-500"
+                  onClick={() => setConfirmVisit(true)}
+                >
+                  Realizada
+                </p>
+                <p
+                  className="cursor-pointer border-b-2 border-blue-500 text-blue-500 "
+                  onClick={() => setConfirmVisit(false)}
+                >
+                  No Realizada
+                </p>
+              </div>
+            )}
           </ContentRow>
-          {caseValue.specialist?.completed === false ? (
-            <TextArea
-              value={caseValue?.refund?.comment ?? ""}
-              onChange={handleChange}
-              label="Comentario"
-              width="525px"
-              height="110px"
-            />
-          ) : (
+          {confirmVisit === true && (
             <>
               <ComboBox
                 label="Calificación"
                 placeHolder="Seleccione calificación"
                 data={qualificationList || []}
                 width="525px"
-                value={caseValue.specialist?.qualification_name ?? ""}
+                value={caseValue.specialist?.qualification_id ?? ""}
                 onChange={handleChange}
                 dataText="name"
                 dataValue="id"
+                id="qualification_id"
               />
               <TextArea
-                value={caseValue.refund?.comment ?? ""}
+                value={caseValue.specialist?.comment ?? ""}
                 onChange={handleChange}
                 label="Descripcion del evento"
                 width="525px"
                 height="110px"
+                id="comment"
               />
             </>
           )}
         </ContentCell>
-        {caseValue.assistance?.assigned.amount &&
-          caseValue.specialist?.completed === true && (
-            <>
-              <ContentCell gap="5px">
-                <ContentRow className="flex flex-row justify-between">
+        {confirmVisit === true && (
+          <>
+            <ContentCell gap="5px">
+              <ContentRow className="flex flex-row justify-between">
+                {caseValue.cost?.amount ? (
                   <InputText
                     label="Costo fijo ($)"
-                    value={(caseValue.assistance?.assigned?.amount).toLocaleString(
-                      "es-CL",
-                      {
-                        style: "currency",
-                        currency: "CLP",
-                      }
-                    )}
+                    value={(caseValue.cost?.amount).toLocaleString("es-CL", {
+                      style: "currency",
+                      currency: "CLP",
+                    })}
                     type="text"
                     width="120px"
-                    disabled={true}
                   />
+                ) : (
+                  <InputText
+                    label="Costo fijo ($)"
+                    value={(caseValue?.cost?.amount ?? "").toString()}
+                    type="number"
+                    width="120px"
+                    id="amount"
+                    onChange={handleChange}
+                  />
+                )}
+                {caseValue.cost?.extra ? (
                   <InputText
                     label="Extra ($)"
-                    value={(caseValue.assistance?.assigned?.amount).toLocaleString(
-                      "es-CL",
-                      {
-                        style: "currency",
-                        currency: "CLP",
-                      }
-                    )}
+                    value={(caseValue.cost?.extra).toLocaleString("es-CL", {
+                      style: "currency",
+                      currency: "CLP",
+                    })}
                     type="text"
                     width="120px"
                     onChange={handleChange}
                   />
-                </ContentRow>
-                <TextArea
-                  value={caseValue.specialist.comment}
-                  onChange={handleChange}
-                  label="Justificación"
-                  width="525px"
-                  height="110px"
-                />
-              </ContentCell>
-            </>
-          )}
+                ) : (
+                  <InputText
+                    label="Extra ($)"
+                    value={(caseValue?.cost?.extra ?? "").toString()}
+                    type="text"
+                    width="120px"
+                    id="extra"
+                    onChange={handleChange}
+                  />
+                )}
+              </ContentRow>
+              <TextArea
+                value={caseValue.cost?.comment ?? ""}
+                onChange={handleChange}
+                label="Justificación"
+                width="525px"
+                height="110px"
+                id="comment"
+              />
+            </ContentCell>
+          </>
+        )}
       </ContentCell>
     </ContentCell>
   );

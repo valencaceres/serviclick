@@ -10,7 +10,7 @@ import { CaseHistory } from "~/components/functional/_assistances/Case";
 import { stagePages } from "../../../../data/stages";
 
 import { useDistrict, useUI } from "~/hooks";
-import { useCase, useApplicant } from "~/store/hooks";
+import { useCase, useApplicant, useProcedure } from "~/store/hooks";
 
 type Stage = keyof typeof stagePages;
 
@@ -50,8 +50,12 @@ const AssistanceCasePage = () => {
           } - datos del titular`
         ),
       save: () => SaveInsured(),
-      next: () => router.push(`/assistance/case/product/${urlID}`),
-      back: () => router.push(`/assistance/case/applicant/${urlID}`),
+      next: () =>
+        router.push(`/assistance/case/product/${caseValue?.case_id ?? "new"}`),
+      back: () =>
+        router.push(
+          `/assistance/case/applicant/${caseValue?.case_id ?? "new"}`
+        ),
     },
     product: {
       onLoad: () =>
@@ -61,12 +65,12 @@ const AssistanceCasePage = () => {
           } - datos del servicio`
         ),
       save: () => SaveProduct(),
-      next: () => router.push(`#`),
+      next: () => router.push(`/assistance/case/event/${caseValue?.case_id}`),
       back: () =>
         router.push(
           `/assistance/case/${
             caseValue.type === "I" ? "applicant" : "insured"
-          }/${urlID}`
+          }/${caseValue?.case_id}`
         ),
     },
     event: {
@@ -77,8 +81,9 @@ const AssistanceCasePage = () => {
           } - datos del evento`
         ),
       save: () => SaveEvent(),
-      next: () => router.push(`/assistance/case/attachment/${urlID}`),
-      back: () => router.push(`/assistance/case/product/${urlID}`),
+      next: () =>
+        router.push(`/assistance/case/attachment/${caseValue?.case_id}`),
+      back: () => router.push(`/assistance/case/product/${caseValue?.case_id}`),
     },
     attachment: {
       onLoad: () =>
@@ -89,7 +94,9 @@ const AssistanceCasePage = () => {
         ),
       save: () => SaveEvent(),
       next: () =>
-        router.push(`/assistance/case/attachment/${caseValue?.case_id}`),
+        router.push(
+          `/assistance/case/${matchingProcedure?.code}/${caseValue?.case_id}`
+        ),
       back: () => router.push(`/assistance/case/event/${caseValue.case_id}`),
     },
     refund: {
@@ -152,6 +159,7 @@ const AssistanceCasePage = () => {
     caseValue,
     isLoading: isLoadingCase,
   } = useCase();
+  const { getAll, procedureList } = useProcedure();
 
   const [isEnabledSave, setIsEnabledSave] = useState<boolean>(false);
   const [urlID, setUrlID] = useState<string | null>(null);
@@ -197,8 +205,13 @@ const AssistanceCasePage = () => {
 
   useEffect(() => {
     listAllDistrict();
+    getAll();
     // stateMachine[stageKey].onLoad();
   }, []);
+
+  const matchingProcedure = procedureList.find(
+    (procedure) => procedure.id === caseValue.procedure_id
+  );
 
   useEffect(() => {
     setItWasFound(false);

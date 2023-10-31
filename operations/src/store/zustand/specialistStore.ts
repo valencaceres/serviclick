@@ -30,6 +30,7 @@ interface specialistState {
   delete: (id: string) => void;
   getBySpecialtyId: (id: string) => void;
   getByName: (name: string) => void;
+  getByDistrict: (district: string, assistance_id: string) => void;
 }
 
 const initialData: ISpecialist = {
@@ -157,6 +158,27 @@ export const specialistStore = create<specialistState>((set, get) => ({
       set((state) => ({
         ...state,
         specialist: data,
+        isLoading: false,
+        isError: false,
+      }));
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
+  },
+  getByDistrict: async (district: string, assistance_id: string) => {
+    try {
+      set((state) => ({ ...state, isLoading: true }));
+      const { data } = await apiInstance.get(
+        `specialist/getByDistrict/${district}/${assistance_id}`
+      );
+      set((state) => ({
+        ...state,
+        list: data,
         isLoading: false,
         isError: false,
       }));

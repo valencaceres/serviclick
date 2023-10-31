@@ -21,15 +21,16 @@ const CaseImed = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
   const handleChange = (e: any) => {
     const value = e.target.value;
     const id = e.target.id;
-    console.log(value);
-    switch (id) {
-      default:
-        setCase({
-          ...caseValue,
-          refund: { [id]: value },
-        });
-        return;
-    }
+    setCase({
+      ...caseValue,
+      refund: {
+        amount: caseValue.refund?.amount || 0,
+        imed_amount: caseValue.refund?.imed_amount || 0,
+        status: caseValue.refund?.status || "",
+        comment: caseValue.refund?.comment || "",
+        [id]: value,
+      },
+    });
   };
 
   useEffect(() => {
@@ -53,7 +54,7 @@ const CaseImed = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
             type="text"
             value={caseValue ? caseValue.retail?.name || "" : ""}
             width="530px"
-            disabled={itWasFound}
+            disabled={true}
           />
         )}
         {caseValue.customer.rut !== caseValue.insured.rut && (
@@ -63,12 +64,11 @@ const CaseImed = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
             type="text"
             value={caseValue ? caseValue.customer?.name || "" : ""}
             width="530px"
-            disabled={itWasFound}
+            disabled={true}
           />
         )}
         {caseValue.type === "C" && (
           <InputText
-            id="insured"
             label="Titular"
             type="text"
             value={
@@ -78,11 +78,10 @@ const CaseImed = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
                 : ""
             }
             width="530px"
-            disabled={itWasFound}
+            disabled={true}
           />
         )}
         <InputText
-          id="applicant"
           label="Beneficiario"
           type="text"
           value={
@@ -92,7 +91,7 @@ const CaseImed = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
               : ""
           }
           width="530px"
-          disabled={itWasFound}
+          disabled={true}
         />
       </ContentCell>
       <ContentCell gap="20px">
@@ -153,14 +152,17 @@ const CaseImed = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
           </ContentRow>
 
           <ContentRow gap="5px">
-            {caseValue?.refund?.amount && caseValue.refund.status ? (
+            {caseValue?.refund?.imed_amount && caseValue.refund.status ? (
               <>
                 <InputText
                   label="Monto solicitado ($)"
-                  value={(caseValue?.refund?.amount).toLocaleString("es-CL", {
-                    style: "currency",
-                    currency: "CLP",
-                  })}
+                  value={caseValue?.refund?.imed_amount?.toLocaleString(
+                    "es-CL",
+                    {
+                      style: "currency",
+                      currency: "CLP",
+                    }
+                  )}
                   type="text"
                   width="260px"
                   disabled={true}
@@ -177,10 +179,11 @@ const CaseImed = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
               <InputText
                 label="Monto solicitado ($)"
                 value={
-                  caseValue && caseValue.refund?.amount
-                    ? caseValue.product.id || ""
+                  caseValue && caseValue.refund?.imed_amount
+                    ? caseValue.refund?.imed_amount.toString()
                     : ""
                 }
+                id="imed_amount"
                 type="number"
                 width="260px"
                 onChange={handleChange}

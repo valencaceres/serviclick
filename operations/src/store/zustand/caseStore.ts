@@ -259,7 +259,7 @@ export const caseStore = create<caseState>((set) => ({
 
       const { data: response } = await apiInstance.post(`/case/upsert`, data);
       console.log(response);
-      set((state) => ({ ...state, caseValue: response, isLoading: false }));
+      set((state) => ({ ...state, case: response, isLoading: false }));
     } catch (e) {
       set((state) => ({
         ...state,
@@ -273,7 +273,6 @@ export const caseStore = create<caseState>((set) => ({
   resetNoRut: (applicantCode: "insured" | "beneficiary", rut: string) => {
     set((state) => ({
       ...state,
-      caseValue: initialCase,
       case: {
         ...initialCase,
         [applicantCode]: { ...initialCase[applicantCode], rut },
@@ -284,7 +283,6 @@ export const caseStore = create<caseState>((set) => ({
   reset: () => {
     set((state) => ({
       ...state,
-      caseValue: initialCase,
       case: initialCase,
     }));
   },

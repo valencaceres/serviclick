@@ -29,8 +29,9 @@ interface ICaseProductProps {
 const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
   const { caseValue, setCase, products, assistances, getServicesAndValues } =
     useCase();
-  console.log(caseValue);
+
   const [applicant, setApplicant] = useState<IApplicant>();
+
   const handleChangeProduct = (e: any) => {
     getServicesAndValues({
       insured_id: caseValue.insured.id,
@@ -50,6 +51,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
       });
     }
   };
+
   const handleChangeAssistance = (e: any) => {
     if (assistances) {
       const selectedAssistance = assistances.find(
@@ -61,6 +63,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
       });
     }
   };
+
   const handleChangeValue = (e: any, id: string) => {
     const values = caseValue.values?.map((item) => {
       if (item.id === id) {
@@ -81,6 +84,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
     }
     setIsEnabledSave(true);
   }, []);
+
   return (
     <ContentCell gap="20px">
       <ContentCell gap="5px">

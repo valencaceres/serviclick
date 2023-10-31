@@ -4,7 +4,7 @@ import { ComboBox, InputText } from "~/components/ui";
 import TextArea from "~/components/ui/TextArea/TextArea";
 import { useDistrict } from "~/hooks";
 import { IApplicant } from "~/interfaces/applicant";
-import { useCase } from "~/store/hooks";
+import { useCase, useProcedure } from "~/store/hooks";
 
 interface ICaseEventProps {
   setIsEnabledSave: (isEnabled: boolean) => void;
@@ -15,6 +15,7 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   const { caseValue, setCase } = useCase();
   const { list: districtList } = useDistrict();
   const [applicant, setApplicant] = useState<IApplicant>();
+  const { procedureList, getAll } = useProcedure();
 
   const handleChange = (e: any) => {
     const value = e.target.value;
@@ -27,9 +28,12 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
         description: caseValue.event?.description || "",
         [id]: value,
       },
+      [id]: value,
     });
   };
+
   useEffect(() => {
+    getAll();
     if (caseValue) {
       const applicant =
         caseValue?.type === "I" ? caseValue.insured : caseValue.beneficiary;
@@ -39,25 +43,26 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
     }
     setIsEnabledSave(true);
   }, []);
+
   return (
     <ContentCell gap="20px">
       <ContentCell gap="5px">
         {caseValue.retail?.rut !== caseValue.customer.rut && (
           <InputText
+            id="retail"
             label="Empresa"
             type="text"
             value={caseValue ? caseValue.retail?.name || "" : ""}
             width="530px"
-            disabled={itWasFound}
           />
         )}
         {caseValue.customer.rut !== caseValue.insured.rut && (
           <InputText
+            id="customer"
             label="Titular"
             type="text"
             value={caseValue ? caseValue.customer?.name || "" : ""}
             width="530px"
-            disabled={itWasFound}
           />
         )}
         {caseValue.type === "C" && (
@@ -71,7 +76,6 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                 : ""
             }
             width="530px"
-            disabled={itWasFound}
           />
         )}
         <InputText
@@ -84,7 +88,6 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
               : ""
           }
           width="530px"
-          disabled={itWasFound}
         />
       </ContentCell>
       <ContentCell gap="20px">
@@ -138,6 +141,17 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
             label="Descripción del evento"
             width="530px"
             height="110px"
+          />
+          <ComboBox
+            label="Procedimiento"
+            id="procedure_id"
+            placeHolder="Seleccione el procedimiento"
+            width="525px"
+            value={caseValue.procedure_id ?? ""}
+            onChange={handleChange}
+            data={procedureList}
+            dataText="name"
+            dataValue="id"
           />
         </ContentCell>
       </ContentCell>
