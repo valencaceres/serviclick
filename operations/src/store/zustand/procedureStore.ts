@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { apiInstance } from "../../utils/api";
 
 interface procedureState {
-  procedureList: { id: string; name: string }[];
+  procedureList: { id: string; name: string; code: string }[];
   isLoading: boolean;
   isError: boolean;
   error: string;
