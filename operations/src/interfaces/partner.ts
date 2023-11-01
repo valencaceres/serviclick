@@ -14,7 +14,10 @@ export interface IPartner {
 }
 
 export interface IPartnerItem {
+  id: any;
   data: IPartner;
+  district: string | null;
+  address: string | null;
 }
 
 export interface IPartnerFamily {

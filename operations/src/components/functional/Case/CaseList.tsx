@@ -9,12 +9,13 @@ const CaseList = () => {
   const router = useRouter();
 
   const { getAll, caseList } = useCase();
+
   useEffect(() => {
     getAll("", "", "", "");
   }, [getAll]);
   if (!caseList) return null;
-  const handleViewCase = ({ id, stage_name }: ICaseItem) => {
-    router.push(`/assistance/case/applicant/${id}`);
+  const handleViewCase = ({ id, code }: ICaseItem) => {
+    router.push(`/assistance/case/${code}/${id}`);
   };
 
   return (
@@ -114,22 +115,20 @@ const columns: ColumnDef<ICaseItem>[] = [
     accessorKey: "assistance",
     header: "Servicio",
     cell: ({ row }) => {
-      const service = `${row.getValue("assistance")}`;
+      const service = `${row.original.assistance_name}`;
       return (
         <div
           className={`  ${
-            !!row.getValue("assistance")
+            !!service
               ? "max-w-[140px] truncate  font-oswald font-light"
               : "font-light italic"
           }`}
         >
           <span
-            className={`font-oswald ${
-              !row.getValue("assistance") ? "italic" : ""
-            }`}
+            className={`font-oswald ${!service ? "italic" : ""}`}
             title={service}
           >
-            {!!row.getValue("assistance") ? service : "Sin servicio asignado"}
+            {!!service ? service : "Sin servicio asignado"}
           </span>
         </div>
       );

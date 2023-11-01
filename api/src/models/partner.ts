@@ -340,6 +340,40 @@ const getByFamilyId = async (id: string) => {
   }
 };
 
+const getByAssistance = async (id: string) => {
+  try {
+    const result = await pool.query(
+      `select  distinct
+      par.id as id,
+      par.name as name,
+      par.district as district,
+      par.address as address
+from    app.partner par
+          inner join app.partnerspecialty psp on par.id = psp.partner_id
+          inner join app.assistancespecialty asp on psp.specialty_id = asp.specialty_id
+where   asp.assistance_id = $1
+order   by
+      par.name`,
+      [id]
+    );
+    const data =
+      result.rows.length > 0
+        ? result.rows.map((item: any) => {
+            const { id, name, address, district } = item;
+            return {
+              id,
+              name,
+              address,
+              district,
+            };
+          })
+        : [];
+
+    return { success: true, data: data, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
 export {
   create,
   getAll,
@@ -350,4 +384,5 @@ export {
   getBySpecialtyId,
   getByName,
   getByFamilyId,
+  getByAssistance,
 };

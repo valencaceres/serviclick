@@ -1,7 +1,6 @@
 import { create } from "zustand";
 
 import { apiInstance } from "../../utils/api";
-
 interface specialtyStore {
   specialtyList: {
     id: string;
@@ -12,7 +11,7 @@ interface specialtyStore {
   isLoading: boolean;
   isError: boolean;
   error: string;
-  getAll: () => void;
+  getByFamilyId: (id: string) => void;
 }
 
 export const specialtyStore = create<specialtyStore>((set) => ({
@@ -21,10 +20,12 @@ export const specialtyStore = create<specialtyStore>((set) => ({
   isError: false,
   error: "",
 
-  getAll: async () => {
+  getByFamilyId: async (id: string) => {
     try {
       set((state) => ({ ...state, isLoading: true }));
-      const { data } = await apiInstance.get(`/specialty/getAllSpecialties`);
+      const { data } = await apiInstance.get(
+        `/specialty/getSpecialtiesByFamilyId/${id}`
+      );
       set((state) => ({ ...state, specialtyList: data, isLoading: false }));
     } catch (e) {
       set((state) => ({

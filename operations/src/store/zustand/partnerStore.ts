@@ -25,6 +25,8 @@ interface partnerState {
   resetAll: () => void;
   delete: (id: string) => void;
   getBySpecialtyId: (id: string) => void;
+  getByAssistanceId: (id: string) => void;
+
   getByName: (name: string) => void;
 }
 
@@ -211,7 +213,25 @@ export const partnerStore = create<partnerState>((set, get) => ({
       }));
     }
   },
-
+  getByAssistanceId: async (id: string) => {
+    try {
+      set((state) => ({ ...state, isLoading: true }));
+      const { data } = await apiInstance.get(`partner/getByAssistance/${id}`);
+      set((state) => ({
+        ...state,
+        list: data,
+        isLoading: false,
+        isError: false,
+      }));
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
+  },
   getByName: async (name: string) => {
     try {
       set((state) => ({ ...state, isLoading: true }));

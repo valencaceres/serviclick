@@ -1,23 +1,23 @@
 import { specialtyStore } from "../zustand/index";
 
 const useSpecialty = () => {
-  const { specialtyList, isLoading, isError, error } = specialtyStore(
+  const { specialties, isLoading, isError, error } = specialtyStore(
     (state) => ({
-      specialtyList: state.specialtyList,
+      specialties: state.specialtyList,
       isLoading: state.isLoading,
       isError: state.isError,
       error: state.error,
     })
   );
 
-  const { getAll } = specialtyStore();
+  const { getByFamilyId } = specialtyStore();
 
   return {
-    specialtyList,
+    specialties,
+    getByFamilyId,
     isLoading,
     isError,
     error,
-    getAll,
   };
 };
 

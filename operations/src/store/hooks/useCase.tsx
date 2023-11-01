@@ -7,12 +7,14 @@ const useCase = () => {
     retailList,
     statusList,
     products,
+    caseId,
     assistances,
     isLoading,
     isError,
     error,
   } = caseStore((state) => ({
     case: state.case,
+    caseId: state.caseId,
     caseList: state.caseList,
     retailList: state.retailList,
     statusList: state.statusList,
@@ -38,6 +40,7 @@ const useCase = () => {
 
   return {
     caseValue,
+    caseId,
     caseList,
     retailList,
     statusList,

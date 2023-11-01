@@ -77,7 +77,7 @@ interface ISpecialist {
   scheduled_time: string;
   confirmed: boolean;
   completed: boolean;
-  qualification_id: string;
+  qualification_id: string | null;
   qualification_name: string;
   comment: string;
 }
@@ -91,7 +91,7 @@ interface IAlliance {
   scheduled_time: string;
   confirmed: boolean;
   completed: boolean;
-  qualification_id: string;
+  qualification_id: string | null;
   qualification_name: string;
   comment: string;
 }
@@ -142,9 +142,11 @@ export interface ICaseItem {
   createddate: string;
   customer_id: string;
   customer_name: string;
+  assistance_name: string;
   applicant_rut: string;
   applicant_name: string;
   stage_id: string;
+  code: string;
   stage_name: string;
 }
 
@@ -156,4 +158,40 @@ export interface IRetailItem {
 export interface IStatusItem {
   id: string;
   name: string;
+}
+
+export interface IAssistanceItem {
+  id: string | null;
+  name: string | null;
+  description: string | null;
+  family: {
+    id: string | null;
+    icon: string | null;
+    name: string | null;
+  } | null;
+  values:
+    | {
+        id: string | null;
+        name: string | null;
+      }[]
+    | null;
+  specialties:
+    | {
+        id: string | null;
+        name: string | null;
+      }[]
+    | null;
+  documents: any[] | null;
+  benefits:
+    | {
+        id: string | null;
+        description: string | null;
+      }[]
+    | null;
+  exclusions:
+    | {
+        id: string | null;
+        description: string | null;
+      }[]
+    | null;
 }

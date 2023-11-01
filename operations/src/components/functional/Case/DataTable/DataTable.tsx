@@ -27,7 +27,7 @@ import { Label } from "../../../ui/Label";
 
 import { DataTablePagination } from "./DataTablePagination";
 import { isValidRut, rutValidate } from "~/utils/validations";
-import { unFormatRut } from "~/utils/format";
+import { unFormatRut } from "~/utils/rut";
 import { Popover, PopoverContent, PopoverTrigger } from "../../../ui/Popover";
 import { Button } from "../../../ui/ButtonC";
 import { Check, ChevronsUpDown } from "lucide-react";
@@ -280,7 +280,6 @@ export function DataTable<TData, TValue>({
       }
     );
   }
-
   useEffect(() => {
     if (rutInput === "-") {
       setRutInput("");

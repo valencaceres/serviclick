@@ -11,6 +11,7 @@ import {
   getBySpecialtyId,
   getByName,
   getByFamilyId,
+  getByAssistanceId,
 } from "../controllers/partner";
 import isAuthenticated from "../middlewares/isAuthenticated";
 import isAdmin from "../middlewares/isAdmin";
@@ -22,9 +23,16 @@ PartnerRouter.get("/getAll", auth, getAll);
 PartnerRouter.get("/getById/:id", auth, getById);
 PartnerRouter.get("/getByRut/:rut", auth, getByRut);
 PartnerRouter.get("/getFamilies", auth, getFamilies);
-PartnerRouter.delete("/deletePartner/:id", auth, isAuthenticated, isAdmin, deletePartner);
+PartnerRouter.delete(
+  "/deletePartner/:id",
+  auth,
+  isAuthenticated,
+  isAdmin,
+  deletePartner
+);
 PartnerRouter.get("/getBySpecialtyId/:id", auth, getBySpecialtyId);
 PartnerRouter.get("/getByName/:name", auth, getByName);
 PartnerRouter.get("/getByFamilyId/:id", auth, getByFamilyId);
+PartnerRouter.get("/getByAssistance/:id", getByAssistanceId);
 
 export default PartnerRouter;

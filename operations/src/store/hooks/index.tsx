@@ -6,7 +6,8 @@ import useQualification from "./useQualification";
 import useProcedure from "./useProcedure";
 import useCase from "./useCase";
 import useApplicant from "./useApplicant";
-
+import useAssistance from "./useAsssitance";
+import useSpecialty from "./useSpecialty";
 export {
   useSpecialist,
   usePartner,
@@ -16,4 +17,6 @@ export {
   useProcedure,
   useCase,
   useApplicant,
+  useAssistance,
+  useSpecialty,
 };

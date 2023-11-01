@@ -24,6 +24,7 @@ interface caseState {
   products: IProduct[] | null;
   assistances: IAssistance[] | null;
   case: ICase;
+  caseId: ICase;
   caseList: ICaseItem[];
   retailList: IRetailItem[];
   statusList: IStatusItem[];
@@ -113,6 +114,7 @@ const initialCase: ICase = {
 export const caseStore = create<caseState>((set) => ({
   products: [],
   assistances: [],
+  caseId: initialCase,
   case: initialCase,
   caseList: [],
   retailList: [],
@@ -186,7 +188,12 @@ export const caseStore = create<caseState>((set) => ({
 
       const { data } = await apiInstance.get(`/case/getById/${id}`);
 
-      set((state) => ({ ...state, case: data, isLoading: false }));
+      set((state) => ({
+        ...state,
+        case: data,
+        caseId: data,
+        isLoading: false,
+      }));
     } catch (e) {
       set((state) => ({
         ...state,
@@ -254,11 +261,16 @@ export const caseStore = create<caseState>((set) => ({
   },
 
   upsert: async (data: ICase) => {
+    if (data?.alliance) {
+      data.alliance.completed = data.alliance.completed === true;
+      data.alliance.confirmed = data.alliance.confirmed === true;
+    }
+    console.log(data);
     try {
       set((state) => ({ ...state, isLoading: true }));
-
+      console.log(data);
       const { data: response } = await apiInstance.post(`/case/upsert`, data);
-      console.log(response);
+      console.log(response, data);
       set((state) => ({ ...state, case: response, isLoading: false }));
     } catch (e) {
       set((state) => ({

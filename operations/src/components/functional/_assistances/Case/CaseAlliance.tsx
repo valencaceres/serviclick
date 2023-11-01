@@ -3,31 +3,34 @@ import { ContentCell, ContentRow } from "~/components/layout/Content";
 import { ComboBox, InputText } from "~/components/ui";
 import { IApplicant } from "~/interfaces/applicant";
 import { useCase } from "~/store/hooks";
-import { useToast } from "~/components/ui/use-toast";
-import { useQueryClient } from "@tanstack/react-query";
 import TextArea from "~/components/ui/TextArea/TextArea";
 import { usePartner } from "~/store/hooks";
 import { useQualification } from "~/store/hooks";
-import useSpecialty from "~/store/hooks/useSpecialty";
+import { useRouter } from "next/router";
+import { useAssistance } from "~/store/hooks";
+import { useSpecialty } from "~/store/hooks";
 interface ICaseEventProps {
   setIsEnabledSave: (isEnabled: boolean) => void;
   itWasFound: boolean;
 }
 
 const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
-  const { caseValue, setCase } = useCase();
-  const { partnerList, getPartnersBySpecialtyId } = usePartner();
+  const { caseValue, setCase, getById: getCaseById, caseId } = useCase();
+  const { partnerList, getPartnersByAssistanceId } = usePartner();
   const { qualificationList, getAll } = useQualification();
-  const { getAll: getSpecialties, specialtyList } = useSpecialty();
+  const { assistance, getById } = useAssistance();
+  const { specialties, getByFamilyId } = useSpecialty();
   const [applicant, setApplicant] = useState<IApplicant>();
   const [confirmHour, setConfirmHour] = useState(false);
   const [confirmVisit, setConfirmVisit] = useState(false);
-  const [specialtyId, setSpecialtyId] = useState<string>("");
 
   const minDate = new Date();
+  const router = useRouter();
+
   const handleChange = (e: any) => {
     const value = e.target.value;
     const id = e.target.id;
+
     setCase({
       ...caseValue,
       alliance: {
@@ -39,11 +42,19 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
         partner_name: caseValue.alliance?.partner_name || "",
         specialty_id: caseValue.alliance?.specialty_id || "",
         specialty_name: caseValue.alliance?.specialty_name || "",
-        qualification_id: caseValue.alliance?.qualification_id || "",
+        qualification_id: caseValue.alliance?.qualification_id || null,
         qualification_name: caseValue.alliance?.qualification_name || "",
         comment: caseValue.alliance?.comment || "",
         [id]: value,
       },
+    });
+  };
+
+  const handleChangeCost = (e: any) => {
+    const value = e.target.value;
+    const id = e.target.id;
+    setCase({
+      ...caseValue,
       cost: {
         amount: caseValue.cost?.amount || 0,
         extra: caseValue.cost?.extra || 0,
@@ -52,10 +63,8 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
       },
     });
   };
-
   useEffect(() => {
     getAll();
-    getSpecialties();
     if (caseValue) {
       const applicant =
         caseValue?.type === "I" ? caseValue.insured : caseValue.beneficiary;
@@ -65,8 +74,8 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
     }
     setIsEnabledSave(true);
   }, []);
-
   useEffect(() => {
+    getById(caseValue.assistance.id);
     if (caseValue.alliance) {
       setConfirmHour(caseValue.alliance.confirmed);
       setConfirmVisit(caseValue.alliance.completed);
@@ -74,11 +83,25 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   }, [caseValue]);
 
   useEffect(() => {
-    if (specialtyId) {
-      getPartnersBySpecialtyId(specialtyId);
+    if (assistance.family?.id) {
+      getByFamilyId(assistance.family?.id);
     }
-  }, [specialtyId]);
+    if (assistance.id) {
+      getPartnersByAssistanceId(assistance?.id);
+    }
+  }, [assistance]);
 
+  useEffect(() => {
+    if (router.query.id) {
+      getCaseById(router.query.id as string);
+    }
+  }, [router.query.id]);
+
+  const partner = partnerList.find(
+    (partner) => partner?.id === caseValue.alliance?.partner_id
+  );
+  console.log(confirmHour);
+  console.log(caseValue);
   return (
     <ContentCell gap="20px">
       <ContentCell gap="5px">
@@ -89,6 +112,7 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
             type="text"
             value={caseValue ? caseValue.retail?.name || "" : ""}
             width="530px"
+            disabled={true}
           />
         )}
         {caseValue.customer.rut !== caseValue.insured.rut && (
@@ -98,6 +122,7 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
             type="text"
             value={caseValue ? caseValue.customer?.name || "" : ""}
             width="530px"
+            disabled={true}
           />
         )}
         {caseValue.type === "C" && (
@@ -111,6 +136,7 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                 : ""
             }
             width="530px"
+            disabled={true}
           />
         )}
         <InputText
@@ -123,6 +149,7 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
               : ""
           }
           width="530px"
+          disabled={true}
         />
       </ContentCell>
       <ContentCell gap="20px">
@@ -158,26 +185,11 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
           </ContentCell>
           {caseValue.specialist === null ? (
             <>
-              <ComboBox
-                label="Especialidad"
-                placeHolder="Seleccione especialidad"
-                data={specialtyList}
-                width="525px"
-                id="specialty_id"
-                value={specialtyList
-                  .map((specialty) => specialty.id)
-                  .join(", ")}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setSpecialtyId(e.target.value)
-                }
-                dataText="name"
-                dataValue="id"
-              />
               <ContentRow gap="5px">
-                {partnerList?.length > 0 && (
+                {partnerList?.length > 0 ? (
                   <ComboBox
-                    label="Especialista"
-                    placeHolder="Seleccione especialista"
+                    label="Alianza"
+                    placeHolder="Seleccione alianza"
                     data={partnerList}
                     id="partner_id"
                     width="525px"
@@ -185,14 +197,33 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                     onChange={handleChange}
                     dataText="name"
                     dataValue="id"
+                    enabled={confirmHour === false}
                   />
+                ) : (
+                  <p className="font-bold text-red-500">Sin alianzas</p>
                 )}
               </ContentRow>
+              {specialties?.length > 0 ? (
+                <ComboBox
+                  label="Especialidad"
+                  placeHolder="Seleccione especialidad"
+                  data={specialties ?? []}
+                  width="525px"
+                  id="specialty_id"
+                  value={caseValue.alliance?.specialty_id ?? ""}
+                  onChange={handleChange}
+                  dataText="name"
+                  dataValue="id"
+                  enabled={confirmHour === false}
+                />
+              ) : (
+                <p className="font-bold text-red-500">Sin especialidades</p>
+              )}
             </>
           ) : (
             <>
               <InputText
-                label="Especialista"
+                label="Alianza"
                 value={caseValue?.alliance?.partner_name ?? ""}
                 type="text"
                 disabled={true}
@@ -203,7 +234,29 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                 type="text"
                 disabled={true}
               />
+              <ContentRow
+                className="flex flex-row items-center justify-between"
+                gap="5px"
+              ></ContentRow>
             </>
+          )}
+          {caseValue.alliance?.partner_id && (
+            <ContentRow gap="5px">
+              <InputText
+                label="Districto alianza"
+                value={partner?.district ?? ""}
+                type="text"
+                disabled={true}
+                width="260px"
+              />
+              <InputText
+                label="Direccion alianza"
+                value={partner?.address ?? ""}
+                type="text"
+                disabled={true}
+                width="260px"
+              />
+            </ContentRow>
           )}
           <ContentRow
             gap="5px"
@@ -218,6 +271,7 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                 value={caseValue?.alliance?.scheduled_date ?? ""}
                 onChange={handleChange}
                 id="scheduled_date"
+                disabled={caseValue?.alliance?.confirmed}
               />
               <InputText
                 label="Hora de visita"
@@ -228,42 +282,67 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                 minTime="09:00"
                 maxTime="20:00"
                 id="scheduled_time"
+                disabled={caseValue?.alliance?.confirmed}
               />
             </ContentRow>
-            {confirmHour === false && (
+            {caseId.alliance && (
               <div className="mr-12 flex  h-6 gap-[10px] font-bold ">
-                <p
-                  className="cursor-pointer border-b-2 border-blue-500 text-blue-500"
-                  onClick={() => setConfirmHour(true)}
-                >
+                <label className={`cursor-pointer  text-blue-500 `}>
+                  <input
+                    type="radio"
+                    name="confirmRadio"
+                    value={confirmHour === false ? "false" : "true"}
+                    id="confirmed"
+                    hidden
+                    onChange={handleChange}
+                    onClick={() => setConfirmHour(true)}
+                  />
                   Confirmar
-                </p>
-                <p
-                  className="cursor-pointer border-b-2 border-blue-500 text-blue-500 "
-                  onClick={() => setConfirmHour(false)}
-                >
+                </label>
+                <label className={`cursor-pointer text-blue-500 `}>
+                  <input
+                    type="radio"
+                    hidden
+                    name="confirmRadio"
+                    id="confirmed"
+                    value={confirmHour === true ? "true" : "false"}
+                    onChange={handleChange}
+                    onClick={() => setConfirmHour(false)}
+                  />
                   Anular
-                </p>
+                </label>
               </div>
             )}
-            {confirmVisit === false && confirmHour === true && (
+            {caseId.alliance?.confirmed === true && (
               <div className="mr-12 flex  h-6 gap-[10px] font-bold ">
-                <p
-                  className="cursor-pointer border-b-2 border-blue-500 text-blue-500"
-                  onClick={() => setConfirmVisit(true)}
-                >
+                <label className={`cursor-pointer  text-blue-500 `}>
+                  <input
+                    type="radio"
+                    name="confirmRadio"
+                    value={"true"}
+                    id="completed"
+                    hidden
+                    onChange={handleChange}
+                    onClick={() => setConfirmVisit(true)}
+                  />
                   Realizada
-                </p>
-                <p
-                  className="cursor-pointer border-b-2 border-blue-500 text-blue-500 "
-                  onClick={() => setConfirmVisit(false)}
-                >
+                </label>
+                <label className={`cursor-pointer text-blue-500 `}>
+                  <input
+                    type="radio"
+                    hidden
+                    name="confirmRadio"
+                    id="completed"
+                    value={"true"}
+                    onChange={handleChange}
+                    onClick={() => setConfirmVisit(false)}
+                  />
                   No Realizada
-                </p>
+                </label>
               </div>
             )}
           </ContentRow>
-          {confirmVisit === true && (
+          {caseId.alliance?.completed === true && (
             <>
               <ComboBox
                 label="Calificación"
@@ -291,7 +370,7 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
           <>
             <ContentCell gap="5px">
               <ContentRow className="flex flex-row justify-between">
-                {caseValue.cost?.amount ? (
+                {caseValue?.cost?.amount && caseValue.cost?.amount !== 0 ? (
                   <InputText
                     label="Costo fijo ($)"
                     value={(caseValue.cost?.amount).toLocaleString("es-CL", {
@@ -300,6 +379,7 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                     })}
                     type="text"
                     width="120px"
+                    disabled
                   />
                 ) : (
                   <InputText
@@ -308,19 +388,19 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                     type="number"
                     width="120px"
                     id="amount"
-                    onChange={handleChange}
+                    onChange={handleChangeCost}
                   />
                 )}
-                {caseValue.cost?.extra ? (
+                {caseValue?.cost?.extra && caseValue.cost?.extra !== 0 ? (
                   <InputText
                     label="Extra ($)"
-                    value={(caseValue.cost?.extra).toLocaleString("es-CL", {
+                    value={(caseValue?.cost?.extra).toLocaleString("es-CL", {
                       style: "currency",
                       currency: "CLP",
                     })}
                     type="text"
                     width="120px"
-                    onChange={handleChange}
+                    disabled
                   />
                 ) : (
                   <InputText
@@ -329,13 +409,13 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                     type="text"
                     width="120px"
                     id="extra"
-                    onChange={handleChange}
+                    onChange={handleChangeCost}
                   />
                 )}
               </ContentRow>
               <TextArea
                 value={caseValue.cost?.comment ?? ""}
-                onChange={handleChange}
+                onChange={handleChangeCost}
                 label="Justificación"
                 width="525px"
                 height="110px"

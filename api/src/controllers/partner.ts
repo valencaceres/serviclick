@@ -257,6 +257,26 @@ const getByFamilyId = async (req: any, res: any) => {
 
   res.status(200).json(partnerResponse.data);
 };
+const getByAssistanceId = async (req: any, res: any) => {
+  const { id } = req.params;
+  const partnerResponse = await Partner.getByAssistance(id);
+
+  if (!partnerResponse.success) {
+    createLogger.error({
+      model: `partner/getByAssistanceId`,
+      error: partnerResponse.error,
+    });
+    res.status(500).json({ error: "Error retrieving partner" });
+    return;
+  }
+
+  createLogger.info({
+    controller: `partner/getByAssistanceId`,
+    message: `OK - Get Partners by Family Id`,
+  });
+
+  res.status(200).json(partnerResponse.data);
+};
 
 export {
   create,
@@ -265,6 +285,7 @@ export {
   getByRut,
   getFamilies,
   deletePartner,
+  getByAssistanceId,
   getBySpecialtyId,
   getByName,
   getByFamilyId,

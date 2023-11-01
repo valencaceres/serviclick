@@ -3,27 +3,30 @@ import { ContentCell, ContentRow } from "~/components/layout/Content";
 import { ComboBox, InputText } from "~/components/ui";
 import { useDistrict } from "~/hooks";
 import { IApplicant } from "~/interfaces/applicant";
-import { useCase } from "~/store/hooks";
+import { useAssistance, useCase, useSpecialty } from "~/store/hooks";
 import TextArea from "~/components/ui/TextArea/TextArea";
 import { useSpecialist } from "~/store/hooks";
 import { useQualification } from "~/store/hooks";
-
+import { useRouter } from "next/router";
 interface ICaseEventProps {
   setIsEnabledSave: (isEnabled: boolean) => void;
   itWasFound: boolean;
 }
 
 const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
-  const { caseValue, setCase } = useCase();
+  const { caseValue, setCase, getById: getCaseByid } = useCase();
   const { list: districtList } = useDistrict();
-  const { specialistList, getByDistrict } = useSpecialist();
   const { qualificationList, getAll } = useQualification();
-
+  const { assistance, getById } = useAssistance();
+  const { specialties, getByFamilyId } = useSpecialty();
+  const { getSpecialistByDistrictAndSpecialty, specialistList } =
+    useSpecialist();
   const [applicant, setApplicant] = useState<IApplicant>();
   const [confirmHour, setConfirmHour] = useState(false);
   const [confirmVisit, setConfirmVisit] = useState(false);
   const [district, setDistrict] = useState<string>("");
-
+  const [specialtyId, setSpecialtyId] = useState<string>("");
+  const router = useRouter();
   const minDate = new Date();
   const handleChange = (e: any) => {
     const value = e.target.value;
@@ -68,6 +71,7 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   }, []);
 
   useEffect(() => {
+    getById(caseValue.assistance.id);
     if (caseValue.specialist) {
       setConfirmHour(caseValue.specialist.confirmed);
       setConfirmVisit(caseValue.specialist.completed);
@@ -75,10 +79,22 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   }, [caseValue]);
 
   useEffect(() => {
-    if (district) {
-      getByDistrict(district, caseValue.assistance.id);
+    if (assistance.family?.id) {
+      getByFamilyId(assistance.family?.id);
     }
-  }, [district]);
+  }, [assistance]);
+
+  useEffect(() => {
+    if (specialtyId && district) {
+      getSpecialistByDistrictAndSpecialty(district, specialtyId);
+    }
+  }, [specialtyId, district]);
+
+  useEffect(() => {
+    if (router.query.id) {
+      getCaseByid(router.query.id as string);
+    }
+  }, [router.query.id]);
 
   return (
     <ContentCell gap="20px">
@@ -162,33 +178,56 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
               <ComboBox
                 id="district_id"
                 label="Comuna"
-                value={
-                  caseValue ? caseValue.specialist?.district_name || "" : ""
-                }
+                value={caseValue ? caseValue.specialist?.district_id || "" : ""}
                 placeHolder=":: Seleccione una comuna ::"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setDistrict(e.target.value)
                 }
                 data={districtList}
-                dataValue={"district_name"}
-                dataText={"district_name"}
+                dataValue={"district_id"}
+                dataText={"district_id"}
                 width="535px"
               />
               <ContentRow gap="5px">
-                {specialistList?.length > 0 && (
+                {specialistList?.length > 0 ? (
                   <ComboBox
                     label="Especialista"
                     placeHolder="Seleccione especialista"
                     data={specialistList}
-                    id="specialist_id"
+                    id="partner_id"
                     width="525px"
                     value={caseValue.specialist?.specialist_id ?? ""}
                     onChange={handleChange}
                     dataText="name"
                     dataValue="id"
                   />
+                ) : (
+                  <p className="font-bold text-red-500">Sin especialistas</p>
                 )}
               </ContentRow>
+              {specialties?.length > 0 ? (
+                <ComboBox
+                  label="Especialidad"
+                  placeHolder="Seleccione especialidad"
+                  data={specialties ?? []}
+                  width="525px"
+                  id="specialty_id"
+                  value={
+                    (specialties?.length === 1
+                      ? specialties[0].id
+                      : specialties
+                          ?.map((specialty) => specialty.id)
+                          .join(", ")) ?? ""
+                  }
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setSpecialtyId(e.target.value)
+                  }
+                  dataText="name"
+                  dataValue="id"
+                />
+              ) : (
+                <p className="font-bold text-red-500">Sin especialidades</p>
+              )}
             </>
           ) : (
             <>
@@ -201,6 +240,12 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
               <InputText
                 label="Especialista"
                 value={caseValue?.specialist?.specialist_name ?? ""}
+                type="text"
+                disabled={true}
+              />
+              <InputText
+                label="Especialidad"
+                value={caseValue?.specialist?.specialty_name ?? ""}
                 type="text"
                 disabled={true}
               />
@@ -219,6 +264,7 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                 value={caseValue?.specialist?.scheduled_date ?? ""}
                 onChange={handleChange}
                 id="scheduled_date"
+                disabled={caseValue?.specialist?.confirmed ? false : true}
               />
               <InputText
                 label="Hora de visita"
@@ -229,6 +275,7 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                 minTime="09:00"
                 maxTime="20:00"
                 id="scheduled_time"
+                disabled={caseValue?.specialist?.confirmed ? false : true}
               />
             </ContentRow>
             {confirmHour === false && (
@@ -236,12 +283,14 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                 <p
                   className="cursor-pointer border-b-2 border-blue-500 text-blue-500"
                   onClick={() => setConfirmHour(true)}
+                  id="confirmed"
                 >
                   Confirmar
                 </p>
                 <p
                   className="cursor-pointer border-b-2 border-blue-500 text-blue-500 "
                   onClick={() => setConfirmHour(false)}
+                  id="confirmed"
                 >
                   Anular
                 </p>
@@ -252,12 +301,14 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                 <p
                   className="cursor-pointer border-b-2 border-blue-500 text-blue-500"
                   onClick={() => setConfirmVisit(true)}
+                  id="completed"
                 >
                   Realizada
                 </p>
                 <p
                   className="cursor-pointer border-b-2 border-blue-500 text-blue-500 "
                   onClick={() => setConfirmVisit(false)}
+                  id="completed"
                 >
                   No Realizada
                 </p>

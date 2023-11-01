@@ -3,6 +3,7 @@ import { partnerStore } from "./partnerStore";
 import { retailStore } from "./retailStore";
 import { qualificationStore } from "./qualificationStore";
 import { procedureStore } from "./procedureStore";
+import { assistanceStore } from "./assistanceStore";
 import { specialtyStore } from "./specialtyStore";
 
 export {
@@ -11,5 +12,6 @@ export {
   retailStore,
   qualificationStore,
   procedureStore,
+  assistanceStore,
   specialtyStore,
 };
