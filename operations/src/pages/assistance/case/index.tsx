@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import FloatMenu from "~/components/ui/FloatMenu";
 import ButtonIcon from "~/components/ui/ButtonIcon";
 
-import { CaseList } from "~/components/functional/Case";
+import CaseTable from "~/components/functional/_assistances/Case/CaseTable";
 
 import { useUI } from "~/hooks";
 import { useCase } from "~/store/hooks";
@@ -32,7 +32,7 @@ const CasePage = () => {
 
   return (
     <Fragment>
-      <CaseList />
+      <CaseTable />
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />
         <ButtonIcon iconName="refresh" onClick={handleClickRefresh} />
