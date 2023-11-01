@@ -60,7 +60,7 @@ const CaseTable = ({ setShowModal, showModal }: any) => {
           />
           <InputText
             label="Beneficiario"
-            width="280px"
+            width="370px"
             value={search}
             onChange={setSearch}
           />
@@ -78,14 +78,14 @@ const CaseTable = ({ setShowModal, showModal }: any) => {
 
           <ButtonIcon iconName="search" color="gray" />
         </ContentRow>
-        <Table width="1000px">
+        <Table width="1100px">
           <TableHeader>
             <TableCell width="70px" align="center">
               #
             </TableCell>
             <TableCell width="200px">N° Caso</TableCell>
             <TableCell width="250px">Cliente</TableCell>
-            <TableCell width="250px">Asegurado / Beneficiario</TableCell>
+            <TableCell width="300px">Asegurado / Beneficiario</TableCell>
             <TableCell width="250px">Servicio</TableCell>
             <TableCell width="250px">Estado</TableCell>
           </TableHeader>
@@ -99,7 +99,7 @@ const CaseTable = ({ setShowModal, showModal }: any) => {
                   {caseItem.number}
                 </TableCell>
                 <TableCell width="250px">{caseItem.customer_name}</TableCell>
-                <TableCell width="250px">{caseItem.applicant_name}</TableCell>
+                <TableCell width="300px">{caseItem.applicant_name}</TableCell>
                 <TableCell width="250px">{caseItem.assistance_name}</TableCell>
                 <TableCell width="250px">
                   {caseItem.stage_name}
