@@ -261,11 +261,6 @@ export const caseStore = create<caseState>((set) => ({
   },
 
   upsert: async (data: ICase) => {
-    if (data?.alliance) {
-      data.alliance.completed = data.alliance.completed === true;
-      data.alliance.confirmed = data.alliance.confirmed === true;
-    }
-    console.log(data);
     try {
       set((state) => ({ ...state, isLoading: true }));
       console.log(data);
