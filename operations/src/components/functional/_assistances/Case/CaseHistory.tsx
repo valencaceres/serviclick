@@ -19,12 +19,14 @@ import {
 import Icon from "~/components/ui/Icon";
 import { LoadingMessage } from "~/components/ui/LoadingMessage";
 import { useCase } from "~/store/hooks";
-
+import { useQueryCase } from "~/hooks/query";
+import { useUser } from "@clerk/nextjs";
 const CaseHistory = () => {
   const router = useRouter();
 
   const { caseValue } = useCase();
-
+  const userIds = caseValue.history?.map((m: any) => m.user);
+  const { data: operators } = useQueryCase().useGetUserByClerkId(userIds);
   return (
     <Fragment>
       <ContentCell gap="5px">
@@ -40,33 +42,40 @@ const CaseHistory = () => {
             <TableCellEnd />
           </TableHeader>
           <TableDetail>
-            {caseValue?.history.map((stage, idx: number) => (
-              <TableRow key={idx}>
-                <TableCell width="95px" align="center">
-                  {stage.date}
-                </TableCell>
-                <TableCell width="57px">{stage.time}</TableCell>
-                <TableCell width="177px" align="center">
-                  {stage.user}
-                </TableCell>
-                <TableCell width="208px" align="left">
-                  {stage.name}
-                </TableCell>
-                <TableCell width="41px" align="left">
-                  <TableIcons>
-                    <Icon
-                      iconName="search"
-                      button={true}
-                      onClick={() => {
-                        router.push(
-                          `/assistance/case/${stage.code}/${caseValue?.case_id}`
-                        );
-                      }}
-                    />
-                  </TableIcons>
-                </TableCell>
-              </TableRow>
-            ))}
+            {caseValue?.history.map((stage, idx: number) => {
+              const user = operators?.data.find(
+                (user: any) => user.id === stage.user
+              );
+              return (
+                <TableRow key={idx}>
+                  <TableCell width="95px" align="center">
+                    {stage.date}
+                  </TableCell>
+                  <TableCell width="57px">{stage.time}</TableCell>
+                  <TableCell width="177px" align="center">
+                    {user
+                      ? `${user.first_name} ${user.last_name}`
+                      : "Usuario no encontrado"}
+                  </TableCell>
+                  <TableCell width="208px" align="left">
+                    {stage.name}
+                  </TableCell>
+                  <TableCell width="41px" align="left">
+                    <TableIcons>
+                      <Icon
+                        iconName="search"
+                        button={true}
+                        onClick={() => {
+                          router.push(
+                            `/assistance/case/${stage.code}/${caseValue?.case_id}`
+                          );
+                        }}
+                      />
+                    </TableIcons>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableDetail>
         </Table>
         <ContentRow className="justify-between">
@@ -85,5 +94,4 @@ const CaseHistory = () => {
     </Fragment>
   );
 };
-
 export default CaseHistory;

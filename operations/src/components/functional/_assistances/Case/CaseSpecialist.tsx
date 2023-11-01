@@ -57,12 +57,6 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
         qualification_name: caseValue.specialist?.qualification_name || "",
         [id]: value,
       },
-      cost: {
-        amount: caseValue.cost?.amount || 0,
-        extra: caseValue.cost?.extra || 0,
-        comment: caseValue.cost?.comment || "",
-        [id]: value,
-      },
     });
   };
 

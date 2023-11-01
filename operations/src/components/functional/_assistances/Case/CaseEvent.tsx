@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import React, { Fragment, useEffect, useState } from "react";
 import { ContentCell, ContentRow } from "~/components/layout/Content";
 import { ComboBox, InputText } from "~/components/ui";
@@ -12,10 +13,13 @@ interface ICaseEventProps {
 }
 
 const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
-  const { caseValue, setCase } = useCase();
+  const { caseValue, setCase, getById: getCaseByid, caseId } = useCase();
+
   const { list: districtList } = useDistrict();
   const [applicant, setApplicant] = useState<IApplicant>();
   const { procedureList, getAll } = useProcedure();
+
+  const router = useRouter();
 
   const handleChange = (e: any) => {
     const value = e.target.value;
@@ -44,6 +48,12 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
     setIsEnabledSave(true);
   }, []);
 
+  useEffect(() => {
+    if (router.query.id) {
+      getCaseByid(router.query.id as string);
+    }
+  }, [router.query.id]);
+  console.log(caseId);
   return (
     <ContentCell gap="20px">
       <ContentCell gap="5px">
@@ -120,6 +130,7 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
               type="date"
               width="234px"
               onChange={handleChange}
+              disabled={caseId?.event?.date != null}
             />
 
             <ComboBox
@@ -132,6 +143,7 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
               dataValue={"district_name"}
               dataText={"district_name"}
               width="290px"
+              enabled={caseId.event?.location === null}
             />
           </ContentRow>
           <TextArea
@@ -152,6 +164,7 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
             data={procedureList}
             dataText="name"
             dataValue="id"
+            enabled={caseId.procedure_id === null}
           />
         </ContentCell>
       </ContentCell>

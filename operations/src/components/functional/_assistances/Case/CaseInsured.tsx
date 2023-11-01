@@ -177,7 +177,6 @@ const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
             type="date"
             value={caseValue ? caseValue.insured?.birthDate || "" : ""}
             onChange={handleChange}
-            disabled={itWasFound}
           />
         </ContentRow>
         <InputText
@@ -186,7 +185,6 @@ const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
           type="text"
           value={caseValue ? caseValue.insured?.name || "" : ""}
           onChange={handleChange}
-          disabled={itWasFound}
         />
         <InputText
           id="paternalLastName"
@@ -194,7 +192,6 @@ const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
           type="text"
           value={caseValue ? caseValue.insured?.paternalLastName || "" : ""}
           onChange={handleChange}
-          disabled={itWasFound}
         />
         <InputText
           id="maternalLastName"
@@ -202,7 +199,6 @@ const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
           type="text"
           value={caseValue ? caseValue.insured?.maternalLastName || "" : ""}
           onChange={handleChange}
-          disabled={itWasFound}
         />
         <InputText
           id="address"
@@ -210,7 +206,6 @@ const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
           type="text"
           value={caseValue ? caseValue.insured?.address || "" : ""}
           onChange={handleChange}
-          disabled={itWasFound}
         />
         <ComboBox
           id="district"
@@ -222,7 +217,6 @@ const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
           data={districtList}
           dataValue={"district_name"}
           dataText={"district_name"}
-          enabled={!itWasFound}
         />
         <ContentRow gap="5px">
           <ContentCell gap="5px">
@@ -234,7 +228,6 @@ const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
               onChange={handleChange}
               width={"100%"}
               isValid={isValidField.email}
-              disabled={itWasFound}
             />
             <InputText
               id="phone"
@@ -245,7 +238,6 @@ const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
               maxLength={9}
               width={"265px"}
               isValid={isValidField.phone}
-              disabled={itWasFound}
             />
           </ContentCell>
         </ContentRow>

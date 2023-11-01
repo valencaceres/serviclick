@@ -12,7 +12,7 @@ export const fetchClerkUser = async (userId: string) => {
     );
     return response.data;
   } catch (error) {
-    console.error(`Error fetching user data for user: ${userId}`, error);
+    console.error(`Error fetching user data for user: ${userId}`);
     return null;
   }
 };

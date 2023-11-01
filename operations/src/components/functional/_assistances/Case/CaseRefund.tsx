@@ -7,6 +7,7 @@ import { InputText } from "~/components/ui";
 import { useCase } from "~/store/hooks";
 
 import { IApplicant } from "../../../../interfaces/applicant";
+import { useRouter } from "next/router";
 
 interface ICaseProductProps {
   setIsEnabledSave: (isEnabled: boolean) => void;
@@ -14,21 +15,27 @@ interface ICaseProductProps {
 }
 
 const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
-  const { caseValue, setCase } = useCase();
+  const { caseValue, setCase, getById: getCaseByid, caseId } = useCase();
 
   const [applicant, setApplicant] = useState<IApplicant>();
-
+  const router = useRouter();
   const handleChange = (e: any) => {
     const value = e.target.value;
     const id = e.target.id;
+    const numericValue = parseFloat(value);
+
+    const isNumeric = !isNaN(numericValue);
+
     setCase({
       ...caseValue,
       refund: {
-        amount: caseValue.refund?.amount || 0,
+        amount:
+          id === "amount" && isNumeric
+            ? numericValue
+            : caseValue.refund?.amount || 0,
         imed_amount: caseValue.refund?.imed_amount || 0,
         status: caseValue.refund?.status || "",
         comment: caseValue.refund?.comment || "",
-        [id]: value,
       },
     });
   };
@@ -43,6 +50,12 @@ const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
     }
     setIsEnabledSave(true);
   }, []);
+
+  useEffect(() => {
+    if (router.query.id) {
+      getCaseByid(router.query.id as string);
+    }
+  }, [router.query.id]);
 
   return (
     <ContentCell gap="20px">
@@ -144,11 +157,11 @@ const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
           </ContentRow>
 
           <ContentRow gap="5px">
-            {caseValue?.refund?.amount && caseValue.refund.status ? (
+            {caseId?.refund?.amount && caseId.refund.status ? (
               <>
                 <InputText
                   label="Monto solicitado ($)"
-                  value={caseValue?.refund?.amount?.toLocaleString("es-CL", {
+                  value={caseId?.refund?.amount?.toLocaleString("es-CL", {
                     style: "currency",
                     currency: "CLP",
                   })}
@@ -158,7 +171,7 @@ const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
                 />
                 <InputText
                   label="Monto solicitado ($)"
-                  value={caseValue?.refund?.status}
+                  value={caseId?.refund?.status}
                   type="text"
                   width="260px"
                   disabled={true}
@@ -179,10 +192,10 @@ const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
               />
             )}
           </ContentRow>
-          {caseValue?.refund?.comment && (
+          {caseId?.refund?.comment && (
             <InputText
               label="Motivo"
-              value={caseValue?.refund?.comment}
+              value={caseId?.refund?.comment}
               type="text"
               width="260px"
               disabled={true}

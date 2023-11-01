@@ -181,12 +181,10 @@ const AssistanceCasePage = () => {
   };
 
   const SaveProduct = () => {
-    console.log(caseValue);
     caseUpsert(caseValue);
   };
 
   const SaveEvent = () => {
-    console.log(caseValue);
     caseUpsert(caseValue);
   };
 

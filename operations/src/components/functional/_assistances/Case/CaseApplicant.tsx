@@ -186,7 +186,6 @@ const CaseApplicant = ({
             value={caseValue ? caseValue[applicantType]?.birthDate || "" : ""}
             onChange={handleChange}
             width="150px"
-            disabled={itWasFound}
           />
         </ContentRow>
         <InputText
@@ -196,7 +195,6 @@ const CaseApplicant = ({
           value={caseValue ? caseValue[applicantType]?.name || "" : ""}
           onChange={handleChange}
           width="535px"
-          disabled={itWasFound}
         />
         <InputText
           id="paternalLastName"
@@ -207,7 +205,6 @@ const CaseApplicant = ({
           }
           onChange={handleChange}
           width="535px"
-          disabled={itWasFound}
         />
         <InputText
           id="maternalLastName"
@@ -218,7 +215,6 @@ const CaseApplicant = ({
           }
           onChange={handleChange}
           width="535px"
-          disabled={itWasFound}
         />
         <InputText
           id="address"
@@ -227,7 +223,6 @@ const CaseApplicant = ({
           value={caseValue ? caseValue[applicantType]?.address || "" : ""}
           onChange={handleChange}
           width="535px"
-          disabled={itWasFound}
         />
         <ComboBox
           id="district"
@@ -239,7 +234,6 @@ const CaseApplicant = ({
           dataValue={"district_name"}
           dataText={"district_name"}
           width="535px"
-          enabled={!itWasFound}
         />
         <ContentRow gap="5px">
           <ContentCell gap="5px">
@@ -251,7 +245,6 @@ const CaseApplicant = ({
               onChange={handleChange}
               width={"380px"}
               isValid={isValidField.email}
-              disabled={itWasFound}
             />
             <InputText
               id="phone"
@@ -262,7 +255,6 @@ const CaseApplicant = ({
               maxLength={9}
               width={"380px"}
               isValid={isValidField.phone}
-              disabled={itWasFound}
             />
           </ContentCell>
           <RadioButtonGroup label="Tipo" width="150px">

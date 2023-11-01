@@ -7,6 +7,7 @@ import { InputText } from "~/components/ui";
 import { useCase } from "~/store/hooks";
 
 import { IApplicant } from "../../../../interfaces/applicant";
+import { useRouter } from "next/router";
 
 interface ICaseProductProps {
   setIsEnabledSave: (isEnabled: boolean) => void;
@@ -14,21 +15,27 @@ interface ICaseProductProps {
 }
 
 const CaseImed = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
-  const { caseValue, setCase } = useCase();
-
+  const { caseValue, setCase, getById: getCaseByid, caseId } = useCase();
+  const router = useRouter();
   const [applicant, setApplicant] = useState<IApplicant>();
 
   const handleChange = (e: any) => {
     const value = e.target.value;
     const id = e.target.id;
+    const numericValue = parseFloat(value);
+
+    const isNumeric = !isNaN(numericValue);
+
     setCase({
       ...caseValue,
       refund: {
         amount: caseValue.refund?.amount || 0,
-        imed_amount: caseValue.refund?.imed_amount || 0,
+        imed_amount:
+          id === "imed_amount" && isNumeric
+            ? numericValue
+            : caseValue.refund?.imed_amount || 0,
         status: caseValue.refund?.status || "",
         comment: caseValue.refund?.comment || "",
-        [id]: value,
       },
     });
   };
@@ -43,6 +50,12 @@ const CaseImed = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
     }
     setIsEnabledSave(true);
   }, []);
+  console.log(caseValue);
+  useEffect(() => {
+    if (router.query.id) {
+      getCaseByid(router.query.id as string);
+    }
+  }, [router.query.id]);
 
   return (
     <ContentCell gap="20px">
@@ -145,31 +158,31 @@ const CaseImed = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
               id="limit"
               label="Límite"
               type="text"
-              value={caseValue.assistance.assigned.maximum.toString()}
+              value={
+                caseValue.assistance.assigned.maximum.toString() ??
+                "sin limited"
+              }
               width="210px"
               disabled={itWasFound}
             />
           </ContentRow>
 
           <ContentRow gap="5px">
-            {caseValue?.refund?.imed_amount && caseValue.refund.status ? (
+            {caseId?.refund?.imed_amount && caseId.refund.status ? (
               <>
                 <InputText
                   label="Monto solicitado ($)"
-                  value={caseValue?.refund?.imed_amount?.toLocaleString(
-                    "es-CL",
-                    {
-                      style: "currency",
-                      currency: "CLP",
-                    }
-                  )}
+                  value={caseId?.refund?.imed_amount?.toLocaleString("es-CL", {
+                    style: "currency",
+                    currency: "CLP",
+                  })}
                   type="text"
                   width="260px"
                   disabled={true}
                 />
                 <InputText
                   label="Monto solicitado ($)"
-                  value={caseValue?.refund?.status}
+                  value={caseId?.refund?.status}
                   type="text"
                   width="260px"
                   disabled={true}
@@ -178,22 +191,18 @@ const CaseImed = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
             ) : (
               <InputText
                 label="Monto solicitado ($)"
-                value={
-                  caseValue && caseValue.refund?.imed_amount
-                    ? caseValue.refund?.imed_amount.toString()
-                    : ""
-                }
-                id="imed_amount"
-                type="number"
+                value={(caseValue?.refund?.imed_amount ?? "").toString()}
+                type="text"
                 width="260px"
+                id="imed_amount"
                 onChange={handleChange}
               />
             )}
           </ContentRow>
-          {caseValue?.refund?.comment && (
+          {caseId?.refund?.comment && (
             <InputText
               label="Motivo"
-              value={caseValue?.refund?.comment}
+              value={caseId?.refund?.comment}
               type="text"
               width="260px"
               disabled={true}
