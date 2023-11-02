@@ -15,10 +15,12 @@ interface ICaseProductProps {
 }
 
 const CaseImed = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
-  const { caseValue, setCase, getById: getCaseByid, caseId } = useCase();
   const router = useRouter();
-  const [applicant, setApplicant] = useState<IApplicant>();
+  const { caseValue, setCase, getById: getCaseByid, caseId } = useCase();
   const { user } = useUser();
+
+  const [applicant, setApplicant] = useState<IApplicant>();
+
   const handleChange = (e: any) => {
     const value = e.target.value;
     const id = e.target.id;
@@ -41,6 +43,17 @@ const CaseImed = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
     });
   };
 
+  const checkCompleteFields = () => {
+    if (caseValue.refund && caseValue.refund.imed_amount !== 0) {
+      return true;
+    }
+    return false;
+  };
+
+  useEffect(() => {
+    setIsEnabledSave(checkCompleteFields());
+  }, [caseValue, setIsEnabledSave]);
+
   useEffect(() => {
     if (caseValue) {
       const applicant =
@@ -51,7 +64,7 @@ const CaseImed = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
     }
     setIsEnabledSave(true);
   }, []);
-  console.log(caseValue);
+
   useEffect(() => {
     if (router.query.id) {
       getCaseByid(router.query.id as string);
@@ -141,7 +154,11 @@ const CaseImed = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
           <ContentRow gap="5px">
             <InputText
               id="assistance"
-              label="Monto autorizado ($)"
+              label={
+                caseValue?.assistance.assigned.currency === "U"
+                  ? "Monto Disponible (UF)"
+                  : "Monto Disponible ($)"
+              }
               type="text"
               value={caseValue.assistance.assigned.amount.toString()}
               width="190px"

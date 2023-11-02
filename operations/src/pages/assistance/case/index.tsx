@@ -1,4 +1,4 @@
-import { useEffect, Fragment } from "react";
+import { useEffect, Fragment, useState } from "react";
 import { useRouter } from "next/router";
 
 import FloatMenu from "~/components/ui/FloatMenu";
@@ -11,15 +11,28 @@ import { useCase } from "~/store/hooks";
 
 const CasePage = () => {
   const router = useRouter();
+  const { getAll, caseList } = useCase();
 
   const { setTitleUI, filters } = useUI();
   const { reset } = useCase();
 
+  const [selectedRetailValue, setSelectedRetailValue] = useState("");
+  const [selectedStageValue, setSelectedStageValue] = useState("");
+  const [inputRut, setInputRut] = useState("");
+  const [inputText, setInputText] = useState();
   const handleClickHome = () => {
     router.push("/");
   };
 
-  const handleClickRefresh = () => {};
+  const handleClickRefresh = () => {
+    console.log("hgo");
+    getAll(
+      selectedRetailValue,
+      inputRut ? inputRut : "",
+      inputText ? inputText : "",
+      selectedStageValue
+    );
+  };
 
   const handleClickNew = () => {
     reset();
@@ -30,9 +43,24 @@ const CasePage = () => {
     setTitleUI("Casos");
   }, [router]);
 
+  useEffect(() => {
+    getAll("", "", "", "");
+  }, []);
+
   return (
     <Fragment>
-      <CaseTable />
+      <CaseTable
+        caseList={caseList}
+        selectedStageValue={selectedStageValue}
+        selectedRetailValue={selectedRetailValue}
+        setSelectedStageValue={setSelectedStageValue}
+        setSelectedRetailValue={setSelectedRetailValue}
+        setInputText={setInputText}
+        inputText={inputText}
+        setInputRut={setInputRut}
+        inputRut={inputRut}
+        handleClickRefresh={handleClickRefresh}
+      />
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />
         <ButtonIcon iconName="refresh" onClick={handleClickRefresh} />

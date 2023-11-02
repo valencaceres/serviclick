@@ -166,10 +166,20 @@ export const caseStore = create<caseState>((set) => ({
     try {
       set((state) => ({ ...state, isLoading: true }));
 
-      const { data } = await apiInstance.get(
-        `/case/getAll`
-        /* ?retail_id=${retail_id}&applicant_rut=${applicant_rut}&applicant_name=${applicant_name}&stage_id=${stage_id} */
-      );
+      const params = {
+        retail_id: retail_id,
+        applicant_rut: applicant_rut,
+        applicant_name: applicant_name,
+        stage_id: stage_id,
+      };
+
+      const queryParams = Object.entries(params)
+        .filter(([_, value]) => value !== "")
+        .map(([key, value]) => `${key}=${value}`)
+        .join("&");
+
+      const url = `/case/getAll${queryParams ? `?${queryParams}` : ""}`;
+      const { data } = await apiInstance.get(url);
 
       set((state) => ({ ...state, caseList: data, isLoading: false }));
     } catch (e) {

@@ -9,7 +9,6 @@ import useApplicant from "./useApplicant";
 import useAssistance from "./useAsssitance";
 import useSpecialty from "./useSpecialty";
 import useStage from "./useStage";
-import useRetails from "./useRetails";
 
 export {
   useSpecialist,
@@ -23,5 +22,4 @@ export {
   useAssistance,
   useSpecialty,
   useStage,
-  useRetails,
 };

@@ -17,25 +17,29 @@ import {
   TableIcons,
 } from "../../../ui/Table";
 import Icon from "../../../ui/Icon";
-import { useCase, useStage, useRetails } from "~/store/hooks";
+import { useCase } from "~/store/hooks";
 import { useRouter } from "next/router";
 import { ComboBox } from "~/components/ui";
 
-const CaseTable = ({ setShowModal, showModal }: any) => {
-  const { getAll, caseList } = useCase();
+const CaseTable = ({
+  caseList,
+  setSelectedRetailValue,
+  setSelectedStageValue,
+  selectedRetailValue,
+  selectedStageValue,
+  setInputText,
+  inputText,
+  setInputRut,
+  inputRut,
+  handleClickRefresh,
+}: any) => {
+  const { getRetails, retailList, getStatus, statusList } = useCase();
   const router = useRouter();
-  const [search, setSearch] = useState("");
-  const { getAll: getAllStages, stageList } = useStage();
-  const { getAll: getAllRetails, retailList } = useRetails();
-  const [selectedRetailValue, setSelectedRetailValue] = useState("");
-  const [selectedStageValue, setSelectedStageValue] = useState("");
 
   useEffect(() => {
-    getAll("", "", "", "");
-    getAllRetails();
-    getAllStages();
-  }, [getAll, getAllStages, getAllRetails]);
-  console.log(selectedRetailValue);
+    getStatus();
+    getRetails();
+  }, [, getRetails, getStatus]);
   return (
     <Fragment>
       <ContentCell gap="10px">
@@ -47,22 +51,22 @@ const CaseTable = ({ setShowModal, showModal }: any) => {
             placeHolder=":: Seleccione empresa ::"
             onChange={(e: any) => setSelectedRetailValue(e.target.value)}
             data={retailList}
-            dataValue={"retail_id"}
-            dataText={"retail_id"}
+            dataValue={"id"}
+            dataText={"name"}
             width="250px"
           />
 
           <InputText
             label="Rut"
             width="150px"
-            value={search}
-            onChange={setSearch}
+            value={inputRut}
+            onChange={(e: any) => setInputRut(e.target.value)}
           />
           <InputText
             label="Beneficiario"
             width="370px"
-            value={search}
-            onChange={setSearch}
+            value={inputText}
+            onChange={(e: any) => setInputText(e.target.value)}
           />
           <ComboBox
             id="stage_id"
@@ -70,13 +74,17 @@ const CaseTable = ({ setShowModal, showModal }: any) => {
             value={selectedStageValue}
             placeHolder=":: Seleccione estado ::"
             onChange={(e: any) => setSelectedStageValue(e.target.value)}
-            data={stageList}
-            dataValue={"stage_id"}
-            dataText={"stage_id"}
+            data={statusList}
+            dataValue={"id"}
+            dataText={"name"}
             width="250px"
           />
 
-          <ButtonIcon iconName="search" color="gray" />
+          <ButtonIcon
+            onClick={() => handleClickRefresh()}
+            iconName="search"
+            color="gray"
+          />
         </ContentRow>
         <Table width="1100px">
           <TableHeader>

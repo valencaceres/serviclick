@@ -30,6 +30,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
   const { caseValue, setCase, products, assistances, getServicesAndValues } =
     useCase();
   const { user } = useUser();
+
   const [applicant, setApplicant] = useState<IApplicant>();
 
   const handleChangeProduct = (e: any) => {
@@ -74,6 +75,17 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
     });
     setCase({ ...caseValue, values: values || null });
   };
+
+  const checkCompleteFields = () => {
+    if (caseValue.assistance.id !== "" && caseValue.product.id !== "") {
+      return true;
+    }
+    return false;
+  };
+
+  useEffect(() => {
+    setIsEnabledSave(checkCompleteFields());
+  }, [caseValue, setIsEnabledSave]);
 
   useEffect(() => {
     if (caseValue) {
@@ -195,7 +207,11 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
         <ContentRow gap="5px">
           <InputText
             id="assistance"
-            label="Monto autorizado ($)"
+            label={
+              caseValue?.assistance.assigned.currency === "U"
+                ? "Monto Disponible (UF)"
+                : "Monto Disponible ($)"
+            }
             type="text"
             value={caseValue.assistance.assigned.amount.toString()}
             width="190px"

@@ -15,10 +15,13 @@ interface ICaseProductProps {
 }
 
 const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
+  const router = useRouter();
+
   const { caseValue, setCase, getById: getCaseByid, caseId } = useCase();
   const { user } = useUser();
+
   const [applicant, setApplicant] = useState<IApplicant>();
-  const router = useRouter();
+
   const handleChange = (e: any) => {
     const value = e.target.value;
     const id = e.target.id;
@@ -40,6 +43,17 @@ const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
       },
     });
   };
+
+  const checkCompleteFields = () => {
+    if (caseValue.refund && caseValue.refund.amount !== 0) {
+      return true;
+    }
+    return false;
+  };
+
+  useEffect(() => {
+    setIsEnabledSave(checkCompleteFields());
+  }, [caseValue, setIsEnabledSave]);
 
   useEffect(() => {
     if (caseValue) {
@@ -133,7 +147,11 @@ const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
           <ContentRow gap="5px">
             <InputText
               id="assistance"
-              label="Monto autorizado ($)"
+              label={
+                caseValue?.assistance.assigned.currency === "U"
+                  ? "Monto Disponible (UF)"
+                  : "Monto Disponible ($)"
+              }
               type="text"
               value={caseValue.assistance.assigned.amount.toString()}
               width="190px"
@@ -167,14 +185,14 @@ const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
                     currency: "CLP",
                   })}
                   type="text"
-                  width="260px"
+                  width="190px"
                   disabled={true}
                 />
                 <InputText
-                  label="Monto solicitado ($)"
+                  label="Estado"
                   value={caseId?.refund?.status}
                   type="text"
-                  width="260px"
+                  width="335px"
                   disabled={true}
                 />
               </>
@@ -188,7 +206,7 @@ const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
                 }
                 id="amount"
                 type="number"
-                width="260px"
+                width="190px"
                 onChange={handleChange}
               />
             )}

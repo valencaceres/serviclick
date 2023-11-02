@@ -72,7 +72,6 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
     });
   };
   const sendConfirmationVisit = (e: boolean) => {
-    console.log("hgol");
     setCase({
       ...caseValue,
       alliance: {
@@ -104,6 +103,23 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
       },
     });
   };
+
+  const checkCompleteFields = () => {
+    if (
+      caseValue.alliance &&
+      caseValue.alliance.partner_id !== "" &&
+      caseValue.alliance.specialty_id !== "" &&
+      caseValue.alliance.scheduled_date !== "" &&
+      caseValue.alliance.scheduled_time !== ""
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  useEffect(() => {
+    setIsEnabledSave(checkCompleteFields());
+  }, [caseValue, setIsEnabledSave]);
 
   useEffect(() => {
     getAll();
@@ -142,7 +158,6 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   const partner = partnerList.find(
     (partner) => partner?.id === caseValue.alliance?.partner_id
   );
-  console.log(caseValue);
   return (
     <ContentCell gap="20px">
       <ContentCell gap="5px">

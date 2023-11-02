@@ -1,11 +1,9 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { ContentCell } from "~/components/layout/Content";
-import { ComboBox, InputText } from "~/components/ui";
-import { useDistrict } from "~/hooks";
+import { InputText } from "~/components/ui";
 import { IApplicant } from "~/interfaces/applicant";
 import { useCase } from "~/store/hooks";
 import CaseDocumentsTable from "../../Case/CaseDocumentsTable";
-import { useProcedure } from "~/store/hooks";
 import { useToast } from "~/components/ui/use-toast";
 import { useQueryAssistances } from "~/hooks/query";
 import { useQueryClient } from "@tanstack/react-query";
@@ -18,17 +16,19 @@ interface ICaseEventProps {
 }
 
 const CaseAttachment = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
-  const { caseValue, setCase } = useCase();
   const router = useRouter();
   const queryClient = useQueryClient();
+
   const { stage } = router.query;
+  const { toast } = useToast();
+
+  const { caseValue, setCase } = useCase();
   const { getAll: getStages, stageList } = useStage();
   const { mutate: uploadDocuments, isLoading } =
     useQueryAssistances().useUploadDocument();
+
   const [applicant, setApplicant] = useState<IApplicant>();
   const [thisStage, setThisStage] = useState<string>("");
-
-  const { toast } = useToast();
 
   const handleSubmit = (file: any, documentId: any) => {
     const formData = new FormData();

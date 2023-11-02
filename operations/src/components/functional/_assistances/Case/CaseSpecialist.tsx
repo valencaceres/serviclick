@@ -15,6 +15,9 @@ interface ICaseEventProps {
 }
 
 const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
+  const router = useRouter();
+  const minDate = new Date();
+
   const { caseValue, setCase, getById: getCaseByid, caseId } = useCase();
   const { list: districtList } = useDistrict();
   const { qualificationList, getAll } = useQualification();
@@ -23,23 +26,15 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   const { getSpecialistByDistrictAndAsssitance, specialistList } =
     useSpecialist();
   const { user } = useUser();
+
   const [applicant, setApplicant] = useState<IApplicant>();
   const [confirmHour, setConfirmHour] = useState(false);
   const [confirmVisit, setConfirmVisit] = useState(false);
 
-  const router = useRouter();
-  const minDate = new Date();
-
   const handleChange = (e: any) => {
     const value = e.target.value;
     const id = e.target.id;
-    const selectedDistrict = districtList.find(
-      (district) => district.district_name === e.target.value
-    );
-    let districtId;
-    if (selectedDistrict) {
-      districtId = selectedDistrict.id;
-    }
+
     setCase({
       ...caseValue,
       user_id: user?.id || "",
@@ -49,7 +44,7 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
         scheduled_date: caseValue.specialist?.scheduled_date || "",
         scheduled_time: caseValue.specialist?.scheduled_time || "",
         comment: caseValue.specialist?.comment || "",
-        district_id: districtId || "",
+        district_id: caseValue.specialist?.district_id || "",
         district_name: caseValue.specialist?.district_name || "",
         specialist_id: caseValue.specialist?.specialist_id || "",
         specialist_name: caseValue.specialist?.specialist_name || "",
@@ -83,7 +78,6 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
     });
   };
   const sendConfirmationVisit = (e: boolean) => {
-    console.log("hgol");
     setCase({
       ...caseValue,
       specialist: {
@@ -117,6 +111,24 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
       },
     });
   };
+
+  const checkCompleteFields = () => {
+    if (
+      caseValue.specialist &&
+      caseValue.specialist.district_id !== "" &&
+      caseValue.specialist.specialist_id !== "" &&
+      caseValue.specialist.specialty_id !== "" &&
+      caseValue.specialist.scheduled_date !== "" &&
+      caseValue.specialist.scheduled_time !== ""
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  useEffect(() => {
+    setIsEnabledSave(checkCompleteFields());
+  }, [caseValue, setIsEnabledSave]);
 
   useEffect(() => {
     getAll();
@@ -240,14 +252,12 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
             <>
               <ComboBox
                 label="Comuna"
-                value={
-                  caseValue ? caseValue.specialist?.district_name || "" : ""
-                }
+                value={caseValue ? caseValue.specialist?.district_id || "" : ""}
                 placeHolder=":: Seleccione una comuna del evento ::"
                 onChange={handleChange}
                 data={districtList}
-                id="district_name"
-                dataValue={"district_name"}
+                id="district_id"
+                dataValue={"id"}
                 dataText={"district_name"}
                 width="535px"
               />

@@ -37,6 +37,7 @@ const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
   const router = useRouter();
   const { user } = useUser();
   const { setTitleUI, title } = useUI();
+
   const { list: districtList, listAllDistrict } = useDistrict();
   const { setCase, caseValue, getApplicantByRut, resetNoRut, reset } =
     useCase();

@@ -37,6 +37,23 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
     });
   };
 
+  const checkCompleteFields = () => {
+    if (
+      caseValue.event &&
+      caseValue.event.date !== "" &&
+      caseValue.event?.description !== "" &&
+      caseValue.event?.location !== "" &&
+      caseValue.procedure_id !== null
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  useEffect(() => {
+    setIsEnabledSave(checkCompleteFields());
+  }, [caseValue, setIsEnabledSave]);
+
   useEffect(() => {
     getAll();
     if (caseValue) {
@@ -54,6 +71,7 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
       getCaseByid(router.query.id as string);
     }
   }, [router.query.id]);
+
   return (
     <ContentCell gap="20px">
       <ContentCell gap="5px">
@@ -140,7 +158,7 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
               placeHolder=":: Seleccione una comuna ::"
               onChange={handleChange}
               data={districtList}
-              dataValue={"district_name"}
+              dataValue={"id"}
               dataText={"district_name"}
               width="290px"
               enabled={caseId.event?.location === null}

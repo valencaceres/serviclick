@@ -31,7 +31,7 @@ const AssistanceCasePage = () => {
         setTitleUI(
           `Caso${
             caseValue.case_id ? " N°" + caseValue.case_number.toString() : ""
-          } - datos del beneficiario`
+          } - Datos del beneficiario`
         ),
       save: () => SaveApplicant(),
       next: () =>
@@ -47,7 +47,7 @@ const AssistanceCasePage = () => {
         setTitleUI(
           `Caso${
             caseValue.case_id ? " N°" + caseValue.case_number.toString() : ""
-          } - datos del titular`
+          } - Datos del titular`
         ),
       save: () => SaveInsured(),
       next: () =>
@@ -62,10 +62,16 @@ const AssistanceCasePage = () => {
         setTitleUI(
           `Caso${
             caseValue.case_id ? " N°" + caseValue.case_number.toString() : ""
-          } - datos del servicio`
+          } - Datos del servicio`
         ),
-      save: () => SaveProduct(),
-      next: () => router.push(`/assistance/case/event/${caseValue?.case_id}`),
+      save: () => {
+        SaveProduct();
+      },
+      next: () => {
+        if (caseValue?.case_id) {
+          router.push(`/assistance/case/event/${caseValue?.case_id}`);
+        }
+      },
       back: () =>
         router.push(
           `/assistance/case/${
@@ -78,7 +84,7 @@ const AssistanceCasePage = () => {
         setTitleUI(
           `Caso${
             caseValue.case_id ? " N°" + caseValue.case_number.toString() : ""
-          } - datos del evento`
+          } - Datos del evento`
         ),
       save: () => SaveEvent(),
       next: () =>
@@ -158,6 +164,7 @@ const AssistanceCasePage = () => {
     upsert: caseUpsert,
     caseValue,
     isLoading: isLoadingCase,
+    caseId,
   } = useCase();
   const { getAll, procedureList } = useProcedure();
 
@@ -180,7 +187,7 @@ const AssistanceCasePage = () => {
     applicantUpsert("I", caseValue.insured);
   };
 
-  const SaveProduct = () => {
+  const SaveProduct = async () => {
     caseUpsert(caseValue);
   };
 
@@ -218,6 +225,7 @@ const AssistanceCasePage = () => {
       setUrlID(caseValue.case_id ?? null);
     }
   }, [caseValue]);
+
   useEffect(() => {
     if (router.isReady) {
       const { id, stage } = router.query;
