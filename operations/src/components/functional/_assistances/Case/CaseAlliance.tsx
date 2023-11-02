@@ -16,7 +16,13 @@ interface ICaseEventProps {
 }
 
 const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
-  const { caseValue, setCase, getById: getCaseById, caseId } = useCase();
+  const {
+    caseValue,
+    setCase,
+    getById: getCaseById,
+    caseId,
+    upsert: caseUpsert,
+  } = useCase();
   const { partnerList, getPartnersByAssistanceId } = usePartner();
   const { user } = useUser();
   const { qualificationList, getAll } = useQualification();
@@ -53,6 +59,7 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
       },
     });
   };
+
   const sendConfirmation = (e: boolean) => {
     setCase({
       ...caseValue,
@@ -70,6 +77,8 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
         comment: caseValue.alliance?.comment || "",
       },
     });
+    caseUpsert(caseValue);
+    router.push("/assistance/case");
   };
   const sendConfirmationVisit = (e: boolean) => {
     setCase({
@@ -88,6 +97,8 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
         comment: caseValue.alliance?.comment || "",
       },
     });
+    caseUpsert(caseValue);
+    router.push("/assistance/case");
   };
 
   const handleChangeCost = (e: any) => {
@@ -132,13 +143,14 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
     }
     setIsEnabledSave(true);
   }, []);
+
   useEffect(() => {
-    getById(caseValue.assistance.id);
-    if (caseValue.alliance) {
-      setConfirmHour(caseValue.alliance.confirmed);
-      setConfirmVisit(caseValue.alliance.completed);
+    getById(caseId.assistance.id);
+    if (caseId.alliance) {
+      setConfirmHour(caseId.alliance.confirmed);
+      setConfirmVisit(caseId.alliance.completed);
     }
-  }, [caseValue]);
+  }, [caseId]);
 
   useEffect(() => {
     if (assistance.family?.id) {
@@ -158,6 +170,7 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   const partner = partnerList.find(
     (partner) => partner?.id === caseValue.alliance?.partner_id
   );
+  console.log(caseValue);
   return (
     <ContentCell gap="20px">
       <ContentCell gap="5px">
@@ -239,32 +252,30 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
               disabled={true}
             />
           </ContentCell>
-          {caseValue.specialist === null ? (
+          {caseId?.alliance === null ? (
             <>
               <ContentRow gap="5px">
-                {partnerList?.length > 0 ? (
+                {partnerList?.length > 0 && (
                   <ComboBox
                     label="Alianza"
                     placeHolder="Seleccione alianza"
                     data={partnerList}
                     id="partner_id"
-                    width="525px"
+                    width="530px"
                     value={caseValue.alliance?.partner_id ?? ""}
                     onChange={handleChange}
                     dataText="name"
                     dataValue="id"
                     enabled={confirmHour === false}
                   />
-                ) : (
-                  <p className="font-bold text-red-500">Sin alianzas</p>
                 )}
               </ContentRow>
-              {specialties?.length > 0 ? (
+              {specialties?.length > 0 && (
                 <ComboBox
                   label="Especialidad"
                   placeHolder="Seleccione especialidad"
                   data={specialties ?? []}
-                  width="525px"
+                  width="530px"
                   id="specialty_id"
                   value={caseValue.alliance?.specialty_id ?? ""}
                   onChange={handleChange}
@@ -272,8 +283,6 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                   dataValue="id"
                   enabled={confirmHour === false}
                 />
-              ) : (
-                <p className="font-bold text-red-500">Sin especialidades</p>
               )}
             </>
           ) : (
@@ -282,12 +291,14 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                 label="Alianza"
                 value={caseValue?.alliance?.partner_name ?? ""}
                 type="text"
+                width="530px"
                 disabled={true}
               />
               <InputText
                 label="Especialidad"
                 value={caseValue?.alliance?.specialty_name ?? ""}
                 type="text"
+                width="530px"
                 disabled={true}
               />
               <ContentRow
@@ -297,22 +308,38 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
             </>
           )}
           {caseValue.alliance?.partner_id && (
-            <ContentRow gap="5px">
+            <>
               <InputText
                 label="Districto alianza"
                 value={partner?.district ?? ""}
                 type="text"
                 disabled={true}
-                width="260px"
+                width="530px"
               />
               <InputText
                 label="Direccion alianza"
                 value={partner?.address ?? ""}
                 type="text"
                 disabled={true}
-                width="260px"
+                width="530px"
               />
-            </ContentRow>
+              <ContentRow gap="5px">
+                <InputText
+                  label="Email alianza"
+                  value={partner?.email ?? ""}
+                  type="text"
+                  disabled={true}
+                  width="262px"
+                />
+                <InputText
+                  label="Telefono alianza"
+                  value={partner?.phone ?? ""}
+                  type="text"
+                  disabled={true}
+                  width="262px"
+                />
+              </ContentRow>
+            </>
           )}
           <ContentRow
             gap="5px"
@@ -389,7 +416,7 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                 label="Calificación"
                 placeHolder="Seleccione calificación"
                 data={qualificationList || []}
-                width="525px"
+                width="530px"
                 value={caseValue.alliance?.qualification_id ?? ""}
                 onChange={handleChange}
                 dataText="name"
@@ -400,7 +427,7 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                 value={caseValue.alliance?.comment ?? ""}
                 onChange={handleChange}
                 label="Descripcion del evento"
-                width="525px"
+                width="530px"
                 height="110px"
                 id="comment"
               />
@@ -464,7 +491,7 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                 value={caseValue.cost?.comment ?? ""}
                 onChange={handleChangeCost}
                 label="Justificación"
-                width="525px"
+                width="530px"
                 height="110px"
                 id="comment"
               />

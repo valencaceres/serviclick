@@ -44,5 +44,10 @@ SpecialtyRouter.get(
   auth,
   getSpecialtiesByFamilyId
 );
+/* SpecialtyRouter.get(
+  "/getSpecialiesBySpecialist/:specialist_id",
+  auth,
+  getSpecialtiesByFamilyId
+); */
 
 export default SpecialtyRouter;

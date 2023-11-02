@@ -18,6 +18,8 @@ export interface IPartnerItem {
   data: IPartner;
   district: string | null;
   address: string | null;
+  email: string | null;
+  phone: string | null;
 }
 
 export interface IPartnerFamily {

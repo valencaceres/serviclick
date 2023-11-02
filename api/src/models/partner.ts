@@ -346,6 +346,8 @@ const getByAssistance = async (id: string) => {
       `select  distinct
       par.id as id,
       par.name as name,
+      par.email as email,
+      par.phone as phone,
       par.district as district,
       par.address as address
 from    app.partner par
@@ -359,12 +361,14 @@ order   by
     const data =
       result.rows.length > 0
         ? result.rows.map((item: any) => {
-            const { id, name, address, district } = item;
+            const { id, name, address, district, email, phone } = item;
             return {
               id,
               name,
               address,
               district,
+              email,
+              phone,
             };
           })
         : [];

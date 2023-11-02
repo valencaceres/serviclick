@@ -100,7 +100,7 @@ const initialCase: ICase = {
       total_amount: 0,
     },
   },
-  values: null,
+  values: null || [],
   event: null,
   files: null,
   procedure_id: null,
@@ -273,9 +273,7 @@ export const caseStore = create<caseState>((set) => ({
   upsert: async (data: ICase) => {
     try {
       set((state) => ({ ...state, isLoading: true }));
-      console.log(data);
       const { data: response } = await apiInstance.post(`/case/upsert`, data);
-      console.log(response, data);
       set((state) => ({ ...state, case: response, isLoading: false }));
     } catch (e) {
       set((state) => ({

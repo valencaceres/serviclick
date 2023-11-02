@@ -151,6 +151,7 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
               onChange={handleChange}
               maxTime={minDate?.toISOString().split("T")[0]}
               disabled={caseId?.event?.date != null}
+              timeFormat=""
             />
 
             <ComboBox

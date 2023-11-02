@@ -446,7 +446,7 @@ const getByAssistanceAndDistrict: any = async (
     const result = await pool.query(
       `SELECT DISTINCT ON
         (app.person.id)
-        app.person.id,
+        app.specialist.id,
         app.person.rut,
         app.person.name,
         app.person.paternallastname,
