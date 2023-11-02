@@ -13,8 +13,9 @@ interface ICaseEventProps {
 }
 
 const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
-  const { caseValue, setCase, getById: getCaseByid, caseId } = useCase();
+  const minDate = new Date();
 
+  const { caseValue, setCase, getById: getCaseByid, caseId } = useCase();
   const { list: districtList } = useDistrict();
   const [applicant, setApplicant] = useState<IApplicant>();
   const { procedureList, getAll } = useProcedure();
@@ -148,6 +149,7 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
               type="date"
               width="234px"
               onChange={handleChange}
+              maxTime={minDate?.toISOString().split("T")[0]}
               disabled={caseId?.event?.date != null}
             />
 
