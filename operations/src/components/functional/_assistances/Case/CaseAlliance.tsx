@@ -255,35 +255,31 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
           {caseId?.alliance === null ? (
             <>
               <ContentRow gap="5px">
-                {partnerList?.length > 0 && (
-                  <ComboBox
-                    label="Alianza"
-                    placeHolder="Seleccione alianza"
-                    data={partnerList}
-                    id="partner_id"
-                    width="530px"
-                    value={caseValue.alliance?.partner_id ?? ""}
-                    onChange={handleChange}
-                    dataText="name"
-                    dataValue="id"
-                    enabled={confirmHour === false}
-                  />
-                )}
-              </ContentRow>
-              {specialties?.length > 0 && (
                 <ComboBox
-                  label="Especialidad"
-                  placeHolder="Seleccione especialidad"
-                  data={specialties ?? []}
+                  label="Alianza"
+                  placeHolder="Seleccione alianza"
+                  data={partnerList}
+                  id="partner_id"
                   width="530px"
-                  id="specialty_id"
-                  value={caseValue.alliance?.specialty_id ?? ""}
+                  value={caseValue.alliance?.partner_id ?? ""}
                   onChange={handleChange}
                   dataText="name"
                   dataValue="id"
                   enabled={confirmHour === false}
                 />
-              )}
+              </ContentRow>
+              <ComboBox
+                label="Especialidad"
+                placeHolder="Seleccione especialidad"
+                data={specialties ?? []}
+                width="530px"
+                id="specialty_id"
+                value={caseValue.alliance?.specialty_id ?? ""}
+                onChange={handleChange}
+                dataText="name"
+                dataValue="id"
+                enabled={confirmHour === false}
+              />
             </>
           ) : (
             <>

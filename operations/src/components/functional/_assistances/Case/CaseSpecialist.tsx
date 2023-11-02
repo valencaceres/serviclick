@@ -267,7 +267,7 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
         <ContentCell gap="5px">
           <ContentCell gap="5px">
             <InputText
-              value="Designación de alianza"
+              value="Envio de especialista"
               label="Procedimiento"
               disabled={true}
             />
@@ -286,35 +286,31 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                 width="530px"
               />
               <ContentRow gap="5px">
-                {specialistList?.length > 0 && (
-                  <ComboBox
-                    label="Especialista"
-                    placeHolder="Seleccione especialista"
-                    data={specialistList}
-                    id="specialist_id"
-                    width="530px"
-                    value={caseValue.specialist?.specialist_id ?? ""}
-                    onChange={handleChange}
-                    dataText="name"
-                    dataValue="id"
-                    enabled={confirmHour === false}
-                  />
-                )}
-              </ContentRow>
-              {specialties?.length > 0 && (
                 <ComboBox
-                  label="Especialidad"
-                  placeHolder="Seleccione especialidad"
-                  data={specialties ?? []}
+                  label="Especialista"
+                  placeHolder="Seleccione especialista"
+                  data={specialistList}
+                  id="specialist_id"
                   width="530px"
-                  id="specialty_id"
-                  value={caseValue.specialist?.specialty_id ?? ""}
+                  value={caseValue.specialist?.specialist_id ?? ""}
                   onChange={handleChange}
                   dataText="name"
                   dataValue="id"
                   enabled={confirmHour === false}
                 />
-              )}
+              </ContentRow>
+              <ComboBox
+                label="Especialidad"
+                placeHolder="Seleccione especialidad"
+                data={specialties ?? []}
+                width="530px"
+                id="specialty_id"
+                value={caseValue.specialist?.specialty_id ?? ""}
+                onChange={handleChange}
+                dataText="name"
+                dataValue="id"
+                enabled={confirmHour === false}
+              />
             </>
           ) : (
             <>

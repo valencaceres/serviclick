@@ -101,6 +101,26 @@ const getSpecialtiesByFamilyId: any = async (family_id: string) => {
   }
 };
 
+const getSpecialtiesBySpecialistAndAssistanceId: any = async (
+  specialist_id: string,
+  assistance_id: string
+) => {
+  try {
+    const result = await pool.query(
+      `
+      SELECT s.id AS specialty_id, s.name AS specialty_name
+FROM app.specialty AS s
+INNER JOIN app.specialistspecialty AS ss ON s.id = ss.specialty_id
+INNER JOIN app.specialist AS sp ON ss.specialist_id = sp.id
+INNER JOIN app.assistance AS a ON a.family_id = s.family_id
+WHERE a.id = $1 AND sp.id = $2;`,
+      [assistance_id, specialist_id]
+    );
+    return { success: true, data: result.rows, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
 const getFamilies: any = async (values: any) => {
   try {
     const result = await pool.query(`
@@ -126,4 +146,5 @@ export {
   getAllSpecialties,
   getSpecialtiesByFamilyId,
   getFamilies,
+  getSpecialtiesBySpecialistAndAssistanceId,
 };

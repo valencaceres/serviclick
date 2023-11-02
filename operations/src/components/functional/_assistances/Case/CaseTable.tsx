@@ -1,5 +1,7 @@
 import { useState, Fragment, useEffect } from "react";
 
+import { unFormatRut, formatRut } from "~/utils";
+
 import {
   ContentCell,
   ContentRow,
@@ -40,6 +42,21 @@ const CaseTable = ({
     getStatus();
     getRetails();
   }, [, getRetails, getStatus]);
+
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+
+    const unformattedRut = unFormatRut(value);
+    setInputRut(unformattedRut);
+  };
+
+  const handleBlur = (e: any) => {
+    const value = e.target.value;
+
+    const formattedRut = formatRut(value);
+    setInputRut(formattedRut);
+  };
+
   return (
     <Fragment>
       <ContentCell gap="10px">
@@ -60,13 +77,21 @@ const CaseTable = ({
             label="Rut"
             width="150px"
             value={inputRut}
-            onChange={(e: any) => setInputRut(e.target.value)}
+            onBlur={handleBlur}
+            onFocus={handleFocus}
+            onChange={(e: any) => {
+              setInputRut(e.target.value);
+              setInputText("");
+            }}
           />
           <InputText
             label="Beneficiario"
             width="370px"
             value={inputText}
-            onChange={(e: any) => setInputText(e.target.value)}
+            onChange={(e: any) => {
+              setInputText(e.target.value);
+              setInputRut("");
+            }}
           />
           <ComboBox
             id="stage_id"
