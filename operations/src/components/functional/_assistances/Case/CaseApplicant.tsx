@@ -65,7 +65,7 @@ const CaseApplicant = ({
     if (
       applicant &&
       applicant.rut !== "" &&
-      applicant.birthDate !== "" &&
+      applicant.birthDate !== null &&
       applicant.name !== "" &&
       applicant.paternalLastName !== "" &&
       applicant.maternalLastName !== "" &&

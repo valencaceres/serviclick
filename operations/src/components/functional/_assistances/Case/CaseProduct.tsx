@@ -67,13 +67,15 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
   };
 
   const handleChangeValue = (e: any, id: string) => {
-    const values = caseValue.values?.map((item) => {
-      if (item.id === id) {
-        item.value = e.target.value || "";
-      }
-      return item;
-    });
-    setCase({ ...caseValue, values: values || null });
+    if (Array.isArray(caseValue.values)) {
+      const values = caseValue.values.map((item) => {
+        if (item.id === id) {
+          item.value = e.target.value || "";
+        }
+        return item;
+      });
+      setCase({ ...caseValue, values });
+    }
   };
 
   const checkCompleteFields = () => {
@@ -97,7 +99,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
     }
     setIsEnabledSave(true);
   }, []);
-
+  console.log(caseValue);
   return (
     <ContentCell gap="20px">
       <ContentCell gap="5px">
@@ -265,6 +267,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
           {caseValue.values &&
           caseValue.values.length > 0 &&
           caseValue.values.length > 0 ? (
+            Array.isArray(caseValue.values) &&
             caseValue.values.map((item, idx: number) => (
               <TableRow key={item.id}>
                 <TableCell width="250px" align="left">

@@ -125,7 +125,7 @@ export interface ICase {
   beneficiary: IApplicant | null;
   product: IProduct;
   assistance: IAssistance;
-  values: IValue[] | null;
+  values: IValue[] | string;
   event: IEvent | null;
   files: IFile[] | null;
   procedure_id: string | null;
