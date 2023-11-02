@@ -7,14 +7,15 @@ import ButtonIcon from "~/components/ui/ButtonIcon";
 import CaseTable from "~/components/functional/_assistances/Case/CaseTable";
 
 import { useUI } from "~/hooks";
-import { useCase } from "~/store/hooks";
+import { useCase, useApplicant } from "~/store/hooks";
 
 const CasePage = () => {
   const router = useRouter();
-  const { getAll, caseList } = useCase();
+
+  const { reset: resetApplicant } = useApplicant();
+  const { getAll, caseList, reset: resetCase } = useCase();
 
   const { setTitleUI, filters } = useUI();
-  const { reset } = useCase();
 
   const [selectedRetailValue, setSelectedRetailValue] = useState("");
   const [selectedStageValue, setSelectedStageValue] = useState("");
@@ -25,7 +26,6 @@ const CasePage = () => {
   };
 
   const handleClickRefresh = () => {
-    console.log("hgo");
     getAll(
       selectedRetailValue,
       inputRut ? inputRut : "",
@@ -35,7 +35,8 @@ const CasePage = () => {
   };
 
   const handleClickNew = () => {
-    reset();
+    resetApplicant();
+    resetCase();
     router.push("/assistance/case/applicant/new");
   };
 

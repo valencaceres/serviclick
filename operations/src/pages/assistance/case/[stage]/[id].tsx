@@ -33,7 +33,7 @@ const AssistanceCasePage = () => {
             caseValue.case_id ? " N°" + caseValue.case_number.toString() : ""
           } - Datos del beneficiario`
         ),
-      save: () => SaveApplicant(),
+      save: () => saveApplicant(),
       next: () =>
         router.push(
           `/assistance/case/${
@@ -49,7 +49,7 @@ const AssistanceCasePage = () => {
             caseValue.case_id ? " N°" + caseValue.case_number.toString() : ""
           } - Datos del titular`
         ),
-      save: () => SaveInsured(),
+      save: () => saveInsured(),
       next: () =>
         router.push(`/assistance/case/product/${caseValue?.case_id ?? "new"}`),
       back: () =>
@@ -65,7 +65,7 @@ const AssistanceCasePage = () => {
           } - Datos del servicio`
         ),
       save: () => {
-        SaveProduct();
+        saveProduct();
       },
       next: () => {
         if (caseValue?.case_id) {
@@ -86,7 +86,7 @@ const AssistanceCasePage = () => {
             caseValue.case_id ? " N°" + caseValue.case_number.toString() : ""
           } - Datos del evento`
         ),
-      save: () => SaveEvent(),
+      save: () => saveStage(),
       next: () =>
         router.push(`/assistance/case/attachment/${caseValue?.case_id}`),
       back: () => router.push(`/assistance/case/product/${caseValue?.case_id}`),
@@ -98,7 +98,7 @@ const AssistanceCasePage = () => {
             caseValue.case_id ? " N°" + caseValue.case_number.toString() : ""
           } - Antecedentes (adjuntos)`
         ),
-      save: () => SaveEvent(),
+      save: () => saveStage(),
       next: () =>
         router.push(
           `/assistance/case/${matchingProcedure?.code}/${caseValue?.case_id}`
@@ -112,7 +112,7 @@ const AssistanceCasePage = () => {
             caseValue.case_id ? " N°" + caseValue.case_number.toString() : ""
           } - Reembolso`
         ),
-      save: () => SaveEvent(),
+      save: () => saveStage(),
       next: () => router.push(`/assistance/case`),
       back: () =>
         router.push(`/assistance/case/attachment/${caseValue.case_id}`),
@@ -124,7 +124,7 @@ const AssistanceCasePage = () => {
             caseValue.case_id ? " N°" + caseValue.case_number.toString() : ""
           } - Devolución IMED`
         ),
-      save: () => SaveEvent(),
+      save: () => saveStage(),
       next: () => router.push(`/assistance/case`),
       back: () =>
         router.push(`/assistance/case/attachment/${caseValue.case_id}`),
@@ -136,7 +136,7 @@ const AssistanceCasePage = () => {
             caseValue.case_id ? " N°" + caseValue.case_number.toString() : ""
           } - Envío de especialista`
         ),
-      save: () => SaveEvent(),
+      save: () => saveStage(),
       next: () => router.push(`/assistance/case`),
       back: () =>
         router.push(`/assistance/case/attachment/${caseValue.case_id}`),
@@ -148,7 +148,7 @@ const AssistanceCasePage = () => {
             caseValue.case_id ? " N°" + caseValue.case_number.toString() : ""
           } - Designación de alianza`
         ),
-      save: () => SaveEvent(),
+      save: () => saveStage(),
       next: () => router.push(`/assistance/case`),
       back: () =>
         router.push(`/assistance/case/attachment/${caseValue.case_id}`),
@@ -157,8 +157,11 @@ const AssistanceCasePage = () => {
 
   const { setTitleUI } = useUI();
   const { listAllDistrict } = useDistrict();
-  const { upsert: applicantUpsert, isLoading: isLoadingApplicant } =
-    useApplicant();
+  const {
+    upsert: applicantUpsert,
+    isLoading: isLoadingApplicant,
+    applicant,
+  } = useApplicant();
   const {
     getById: getCaseById,
     upsert: caseUpsert,
@@ -171,10 +174,15 @@ const AssistanceCasePage = () => {
   const [isEnabledSave, setIsEnabledSave] = useState<boolean>(false);
   const [urlID, setUrlID] = useState<string | null>(null);
   const [itWasFound, setItWasFound] = useState(false);
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [stageKey, setStageKey] = useState<Stage>("applicant");
 
-  const SaveApplicant = () => {
-    if (caseValue) {
+  const matchingProcedure = procedureList.find(
+    (procedure) => procedure.id === caseValue.procedure_id
+  );
+
+  const saveApplicant = () => {
+    if (caseValue.type) {
       const applicant =
         caseValue?.type === "I" ? caseValue.insured : caseValue.beneficiary;
       if (applicant) {
@@ -183,15 +191,17 @@ const AssistanceCasePage = () => {
     }
   };
 
-  const SaveInsured = () => {
+  const saveInsured = () => {
     applicantUpsert("I", caseValue.insured);
   };
 
-  const SaveProduct = async () => {
+  const saveProduct = async () => {
+    setIsProcessing(true);
     caseUpsert(caseValue);
   };
 
-  const SaveEvent = () => {
+  const saveStage = () => {
+    setIsProcessing(true);
     caseUpsert(caseValue);
   };
 
@@ -205,7 +215,7 @@ const AssistanceCasePage = () => {
 
   const handleClickSave = () => {
     stateMachine[stageKey].save();
-    stateMachine[stageKey].next();
+    //stateMachine[stageKey].next();
   };
 
   useEffect(() => {
@@ -214,29 +224,43 @@ const AssistanceCasePage = () => {
     // stateMachine[stageKey].onLoad();
   }, []);
 
-  const matchingProcedure = procedureList.find(
-    (procedure) => procedure.id === caseValue.procedure_id
-  );
+  useEffect(() => {
+    if (applicant.id) {
+      stateMachine[stageKey].next();
+    }
+  }, [applicant]);
 
   useEffect(() => {
     setItWasFound(false);
+
     if (caseValue.case_id !== null) {
       setItWasFound(true);
       setUrlID(caseValue.case_id ?? null);
+
+      if (isProcessing) {
+        // setIsProcessing(false);
+        stateMachine[stageKey].next();
+      }
     }
   }, [caseValue]);
 
   useEffect(() => {
+    stateMachine[stageKey].onLoad();
+  }, [stageKey]);
+
+  useEffect(() => {
+    setIsProcessing(false);
     if (router.isReady) {
       const { id, stage } = router.query;
+
       if (id) {
         setUrlID(id.toString());
         if (id.toString() !== "new") {
           getCaseById(id.toString());
         }
+        stateMachine[stageKey].onLoad();
       }
       setStageKey(stage as Stage);
-      stateMachine[stageKey].onLoad();
     }
   }, [router]);
 
