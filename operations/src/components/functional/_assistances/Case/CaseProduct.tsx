@@ -18,7 +18,7 @@ import {
 } from "~/components/ui";
 
 import { useCase } from "~/store/hooks";
-
+import { useUser } from "@clerk/nextjs";
 import { IApplicant } from "../../../../interfaces/applicant";
 
 interface ICaseProductProps {
@@ -29,7 +29,7 @@ interface ICaseProductProps {
 const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
   const { caseValue, setCase, products, assistances, getServicesAndValues } =
     useCase();
-
+  const { user } = useUser();
   const [applicant, setApplicant] = useState<IApplicant>();
 
   const handleChangeProduct = (e: any) => {
@@ -47,6 +47,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
       );
       setCase({
         ...caseValue,
+        user_id: user?.id || "",
         product: selectedProduct || caseValue.product,
       });
     }

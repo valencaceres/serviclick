@@ -13,7 +13,6 @@ import {
   isValidPhone,
   isValidEmail,
 } from "~/utils";
-
 import { useUI, useDistrict } from "~/hooks";
 import { useCase } from "~/store/hooks";
 
@@ -36,7 +35,7 @@ interface ICaseInsuredProps {
 
 const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
   const router = useRouter();
-
+  const { user } = useUser();
   const { setTitleUI, title } = useUI();
   const { list: districtList, listAllDistrict } = useDistrict();
   const { setCase, caseValue, getApplicantByRut, resetNoRut, reset } =
@@ -96,6 +95,7 @@ const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
       default:
         setCase({
           ...caseValue,
+          user_id: user?.id || "",
           insured: { ...caseValue.insured, [id]: value },
         });
         return;

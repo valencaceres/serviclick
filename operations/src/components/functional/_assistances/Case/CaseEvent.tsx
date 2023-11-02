@@ -6,7 +6,7 @@ import TextArea from "~/components/ui/TextArea/TextArea";
 import { useDistrict } from "~/hooks";
 import { IApplicant } from "~/interfaces/applicant";
 import { useCase, useProcedure } from "~/store/hooks";
-
+import { useUser } from "@clerk/nextjs";
 interface ICaseEventProps {
   setIsEnabledSave: (isEnabled: boolean) => void;
   itWasFound: boolean;
@@ -18,7 +18,7 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   const { list: districtList } = useDistrict();
   const [applicant, setApplicant] = useState<IApplicant>();
   const { procedureList, getAll } = useProcedure();
-
+  const { user } = useUser();
   const router = useRouter();
 
   const handleChange = (e: any) => {
@@ -26,6 +26,7 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
     const id = e.target.id;
     setCase({
       ...caseValue,
+      user_id: user?.id || "",
       event: {
         date: caseValue.event?.date || "",
         location: caseValue.event?.location || "",

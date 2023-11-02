@@ -9,6 +9,7 @@ import { useQualification } from "~/store/hooks";
 import { useRouter } from "next/router";
 import { useAssistance } from "~/store/hooks";
 import { useSpecialty } from "~/store/hooks";
+import { useUser } from "@clerk/nextjs";
 interface ICaseEventProps {
   setIsEnabledSave: (isEnabled: boolean) => void;
   itWasFound: boolean;
@@ -17,6 +18,7 @@ interface ICaseEventProps {
 const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   const { caseValue, setCase, getById: getCaseById, caseId } = useCase();
   const { partnerList, getPartnersByAssistanceId } = usePartner();
+  const { user } = useUser();
   const { qualificationList, getAll } = useQualification();
   const { assistance, getById } = useAssistance();
   const { specialties, getByFamilyId } = useSpecialty();
@@ -34,6 +36,7 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
 
     setCase({
       ...caseValue,
+      user_id: user?.id || "",
       alliance: {
         completed: confirmVisit,
         confirmed: confirmHour,

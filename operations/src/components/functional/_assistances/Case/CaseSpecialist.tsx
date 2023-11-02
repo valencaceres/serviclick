@@ -8,6 +8,7 @@ import TextArea from "~/components/ui/TextArea/TextArea";
 import { useSpecialist } from "~/store/hooks";
 import { useQualification } from "~/store/hooks";
 import { useRouter } from "next/router";
+import { useUser } from "@clerk/nextjs";
 interface ICaseEventProps {
   setIsEnabledSave: (isEnabled: boolean) => void;
   itWasFound: boolean;
@@ -21,7 +22,7 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   const { specialties, getByFamilyId } = useSpecialty();
   const { getSpecialistByDistrictAndAsssitance, specialistList } =
     useSpecialist();
-
+  const { user } = useUser();
   const [applicant, setApplicant] = useState<IApplicant>();
   const [confirmHour, setConfirmHour] = useState(false);
   const [confirmVisit, setConfirmVisit] = useState(false);
@@ -41,6 +42,7 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
     }
     setCase({
       ...caseValue,
+      user_id: user?.id || "",
       specialist: {
         completed: confirmVisit,
         confirmed: confirmHour,

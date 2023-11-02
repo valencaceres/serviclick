@@ -8,7 +8,7 @@ import { useCase } from "~/store/hooks";
 
 import { IApplicant } from "../../../../interfaces/applicant";
 import { useRouter } from "next/router";
-
+import { useUser } from "@clerk/nextjs";
 interface ICaseProductProps {
   setIsEnabledSave: (isEnabled: boolean) => void;
   itWasFound: boolean;
@@ -18,7 +18,7 @@ const CaseImed = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
   const { caseValue, setCase, getById: getCaseByid, caseId } = useCase();
   const router = useRouter();
   const [applicant, setApplicant] = useState<IApplicant>();
-
+  const { user } = useUser();
   const handleChange = (e: any) => {
     const value = e.target.value;
     const id = e.target.id;
@@ -28,6 +28,7 @@ const CaseImed = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
 
     setCase({
       ...caseValue,
+      user_id: user?.id || "",
       refund: {
         amount: caseValue.refund?.amount || 0,
         imed_amount:

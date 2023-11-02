@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { useUser } from "@clerk/nextjs";
 
 import { ContentCell, ContentRow } from "../../../layout/Content";
 
@@ -18,7 +17,7 @@ import {
   isValidPhone,
   isValidEmail,
 } from "~/utils";
-
+import { useUser } from "@clerk/nextjs";
 import { useUI, useDistrict } from "~/hooks";
 import { useCase } from "~/store/hooks";
 
@@ -49,7 +48,7 @@ const CaseApplicant = ({
   const { list: districtList, listAllDistrict } = useDistrict();
   const { setCase, caseValue, getApplicantByRut, resetNoRut, reset } =
     useCase();
-
+  const { user } = useUser();
   const [formValues, setFormValues] = useState();
   const [applicantType, setApplicantType] = useState<"insured" | "beneficiary">(
     "insured"
@@ -101,6 +100,7 @@ const CaseApplicant = ({
     }
     setCase({
       ...caseValue,
+      user_id: user?.id || "",
       [applicantType]: { ...caseValue[applicantType], [id]: value },
     });
   };
