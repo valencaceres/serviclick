@@ -179,7 +179,7 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
             label="Procedimiento"
             id="procedure_id"
             placeHolder="Seleccione el procedimiento"
-            width="525px"
+            width="530px"
             value={caseValue.procedure_id ?? ""}
             onChange={handleChange}
             data={procedureList}

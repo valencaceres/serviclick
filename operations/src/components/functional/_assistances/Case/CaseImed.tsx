@@ -195,23 +195,27 @@ const CaseImed = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
                     currency: "CLP",
                   })}
                   type="text"
-                  width="260px"
+                  width="190px"
                   disabled={true}
                 />
                 <InputText
-                  label="Monto solicitado ($)"
+                  label="Estado"
                   value={caseId?.refund?.status}
                   type="text"
-                  width="260px"
+                  width="335px"
                   disabled={true}
                 />
               </>
             ) : (
               <InputText
                 label="Monto solicitado ($)"
-                value={(caseValue?.refund?.imed_amount ?? "").toString()}
+                value={
+                  caseValue && caseValue.refund?.imed_amount
+                    ? caseValue.refund?.imed_amount.toString()
+                    : ""
+                }
                 type="text"
-                width="260px"
+                width="190px"
                 id="imed_amount"
                 onChange={handleChange}
               />
