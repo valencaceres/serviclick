@@ -27,7 +27,7 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   const { user } = useUser();
   const { qualificationList, getAll } = useQualification();
   const { assistance, getById } = useAssistance();
-  const { specialties, getByFamilyId } = useSpecialty();
+  const { specialties, getSpecialitiesByPartner } = useSpecialty();
 
   const [applicant, setApplicant] = useState<IApplicant>();
   const [confirmHour, setConfirmHour] = useState(false);
@@ -151,13 +151,10 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   }, [caseId]);
 
   useEffect(() => {
-    if (assistance.family?.id) {
-      getByFamilyId(assistance.family?.id);
-    }
     if (assistance.id) {
       getPartnersByAssistanceId(assistance?.id);
     }
-  }, [assistance]);
+  }, [assistance?.id]);
 
   useEffect(() => {
     if (router.query.id) {
@@ -165,10 +162,18 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
     }
   }, [router.query.id]);
 
+  useEffect(() => {
+    if (caseValue.assistance && caseValue.alliance?.partner_id) {
+      getSpecialitiesByPartner(
+        caseValue.alliance?.partner_id,
+        caseValue.assistance.id
+      );
+    }
+  }, [caseValue.assistance, caseValue.alliance?.partner_id]);
+
   const partner = partnerList.find(
     (partner) => partner?.id === caseValue.alliance?.partner_id
   );
-  console.log(caseValue);
   return (
     <ContentCell gap="20px">
       <ContentCell gap="5px">
@@ -274,8 +279,8 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                 id="specialty_id"
                 value={caseValue.alliance?.specialty_id ?? ""}
                 onChange={handleChange}
-                dataText="name"
-                dataValue="id"
+                dataText={"specialty_name"}
+                dataValue={"specialty_id"}
                 enabled={confirmHour === false}
               />
             </>

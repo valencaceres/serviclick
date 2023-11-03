@@ -130,6 +130,29 @@ const getSpecialitiesByAssistance = async (req: any, res: any) => {
   res.status(200).json(specialistResponse.data);
 };
 
+const getSpecialtiesByPartner = async (req: any, res: any) => {
+  const { id, assistance_id } = req.params;
+  const specialistResponse = await Specialty.getSpecialitiesByPartner(
+    id,
+    assistance_id
+  );
+
+  if (!specialistResponse.success) {
+    createLogger.error({
+      model: "specialist/getSpecialtiesByPartner",
+      error: specialistResponse.error,
+    });
+    res.status(500).json({ error: "Error retrieving specialist" });
+    return;
+  }
+
+  createLogger.info({
+    controller: "specialist/getSpecialtiesByPartner",
+    message: "OK",
+  });
+  res.status(200).json(specialistResponse.data);
+};
+
 const getSpecialtiesByFamilyId = async (req: any, res: any) => {
   const { family_id } = req.params;
   const specialtyResponse = await Specialty.getSpecialtiesByFamilyId(family_id);
@@ -178,4 +201,5 @@ export {
   getSpecialtiesByFamilyId,
   getFamilies,
   getSpecialitiesByAssistance,
+  getSpecialtiesByPartner,
 };

@@ -10,6 +10,7 @@ import {
   getSpecialtiesByFamilyId,
   getFamilies,
   getSpecialitiesByAssistance,
+  getSpecialtiesByPartner,
 } from "../controllers/specialty";
 import isAuthenticated from "../middlewares/isAuthenticated";
 import isAdmin from "../middlewares/isAdmin";
@@ -48,5 +49,9 @@ SpecialtyRouter.get(
 SpecialtyRouter.get(
   "/getSpecialitiesByAssistance/:id/:assistance_id",
   getSpecialitiesByAssistance
+);
+SpecialtyRouter.get(
+  "/getSpecialitiesByPartner/:id/:assistance_id",
+  getSpecialtiesByPartner
 );
 export default SpecialtyRouter;
