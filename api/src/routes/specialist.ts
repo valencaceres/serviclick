@@ -13,6 +13,7 @@ import {
   getBySpecialtyId,
   getByName,
   getByAssistanceAndDistrict,
+  getSpecialitiesByAssistance,
 } from "../controllers/specialist";
 import isAuthenticated from "../middlewares/isAuthenticated";
 import isAdmin from "../middlewares/isAdmin";
@@ -41,8 +42,11 @@ SpecialistRouter.get("/getBySpecialtyId/:id", auth, getBySpecialtyId);
 SpecialistRouter.get("/getByName/:name", auth, getByName);
 SpecialistRouter.get(
   "/getByAssistanceAndDistrict/:district/:assistance_id",
-
   getByAssistanceAndDistrict
+);
+SpecialistRouter.get(
+  "/getSpecialitiesByAssistance/:id/:assistance_id",
+  getSpecialitiesByAssistance
 );
 
 export default SpecialistRouter;
