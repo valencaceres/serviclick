@@ -170,13 +170,13 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   }, [caseValue]);
 
   useEffect(() => {
-    if (caseValue.assistance && caseValue.specialist?.district_id) {
+    if (caseValue.assistance && caseValue.event?.location) {
       getSpecialistByDistrictAndAsssitance(
-        caseValue.specialist?.district_id,
+        caseValue.event.location,
         caseValue.assistance.id
       );
     }
-  }, [caseValue.assistance, caseValue.specialist?.district_id]);
+  }, [caseValue.assistance, caseValue.event?.location]);
 
   useEffect(() => {
     if (caseValue.assistance && caseValue.specialist?.specialist_id) {
@@ -192,6 +192,8 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
       getCaseByid(router.query.id as string);
     }
   }, [router.query.id]);
+
+  console.log(specialistList);
 
   return (
     <ContentCell gap="20px">
