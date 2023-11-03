@@ -341,29 +341,6 @@ const getByAssistanceAndDistrict = async (req: any, res: any) => {
   res.status(200).json(specialistResponse.data);
 };
 
-const getSpecialitiesByAssistance = async (req: any, res: any) => {
-  const { id, assistance_id } = req.params;
-  const specialistResponse = await Specialist.getSpecialitiesByAssistance(
-    id,
-    assistance_id
-  );
-
-  if (!specialistResponse.success) {
-    createLogger.error({
-      model: "specialist/getSpecialitiesByAssistance",
-      error: specialistResponse.error,
-    });
-    res.status(500).json({ error: "Error retrieving specialist" });
-    return;
-  }
-
-  createLogger.info({
-    controller: "specialist/getSpecialitiesByAssistance",
-    message: "OK",
-  });
-  res.status(200).json(specialistResponse.data);
-};
-
 export {
   create,
   deleteById,
@@ -376,7 +353,6 @@ export {
   getBySpecialtyId,
   getByName,
   getByAssistanceAndDistrict,
-  getSpecialitiesByAssistance,
 };
 
 const functionGetById = async (id: string) => {
