@@ -27,8 +27,7 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   } = useCase();
   const { list: districtList } = useDistrict();
   const { qualificationList, getAll } = useQualification();
-  const { assistance, getById } = useAssistance();
-  const { specialties, getByFamilyId } = useSpecialty();
+  const { specialties, getSpecialitiesByAssistance } = useSpecialty();
   const { getSpecialistByDistrictAndAsssitance, specialistList } =
     useSpecialist();
   const { user } = useUser();
@@ -40,7 +39,6 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   const handleChange = (e: any) => {
     const value = e.target.value;
     const id = e.target.id;
-    let location;
     let locationValue;
     if (id === "district_id") {
       location = id;
@@ -78,7 +76,7 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   };
 
   const sendConfirmation = (e: boolean) => {
-    setCase({
+    caseUpsert({
       ...caseValue,
       specialist: {
         completed: confirmVisit,
@@ -96,11 +94,10 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
         specialty_name: caseValue.specialist?.specialty_name || "",
       },
     });
-    caseUpsert(caseValue);
     router.push("/assistance/case");
   };
   const sendConfirmationVisit = (e: boolean) => {
-    setCase({
+    caseUpsert({
       ...caseValue,
       specialist: {
         completed: e,
@@ -118,6 +115,7 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
         specialty_name: caseValue.specialist?.specialty_name || "",
       },
     });
+    router.push("/assistance/case");
   };
 
   const handleChangeCost = (e: any) => {
@@ -165,18 +163,11 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   }, []);
 
   useEffect(() => {
-    getById(caseValue.assistance.id);
     if (caseValue.specialist) {
       setConfirmHour(caseValue.specialist.confirmed);
       setConfirmVisit(caseValue.specialist.completed);
     }
   }, [caseValue]);
-
-  useEffect(() => {
-    if (assistance.family?.id) {
-      getByFamilyId(assistance.family?.id);
-    }
-  }, [assistance]);
 
   useEffect(() => {
     if (caseValue.assistance && caseValue.specialist?.district_id) {
@@ -188,12 +179,19 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   }, [caseValue.assistance, caseValue.specialist?.district_id]);
 
   useEffect(() => {
+    if (caseValue.assistance && caseValue.specialist?.specialist_id) {
+      getSpecialitiesByAssistance(
+        caseValue.specialist?.specialist_id,
+        caseValue.assistance.id
+      );
+    }
+  }, [caseValue.assistance, caseValue.specialist?.specialist_id]);
+
+  useEffect(() => {
     if (router.query.id) {
       getCaseByid(router.query.id as string);
     }
   }, [router.query.id]);
-
-  console.log("list:", specialistList, "caseValue:", caseValue);
 
   return (
     <ContentCell gap="20px">
@@ -294,8 +292,8 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                   width="530px"
                   value={caseValue.specialist?.specialist_id ?? ""}
                   onChange={handleChange}
-                  dataText="name"
-                  dataValue="id"
+                  dataText={"name"}
+                  dataValue={"id"}
                   enabled={confirmHour === false}
                 />
               </ContentRow>
@@ -307,8 +305,8 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                 id="specialty_id"
                 value={caseValue.specialist?.specialty_id ?? ""}
                 onChange={handleChange}
-                dataText="name"
-                dataValue="id"
+                dataText={"specialty_name"}
+                dataValue={"specialty_id"}
                 enabled={confirmHour === false}
               />
             </>

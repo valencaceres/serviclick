@@ -10,11 +10,12 @@ const useSpecialty = () => {
     })
   );
 
-  const { getByFamilyId } = specialtyStore();
+  const { getByFamilyId, getSpecialitiesByAssistance } = specialtyStore();
 
   return {
     specialties,
     getByFamilyId,
+    getSpecialitiesByAssistance,
     isLoading,
     isError,
     error,

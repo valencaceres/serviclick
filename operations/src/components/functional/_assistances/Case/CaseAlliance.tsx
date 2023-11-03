@@ -61,7 +61,7 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   };
 
   const sendConfirmation = (e: boolean) => {
-    setCase({
+    caseUpsert({
       ...caseValue,
       alliance: {
         completed: confirmVisit,
@@ -77,11 +77,10 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
         comment: caseValue.alliance?.comment || "",
       },
     });
-    caseUpsert(caseValue);
     router.push("/assistance/case");
   };
   const sendConfirmationVisit = (e: boolean) => {
-    setCase({
+    caseUpsert({
       ...caseValue,
       alliance: {
         completed: e,
@@ -97,7 +96,6 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
         comment: caseValue.alliance?.comment || "",
       },
     });
-    caseUpsert(caseValue);
     router.push("/assistance/case");
   };
 

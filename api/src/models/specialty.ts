@@ -101,22 +101,43 @@ const getSpecialtiesByFamilyId: any = async (family_id: string) => {
   }
 };
 
-const getSpecialtiesBySpecialistAndAssistanceId: any = async (
-  specialist_id: string,
+const getSpecialitiesByAssistance: any = async (
+  id: string,
   assistance_id: string
 ) => {
   try {
     const result = await pool.query(
       `
-      SELECT s.id AS specialty_id, s.name AS specialty_name
-FROM app.specialty AS s
-INNER JOIN app.specialistspecialty AS ss ON s.id = ss.specialty_id
-INNER JOIN app.specialist AS sp ON ss.specialist_id = sp.id
-INNER JOIN app.assistance AS a ON a.family_id = s.family_id
-WHERE a.id = $1 AND sp.id = $2;`,
-      [assistance_id, specialist_id]
+    select 	distinct
+            spy.id as specialty_id,
+            spy.name as specialty_name
+    from 	  app.specialist spe
+              inner join app.specialistspecialty ssp on spe.id = ssp.specialist_id
+              inner join app.assistancespecialty asp on ssp.specialty_id = asp.specialty_id
+              inner join app.specialty spy on ssp.specialty_id = spy.id
+    where 	spe.id = $1 and
+            asp.assistance_id = $2
+    order  	by 
+            spy.name`,
+      [id, assistance_id]
     );
-    return { success: true, data: result.rows, error: null };
+
+    const data =
+      result.rows.length > 0
+        ? result.rows.map((item: any) => {
+            const { specialty_id, specialty_name } = item;
+            return {
+              specialty_id,
+              specialty_name,
+            };
+          })
+        : [];
+
+    return {
+      success: true,
+      data,
+      error: null,
+    };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
   }
@@ -146,5 +167,5 @@ export {
   getAllSpecialties,
   getSpecialtiesByFamilyId,
   getFamilies,
-  getSpecialtiesBySpecialistAndAssistanceId,
+  getSpecialitiesByAssistance,
 };
