@@ -39,6 +39,7 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   const handleChange = (e: any) => {
     const value = e.target.value;
     const id = e.target.id;
+    let location;
     let locationValue;
     if (id === "district_id") {
       location = id;
