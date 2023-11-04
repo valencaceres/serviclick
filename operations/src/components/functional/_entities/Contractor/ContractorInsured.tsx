@@ -35,7 +35,7 @@ import { Button } from "~/components/ui/ButtonC";
 
 import { Label } from "~/components/ui/Label";
 import { Input } from "~/components/ui/Input";
-import { formatRut, unFormatRut } from "~/utils/format";
+import { formatRut, unFormatRut } from "~/utils/rut";
 import { emailRegEx, numberRegEx, rutRegEx } from "~/utils/regEx";
 import { rutValidate } from "~/utils/validations";
 import { useQueryInsured, useQueryLead } from "~/hooks/query";

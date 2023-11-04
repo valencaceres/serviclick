@@ -20,7 +20,7 @@ import {
 
 import { LoadingMessage } from "../../../ui/LoadingMessage";
 
-import { unFormatRut, formatRut } from "../../../../utils/format";
+import { unFormatRut, formatRut } from "../../../../utils/rut";
 
 import { useUI, useRetail } from "../../../../hooks";
 
