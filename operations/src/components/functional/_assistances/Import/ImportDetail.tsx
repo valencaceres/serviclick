@@ -9,7 +9,7 @@ import {
 
 import { LoadingMessage } from "../../../ui/LoadingMessage";
 
-import { formatRut } from "../../../../utils/format";
+import { formatRut } from "../../../../utils/rut";
 
 import { useQueryImport } from "../../../../hooks/query";
 

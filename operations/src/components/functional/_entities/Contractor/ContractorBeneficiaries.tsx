@@ -32,7 +32,7 @@ import {
 
 import { emailRegEx, numberRegEx, rutRegEx } from "~/utils/regEx";
 import { rutValidate } from "~/utils/validations";
-import { formatRut, unFormatRut } from "~/utils/format";
+import { formatRut, unFormatRut } from "~/utils/rut";
 
 import { useContractor, useDistrict } from "../../../../hooks";
 import { useQueryBeneficiary, useQueryLead } from "~/hooks/query";

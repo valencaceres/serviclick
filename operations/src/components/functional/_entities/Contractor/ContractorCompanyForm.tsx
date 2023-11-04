@@ -4,7 +4,7 @@ import ComboBox from "../../../ui/ComboBox";
 
 import { ContentCell, ContentRow } from "../../../layout/Content";
 
-import { unFormatRut, formatRut } from "../../../../utils/format";
+import { unFormatRut, formatRut } from "../../../../utils/rut";
 import { numberRegEx, rutRegEx, emailRegEx } from "../../../../utils/regEx";
 import { rutValidate } from "../../../../utils/validations";
 

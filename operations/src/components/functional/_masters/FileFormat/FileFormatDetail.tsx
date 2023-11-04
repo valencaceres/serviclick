@@ -7,7 +7,7 @@ import InputText from "../../../ui/InputText";
 
 import { FileFormatProducts, FileFormatFields } from ".";
 
-import { unFormatRut, formatRut } from "../../../../utils/format";
+import { unFormatRut, formatRut } from "../../../../utils/rut";
 import { rutRegEx } from "../../../../utils/regEx";
 import { rutValidate } from "../../../../utils/validations";
 

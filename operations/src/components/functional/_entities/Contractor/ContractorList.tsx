@@ -24,7 +24,7 @@ import ModalWarning from "../../../ui/ModalWarning";
 // import ComboBox from "../../../ui/ComboBox";
 import { LoadingMessage } from "../../../ui/LoadingMessage";
 
-import { unFormatRut, formatRut } from "../../../../utils/format";
+import { unFormatRut, formatRut } from "../../../../utils/rut";
 import { numberRegEx, rutRegEx, emailRegEx } from "../../../../utils/regEx";
 import { rutValidate } from "../../../../utils/validations";
 
