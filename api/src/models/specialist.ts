@@ -438,12 +438,15 @@ const getByName: any = async (name: string) => {
   }
 };
 
-const getByDistrict: any = async (district: string, assistance_id: string) => {
+const getByAssistanceAndDistrict: any = async (
+  district: string,
+  assistance_id: string
+) => {
   try {
     const result = await pool.query(
       `SELECT DISTINCT ON
         (app.person.id)
-        app.person.id,
+        app.specialist.id,
         app.person.rut,
         app.person.name,
         app.person.paternallastname,
@@ -514,5 +517,5 @@ export {
   getByFamilyAssistance,
   getBySpecialtyId,
   getByName,
-  getByDistrict,
+  getByAssistanceAndDistrict,
 };

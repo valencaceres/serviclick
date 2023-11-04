@@ -1,11 +1,14 @@
+import { IApplicant } from "./applicant";
+
 interface IPolicy {
-  id: string;
+  id: string | null;
   startDate: string;
   endDate: string;
 }
 
 interface IRetail {
   id: string;
+  rut: string;
   name: string;
 }
 
@@ -15,26 +18,12 @@ interface ICustomer {
   name: string;
 }
 
-interface IApplicant {
-  type: string;
-  id: string;
-  rut: string;
-  name: string;
-  paternallastname: string;
-  maternallastname: string;
-  address: string;
-  district: string;
-  email: string;
-  phone: string;
-  birthdate: string;
-}
-
-interface IProduct {
+export interface IProduct {
   id: string;
   name: string;
 }
 
-interface IAssistance {
+export interface IAssistance {
   id: string;
   name: string;
   assigned: {
@@ -88,7 +77,7 @@ interface ISpecialist {
   scheduled_time: string;
   confirmed: boolean;
   completed: boolean;
-  qualification_id: string;
+  qualification_id: string | null;
   qualification_name: string;
   comment: string;
 }
@@ -102,7 +91,7 @@ interface IAlliance {
   scheduled_time: string;
   confirmed: boolean;
   completed: boolean;
-  qualification_id: string;
+  qualification_id: string | null;
   qualification_name: string;
   comment: string;
 }
@@ -114,23 +103,29 @@ interface ICost {
 }
 
 interface IHistory {
+  code: string;
   date: string;
+  time: string;
   user: string;
   name: string;
 }
 
 export interface ICase {
   case_id: string | null;
-  type: string | null;
-  lead_id: string | null;
-  policy: IPolicy | null;
+  user_id: string;
+  date: string;
+  time: string;
+  case_number: number;
+  type: "I" | "B" | "C";
+  lead_id: string;
+  policy: IPolicy;
   retail: IRetail | null;
-  customer: ICustomer | null;
-  insured: IApplicant | null;
+  customer: ICustomer;
+  insured: IApplicant;
   beneficiary: IApplicant | null;
-  product: IProduct | null;
-  assistance: IAssistance | null;
-  values: IValue[] | null;
+  product: IProduct;
+  assistance: IAssistance;
+  values: IValue[] | string;
   event: IEvent | null;
   files: IFile[] | null;
   procedure_id: string | null;
@@ -138,28 +133,7 @@ export interface ICase {
   specialist: ISpecialist | null;
   alliance: IAlliance | null;
   cost: ICost | null;
-  history: IHistory[] | null;
-}
-
-export interface ICaseData {
-  case_id: string | null;
-  user_id: string | null;
-  type: string | null;
-  insured_id: string | null;
-  beneficiary: string | null;
-  customer_id: string | null;
-  retail_id: string | null;
-  product_id: string | null;
-  assistance_id: string | null;
-  lead_id: string | null;
-  values: IValue[] | null;
-  event: IEvent | null;
-  files: IFile[] | null;
-  procedure_id: string | null;
-  refund_amount: number | null;
-  specialist: ISpecialist | null;
-  alliance: IAlliance | null;
-  cost: ICost | null;
+  history: IHistory[];
 }
 
 export interface ICaseItem {
@@ -168,9 +142,11 @@ export interface ICaseItem {
   createddate: string;
   customer_id: string;
   customer_name: string;
+  assistance_name: string;
   applicant_rut: string;
   applicant_name: string;
   stage_id: string;
+  code: string;
   stage_name: string;
 }
 
@@ -182,4 +158,40 @@ export interface IRetailItem {
 export interface IStatusItem {
   id: string;
   name: string;
+}
+
+export interface IAssistanceItem {
+  id: string | null;
+  name: string | null;
+  description: string | null;
+  family: {
+    id: string | null;
+    icon: string | null;
+    name: string | null;
+  } | null;
+  values:
+    | {
+        id: string | null;
+        name: string | null;
+      }[]
+    | null;
+  specialties:
+    | {
+        id: string | null;
+        name: string | null;
+      }[]
+    | null;
+  documents: any[] | null;
+  benefits:
+    | {
+        id: string | null;
+        description: string | null;
+      }[]
+    | null;
+  exclusions:
+    | {
+        id: string | null;
+        description: string | null;
+      }[]
+    | null;
 }

@@ -1,6 +1,7 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, QueryClient } from "@tanstack/react-query";
 
 import { apiInstance } from "../../utils/api";
+const queryClient = new QueryClient();
 
 const assignValue = async (data: any) => {
   const { data: result } = await apiInstance.post(
@@ -76,6 +77,21 @@ const useGetDocumentsById = (assistance_id: string) => {
 const useAssignValue = () => {
   return useMutation(["productValue"], assignValue);
 };
+const uploadDocument = async (formData: any) => {
+  const { data } = await apiInstance.post(`/case/uploadDocument`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return data;
+};
+const useUploadDocument = () => {
+  return useMutation(["case"], uploadDocument, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["case"]);
+    },
+  });
+};
 
 const useQueryAssistances = () => {
   return {
@@ -84,6 +100,7 @@ const useQueryAssistances = () => {
     useGetValuesById,
     useGetDocumentsById,
     useAssignValue,
+    useUploadDocument,
   };
 };
 

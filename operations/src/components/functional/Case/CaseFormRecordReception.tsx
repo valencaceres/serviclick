@@ -120,7 +120,7 @@ const CaseFormRecordReception = ({ thisCase }: any) => {
       setThisStage(stages.find((s: any) => s.name.toLowerCase() === stage)?.id);
     }
   }, [stages, stage]);
-
+  //
   return (
     <>
       <ContentCell gap="20px">

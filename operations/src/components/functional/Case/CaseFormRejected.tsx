@@ -20,7 +20,7 @@ const CaseFormRejected = ({ thisCase }: any) => {
   return (
     <form>
       <ContentCell gap="20px">
-      <CaseDescription thisCase={thisCase} />
+        <CaseDescription thisCase={thisCase} />
         <ContentCell gap="20px">
           <TextArea
             label="Justificación"
@@ -34,5 +34,5 @@ const CaseFormRejected = ({ thisCase }: any) => {
     </form>
   );
 };
-
+//
 export default CaseFormRejected;

@@ -28,6 +28,7 @@ const usePartner = () => {
     delete: deletePartner,
     getBySpecialtyId: getPartnersBySpecialtyId,
     getByName: getPartnersByName,
+    getByAssistanceId: getPartnersByAssistanceId,
   } = partnerStore();
 
   return {
@@ -47,6 +48,7 @@ const usePartner = () => {
     deletePartner,
     getPartnersBySpecialtyId,
     getPartnersByName,
+    getPartnersByAssistanceId,
   };
 };
 

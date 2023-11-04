@@ -9,26 +9,23 @@ import {
   TableCellEnd,
 } from "../../ui/Table";
 import Icon from "../../ui/Icon";
-
 import { useQueryAssistances, useQueryCase } from "../../../hooks/query";
-import { useCase } from "../../../store/hooks/useCase";
 import Link from "next/link";
 
-const CaseDocumentsTable = ({ thisCase, thisStage, handleSubmit }: any) => {
-  const { data } = useCase();
+const CaseDocumentsTable = ({ caseValue, thisStage, handleSubmit }: any) => {
   const [assistance, setAssistance] = useState<any>(null);
 
   useEffect(() => {
-    if (data) {
-      setAssistance(thisCase?.assistance_id);
+    if (caseValue) {
+      setAssistance(caseValue?.assistance?.id);
     }
-  }, [data, thisCase?.assistance_id]);
+  }, [caseValue?.assistance?.id, caseValue]);
 
   const { data: documents } =
     useQueryAssistances().useGetDocumentsById(assistance);
 
   const { data: attachments } = useQueryCase().useGetAttach(
-    thisCase?.case_id,
+    caseValue?.case_id as string,
     thisStage
   );
 
@@ -105,5 +102,5 @@ const CaseDocumentsTable = ({ thisCase, thisStage, handleSubmit }: any) => {
     </Table>
   );
 };
-
+//
 export default CaseDocumentsTable;

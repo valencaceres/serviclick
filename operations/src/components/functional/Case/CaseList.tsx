@@ -1,25 +1,27 @@
 import { useRouter } from "next/router";
-
+import { useEffect } from "react";
 import { Row, type ColumnDef } from "@tanstack/react-table";
-
-import { useQueryCase } from "../../../hooks/query";
+import { useCase } from "~/store/hooks";
 import { DataTable } from "~/components/functional/Case/DataTable/DataTable";
 import { DataTableColumnHeader } from "~/components/functional/Case/DataTable/DataTableColumnHeader";
+import { ICaseItem } from "~/interfaces/case";
 const CaseList = () => {
   const router = useRouter();
 
-  const { data: cases } = useQueryCase().useGetAll();
+  const { getAll, caseList } = useCase();
 
-  if (!cases) return null;
-
-  const handleViewCase = ({ case_id, stage }: Case) => {
-    router.push(`/case/${case_id}/${stage.toLowerCase()}`);
+  useEffect(() => {
+    getAll("", "", "", "");
+  }, [getAll]);
+  if (!caseList) return null;
+  const handleViewCase = ({ id, code }: ICaseItem) => {
+    router.push(`/assistance/case/${code}/${id}`);
   };
 
   return (
     <DataTable
       columns={columns}
-      data={cases}
+      data={caseList}
       onRowClick={handleViewCase}
       paginate
     />
@@ -28,23 +30,10 @@ const CaseList = () => {
 
 export default CaseList;
 
-type Case = {
-  case_id: string;
-  contractor_name: string;
-  createddate: string;
-  number: string;
-  rut: string;
-  name: string;
-  lastname: string;
-  product: string;
-  assistance: string;
-  stage: string;
-};
-
-const filterFn = (row: Row<Case>, id: string, filterValue: string) => {
+const filterFn = (row: Row<ICaseItem>, id: string, filterValue: string) => {
   const rowValue = row.getValue(id);
-  const fullname = `${row.original.name} ${row.original.lastname}`;
-  const contractorName = row.original.contractor_name;
+  const fullname = `${row.original.applicant_name} ${row.original.applicant_name}`;
+  const contractorName = row.original.customer_name;
 
   return (
     String(rowValue).toLowerCase().includes(filterValue.toLowerCase()) ||
@@ -53,7 +42,7 @@ const filterFn = (row: Row<Case>, id: string, filterValue: string) => {
   );
 };
 
-const columns: ColumnDef<Case>[] = [
+const columns: ColumnDef<ICaseItem>[] = [
   {
     accessorKey: "number",
     header: ({ column }) => (
@@ -95,8 +84,8 @@ const columns: ColumnDef<Case>[] = [
     cell: ({ row }) => {
       return (
         <div className="max-w-[140px] truncate  font-oswald  font-light capitalize ">
-          {row.original.contractor_name
-            ? row.original.contractor_name.toLowerCase()
+          {row.original.customer_name
+            ? row.original.customer_name.toLowerCase()
             : "Sin cliente asignado"}
         </div>
       );
@@ -107,7 +96,7 @@ const columns: ColumnDef<Case>[] = [
     header: "RUT",
     cell: ({ row }) => (
       <div className="max-w-[90px]  truncate  text-right font-oswald  font-light capitalize ">
-        {row.original.rut}
+        {row.original.applicant_rut}
       </div>
     ),
   },
@@ -116,7 +105,7 @@ const columns: ColumnDef<Case>[] = [
     header: "Beneficiario",
     filterFn: filterFn,
     cell: ({ row }) => {
-      const fullname = `${row.original.name?.toLowerCase()} ${row.original.lastname?.toLowerCase()}`;
+      const fullname = `${row.original.applicant_name?.toLowerCase()}`;
       return (
         <div className=" font-oswald font-light capitalize">{fullname}</div>
       );
@@ -126,22 +115,20 @@ const columns: ColumnDef<Case>[] = [
     accessorKey: "assistance",
     header: "Servicio",
     cell: ({ row }) => {
-      const service = `${row.getValue("assistance")}`;
+      const service = `${row.original.assistance_name}`;
       return (
         <div
           className={`  ${
-            !!row.getValue("assistance")
+            !!service
               ? "max-w-[140px] truncate  font-oswald font-light"
               : "font-light italic"
           }`}
         >
           <span
-            className={`font-oswald ${
-              !row.getValue("assistance") ? "italic" : ""
-            }`}
+            className={`font-oswald ${!service ? "italic" : ""}`}
             title={service}
           >
-            {!!row.getValue("assistance") ? service : "Sin servicio asignado"}
+            {!!service ? service : "Sin servicio asignado"}
           </span>
         </div>
       );
@@ -154,8 +141,8 @@ const columns: ColumnDef<Case>[] = [
     ),
     cell: ({ row }) => (
       <div className="max-w-[140px] truncate  font-light ">
-        <span className="font-oswald" title={row.original.stage}>
-          {row.original.stage}
+        <span className="font-oswald" title={row.original.stage_name}>
+          {row.original.stage_name}
         </span>
       </div>
     ),

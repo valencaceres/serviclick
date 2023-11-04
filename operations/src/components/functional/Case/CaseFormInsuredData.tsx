@@ -417,25 +417,12 @@ const BeneficiaryForm = ({ thisCase }: any) => {
                 >
                   Apellido paterno
                 </Label>
-                <Input
-                  errorText={errors.paternalLastName?.message}
-                  {...register("paternalLastName", {
-                    required: "Este campo es requerido",
-                  })}
-                  type="text"
-                  id="paternalLastName"
-                  placeholder="Apellido paterno"
-                  disabled={
-                    isLoading || thisCase?.is_active || !thisCase === true
-                      ? false
-                      : true
-                  }
-                  className={`w-full ${
-                    errors.paternalLastName?.message?.length
-                      ? "border-red-500"
-                      : ""
-                  }`}
+                <InputText
+                  label="Relación"
                   value={paternalLastName}
+                  type="text"
+                  disabled={true}
+                  width="260px"
                 />
               </div>
               <div className="flex w-full flex-col">

@@ -19,7 +19,7 @@ const CasePage = () => {
   const handleClickRefresh = () => {};
 
   const handleClickNew = () => {
-    router.push("/case/new");
+    router.push("/assistance/case/applicant");
   };
 
   useEffect(() => {

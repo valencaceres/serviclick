@@ -7,6 +7,7 @@ import {
   TableCellWide,
   TableIcons,
   TableCellEnd,
+  TableCellText,
 } from "./Table";
 
 export {
@@ -18,4 +19,5 @@ export {
   TableCellWide,
   TableIcons,
   TableCellEnd,
+  TableCellText,
 };

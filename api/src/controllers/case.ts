@@ -458,7 +458,6 @@ const reimburse = async (req: any, res: any) => {
     uf_value,
     available,
   } = req.body;
-  console.log(req.body);
   const caseStageResponse = await CaseStageResult.create(
     case_id,
     casestage_id,
@@ -831,44 +830,43 @@ const upsert = async (req: any, res: any) => {
     case_id,
     user_id,
     type,
-    insured_id,
-    beneficiary_id,
-    customer_id,
-    retail_id,
-    product_id,
-    assistance_id,
+    insured,
+    beneficiary,
+    customer,
+    retail,
+    product,
+    assistance,
     lead_id,
     values,
     event,
     files,
     procedure_id,
-    refund_amount,
+    refund,
     specialist,
     alliance,
     cost,
   } = req.body;
-
+  console.log(req.body);
   const response = await Case.upsert(
     case_id,
     user_id,
     type,
-    insured_id,
-    beneficiary_id,
-    customer_id,
-    retail_id,
-    product_id,
-    assistance_id,
+    insured,
+    beneficiary,
+    customer,
+    retail,
+    product,
+    assistance,
     lead_id,
     values,
     event,
     files,
     procedure_id,
-    refund_amount,
+    refund,
     specialist,
     alliance,
     cost
   );
-
   if (!response.success) {
     createLogger.error({
       model: `case/upsert`,

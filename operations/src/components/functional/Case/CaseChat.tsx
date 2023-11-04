@@ -39,15 +39,15 @@ const CaseNotes = ({ thisCase }: any) => {
   const { data: messages } = useQueryCase().useGetChatByCase(case_id as string);
   const { mutate: createMessage } = useQueryCase().useCreateChatMessage();
 
-  const thisCaseStage = thisCase?.stages.find(
-    (s: any) => s.stage.toLowerCase() === stage
+  const thisCaseStage = thisCase?.history?.find(
+    (s: any) => s.code.toLowerCase() === stage
   );
 
   const handleCreate = () => {
     createMessage(
       {
         case_id: case_id as string,
-        casestage_id: thisCaseStage?.id,
+        casestage_id: thisCaseStage ? thisCaseStage.id : null,
         user_id: user?.id,
         message,
         type,

@@ -4,11 +4,12 @@ import { NextResponse } from "next/server";
 type UserRole = "user" | "moderator" | "admin";
 
 const roles: Record<UserRole, RegExp[]> = {
-  user: [/^\/$/, /^\/case(\/.*)?$/],
-  moderator: [/^\/$/, /^\/case(\/.*)?$/],
+  user: [/^\/$/, /^\/case(\/.*)?$/, /^\/assistance(\/.*)?$/],
+  moderator: [/^\/$/, /^\/case(\/.*)?$/, /^\/$/, /^\/assistance(\/.*)?$/],
   admin: [
     /^\/$/,
     /^\/case(\/.*)?$/,
+    /^\/assistance(\/.*)?$/,
     /^\/masters(\/.*)?$/,
     /^\/entities(\/.*)?$/,
     /^\/dashboard(\/.*)?$/,
@@ -17,7 +18,7 @@ const roles: Record<UserRole, RegExp[]> = {
 };
 
 export default authMiddleware({
-  publicRoutes: ["/sign-in/[[...index]]", "/unauthorized",],
+  publicRoutes: ["/sign-in/[[...index]]", "/unauthorized"],
   afterAuth(auth, req, evt) {
     if (!auth.userId && !auth.isPublicRoute) {
       return redirectToSignIn({ returnBackUrl: req.url });

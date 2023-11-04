@@ -25,12 +25,6 @@ const getStatistics = async () => {
   return data;
 };
 
-const getCaseById = async (id: string) => {
-  const { data } = await apiInstance.get(`/case/getById/${id}`);
-
-  return data;
-};
-
 const uploadDocument = async (formData: any) => {
   const { data } = await apiInstance.post(`/case/uploadDocument`, formData, {
     headers: {
@@ -154,10 +148,6 @@ const useGetAll = () => {
 
 const useGetStatistics = () => {
   return useQuery(["cases"], getStatistics);
-};
-
-const useGetById = (id: string) => {
-  return useQuery(["case", id], () => getCaseById(id));
 };
 
 const useCreate = () => {
@@ -311,7 +301,6 @@ const useQueryCase = () => {
   return {
     useCreate,
     useGetAll,
-    useGetById,
     useUploadDocument,
     useGetAttach,
     useGetNewCaseNumber,

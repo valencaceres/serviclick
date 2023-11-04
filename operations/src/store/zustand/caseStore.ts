@@ -4,10 +4,11 @@ import { apiInstance } from "../../utils/api";
 
 import {
   ICase,
-  ICaseData,
   ICaseItem,
   IRetailItem,
   IStatusItem,
+  IProduct,
+  IAssistance,
 } from "../../interfaces/case";
 
 interface ICaseServices {
@@ -20,14 +21,18 @@ interface ICaseServices {
 }
 
 interface caseState {
-  caseValue: ICase;
-  caseData: ICaseData;
+  products: IProduct[] | null;
+  assistances: IAssistance[] | null;
+  case: ICase;
+  caseId: ICase;
   caseList: ICaseItem[];
   retailList: IRetailItem[];
   statusList: IStatusItem[];
   isLoading: boolean;
   isError: boolean;
   error: string;
+  setCase: (data: ICase) => void;
+  getApplicantByRut: (rut: string) => void;
   getRetails: () => void;
   getStatus: () => void;
   getAll: (
@@ -37,24 +42,65 @@ interface caseState {
     stage_id: string
   ) => void;
   getById: (id: string) => void;
-  getApplicantByRut: (rut: string) => void;
   getServicesAndValues: (data: ICaseServices) => void;
-  upsert: (data: ICaseData) => void;
+  upsert: (data: ICase) => void;
+  resetNoRut: (applicantCode: "insured" | "beneficiary", rut: string) => void;
   reset: () => void;
 }
 
 const initialCase: ICase = {
   case_id: null,
-  type: null,
-  lead_id: null,
-  policy: null,
+  case_number: 0,
+  user_id: "",
+  date: "",
+  time: "",
+  type: "I",
+  lead_id: "",
+  policy: {
+    id: null,
+    startDate: "",
+    endDate: "",
+  },
   retail: null,
-  customer: null,
-  insured: null,
+  customer: {
+    id: "",
+    rut: "",
+    name: "",
+  },
+  insured: {
+    type: "I",
+    id: "",
+    rut: "",
+    name: "",
+    paternalLastName: "",
+    maternalLastName: "",
+    address: "",
+    district: "",
+    email: "",
+    phone: "",
+    birthDate: "",
+  },
   beneficiary: null,
-  product: null,
-  assistance: null,
-  values: null,
+  product: {
+    id: "",
+    name: "",
+  },
+  assistance: {
+    id: "",
+    name: "",
+    assigned: {
+      amount: 0,
+      currency: "",
+      maximum: "",
+      events: 0,
+      lack: 0,
+    },
+    used: {
+      events: 0,
+      total_amount: 0,
+    },
+  },
+  values: null || [],
   event: null,
   files: null,
   procedure_id: null,
@@ -62,39 +108,24 @@ const initialCase: ICase = {
   specialist: null,
   alliance: null,
   cost: null,
-  history: null,
-};
-
-const initialCaseData: ICaseData = {
-  case_id: null,
-  user_id: null,
-  type: null,
-  insured_id: null,
-  beneficiary: null,
-  customer_id: null,
-  retail_id: null,
-  product_id: null,
-  assistance_id: null,
-  lead_id: null,
-  values: null,
-  event: null,
-  files: null,
-  procedure_id: null,
-  refund_amount: null,
-  specialist: null,
-  alliance: null,
-  cost: null,
+  history: [],
 };
 
 export const caseStore = create<caseState>((set) => ({
-  caseValue: initialCase,
-  caseData: initialCaseData,
+  products: [],
+  assistances: [],
+  caseId: initialCase,
+  case: initialCase,
   caseList: [],
   retailList: [],
   statusList: [],
   isLoading: false,
   isError: false,
   error: "",
+
+  setCase: (data: ICase) => {
+    set((state) => ({ ...state, case: data }));
+  },
 
   getRetails: async () => {
     try {
@@ -134,9 +165,22 @@ export const caseStore = create<caseState>((set) => ({
   ) => {
     try {
       set((state) => ({ ...state, isLoading: true }));
-      const { data } = await apiInstance.get(
-        `/case/getAll?retail_id=${retail_id}&applicant_rut=${applicant_rut}&applicant_name=${applicant_name}&stage_id=${stage_id}`
-      );
+
+      const params = {
+        retail_id: retail_id,
+        applicant_rut: applicant_rut,
+        applicant_name: applicant_name,
+        stage_id: stage_id,
+      };
+
+      const queryParams = Object.entries(params)
+        .filter(([_, value]) => value !== "")
+        .map(([key, value]) => `${key}=${value}`)
+        .join("&");
+
+      const url = `/case/getAll${queryParams ? `?${queryParams}` : ""}`;
+      const { data } = await apiInstance.get(url);
+
       set((state) => ({ ...state, caseList: data, isLoading: false }));
     } catch (e) {
       set((state) => ({
@@ -151,8 +195,15 @@ export const caseStore = create<caseState>((set) => ({
   getById: async (id: string) => {
     try {
       set((state) => ({ ...state, isLoading: true }));
+
       const { data } = await apiInstance.get(`/case/getById/${id}`);
-      set((state) => ({ ...state, caseValue: data, isLoading: false }));
+
+      set((state) => ({
+        ...state,
+        case: data,
+        caseId: data,
+        isLoading: false,
+      }));
     } catch (e) {
       set((state) => ({
         ...state,
@@ -166,8 +217,17 @@ export const caseStore = create<caseState>((set) => ({
   getApplicantByRut: async (rut: string) => {
     try {
       set((state) => ({ ...state, isLoading: true }));
+
       const { data } = await apiInstance.get(`/case/getApplicantByRut/${rut}`);
-      set((state) => ({ ...state, caseData: data, isLoading: false }));
+
+      const { type, retail, customer, insured, beneficiary, products } = data;
+
+      set((state) => ({
+        ...state,
+        products,
+        case: { ...state.case, type, retail, customer, insured, beneficiary },
+        isLoading: false,
+      }));
     } catch (e) {
       set((state) => ({
         ...state,
@@ -181,11 +241,25 @@ export const caseStore = create<caseState>((set) => ({
   getServicesAndValues: async (data: ICaseServices) => {
     try {
       set((state) => ({ ...state, isLoading: true }));
+
       const { data: response } = await apiInstance.post(
         `/case/getServicesAndValues`,
         data
       );
-      set((state) => ({ ...state, caseData: response, isLoading: false }));
+
+      const { lead_id, assistances, assistance, values } = response;
+
+      set((state) => ({
+        ...state,
+        assistances,
+        case: {
+          ...state.case,
+          lead_id,
+          values,
+          assistance: assistance || state.case.assistance,
+        },
+        isLoading: false,
+      }));
     } catch (e) {
       set((state) => ({
         ...state,
@@ -196,11 +270,11 @@ export const caseStore = create<caseState>((set) => ({
     }
   },
 
-  upsert: async (data: ICaseData) => {
+  upsert: async (data: ICase) => {
     try {
       set((state) => ({ ...state, isLoading: true }));
       const { data: response } = await apiInstance.post(`/case/upsert`, data);
-      set((state) => ({ ...state, caseValue: response, isLoading: false }));
+      set((state) => ({ ...state, case: response, isLoading: false }));
     } catch (e) {
       set((state) => ({
         ...state,
@@ -209,13 +283,22 @@ export const caseStore = create<caseState>((set) => ({
         error: (e as Error).message,
       }));
     }
+  },
+
+  resetNoRut: (applicantCode: "insured" | "beneficiary", rut: string) => {
+    set((state) => ({
+      ...state,
+      case: {
+        ...initialCase,
+        [applicantCode]: { ...initialCase[applicantCode], rut },
+      },
+    }));
   },
 
   reset: () => {
     set((state) => ({
       ...state,
-      caseValue: initialCase,
-      caseData: initialCaseData,
+      case: initialCase,
     }));
   },
 }));

@@ -116,7 +116,7 @@ const CaseFormPartner = ({ thisCase }: any) => {
       setScheduledTime(getAssignedPartner?.scheduled_time);
     }
   }, [stages, stage, getAssignedPartner]);
-
+  //
   return (
     <div>
       <ContentCell gap="20px">

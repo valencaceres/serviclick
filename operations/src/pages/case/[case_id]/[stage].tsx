@@ -10,7 +10,7 @@ import ButtonIcon from "~/components/ui/ButtonIcon";
 import { useUI } from "~/hooks";
 import CaseFormRecordReception from "~/components/functional/Case/CaseFormRecordReception";
 import CaseFormEvaluation from "~/components/functional/Case/CaseFormEvaluation";
-import CaseFormNew from "~/components/functional/Case/CaseFormNew";
+import ApplicantFormNew from "~/components/functional/Case/CaseFormNew";
 import CaseFormPartner from "~/components/functional/Case/CaseFormPartner";
 import CaseFormSpecialist from "~/components/functional/Case/CaseFormSpecialist";
 import CaseTracking from "~/components/functional/Case/CaseTracking";
@@ -26,8 +26,8 @@ import CaseFormInsuredData from "~/components/functional/Case/CaseFormInsuredDat
 import CaseFormIMED from "~/components/functional/Case/CaseFormIMED";
 
 const stageComponents = {
-  apertura: CaseFormNew,
-  contención: CaseFormNew,
+  apertura: ApplicantFormNew,
+  contención: ApplicantFormNew,
   "datos titular": CaseFormInsuredData,
   "registro de servicio": CaseFormService,
   "recepción de antecedentes": CaseFormRecordReception,
@@ -75,32 +75,34 @@ const CaseStepPage = () => {
       ? router.query.stage[0]
       : router.query.stage
   ) as StageKeys | undefined;
-  const { data: thisCase, isLoading } = useQueryCase().useGetById(
-    case_id as string
-  );
-  const number = thisCase?.case_number;
+  // const { data: thisCase, isLoading } = useQueryCase().useGetById(
+  //   case_id as string
+  // );
+  // const number = thisCase?.case_number;
   const StageComponent = stage ? stageComponents[stage] : null;
 
   const handleClickHome = () => router.push("/");
   const handleClickBack = () => router.push("/case");
+  const handleClickSave = () => router.push("/case");
+
   const setClosed = () => setShowModal(false);
 
-  useEffect(() => {
-    if (stage) {
-      setTitleUI(
-        `${
-          isLoading
-            ? "Cargando..."
-            : `${stageNames[stage]} | Caso ${number ?? stageNames[stage]}`
-        }`
-      );
-    }
-  }, [router, thisCase, stage]);
+  // useEffect(() => {
+  //   if (stage) {
+  //     setTitleUI(
+  //       `${
+  //         isLoading
+  //           ? "Cargando..."
+  //           : `${stageNames[stage]} | Caso ${number ?? stageNames[stage]}`
+  //       }`
+  //     );
+  //   }
+  // }, [router, thisCase, stage]);
 
   return (
     <Fragment>
       <ContentHalfRow>
-        {StageComponent && <StageComponent thisCase={thisCase} />}
+        {/* {StageComponent && <StageComponent thisCase={thisCase} />} */}
         <ContentCell gap="20px">
           <CaseStageList setShowModal={setShowModal} showModal={showModal} />
         </ContentCell>
@@ -108,10 +110,16 @@ const CaseStepPage = () => {
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />
         <ButtonIcon iconName="arrow_back" onClick={handleClickBack} />
+        <ButtonIcon
+          iconName="save"
+          onClick={() => {
+            handleClickSave();
+          }}
+        />
       </FloatMenu>
       <Modal showModal={showModal}>
         <Window setClosed={setClosed}>
-          <CaseNotes thisCase={thisCase} />
+          {/* <CaseNotes thisCase={thisCase} /> */}
         </Window>
       </Modal>
     </Fragment>

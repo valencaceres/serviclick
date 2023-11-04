@@ -1,37 +1,26 @@
-import { useEffect, Fragment } from "react";
+import { useEffect, Fragment, useState } from "react";
 import { useRouter } from "next/router";
 
 import FloatMenu from "../../components/ui/FloatMenu";
 import ButtonIcon from "../../components/ui/ButtonIcon";
-
-import { useUI } from "../../hooks";
+import { ContentHalfRow } from "~/components/layout/ResponsiveContent";
+import CaseFormService from "~/components/functional/Case/CaseFormService";
+import CaseStageList from "~/components/functional/Case/CaseStageList";
 
 import CaseFormNew from "../../components/functional/Case/CaseFormNew";
-
+import { ContentCell } from "~/components/layout/Content";
 const NewCasePage = () => {
   const router = useRouter();
-
-  const { setTitleUI, filters } = useUI();
-
-  const handleClickHome = () => {
-    router.push("/");
-  };
-
-  const handleClickBack = () => {
-    router.back();
-  };
-
-  useEffect(() => {
-    setTitleUI(`Nuevo caso`);
-  }, [router]);
+  const [showModal, setShowModal] = useState(false);
 
   return (
     <Fragment>
-      <CaseFormNew thisCase={null} />
-      <FloatMenu>
-        <ButtonIcon iconName="home" onClick={handleClickHome} />
-        <ButtonIcon iconName="arrow_back" onClick={handleClickBack} />
-      </FloatMenu>
+      <ContentHalfRow>
+        <CaseFormNew thisCase={null} />
+        <ContentCell gap="20px">
+          <CaseStageList setShowModal={setShowModal} showModal={showModal} />
+        </ContentCell>
+      </ContentHalfRow>
     </Fragment>
   );
 };
