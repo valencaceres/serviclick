@@ -16,12 +16,12 @@ const pool = new Pool({
   port: 5432,
   keepAlive: true,
   max: 20,
-  ssl:
-    process.env.ENV === "dev"
-      ? false
-      : {
-          ca: fs.readFileSync(path.join(__dirname, "/certificate.crt")),
-        },
+  // ssl:
+  //   process.env.ENV === "dev"
+  //     ? false
+  //     : {
+  //         ca: fs.readFileSync(path.join(__dirname, "/certificate.crt")),
+  //       },
 });
 
 pool.connect(function (err) {
