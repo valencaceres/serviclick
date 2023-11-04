@@ -8,15 +8,6 @@ import createLogger from "./logger";
 const { Pool } = pg;
 const { dbHost, dbUser, dbPassword, dbName } = config;
 
-/* 
-  username = linpostgres
-  password = VTsTvtUE2l^92si9
-  host = lin-9038-1973-pgsql-primary.servers.linodedb.net
-  private network host = lin-9038-1973-pgsql-primary-private.servers.linodedb.net
-  port = 5432
-  ssl = ENABLED
-*/
-
 const pool = new Pool({
   user: dbUser,
   host: dbHost,
