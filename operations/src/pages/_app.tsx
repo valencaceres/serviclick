@@ -26,15 +26,15 @@ import { useSocket, useRetail } from "../store/hooks";
 const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const { connect, on } = useSocket();
+  // const { connect, on } = useSocket();
   const { setRetailDataLoading } = useRetail();
 
-  useEffect(() => {
-    connect();
-    on("rowResponse", (data: any) => {
-      setRetailDataLoading(JSON.parse(data));
-    });
-  }, []);
+  // useEffect(() => {
+  //   connect();
+  //   on("rowResponse", (data: any) => {
+  //     setRetailDataLoading(JSON.parse(data));
+  //   });
+  // }, []);
 
   return (
     <ClerkProvider {...pageProps} localization={esES}>
