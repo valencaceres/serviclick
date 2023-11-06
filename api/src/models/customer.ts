@@ -223,7 +223,6 @@ const updateCustomerAccount = async (
       if (updateResult.rows.length > 0) {
         return { success: true, data: updateResult.rows[0], error: null };
       } else {
-        console.log("No records found for update");
         return {
           success: false,
           data: null,
@@ -235,9 +234,34 @@ const updateCustomerAccount = async (
     return { success: false, data: null, error: e.message };
   }
 };
+
+const getByRutOrName: any = async (
+  rut: string,
+  name: string,
+  records: number,
+  page: number
+) => {
+  try {
+    const result = await pool.query(
+      `select app.report_customer_get_all($1, $2, $3, $4)`,
+      [rut, name, records, page]
+    );
+
+    return {
+      success: true,
+      data:
+        result.rows.length > 0 ? result.rows[0].report_customer_get_all : [],
+      error: null,
+    };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 export {
   createModel,
   getByRutModel,
   getCustomerAccountByRut,
   updateCustomerAccount,
+  getByRutOrName,
 };

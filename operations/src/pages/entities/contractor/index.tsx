@@ -6,76 +6,65 @@ import ButtonIcon from "../../../components/ui/ButtonIcon";
 
 import { ContractorList } from "../../../components/functional/_entities/Contractor";
 
-import { useUI, useContractor, useDistrict } from "../../../hooks";
+import { useUI, useDistrict } from "../../../hooks";
+import { useCustomer } from "~/store/hooks";
+
+const initialFilters = {
+  rut: null,
+  name: null,
+  records: 20,
+  page: 1,
+};
 
 const ContractorPage = () => {
   const router = useRouter();
 
-  const { setTitleUI, filters } = useUI();
+  const { setTitleUI } = useUI();
   const { listAllDistrict } = useDistrict();
-  const { getAllContractors, resetContractor, contractorLoading } =
-    useContractor();
+  const { getByRutOrName, customerList } = useCustomer();
 
   const [isSaving, setIsSaving] = useState(false);
-  const [showModalType, setShowModalType] = useState(false);
+  const [filters, setFilters] = useState(initialFilters);
 
   const handleClickHome = () => {
     router.push("/");
   };
 
   const handleClickRefresh = () => {
-    getAllContractors(
-      filters?.type || "",
-      filters?.rut || "",
-      filters?.name || "",
-      filters?.status || "A"
+    getByRutOrName(
+      filters?.rut || null,
+      filters?.name || null,
+      filters?.records || 20,
+      filters?.page || 1
     );
   };
 
-  const handleClickNew = () => {
-    resetContractor();
-    setShowModalType(true);
-  };
-
   const handleClickEdit = (id: string) => {
-    resetContractor();
     router.push(`/entities/contractor/${id}`);
   };
 
   useEffect(() => {
     setTitleUI("Clientes");
     listAllDistrict();
-    getAllContractors(
-      filters?.type || "",
-      filters?.rut || "",
-      filters?.name || "",
-      filters?.status || "A"
+    setFilters(initialFilters);
+    getByRutOrName(
+      initialFilters.rut,
+      initialFilters.name,
+      initialFilters.records,
+      initialFilters.page
     );
   }, []);
-
-  useEffect(() => {
-    if (isSaving === true && contractorLoading === false) {
-      getAllContractors(
-        filters.type,
-        filters.rut,
-        filters.name,
-        filters.status
-      );
-      setIsSaving(false);
-    }
-  }, [isSaving, contractorLoading]);
 
   return (
     <Fragment>
       <ContractorList
         editContractor={handleClickEdit}
-        showModalType={showModalType}
-        setShowModalType={setShowModalType}
+        filters={filters}
+        setFilters={setFilters}
       />
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />
         <ButtonIcon iconName="refresh" onClick={handleClickRefresh} />
-        {/* <ButtonIcon iconName="add" onClick={handleClickNew} /> */}
       </FloatMenu>
     </Fragment>
   );

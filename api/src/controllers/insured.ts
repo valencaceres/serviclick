@@ -157,4 +157,24 @@ const upsert = async (req: any, res: any) => {
   res.status(200).json(data);
 };
 
-export { getByRut, getProfile, create, getById, upsert };
+const getByRutOrName = async (req: any, res: any) => {
+  const { rut, name, records, page } = req.query;
+  const response = await Insured.getByRutOrName(rut, name, records, page);
+
+  if (!response.success) {
+    createLogger.error({
+      model: "insured/getByRutOrName",
+      error: response.error,
+    });
+    res.status(500).json({ error: "Error retrieving insured" });
+    return;
+  }
+
+  createLogger.info({
+    controller: "insured/getByRutOrName",
+    message: "OK",
+  });
+  res.status(200).json(response.data);
+};
+
+export { getByRut, getProfile, create, getById, upsert, getByRutOrName };

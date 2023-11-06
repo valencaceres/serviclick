@@ -115,13 +115,14 @@ const getByRetailId: any = async (retail_id: string) => {
               max(ppl.discount_percent) as discount_percent,
               max(ppl.discount_cicles) as discount_cicles,
               max(ppl.plan_id) as plan_id,
-              sum(case when lea.policy_id is null then 0 else 1 end) as subscriptions
+              sum(case when pol.id is null then 0 else 1 end) as subscriptions
        FROM   app.retailProduct brp
                 inner join app.product pro on brp.product_id = pro.id
                 left outer join app.productdescription des on pro.id = des.product_id
                 left outer join app.productplan ppl on pro.id = ppl.product_id and brp.plan_id = ppl.plan_id
                 left outer join app.leadproduct lpr on ppl.plan_id = lpr.productplan_id
                 left outer join app.lead lea on lpr.lead_id = lea.id
+                left outer join app.policy pol on lea.policy_id = pol.id and (pol.enddate is null or pol.enddate::date >= now()::date)
        WHERE  brp.retail_id = $1 and
               brp.isactive is true
        GROUP  BY

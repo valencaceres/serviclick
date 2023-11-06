@@ -15,6 +15,7 @@ export const _getBySearchValues = (rut: string, name: string) => `
                         left outer join (
                                 app.leadproduct lpr
                                         inner join app.lead lea on lpr.lead_id = lea.id
+                                        inner join app.policy pol on lea.policy_id = pol.id and (pol.enddate is null or pol.enddate::date >= now()::date)
                                         inner join app.customer cus on lea.customer_id = cus.id
                         )  on ppl.plan_id = lpr.productplan_id
                 where 	ret.isactive is true
@@ -63,6 +64,6 @@ export const _getCustomersByRetailIdAndProductId = `
                         inner join app.leadinsured lin on lea.id = lin.lead_id
                         inner join app.customer cus on lea.customer_id = cus.id
                         inner join app.insured ins on lin.insured_id = ins.id
-                        inner join app.policy pol on lea.policy_id = pol.id
+                        inner join app.policy pol on lea.policy_id = pol.id and (pol.enddate is null or pol.enddate::date >= now()::date)
         where 	ret.id = $1 and
                 ppl.id = $2`;

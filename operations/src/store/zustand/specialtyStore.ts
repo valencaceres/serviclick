@@ -39,7 +39,6 @@ export const specialtyStore = create<specialtyStore>((set) => ({
     }
   },
   getSpecialitiesByAssistance: async (id: string, assistance_id: string) => {
-    console.log(id, assistance_id);
     try {
       set((state) => ({ ...state, isLoading: true }));
       const { data } = await apiInstance.get(

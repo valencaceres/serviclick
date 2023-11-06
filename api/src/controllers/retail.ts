@@ -583,6 +583,16 @@ const addLeadFromExcel = async (req: any, res: any) => {
     //   total: xlsData.length,
     // });
 
+    const resultExpiration = await Retail.expireInsured(productPlan_id);
+
+    if (!resultExpiration.success) {
+      createLogger.error({
+        model: "retail/expireInsured",
+        error: resultExpiration.error,
+      });
+      return res.status(500).json({ error: "Error expiring insured" });
+    }
+
     data.map(async (item, idx: number) => {
       const rowSummary = { total: xlsData.length, count: idx + 1 };
       promiseExcel.push(

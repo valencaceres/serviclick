@@ -184,7 +184,9 @@ const getAll: any = async (
   retail_id: string,
   applicant_rut: string,
   applicant_name: string,
-  stage_id: string
+  stage_id: string,
+  records: number,
+  page: number
 ) => {
   try {
     const result = await pool.query(_getAll, [
@@ -192,6 +194,8 @@ const getAll: any = async (
       applicant_rut,
       applicant_name,
       stage_id,
+      records,
+      page,
     ]);
 
     return {

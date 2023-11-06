@@ -207,8 +207,6 @@ const ProductDetail = ({ product }: any) => {
     );
   }
 
-  console.log(assistances);
-
   const handleClickDeleteAssistance = (assistanceItem: AssistanceType) => {
     setAssistances(
       assistances.filter(

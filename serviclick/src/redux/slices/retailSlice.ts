@@ -121,7 +121,6 @@ export const create = (values: RetailT) => async (dispatch: any) => {
   const { success, data, error } = await post(`retail/create`, values);
 
   if (!success) {
-    console.log(error);
     return false;
   }
 
@@ -134,7 +133,6 @@ export const getById = (id: string) => async (dispatch: any) => {
   const { success, data, error } = await get(`retail/getById/${id}`);
 
   if (!success) {
-    console.log(error);
     return false;
   }
 
@@ -147,7 +145,6 @@ export const getByRut = (rut: string) => async (dispatch: any) => {
   const { success, data, error } = await get(`retail/getByRut/${rut}`);
 
   if (!success) {
-    console.log(error);
     return false;
   }
 
@@ -160,7 +157,6 @@ export const getAll = () => async (dispatch: any) => {
   const { success, data, error } = await get(`retail/getAll`);
 
   if (!success) {
-    console.log(error);
     return false;
   }
 
@@ -173,7 +169,6 @@ export const uploadLogo = (logo: any) => async (dispatch: any) => {
   const { success, data, error } = await post(`retail/uploadLogo`, logo);
 
   if (!success) {
-    console.log(error);
     return false;
   }
 
@@ -186,7 +181,6 @@ export const deleteById = (id: string) => async (dispatch: any) => {
   const { success, data, error } = await erase(`retail/deleteById/${id}`);
 
   if (!success) {
-    console.log(error);
     return false;
   }
 

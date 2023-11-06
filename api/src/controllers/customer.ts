@@ -100,7 +100,11 @@ const getCustomerAccountByRut = async (req: any, res: any) => {
 
 const updateCustomerAccount = async (req: any, res: any) => {
   const { rut, bank, account_number } = req.body;
-  const response = await Customer.updateCustomerAccount(rut, bank, account_number);
+  const response = await Customer.updateCustomerAccount(
+    rut,
+    bank,
+    account_number
+  );
   if (!response?.success) {
     createLogger.error({
       model: "customer/updateCustomerAccount",
@@ -117,8 +121,33 @@ const updateCustomerAccount = async (req: any, res: any) => {
   res.status(200).json(response.data);
 };
 
+const getByRutOrName = async (req: any, res: any) => {
+  const { rut, name, records, page } = req.query;
+  const response = await Customer.getByRutOrName(rut, name, records, page);
 
-export { create, getByRutController, getCustomerAccountByRut, updateCustomerAccount };
+  if (!response.success) {
+    createLogger.error({
+      model: "customer/getByRutOrName",
+      error: response.error,
+    });
+    res.status(500).json({ error: "Error retrieving customer" });
+    return;
+  }
+
+  createLogger.info({
+    controller: "customer/getByRutOrName",
+    message: "OK",
+  });
+  res.status(200).json(response.data);
+};
+
+export {
+  create,
+  getByRutController,
+  getCustomerAccountByRut,
+  updateCustomerAccount,
+  getByRutOrName,
+};
 
 const getByRut = async (rut: string) => {
   const response = await Customer.getByRutModel(rut);

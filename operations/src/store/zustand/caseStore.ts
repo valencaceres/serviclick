@@ -25,7 +25,17 @@ interface caseState {
   assistances: IAssistance[] | null;
   case: ICase;
   caseId: ICase;
-  caseList: ICaseItem[];
+  caseList: {
+    summary: {
+      cases: number;
+    };
+    pagination: {
+      total: number;
+      page: number;
+      records: number;
+    };
+    data: ICaseItem[];
+  };
   retailList: IRetailItem[];
   statusList: IStatusItem[];
   isLoading: boolean;
@@ -39,7 +49,9 @@ interface caseState {
     retail_id: string,
     applicant_rut: string,
     applicant_name: string,
-    stage_id: string
+    stage_id: string,
+    records: number,
+    page: number
   ) => void;
   getById: (id: string) => void;
   getServicesAndValues: (data: ICaseServices) => void;
@@ -116,7 +128,17 @@ export const caseStore = create<caseState>((set) => ({
   assistances: [],
   caseId: initialCase,
   case: initialCase,
-  caseList: [],
+  caseList: {
+    summary: {
+      cases: 0,
+    },
+    pagination: {
+      total: 0,
+      page: 0,
+      records: 0,
+    },
+    data: [],
+  },
   retailList: [],
   statusList: [],
   isLoading: false,
@@ -161,7 +183,9 @@ export const caseStore = create<caseState>((set) => ({
     retail_id: string,
     applicant_rut: string,
     applicant_name: string,
-    stage_id: string
+    stage_id: string,
+    records: number,
+    page: number
   ) => {
     try {
       set((state) => ({ ...state, isLoading: true }));
@@ -171,6 +195,8 @@ export const caseStore = create<caseState>((set) => ({
         applicant_rut: applicant_rut,
         applicant_name: applicant_name,
         stage_id: stage_id,
+        records,
+        page,
       };
 
       const queryParams = Object.entries(params)

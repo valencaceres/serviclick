@@ -123,7 +123,6 @@ export const create = (values: BrokerT) => async (dispatch: any) => {
   const { success, data, error } = await post(`broker/create`, values);
 
   if (!success) {
-    console.log(error);
     return false;
   }
 
@@ -136,7 +135,6 @@ export const getById = (id: string) => async (dispatch: any) => {
   const { success, data, error } = await get(`broker/getById/${id}`);
 
   if (!success) {
-    console.log(error);
     return false;
   }
 
@@ -149,7 +147,6 @@ export const getByRut = (rut: string) => async (dispatch: any) => {
   const { success, data, error } = await get(`broker/getByRut/${rut}`);
 
   if (!success) {
-    console.log(error);
     return false;
   }
 
@@ -162,7 +159,6 @@ export const getAll = () => async (dispatch: any) => {
   const { success, data, error } = await get(`broker/getAll`);
 
   if (!success) {
-    console.log(error);
     return false;
   }
 
@@ -175,7 +171,6 @@ export const uploadLogo = (logo: any) => async (dispatch: any) => {
   const { success, data, error } = await post(`broker/uploadLogo`, logo);
 
   if (!success) {
-    console.log(error);
     return false;
   }
 
@@ -188,7 +183,6 @@ export const deleteById = (id: string) => async (dispatch: any) => {
   const { success, data, error } = await erase(`broker/deleteById/${id}`);
 
   if (!success) {
-    console.log(error);
     return false;
   }
 

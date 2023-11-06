@@ -157,13 +157,16 @@ const create = async (req: any, res: any) => {
 };
 
 const getAll = async (req: any, res: any) => {
-  const { retail_id, applicant_rut, applicant_name, stage_id } = req.query;
+  const { retail_id, applicant_rut, applicant_name, stage_id, records, page } =
+    req.query;
 
   const caseResponse = await Case.getAll(
     retail_id,
     applicant_rut,
     applicant_name,
-    stage_id
+    stage_id,
+    records,
+    page
   );
 
   if (!caseResponse.success) {
@@ -846,7 +849,7 @@ const upsert = async (req: any, res: any) => {
     alliance,
     cost,
   } = req.body;
-  console.log(req.body);
+
   const response = await Case.upsert(
     case_id,
     user_id,

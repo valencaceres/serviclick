@@ -350,7 +350,6 @@ const getByClerkId = async (req: any, res: any) => {
   try {
     const { ids } = req.body;
     if (!Array.isArray(ids)) {
-      console.log(ids);
       return res
         .status(400)
         .json({ success: false, data: null, error: "Invalid input" });

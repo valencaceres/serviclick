@@ -245,7 +245,6 @@ export const createLead =
       });
       dispatch(setLead(resolveData.data));
     } catch (e) {
-      console.log(e);
       dispatch(setError(true));
     }
   };

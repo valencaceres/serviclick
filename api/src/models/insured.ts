@@ -216,4 +216,26 @@ const upsert: any = async (
   }
 };
 
-export { create, getByRut, getById, getProfile, upsert };
+const getByRutOrName: any = async (
+  rut: string,
+  name: string,
+  records: number,
+  page: number
+) => {
+  try {
+    const result = await pool.query(
+      `select app.report_insured_get_all($1, $2, $3, $4)`,
+      [rut, name, records, page]
+    );
+
+    return {
+      success: true,
+      data: result.rows.length > 0 ? result.rows[0].report_insured_get_all : [],
+      error: null,
+    };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+export { create, getByRut, getById, getProfile, upsert, getByRutOrName };
