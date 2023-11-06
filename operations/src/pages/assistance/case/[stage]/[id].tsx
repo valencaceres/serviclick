@@ -6,12 +6,13 @@ import { ContentHalfRow } from "~/components/layout/ResponsiveContent";
 import { FloatMenu, ButtonIcon, LoadingMessage } from "~/components/ui";
 
 import { CaseHistory } from "~/components/functional/_assistances/Case";
+import CaseChat from "~/components/functional/_assistances/Case/CaseChat";
 
 import { stagePages } from "../../../../data/stages";
 
 import { useDistrict, useUI } from "~/hooks";
 import { useCase, useApplicant, useProcedure } from "~/store/hooks";
-
+import { Modal, Window } from "~/components/ui/Modal";
 type Stage = keyof typeof stagePages;
 
 const AssistanceCasePage = () => {
@@ -176,6 +177,7 @@ const AssistanceCasePage = () => {
   const [itWasFound, setItWasFound] = useState(false);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [stageKey, setStageKey] = useState<Stage>("applicant");
+  const [showModal, setShowModal] = useState(false);
 
   const matchingProcedure = procedureList.find(
     (procedure) => procedure.id === caseValue.procedure_id
@@ -217,6 +219,8 @@ const AssistanceCasePage = () => {
     stateMachine[stageKey].save();
     //stateMachine[stageKey].next();
   };
+
+  const setClosed = () => setShowModal(false);
 
   useEffect(() => {
     listAllDistrict();
@@ -270,7 +274,7 @@ const AssistanceCasePage = () => {
         setIsEnabledSave,
         itWasFound,
       })}
-      <CaseHistory />
+      <CaseHistory setShowModal={setShowModal} showModal={showModal} />
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />
         <ButtonIcon iconName="arrow_back" onClick={handleClickBack} />
@@ -280,6 +284,11 @@ const AssistanceCasePage = () => {
           disabled={!isEnabledSave}
         />
       </FloatMenu>
+      <Modal showModal={showModal}>
+        <Window setClosed={setClosed}>
+          <CaseChat thisCase={caseId} />
+        </Window>
+      </Modal>
       <LoadingMessage showModal={isLoadingApplicant || isLoadingCase} />
     </ContentHalfRow>
   ) : (

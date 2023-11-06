@@ -21,7 +21,8 @@ import { LoadingMessage } from "~/components/ui/LoadingMessage";
 import { useCase } from "~/store/hooks";
 import { useQueryCase } from "~/hooks/query";
 import { useUser } from "@clerk/nextjs";
-const CaseHistory = () => {
+import Button from "~/components/ui/Button";
+const CaseHistory = ({ showModal, setShowModal }: any) => {
   const router = useRouter();
 
   const { caseValue } = useCase();
@@ -88,6 +89,13 @@ const CaseHistory = () => {
               ? "1 acción"
               : `${caseValue?.history?.length} acciones`}
           </ContentCellSummary>
+          {caseValue.case_id && (
+            <Button
+              text="Chat"
+              iconName="chat"
+              onClick={() => setShowModal(true)}
+            />
+          )}
         </ContentRow>
       </ContentCell>
       <LoadingMessage />

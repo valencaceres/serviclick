@@ -626,11 +626,11 @@ const updateReimbursementStatus = async (req: any, res: any) => {
 
 const createChatMessage = async (req: any, res: any) => {
   try {
-    const { case_id, casestage_id, message, user_id, type } = req.body;
+    const { case_id, stage_id, message, user_id, type } = req.body;
 
     const response = await CaseChat.create(
       case_id,
-      casestage_id,
+      stage_id,
       user_id,
       message,
       type
