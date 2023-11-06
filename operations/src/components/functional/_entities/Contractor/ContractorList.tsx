@@ -19,6 +19,7 @@ import {
   TableCellEnd,
 } from "../../../ui/Table";
 import Icon from "../../../ui/Icon";
+
 import { LoadingMessage } from "../../../ui/LoadingMessage";
 
 import { unFormatRut, formatRut } from "../../../../utils/rut";
@@ -31,6 +32,7 @@ const ContractorList = ({ editContractor, filters, setFilters }: any) => {
   const router = useRouter();
 
   const { getByRutOrName, customerList, customerIsLoading } = useCustomer();
+  const [isNextClick, setIsNextClick] = useState(false);
 
   const handleChangeRut = (e: any) => {
     setFilters({ ...filters, rut: e.target.value, name: "" });
@@ -55,6 +57,7 @@ const ContractorList = ({ editContractor, filters, setFilters }: any) => {
   };
 
   const handleClickNextPage = () => {
+    setIsNextClick(true);
     if ((filters?.page || 1) === customerList.pagination.total) return;
     setFilters({ ...filters, page: filters.page + 1 });
     getByRutOrName(
@@ -66,6 +69,7 @@ const ContractorList = ({ editContractor, filters, setFilters }: any) => {
   };
 
   const handleClickPrevPage = () => {
+    setIsNextClick(false);
     if ((filters?.page || 1) === 1) return;
     setFilters({ ...filters, page: filters.page - 1 });
     getByRutOrName(
@@ -81,7 +85,7 @@ const ContractorList = ({ editContractor, filters, setFilters }: any) => {
       setFilters(filters);
     }
   }, [filters]);
-
+  console.log(customerIsLoading);
   return (
     <Fragment>
       <ContentCell gap="5px" className="fade-in-fwd">
@@ -149,23 +153,31 @@ const ContractorList = ({ editContractor, filters, setFilters }: any) => {
             <ContentCellSummary>{`${customerList.summary.products} productos`}</ContentCellSummary>
           </ContentRow>
           <ContentRow gap="5px" align="flex-end">
-            <ButtonIcon
-              iconName="navigate_before"
-              onClick={handleClickPrevPage}
-              color="gray"
-            />
+            {customerIsLoading && !isNextClick ? (
+              <ButtonIcon iconName="refresh" color="gray" loading={true} />
+            ) : (
+              <ButtonIcon
+                iconName="navigate_before"
+                onClick={handleClickPrevPage}
+                color="gray"
+              />
+            )}
+
             <ContentCellSummary>{`Página ${filters?.page || 1} de ${
               customerList.pagination?.total || 1
             }`}</ContentCellSummary>
-            <ButtonIcon
-              iconName="navigate_next"
-              onClick={handleClickNextPage}
-              color="gray"
-            />
+            {customerIsLoading && isNextClick ? (
+              <ButtonIcon iconName="refresh" color="gray" loading={true} />
+            ) : (
+              <ButtonIcon
+                iconName="navigate_next"
+                onClick={handleClickNextPage}
+                color="gray"
+              />
+            )}
           </ContentRow>
         </ContentRow>
       </ContentCell>
-      <LoadingMessage showModal={customerIsLoading} />
     </Fragment>
   );
 };

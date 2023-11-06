@@ -2,16 +2,16 @@ import pool from "../util/database";
 
 const create: any = async (
   case_id: string,
-  casestage_id: string,
+  stage_id: string,
   user_id: string,
   message: string,
   type: string
 ) => {
   try {
     const result = await pool.query(
-      `INSERT INTO app.casechat(case_id, casestage_id, user_id, message, type)
+      `INSERT INTO app.casechat(case_id, stage_id, user_id, message, type)
         VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-      [case_id, casestage_id, user_id, message, type]
+      [case_id, stage_id, user_id, message, type]
     );
 
     return { success: true, data: result.rows[0], error: null };
@@ -26,7 +26,7 @@ const getByCase: any = async (case_id: string) => {
       `SELECT
         cc.id,
         cc.case_id,
-        cc.casestage_id,
+        cc.stage_id,
         cc.user_id,
         cc.message,
         cc.created_at,
