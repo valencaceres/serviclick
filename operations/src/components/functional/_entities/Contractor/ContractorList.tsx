@@ -77,7 +77,6 @@ const ContractorList = ({ editContractor, filters, setFilters }: any) => {
   };
 
   useEffect(() => {
-    console.log(1);
     if (filters?.rut || filters?.name || filters?.page || filters?.records) {
       setFilters(filters);
     }

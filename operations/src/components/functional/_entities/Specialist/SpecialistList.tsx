@@ -43,7 +43,6 @@ const SpecialistList = ({
     family_id: "",
     name: "",
   };
-  console.log(specialistList);
 
   const [search, setSearch] = useState(initialSearchForm);
 

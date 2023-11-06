@@ -99,7 +99,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
     }
     setIsEnabledSave(true);
   }, []);
-  console.log(caseValue);
+
   return (
     <ContentCell gap="20px">
       <ContentCell gap="5px">

@@ -107,7 +107,6 @@ const FileFormatDetail = () => {
   }, []);
 
   useEffect(() => {
-    console.log(retail);
     if (retail.id && isProcessing) {
       setFormData({
         rut: { value: retail.rut, isValid: true },

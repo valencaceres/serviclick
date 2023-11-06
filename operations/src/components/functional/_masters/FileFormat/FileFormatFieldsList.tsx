@@ -19,7 +19,6 @@ const FileFormatFieldsList = ({ setShowModal }: any) => {
   const { setFileFormat, fileFormat } = useFileFormat();
 
   const handleClickAddDocument = (field: any) => {
-    console.log({ ...fileFormat });
     setFileFormat({
       ...fileFormat,
       fields: [

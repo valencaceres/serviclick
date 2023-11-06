@@ -223,7 +223,6 @@ const updateCustomerAccount = async (
       if (updateResult.rows.length > 0) {
         return { success: true, data: updateResult.rows[0], error: null };
       } else {
-        console.log("No records found for update");
         return {
           success: false,
           data: null,

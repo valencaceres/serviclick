@@ -25,7 +25,6 @@ const ProductAssistance = ({
   assistance,
   setIsOpen,
 }: any) => {
-  console.log(assistance);
   const [serviceName, setServiceName] = useState<string | undefined>(
     assistance ? assistance.name : undefined
   );

@@ -194,8 +194,6 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
     }
   }, [router.query.id]);
 
-  console.log(specialistList);
-
   return (
     <ContentCell gap="20px">
       <ContentCell gap="5px">
