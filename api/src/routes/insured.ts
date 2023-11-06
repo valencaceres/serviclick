@@ -7,6 +7,7 @@ import {
   create,
   getById,
   upsert,
+  getByRutOrName,
 } from "../controllers/insured";
 import isAuthenticated from "../middlewares/isAuthenticated";
 import isAdmin from "../middlewares/isAdmin";
@@ -18,5 +19,6 @@ InsuredRouter.get("/getProfile/:rut", auth, getProfile);
 InsuredRouter.post("/create", auth, isAuthenticated, isAdmin, create);
 InsuredRouter.get("/getById/:id", auth, getById);
 InsuredRouter.post("/upsert", auth, upsert);
+InsuredRouter.get("/getByRutOrName", auth, getByRutOrName);
 
 export default InsuredRouter;

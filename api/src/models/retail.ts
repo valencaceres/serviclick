@@ -503,6 +503,33 @@ const getCustomerByRut: any = async (productPlan_id: string, rut: string) => {
   }
 };
 
+const expireInsured: any = async (productPlan_id: string) => {
+  try {
+    const result = await pool.query(
+      `
+      update 	app.policy
+      set 	  enddate = (now()::date - interval '1 day')::date
+      where 	id in (
+            select  pol.id
+            from    app.lead lea
+                      inner join app.leadproduct lpr on lea.id = lpr.lead_id
+                      inner join app.productplan ppl on lpr.productplan_id = ppl.plan_id
+                      inner join app.policy pol on lea.policy_id = pol.id
+            where 	(pol.enddate is null or pol.enddate::date >= now()::date) and
+                    ppl.id = $1)`,
+      [productPlan_id]
+    );
+
+    return {
+      success: true,
+      data: "OK",
+      error: null,
+    };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 export {
   create,
   getById,
@@ -516,4 +543,5 @@ export {
   getBySearchValues,
   getCustomersByRetailIdAndProductId,
   getCustomerByRut,
+  expireInsured,
 };

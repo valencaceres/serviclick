@@ -150,10 +150,9 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
               width="234px"
               onChange={handleChange}
               maxTime={minDate?.toISOString().split("T")[0]}
-              disabled={caseId?.event?.date != null}
+              //disabled={caseId?.event?.date != null}
               timeFormat=""
             />
-
             <ComboBox
               id="location"
               label="Comuna"
@@ -164,7 +163,7 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
               dataValue={"id"}
               dataText={"district_name"}
               width="290px"
-              enabled={caseId.event?.location === null}
+              //enabled={caseId.event?.location === null}
             />
           </ContentRow>
           <TextArea

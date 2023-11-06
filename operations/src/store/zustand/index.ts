@@ -5,6 +5,8 @@ import { qualificationStore } from "./qualificationStore";
 import { procedureStore } from "./procedureStore";
 import { assistanceStore } from "./assistanceStore";
 import { specialtyStore } from "./specialtyStore";
+import { insuredStore } from "./insuredStore";
+import { customerStore } from "./customerStore";
 
 export {
   specialistStore,
@@ -14,4 +16,6 @@ export {
   procedureStore,
   assistanceStore,
   specialtyStore,
+  insuredStore,
+  customerStore,
 };

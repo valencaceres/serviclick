@@ -157,13 +157,25 @@ const create = async (req: any, res: any) => {
 };
 
 const getAll = async (req: any, res: any) => {
-  const { retail_id, applicant_rut, applicant_name, stage_id } = req.query;
+  const { retail_id, applicant_rut, applicant_name, stage_id, records, page } =
+    req.query;
+
+  console.log({
+    retail_id,
+    applicant_rut,
+    applicant_name,
+    stage_id,
+    records,
+    page,
+  });
 
   const caseResponse = await Case.getAll(
     retail_id,
     applicant_rut,
     applicant_name,
-    stage_id
+    stage_id,
+    records,
+    page
   );
 
   if (!caseResponse.success) {

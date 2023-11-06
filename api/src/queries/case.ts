@@ -1,5 +1,5 @@
 export const _getById = `select app.case_get_by_id($1)`;
-export const _getAll = `select app.case_get_all($1, $2, $3, $4)`;
+export const _getAll = `select app.case_get_all($1, $2, $3, $4, $5, $6)`;
 
 export const _getBeneficiaryData = `
     SELECT  ins.id AS insured_id,
