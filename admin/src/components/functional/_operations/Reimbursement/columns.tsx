@@ -44,10 +44,10 @@ export const columns: ColumnDef<CaseReimbursement>[] = [
     header: "Caso",
   },
   {
-    accessorKey: "casestageresult",
+    accessorKey: "applicationdate",
     header: "Fecha",
     cell: ({ row }) => {
-      const date = new Date(row.original.casestageresult.created_at as Date);
+      const date = new Date(row.original.application_date as Date);
       return date.toLocaleDateString("es-CL", {
         year: "numeric",
         month: "long",
@@ -75,10 +75,11 @@ export const columns: ColumnDef<CaseReimbursement>[] = [
     header: "Servicio",
   },
   {
-    accessorKey: "casestageresult.available",
+    accessorKey: "casemodel.available",
     header: "Disponible",
     cell: ({ row }) => {
-      const available = row.original.casestageresult.available;
+      const available =
+        row.original.casemodel.assistance?.productassistances[0]?.amount;
       return available
         ? Number(available).toLocaleString("es-CL", {
             style: "currency",
@@ -88,10 +89,10 @@ export const columns: ColumnDef<CaseReimbursement>[] = [
     },
   },
   {
-    accessorKey: "casestageresult.amount",
+    accessorKey: "cademodel.amount",
     header: "Reembolso",
     cell: ({ row }) => {
-      const amount = row.original.casestageresult.amount;
+      const amount = row.original.amount;
       return amount ? (
         <span className="font-semibold">
           {Number(amount).toLocaleString("es-CL", {
@@ -174,7 +175,6 @@ const Actions = ({
       }
     );
   };
-
   return (
     <>
       <DropdownMenu>
@@ -223,25 +223,22 @@ const Actions = ({
             <h2 className="font-semibold text-teal-blue">
               Disponible:{" "}
               <span className="font-bold">
-                {Number(row.original.casestageresult.available).toLocaleString(
-                  "es-CL",
-                  {
-                    style: "currency",
-                    currency: "CLP",
-                  }
-                )}
+                {Number(
+                  row.original.casemodel.assistance?.productassistances[0]
+                    ?.amount
+                ).toLocaleString("es-CL", {
+                  style: "currency",
+                  currency: "CLP",
+                })}
               </span>
             </h2>
             <h2 className="font-semibold text-teal-blue">
               Reembolso solicitado:{" "}
               <span className="font-bold">
-                {Number(row.original.casestageresult.amount).toLocaleString(
-                  "es-CL",
-                  {
-                    style: "currency",
-                    currency: "CLP",
-                  }
-                )}
+                {Number(row.original.register_amount).toLocaleString("es-CL", {
+                  style: "currency",
+                  currency: "CLP",
+                })}
               </span>
             </h2>
             <h2 className="font-semibold text-teal-blue">
