@@ -11,8 +11,26 @@ export const reimbursementRouter = createTRPCRouter({
     )
     .query(async ({ input, ctx }) => {
       const whereCondition = input.isImed
-        ? { OR: [{ imed_amount: { gt: 0 } }, { imed_amount: 0 }] }
-        : { OR: [{ imed_amount: null }] };
+        ? {
+            OR: [
+              {
+                AND: [
+                  { register_imedamount: { not: { equals: 0 } } },
+                  { register_imedamount: { not: { equals: null } } },
+                ],
+              },
+            ],
+          }
+        : {
+            OR: [
+              {
+                AND: [
+                  { register_amount: { not: { equals: 0 } } },
+                  { register_amount: { not: { equals: null } } },
+                ],
+              },
+            ],
+          };
 
       const reimbursement = await ctx.prisma.casereimbursment.findMany({
         where: whereCondition,
@@ -29,7 +47,6 @@ export const reimbursementRouter = createTRPCRouter({
               product: true,
             },
           },
-          casestageresult: true,
         },
         orderBy: {
           casemodel: {
@@ -91,7 +108,6 @@ export const reimbursementRouter = createTRPCRouter({
               },
             },
           },
-          casestageresult: true,
         },
       });
 

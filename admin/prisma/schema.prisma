@@ -1,5 +1,5 @@
 generator client {
-  provider        = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -61,18 +61,19 @@ model assistancevalue {
 }
 
 model beneficiary {
-  id               String      @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
-  rut              String      @unique(map: "beneficiary_rut_idx") @db.VarChar
-  name             String      @db.VarChar
-  paternallastname String      @db.VarChar
-  maternallastname String      @db.VarChar
-  email            String      @db.VarChar
-  phone            String      @db.VarChar
-  address          String?     @db.VarChar
-  district         String?     @db.VarChar
-  birthdate        DateTime?   @db.Date
-  relationship     String?     @db.VarChar
+  id               String            @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
+  rut              String            @unique(map: "beneficiary_rut_idx") @db.VarChar
+  name             String            @db.VarChar
+  paternallastname String            @db.VarChar
+  maternallastname String            @db.VarChar
+  email            String            @db.VarChar
+  phone            String            @db.VarChar
+  address          String?           @db.VarChar
+  district         String?           @db.VarChar
+  birthdate        DateTime?         @db.Date
+  relationship     String?           @db.VarChar
   Renamedcase      casemodel[]
+  leadbeneficiary  leadbeneficiary[]
 }
 
 model broker {
@@ -126,68 +127,75 @@ model brokerproduct {
 }
 
 model casemodel {
-  id               String             @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
-  createddate      DateTime           @default(now()) @db.Timestamp(6)
-  type             String             @db.VarChar(1)
-  number           Int                @default(autoincrement())
-  insured_id       String?            @db.Uuid
-  product_id       String?            @db.Uuid
-  assistance_id    String?            @db.Uuid
-  isactive         Boolean            @default(true)
-  beneficiary_id   String?            @db.Uuid
-  customer_id      String?            @db.Uuid
-  company_id       String?            @db.Uuid
-  lead_id          String?            @db.Uuid
-  event_date       DateTime?          @db.Date
-  event_location   String?            @db.VarChar
-  insured          insured?           @relation(fields: [insured_id], references: [id], map: "case_applicant_id_fkey")
-  assistance       assistance?        @relation(fields: [assistance_id], references: [id])
-  beneficiary      beneficiary?       @relation(fields: [beneficiary_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  lead             lead?              @relation(fields: [lead_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  product          product?           @relation(fields: [product_id], references: [id])
-  casechat         casechat[]
-  casereimbursment casereimbursment[]
-  casestage        casestage[]
-  caseattach       casestageattach[]
+  id                String            @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
+  createddate       DateTime          @default(now()) @db.Timestamp(6)
+  type              String            @db.VarChar(1)
+  number            Int               @default(autoincrement())
+  insured_id        String?           @db.Uuid
+  product_id        String?           @db.Uuid
+  assistance_id     String?           @db.Uuid
+  isactive          Boolean           @default(true)
+  beneficiary_id    String?           @db.Uuid
+  customer_id       String?           @db.Uuid
+  lead_id           String?           @db.Uuid
+  event_date        DateTime?         @db.Date
+  event_location    String?           @db.VarChar
+  retail_id         String?           @db.Uuid
+  event_description String?
+  stage_id          String?           @db.Uuid
+  procedure_id      String?           @db.Uuid
+  insured           insured?          @relation(fields: [insured_id], references: [id], map: "case_applicant_id_fkey")
+  assistance        assistance?       @relation(fields: [assistance_id], references: [id])
+  beneficiary       beneficiary?      @relation(fields: [beneficiary_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  lead              lead?             @relation(fields: [lead_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  product           product?          @relation(fields: [product_id], references: [id])
+  casechat          casechat[]
+  casereimbursment  casereimbursment?
+  casestage         casestage[]
+  caseattach        casestageattach[]
 
   @@map("case")
 }
 
 model casechat {
-  id           String    @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
-  created_at   DateTime  @default(now()) @db.Timestamp(6)
-  casestage_id String    @db.Uuid
-  user_id      String    @db.VarChar(255)
-  message      String
-  type         String    @default("") @db.VarChar(50)
-  case_id      String    @db.Uuid
-  casemodel    casemodel @relation(fields: [case_id], references: [id])
-  casestage    casestage @relation(fields: [casestage_id], references: [id])
+  id         String    @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
+  created_at DateTime  @default(now()) @db.Timestamp(6)
+  stage_id   String    @db.Uuid
+  user_id    String    @db.VarChar(255)
+  message    String
+  type       String    @default("") @db.VarChar(50)
+  case_id    String    @db.Uuid
+  casemodel  casemodel @relation(fields: [case_id], references: [id])
 }
 
 model casereimbursment {
-  id                 String          @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
-  case_id            String          @db.Uuid
-  casestageresult_id String          @db.Uuid
-  user_id            String?         @db.VarChar(255)
-  status             String          @default("Pendiente") @db.VarChar
-  comment            String?         @db.VarChar(255)
-  imed_amount        Int?
-  amount             Int?
-  casemodel          casemodel       @relation(fields: [case_id], references: [id])
-  casestageresult    casestageresult @relation(fields: [casestageresult_id], references: [id])
+  id                  String           @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
+  case_id             String           @unique(map: "casereimbursment_case_id_idx") @db.Uuid
+  casestageresult_id  String?          @db.Uuid
+  user_id             String?          @db.VarChar(255)
+  status              String           @default("Pendiente") @db.VarChar
+  comment             String?          @db.VarChar(255)
+  imed_amount         Int?
+  amount              Int?
+  application_date    DateTime?        @db.Timestamp(6)
+  response_date       DateTime?        @db.Timestamp(6)
+  register_amount     Int?
+  register_imedamount Int?
+  casemodel           casemodel        @relation(fields: [case_id], references: [id])
+  casestageresult     casestageresult? @relation(fields: [casestageresult_id], references: [id], onDelete: Restrict)
 }
 
 model casestage {
-  id          String     @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
-  case_id     String     @db.Uuid
-  createddate DateTime   @default(now()) @db.Timestamp(6)
-  stage_id    String     @db.Uuid
-  user_id     String     @db.VarChar(255)
+  id          String    @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
+  case_id     String    @db.Uuid
+  createddate DateTime  @default(now()) @db.Timestamp(6)
+  stage_id    String    @db.Uuid
+  user_id     String    @db.VarChar(255)
   description String?
-  casechat    casechat[]
-  case        casemodel  @relation(fields: [case_id], references: [id])
-  stage       stage      @relation(fields: [stage_id], references: [id])
+  case        casemodel @relation(fields: [case_id], references: [id])
+  stage       stage     @relation(fields: [stage_id], references: [id])
+
+  @@unique([case_id, stage_id], map: "casestage_case_id_idx")
 }
 
 model casestageattach {
@@ -201,14 +209,19 @@ model casestageattach {
 }
 
 model casestagepartner {
-  id             String    @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
-  case_id        String    @db.Uuid
-  casestage_id   String    @db.Uuid
-  partner_id     String    @db.Uuid
-  scheduled_date DateTime? @db.Date
-  scheduled_time DateTime? @db.Time(6)
-  confirmed_date DateTime? @db.Date
-  confirmed_time DateTime? @db.Time(6)
+  id               String    @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
+  case_id          String    @unique(map: "casestagepartner_case_id_idx") @db.Uuid
+  casestage_id     String?   @db.Uuid
+  partner_id       String    @db.Uuid
+  scheduled_date   DateTime? @db.Date
+  scheduled_time   DateTime? @db.Time(6)
+  confirmed_date   DateTime? @db.Date
+  confirmed_time   DateTime? @db.Time(6)
+  qualification_id String?   @db.Uuid
+  comment          String?   @db.VarChar
+  confirmed        Boolean?
+  completed        Boolean?
+  specialty_id     String?   @db.Uuid
 }
 
 model casestageresult {
@@ -224,15 +237,20 @@ model casestageresult {
 }
 
 model casestagespecialist {
-  id             String    @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
-  case_id        String    @db.Uuid
-  casestage_id   String    @db.Uuid
-  specialist_id  String    @db.Uuid
-  district_id    String    @db.Uuid
-  scheduled_date DateTime? @db.Date
-  scheduled_time DateTime? @db.Time(6)
-  confirmed_date DateTime? @db.Date
-  confirmed_time DateTime? @db.Time(6)
+  id               String    @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
+  case_id          String    @unique(map: "casestagespecialist_case_id_idx") @db.Uuid
+  casestage_id     String?   @db.Uuid
+  specialist_id    String    @db.Uuid
+  district_id      String    @db.Uuid
+  scheduled_date   DateTime? @db.Date
+  scheduled_time   DateTime? @db.Time(6)
+  confirmed_date   DateTime? @db.Date
+  confirmed_time   DateTime? @db.Time(6)
+  specialty_id     String?   @db.Uuid
+  qualification_id String?   @db.Uuid
+  comment          String?   @db.VarChar
+  confirmed        Boolean?
+  completed        Boolean?
 }
 
 model channel {
@@ -347,45 +365,50 @@ model frequency {
 }
 
 model insured {
-  id               String      @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
-  rut              String      @unique(map: "insured_rut_idx") @db.VarChar
-  name             String      @db.VarChar
-  paternallastname String      @db.VarChar
-  maternallastname String      @db.VarChar
-  address          String      @db.VarChar
-  district         String      @db.VarChar
-  email            String      @db.VarChar
-  phone            String      @db.VarChar
-  birthdate        DateTime?   @db.Date
+  id               String        @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
+  rut              String        @unique(map: "insured_rut_idx") @db.VarChar
+  name             String        @db.VarChar
+  paternallastname String        @db.VarChar
+  maternallastname String        @db.VarChar
+  address          String        @db.VarChar
+  district         String        @db.VarChar
+  email            String        @db.VarChar
+  phone            String        @db.VarChar
+  birthdate        DateTime?     @db.Date
   cases            casemodel[]
+  leadinsured      leadinsured[]
 }
 
 model lead {
-  id               String      @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
-  createdate       DateTime    @db.Timestamp(6)
-  customer_id      String?     @db.Uuid
-  company_id       String?     @db.Uuid
+  id               String        @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
+  createdate       DateTime      @db.Timestamp(6)
+  customer_id      String?       @db.Uuid
+  retail_id        String?       @db.Uuid
   subscription_id  Int?
-  isactive         Boolean     @default(true)
-  agent_id         String?     @db.Uuid
-  paymenttype_code String?     @db.VarChar(1)
-  policy_id        String?     @db.Uuid
-  link             String?     @db.VarChar
-  user_id          String?     @db.VarChar(255)
+  isactive         Boolean       @default(true)
+  agent_id         String?       @db.Uuid
+  paymenttype_code String?       @db.VarChar(1)
+  policy_id        String?       @db.Uuid
+  link             String?       @db.VarChar
+  user_id          String?       @db.VarChar(255)
   Renamedcase      casemodel[]
+  leadinsured      leadinsured[]
 }
 
 model leadbeneficiary {
-  lead_id        String @db.Uuid
-  insured_id     String @db.Uuid
-  beneficiary_id String @db.Uuid
+  lead_id        String      @db.Uuid
+  insured_id     String      @db.Uuid
+  beneficiary_id String      @db.Uuid
+  beneficiary    beneficiary @relation(fields: [beneficiary_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "leadbenficiary_beneficiary_id_fkey")
 
   @@unique([lead_id, insured_id, beneficiary_id], map: "leadbeneficiary_idx")
 }
 
 model leadinsured {
-  lead_id    String @db.Uuid
-  insured_id String @db.Uuid
+  lead_id    String  @db.Uuid
+  insured_id String  @db.Uuid
+  insured    insured @relation(fields: [insured_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  lead       lead    @relation(fields: [lead_id], references: [id])
 
   @@unique([lead_id, insured_id], map: "leadinsured_idx")
 }
@@ -573,18 +596,19 @@ model relationship {
 }
 
 model retail {
-  id          String  @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
-  rut         String  @unique(map: "retail_rut_idx") @db.VarChar
-  name        String  @db.VarChar
-  line        String  @db.VarChar
-  address     String  @db.VarChar
-  district    String  @db.VarChar
-  email       String  @db.VarChar
-  phone       String  @db.VarChar
-  logo        String?
-  isactive    Boolean @default(true)
-  channel_id  String  @default(dbgenerated("'3e085593-ca72-404f-9013-c1cce7abd60d'::uuid")) @db.Uuid
-  fantasyname String? @db.VarChar
+  id                  String  @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
+  rut                 String  @unique(map: "retail_rut_idx") @db.VarChar
+  name                String  @db.VarChar
+  line                String  @db.VarChar
+  address             String  @db.VarChar
+  district            String  @db.VarChar
+  email               String  @db.VarChar
+  phone               String  @db.VarChar
+  logo                String?
+  isactive            Boolean @default(true)
+  channel_id          String  @default(dbgenerated("'3e085593-ca72-404f-9013-c1cce7abd60d'::uuid")) @db.Uuid
+  fantasyname         String? @db.VarChar
+  legalrepresentative String? @db.VarChar
 }
 
 model retailcampaign {
@@ -614,6 +638,7 @@ model retailproduct {
   isactive          Boolean @default(true)
   normalprice       Int?    @default(0)
   plan_id           Int?
+  number            Int?
 
   @@unique([retail_id, product_id], map: "retailproduct_idx")
 }
@@ -658,6 +683,7 @@ model stage {
   id         String      @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
   number     Int         @default(autoincrement())
   name       String      @unique(map: "stage_name_idx") @db.VarChar
+  code       String      @db.VarChar
   isactive   Boolean     @default(true)
   casestages casestage[]
 }
@@ -780,4 +806,178 @@ model brokeruser {
   isactive    Boolean @default(true)
   profilecode String  @default("S") @db.Char(1)
   broker      broker  @relation(fields: [broker_id], references: [id])
+}
+
+model back_customer {
+  id               String    @id @db.Uuid
+  rut              String    @db.VarChar
+  name             String    @db.VarChar
+  paternallastname String    @db.VarChar
+  maternallastname String    @db.VarChar
+  address          String    @db.VarChar
+  district         String    @db.VarChar
+  email            String    @db.VarChar
+  phone            String    @db.VarChar
+  birthdate        DateTime? @db.Date
+
+  @@map("_back_customer")
+}
+
+model bak_company {
+  id                  String @id @db.Uuid
+  rut                 String @db.VarChar
+  companyname         String @db.VarChar
+  legalrepresentative String @db.VarChar
+  line                String @db.VarChar
+  address             String @db.VarChar
+  district            String @db.VarChar
+  email               String @db.VarChar
+  phone               String @db.VarChar
+
+  @@map("_bak_company")
+}
+
+model bak_lead {
+  id              String   @id @db.Uuid
+  createdate      DateTime @db.Timestamp(6)
+  customer_id     String?  @db.Uuid
+  company_id      String?  @db.Uuid
+  subscription_id Int?
+  isactive        Boolean  @default(true)
+  agent_id        String?  @db.Uuid
+
+  @@map("_bak_lead")
+}
+
+model bak_payment {
+  id               String   @id @db.Uuid
+  payment_id       Int
+  date             DateTime @db.Timestamp(6)
+  subscription_id  Int
+  amount           Int
+  buy_order        String   @db.VarChar
+  credit_card_type String   @db.VarChar
+  is_recurrent     Boolean
+  gateway_response String   @db.VarChar
+
+  @@map("_bak_payment")
+}
+
+model bak_productplan {
+  id         String   @id @db.Uuid
+  createdate DateTime @db.Date
+  product_id String   @db.Uuid
+  plan_id    Int
+  type       String   @db.VarChar
+  price      Int
+  frequency  String   @db.VarChar
+
+  @@map("_bak_productplan")
+}
+
+model bak_subscription {
+  id                String    @id @db.Uuid
+  date              DateTime  @db.Timestamp(6)
+  interval_id       Int
+  status_id         Int
+  subscription_id   Int
+  plan_id           Int
+  plan_amount       Int
+  last_payment_date DateTime? @db.Timestamp(6)
+
+  @@map("_bak_subscription")
+}
+
+model bak_subscription_history {
+  id                String    @id @db.Uuid
+  date              DateTime  @db.Timestamp(6)
+  interval_id       Int
+  status_id         Int
+  subscription_id   Int
+  plan_id           Int
+  plan_amount       Int
+  last_payment_date DateTime? @db.Timestamp(6)
+
+  @@map("_bak_subscription_history")
+}
+
+model casesummary {
+  case_id     String   @id @db.Uuid
+  amount      Decimal? @db.Decimal(10, 2)
+  extraamount Decimal? @db.Decimal(10, 2)
+  comment     String?  @db.VarChar
+}
+
+model customeraccount {
+  customer_id   String  @id @db.Uuid
+  bank          String? @db.VarChar(255)
+  accountnumber String? @db.VarChar(255)
+}
+
+model field {
+  id      String  @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
+  name    String  @unique(map: "field_name_idx") @db.VarChar
+  format  String? @db.VarChar
+  db_name String? @db.VarChar
+}
+
+model fileformat {
+  id             String  @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
+  lead_id        String? @db.Uuid
+  number         Int
+  field_id       String  @db.Uuid
+  retail_id      String? @db.Uuid
+  productplan_id String? @db.Uuid
+
+  @@unique([lead_id, field_id], map: "fileformat_idx")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model migracion {
+  asistencia String? @db.VarChar
+  convenio   String? @db.VarChar
+  rut        String? @db.VarChar
+  fecha      String? @db.VarChar
+  tipo       String? @db.VarChar
+  monto      Int?
+  imed       Int?
+  contacto   String? @db.VarChar
+  prevision  String? @db.VarChar
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model mktinput {
+  date         DateTime @db.Date
+  name         String   @db.VarChar
+  email        String   @db.VarChar
+  phone        String   @db.VarChar
+  origin       String   @db.VarChar
+  product_name String   @db.VarChar
+
+  @@ignore
+}
+
+model plan {
+  id          Int      @id @default(autoincrement())
+  createddate DateTime @db.Timestamp(6)
+}
+
+model procedure {
+  id   String @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
+  name String @unique(map: "procedure_name_idx") @db.VarChar
+}
+
+model procedurestage {
+  procedure_id String @db.Uuid
+  stage_id     String @db.Uuid
+
+  @@unique([procedure_id, stage_id], map: "procedurestage_idx")
+}
+
+model qualification {
+  id     String @id @default(dbgenerated("public.gen_random_uuid()")) @db.Uuid
+  name   String @unique(map: "qualification_name_idx") @db.VarChar
+  number Int?
 }

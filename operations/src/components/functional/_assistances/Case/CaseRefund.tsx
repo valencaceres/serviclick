@@ -28,16 +28,22 @@ const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
     const numericValue = parseFloat(value);
 
     const isNumeric = !isNaN(numericValue);
-
     setCase({
       ...caseValue,
       user_id: user?.id || "",
       refund: {
-        amount:
-          id === "amount" && isNumeric
-            ? numericValue
-            : caseValue.refund?.amount || 0,
-        imed_amount: caseValue.refund?.imed_amount || 0,
+        amount: {
+          refunded: caseValue?.refund?.amount.refunded || 0,
+          required:
+            id === "amount" && isNumeric
+              ? numericValue
+              : caseValue.refund?.amount?.required || 0,
+        },
+        imed: {
+          refunded: caseValue?.refund?.imed.refunded || 0,
+          required: caseValue?.refund?.imed.required || 0,
+        },
+
         status: caseValue.refund?.status || "",
         comment: caseValue.refund?.comment || "",
       },
@@ -45,7 +51,7 @@ const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
   };
 
   const checkCompleteFields = () => {
-    if (caseValue.refund && caseValue.refund.amount !== 0) {
+    if (caseValue.refund && caseValue?.refund?.amount?.required !== 0) {
       return true;
     }
     return false;
@@ -176,14 +182,17 @@ const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
           </ContentRow>
 
           <ContentRow gap="5px">
-            {caseId?.refund?.amount && caseId.refund.status ? (
+            {caseId?.refund?.amount?.required && caseId.refund.status ? (
               <>
                 <InputText
                   label="Monto solicitado ($)"
-                  value={caseId?.refund?.amount?.toLocaleString("es-CL", {
-                    style: "currency",
-                    currency: "CLP",
-                  })}
+                  value={caseId?.refund?.amount?.required?.toLocaleString(
+                    "es-CL",
+                    {
+                      style: "currency",
+                      currency: "CLP",
+                    }
+                  )}
                   type="text"
                   width="190px"
                   disabled={true}
@@ -200,8 +209,8 @@ const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
               <InputText
                 label="Monto solicitado ($)"
                 value={
-                  caseValue && caseValue.refund?.amount
-                    ? caseValue.refund?.amount.toString()
+                  caseValue && caseValue.refund?.amount?.required
+                    ? caseValue.refund?.amount?.required.toString()
                     : ""
                 }
                 id="amount"
@@ -211,15 +220,32 @@ const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
               />
             )}
           </ContentRow>
-          {caseId?.refund?.comment && (
-            <InputText
-              label="Motivo"
-              value={caseId?.refund?.comment}
-              type="text"
-              width="260px"
-              disabled={true}
-            />
-          )}
+          <ContentRow gap="5px">
+            {caseId?.refund?.amount?.refunded && (
+              <InputText
+                label="Monto reembolsado ($)"
+                value={caseId?.refund?.amount?.refunded?.toLocaleString(
+                  "es-CL",
+                  {
+                    style: "currency",
+                    currency: "CLP",
+                  }
+                )}
+                type="text"
+                width="190px"
+                disabled={true}
+              />
+            )}
+            {caseId?.refund?.comment && (
+              <InputText
+                label="Motivo"
+                value={caseId?.refund?.comment}
+                type="text"
+                width="335px"
+                disabled={true}
+              />
+            )}
+          </ContentRow>
         </ContentCell>
       </ContentCell>
     </ContentCell>

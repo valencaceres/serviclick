@@ -60,8 +60,14 @@ interface IFile {
 }
 
 interface IRefund {
-  amount: number;
-  imed_amount: number;
+  amount: {
+    required: number | null;
+    refunded: number | null;
+  };
+  imed: {
+    required: number | null;
+    refunded: number | null;
+  };
   status: string;
   comment: string;
 }
