@@ -51,18 +51,18 @@ const RetailList = ({ editRetail, deleteRetail }: any) => {
         <ContentRow gap="10px" align="center">
           <InputText
             label="Texto a buscar"
-            width="375px"
+            width="530px"
             value={search}
             onChange={setSearch}
           />
           <ButtonIcon iconName="search" color="gray" />
         </ContentRow>
-        <Table width="428px">
+        <Table width="578px">
           <TableHeader>
             <TableCell width="70px" align="center">
               #
             </TableCell>
-            <TableCell width="350px">Nombre</TableCell>
+            <TableCell width="500px">Nombre</TableCell>
           </TableHeader>
           <TableDetail>
             {retailList &&
@@ -72,7 +72,7 @@ const RetailList = ({ editRetail, deleteRetail }: any) => {
                   <TableCell width="70px" align="center">
                     {idx + 1}
                   </TableCell>
-                  <TableCell width="350px">
+                  <TableCell width="500px">
                     {item.name}
                     <TableIcons>
                       <Icon
