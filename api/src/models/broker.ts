@@ -389,6 +389,27 @@ const getCollectById: any = async (id: string) => {
   }
 };
 
+const getByUserId: any = async (user_id: string) => {
+  try {
+    const result = await pool.query(
+      `
+      select 	bro.id,
+              bro.rut,
+              bro.name
+      from 	app.broker bro
+                inner join app.brokeruser bru on bro.id = bru.broker_id
+      where 	bru.user_id = $1
+      order 	by
+              bro.name`,
+      [user_id]
+    );
+
+    return { success: true, data: result.rows[0], error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 export {
   create,
   getById,
@@ -399,4 +420,5 @@ export {
   getFamiliesByBrokerId,
   getProductsByBrokerIdAndFamilyId,
   getCollectById,
+  getByUserId,
 };
