@@ -652,6 +652,32 @@ const updateAgent = async (req: any, res: any) => {
   return res.status(200).json(profileCode);
 };
 
+const getByUserId = async (req: any, res: any) => {
+  try {
+    const { user_id } = req.params;
+    const { success, data, error } = await Broker.getByUserId(user_id);
+
+    if (!success) {
+      createLogger.error({
+        model: "broker/getByUserId",
+        error,
+      });
+      res.status(status).json({ error: "error retrieving broker" });
+      return;
+    }
+
+    res.status(200).json(data);
+    return;
+  } catch (error) {
+    createLogger.error({
+      controller: "broker/getById",
+      error: (error as Error).message,
+    });
+    res.status(500).json({ error: "error retrieving broker" });
+    return;
+  }
+};
+
 export {
   create,
   addProduct,
@@ -666,6 +692,7 @@ export {
   getCollectById,
   getAgents,
   updateAgent,
+  getByUserId,
 };
 
 export const getBrokerDataById = async (id: string) => {
