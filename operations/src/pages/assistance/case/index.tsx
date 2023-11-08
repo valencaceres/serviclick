@@ -31,9 +31,10 @@ const CasePage = () => {
   const router = useRouter();
 
   const { reset: resetApplicant } = useApplicant();
-  const { getAll, caseList, reset: resetCase } = useCase();
+  const { getAll, caseList, reset: resetCase, isLoading } = useCase();
 
   const { setTitleUI } = useUI();
+  const [isNextClick, setIsNextClick] = useState(false);
 
   const [filters, setFilters] = useState<IFilters>(initialFilters);
   const [selectedRetailValue, setSelectedRetailValue] = useState("");
@@ -60,6 +61,7 @@ const CasePage = () => {
   };
 
   const handleClickNextPage = () => {
+    setIsNextClick(true);
     if ((filters?.page || 1) === caseList.pagination.total) return;
     setFilters({ ...filters, page: filters.page + 1 });
     getAll(
@@ -73,6 +75,7 @@ const CasePage = () => {
   };
 
   const handleClickPrevPage = () => {
+    setIsNextClick(false);
     if ((filters?.page || 1) === 1) return;
     setFilters({ ...filters, page: filters.page - 1 });
     getAll(
@@ -115,6 +118,8 @@ const CasePage = () => {
         search={handleClickSearch}
         next={handleClickNextPage}
         previous={handleClickPrevPage}
+        isNextClick={isNextClick}
+        isLoding={isLoading}
       />
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />

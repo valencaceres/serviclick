@@ -85,7 +85,7 @@ const ContractorList = ({ editContractor, filters, setFilters }: any) => {
       setFilters(filters);
     }
   }, [filters]);
-  console.log(customerIsLoading);
+
   return (
     <Fragment>
       <ContentCell gap="5px" className="fade-in-fwd">
@@ -153,28 +153,23 @@ const ContractorList = ({ editContractor, filters, setFilters }: any) => {
             <ContentCellSummary>{`${customerList.summary.products} productos`}</ContentCellSummary>
           </ContentRow>
           <ContentRow gap="5px" align="flex-end">
-            {customerIsLoading && !isNextClick ? (
-              <ButtonIcon iconName="refresh" color="gray" loading={true} />
-            ) : (
-              <ButtonIcon
-                iconName="navigate_before"
-                onClick={handleClickPrevPage}
-                color="gray"
-              />
-            )}
+            <ButtonIcon
+              iconName="navigate_before"
+              onClick={handleClickPrevPage}
+              color="gray"
+              loading={customerIsLoading && !isNextClick}
+            />
 
             <ContentCellSummary>{`Página ${filters?.page || 1} de ${
               customerList.pagination?.total || 1
             }`}</ContentCellSummary>
-            {customerIsLoading && isNextClick ? (
-              <ButtonIcon iconName="refresh" color="gray" loading={true} />
-            ) : (
-              <ButtonIcon
-                iconName="navigate_next"
-                onClick={handleClickNextPage}
-                color="gray"
-              />
-            )}
+
+            <ButtonIcon
+              iconName="navigate_next"
+              onClick={handleClickNextPage}
+              color="gray"
+              loading={customerIsLoading && isNextClick}
+            />
           </ContentRow>
         </ContentRow>
       </ContentCell>

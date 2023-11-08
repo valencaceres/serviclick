@@ -24,7 +24,15 @@ import { useCase } from "~/store/hooks";
 import { useRouter } from "next/router";
 import { ComboBox } from "~/components/ui";
 
-const CaseTable = ({ filters, setFilters, search, next, previous }: any) => {
+const CaseTable = ({
+  filters,
+  setFilters,
+  search,
+  next,
+  previous,
+  isNextClick,
+  isLoding,
+}: any) => {
   const router = useRouter();
 
   const { getRetails, retailList, getStatus, statusList, caseList } = useCase();
@@ -159,11 +167,17 @@ const CaseTable = ({ filters, setFilters, search, next, previous }: any) => {
               iconName="navigate_before"
               onClick={previous}
               color="gray"
+              loading={isLoding && !isNextClick}
             />
             <ContentCellSummary>{`Página ${filters?.page || 1} de ${
               caseList.pagination?.total || 1
             }`}</ContentCellSummary>
-            <ButtonIcon iconName="navigate_next" onClick={next} color="gray" />
+            <ButtonIcon
+              iconName="navigate_next"
+              onClick={next}
+              loading={isLoding && isNextClick}
+              color="gray"
+            />
           </ContentRow>
         </ContentRow>
       </ContentCell>
