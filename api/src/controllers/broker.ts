@@ -662,7 +662,7 @@ const getByUserId = async (req: any, res: any) => {
         model: "broker/getByUserId",
         error,
       });
-      res.status(status).json({ error: "error retrieving broker" });
+      res.status(500).json({ error: "error retrieving broker" });
       return;
     }
 
@@ -671,6 +671,58 @@ const getByUserId = async (req: any, res: any) => {
   } catch (error) {
     createLogger.error({
       controller: "broker/getById",
+      error: (error as Error).message,
+    });
+    res.status(500).json({ error: "error retrieving broker" });
+    return;
+  }
+};
+
+const getProductsById = async (req: any, res: any) => {
+  try {
+    const { id } = req.params;
+    const { success, data, error } = await Broker.getProductsById(id);
+
+    if (!success) {
+      createLogger.error({
+        model: "broker/getProductsById",
+        error,
+      });
+      res.status(500).json({ error: "error retrieving broker" });
+      return;
+    }
+
+    res.status(200).json(data);
+    return;
+  } catch (error) {
+    createLogger.error({
+      controller: "broker/getProductsById",
+      error: (error as Error).message,
+    });
+    res.status(500).json({ error: "error retrieving broker" });
+    return;
+  }
+};
+
+const getCollectionById = async (req: any, res: any) => {
+  try {
+    const { id } = req.params;
+    const { success, data, error } = await Broker.getCollectionById(id);
+
+    if (!success) {
+      createLogger.error({
+        model: "broker/getCollectionById",
+        error,
+      });
+      res.status(500).json({ error: "error retrieving broker" });
+      return;
+    }
+
+    res.status(200).json(data);
+    return;
+  } catch (error) {
+    createLogger.error({
+      controller: "broker/getCollectionById",
       error: (error as Error).message,
     });
     res.status(500).json({ error: "error retrieving broker" });
@@ -693,6 +745,8 @@ export {
   getAgents,
   updateAgent,
   getByUserId,
+  getProductsById,
+  getCollectionById,
 };
 
 export const getBrokerDataById = async (id: string) => {

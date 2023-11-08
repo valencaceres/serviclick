@@ -8,6 +8,9 @@ import {
   getAll,
   getById,
   getByRut,
+  getByUserId,
+  getProductsById,
+  getCollectionById,
   updateLogo,
   deleteById,
   getFamiliesByBrokerId,
@@ -33,7 +36,10 @@ BrokerRouter.get(
   auth,
   getProductsByBrokerIdAndFamilyId
 );
+BrokerRouter.get("/getByUserId/:user_id", auth, getByUserId);
 BrokerRouter.get("/getCollectById/:id", auth, getCollectById);
+BrokerRouter.get("/getProductsById/:id", auth, getProductsById);
+BrokerRouter.get("/getCollectionById/:id", auth, getCollectionById);
 BrokerRouter.put("/updateLogo/:id", isAuthenticated, isAdmin, updateLogo);
 BrokerRouter.delete(
   "/deleteById/:id",

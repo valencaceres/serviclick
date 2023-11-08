@@ -404,7 +404,41 @@ const getByUserId: any = async (user_id: string) => {
       [user_id]
     );
 
-    return { success: true, data: result.rows[0], error: null };
+    return { success: true, data: result.rows, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+const getProductsById: any = async (id: string) => {
+  try {
+    const result = await pool.query(
+      `select app.broker_get_products_by_id($1)`,
+      [id]
+    );
+
+    return {
+      success: true,
+      data: result.rows[0].broker_get_products_by_id,
+      error: null,
+    };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+const getCollectionById: any = async (id: string) => {
+  try {
+    const result = await pool.query(
+      `select app.broker_get_collection_by_id($1)`,
+      [id]
+    );
+
+    return {
+      success: true,
+      data: result.rows[0].broker_get_collection_by_id,
+      error: null,
+    };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
   }
@@ -421,4 +455,6 @@ export {
   getProductsByBrokerIdAndFamilyId,
   getCollectById,
   getByUserId,
+  getProductsById,
+  getCollectionById,
 };
