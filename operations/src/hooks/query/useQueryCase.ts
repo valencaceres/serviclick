@@ -137,7 +137,11 @@ const getUserByClerkId = async (ids: string[]) => {
   }
 };
 
-const getChatByCase = async (case_id: string) => {
+const getChatByCase = async (case_id: string | null) => {
+  if (case_id === null || case_id === "") {
+    return null;
+  }
+
   const { data } = await apiInstance.get(`/case/getChatByCase/${case_id}`);
   return data;
 };
