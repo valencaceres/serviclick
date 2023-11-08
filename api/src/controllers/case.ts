@@ -627,6 +627,9 @@ const updateReimbursementStatus = async (req: any, res: any) => {
 const createChatMessage = async (req: any, res: any) => {
   try {
     const { case_id, stage_id, message, user_id, type } = req.body;
+    if (case_id === null) {
+      return res.status(200).json(null);
+    }
 
     const response = await CaseChat.create(
       case_id,
@@ -662,6 +665,10 @@ const createChatMessage = async (req: any, res: any) => {
 
 const getChatByCase = async (req: any, res: any) => {
   const { case_id } = req.params;
+
+  if (case_id === null) {
+    return res.status(200).json(null);
+  }
 
   const response = await CaseChat.getByCase(case_id);
 

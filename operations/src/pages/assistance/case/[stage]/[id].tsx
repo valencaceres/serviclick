@@ -284,11 +284,14 @@ const AssistanceCasePage = () => {
           disabled={!isEnabledSave}
         />
       </FloatMenu>
-      <Modal showModal={showModal}>
-        <Window setClosed={setClosed}>
-          <CaseChat thisCase={caseId} />
-        </Window>
-      </Modal>
+      {caseValue.case_id !== null && caseValue.case_id !== "" && (
+        <Modal showModal={showModal}>
+          <Window setClosed={setClosed}>
+            <CaseChat thisCase={caseId} />
+          </Window>
+        </Modal>
+      )}
+
       <LoadingMessage showModal={isLoadingApplicant || isLoadingCase} />
     </ContentHalfRow>
   ) : (
