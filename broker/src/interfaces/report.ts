@@ -4,7 +4,6 @@ export interface IReport {
   customer_email: string;
   customer_name: string;
   customer_phone: string;
-  executive_name: string;
   fee_value: number;
   fees_charged: number;
   free_months: number;

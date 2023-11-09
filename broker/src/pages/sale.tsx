@@ -3,7 +3,7 @@ import { useEffect } from "react";
 
 import { Sale } from "~/components/functional/Sale";
 
-import { useUI } from "~/store/hooks";
+import { useUI } from "~/store/hooks/index";
 
 const SalePage: NextPage = () => {
   const { setTitle } = useUI();
@@ -11,7 +11,7 @@ const SalePage: NextPage = () => {
   useEffect(() => {
     setTitle("Venta");
   }, [setTitle]);
-  
+
   return <Sale />;
 };
 

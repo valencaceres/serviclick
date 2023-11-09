@@ -1,10 +1,10 @@
 export interface IProduct {
   id: string;
+  productPlan_id: string;
   name: string;
   currency: string;
   frequency: string;
-  companyprice: number;
-  customerprice: number;
+  price: number;
 }
 
 export interface IProductPlan {

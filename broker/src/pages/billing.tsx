@@ -1,8 +1,8 @@
 import { type NextPage } from "next";
 import { useEffect } from "react";
-import { Billing } from "~/components/functional/Billing/Billing"; 
+import { Billing } from "~/components/functional/Billing/Billing";
 
-import { useUI } from "~/store/hooks";
+import { useUI } from "~/store/hooks/index";
 
 const BillingPage: NextPage = () => {
   const { setTitle } = useUI();
@@ -10,7 +10,7 @@ const BillingPage: NextPage = () => {
   useEffect(() => {
     setTitle("Cobranza");
   }, [setTitle]);
-  
+
   return <Billing />;
 };
 

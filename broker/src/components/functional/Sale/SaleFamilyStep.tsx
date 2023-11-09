@@ -1,22 +1,26 @@
-import { type RouterOutputs, api } from "~/utils/api";
-
+import { useEffect } from "react";
 import { useUI } from "~/store/hooks";
 import { Button } from "~/components/ui/Button";
-
+import { type IFamily } from "../../../interfaces/family";
+import { useBroker } from "~/store/hooks";
 export function SaleFamilyStep({ onDone }: { onDone: () => void }) {
   const { broker, setFamily } = useUI();
-
-  const { data, isLoading } = api.broker.getFamilies.useQuery(
-    {
-      brokerId: broker?.id || "",
-    },
-    {
-      enabled: !!broker,
+  const { familiesList: data, getFamiliesByBrokerId, isLoading } = useBroker();
+ console.log(broker?.id == "")
+  useEffect(() => {
+    if (broker) {
+      getFamiliesByBrokerId(broker.id);
     }
-  );
+  }, [broker, getFamiliesByBrokerId]);
 
-  const selectFamily = (family: Family) => {
-    setFamily(family);
+  const selectFamily = (family: IFamily) => {
+    setFamily({
+      id: family.id,
+      icon: family.icon,
+      name: family.name,
+      products: family.products,
+    });
+    console.log(family.products);
     onDone();
   };
 
@@ -24,7 +28,7 @@ export function SaleFamilyStep({ onDone }: { onDone: () => void }) {
     <div className="flex w-full flex-col items-center justify-center gap-4 pb-24 pl-12">
       <h2 className="text-2xl font-bold text-teal-blue">Familias</h2>
       <div className="flex w-full max-w-5xl flex-col flex-wrap items-center justify-center gap-2 md:flex-row">
-        {!broker ? (
+        {broker?.id === "" ? (
           <div className="w-full">
             <h2 className="text-center text-xl font-bold text-teal-blue">
               Seleccione un broker para mostrar las familias disponibles...
@@ -45,22 +49,26 @@ export function SaleFamilyStep({ onDone }: { onDone: () => void }) {
     </div>
   );
 }
-
-type Family = RouterOutputs["broker"]["getFamilies"][number];
+interface Family {
+  id: string;
+  name: string;
+  icon: string;
+}
 
 function FamilyCard({
   id,
   name,
   icon,
+  products,
   onClick,
-}: Family & { onClick: (family: Family) => void }) {
+}: IFamily & { onClick: (family: IFamily) => void }) {
   return (
     <Button
       key={id}
-      onClick={() => onClick({ id, name, icon })}
-      className="w-full max-w-xs p-10 select-none text-center text-2xl text-teal-blue cursor-pointer bg-primary-500 shadow-md duration-75 hover:bg-primary-600 hover:shadow-none active:bg-primary-700"
+      onClick={() => onClick({ id, name, icon, products })}
+      className="hover:bg-primary-600 active:bg-primary-700 w-full max-w-xs cursor-pointer select-none bg-primary-500 p-10 text-center text-2xl text-teal-blue shadow-md duration-75 hover:shadow-none"
     >
-          {name}
+      {name}
     </Button>
   );
 }

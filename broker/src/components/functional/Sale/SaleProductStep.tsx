@@ -6,26 +6,17 @@ import { Button } from "~/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/Card";
 
 import { useUI } from "~/store/hooks";
-
-import { type RouterOutputs, api } from "~/utils/api";
-
+import { IProduct } from "~/interfaces/product";
+import { useBroker } from "~/store/hooks";
 export function SaleProductStep({
   previousStep,
 }: {
   onDone: () => void;
   previousStep: () => void;
 }) {
-  const { broker, family } = useUI();
-
-  const { data: products, isLoading } = api.product.getProducts.useQuery(
-    {
-      brokerId: broker?.id || "",
-      familyId: family?.id || "",
-    },
-    {
-      enabled: !!broker && !!family,
-    }
-  );
+  const { family } = useUI();
+  const { isLoading } = useBroker();
+  const products = family?.products;
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -56,11 +47,7 @@ export function SaleProductStep({
           </div>
         ) : (
           products?.map((product) => (
-            <ProductCard
-              key={product.id}
-              {...product}
-              broker={broker?.id || ""}
-            />
+            <ProductCard key={product.id} {...product} />
           ))
         )}
       </div>
@@ -68,21 +55,16 @@ export function SaleProductStep({
   );
 }
 
-type Product = RouterOutputs["product"]["getProducts"][number];
-
 function ProductCard({
   id,
   name,
-  companyprice,
-  customerprice,
-  broker,
-}: Product & { broker: string }) {
+  currency,
+  frequency,
+  productPlan_id,
+  price,
+}: IProduct) {
   const router = useRouter();
   const { user } = useUser();
-  const { data } = api.product.getProductPlan.useQuery({
-    agentId: broker,
-    productId: id,
-  });
 
   function formatPrice(price: number) {
     return price.toLocaleString("es-CL", {
@@ -91,46 +73,24 @@ function ProductCard({
       maximumFractionDigits: 0,
     });
   }
-
-  const customerId = data?.find((plan) => plan.type === "customer")?.id;
-  const companyId = data?.find((plan) => plan.type === "company")?.id;
-
-  if (!customerId || !companyId || !user) return null;
-
+  const type = frequency === "M" ? "mensual" : frequency === "A" ? "anual" : "semanal";
   return (
     <Card className="w-full max-w-xs text-center">
-      <CardHeader className="flex h-20 items-center justify-center rounded-t-md bg-primary">
+      <CardHeader className="flex h-20 items-center justify-center  rounded-t-md bg-primary-500">
         <CardTitle className="text-teal-blue">{name}</CardTitle>
       </CardHeader>
       <CardContent className="flex items-center justify-between rounded-b-md bg-teal-blue p-2">
-        <div className="w-full border-r p-2">
+        <div className="w-full p-2">
           <Button
             className="flex w-full flex-col items-center justify-center p-6"
             onClick={() =>
               void router.push(
-                `https://productos.serviclick.cl/contractor?productPlanId=${customerId}&userId=${user?.id}`
+                `https://productos.serviclick.cl/contractor?productPlanId=${productPlan_id}&userId=${user?.id}`
               )
             }
           >
-            <h2>Persona</h2>
-            <h3 className="text-lg font-semibold">
-              {formatPrice(customerprice)}
-            </h3>
-          </Button>
-        </div>
-        <div className="w-full border-l p-2">
-          <Button
-            className="flex w-full flex-col items-center justify-center p-6"
-            onClick={() =>
-              void router.push(
-                `https://productos.serviclick.cl/contractor?productPlanId=${companyId}&userId=${user?.id}`
-              )
-            }
-          >
-            <h2>Empresa</h2>
-            <h3 className="text-lg font-semibold">
-              {formatPrice(companyprice)}
-            </h3>
+            <h2 className="capitalize">{type}</h2>
+            <h3 className="text-lg font-semibold">{formatPrice(price)}</h3>
           </Button>
         </div>
       </CardContent>

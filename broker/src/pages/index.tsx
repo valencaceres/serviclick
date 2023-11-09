@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import { useEffect } from "react";
 import { Dashboard } from "~/components/functional/Dashboard";
-import { useUI } from "~/store/hooks";
+import { useUI } from "~/store/hooks/index";
 
 const DashboardPage: NextPage = () => {
   const { setTitle } = useUI();

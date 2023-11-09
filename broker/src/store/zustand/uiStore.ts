@@ -1,10 +1,7 @@
 import { create } from "zustand";
 
 import { type IFamily } from "~/interfaces/family";
-
-import { type RouterOutputs } from "~/utils/api";
-
-type Broker = RouterOutputs["broker"]["getByUser"][number];
+import { type Broker } from "~/interfaces/broker";
 
 interface IUIState {
   title: string;

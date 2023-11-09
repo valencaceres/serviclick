@@ -56,7 +56,6 @@ export const SignIn: React.FC = () => {
 
   return (
     <form
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onSubmit={handleSubmit(submit)}
       className="flex w-96 flex-col items-center gap-2 p-2"
     >
