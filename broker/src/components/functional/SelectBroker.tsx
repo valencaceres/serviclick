@@ -11,12 +11,10 @@ import {
   CommandInput,
   CommandItem,
 } from "../ui/Command";
+import { Broker } from "~/interfaces/broker";
+import { useBroker } from "~/store/hooks";
 
 import { cn } from "~/utils/cn";
-import { api, type RouterOutputs } from "~/utils/api";
-
-type Broker = RouterOutputs["broker"]["getByUser"][number];
-
 export function SelectBroker({
   open,
   setOpen,
@@ -29,10 +27,12 @@ export function SelectBroker({
   setBroker: (broker: Broker | null) => void;
 }) {
   const { user } = useUser();
-
-  const { data: brokers } = api.broker.getByUser.useQuery({
-    userId: user?.id || "",
-  });
+  const { brokerList: brokers, getByUserId } = useBroker();
+  useEffect(() => {
+    if (user) {
+      getByUserId(user.id);
+    }
+  }, [user, getByUserId]);
 
   useEffect(() => {
     if (brokers && brokers.length === 1) {
@@ -49,7 +49,7 @@ export function SelectBroker({
           aria-expanded={open}
           className="w-full max-w-xs justify-between"
         >
-          {broker
+          {broker && broker.id !== ""
             ? brokers?.find((b: Broker) => b.id === broker.id)?.name
             : "Seleccionar broker"}
           <ChevronsUpDownIcon className="h-4 w-4 shrink-0 opacity-50" />

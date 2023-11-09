@@ -1,4 +1,4 @@
-import { uiStore } from "../uiStore";
+import { uiStore } from "../zustand/index";
 
 const useUI = () => {
   const { title, broker, family } = uiStore((state) => ({

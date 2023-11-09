@@ -1,6 +1,6 @@
 import type { NextPage, GetStaticProps } from "next";
 import { useEffect } from "react";
-import { useUI } from "~/store/hooks";
+import { useUI } from "~/store/hooks/index";
 
 const HomePage: NextPage = (props) => {
   const { setTitle } = useUI();
@@ -10,7 +10,7 @@ const HomePage: NextPage = (props) => {
   }, []);
 
   return (
-    <div className="h-screen-nh flex flex-col items-center justify-center text-center">
+    <div className="flex h-screen-nh flex-col items-center justify-center text-center">
       <h1 className="text-6xl font-bold text-teal-blue">403</h1>
       <p>Ocurrió un error al intentar acceder a esta página.</p>
       <p className="text-sm italic">

@@ -70,7 +70,7 @@ const CaseImed = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
       }
     }
     setIsEnabledSave(true);
-  }, []);
+  }, [caseValue.insured, caseValue.beneficiary, setIsEnabledSave]);
 
   useEffect(() => {
     if (router.query.id) {

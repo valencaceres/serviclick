@@ -91,6 +91,10 @@ interface ISpecialist {
 interface IAlliance {
   partner_id: string;
   partner_name: string;
+  partner_address: string;
+  partner_district: string;
+  partner_email: string;
+  partner_phone: string;
   specialty_id: string;
   specialty_name: string;
   scheduled_date: string;

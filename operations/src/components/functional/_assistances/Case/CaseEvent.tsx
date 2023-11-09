@@ -21,7 +21,6 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   const { procedureList, getAll } = useProcedure();
   const { user } = useUser();
   const router = useRouter();
-
   const handleChange = (e: any) => {
     const value = e.target.value;
     const id = e.target.id;
@@ -56,7 +55,6 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   }, [caseValue, setIsEnabledSave]);
 
   useEffect(() => {
-    getAll();
     if (caseValue) {
       const applicant =
         caseValue?.type === "I" ? caseValue.insured : caseValue.beneficiary;
@@ -65,6 +63,10 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
       }
     }
     setIsEnabledSave(true);
+  }, [caseValue.insured, caseValue.beneficiary, setIsEnabledSave]);
+
+  useEffect(() => {
+    getAll();
   }, []);
 
   useEffect(() => {

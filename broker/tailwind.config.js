@@ -1,27 +1,28 @@
-import { type Config } from "tailwindcss";
-
-export default {
-  content: ["./src/**/*.{js,ts,jsx,tsx}"],
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    // Or if using `src` directory:
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
   theme: {
     extend: {
+      height: {
+        "screen-nh": "calc(100vh - 200px)",
+      },
       fontFamily: {
         oswald: ["Oswald", "sans-serif"],
       },
       colors: {
         primary: {
-          DEFAULT: "#B4CD25",
-          50: "#E3EFA4",
-          100: "#DFEC95",
-          200: "#D6E677",
-          300: "#CDE158",
-          400: "#C3DB3A",
           500: "#B4CD25",
-          600: "#A9C023",
-          700: "#9DB320",
-          800: "#92A61E",
-          900: "#86991C",
-          950: "#81931A",
         },
+        secondary: {
+          500: "#03495c",
+        },
+        tertiary: {
+          500: "#959595",
+        },
+        ultraLightGrey: "#ececec",
         "teal-blue": {
           DEFAULT: "#03495C",
           50: "#058F9F",
@@ -50,7 +51,6 @@ export default {
           900: "#252525",
           950: "#171717",
         },
-        ultraLightGrey: "#ececec",
       },
       keyframes: {
         "accordion-down": {
@@ -68,5 +68,8 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
-} satisfies Config;
+  plugins: [
+    require("prettier-plugin-tailwindcss"),
+    require("tailwindcss-animate"),
+  ],
+};

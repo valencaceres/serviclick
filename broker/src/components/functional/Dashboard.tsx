@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { DollarSignIcon, WalletIcon } from "lucide-react";
 
@@ -10,9 +10,9 @@ import {
   CardTitle,
 } from "../ui/Card";
 
-import { type RouterOutputs, api } from "~/utils/api";
-
-import { useUI } from "~/store/hooks";
+import { useBroker } from "~/store/hooks/index";
+import { Broker } from "~/interfaces/broker";
+import { useUI } from "~/store/hooks/index";
 import { Skeleton } from "../ui/Skeleton";
 
 export const Dashboard: React.FC = () => {
@@ -25,17 +25,19 @@ export const Dashboard: React.FC = () => {
   );
 };
 
-type Broker = RouterOutputs["broker"]["getByUser"][number];
-
 function BrokerSummary({ broker }: { broker: Broker | null }) {
-  const { data, isLoading } = api.broker.getReport.useQuery(
-    {
-      agentId: broker?.id || "",
-    },
-    {
-      enabled: !!broker,
+  const {
+    getDetailsByBrokerId,
+    summary: data,
+    isLoading: loading,
+  } = useBroker();
+
+  useEffect(() => {
+    if (broker) {
+      getDetailsByBrokerId(broker.id);
     }
-  );
+  }, [broker, getDetailsByBrokerId]);
+  const isLoading = loading || data?.summary?.charged === null;
 
   return (
     <div className="flex w-full flex-col flex-wrap items-center gap-4 py-4 lg:flex-row lg:justify-center">
@@ -50,7 +52,9 @@ function BrokerSummary({ broker }: { broker: Broker | null }) {
           {isLoading || !broker ? (
             <Skeleton className="h-8 w-full bg-primary-500" />
           ) : (
-            <h2 className="text-2xl font-bold">{data?.length} ventas</h2>
+            <h2 className="text-2xl font-bold">
+              {data?.summary?.quantity} ventas
+            </h2>
           )}
         </CardContent>
         <CardFooter>
@@ -69,12 +73,10 @@ function BrokerSummary({ broker }: { broker: Broker | null }) {
             <Skeleton className="h-8 w-full bg-primary-500" />
           ) : (
             <h2 className="text-2xl font-bold">
-              {data
-                ?.reduce((acc, curr) => acc + Number(curr.charged), 0)
-                .toLocaleString("es-CL", {
-                  style: "currency",
-                  currency: "CLP",
-                })}
+              {data?.summary?.charged?.toLocaleString("es-CL", {
+                style: "currency",
+                currency: "CLP",
+              })}
             </h2>
           )}
         </CardContent>
@@ -94,12 +96,10 @@ function BrokerSummary({ broker }: { broker: Broker | null }) {
             <Skeleton className="h-8 w-full bg-primary-500" />
           ) : (
             <h2 className="text-2xl font-bold">
-              {data
-                ?.reduce((acc, curr) => acc + Number(curr.paid), 0)
-                .toLocaleString("es-CL", {
-                  style: "currency",
-                  currency: "CLP",
-                })}
+              {data?.summary?.paid?.toLocaleString("es-CL", {
+                style: "currency",
+                currency: "CLP",
+              })}
             </h2>
           )}
         </CardContent>
@@ -119,12 +119,10 @@ function BrokerSummary({ broker }: { broker: Broker | null }) {
             <Skeleton className="h-8 w-full bg-primary-500" />
           ) : (
             <h2 className="text-2xl font-bold">
-              {data
-                ?.reduce((acc, curr) => acc + Number(curr.balance), 0)
-                .toLocaleString("es-CL", {
-                  style: "currency",
-                  currency: "CLP",
-                })}
+              {data?.summary?.quantity?.toLocaleString("es-CL", {
+                style: "currency",
+                currency: "CLP",
+              })}
             </h2>
           )}
         </CardContent>
