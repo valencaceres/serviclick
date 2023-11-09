@@ -98,7 +98,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
       }
     }
     setIsEnabledSave(true);
-  }, []);
+  }, [caseValue.insured, caseValue.beneficiary, setIsEnabledSave]);
 
   return (
     <ContentCell gap="20px">

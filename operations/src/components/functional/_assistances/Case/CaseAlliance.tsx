@@ -132,6 +132,9 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
 
   useEffect(() => {
     getAll();
+  }, []);
+
+  useEffect(() => {
     if (caseValue) {
       const applicant =
         caseValue?.type === "I" ? caseValue.insured : caseValue.beneficiary;
@@ -140,7 +143,7 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
       }
     }
     setIsEnabledSave(true);
-  }, []);
+  }, [caseValue.insured, caseValue.beneficiary, setIsEnabledSave]);
 
   useEffect(() => {
     getById(caseId.assistance.id);

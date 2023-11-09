@@ -57,6 +57,9 @@ const CaseAttachment = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
 
   useEffect(() => {
     getStages();
+  }, []);
+
+  useEffect(() => {
     if (caseValue) {
       const applicant =
         caseValue?.type === "I" ? caseValue.insured : caseValue.beneficiary;
@@ -65,7 +68,7 @@ const CaseAttachment = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
       }
     }
     setIsEnabledSave(true);
-  }, []);
+  }, [caseValue.insured, caseValue.beneficiary, setIsEnabledSave]);
 
   useEffect(() => {
     let foundStageCode = "";
