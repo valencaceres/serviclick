@@ -1,3 +1,3 @@
-import { uiStore } from "./uiStore";
+import { uiStore } from "./zustand/uiStore";
 
 export { uiStore };
