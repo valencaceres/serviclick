@@ -49,12 +49,17 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
         scheduled_date: caseValue.alliance?.scheduled_date || "",
         scheduled_time: caseValue.alliance?.scheduled_time || "",
         partner_id: caseValue.alliance?.partner_id || "",
+        partner_address: caseValue.alliance?.partner_address || "",
+        partner_district: caseValue.alliance?.partner_district || "",
+        partner_email: caseValue.alliance?.partner_email || "",
+        partner_phone: caseValue.alliance?.partner_phone || "",
         partner_name: caseValue.alliance?.partner_name || "",
         specialty_id: caseValue.alliance?.specialty_id || "",
         specialty_name: caseValue.alliance?.specialty_name || "",
         qualification_id: caseValue.alliance?.qualification_id || null,
         qualification_name: caseValue.alliance?.qualification_name || "",
         comment: caseValue.alliance?.comment || "",
+
         [id]: value,
       },
     });
@@ -70,6 +75,10 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
         scheduled_time: caseValue.alliance?.scheduled_time || "",
         partner_id: caseValue.alliance?.partner_id || "",
         partner_name: caseValue.alliance?.partner_name || "",
+        partner_address: caseValue.alliance?.partner_address || "",
+        partner_district: caseValue.alliance?.partner_district || "",
+        partner_email: caseValue.alliance?.partner_email || "",
+        partner_phone: caseValue.alliance?.partner_phone || "",
         specialty_id: caseValue.alliance?.specialty_id || "",
         specialty_name: caseValue.alliance?.specialty_name || "",
         qualification_id: caseValue.alliance?.qualification_id || null,
@@ -89,6 +98,10 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
         scheduled_time: caseValue.alliance?.scheduled_time || "",
         partner_id: caseValue.alliance?.partner_id || "",
         partner_name: caseValue.alliance?.partner_name || "",
+        partner_address: caseValue.alliance?.partner_address || "",
+        partner_district: caseValue.alliance?.partner_district || "",
+        partner_email: caseValue.alliance?.partner_email || "",
+        partner_phone: caseValue.alliance?.partner_phone || "",
         specialty_id: caseValue.alliance?.specialty_id || "",
         specialty_name: caseValue.alliance?.specialty_name || "",
         qualification_id: caseValue.alliance?.qualification_id || null,
@@ -174,9 +187,6 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
     }
   }, [caseValue.assistance, caseValue.alliance?.partner_id]);
 
-  const partner = partnerList.find(
-    (partner) => partner?.id === caseValue.alliance?.partner_id
-  );
   return (
     <ContentCell gap="20px">
       <ContentCell gap="5px">
@@ -313,14 +323,14 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
             <>
               <InputText
                 label="Districto alianza"
-                value={partner?.district ?? ""}
+                value={caseValue.alliance.partner_district ?? ""}
                 type="text"
                 disabled={true}
                 width="530px"
               />
               <InputText
                 label="Direccion alianza"
-                value={partner?.address ?? ""}
+                value={caseValue.alliance.partner_address ?? ""}
                 type="text"
                 disabled={true}
                 width="530px"
@@ -328,14 +338,14 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
               <ContentRow gap="5px">
                 <InputText
                   label="Email alianza"
-                  value={partner?.email ?? ""}
+                  value={caseValue.alliance.partner_email ?? ""}
                   type="text"
                   disabled={true}
                   width="262px"
                 />
                 <InputText
                   label="Telefono alianza"
-                  value={partner?.phone ?? ""}
+                  value={caseValue.alliance.partner_phone ?? ""}
                   type="text"
                   disabled={true}
                   width="262px"
