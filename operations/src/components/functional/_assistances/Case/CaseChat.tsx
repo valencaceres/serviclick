@@ -12,6 +12,7 @@ import { useQueryCase } from "../../../../hooks/query";
 import { useStage } from "~/store/hooks";
 import { useQueryClient } from "@tanstack/react-query";
 import { useUser } from "@clerk/nextjs";
+import { ButtonIcon } from "~/components/ui";
 
 const CaseNotes = ({ thisCase }: any) => {
   const router = useRouter();
@@ -26,7 +27,8 @@ const CaseNotes = ({ thisCase }: any) => {
   const { getAll, stageList } = useStage();
   const stageObj = stageList.find((stageItem) => stageItem.code === stage);
   const { data: messages } = useQueryCase().useGetChatByCase(id as string);
-  const { mutate: createMessage } = useQueryCase().useCreateChatMessage();
+  const { mutate: createMessage, isLoading } =
+    useQueryCase().useCreateChatMessage();
 
   useEffect(() => {
     getAll();
@@ -44,6 +46,9 @@ const CaseNotes = ({ thisCase }: any) => {
         onSuccess: () => {
           queryClient.invalidateQueries(["caseMessages", id as string]);
           setMessage("");
+        },
+        onError: (e) => {
+          console.log("error:", e);
         },
       }
     );
@@ -63,9 +68,11 @@ const CaseNotes = ({ thisCase }: any) => {
             onChange={(e: any) => setType(e.target.value)}
             width="400px"
           />
+
           <Button
             text="Enviar"
             iconName="send"
+            loading={isLoading}
             enabled={type !== "" && message !== "" ? true : false}
             onClick={handleCreate}
           />
