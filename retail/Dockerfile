@@ -1,5 +1,5 @@
 # Etapa de compilación
-FROM node:16-alpine AS build
+FROM node:18-alpine AS build
 
 # Directorio de trabajo en el contenedor
 WORKDIR /app
@@ -21,7 +21,7 @@ WORKDIR /app
 COPY --from=build /app ./
 
 # Exponer el puerto en el que se ejecuta la aplicación
-EXPOSE 3009
+EXPOSE 3010
 
 # Comando para iniciar la aplicación
 CMD ["yarn", "start"]

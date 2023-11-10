@@ -507,6 +507,84 @@ const updateAgent = async (req: any, res: any) => {
   return res.status(200).json(profileCode);
 };
 
+const getByUserId = async (req: any, res: any) => {
+  try {
+    const { user_id } = req.params;
+    const { success, data, error } = await Retail.getByUserId(user_id);
+
+    if (!success) {
+      createLogger.error({
+        model: "retail/getByUserId",
+        error,
+      });
+      res.status(500).json({ error: "error retrieving retail" });
+      return;
+    }
+
+    res.status(200).json(data);
+    return;
+  } catch (error) {
+    createLogger.error({
+      controller: "retail/getById",
+      error: (error as Error).message,
+    });
+    res.status(500).json({ error: "error retrieving retail" });
+    return;
+  }
+};
+
+const getProductsById = async (req: any, res: any) => {
+  try {
+    const { id } = req.params;
+    const { success, data, error } = await Retail.getProductsById(id);
+
+    if (!success) {
+      createLogger.error({
+        model: "retail/getProductsById",
+        error,
+      });
+      res.status(500).json({ error: "error retrieving retail" });
+      return;
+    }
+
+    res.status(200).json(data);
+    return;
+  } catch (error) {
+    createLogger.error({
+      controller: "retail/getProductsById",
+      error: (error as Error).message,
+    });
+    res.status(500).json({ error: "error retrieving retail" });
+    return;
+  }
+};
+
+const getCollectionById = async (req: any, res: any) => {
+  try {
+    const { id } = req.params;
+    const { success, data, error } = await Retail.getCollectionById(id);
+
+    if (!success) {
+      createLogger.error({
+        model: "retail/getCollectionById",
+        error,
+      });
+      res.status(500).json({ error: "error retrieving retail" });
+      return;
+    }
+
+    res.status(200).json(data);
+    return;
+  } catch (error) {
+    createLogger.error({
+      controller: "retail/getCollectionById",
+      error: (error as Error).message,
+    });
+    res.status(500).json({ error: "error retrieving retail" });
+    return;
+  }
+};
+
 const addLeadFromExcel = async (req: any, res: any) => {
   try {
     const socket = ioClient(`${process.env.SOCKET_API_URL}`);
@@ -650,6 +728,9 @@ export {
   getAgents,
   updateAgent,
   addLeadFromExcel,
+  getByUserId,
+  getProductsById,
+  getCollectionById,
 };
 
 function isRecord(obj: unknown): obj is Record<string, any> {

@@ -93,10 +93,12 @@ const formSchema = z.object({
   role_broker: z.string(),
   role_operations: z.string(),
   role_serviclick: z.string(),
+  role_retail: z.string(),
   type_role_admin: z.string(),
   type_role_broker: z.string(),
   type_role_operations: z.string(),
   type_role_serviclick: z.string(),
+  type_role_retail: z.string(),
 });
 
 export const UserEdit: React.FC = () => {
@@ -119,6 +121,7 @@ export const UserEdit: React.FC = () => {
             type_role_broker: data?.publicMetadata?.roles?.broker,
             type_role_operations: data?.publicMetadata?.roles?.operaciones,
             type_role_serviclick: data?.publicMetadata?.roles?.serviclick,
+            type_role_retail: data?.publicMetadata?.roles?.retail,
           });
         }
       },
@@ -135,10 +138,12 @@ export const UserEdit: React.FC = () => {
       role_broker: "broker",
       role_operations: "operaciones",
       role_serviclick: "serviclick",
+      role_retail: "retail",
       type_role_admin: "user",
       type_role_broker: "user",
       type_role_operations: "user",
       type_role_serviclick: "user",
+      type_role_retail: "user",
       email_address: "",
       password: "",
       passwordConfirm: "",
@@ -167,6 +172,8 @@ export const UserEdit: React.FC = () => {
         role_broker: "broker",
         role_operations: "operaciones",
         role_serviclick: "serviclick",
+        role_retail: "retail",
+
         type_role_admin: values.type_role_admin as
           | "user"
           | "admin"
@@ -180,6 +187,10 @@ export const UserEdit: React.FC = () => {
           | "admin"
           | "moderator",
         type_role_serviclick: values.type_role_serviclick as
+          | "user"
+          | "admin"
+          | "moderator",
+        type_role_retail: values.type_role_retail as
           | "user"
           | "admin"
           | "moderator",
@@ -455,6 +466,35 @@ export const UserEdit: React.FC = () => {
                     </FormItem>
                   )}
                 />
+                <FormField
+                  control={form.control}
+                  name="type_role_retail"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Rol del modulo retail</FormLabel>
+                      <FormControl>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger className="max-w-full md:max-w-full">
+                            <SelectValue placeholder="Seleccione rol..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value={"admin"}>
+                              Administrador
+                            </SelectItem>
+                            <SelectItem value={"moderator"}>
+                              Operador
+                            </SelectItem>
+                            <SelectItem value={"user"}>Usuario</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </CardContent>
             </Card>
             <div
@@ -472,6 +512,8 @@ export const UserEdit: React.FC = () => {
                     user?.publicMetadata?.roles?.operaciones ||
                   watchAllFields.type_role_serviclick !==
                     user?.publicMetadata?.roles?.serviclick ||
+                  watchAllFields.type_role_retail !==
+                    user?.publicMetadata?.roles?.retail ||
                   watchAllFields.password !== ""
                   ? "bottom-0"
                   : "-bottom-20"

@@ -1,21 +1,16 @@
+import { type NextPage } from "next";
 import { useEffect } from "react";
-import type { NextPage } from "next";
+import { Dashboard } from "~/components/functional/Dashboard";
+import { useUI } from "~/store/hooks/index";
 
-import Welcome from "../components/functional/Welcome";
-
-import { useUI, useProduct } from "../hooks";
-
-const Home: NextPage = () => {
-  const { setAgentUI, retail } = useUI();
-  const { resetProduct, resetProductList } = useProduct();
+const DashboardPage: NextPage = () => {
+  const { setTitle } = useUI();
 
   useEffect(() => {
-    setAgentUI(retail.id);
-    resetProduct();
-    resetProductList();
-  }, []);
+    setTitle("Dashboard");
+  }, [setTitle]);
 
-  return <Welcome />;
+  return <Dashboard />;
 };
 
-export default Home;
+export default DashboardPage;

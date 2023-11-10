@@ -1,32 +1,19 @@
-import Head from "next/head";
-import { Provider } from "react-redux";
+import { ClerkProvider } from "@clerk/nextjs";
+import { esES } from "@clerk/localizations";
+import { type AppType } from "next/app";
 
-import store from "../redux/store";
+import { Layout } from "~/components/layout/Layout";
 
-import Switch from "../components/functional/Switch";
+import "~/styles/globals.css";
 
-import "../styles/app.css";
-import type { AppProps } from "next/app";
-
-function MyApp({ Component, pageProps }: AppProps) {
+const MyApp: AppType = ({ Component, pageProps }) => {
   return (
-    <Provider store={store}>
-      <Head>
-        <title>
-          Serviclick.cl - Todas las soluciones para tu hogar, en la palma de tu
-          mano
-        </title>
-        <meta
-          name="description"
-          content="Serviclick.cl - Todas las soluciones para tu hogar, en la palma de tu mano"
-        />
-        <link rel="icon" href="/favicon.png" />
-      </Head>
-      <Switch>
+    <ClerkProvider {...pageProps} localization={esES}>
+      <Layout>
         <Component {...pageProps} />
-      </Switch>
-    </Provider>
+      </Layout>
+    </ClerkProvider>
   );
-}
+};
 
 export default MyApp;
