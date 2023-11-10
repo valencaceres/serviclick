@@ -1,15 +1,45 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { api } from "~/utils/api";
 import { DataTableImed } from "./DataTableImed";
 import { columns } from "./columns";
 
 export const Imed: React.FC = () => {
-  const { data: discounts } = api.reimbursement.getAll.useQuery({
+  const [page, setPage] = useState<number>(1);
+
+  const { data: discounts, isLoading } = api.reimbursement.getAll.useQuery({
     isImed: true,
+    numberOfReimburses: 10,
+    pagination: page,
   });
+  const previousData = useRef(discounts?.reimbursement);
+  const previousPageInfo = useRef(discounts?.pageInfo);
 
-  if (!discounts) return null;
+  const shouldShowPreviousData = isLoading && previousData.current;
+  const shouldShowPreviousPageInfo = isLoading && previousPageInfo.current;
 
-  return <DataTableImed columns={columns} data={discounts} />;
+  useEffect(() => {
+    if (!isLoading) {
+      previousData.current = discounts?.reimbursement;
+      previousPageInfo.current = discounts?.pageInfo;
+    }
+  }, [isLoading, discounts?.reimbursement, discounts?.pageInfo]);
+
+  const dataToShow = shouldShowPreviousData
+    ? previousData.current
+    : discounts?.reimbursement;
+  const pageInfoToShow = shouldShowPreviousPageInfo
+    ? previousPageInfo.current
+    : discounts?.pageInfo;
+  if (!dataToShow || !pageInfoToShow) return null;
+
+  return (
+    <DataTableImed
+      setPage={setPage}
+      isLoading={isLoading}
+      pageInfo={pageInfoToShow}
+      columns={columns}
+      data={dataToShow}
+    />
+  );
 };

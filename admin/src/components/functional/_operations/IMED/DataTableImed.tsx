@@ -1,13 +1,11 @@
 "use client";
-
+import { type RouterOutputs } from "~/utils/api";
 import {
   type ColumnDef,
   flexRender,
-  getPaginationRowModel,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { DataTablePagination } from "~/components/ui/DataTablePagination";
 
 import {
   Table,
@@ -17,22 +15,61 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/Table";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+  Loader2,
+} from "lucide-react";
+
+import { Button } from "~/components/ui/Button";
+import { useState } from "react";
+
+type CaseReimbursement = RouterOutputs["reimbursement"]["getAll"]["pageInfo"];
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  pageInfo: CaseReimbursement;
+  setPage: React.Dispatch<React.SetStateAction<number>>;
+  isLoading: boolean;
 }
 
 export function DataTableImed<TData, TValue>({
   columns,
   data,
+  pageInfo,
+  isLoading,
+  setPage,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
-    getPaginationRowModel: getPaginationRowModel(),
     getCoreRowModel: getCoreRowModel(),
   });
+
+  const [buttonLoadingStates, setButtonLoadingStates] = useState({
+    firstPage: false,
+    prevPage: false,
+    nextPage: false,
+    lastPage: false,
+  });
+
+  const handleButtonClick = (buttonName: string, pageFunction: () => void) => {
+    setButtonLoadingStates(() => {
+      const newState = {
+        firstPage: false,
+        prevPage: false,
+        nextPage: false,
+        lastPage: false,
+        [buttonName]: true,
+      };
+      return newState;
+    });
+
+    pageFunction();
+  };
 
   return (
     <div className="flex w-full max-w-7xl flex-col gap-2">
@@ -87,7 +124,82 @@ export function DataTableImed<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
+      <div className={`flex items-center justify-end px-2`}>
+        <div className="flex items-center space-x-6 lg:space-x-8">
+          <div className="flex w-fit items-center justify-center text-sm font-medium">
+            Página {pageInfo.currentPage} de {pageInfo.totalPages}
+          </div>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="outline"
+              className="h-8 w-8 p-0 lg:flex"
+              onClick={() => handleButtonClick("firstPage", () => setPage(1))}
+            >
+              <span className="sr-only">Go to first page</span>
+              {buttonLoadingStates.firstPage && isLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <ChevronsLeft className="h-4 w-4" />
+              )}
+            </Button>
+
+            <Button
+              variant="outline"
+              className="h-8 w-8 p-0"
+              onClick={() =>
+                handleButtonClick("prevPage", () =>
+                  setPage(Math.max(pageInfo.currentPage - 1, 1))
+                )
+              }
+            >
+              <span className="sr-only">Go to previous page</span>
+              {buttonLoadingStates.prevPage && isLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <ChevronLeft className="h-4 w-4" />
+              )}
+            </Button>
+
+            {/* Tercer botón */}
+            <Button
+              variant="outline"
+              className="h-8 w-8 p-0"
+              onClick={() =>
+                handleButtonClick("nextPage", () =>
+                  setPage(
+                    Math.min(pageInfo.currentPage + 1, pageInfo.totalPages)
+                  )
+                )
+              }
+            >
+              <span className="sr-only">Go to next page</span>
+              {buttonLoadingStates.nextPage && isLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <ChevronRight className="h-4 w-4" />
+              )}
+            </Button>
+
+            {/* Cuarto botón */}
+            <Button
+              variant="outline"
+              className="hidden h-8 w-8 p-0 lg:flex"
+              onClick={() =>
+                handleButtonClick("lastPage", () =>
+                  setPage(pageInfo.totalPages)
+                )
+              }
+            >
+              <span className="sr-only">Go to last page</span>
+              {buttonLoadingStates.lastPage && isLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <ChevronsRight className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
