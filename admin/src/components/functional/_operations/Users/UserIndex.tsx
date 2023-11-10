@@ -25,6 +25,7 @@ export const Users: React.FC = () => {
 import {
   type ColumnDef,
   flexRender,
+  getPaginationRowModel,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
@@ -51,6 +52,7 @@ export function DataTableUsers<TData extends User, TValue>({
   const table = useReactTable({
     data,
     columns,
+    getPaginationRowModel: getPaginationRowModel(),
     getCoreRowModel: getCoreRowModel(),
   });
   const router = useRouter();

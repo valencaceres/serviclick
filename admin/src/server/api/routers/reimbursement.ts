@@ -7,6 +7,8 @@ export const reimbursementRouter = createTRPCRouter({
     .input(
       z.object({
         isImed: z.boolean(),
+        pagination: z.number().optional(),
+        numberOfReimburses: z.number().optional(),
       })
     )
     .query(async ({ input, ctx }) => {
@@ -32,6 +34,17 @@ export const reimbursementRouter = createTRPCRouter({
             ],
           };
 
+      const totalReimbursements = await ctx.prisma.casereimbursment.count({
+        where: whereCondition,
+      });
+
+      const pageSize = input.numberOfReimburses || 10;
+      const page = input.pagination || 1;
+
+      const offset = (page - 1) * pageSize;
+
+      const take = input.numberOfReimburses || 10;
+
       const reimbursement = await ctx.prisma.casereimbursment.findMany({
         where: whereCondition,
         include: {
@@ -53,9 +66,20 @@ export const reimbursementRouter = createTRPCRouter({
             number: "asc",
           },
         },
+        skip: offset,
+        take,
       });
+      console.log(pageSize);
+      const totalPages = Math.ceil(totalReimbursements / pageSize);
 
-      return reimbursement;
+      return {
+        reimbursement,
+        pageInfo: {
+          totalElements: totalReimbursements,
+          totalPages,
+          currentPage: page,
+        },
+      };
     }),
   update: publicProcedure
     .input(

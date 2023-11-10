@@ -13,7 +13,7 @@ export function Billing() {
     }
   }, [broker, getDetailsByBrokerId]);
 
-  const newData = data.detail.map((detailItem) => {
+  const newData = data?.detail?.map((detailItem) => {
     const [year, month, day] = detailItem.product.incorporation.split("-");
 
     const formattedDate = `${day}-${month}-${year}`;
@@ -33,7 +33,14 @@ export function Billing() {
       product_name: detailItem.product.name,
     };
   });
-  if (!newData) return null;
+  if (!newData)
+    return (
+      <div className="w-full">
+        <h2 className="text-center text-xl font-bold text-teal-blue">
+          Sin datos disponibles...
+        </h2>
+      </div>
+    );
 
   return (
     <div className="flex w-full flex-col items-center gap-2 pl-12">

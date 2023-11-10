@@ -36,8 +36,8 @@ import {
 } from "~/components/ui/Accordion";
 import Link from "next/link";
 
-type CaseReimbursement = RouterOutputs["reimbursement"]["getAll"][number];
-
+type CaseReimbursement =
+  RouterOutputs["reimbursement"]["getAll"]["reimbursement"][0];
 export const columns: ColumnDef<CaseReimbursement>[] = [
   {
     accessorKey: "casemodel.number",

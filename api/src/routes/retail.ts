@@ -10,6 +10,9 @@ import {
   getBySearchValues,
   getCustomersByRetailIdAndProductId,
   getById,
+  getByUserId,
+  getProductsById,
+  getCollectionById,
   getByRut,
   updateLogo,
   deleteById,
@@ -61,6 +64,9 @@ RetailRouter.delete(
   deleteById
 );
 RetailRouter.get("/getAgents/:id", auth, getAgents);
+RetailRouter.get("/getByUserId/:user_id", getByUserId);
+RetailRouter.get("/getProductsById/:id", getProductsById);
+RetailRouter.get("/getCollectionById/:id", getCollectionById);
 RetailRouter.put(
   "/updateAgent/:retailId",
   auth,
