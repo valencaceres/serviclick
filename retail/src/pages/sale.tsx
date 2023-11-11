@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import { useEffect } from "react";
 
-import { Sale } from "~/components/functional/Sale";
+import { Sale } from "~/components/functional/Sale/Sale";
 
 import { useUI } from "~/store/hooks/index";
 
