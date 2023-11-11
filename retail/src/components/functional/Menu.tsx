@@ -119,15 +119,6 @@ const MenuItem: React.FC<MenuItemProps> = ({ route, isOpen, setIsOpen }) => {
   const { pathname } = useRouter();
 
   const { user } = useUser();
-  const userRoles = user?.publicMetadata.roles?.retail;
-
-  const userHasRole = (role: string) => {
-    return userRoles === role;
-  };
-
-  if (route.roles && !route.roles.some(userHasRole)) {
-    return null;
-  }
 
   if (!route.route && !route.subRoutes) {
     return (
