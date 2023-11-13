@@ -349,6 +349,22 @@ const updateLogo: any = async (id: string, logo: string) => {
   }
 };
 
+const updatePaymentCodes: any = async (codes: any) => {
+  try {
+    const result = await pool.query(`select app.retail_update_payment($1)`, [
+      codes,
+    ]);
+
+    return {
+      success: true,
+      data: result.rows[0].retail_update_payment,
+      error: null,
+    };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 const getFamiliesByRetailId: any = async (id: string) => {
   try {
     const result = await pool.query(
@@ -529,6 +545,7 @@ const expireInsured: any = async (productPlan_id: string) => {
     return { success: false, data: null, error: (e as Error).message };
   }
 };
+
 const getByUserId: any = async (user_id: string) => {
   try {
     const result = await pool.query(
@@ -584,12 +601,27 @@ const getCollectionById: any = async (id: string) => {
   }
 };
 
+const getPayments: any = async (id: string) => {
+  try {
+    const result = await pool.query(`select app.retail_get_payment($1)`, [id]);
+
+    return {
+      success: true,
+      data: result.rows[0].retail_get_payment,
+      error: null,
+    };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 export {
   create,
   getById,
   getByRut,
   getAll,
   updateLogo,
+  updatePaymentCodes,
   deleteById,
   getFamiliesByRetailId,
   getProductsByRetailIdAndFamilyId,
@@ -601,4 +633,5 @@ export {
   getByUserId,
   getProductsById,
   getCollectionById,
+  getPayments,
 };

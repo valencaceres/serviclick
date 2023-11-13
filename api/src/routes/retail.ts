@@ -15,11 +15,13 @@ import {
   getCollectionById,
   getByRut,
   updateLogo,
+  updatePaymentCodes,
   deleteById,
   getFamiliesByRetailId,
   getProductsByRetailIdAndFamilyId,
   getCollectById,
   getAgents,
+  getPayments,
   updateAgent,
   addLeadFromExcel,
 } from "../controllers/retail";
@@ -56,6 +58,7 @@ RetailRouter.get(
 );
 RetailRouter.get("/getCollectById/:id", auth, getCollectById);
 RetailRouter.put("/updateLogo/:id", isAuthenticated, isAdmin, updateLogo);
+RetailRouter.post("/updatePaymentCodes", auth, updatePaymentCodes);
 RetailRouter.delete(
   "/deleteById/:id",
   auth,
@@ -67,6 +70,7 @@ RetailRouter.get("/getAgents/:id", auth, getAgents);
 RetailRouter.get("/getByUserId/:user_id", getByUserId);
 RetailRouter.get("/getProductsById/:id", getProductsById);
 RetailRouter.get("/getCollectionById/:id", getCollectionById);
+RetailRouter.get("/getPayments/:id", getPayments);
 RetailRouter.put(
   "/updateAgent/:retailId",
   auth,
