@@ -119,7 +119,7 @@ function BrokerSummary({ broker }: { broker: Broker | null }) {
             <Skeleton className="h-8 w-full bg-primary-500" />
           ) : (
             <h2 className="text-2xl font-bold">
-              {data?.summary?.quantity?.toLocaleString("es-CL", {
+              {data?.summary?.due?.toLocaleString("es-CL", {
                 style: "currency",
                 currency: "CLP",
               })}
