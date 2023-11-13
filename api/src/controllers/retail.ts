@@ -282,6 +282,32 @@ const updateLogo = async (req: any, res: any) => {
   }
 };
 
+const updatePaymentCodes = async (req: any, res: any) => {
+  try {
+    const { codes } = req.body;
+    const { success, data, error } = await Retail.updatePaymentCodes(codes);
+
+    if (!success) {
+      createLogger.error({
+        model: "retail/updatePaymentCodes",
+        error,
+      });
+      res.status(500).json({ error: "error updating payments" });
+      return;
+    }
+
+    res.status(200).json(data);
+    return;
+  } catch (error) {
+    createLogger.error({
+      controller: "retail/updatePaymentCodes",
+      error: (error as Error).message,
+    });
+    res.status(500).json({ error: "error updating payments" });
+    return;
+  }
+};
+
 const getFamiliesByRetailId = async (req: any, res: any) => {
   try {
     const { id } = req.params;
@@ -585,6 +611,32 @@ const getCollectionById = async (req: any, res: any) => {
   }
 };
 
+const getPayments = async (req: any, res: any) => {
+  try {
+    const { id } = req.params;
+    const { success, data, error } = await Retail.getPayments(id);
+
+    if (!success) {
+      createLogger.error({
+        model: "retail/getPayments",
+        error,
+      });
+      res.status(500).json({ error: "error retrieving payments" });
+      return;
+    }
+
+    res.status(200).json(data);
+    return;
+  } catch (error) {
+    createLogger.error({
+      controller: "retail/getPayments",
+      error: (error as Error).message,
+    });
+    res.status(500).json({ error: "error retrieving payments" });
+    return;
+  }
+};
+
 const addLeadFromExcel = async (req: any, res: any) => {
   try {
     const socket = ioClient(`${process.env.SOCKET_API_URL}`);
@@ -721,6 +773,7 @@ export {
   getBySearchValues,
   getCustomersByRetailIdAndProductId,
   updateLogo,
+  updatePaymentCodes,
   deleteById,
   getFamiliesByRetailId,
   getProductsByRetailIdAndFamilyId,
@@ -731,6 +784,7 @@ export {
   getByUserId,
   getProductsById,
   getCollectionById,
+  getPayments,
 };
 
 function isRecord(obj: unknown): obj is Record<string, any> {
