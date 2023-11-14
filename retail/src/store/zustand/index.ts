@@ -1,3 +1,4 @@
 import { uiStore } from "./uiStore";
 import { retailStore } from "./retailStore";
-export { uiStore, retailStore };
+import { paymentStore } from "./paymentStore";
+export { uiStore, retailStore, paymentStore };

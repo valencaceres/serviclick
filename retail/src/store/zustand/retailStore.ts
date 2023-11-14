@@ -55,7 +55,6 @@ export const retailStore = create<retailState>((set, get) => ({
   getByUserId: async (id: string) => {
     try {
       set((state) => ({ ...state, isLoading: true }));
-      console.log(id);
       const { data } = await apiInstance.get(`retail/getByUserId/${id}`);
       set((state) => ({
         ...state,
@@ -114,7 +113,7 @@ export const retailStore = create<retailState>((set, get) => ({
   reset: () =>
     set((state) => ({
       ...state,
-      partner: initialData,
+      retail: initialData,
       isLoading: false,
       isError: false,
       error: "",

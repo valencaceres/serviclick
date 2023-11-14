@@ -38,7 +38,6 @@ function RetailSummary({ retail }: { retail: Retail | null }) {
     }
   }, [retail, getDetailsByRetailId]);
   const isLoading = loading || data?.summary?.charged === null;
-  console.log(data?.summary);
   return (
     <div className="flex w-full flex-col flex-wrap items-center gap-4 py-4 lg:flex-row lg:justify-center">
       <Card className="w-full max-w-xs hover:bg-slate-50">

@@ -28,6 +28,10 @@ const routes = [
     route: "/sale",
   },
   {
+    text: "Procesados",
+    route: "/payment",
+  },
+  {
     text: "Cobranza",
     route: "/billing",
   },
