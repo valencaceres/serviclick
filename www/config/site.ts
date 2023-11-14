@@ -35,6 +35,6 @@ export const siteConfig: SiteConfig = {
     linkedin: "https://www.linkedin.com/company/serviclick",
     email: "mailto:comercial@serviclick.cl",
     whatsapp:
-      "https://api.whatsapp.com/send/?phone=56939325093&text&type=phone_number&app_absent=0",
+      "https://api.whatsapp.com/send/?phone=56939325099&text&type=phone_number&app_absent=0",
   },
 }

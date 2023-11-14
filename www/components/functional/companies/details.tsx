@@ -14,7 +14,7 @@ export const Details = () => {
       <Accordion className="w-full max-w-4xl" type="single" collapsible>
         <AccordionItem value="insurance">
           <AccordionTrigger>
-            <div className="flex w-full gap-2 text-xl items-center">
+            <div className="flex w-full items-center gap-2 text-xl">
               <Icons.building />
               Industria seguros
             </div>
@@ -28,7 +28,7 @@ export const Details = () => {
         </AccordionItem>
         <AccordionItem value="pymes">
           <AccordionTrigger>
-            <div className="flex w-full gap-2 text-xl items-center">
+            <div className="flex w-full items-center gap-2 text-xl">
               <Icons.store />
               PYMES & MYPYMES
             </div>
@@ -44,7 +44,7 @@ export const Details = () => {
         </AccordionItem>
         <AccordionItem value="commercial-insurance">
           <AccordionTrigger>
-            <div className="flex w-full gap-2 text-xl items-center">
+            <div className="flex w-full items-center gap-2 text-xl">
               <Icons.share />
               Seguros comerciales
             </div>
@@ -61,7 +61,7 @@ export const Details = () => {
         </AccordionItem>
         <AccordionItem value="network">
           <AccordionTrigger>
-            <div className="flex w-full gap-2 text-xl items-center">
+            <div className="flex w-full items-center gap-2 text-xl">
               <Icons.users />
               Prestadores & Redes de apoyo
             </div>
@@ -69,7 +69,7 @@ export const Details = () => {
           <AccordionContent>
             Forma parte de nuestra extensa red de colaboradores. Para más
             información, contáctanos al 600 0860 580 o a través de nuestro
-            WhatsApp al +56939325093 y uno de nuestros ejecutivos estará
+            WhatsApp al +56939325099 y uno de nuestros ejecutivos estará
             encantado de asistirte.
           </AccordionContent>
         </AccordionItem>
@@ -130,7 +130,7 @@ export const Details = () => {
         </TabsContent>
         <TabsContent value="network" className="p-4 xl:mx-16">
           Forma parte de nuestra extensa red de colaboradores. Para más
-          información, contáctanos a través de nuestro WhatsApp al +56939325093
+          información, contáctanos a través de nuestro WhatsApp al +56939325099
           y uno de nuestros ejecutivos estará encantado de asistirte.
         </TabsContent>
       </Tabs> */}

@@ -22,10 +22,10 @@ export default function Faq() {
 
 function FaqAccordion() {
   return (
-    <Accordion className="w-full xl:hidden block" type="single" collapsible>
+    <Accordion className="block w-full xl:hidden" type="single" collapsible>
       <AccordionItem value="subscription">
         <AccordionTrigger>
-          <div className="flex w-full gap-2 text-xl items-center">
+          <div className="flex w-full items-center gap-2 text-xl">
             Suscripción
           </div>
         </AccordionTrigger>
@@ -37,7 +37,7 @@ function FaqAccordion() {
                 <p>
                   Si deseas contratar nuestra asistencia, simplemente haz clic
                   en el botón "¡Lo quiero!" o contáctanos al 600 0860 580 o a
-                  través de WhatsApp al número +56939325093.
+                  través de WhatsApp al número +56939325099.
                 </p>
               </AccordionContent>
             </AccordionItem>
@@ -72,7 +72,7 @@ function FaqAccordion() {
       </AccordionItem>
       <AccordionItem value="assistances">
         <AccordionTrigger>
-          <div className="flex w-full gap-2 text-xl items-center">
+          <div className="flex w-full items-center gap-2 text-xl">
             Asistencias
           </div>
         </AccordionTrigger>
@@ -133,7 +133,7 @@ function FaqAccordion() {
       </AccordionItem>
       <AccordionItem value="my-assistance">
         <AccordionTrigger>
-          <div className="flex w-full gap-2 text-xl items-center">
+          <div className="flex w-full items-center gap-2 text-xl">
             Mis asistencias
           </div>
         </AccordionTrigger>
@@ -170,7 +170,7 @@ function FaqAccordion() {
               <AccordionContent>
                 <p>
                   Puedes comunicarte con nosotros de forma gratuita al 600 0860
-                  580 o a través de WhatsApp al +56939325093.
+                  580 o a través de WhatsApp al +56939325099.
                 </p>
               </AccordionContent>
             </AccordionItem>
@@ -179,7 +179,7 @@ function FaqAccordion() {
       </AccordionItem>
       <AccordionItem value="others">
         <AccordionTrigger>
-          <div className="flex w-full gap-2 text-xl items-center">Otros</div>
+          <div className="flex w-full items-center gap-2 text-xl">Otros</div>
         </AccordionTrigger>
         <AccordionContent>
           <Accordion type="single" collapsible>
@@ -293,30 +293,30 @@ function FaqTabs() {
     <Tabs
       value={selected}
       onValueChange={setSelected}
-      className="w-full hidden xl:block max-w-2xl"
+      className="hidden w-full max-w-2xl xl:block"
     >
       <TabsList>
-        <TabsTrigger className="text-center flex-col p-0" value="subscription">
+        <TabsTrigger className="flex-col p-0 text-center" value="subscription">
           <span className="py-4">Suscripción</span>
-          <div className="bg-background w-full h-[20px] flex justify-center">
+          <div className="flex h-[20px] w-full justify-center bg-background">
             {selected === "subscription" && <Icons.triangle />}
           </div>
         </TabsTrigger>
-        <TabsTrigger className="text-center flex-col p-0" value="assistances">
+        <TabsTrigger className="flex-col p-0 text-center" value="assistances">
           <span className="py-4">Asistencias</span>
-          <div className="bg-background w-full h-[20px] flex justify-center">
+          <div className="flex h-[20px] w-full justify-center bg-background">
             {selected === "assistances" && <Icons.triangle />}
           </div>
         </TabsTrigger>
-        <TabsTrigger className="text-center flex-col p-0" value="my-assistance">
+        <TabsTrigger className="flex-col p-0 text-center" value="my-assistance">
           <span className="py-4">Mis asistencias</span>
-          <div className="bg-background w-full h-[20px] flex justify-center">
+          <div className="flex h-[20px] w-full justify-center bg-background">
             {selected === "my-assistance" && <Icons.triangle />}
           </div>
         </TabsTrigger>
-        <TabsTrigger className="text-center flex-col p-0" value="others">
+        <TabsTrigger className="flex-col p-0 text-center" value="others">
           <span className="py-4">Otros</span>
-          <div className="bg-background w-full h-[20px] flex justify-center">
+          <div className="flex h-[20px] w-full justify-center bg-background">
             {selected === "others" && <Icons.triangle />}
           </div>
         </TabsTrigger>
@@ -329,7 +329,7 @@ function FaqTabs() {
               <p>
                 Si deseas contratar nuestra asistencia, simplemente haz clic en
                 el botón "¡Lo quiero!" o contáctanos al 600 0860 580 o a través
-                de WhatsApp al número +56939325093.
+                de WhatsApp al número +56939325099.
               </p>
             </AccordionContent>
           </AccordionItem>
@@ -447,7 +447,7 @@ function FaqTabs() {
             <AccordionContent>
               <p>
                 Puedes comunicarte con nosotros de forma gratuita al 600 0860
-                580 o a través de WhatsApp al +56939325093.
+                580 o a través de WhatsApp al +56939325099.
               </p>
             </AccordionContent>
           </AccordionItem>
