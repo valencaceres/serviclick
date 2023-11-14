@@ -7,7 +7,6 @@ import { Layout } from "~/components/layout/Layout";
 import "~/styles/globals.css";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
-  console.log("MyApp rendering");
   return (
     <ClerkProvider {...pageProps} localization={esES}>
       <Layout>

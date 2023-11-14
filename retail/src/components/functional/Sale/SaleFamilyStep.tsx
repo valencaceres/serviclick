@@ -6,7 +6,6 @@ import { useRetail } from "~/store/hooks";
 export function SaleFamilyStep({ onDone }: { onDone: () => void }) {
   const { retail, setFamily } = useUI();
   const { familiesList: data, getFamiliesByRetailId, isLoading } = useRetail();
-  console.log(retail?.id == "");
   useEffect(() => {
     if (retail) {
       getFamiliesByRetailId(retail.id);
