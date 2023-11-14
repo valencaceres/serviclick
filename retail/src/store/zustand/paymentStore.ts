@@ -26,7 +26,7 @@ const initialData: Lead = {
 };
 const initialCode: Code = {
   retail_id: "",
-  data: [{ code: "", lead_id: "" }],
+  codes: [{ code: "", lead_id: "" }],
 };
 
 export const paymentStore = create<paymentState>((set, get) => ({
@@ -46,7 +46,7 @@ export const paymentStore = create<paymentState>((set, get) => ({
       const { data } = await apiInstance.get(`retail/getPayments/${id}`);
       const transformedData: Code = {
         retail_id: id,
-        data: data.map((payment: Lead) => ({
+        codes: data.map((payment: Lead) => ({
           lead_id: payment.lead_id,
           code: payment.code,
         })),
