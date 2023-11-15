@@ -6,6 +6,7 @@ import { contractorStore } from "./contractorStore";
 import { insuredStore } from "./insuredStore";
 import { relationshipStore } from "./relationshipStore";
 import { beneficiaryStore } from "./beneficiaryStore";
+import { agentStore } from "./agentStore";
 
 export {
   uiStore,
@@ -16,4 +17,5 @@ export {
   insuredStore,
   relationshipStore,
   beneficiaryStore,
+  agentStore,
 };

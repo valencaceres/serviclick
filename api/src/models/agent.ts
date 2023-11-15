@@ -1,5 +1,7 @@
 import pool from "../util/database";
 
+import { _getProcessById } from "../queries/agent";
+
 const createAgent: any = async (channel_id: string, name: string) => {
   try {
     const result = await pool.query(
@@ -52,4 +54,13 @@ const listAgents: any = async (channel_id: string) => {
   }
 };
 
-export { createAgent, updateAgent, deleteAgent, listAgents };
+const getProcessById: any = async (id: string) => {
+  try {
+    const result = await pool.query(_getProcessById, [id]);
+    return { success: true, data: result.rows[0].process, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+export { createAgent, updateAgent, deleteAgent, listAgents, getProcessById };

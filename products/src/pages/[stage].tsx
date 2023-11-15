@@ -5,7 +5,7 @@ import None from "@/components/functional/wizard/None/None";
 
 import { stages } from "@/data/stage";
 
-import { useUI, useProduct, useLead } from "@/store/hooks";
+import { useUI, useProduct, useLead, useAgent } from "@/store/hooks";
 
 const StagePage = () => {
   const router = useRouter();
@@ -13,11 +13,12 @@ const StagePage = () => {
   const { setUI, ui } = useUI();
   const { product, getByPlanId } = useProduct();
   const { lead, getLeadById } = useLead();
+  const { getProcessById } = useAgent();
 
   const [component, setComponent] = useState(None);
-  
+
   const { stage, productPlanId, leadId, userId } = router.query;
-  
+
   useEffect(() => {
     if (router.isReady) {
       if (stages.some((item) => item.code === stage)) {
@@ -28,6 +29,7 @@ const StagePage = () => {
 
         if (productPlanId) {
           getByPlanId(productPlanId.toString());
+          getProcessById(productPlanId.toString());
         }
 
         if (leadId) {
