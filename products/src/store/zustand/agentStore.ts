@@ -39,21 +39,12 @@ export const agentStore = create<agentState>((set, get) => ({
   getProcessById: async (id: string) => {
     try {
       set((state) => ({ ...state, isLoading: true }));
-      const response = await apiInstance.get(`/agent/getProcessById/${id}`);
-      if (response.data.success) {
-        set((state) => ({
-          ...state,
-          process: response.data.data,
-          isLoading: false,
-        }));
-      } else {
-        set((state) => ({
-          ...state,
-          isLoading: false,
-          isError: true,
-          error: response.data.error,
-        }));
-      }
+      const { data } = await apiInstance.get(`/agent/getProcessById/${id}`);
+      set((state) => ({
+        ...state,
+        process: data,
+        isLoading: false,
+      }));
     } catch (e) {
       set((state) => ({
         ...state,
