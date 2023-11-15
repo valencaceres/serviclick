@@ -23,7 +23,7 @@ export interface Lead {
 
 export interface Code {
   retail_id: string;
-  data: {
+  codes: {
     code: string;
     lead_id: string;
   }[];

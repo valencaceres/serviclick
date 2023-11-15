@@ -87,7 +87,7 @@ function Actions({ lead }: { lead: Lead }) {
     const leadId = lead.lead_id;
     setListValue({
       retail_id: codeValue.retail_id,
-      data: codeValue.data.map((item) =>
+      codes: codeValue.codes.map((item) =>
         item.lead_id === leadId ? { ...item, code: value } : item
       ),
     });
@@ -97,7 +97,7 @@ function Actions({ lead }: { lead: Lead }) {
     <div className=" w-2/6">
       <InputText
         value={
-          codeValue.data.find((item) => item.lead_id === lead.lead_id)?.code ??
+          codeValue.codes.find((item) => item.lead_id === lead.lead_id)?.code ??
           ""
         }
         onChange={handleChangeCode}

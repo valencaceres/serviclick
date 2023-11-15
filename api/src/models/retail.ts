@@ -349,19 +349,20 @@ const updateLogo: any = async (id: string, logo: string) => {
   }
 };
 
-const updatePaymentCodes: any = async (codes: any) => {
+const updatePaymentCodes: any = async (retail_id: string, codes: any) => {
   try {
-    const result = await pool.query(`select app.retail_update_payment($1)`, [
-      codes,
-    ]);
+    const result = await pool.query(
+      `select app.retail_update_payment($1, $2)`,
+      [retail_id, codes]
+    );
 
     return {
       success: true,
-      data: result.rows[0].retail_update_payment,
+      response: result.rows[0].retail_update_payment,
       error: null,
     };
   } catch (e) {
-    return { success: false, data: null, error: (e as Error).message };
+    return { success: false, response: null, error: (e as Error).message };
   }
 };
 

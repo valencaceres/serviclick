@@ -284,8 +284,11 @@ const updateLogo = async (req: any, res: any) => {
 
 const updatePaymentCodes = async (req: any, res: any) => {
   try {
-    const { codes } = req.body;
-    const { success, data, error } = await Retail.updatePaymentCodes(codes);
+    const { codes, retail_id } = req.body;
+    const { success, data, error } = await Retail.updatePaymentCodes(
+      retail_id,
+      codes
+    );
 
     if (!success) {
       createLogger.error({
