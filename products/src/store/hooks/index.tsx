@@ -6,6 +6,7 @@ import useContractor from "./useContractor";
 import useInsured from "./useInsured";
 import useRelationship from "./useRelationship";
 import useBeneficiary from "./useBeneficiary";
+import useAgent from "./useAgent";
 
 export {
   useUI,
@@ -16,4 +17,5 @@ export {
   useInsured,
   useRelationship,
   useBeneficiary,
+  useAgent,
 };

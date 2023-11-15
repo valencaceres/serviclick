@@ -82,4 +82,24 @@ const listAgents = async (req: any, res: any) => {
   res.status(200).json(agentResponse.data);
 };
 
-export { createAgent, updateAgent, deleteAgent, listAgents };
+const getProcessById = async (req: any, res: any) => {
+  const { id } = req.params;
+  const agentResponse = await Agent.getProcessById(id);
+
+  if (!agentResponse.success) {
+    createLogger.error({
+      model: "agent/getProcessById",
+      error: agentResponse.error,
+    });
+    res.status(500).json({ error: "Error getting process" });
+    return;
+  }
+
+  createLogger.info({
+    controller: "agent/getProcessById",
+    message: "OK",
+  });
+  res.status(200).json(agentResponse.data);
+};
+
+export { createAgent, updateAgent, deleteAgent, listAgents, getProcessById };

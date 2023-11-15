@@ -18,7 +18,7 @@ import Loading from "@/components/ui/Loading";
 import Tooltip from "@/components/ui/Tooltip";
 import ModalWindow from "@/components/ui/ModalWindow/index";
 
-import { useProduct, useLead, useUI } from "@/store/hooks";
+import { useProduct, useLead, useUI, useAgent } from "@/store/hooks";
 
 import styles from "./Payment.module.scss";
 
@@ -52,6 +52,7 @@ const Payment = () => {
   const { lead, getLeadById, createLead, leadIsLoading, leadIsError } =
     useLead();
   const { product } = useProduct();
+  const { process } = useAgent();
 
   const [isSelectedContractor, setIsSelectedContractor] = useState(false);
   const [isSelectedinsured, setIsSelectedinsured] = useState(false);
@@ -84,8 +85,12 @@ const Payment = () => {
   };
 
   const handleClickPay = () => {
-    setPaymentType("");
-    setShowPaymentType(true);
+    if (process.process.code === "R") {
+      router.push(process.process.url);
+    } else {
+      setPaymentType("");
+      setShowPaymentType(true);
+    }
   };
 
   const handleClickSuscribe = () => {
@@ -256,11 +261,7 @@ const Payment = () => {
         </Col>
       </Content>
       <Footer>
-        {router.query.productPlanId ===
-          "cfe1b614-d721-4b8b-b9dd-e61b6d473b56" ||
-        router.query.productPlanId === "3d3f4aab-85d5-4533-80e0-a28a42c8fd9b" ||
-        router.query.productPlanId ===
-          "a735654b-c01d-47e9-a214-861a1e67d0fb" ? (
+        {process.process.code === "S" ? (
           <Button
             text="Suscribir descuento por planilla"
             width="300px"
