@@ -33,12 +33,17 @@ export function SelectRetail({
       getByUserId(user.id);
     }
   }, [user, getByUserId]);
-
+  const storedState = localStorage.getItem("uiState");
+  const parsedState = storedState ? JSON.parse(storedState) : {};
+  const retailStorage = parsedState?.retail;
+  console.log("retailll", retailStorage);
   useEffect(() => {
-    if (retails && retails.length === 1) {
+    if (retailStorage && !retail) {
+      setRetail(retailStorage);
+    } else if (!retailStorage && retails && retails.length === 1) {
       setRetail(retails[0] ?? null);
     }
-  }, [retails, setRetail]);
+  }, [retails, setRetail, retailStorage]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

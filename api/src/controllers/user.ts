@@ -6,8 +6,14 @@ import { sendMail } from "../util/email";
 
 import * as User from "../models/user";
 import * as Person from "../models/person";
-import { fetchClerkUser } from "../util/clerkUserData";
-import { IPerson } from "../interfaces/person";
+import {
+  fetchClerkUser,
+  fetchtAllClerkUsers,
+  fetchCreateClerkUser,
+  fetchUpdateClerkUser,
+  fetchDeleteClerkUser,
+} from "../util/clerkUserData";
+import { IPerson, IClerkUser } from "../interfaces/person";
 
 const create = async (req: any, res: any) => {
   const {
@@ -59,6 +65,75 @@ const create = async (req: any, res: any) => {
     message: "OK",
   });
   res.status(200).json(userResponse.data);
+};
+
+const createClerkUser = async (req: any, res: any) => {
+  try {
+    const input: IClerkUser = req.body;
+
+    const result = await fetchCreateClerkUser(input);
+    if (!result.success) {
+      createLogger.error({
+        model: "user/CreateClerkUser",
+        error: "User not valid",
+      });
+      res.status(500).json({ error: "Error creating user" });
+    }
+    if (result.success) {
+      createLogger.info({
+        controller: "user/createClerkUser",
+        message: "OK",
+      });
+      res.status(200).json(result.data);
+    }
+  } catch (error) {
+    console.error("Error creating user:", error);
+    createLogger.error({
+      model: "user/CreateClerkUser",
+      error: "User not valid",
+    });
+    res.status(500).json({ error: "Error creating user" });
+  }
+};
+
+const updateClerkUser = async (req: any, res: any) => {
+  const { id } = req.params;
+  const input: IClerkUser = req.body;
+
+  const result = await fetchUpdateClerkUser(id, input);
+  if (!result.success) {
+    createLogger.error({
+      model: "user/updateClerkUser",
+      error: "User not valid",
+    });
+    res.status(500).json({ error: "Error updating user" });
+  }
+  if (result.success) {
+    createLogger.info({
+      controller: "user/updateClerkUser",
+      message: "OK",
+    });
+    res.status(200).json(result.data);
+  }
+};
+
+const deleteClerkUser = async (req: any, res: any) => {
+  const { id } = req.params;
+  const result = await fetchDeleteClerkUser(id);
+  if (!result.success) {
+    createLogger.error({
+      model: "user/DeleteClerkUser",
+      error: "User not valid",
+    });
+    res.status(500).json({ error: "Error deleting user" });
+  }
+  if (result.success) {
+    createLogger.info({
+      controller: "user/deleteClerkUser",
+      message: "OK",
+    });
+    res.status(200).json(result.data);
+  }
 };
 
 const deleteUserById = async (req: any, res: any) => {
@@ -235,6 +310,60 @@ const getAll = async (req: any, res: any) => {
   }
 };
 
+const getAllClerkUsers = async (req: any, res: any) => {
+  try {
+    const result = await fetchtAllClerkUsers();
+    if (!result.success) {
+      createLogger.error({
+        model: "user/getAllClerkUsers",
+        error: result.error,
+      });
+      res.status(500).json({ error: "Error retrieving users" });
+      return;
+    }
+
+    createLogger.info({
+      controller: "user/getAllClerkUsers",
+      message: "OK",
+    });
+    res.status(200).json(result);
+  } catch (e) {
+    createLogger.error({
+      controller: "user/getAllClerkUsers",
+      error: (e as Error).message,
+    });
+    res.status(500).json({ error: "Error retrieving users" });
+    return;
+  }
+};
+const getClerkUserById = async (req: any, res: any) => {
+  const { id } = req.params;
+  try {
+    const result = await fetchClerkUser(id);
+    if (!result.success) {
+      createLogger.error({
+        model: "user/getClerkUserById",
+        error: result.error,
+      });
+      res.status(500).json({ error: "Error retrieving users" });
+      return;
+    }
+
+    createLogger.info({
+      controller: "user/getClerkUserById",
+      message: "OK",
+    });
+    res.status(200).json(result);
+  } catch (e) {
+    createLogger.error({
+      controller: "user/getClerkUserById",
+      error: (e as Error).message,
+    });
+    res.status(500).json({ error: "Error retrieving users" });
+    return;
+  }
+};
+
 const sendCredentials = async (req: any, res: any) => {
   try {
     const { email } = req.body;
@@ -355,7 +484,7 @@ const getByClerkId = async (req: any, res: any) => {
         .json({ success: false, data: null, error: "Invalid input" });
     }
     const results = await Promise.all(ids.map((id: any) => fetchClerkUser(id)));
-    const validResults = results.filter((result) => result);
+    const validResults = results.filter((result) => result.data);
 
     if (validResults.length > 0) {
       return res.status(200).json({ success: true, data: validResults });
@@ -373,6 +502,7 @@ const getByClerkId = async (req: any, res: any) => {
 
 export {
   create,
+  createClerkUser,
   deleteUserById,
   assignPassword,
   validate,
@@ -382,4 +512,8 @@ export {
   sendCredentials,
   updatePassword,
   getByClerkId,
+  getAllClerkUsers,
+  getClerkUserById,
+  updateClerkUser,
+  deleteClerkUser,
 };

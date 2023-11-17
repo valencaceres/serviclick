@@ -12,13 +12,48 @@ interface IUIState {
   setFamily: (family: IFamily | null) => void;
 }
 
-export const uiStore = create<IUIState>((set) => ({
-  title: "",
-  setTitle: (title: string) => set({ title }),
+export const uiStore = create<IUIState>((set) => {
+  const initialState = {
+    title: "",
+    retail: null,
+    family: null,
+  };
+  if (typeof window !== "undefined") {
+    const storedState = localStorage.getItem("uiState");
+    const parsedState = storedState ? JSON.parse(storedState) : {};
 
-  retail: null,
-  setRetail: (retail: Retail | null) => set({ retail }),
-
-  family: null,
-  setFamily: (family: IFamily | null) => set({ family }),
-}));
+    parsedState.retail = initialState.retail || parsedState.retail;
+    const mergedState = { ...initialState, ...parsedState };
+    set(mergedState);
+  }
+  return {
+    ...initialState,
+    setTitle: (title: string) => {
+      set((state) => {
+        const newState = { ...state, title };
+        if (typeof window !== "undefined") {
+          localStorage.setItem("uiState", JSON.stringify({ ...state, title }));
+        }
+        return newState;
+      });
+    },
+    setRetail: (retail: Retail | null) => {
+      set((state) => {
+        const newState = { ...state, retail };
+        if (typeof window !== "undefined") {
+          localStorage.setItem("uiState", JSON.stringify({ ...state, retail }));
+        }
+        return newState;
+      });
+    },
+    setFamily: (family: IFamily | null) => {
+      set((state) => {
+        const newState = { ...state, family };
+        if (typeof window !== "undefined") {
+          localStorage.setItem("uiState", JSON.stringify({ ...state, family }));
+        }
+        return newState;
+      });
+    },
+  };
+});
