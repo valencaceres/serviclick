@@ -5,7 +5,8 @@ import {
   ContentRow,
   ContentCellSummary,
 } from "../../../layout/Content";
-
+import { Label } from "~/components/ui";
+import CheckBox from "~/components/ui/CheckBox";
 import {
   Table,
   TableHeader,
@@ -23,7 +24,7 @@ import { useSpecialist } from "../../../../store/hooks";
 const SpecialistSpecialties = ({ setShowSpecialitiesModal }: any) => {
   const { specialist, setSpecialist } = useSpecialist();
   const { listAll } = useFamily();
-
+  const [isRemote, setIsRemote] = useState(false);
   const handleClickAddSpeciality = () => {
     listAll();
     setShowSpecialitiesModal(true);
@@ -33,6 +34,15 @@ const SpecialistSpecialties = ({ setShowSpecialitiesModal }: any) => {
     setSpecialist({
       ...specialist,
       specialties: [...specialist.specialties.filter((item) => item.id !== id)],
+    });
+  };
+
+  const handleChangeRemote = (e: any) => {
+    const value = e.target.checked;
+    const id = e.target.id;
+    setSpecialist({
+      ...specialist,
+      [id]: value,
     });
   };
 
@@ -74,6 +84,14 @@ const SpecialistSpecialties = ({ setShowSpecialitiesModal }: any) => {
                 }`
               : `Sin especialidades`}
           </ContentCellSummary>
+          <CheckBox
+            label="Remoto"
+            value={specialist.isRemote ?? false}
+            id="isRemote"
+            onChange={handleChangeRemote}
+            width="100"
+          />
+
           <ButtonIcon
             iconName="add"
             color="gray"

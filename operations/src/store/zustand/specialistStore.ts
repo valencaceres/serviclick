@@ -49,6 +49,7 @@ const initialData: ISpecialist = {
   birthDate: "",
   districts: [],
   specialties: [],
+  isRemote: false,
 };
 
 export const specialistStore = create<specialistState>((set, get) => ({

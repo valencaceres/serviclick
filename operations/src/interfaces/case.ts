@@ -120,6 +120,11 @@ interface IHistory {
   name: string;
 }
 
+interface IStatus {
+  status: boolean;
+  description: string;
+}
+
 export interface ICase {
   case_id: string | null;
   user_id: string;
@@ -144,6 +149,7 @@ export interface ICase {
   alliance: IAlliance | null;
   cost: ICost | null;
   history: IHistory[];
+  status: IStatus;
 }
 
 export interface ICaseItem {

@@ -121,6 +121,10 @@ const initialCase: ICase = {
   alliance: null,
   cost: null,
   history: [],
+  status: {
+    status: true,
+    description: "",
+  },
 };
 
 export const caseStore = create<caseState>((set) => ({
@@ -223,7 +227,6 @@ export const caseStore = create<caseState>((set) => ({
       set((state) => ({ ...state, isLoading: true }));
 
       const { data } = await apiInstance.get(`/case/getById/${id}`);
-
       set((state) => ({
         ...state,
         case: data,
@@ -274,7 +277,6 @@ export const caseStore = create<caseState>((set) => ({
       );
 
       const { lead_id, assistances, assistance, values } = response;
-
       set((state) => ({
         ...state,
         assistances,

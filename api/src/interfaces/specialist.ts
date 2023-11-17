@@ -13,4 +13,5 @@ export interface ISpecialist {
   birthDate: string;
   specialties: ISpecialty[];
   districts: IDistrict[];
+  isRemote: boolean;
 }

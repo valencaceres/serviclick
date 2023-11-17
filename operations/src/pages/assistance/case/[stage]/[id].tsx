@@ -7,7 +7,7 @@ import { FloatMenu, ButtonIcon, LoadingMessage } from "~/components/ui";
 
 import { CaseHistory } from "~/components/functional/_assistances/Case";
 import CaseChat from "~/components/functional/_assistances/Case/CaseChat";
-
+import CaseStatus from "~/components/functional/_assistances/Case/CaseModalStatus";
 import { stagePages } from "../../../../data/stages";
 
 import { useDistrict, useUI } from "~/hooks";
@@ -178,6 +178,7 @@ const AssistanceCasePage = () => {
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [stageKey, setStageKey] = useState<Stage>("applicant");
   const [showModal, setShowModal] = useState(false);
+  const [openModalStatus, setIsOpenModalStatus] = useState<boolean>(false);
 
   const matchingProcedure = procedureList.find(
     (procedure) => procedure.id === caseValue.procedure_id
@@ -195,6 +196,9 @@ const AssistanceCasePage = () => {
 
   const saveInsured = () => {
     applicantUpsert("I", caseValue.insured);
+    if (window.location.href.includes("/insured/new")) {
+      stateMachine[stageKey].next();
+    }
   };
 
   const saveProduct = async () => {
@@ -219,20 +223,19 @@ const AssistanceCasePage = () => {
     stateMachine[stageKey].save();
     //stateMachine[stageKey].next();
   };
-
+  const setOpenModalStatus = () => setIsOpenModalStatus(true);
+  const setClosedModalStatus = () => setIsOpenModalStatus(false);
   const setClosed = () => setShowModal(false);
-
   useEffect(() => {
     listAllDistrict();
     getAll();
     // stateMachine[stageKey].onLoad();
   }, []);
-
   useEffect(() => {
-    if (applicant.id) {
+    if (window.location.href.includes("/applicant/new") && applicant.id) {
       stateMachine[stageKey].next();
     }
-  }, [applicant]);
+  }, [applicant.id, router]);
 
   useEffect(() => {
     setItWasFound(false);
@@ -267,7 +270,6 @@ const AssistanceCasePage = () => {
       setStageKey(stage as Stage);
     }
   }, [router]);
-
   return stagePages[stageKey] ? (
     <ContentHalfRow>
       {React.cloneElement(stagePages[stageKey].component, {
@@ -277,19 +279,32 @@ const AssistanceCasePage = () => {
       <CaseHistory setShowModal={setShowModal} showModal={showModal} />
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />
+        {caseId?.status?.status === false ? (
+          <ButtonIcon iconName="lock_open" onClick={setOpenModalStatus} />
+        ) : (
+          <ButtonIcon iconName="lock" onClick={setOpenModalStatus} />
+        )}
         <ButtonIcon iconName="arrow_back" onClick={handleClickBack} />
+
         <ButtonIcon
           iconName="save"
           onClick={handleClickSave}
-          disabled={!isEnabledSave}
+          disabled={!isEnabledSave || caseId.status?.status === false}
         />
       </FloatMenu>
       {caseValue.case_id !== null && caseValue.case_id !== "" && (
-        <Modal showModal={showModal}>
-          <Window setClosed={setClosed}>
-            <CaseChat thisCase={caseId} />
-          </Window>
-        </Modal>
+        <>
+          <Modal showModal={showModal}>
+            <Window setClosed={setClosed}>
+              <CaseChat thisCase={caseId} />
+            </Window>
+          </Modal>
+          <Modal showModal={openModalStatus}>
+            <Window setClosed={setClosedModalStatus}>
+              <CaseStatus setIsOpen={setIsOpenModalStatus} thisCase={caseId} />
+            </Window>
+          </Modal>
+        </>
       )}
 
       <LoadingMessage showModal={isLoadingApplicant || isLoadingCase} />

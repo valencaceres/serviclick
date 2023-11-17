@@ -1,6 +1,6 @@
 import pool from "../util/database";
 
-const create: any = async (person_id: string) => {
+const create: any = async (person_id: string, isRemote: boolean) => {
   try {
     const specialistExists = await pool.query(
       `
@@ -12,10 +12,10 @@ const create: any = async (person_id: string) => {
       const result = await pool.query(
         `
         UPDATE app.specialist
-        SET isactive = true
+        SET isactive = true, isRemote = $2
         WHERE person_id = $1
         RETURNING *`,
-        [person_id]
+        [person_id, isRemote]
       );
 
       return {
@@ -27,8 +27,11 @@ const create: any = async (person_id: string) => {
 
     const result = await pool.query(
       `
-      INSERT INTO app.specialist (person_id, isactive) VALUES ($1, $2) RETURNING *`,
-      [person_id, true]
+      INSERT INTO app.specialist (person_id, isactive, isRemote)
+      VALUES ($1, true, $2)
+      RETURNING *;
+      `,
+      [person_id, isRemote]
     );
 
     return {
@@ -57,6 +60,7 @@ const getById: any = async (id: string) => {
   try {
     const result = await pool.query(
       `SELECT SPE.id,
+              SPE.isremote,
               PER.id as person_id,
               PER.rut,
               PER.name,
@@ -84,6 +88,7 @@ const getById: any = async (id: string) => {
       address,
       district,
       birthdate,
+      isremote,
     } = result.rows[0];
 
     return {
@@ -100,6 +105,7 @@ const getById: any = async (id: string) => {
         address,
         district,
         birthDate: birthdate,
+        isRemote: isremote,
       },
       error: null,
     };
@@ -462,7 +468,8 @@ const getByAssistanceAndDistrict: any = async (
       INNER JOIN app.specialistdistrict ON app.specialist.id = app.specialistdistrict.specialist_id
       INNER JOIN app.assistancespecialty ON app.specialistspecialty.specialty_id = app.assistancespecialty.specialty_id
       INNER JOIN app.assistance ON app.assistancespecialty.assistance_id = app.assistance.id
-      WHERE app.specialistdistrict.district_id = $1 AND app.assistance.id = $2;`,
+      WHERE app.specialistdistrict.district_id = $1 AND app.assistance.id = $2
+      OR app.specialist.isremote = true;`,
       [district, assistance_id]
     );
 
