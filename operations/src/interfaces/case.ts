@@ -121,7 +121,7 @@ interface IHistory {
 }
 
 interface IStatus {
-  status: boolean;
+  isClosed: boolean;
   description: string;
 }
 

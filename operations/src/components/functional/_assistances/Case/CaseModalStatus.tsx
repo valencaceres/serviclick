@@ -20,28 +20,29 @@ const CaseStatus = ({ setIsOpen, thisCase }: any) => {
   const queryClient = useQueryClient();
   const [status, setStatus] = useState<boolean>(false);
   const { upsert, setCase, caseValue } = useCase();
+
   const handleChange = (e: any) => {
     const value = e.target.value;
     const id = e.target.id;
     setCase({
       ...caseValue,
       status: {
-        status: caseValue?.status?.status,
+        isClosed: caseValue?.status?.isClosed,
         description: caseValue?.status?.description,
         [id]: value,
       },
     });
   };
   const handleConfirm = () => {
-    if (caseValue?.status?.status === true) {
-      setStatus(false);
-    } else {
+    if (caseValue?.status?.isClosed === false) {
       setStatus(true);
+    } else {
+      setStatus(false);
     }
     upsert({
       ...caseValue,
       status: {
-        status: status,
+        isClosed: status,
         description: caseValue?.status?.description,
       },
     });

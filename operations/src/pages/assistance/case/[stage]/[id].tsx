@@ -31,7 +31,7 @@ const AssistanceCasePage = () => {
       onLoad: () =>
         setTitleUI(
           `Caso${
-            caseValue.case_id ? " N°" + caseValue.case_number.toString() : ""
+            caseValue.case_id ? " N°" + caseNumber.toString() : ""
           } - Datos del beneficiario`
         ),
       save: () => saveApplicant(),
@@ -47,7 +47,7 @@ const AssistanceCasePage = () => {
       onLoad: () =>
         setTitleUI(
           `Caso${
-            caseValue.case_id ? " N°" + caseValue.case_number.toString() : ""
+            caseValue.case_id ? " N°" + caseNumber.toString() : ""
           } - Datos del titular`
         ),
       save: () => saveInsured(),
@@ -62,7 +62,7 @@ const AssistanceCasePage = () => {
       onLoad: () =>
         setTitleUI(
           `Caso${
-            caseValue.case_id ? " N°" + caseValue.case_number.toString() : ""
+            caseValue.case_id ? " N°" + caseNumber.toString() : ""
           } - Datos del servicio`
         ),
       save: () => {
@@ -84,7 +84,7 @@ const AssistanceCasePage = () => {
       onLoad: () =>
         setTitleUI(
           `Caso${
-            caseValue.case_id ? " N°" + caseValue.case_number.toString() : ""
+            caseValue.case_id ? " N°" + caseNumber.toString() : ""
           } - Datos del evento`
         ),
       save: () => saveStage(),
@@ -96,7 +96,7 @@ const AssistanceCasePage = () => {
       onLoad: () =>
         setTitleUI(
           `Caso${
-            caseValue.case_id ? " N°" + caseValue.case_number.toString() : ""
+            caseValue.case_id ? " N°" + caseNumber.toString() : ""
           } - Antecedentes (adjuntos)`
         ),
       save: () => saveStage(),
@@ -110,7 +110,7 @@ const AssistanceCasePage = () => {
       onLoad: () =>
         setTitleUI(
           `Caso${
-            caseValue.case_id ? " N°" + caseValue.case_number.toString() : ""
+            caseValue.case_id ? " N°" + caseNumber.toString() : ""
           } - Reembolso`
         ),
       save: () => saveStage(),
@@ -122,7 +122,7 @@ const AssistanceCasePage = () => {
       onLoad: () =>
         setTitleUI(
           `Caso${
-            caseValue.case_id ? " N°" + caseValue.case_number.toString() : ""
+            caseValue.case_id ? " N°" + caseNumber.toString() : ""
           } - Devolución IMED`
         ),
       save: () => saveStage(),
@@ -134,7 +134,7 @@ const AssistanceCasePage = () => {
       onLoad: () =>
         setTitleUI(
           `Caso${
-            caseValue.case_id ? " N°" + caseValue.case_number.toString() : ""
+            caseValue.case_id ? " N°" + caseNumber.toString() : ""
           } - Envío de especialista`
         ),
       save: () => saveStage(),
@@ -146,7 +146,7 @@ const AssistanceCasePage = () => {
       onLoad: () =>
         setTitleUI(
           `Caso${
-            caseValue.case_id ? " N°" + caseValue.case_number.toString() : ""
+            caseValue.case_id ? " N°" + caseNumber.toString() : ""
           } - Designación de alianza`
         ),
       save: () => saveStage(),
@@ -179,6 +179,7 @@ const AssistanceCasePage = () => {
   const [stageKey, setStageKey] = useState<Stage>("applicant");
   const [showModal, setShowModal] = useState(false);
   const [openModalStatus, setIsOpenModalStatus] = useState<boolean>(false);
+  const [caseNumber, setCaseNumber] = useState<string | number>("");
 
   const matchingProcedure = procedureList.find(
     (procedure) => procedure.id === caseValue.procedure_id
@@ -253,7 +254,12 @@ const AssistanceCasePage = () => {
 
   useEffect(() => {
     stateMachine[stageKey].onLoad();
-  }, [stageKey]);
+    if (router.query.id !== "new") {
+      if (caseId?.case_number) {
+        setCaseNumber(caseId.case_number);
+      }
+    }
+  }, [stageKey, caseId, router.query.id]);
 
   useEffect(() => {
     setIsProcessing(false);
@@ -269,7 +275,8 @@ const AssistanceCasePage = () => {
       }
       setStageKey(stage as Stage);
     }
-  }, [router]);
+  }, [router, getCaseById]);
+
   return stagePages[stageKey] ? (
     <ContentHalfRow>
       {React.cloneElement(stagePages[stageKey].component, {
@@ -279,7 +286,7 @@ const AssistanceCasePage = () => {
       <CaseHistory setShowModal={setShowModal} showModal={showModal} />
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />
-        {caseId?.status?.status === false ? (
+        {caseId?.status?.isClosed === true ? (
           <ButtonIcon iconName="lock_open" onClick={setOpenModalStatus} />
         ) : (
           <ButtonIcon iconName="lock" onClick={setOpenModalStatus} />
@@ -289,7 +296,7 @@ const AssistanceCasePage = () => {
         <ButtonIcon
           iconName="save"
           onClick={handleClickSave}
-          disabled={!isEnabledSave || caseId.status?.status === false}
+          disabled={!isEnabledSave || caseId.status?.isClosed === true}
         />
       </FloatMenu>
       {caseValue.case_id !== null && caseValue.case_id !== "" && (

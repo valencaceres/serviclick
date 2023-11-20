@@ -9,6 +9,7 @@ import {
   _upsert,
   _getRetails,
   _getStatus,
+  _getReimbursment,
 } from "../queries/case";
 import { IData } from "../interfaces/case";
 
@@ -197,7 +198,6 @@ const getAll: any = async (
       records,
       page,
     ]);
-
     return {
       success: true,
       data: result.rows[0].case_get_all || [],
@@ -759,6 +759,73 @@ const getStatus = async () => {
   }
 };
 
+const getReimbursment: any = async (
+  isImed: boolean,
+  applicant_rut: string,
+  applicant_name: string,
+  records: number,
+  page: number
+) => {
+  try {
+    const result = await pool.query(_getReimbursment, [
+      isImed,
+      applicant_rut,
+      applicant_name,
+      records,
+      page,
+    ]);
+    console.log("trae:", result.rows[0]);
+    return {
+      success: true,
+      data: result.rows[0].case_get_reimbursment || [],
+      error: null,
+    };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+const updateReimbursment = async (
+  id: string,
+  status: string,
+  user_id: string,
+  imed_amount: number | null,
+  amount: number | null,
+  comment: string | null
+) => {
+  try {
+    const query = `
+      UPDATE app.casereimbursment
+      SET
+        status = $2,
+        user_id = $3,
+        imed_amount = $4,
+        amount = $5,
+        comment = $6
+      WHERE
+        id = $1
+      RETURNING *;
+    `;
+
+    const result = await pool.query(query, [
+      id,
+      status,
+      user_id,
+      imed_amount,
+      amount,
+      comment,
+    ]);
+
+    return {
+      success: true,
+      data: result.rows,
+      error: null,
+    };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 export {
   create,
   getById,
@@ -776,4 +843,6 @@ export {
   upsert,
   getRetails,
   getStatus,
+  updateReimbursment,
+  getReimbursment,
 };

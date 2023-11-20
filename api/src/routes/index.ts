@@ -18,7 +18,6 @@ import DonorRouter from "./donor";
 import DonationRouter from "./donation";
 import ProductDescriptionRouter from "./productDescription";
 import BrokerRouter from "./broker";
-import ReimbursmentRouter from "./reimbursment";
 import RetailRouter from "./retail";
 import UserBrokerRouter from "./userBroker";
 import UserRetailRouter from "./userRetail";
@@ -74,7 +73,6 @@ export {
   DocumentRouter,
   StageRouter,
   SpecialistRouter,
-  ReimbursmentRouter,
   RelationshipRouter,
   PartnerRouter,
   ImportRouter,

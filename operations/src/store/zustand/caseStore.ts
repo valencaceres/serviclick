@@ -122,7 +122,7 @@ const initialCase: ICase = {
   cost: null,
   history: [],
   status: {
-    status: true,
+    isClosed: false,
     description: "",
   },
 };

@@ -87,7 +87,6 @@ const routeMappings = [
   { path: "/api/document", router: routes.DocumentRouter },
   { path: "/api/stage", router: routes.StageRouter },
   { path: "/api/specialist", router: routes.SpecialistRouter },
-  { path: "/api/reimbursment", router: routes.ReimbursmentRouter },
   { path: "/api/relationship", router: routes.RelationshipRouter },
   { path: "/api/partner", router: routes.PartnerRouter },
   { path: "/api/import", router: routes.ImportRouter },
