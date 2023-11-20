@@ -43,22 +43,31 @@ export const paymentStore = create<paymentState>((set, get) => ({
   getByRetailId: async (id: string) => {
     try {
       set((state) => ({ ...state, isLoading: true }));
-      const { data } = await apiInstance.get(`retail/getPayments/${id}`);
-      const transformedData: Code = {
-        retail_id: id,
-        codes: data.map((payment: Lead) => ({
-          lead_id: payment.lead_id,
-          code: payment.code,
-        })),
-      };
-
-      set((state) => ({
-        ...state,
-        list: data,
-        listValue: transformedData,
-        isLoading: false,
-        isError: false,
-      }));
+      const response = await apiInstance.get(`retail/getPayments/${id}`);
+      const { data } = response;
+      if (data !== null) {
+        const transformedData: Code = {
+          retail_id: id,
+          codes: data.map((payment: Lead) => ({
+            lead_id: payment.lead_id,
+            code: payment.code,
+          })),
+        };
+        set((state) => ({
+          ...state,
+          list: data,
+          listValue: transformedData,
+          isLoading: false,
+          isError: false,
+        }));
+      } else {
+        set((state) => ({
+          ...state,
+          list: [initialData],
+          isLoading: false,
+          isError: false,
+        }));
+      }
     } catch (e) {
       set((state) => ({
         ...state,
@@ -93,7 +102,7 @@ export const paymentStore = create<paymentState>((set, get) => ({
   reset: () =>
     set((state) => ({
       ...state,
-      paymentList: initialData,
+      payment: initialData,
       isLoading: false,
       isError: false,
       error: "",

@@ -146,13 +146,16 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
           <ContentRow gap="5px">
             <InputText
               label="Fecha del evento"
-              value={caseValue?.event?.date || ""}
+              value={(caseValue?.event?.date || "").split("T")[0] || ""}
               id="date"
               type="date"
               width="234px"
               onChange={handleChange}
               maxTime={minDate?.toISOString().split("T")[0]}
-              //disabled={caseId?.event?.date != null}
+              disabled={
+                caseValue?.event?.date !== null &&
+                user?.publicMetadata.roles?.operaciones !== "admin"
+              }
               timeFormat=""
             />
             <ComboBox
@@ -165,7 +168,11 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
               dataValue={"id"}
               dataText={"district_name"}
               width="290px"
-              //enabled={caseId.event?.location === null}
+              enabled={
+                caseId.event?.location === null ||
+                (user?.publicMetadata?.roles?.operaciones === "admin" &&
+                  caseId.event?.location != null)
+              }
             />
           </ContentRow>
           <TextArea
@@ -175,6 +182,10 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
             label="Descripción del evento"
             width="530px"
             height="110px"
+            disabled={
+              caseValue?.event?.description !== null &&
+              user?.publicMetadata.roles?.operaciones !== "admin"
+            }
           />
           <ComboBox
             label="Procedimiento"

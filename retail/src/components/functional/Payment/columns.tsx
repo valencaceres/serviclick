@@ -3,7 +3,6 @@ import { ArrowUpDown } from "lucide-react";
 import { Button } from "~/components/ui/Button";
 import { type Lead } from "~/interfaces/payment";
 import { usePayment } from "~/store/hooks";
-import { InputText } from "~/components/ui";
 export const columns: ColumnDef<Lead>[] = [
   {
     id: "cliente",
@@ -95,7 +94,8 @@ function Actions({ lead }: { lead: Lead }) {
 
   return (
     <div className=" w-2/6">
-      <InputText
+      <input
+        className="w-full font-bold"
         value={
           codeValue.codes.find((item) => item.lead_id === lead.lead_id)?.code ??
           ""

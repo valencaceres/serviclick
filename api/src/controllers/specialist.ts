@@ -20,6 +20,7 @@ const create = async (req: any, res: any) => {
     birthDate,
     specialties,
     districts,
+    isRemote,
   }: ISpecialist = req.body;
 
   const personResponse = await Person.create(
@@ -45,7 +46,7 @@ const create = async (req: any, res: any) => {
 
   const { id: person_id } = personResponse.data;
 
-  const specialistResponse = await Specialist.create(person_id);
+  const specialistResponse = await Specialist.create(person_id, isRemote);
 
   if (!specialistResponse.success) {
     createLogger.error({

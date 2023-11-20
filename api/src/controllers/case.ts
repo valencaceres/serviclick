@@ -930,6 +930,60 @@ const getStatus = async (req: any, res: any) => {
 
   return res.status(200).json(response.data);
 };
+const getAllReimbursments = async (req: any, res: any) => {
+  const { isImed, applicant_rut, applicant_name, records, page } = req.query;
+  req.query;
+
+  const caseResponse = await Case.getReimbursment(
+    isImed,
+    applicant_rut,
+    applicant_name,
+    records,
+    page
+  );
+
+  if (!caseResponse.success) {
+    createLogger.error({
+      model: `case/getAllReimbursments`,
+      error: caseResponse.error,
+    });
+    return res.status(500).json({ error: "Error retrieving reimbursments" });
+  }
+
+  createLogger.info({
+    model: `case/getAll`,
+    message: `reimbursments retrieved successfully`,
+  });
+
+  return res.status(200).json(caseResponse.data);
+};
+
+const updateReimbursment = async (req: any, res: any) => {
+  const { status, user_id, imed_amount, amount, comment } = req.body;
+  const { id } = req.params;
+  const reimbursmentsResponse = await Case.updateReimbursment(
+    id,
+    status,
+    user_id,
+    imed_amount,
+    amount,
+    comment
+  );
+  if (!reimbursmentsResponse.success) {
+    createLogger.error({
+      model: `reimbursment/update`,
+      error: reimbursmentsResponse.error,
+    });
+    return res.status(500).json({ error: "Error updating reimbursments" });
+  }
+
+  createLogger.info({
+    model: `reimbursment/update`,
+    message: `reimbursments updating successfully`,
+  });
+
+  return res.status(200).json(reimbursmentsResponse);
+};
 
 export {
   create,
@@ -958,4 +1012,6 @@ export {
   upsert,
   getRetails,
   getStatus,
+  updateReimbursment,
+  getAllReimbursments,
 };

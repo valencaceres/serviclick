@@ -6,6 +6,7 @@ export interface ISpecialist extends IPerson {
   birthDate: string;
   specialties: ISpecialty[];
   districts: IDistrict[];
+  isRemote: boolean;
 }
 
 export interface ISpecialistItem {

@@ -68,6 +68,7 @@ const SpecialistPage = () => {
       phone: "",
       specialties: [],
       districts: [],
+      isRemote: false,
     });
   };
 

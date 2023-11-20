@@ -21,6 +21,8 @@ import {
   discountAssistanceData,
   getReimbursment,
   getAllReimbursements,
+  getAllReimbursments,
+  updateReimbursment,
   updateReimbursementStatus,
   createChatMessage,
   getChatByCase,
@@ -33,6 +35,7 @@ import {
   getStatus,
 } from "../controllers/case";
 import isAuthenticated from "../middlewares/isAuthenticated";
+import isAdmin from "../middlewares/isAdmin";
 
 const CaseRouter = Router();
 
@@ -91,5 +94,7 @@ CaseRouter.post("/createCaseSummary", auth, createCaseSummary);
 CaseRouter.get("/getApplicantByRut/:rut", auth, getApplicantByRut);
 CaseRouter.post("/getServicesAndValues", auth, getServicesAndValues);
 CaseRouter.post("/upsert", upsert);
+CaseRouter.put("/updateReimbursment/:id", auth, isAdmin, updateReimbursment);
+CaseRouter.get("/getReimbursments", getAllReimbursments);
 
 export default CaseRouter;

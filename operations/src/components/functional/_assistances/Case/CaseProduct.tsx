@@ -27,11 +27,24 @@ interface ICaseProductProps {
 }
 
 const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
-  const { caseValue, setCase, products, assistances, getServicesAndValues } =
-    useCase();
+  const {
+    caseValue,
+    setCase,
+    products,
+    assistances,
+    getServicesAndValues,
+    caseId,
+  } = useCase();
   const { user } = useUser();
 
   const [applicant, setApplicant] = useState<IApplicant>();
+  const [hasLoadedServices, setHasLoadedServices] = useState<boolean>(false);
+
+  const isValidAmount = !(
+    caseValue?.assistance.assigned.currency === "$" &&
+    caseValue.assistance.used.total_amount >=
+      caseValue.assistance.assigned.amount
+  );
 
   const handleChangeProduct = (e: any) => {
     getServicesAndValues({
@@ -65,6 +78,21 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
       });
     }
   };
+  useEffect(() => {
+    if (caseId && !hasLoadedServices) {
+      getServicesAndValues({
+        insured_id: caseValue.insured.id,
+        beneficiary_id: caseValue.beneficiary?.id || null,
+        retail_id: caseValue.retail?.id || null,
+        customer_id: caseValue.customer.id,
+        product_id: caseValue.product.id,
+        assistance_id: null,
+      });
+    }
+    if (assistances && assistances?.length > 0 && !hasLoadedServices) {
+      setHasLoadedServices(true);
+    }
+  }, [caseId, caseValue, hasLoadedServices, assistances]);
 
   const handleChangeValue = (e: any, id: string) => {
     if (Array.isArray(caseValue.values)) {
@@ -88,7 +116,6 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
   useEffect(() => {
     setIsEnabledSave(checkCompleteFields());
   }, [caseValue, setIsEnabledSave]);
-
   useEffect(() => {
     if (caseValue) {
       const applicant =
@@ -163,14 +190,6 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
               width="530px"
               disabled={itWasFound}
             />
-            <InputText
-              id="assistance"
-              label="Asistencia"
-              type="text"
-              value={caseValue.assistance.name}
-              width="530px"
-              disabled={itWasFound}
-            />
           </Fragment>
         ) : (
           <Fragment>
@@ -188,24 +207,24 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
               dataText={"name"}
               enabled={!itWasFound}
             />
-            <ComboBox
-              id="assistance"
-              label="Asistencia"
-              placeHolder=":: Seleccione una asistencia ::"
-              value={
-                caseValue && caseValue.assistance
-                  ? caseValue.assistance.id || ""
-                  : ""
-              }
-              onChange={handleChangeAssistance}
-              width="530px"
-              data={assistances}
-              dataValue={"id"}
-              dataText={"name"}
-              enabled={!itWasFound}
-            />
           </Fragment>
         )}
+        <ComboBox
+          id="assistance"
+          label="Asistencia"
+          placeHolder=":: Seleccione una asistencia ::"
+          value={
+            caseValue && caseValue.assistance
+              ? caseValue.assistance.id || ""
+              : ""
+          }
+          onChange={handleChangeAssistance}
+          width="530px"
+          data={assistances}
+          dataValue={"id"}
+          dataText={"name"}
+          enabled={user?.publicMetadata?.roles?.operaciones === "admin"}
+        />
         <ContentRow gap="5px">
           <InputText
             id="assistance"
@@ -218,6 +237,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
             value={caseValue.assistance.assigned.amount.toString()}
             width="190px"
             disabled={itWasFound}
+            isValid={isValidAmount}
           />
           <InputText
             id="events"
@@ -251,6 +271,10 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
             type="text"
             value={caseValue.assistance.used.events.toString()}
             width="120px"
+            isValid={
+              caseValue.assistance.used.events <=
+              caseValue.assistance.assigned.events
+            }
             disabled={itWasFound}
           />
         </ContentRow>

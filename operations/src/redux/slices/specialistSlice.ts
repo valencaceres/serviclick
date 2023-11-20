@@ -30,6 +30,7 @@ const initialState: StateT = {
     birthDate: "",
     specialties: [],
     districts: [],
+    isRemote: false,
   },
   families: [],
   assistances: [],

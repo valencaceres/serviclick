@@ -142,6 +142,7 @@ const CaseApplicant = ({
 
   useEffect(() => {
     setIsEnabledSave(checkCompleteFields());
+    setApplicantType(caseValue.type === "I" ? "insured" : "beneficiary");
   }, [caseValue]);
 
   return (
