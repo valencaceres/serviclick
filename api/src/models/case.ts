@@ -774,7 +774,7 @@ const getReimbursment: any = async (
       records,
       page,
     ]);
-    console.log("trae:", result.rows[0]);
+
     return {
       success: true,
       data: result.rows[0].case_get_reimbursment || [],
