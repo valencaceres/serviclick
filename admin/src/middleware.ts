@@ -1,9 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { authMiddleware, redirectToSignIn } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
@@ -16,7 +10,7 @@ const roles: Record<UserRole, RegExp[]> = {
 };
 
 export default authMiddleware({
-  publicRoutes: ["/sign-in/[[...index]]", "/unauthorized", "/(api|trpc)(.*)"],
+  publicRoutes: ["/sign-in/[[...index]]", "/unauthorized"],
   afterAuth(auth, req, evt) {
     if (!auth.userId && !auth.isPublicRoute) {
       return redirectToSignIn({ returnBackUrl: req.url });

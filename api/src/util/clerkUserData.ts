@@ -63,21 +63,37 @@ export const fetchCreateClerkUser = async (input: IClerkUser) => {
   }
 };
 export const fetchUpdateClerkUser = async (id: string, input: IClerkUser) => {
-  const commonData = {
+  const commonData: {
+    first_name: string;
+    last_name: string;
+    email_address: string[];
+    public_metadata: {
+      roles: {
+        admin: "user" | "admin" | "moderator";
+        broker: "user" | "admin" | "moderator";
+        operations: "user" | "admin" | "moderator";
+        serviclick: "user" | "admin" | "moderator";
+        retail: "user" | "admin" | "moderator";
+      };
+    };
+    password?: string;
+  } = {
     first_name: input.name,
     last_name: input.last_name,
     email_address: [input.email_address],
     public_metadata: {
       roles: {
-        [input.role_admin]: input.type_role_admin,
-        [input.role_broker]: input.type_role_broker,
-        [input.role_operations]: input.type_role_operations,
-        [input.role_serviclick]: input.type_role_serviclick,
-        [input.role_retail]: input.type_role_retail,
+        admin: input.type_role_admin,
+        broker: input.type_role_broker,
+        operations: input.type_role_operations,
+        serviclick: input.type_role_serviclick,
+        retail: input.type_role_retail,
       },
     },
-    password: input.password,
   };
+  if (input.password && input.password.trim() !== "") {
+    commonData.password = input.password;
+  }
   try {
     const response = await axios.patch(
       `https://api.clerk.com/v1/users/${id}`,

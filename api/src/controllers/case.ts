@@ -297,6 +297,7 @@ const getAttachById = async (req: any, res: any) => {
     attachments.push({
       document_id: attachment.document_id,
       viewLink,
+      file_tag: attachment.file_tag,
     });
   }
 
@@ -969,6 +970,7 @@ const updateReimbursment = async (req: any, res: any) => {
     amount,
     comment
   );
+  console.log(req.body);
   if (!reimbursmentsResponse.success) {
     createLogger.error({
       model: `reimbursment/update`,

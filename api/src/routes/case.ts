@@ -55,6 +55,8 @@ CaseRouter.get("/getStatus", auth, getStatus);
 CaseRouter.get("/getBeneficiaryByRut/:rut", auth, getBeneficiaryByRut);
 CaseRouter.get("/getById/:id", auth, getById);
 CaseRouter.get("/getAttachById/:case_id/:casestage_id", auth, getAttachById);
+CaseRouter.get("/getAttachByIdAdmin/:case_id", auth, getAttachById);
+
 CaseRouter.get("/getNewCaseNumber", auth, getNewCaseNumber);
 CaseRouter.post("/assignPartner", auth, isAuthenticated, assignPartner);
 CaseRouter.get(

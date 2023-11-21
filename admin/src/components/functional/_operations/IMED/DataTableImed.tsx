@@ -1,5 +1,4 @@
 "use client";
-import { type RouterOutputs } from "~/utils/api";
 import {
   type ColumnDef,
   flexRender,
@@ -26,14 +25,18 @@ import {
 import { Button } from "~/components/ui/Button";
 import { useState } from "react";
 
-type CaseReimbursement = RouterOutputs["reimbursement"]["getAll"]["pageInfo"];
-
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  pageInfo: CaseReimbursement;
+  pageInfo: Pagination;
   setPage: React.Dispatch<React.SetStateAction<number>>;
   isLoading: boolean;
+}
+
+interface Pagination {
+  total: number;
+  page: number;
+  records: number;
 }
 
 export function DataTableImed<TData, TValue>({
@@ -127,7 +130,7 @@ export function DataTableImed<TData, TValue>({
       <div className={`flex items-center justify-end px-2`}>
         <div className="flex items-center space-x-6 lg:space-x-8">
           <div className="flex w-fit items-center justify-center text-sm font-medium">
-            Página {pageInfo.currentPage} de {pageInfo.totalPages}
+            Página {pageInfo.page} de {pageInfo.total}
           </div>
           <div className="flex items-center space-x-2">
             <Button
@@ -148,7 +151,7 @@ export function DataTableImed<TData, TValue>({
               className="h-8 w-8 p-0"
               onClick={() =>
                 handleButtonClick("prevPage", () =>
-                  setPage(Math.max(pageInfo.currentPage - 1, 1))
+                  setPage(Math.max(pageInfo.page - 1, 1))
                 )
               }
             >
@@ -166,9 +169,7 @@ export function DataTableImed<TData, TValue>({
               className="h-8 w-8 p-0"
               onClick={() =>
                 handleButtonClick("nextPage", () =>
-                  setPage(
-                    Math.min(pageInfo.currentPage + 1, pageInfo.totalPages)
-                  )
+                  setPage(Math.min(pageInfo.page + 1, pageInfo.total))
                 )
               }
             >
@@ -185,9 +186,7 @@ export function DataTableImed<TData, TValue>({
               variant="outline"
               className="hidden h-8 w-8 p-0 lg:flex"
               onClick={() =>
-                handleButtonClick("lastPage", () =>
-                  setPage(pageInfo.totalPages)
-                )
+                handleButtonClick("lastPage", () => setPage(pageInfo.total))
               }
             >
               <span className="sr-only">Go to last page</span>

@@ -1,13 +1,17 @@
 import React from "react";
-
-import { api } from "~/utils/api";
+import { useEffect, useState } from "react";
+import { useUser } from "~/store/hooks";
 import { columns } from "../Users/columns";
 import Link from "next/link";
 import { Button } from "~/components/ui/Button";
 export const Users: React.FC = () => {
-  const { data: users } = api.users.getAll.useQuery();
-  if (!users) return null;
+  const { list: users, getUsers } = useUser();
 
+  useEffect(() => {
+    getUsers();
+  }, []);
+
+  if (!users?.data) return null;
   return (
     <>
       <div className="flex w-[1300px] justify-between p-4 max-[1336px]:w-full">
@@ -16,8 +20,7 @@ export const Users: React.FC = () => {
           <Button>Crear Operador</Button>
         </Link>
       </div>
-
-      <DataTableUsers columns={columns} data={users} />
+      <DataTableUsers columns={columns} data={users?.data} />{" "}
     </>
   );
 };
@@ -39,7 +42,7 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/Table";
-import { type User } from "@clerk/nextjs/dist/types/server";
+import { type User } from "~/interfaces/user";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -89,7 +92,6 @@ export function DataTableUsers<TData extends User, TValue>({
                   className="cursor-pointer"
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
                   onClick={() => handleRowClick(row.original.id)}
                 >
                   {row.getVisibleCells().map((cell) => (

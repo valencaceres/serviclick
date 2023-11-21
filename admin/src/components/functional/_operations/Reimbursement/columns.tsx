@@ -2,7 +2,7 @@
 
 import { type Row, type ColumnDef } from "@tanstack/react-table";
 import { Badge } from "~/components/ui/Badge";
-import { api, type RouterOutputs } from "~/utils/api";
+import { reimbursmentResponse } from "~/interfaces/reimbursment";
 import { cn } from "~/utils/cn";
 import { Loader2, MoreHorizontal, Paperclip } from "lucide-react";
 import {
@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/DropdownMenu";
 import { Button } from "~/components/ui/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -35,51 +35,72 @@ import {
   AccordionTrigger,
 } from "~/components/ui/Accordion";
 import Link from "next/link";
+import { useReimbursment } from "~/store/hooks";
+interface DataItem {
+  amount: null | number;
+  assistance: string;
+  case_type: string;
+  available: number;
+  date: string;
+  imed_amount: null | number;
+  name: string;
+  number: number;
+  product: string;
+  required_amount: null | number;
+  required_imed: null | number;
+  rut: string;
+  status: string;
+  id: string;
+  phone: string;
+  email: string;
+  limit: string;
+  is_active: boolean;
+  case_id: string;
+  casestage_description: string;
+}
 
-type CaseReimbursement =
-  RouterOutputs["reimbursement"]["getAll"]["reimbursement"][0];
-export const columns: ColumnDef<CaseReimbursement>[] = [
+export const columns: ColumnDef<DataItem>[] = [
   {
-    accessorKey: "casemodel.number",
     header: "Caso",
+    cell: ({ row }) => {
+      const number = row.original.number;
+
+      return <span className="font-semibold">{number}</span>;
+    },
   },
   {
     accessorKey: "applicationdate",
     header: "Fecha",
     cell: ({ row }) => {
-      const date = new Date(row.original.application_date as Date);
-      return date.toLocaleDateString("es-CL", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      });
+      const date = new Date(row.original.date);
+      const day = date.getDate().toString().padStart(2, "0");
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
+      const year = date.getFullYear().toString();
+
+      return `${day}/${month}/${year}`;
     },
   },
   {
     header: "Cliente",
     cell: ({ row }) => {
-      const applicant =
-        row.original.casemodel?.type === "I"
-          ? row.original.casemodel?.insured
-          : row.original.casemodel?.beneficiary;
-
-      return (
-        <span className="font-semibold">
-          {applicant?.name} {applicant?.paternallastname}
-        </span>
-      );
+      const applicant = row.original.name;
+      return <span className="font-semibold">{applicant}</span>;
     },
   },
   {
-    accessorKey: "casemodel.assistance.name",
     header: "Servicio",
+    cell: ({ row }) => {
+      const applicant = row.original.assistance;
+
+      return <span className="font-semibold">{applicant}</span>;
+    },
   },
+
   {
     accessorKey: "casemodel.available",
     header: "Disponible",
     cell: ({ row }) => {
-      const available =
-        row.original.casemodel.assistance?.productassistances[0]?.amount;
+      const available = row.original.available;
       return available
         ? Number(available).toLocaleString("es-CL", {
             style: "currency",
@@ -89,8 +110,21 @@ export const columns: ColumnDef<CaseReimbursement>[] = [
     },
   },
   {
+    accessorKey: "casemodel.register_amount",
+    header: "Solicitado",
+    cell: ({ row }) => {
+      const required = row.original.required_amount;
+      return required
+        ? Number(required).toLocaleString("es-CL", {
+            style: "currency",
+            currency: "CLP",
+          })
+        : "0";
+    },
+  },
+  {
     accessorKey: "cademodel.amount",
-    header: "Reembolso",
+    header: "Reembolsado",
     cell: ({ row }) => {
       const amount = row.original.amount;
       return amount ? (
@@ -135,13 +169,7 @@ export const columns: ColumnDef<CaseReimbursement>[] = [
   },
 ];
 
-const Actions = ({
-  status,
-  row,
-}: {
-  status: string;
-  row: Row<CaseReimbursement>;
-}) => {
+const Actions = ({ status, row }: { status: string; row: Row<DataItem> }) => {
   const [action, setAction] = useState<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [reimbursement, setReimbursement] = useState<string>("");
@@ -149,19 +177,14 @@ const Actions = ({
   const [isSummaryOpen, setIsSummaryOpen] = useState<boolean>(false);
 
   const { user } = useUser();
-
-  const ctx = api.useContext();
-
-  const { mutate: updateStatus, isLoading } =
-    api.reimbursement.update.useMutation();
+  const { updateReimbursment, isLoading, getAll } = useReimbursment();
 
   const handleUpdate = (id: string, status: string) => {
-    updateStatus(
+    updateReimbursment(
+      row.original.id,
       {
-        id: row.original.id,
-        status: status,
+        status,
         user_id: user?.id || "",
-        imed_amount: null,
         amount: Number(reimbursement || ""),
         comment: comment || "",
       },
@@ -170,7 +193,7 @@ const Actions = ({
           setIsOpen(false);
           setReimbursement("");
           setComment("");
-          void ctx.reimbursement.getAll.invalidate();
+          getAll(false, "", "", 10, 1);
         },
       }
     );
@@ -223,10 +246,7 @@ const Actions = ({
             <h2 className="font-semibold text-teal-blue">
               Disponible:{" "}
               <span className="font-bold">
-                {Number(
-                  row.original.casemodel.assistance?.productassistances[0]
-                    ?.amount
-                ).toLocaleString("es-CL", {
+                {Number(row.original.available).toLocaleString("es-CL", {
                   style: "currency",
                   currency: "CLP",
                 })}
@@ -235,20 +255,14 @@ const Actions = ({
             <h2 className="font-semibold text-teal-blue">
               Reembolso solicitado:{" "}
               <span className="font-bold">
-                {Number(row.original.register_amount).toLocaleString("es-CL", {
+                {Number(row.original.required_amount).toLocaleString("es-CL", {
                   style: "currency",
                   currency: "CLP",
                 })}
               </span>
             </h2>
             <h2 className="font-semibold text-teal-blue">
-              Límite:{" "}
-              <span className="font-bold">
-                {
-                  row.original.casemodel.assistance?.productassistances[0]
-                    ?.maximum
-                }
-              </span>
+              Límite: <span className="font-bold">{row.original.limit}</span>
             </h2>
           </div>
           <div className="flex gap-2">
@@ -316,22 +330,9 @@ function Summary({
 }: {
   isSummaryOpen: boolean;
   setIsSummaryOpen: (value: boolean) => void;
-  row: Row<CaseReimbursement>;
+  row: Row<DataItem>;
 }) {
-  const { data: caseStage } = api.caseStage.get.useQuery(
-    {
-      case_id: row.original.casemodel?.id,
-      stage: "Registro de servicio",
-    },
-    {
-      enabled: !!isSummaryOpen,
-    }
-  );
-
-  const applicant =
-    row.original.casemodel?.type === "I"
-      ? row.original.casemodel?.insured
-      : row.original.casemodel?.beneficiary;
+  const applicant = row?.original?.name;
 
   return (
     <Dialog
@@ -367,27 +368,27 @@ function Summary({
                       <span className="font-semibold text-teal-blue">
                         Nombre:
                       </span>
-                      <span className="text-lg">
-                        {`${applicant?.name || ""}  ${
-                          applicant?.paternallastname || ""
-                        }`}
-                      </span>
+                      <span className="text-lg">{`${applicant || ""}`}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="font-semibold text-teal-blue">Rut:</span>
-                      <span className="text-lg">{applicant?.rut || ""}</span>
+                      <span className="text-lg">{row.original.rut || ""}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="font-semibold text-teal-blue">
                         Teléfono:
                       </span>
-                      <span className="text-lg">{applicant?.phone || ""}</span>
+                      <span className="text-lg">
+                        {row?.original?.phone || ""}
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="font-semibold text-teal-blue">
                         Correo:
                       </span>
-                      <span className="text-lg">{applicant?.email || ""}</span>
+                      <span className="text-lg">
+                        {row?.original?.email || ""}
+                      </span>
                     </div>
                   </div>
                 </AccordionContent>
@@ -405,24 +406,14 @@ function Summary({
                       <span className="font-semibold text-teal-blue">
                         Fecha de creación:
                       </span>
-                      <span className="text-lg">
-                        {row.original.casemodel?.createddate.toLocaleString(
-                          "es-CL",
-                          {
-                            timeZone: "America/Santiago",
-                            dateStyle: "full",
-                          }
-                        )}
-                      </span>
+                      <span className="text-lg">{row.original?.date}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="font-semibold text-teal-blue">
                         Estado:
                       </span>
                       <span className="text-lg">
-                        {row.original.casemodel?.isactive
-                          ? "Activo"
-                          : "Inactivo"}
+                        {row.original.is_active ? "Activo" : "Inactivo"}
                       </span>
                     </div>
                     <div className="flex flex-col gap-2">
@@ -430,16 +421,14 @@ function Summary({
                         <span className="font-semibold text-teal-blue">
                           Producto:
                         </span>
-                        <span className="text-lg">
-                          {row.original.casemodel?.product?.name}
-                        </span>
+                        <span className="text-lg">{row.original.product}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-teal-blue">
                           Servicio:
                         </span>
                         <span className="text-lg">
-                          {row.original.casemodel?.assistance?.name}
+                          {row.original.assistance}
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
@@ -447,7 +436,7 @@ function Summary({
                           Descripción:
                         </span>
                         <span className="text-lg">
-                          {caseStage?.description}
+                          {row.original.casestage_description}
                         </span>
                       </div>
                     </div>
@@ -463,7 +452,7 @@ function Summary({
                 </AccordionTrigger>
                 <AccordionContent className="p-2">
                   <div className="flex flex-col gap-2">
-                    <Attachments caseId={row.original.casemodel.id} />
+                    <Attachments caseId={row.original.case_id} />
                   </div>
                 </AccordionContent>
               </AccordionItem>
@@ -476,10 +465,10 @@ function Summary({
 }
 
 const Attachments = ({ caseId }: { caseId: string }) => {
-  const { data, isLoading } = api.caseStageAttach.get.useQuery({
-    case_id: caseId,
-  });
-
+  const { getAttachByCase, documents, isLoading } = useReimbursment();
+  useEffect(() => {
+    getAttachByCase(caseId);
+  }, [caseId]);
   return (
     <div className="flex flex-col gap-2">
       {isLoading ? (
@@ -487,13 +476,13 @@ const Attachments = ({ caseId }: { caseId: string }) => {
           <Loader2 className="h-5 w-5 animate-spin text-teal-blue" />
           <h2 className="text-lg font-semibold text-teal-blue">Cargando...</h2>
         </div>
-      ) : data?.length ? (
-        data?.map((file, idx) => (
+      ) : documents?.length ? (
+        documents?.map((file, idx) => (
           <div key={idx} className="flex items-center justify-between gap-2">
             <Link href={file.viewLink || ""} target="_blank">
               <div className="flex items-center gap-2 text-teal-blue hover:text-teal-blue-100 hover:underline">
                 <Paperclip size={16} />
-                <span className="text-lg">{file.document?.name}</span>
+                <span className="text-lg">{file.file_tag}</span>
               </div>
             </Link>
           </div>
