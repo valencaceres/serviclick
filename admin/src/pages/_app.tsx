@@ -2,8 +2,6 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { esES } from "@clerk/localizations";
 import { type AppType } from "next/app";
 
-import { api } from "~/utils/api";
-
 import { Layout } from "~/components/layout/Layout";
 
 import "~/styles/globals.css";
@@ -18,4 +16,4 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   );
 };
 
-export default api.withTRPC(MyApp);
+export default MyApp;

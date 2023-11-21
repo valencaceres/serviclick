@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
 
-import { api } from "~/utils/api";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -43,7 +42,7 @@ import { Label } from "~/components/ui/Label";
 import { Input } from "~/components/ui/Input";
 import { z } from "zod";
 import { Button } from "~/components/ui/Button";
-
+import { useUser } from "~/store/hooks";
 import {
   Card,
   CardContent,
@@ -103,33 +102,30 @@ const formSchema = z.object({
 
 export const UserEdit: React.FC = () => {
   const router = useRouter();
-  const { mutate: deleteUser } = api.users.delete.useMutation();
-  const { mutate: update, isLoading } = api.users.update.useMutation();
-  const { data: user, isLoading: isLoadingUser } = api.users.getById.useQuery(
-    {
-      userId: router.query.id as string,
-    },
-    {
-      enabled: !!router.query.id,
-      onSuccess: (data) => {
-        if (data) {
-          form.reset({
-            name: data.firstName ?? "",
-            last_name: data.lastName ?? "",
-            email_address: data.emailAddresses[0]?.emailAddress,
-            type_role_admin: data?.publicMetadata.roles?.admin,
-            type_role_broker: data?.publicMetadata?.roles?.broker,
-            type_role_operations: data?.publicMetadata?.roles?.operaciones,
-            type_role_serviclick: data?.publicMetadata?.roles?.serviclick,
-            type_role_retail: data?.publicMetadata?.roles?.retail,
-          });
-        }
-      },
-    }
-  );
 
+  const {
+    user,
+    getUserByid,
+    isLoading: isLoadingUser,
+    updateUser,
+    deleteUser,
+  } = useUser();
+  useEffect(() => {
+    getUserByid(router.query.id as string);
+    if (user.data) {
+      form.reset({
+        name: user.data?.first_name ?? "",
+        last_name: user.data?.last_name ?? "",
+        email_address: user?.data?.email_addresses[0]?.email_address,
+        type_role_admin: user.data?.public_metadata?.roles?.admin,
+        type_role_broker: user.data?.public_metadata?.roles?.broker,
+        type_role_operations: user.data?.public_metadata?.roles?.operations,
+        type_role_serviclick: user.data?.public_metadata?.roles?.serviclick,
+        type_role_retail: user.data?.public_metadata?.roles?.retail,
+      });
+    }
+  }, [router.query.id, getUserByid, user.data?.first_name]);
   const form = useForm<z.infer<typeof formSchema>>({
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     /*   resolver: zodResolver(formSchema), */
     defaultValues: {
       name: "",
@@ -161,49 +157,9 @@ export const UserEdit: React.FC = () => {
   };
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    update(
-      {
-        user_id: router.query.id as string,
-        name: values.name,
-        last_name: values.last_name,
-        email_address: values.email_address,
-        password: values.password ?? "",
-        role_admin: "admin",
-        role_broker: "broker",
-        role_operations: "operaciones",
-        role_serviclick: "serviclick",
-        role_retail: "retail",
-
-        type_role_admin: values.type_role_admin as
-          | "user"
-          | "admin"
-          | "moderator",
-        type_role_broker: values.type_role_broker as
-          | "user"
-          | "admin"
-          | "moderator",
-        type_role_operations: values.type_role_operations as
-          | "user"
-          | "admin"
-          | "moderator",
-        type_role_serviclick: values.type_role_serviclick as
-          | "user"
-          | "admin"
-          | "moderator",
-        type_role_retail: values.type_role_retail as
-          | "user"
-          | "admin"
-          | "moderator",
-      },
-      {
-        onSuccess: () => {
-          void router.push("/operations/users");
-        },
-        onError: (error) => {
-          console.error("Form submission failed:", error);
-        },
-      }
-    );
+    updateUser(router.query.id as string, values, {
+      onSuccess: () => router.push("/operations/users"),
+    });
   }
   const watchAllFields = form.watch();
   const isEqual = watchAllFields.password === watchAllFields.passwordConfirm;
@@ -220,12 +176,11 @@ export const UserEdit: React.FC = () => {
             </Link>
             <h1 className="text-2xl font-bold ">
               {" "}
-              &gt; {isLoadingUser ? "Cargando..." : user?.firstName}
+              &gt; {isLoadingUser ? "Cargando..." : user?.data?.first_name}
             </h1>
           </div>
         </div>
         <Form {...form}>
-          {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <Card className="flex flex-col md:flex-row">
               <CardHeader className="w-full md:w-1/2">
@@ -501,19 +456,19 @@ export const UserEdit: React.FC = () => {
               className={cn(
                 "fixed bottom-0 left-0 right-0 flex justify-end overflow-hidden bg-[#B4CD25] p-4 shadow-lg duration-75",
                 watchAllFields.email_address !==
-                  user?.emailAddresses[0]?.emailAddress ||
-                  watchAllFields.last_name !== user?.lastName ||
-                  watchAllFields.name !== user?.firstName ||
+                  user.data?.email_addresses[0]?.email_address ||
+                  watchAllFields.last_name !== user.data?.last_name ||
+                  watchAllFields.name !== user.data?.first_name ||
                   watchAllFields.type_role_admin !==
-                    user?.publicMetadata?.roles?.admin ||
+                    user.data?.public_metadata?.roles?.admin ||
                   watchAllFields.type_role_broker !==
-                    user?.publicMetadata?.roles?.broker ||
+                    user.data?.public_metadata?.roles?.broker ||
                   watchAllFields.type_role_operations !==
-                    user?.publicMetadata?.roles?.operaciones ||
+                    user.data?.public_metadata?.roles?.operations ||
                   watchAllFields.type_role_serviclick !==
-                    user?.publicMetadata?.roles?.serviclick ||
+                    user.data?.public_metadata?.roles?.serviclick ||
                   watchAllFields.type_role_retail !==
-                    user?.publicMetadata?.roles?.retail ||
+                    user.data?.public_metadata?.roles?.retail ||
                   watchAllFields.password !== ""
                   ? "bottom-0"
                   : "-bottom-20"
@@ -525,17 +480,19 @@ export const UserEdit: React.FC = () => {
                   type="button"
                   onClick={() => {
                     form.reset({
-                      email_address: user?.emailAddresses[0]?.emailAddress,
-                      name: user?.firstName ?? "",
-                      last_name: user?.lastName ?? "",
+                      email_address:
+                        user?.data?.email_addresses[0]?.email_address,
+                      name: user.data?.first_name ?? "",
+                      last_name: user.data?.last_name ?? "",
                       password: "",
                       passwordConfirm: "",
-                      type_role_admin: user?.publicMetadata?.roles?.admin,
-                      type_role_broker: user?.publicMetadata?.roles?.broker,
+                      type_role_admin: user.data?.public_metadata?.roles?.admin,
+                      type_role_broker:
+                        user.data?.public_metadata?.roles?.broker,
                       type_role_operations:
-                        user?.publicMetadata?.roles?.operaciones,
+                        user.data?.public_metadata?.roles?.operations,
                       type_role_serviclick:
-                        user?.publicMetadata?.roles?.serviclick,
+                        user.data?.public_metadata?.roles?.serviclick,
                     });
                   }}
                 >
@@ -545,10 +502,10 @@ export const UserEdit: React.FC = () => {
                   type="submit"
                   disabled={
                     watchAllFields.password !==
-                      watchAllFields.passwordConfirm || isLoading
+                      watchAllFields.passwordConfirm || isLoadingUser
                   }
                 >
-                  {form.formState.isSubmitting || isLoading ? (
+                  {form.formState.isSubmitting || isLoadingUser ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       <span>Actualizando</span>
@@ -598,7 +555,7 @@ export const UserEdit: React.FC = () => {
                     <Label htmlFor="field-name" className="text-red-500">
                       Escribe {""}
                       <span className="font-bold">{`"${
-                        user?.firstName ?? ""
+                        user?.data?.first_name ?? ""
                       }"`}</span>{" "}
                       para confirmar
                     </Label>
@@ -613,17 +570,14 @@ export const UserEdit: React.FC = () => {
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancelar</AlertDialogCancel>
                   <AlertDialogAction
-                    disabled={confirmUserName !== user?.firstName}
-                    onClick={() =>
-                      deleteUser(
-                        { user_id: router.query.id as string },
-                        {
-                          onSuccess: () => {
-                            void router.push(`/operations/users`);
-                          },
-                        }
-                      )
-                    }
+                    type="button"
+                    disabled={confirmUserName !== user?.data?.first_name}
+                    onClick={() => {
+                      deleteUser(router.query.id as string, {
+                        onSuccess: () => router.push("/operations/users"),
+                      });
+                      console.log("click");
+                    }}
                     className="bg-red-500 font-bold text-white hover:bg-red-600 focus:bg-red-500 active:bg-red-600"
                   >
                     Eliminar

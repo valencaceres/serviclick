@@ -2,8 +2,7 @@
 
 import { type Row, type ColumnDef } from "@tanstack/react-table";
 
-import { type User } from "@clerk/nextjs/dist/types/server";
-
+import { type User } from "~/interfaces/user";
 export const columns: ColumnDef<User>[] = [
   {
     accessorKey: "fullName",
@@ -12,7 +11,9 @@ export const columns: ColumnDef<User>[] = [
       return (
         <div className="flex flex-col">
           <span className="font-semibold">
-            {`${row.original.firstName ?? ""} ${row.original.lastName ?? ""}`}
+            {`${row.original.first_name ?? ""} ${""} ${
+              row.original.last_name ?? ""
+            }`}
           </span>
         </div>
       );
@@ -24,9 +25,9 @@ export const columns: ColumnDef<User>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex flex-col">
-          <span className="font-semibold">
-            {`${row.original.emailAddresses[0]?.emailAddress ?? ""}`}
-          </span>
+          <span className="font-semibold">{`${
+            row.original.email_addresses[0].email_address ?? ""
+          }`}</span>
         </div>
       );
     },

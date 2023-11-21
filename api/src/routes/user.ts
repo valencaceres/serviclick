@@ -39,14 +39,6 @@ UserRouter.patch(
   updateClerkUser
 );
 UserRouter.delete(
-  "/deleteClerkUser/:id",
-  auth,
-  isAuthenticated,
-  isAdmin,
-  updateClerkUser
-);
-
-UserRouter.delete(
   "/deleteUserById/:id",
   auth,
   isAuthenticated,

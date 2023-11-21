@@ -1,6 +1,5 @@
 import React from "react";
 
-import { api } from "~/utils/api";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,7 +24,7 @@ import {
 import { Input } from "~/components/ui/Input";
 import { z } from "zod";
 import { Button } from "~/components/ui/Button";
-
+import { useUser } from "~/store/hooks";
 import {
   Card,
   CardContent,
@@ -90,7 +89,6 @@ const formSchema = z.object({
 
 export const NewUser: React.FC = () => {
   const form = useForm<z.infer<typeof formSchema>>({
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
@@ -112,8 +110,7 @@ export const NewUser: React.FC = () => {
   });
 
   const router = useRouter();
-  const { mutate: createUser, isLoading } = api.users.create.useMutation();
-
+  const { createUser, isLoading } = useUser();
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const togglePasswordConfirmVisibility = () => {
@@ -124,47 +121,9 @@ export const NewUser: React.FC = () => {
   };
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    createUser(
-      {
-        name: values.name,
-        last_name: values.last_name,
-        email_address: values.email_address,
-        password: values.password,
-        role_admin: "admin",
-        role_broker: "broker",
-        role_operations: "operaciones",
-        role_serviclick: "serviclick",
-        role_retail: "retail",
-        type_role_admin: values.type_role_admin as
-          | "user"
-          | "admin"
-          | "moderator",
-        type_role_broker: values.type_role_broker as
-          | "user"
-          | "admin"
-          | "moderator",
-        type_role_operations: values.type_role_operations as
-          | "user"
-          | "admin"
-          | "moderator",
-        type_role_serviclick: values.type_role_serviclick as
-          | "user"
-          | "admin"
-          | "moderator",
-        type_role_retail: values.type_role_retail as
-          | "user"
-          | "admin"
-          | "moderator",
-      },
-      {
-        onSuccess: () => {
-          void router.push("/operations/users");
-        },
-        onError: (error) => {
-          console.error("Form submission failed:", error);
-        },
-      }
-    );
+    createUser(values, {
+      onSuccess: () => router.push("/operations/users"),
+    });
   }
   const watchAllFields = form.watch();
   const isEqual = watchAllFields.password === watchAllFields.passwordConfirm;
@@ -183,7 +142,6 @@ export const NewUser: React.FC = () => {
           </div>
         </div>
         <Form {...form}>
-          {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <Card className="flex flex-col md:flex-row">
               <CardHeader className="w-full md:w-1/2">

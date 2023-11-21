@@ -99,7 +99,6 @@ const createClerkUser = async (req: any, res: any) => {
 const updateClerkUser = async (req: any, res: any) => {
   const { id } = req.params;
   const input: IClerkUser = req.body;
-
   const result = await fetchUpdateClerkUser(id, input);
   if (!result.success) {
     createLogger.error({
