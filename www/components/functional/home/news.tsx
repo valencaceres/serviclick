@@ -11,9 +11,24 @@ import { CustomSwiper } from "../slider"
 
 const news = [
   {
+    id: "novedad-6",
+    image: "/news6.png",
+    link: "/family/52257aa7-4a97-4d02-a08a-7d2324f49630",
+  },
+  {
+    id: "novedad-5",
+    image: "/news5.jpg",
+    link: "/alianza/vinasanpedro",
+  },
+  {
     id: "novedad-1",
     image: "/news1.jpg",
     link: "https://alianza.serviclick.cl/prepago-los-heroes",
+  },
+  {
+    id: "novedad-4",
+    image: "/news4.jpg",
+    link: "/alianza/sindicato1prosegur",
   },
   {
     id: "novedad-2",
@@ -24,16 +39,6 @@ const news = [
     id: "novedad-3",
     image: "/news3.jpg",
     link: "/companies",
-  },
-  {
-    id: "novedad-4",
-    image: "/news4.jpg",
-    link: "/alianza/sindicato1prosegur",
-  },
-  {
-    id: "novedad-5",
-    image: "/news5.jpg",
-    link: "/alianza/vinasanpedro",
   },
 ]
 
@@ -58,10 +63,10 @@ export const News = () => {
   }
 
   const slides = news.map((news) => (
-    <div className="h-[240px] w-[300px] mx-auto relative">
+    <div className="relative mx-auto h-[240px] w-[300px]">
       <Link href={news.link} passHref>
         <Image
-          className="cursor-pointer hover:scale-105 duration-75 py-2"
+          className="cursor-pointer py-2 duration-75 hover:scale-105"
           src={news.image}
           alt="News"
           fill
