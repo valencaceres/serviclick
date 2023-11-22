@@ -22,7 +22,7 @@ export const HeroCarousel = () => {
   }
 
   const slides = [
-    <section className="relative h-[250px] md:h-[550px] w-full flex items-center justify-center md:justify-start">
+    <section className="relative flex h-[250px] w-full items-center justify-center md:h-[550px] md:justify-start">
       <Image
         src="/slidee.jpg"
         alt="Slide 1"
@@ -31,12 +31,12 @@ export const HeroCarousel = () => {
         className="object-cover object-center"
         loading="lazy"
       />
-      <h1 className="z-20 text-white md:pl-20 w-full text-5xl md:text-6xl uppercase max-w-sm text-center md:text-start">
+      <h1 className="z-20 w-full max-w-sm text-center text-5xl uppercase text-white md:pl-20 md:text-start md:text-6xl">
         Especialistas en protección
       </h1>
-      <div className="w-full h-full absolute top-0 left-0 bg-black z-10 bg-opacity-30"></div>
+      <div className="absolute left-0 top-0 z-10 h-full w-full bg-black bg-opacity-30"></div>
     </section>,
-    <section className="relative h-[250px] md:h-[550px] w-full flex  items-center justify-center md:justify-start">
+    <section className="relative flex h-[250px] w-full items-center  justify-center md:h-[550px] md:justify-start">
       <Image
         src="/slidee2.jpg"
         alt="Slide 2"
@@ -45,12 +45,12 @@ export const HeroCarousel = () => {
         className="object-cover object-top"
         loading="lazy"
       />
-      <h1 className="z-20 text-white md:pl-20 w-full text-5xl md:text-6xl uppercase max-w-xs md:max-w-md text-center md:text-start">
+      <h1 className="z-20 w-full max-w-xs text-center text-5xl uppercase text-white md:max-w-md md:pl-20 md:text-start md:text-6xl">
         Te acompañamos en todo momento
       </h1>
-      <div className="w-full h-full absolute top-0 left-0 bg-black z-10 bg-opacity-30"></div>
+      <div className="absolute left-0 top-0 z-10 h-full w-full bg-black bg-opacity-30"></div>
     </section>,
-    <section className="relative h-[250px] md:h-[550px] w-full flex items-center justify-center md:justify-start">
+    <section className="relative flex h-[250px] w-full items-center justify-center md:h-[550px] md:justify-start">
       <Image
         src="/slidee3.jpg"
         alt="Slide 3"
@@ -59,10 +59,22 @@ export const HeroCarousel = () => {
         className="object-cover object-top"
         loading="lazy"
       />
-      <h1 className="z-20 text-white md:pl-20 w-full text-5xl md:text-6xl uppercase max-w-xs md:max-w-md text-center md:text-start">
+      <h1 className="z-20 w-full max-w-xs text-center text-5xl uppercase text-white md:max-w-md md:pl-20 md:text-start md:text-6xl">
         Protegerte es nuestra labor
       </h1>
-      <div className="w-full h-full absolute top-0 left-0 bg-black z-10 bg-opacity-30"></div>
+      <div className="absolute left-0 top-0 z-10 h-full w-full bg-black bg-opacity-30"></div>
+    </section>,
+    <section className="relative flex h-[250px] w-full items-center justify-center md:h-[550px] md:justify-start">
+      <Image
+        src="/slidee4.png"
+        alt="Slide 4"
+        fill
+        quality={100}
+        className="object-cover object-top"
+        loading="lazy"
+      />
+      <h1 className="z-20 w-full max-w-xs text-center text-5xl uppercase text-white md:max-w-md md:pl-20 md:text-start md:text-6xl"></h1>
+      <div className="absolute left-0 top-0 z-10 h-full w-full bg-black bg-opacity-30"></div>
     </section>,
   ]
 

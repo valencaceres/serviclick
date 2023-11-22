@@ -30,7 +30,7 @@ export const siteConfig: SiteConfig = {
     },
   ],
   links: {
-    instagram: "https://www.instagram.com/serviclick/",
+    instagram: "https://www.instagram.com/serviclick.cl",
     facebook: "https://www.facebook.com/serviclick",
     linkedin: "https://www.linkedin.com/company/serviclick",
     email: "mailto:comercial@serviclick.cl",
