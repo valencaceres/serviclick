@@ -35,6 +35,7 @@ import {
   AccordionTrigger,
 } from "~/components/ui/Accordion";
 import Link from "next/link";
+import { useFilter } from "~/store/hooks";
 import { useReimbursment } from "~/store/hooks";
 interface DataItem {
   amount: null | number;
@@ -175,7 +176,7 @@ const Actions = ({ status, row }: { status: string; row: Row<DataItem> }) => {
   const [reimbursement, setReimbursement] = useState<string>("");
   const [comment, setComment] = useState<string>("");
   const [isSummaryOpen, setIsSummaryOpen] = useState<boolean>(false);
-
+  const { filters } = useFilter();
   const { user } = useUser();
   const { updateReimbursment, isLoading, getAll } = useReimbursment();
 
@@ -193,7 +194,7 @@ const Actions = ({ status, row }: { status: string; row: Row<DataItem> }) => {
           setIsOpen(false);
           setReimbursement("");
           setComment("");
-          getAll(false, "", "", 10, 1);
+          getAll(false, filters.rut, filters.name, filters.records, 1);
         },
       }
     );

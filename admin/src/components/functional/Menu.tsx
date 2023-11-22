@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { UserButton, useUser } from "@clerk/nextjs";
 import { MenuIcon, XIcon } from "lucide-react";
 import Link from "next/link";
-
+import { useFilter } from "~/store/hooks";
 import {
   Accordion,
   AccordionContent,
@@ -127,9 +127,9 @@ interface MenuItemProps {
 }
 
 const MenuItem: React.FC<MenuItemProps> = ({ route, isOpen, setIsOpen }) => {
+  const { resetFilters } = useFilter();
   const { pathname } = useRouter();
   const { user } = useUser();
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const userRoles = user?.publicMetadata.roles?.admin;
 
   const userHasRole = (role: string) => {
@@ -181,7 +181,11 @@ const MenuItem: React.FC<MenuItemProps> = ({ route, isOpen, setIsOpen }) => {
       }`}
       onClick={() => setIsOpen && setIsOpen(false)}
     >
-      <Link className="w-full py-2 hover:underline" href={route.route}>
+      <Link
+        className="w-full py-2 hover:underline"
+        onClick={resetFilters}
+        href={route.route}
+      >
         {route.text}
       </Link>
     </li>

@@ -1,3 +1,4 @@
 import { userStore } from "./userStore";
 import { reimbursmentStore } from "./reimbursmentStore";
-export { userStore, reimbursmentStore };
+import { filterStore } from "./filtersStore";
+export { userStore, reimbursmentStore, filterStore };

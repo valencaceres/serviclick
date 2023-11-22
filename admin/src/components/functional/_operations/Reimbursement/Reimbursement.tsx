@@ -4,17 +4,50 @@ import { DataTableReimbursement } from "./DataTableReimbursement";
 import { columns } from "./columns";
 import { Input } from "~/components/ui/Input";
 import { Label } from "~/components/ui/Label";
+import FloatMenu from "~/components/ui/FloatMenu";
+import ButtonIcon from "~/components/ui/ButtonIcon";
+import { useRouter } from "next/router";
+import { useFilter } from "~/store/hooks";
+import InputText from "~/components/ui/InputText";
+
+import { formatRut, unFormatRut } from "~/utils/rut";
 
 export const Reimbursement: React.FC = () => {
+  const router = useRouter();
   const [page, setPage] = useState<number>(1);
-  const [searchByName, setSearchByName] = useState<string>("");
-  const [searchByRut, setSearchByRut] = useState<string>("");
   const { getAll, list, isLoading } = useReimbursment();
+  const { filters, setFilters, resetFilters } = useFilter();
 
   useEffect(() => {
-    getAll(false, searchByRut, searchByName, 10, page);
-  }, [page, searchByName, searchByRut, page]);
+    setFilters({
+      ...filters,
+      records: 10,
+      page: 1,
+    });
+  }, []);
+  useEffect(() => {
+    getAll(false, "", "", 10, filters.page);
+  }, [filters.page]);
+  const handleRefresh: () => void = () => {
+    getAll(false, filters.rut, filters.name, filters.records, filters.page);
+  };
+  const handleClickHome = () => {
+    router.push("/");
+    resetFilters();
+  };
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    const value = e.target.value;
 
+    const unformattedRut = unFormatRut(value);
+    setFilters({ ...filters, rut: unformattedRut });
+  };
+
+  const handleBlur = (e: any) => {
+    const value = e.target.value;
+
+    const formattedRut = formatRut(value);
+    setFilters({ ...filters, rut: formattedRut });
+  };
   const previousData = useRef(list.data);
   const previousPageInfo = useRef(list?.pagination);
 
@@ -32,25 +65,41 @@ export const Reimbursement: React.FC = () => {
     ? previousPageInfo.current
     : list?.pagination;
   if (!dataToShow || !pageInfoToShow) return null;
-  console.log("data:", dataToShow, "pageInfo:", pageInfoToShow);
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex flex-row gap-4">
+      <div className="flex flex-row items-center gap-4">
         <div>
-          <Label>Buscar por nombre</Label>
-          <Input
-            value={searchByName}
-            onChange={(e) => setSearchByName(e.target.value)}
+          <InputText
+            label="Buscar por nombre"
+            width="290px"
+            value={filters?.name || ""}
+            onChange={(e: any) => {
+              setFilters({
+                ...filters,
+                name: e.target.value,
+                rut: "",
+              });
+            }}
           />
         </div>
         <div>
           {" "}
-          <Label>Buscar por rut</Label>
-          <Input
-            value={searchByRut}
-            onChange={(e) => setSearchByRut(e.target.value)}
+          <InputText
+            label="Rut"
+            width="150px"
+            value={filters?.rut || ""}
+            onBlur={handleBlur}
+            onFocus={handleFocus}
+            onChange={(e: any) => {
+              setFilters({
+                ...filters,
+                rut: e.target.value,
+                name: "",
+              });
+            }}
           />
         </div>
+        <ButtonIcon iconName="search" onClick={handleRefresh} />
       </div>
       <DataTableReimbursement
         setPage={setPage}
@@ -59,6 +108,10 @@ export const Reimbursement: React.FC = () => {
         columns={columns}
         data={dataToShow}
       />
+      <FloatMenu>
+        <ButtonIcon iconName="home" onClick={handleClickHome} />
+        <ButtonIcon iconName="refresh" onClick={handleRefresh} />
+      </FloatMenu>
     </div>
   );
 };

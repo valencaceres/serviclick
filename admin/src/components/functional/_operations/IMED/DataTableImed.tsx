@@ -24,7 +24,7 @@ import {
 
 import { Button } from "~/components/ui/Button";
 import { useState } from "react";
-
+import { useFilter } from "~/store/hooks";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -73,7 +73,7 @@ export function DataTableImed<TData, TValue>({
 
     pageFunction();
   };
-
+  const { filters, setFilters, resetFilters } = useFilter();
   return (
     <div className="flex w-full max-w-7xl flex-col gap-2">
       <div className="rounded-md border">
@@ -136,7 +136,11 @@ export function DataTableImed<TData, TValue>({
             <Button
               variant="outline"
               className="h-8 w-8 p-0 lg:flex"
-              onClick={() => handleButtonClick("firstPage", () => setPage(1))}
+              onClick={() =>
+                handleButtonClick("firstPage", () =>
+                  setFilters({ ...filters, page: 1 })
+                )
+              }
             >
               <span className="sr-only">Go to first page</span>
               {buttonLoadingStates.firstPage && isLoading ? (
@@ -151,7 +155,10 @@ export function DataTableImed<TData, TValue>({
               className="h-8 w-8 p-0"
               onClick={() =>
                 handleButtonClick("prevPage", () =>
-                  setPage(Math.max(pageInfo.page - 1, 1))
+                  setFilters({
+                    ...filters,
+                    page: Math.max(pageInfo.page - 1, 1),
+                  })
                 )
               }
             >
@@ -169,7 +176,10 @@ export function DataTableImed<TData, TValue>({
               className="h-8 w-8 p-0"
               onClick={() =>
                 handleButtonClick("nextPage", () =>
-                  setPage(Math.min(pageInfo.page + 1, pageInfo.total))
+                  setFilters({
+                    ...filters,
+                    page: Math.min(pageInfo.page + 1, pageInfo.total),
+                  })
                 )
               }
             >
@@ -186,7 +196,9 @@ export function DataTableImed<TData, TValue>({
               variant="outline"
               className="hidden h-8 w-8 p-0 lg:flex"
               onClick={() =>
-                handleButtonClick("lastPage", () => setPage(pageInfo.total))
+                handleButtonClick("lastPage", () =>
+                  setFilters({ ...filters, page: pageInfo.total })
+                )
               }
             >
               <span className="sr-only">Go to last page</span>
