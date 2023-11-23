@@ -96,6 +96,7 @@ const routeMappings = [
   { path: "/api/field", router: routes.FieldRouter },
   { path: "/api/procedure", router: routes.ProcedureRouter },
   { path: "/api/qualification", router: routes.QualificationRouter },
+  { path: "/api/web", router: routes.WebRouter },
 ];
 
 function initializeRoutes(server: Express) {

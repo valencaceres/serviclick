@@ -39,7 +39,7 @@ import FileFormatRouter from "./fileFormat";
 import FieldRouter from "./field";
 import ProcedureRouter from "./procedure";
 import QualificationRouter from "./qualification";
-
+import WebRouter from "./web";
 export {
   SlugRouter,
   StatusRouter,
@@ -82,4 +82,5 @@ export {
   FieldRouter,
   ProcedureRouter,
   QualificationRouter,
+  WebRouter,
 };

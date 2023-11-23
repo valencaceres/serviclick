@@ -6,11 +6,43 @@ import "swiper/css"
 import "swiper/css/navigation"
 import "swiper/css/pagination"
 import "swiper/css/effect-fade"
+import { useEffect, useState } from "react"
 import Image from "next/image"
 
 import { CustomSwiper } from "../slider"
 
+interface Hero {
+  id: number
+  url: string
+  alt: string
+  text: string
+  number: number
+}
 export const HeroCarousel = () => {
+  const [hero, setHero] = useState<Hero[] | null>(null)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const responseHero = await fetch(
+          "http://localhost:3001" + "/api/web/getHero",
+          {
+            headers: {
+              id: process.env.API_KEY!,
+            },
+            cache: "no-store",
+          }
+        )
+        const heroData = await responseHero.json()
+        setHero(heroData)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    fetchData()
+  }, [])
+
   const options: SwiperOptions = {
     modules: [Pagination, Navigation, EffectFade],
     effect: "fade",
@@ -20,63 +52,26 @@ export const HeroCarousel = () => {
     pagination: { clickable: true },
     scrollbar: { draggable: true },
   }
-
-  const slides = [
-    <section className="relative flex h-[250px] w-full items-center justify-center md:h-[550px] md:justify-start">
+  if (!hero) return null
+  const slides = hero?.map((heroData) => (
+    <section
+      key={heroData.id}
+      className="relative flex h-[250px] w-full items-center justify-center md:h-[550px] md:justify-start"
+    >
       <Image
-        src="/slidee4.png"
-        alt="Slide 4"
-        fill
-        quality={100}
-        className="object-cover object-top"
-        loading="lazy"
-      />
-      <h1 className="z-20 w-full max-w-xs text-center text-5xl uppercase text-white md:max-w-md md:pl-20 md:text-start md:text-6xl"></h1>
-      <div className="absolute left-0 top-0 z-10 h-full w-full bg-black bg-opacity-30"></div>
-    </section>,
-    <section className="relative flex h-[250px] w-full items-center justify-center md:h-[550px] md:justify-start">
-      <Image
-        src="/slidee.jpg"
-        alt="Slide 1"
-        fill
-        quality={100}
-        className="object-cover object-center"
-        loading="lazy"
-      />
-      <h1 className="z-20 w-full max-w-sm text-center text-5xl uppercase text-white md:pl-20 md:text-start md:text-6xl">
-        Especialistas en protección
-      </h1>
-      <div className="absolute left-0 top-0 z-10 h-full w-full bg-black bg-opacity-30"></div>
-    </section>,
-    <section className="relative flex h-[250px] w-full items-center  justify-center md:h-[550px] md:justify-start">
-      <Image
-        src="/slidee2.jpg"
-        alt="Slide 2"
+        src={heroData.url}
+        alt={heroData.alt}
         fill
         quality={100}
         className="object-cover object-top"
         loading="lazy"
       />
       <h1 className="z-20 w-full max-w-xs text-center text-5xl uppercase text-white md:max-w-md md:pl-20 md:text-start md:text-6xl">
-        Te acompañamos en todo momento
+        {heroData.text}
       </h1>
       <div className="absolute left-0 top-0 z-10 h-full w-full bg-black bg-opacity-30"></div>
-    </section>,
-    <section className="relative flex h-[250px] w-full items-center justify-center md:h-[550px] md:justify-start">
-      <Image
-        src="/slidee3.jpg"
-        alt="Slide 3"
-        fill
-        quality={100}
-        className="object-cover object-top"
-        loading="lazy"
-      />
-      <h1 className="z-20 w-full max-w-xs text-center text-5xl uppercase text-white md:max-w-md md:pl-20 md:text-start md:text-6xl">
-        Protegerte es nuestra labor
-      </h1>
-      <div className="absolute left-0 top-0 z-10 h-full w-full bg-black bg-opacity-30"></div>
-    </section>,
-  ]
+    </section>
+  ))
 
   return <CustomSwiper options={options} slides={slides} />
 }
