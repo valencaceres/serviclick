@@ -24,7 +24,7 @@ export const News = () => {
     const fetchData = async () => {
       try {
         const responseNews = await fetch(
-          "http://localhost:3001" + "/api/web/getNews",
+          process.env.API_URL! + "/api/web/getNews",
           {
             headers: {
               id: process.env.API_KEY!,

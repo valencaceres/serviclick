@@ -25,7 +25,7 @@ export const HeroCarousel = () => {
     const fetchData = async () => {
       try {
         const responseHero = await fetch(
-          "http://localhost:3001" + "/api/web/getHero",
+          process.env.API_URL! + "/api/web/getHero",
           {
             headers: {
               id: process.env.API_KEY!,
