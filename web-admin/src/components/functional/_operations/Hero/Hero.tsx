@@ -164,7 +164,6 @@ export const Hero: React.FC<itemsProps> = ({ type }) => {
       family_id: undefined,
     },
   });
-  console.log(categoryList);
   const handleSetImagePreviewClick = (clickedImage: HeroItem) => {
     setImagePreview({
       id: clickedImage.id,
@@ -173,6 +172,8 @@ export const Hero: React.FC<itemsProps> = ({ type }) => {
       url: clickedImage.url,
       alt: clickedImage.alt,
       link: clickedImage.link,
+      category_id: clickedImage.category_id,
+      family_id: clickedImage.family_id,
     });
     setImageId(clickedImage.id);
   };
@@ -206,7 +207,6 @@ export const Hero: React.FC<itemsProps> = ({ type }) => {
     }
   };
   const onSubmitEdit = async (values: z.infer<typeof formSchemaEdit>) => {
-    console.log(values, imageId);
     try {
       update(
         values.text ?? "",
@@ -252,6 +252,16 @@ export const Hero: React.FC<itemsProps> = ({ type }) => {
       setPrevImageList(imageList);
     }
   }, [imageList]);
+
+  useEffect(() => {
+    if (imagePreview) {
+      formEdit.setValue("text", imagePreview.text),
+        formEdit.setValue("alt", imagePreview.alt),
+        formEdit.setValue("category_id", imagePreview.category_id),
+        formEdit.setValue("link", imagePreview.link),
+        formEdit.setValue("family_id", imagePreview.family_id);
+    }
+  }, [imagePreview]);
   return (
     <div className="flex flex-col gap-2">
       {/*       {type === "hero" && imageList && imageList.length > 0 && <HeroCarousel hero={imageList} />}

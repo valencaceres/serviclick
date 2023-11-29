@@ -42,6 +42,7 @@ export interface User {
       retail: string;
       operations: string;
       serviclick: string;
+      web_admin:string;
     };
   };
   private_metadata: Record<string, any>;

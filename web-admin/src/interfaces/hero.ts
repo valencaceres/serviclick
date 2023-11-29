@@ -5,6 +5,8 @@ export interface HeroItem {
   number: number;
   id: string;
   link: string;
+  category_id: string | undefined,
+  family_id: string | undefined,
 }
 
 export interface heroResponse {

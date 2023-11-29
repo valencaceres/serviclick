@@ -5,7 +5,7 @@ type UserRole = "user" | "moderator" | "admin";
 
 const roles: Record<UserRole, RegExp[]> = {
   user: [/^\/$/],
-  moderator: [/^\/$/],
+  moderator: [/^\/$/, /^\/operations(\/.*)?$/],
   admin: [/^\/$/, /^\/operations(\/.*)?$/],
 };
 
