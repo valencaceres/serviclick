@@ -8,40 +8,35 @@ import "swiper/css/pagination"
 import "swiper/css/effect-fade"
 import { useEffect, useState } from "react"
 import Image from "next/image"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 import { CustomSwiper } from "../slider"
 
-interface Hero {
-  id: number
+interface HeroItem {
   url: string
   alt: string
   text: string
   number: number
+  id: string
+  link: string
 }
-export const HeroCarousel = () => {
-  const [hero, setHero] = useState<Hero[] | null>(null)
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const responseHero = await fetch(
-          process.env.API_URL! + "/api/web/getHero",
-          {
-            headers: {
-              id: process.env.API_KEY!,
-            },
-            cache: "no-store",
-          }
-        )
-        const heroData = await responseHero.json()
-        setHero(heroData)
-      } catch (error) {
-        console.log(error)
-      }
-    }
+export const HeroCarousel = ({
+  hero,
+}: {
+  hero: { data: HeroItem[] } | undefined
+}) => {
+  const router = useRouter()
 
-    fetchData()
-  }, [])
+  if (!hero) return null
+
+  const heroData = hero.data
+
+  if (!Array.isArray(heroData)) {
+    console.error("Hero data is not an array:", heroData)
+    return null
+  }
 
   const options: SwiperOptions = {
     modules: [Pagination, Navigation, EffectFade],
@@ -52,23 +47,28 @@ export const HeroCarousel = () => {
     pagination: { clickable: true },
     scrollbar: { draggable: true },
   }
-  if (!hero) return null
-  const slides = hero?.map((heroData) => (
-    <section
-      key={heroData.id}
-      className="relative flex h-[250px] w-full items-center justify-center md:h-[550px] md:justify-start"
-    >
-      <Image
-        src={heroData.url}
-        alt={heroData.alt}
-        fill
-        quality={100}
-        className="object-cover object-top"
-        loading="lazy"
-      />
-      <h1 className="z-20 w-full max-w-xs text-center text-5xl uppercase text-white md:max-w-md md:pl-20 md:text-start md:text-6xl">
-        {heroData.text}
-      </h1>
+
+  const slides = heroData.map((heroItem) => (
+    <section className="relative flex h-[250px] w-full cursor-pointer items-center justify-center md:h-[550px] md:justify-start">
+      <Link
+        key={heroItem.id}
+        href={`${heroItem.link}`}
+        passHref
+        target="_blank"
+        className="z-50 border border-blue-500"
+      >
+        <Image
+          src={heroItem.url}
+          alt={heroItem.alt}
+          fill
+          quality={100}
+          className="cursor-pointer object-cover object-top"
+          loading="lazy"
+        />
+        <h1 className="absolute z-40 w-full max-w-xs text-center text-5xl uppercase text-white md:max-w-md md:pl-20 md:text-start md:text-6xl">
+          {heroItem.text}
+        </h1>
+      </Link>
       <div className="absolute left-0 top-0 z-10 h-full w-full bg-black bg-opacity-30"></div>
     </section>
   ))

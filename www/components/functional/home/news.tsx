@@ -12,36 +12,13 @@ import { CustomSwiper } from "../slider"
 
 interface News {
   id: number
-  image_url: string
+  url: string
   link: string
   number: number
+  text: string
 }
 
-export const News = () => {
-  const [news, setNews] = useState<News[] | null>(null)
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const responseNews = await fetch(
-          process.env.API_URL! + "/api/web/getNews",
-          {
-            headers: {
-              id: process.env.API_KEY!,
-            },
-            cache: "no-store",
-          }
-        )
-        const newsData = await responseNews.json()
-        setNews(newsData)
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    fetchData()
-  }, [])
-
+export const News = ({ news }: { news: { data: News[] } | undefined }) => {
   const options: SwiperOptions = {
     modules: [Navigation],
     breakpoints: {
@@ -60,16 +37,21 @@ export const News = () => {
     },
     navigation: true,
   }
-  if (!news) return null
-  const slides = news.map((news) => (
-    <div className="relative mx-auto h-[240px] w-[300px]">
-      <Link href={news.link} passHref>
+
+  if (!news || !news.data) return null
+
+  const slides = news.data.map((newsItem) => (
+    <div className="relative mx-auto h-[240px] w-[300px]" key={newsItem.id}>
+      <Link href={newsItem.link} passHref>
         <Image
           className="cursor-pointer py-2 duration-75 hover:scale-105"
-          src={news.image_url}
+          src={newsItem.url}
           alt="News"
           fill
         />
+        <h1 className="absolute z-40 w-full max-w-xs text-center text-3xl uppercase text-white md:max-w-md md:py-20 md:text-start md:text-5xl">
+          {newsItem.text}
+        </h1>{" "}
       </Link>
     </div>
   ))

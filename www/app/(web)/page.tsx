@@ -35,12 +35,32 @@ export default async function IndexPage() {
       cache: "no-store",
     }
   )
-  const categories = await responseCategories.json()
 
+  const responseHero = await fetch(
+    process.env.API_URL! + "/api/web/getHero?type=hero",
+    {
+      headers: {
+        id: process.env.API_KEY!,
+      },
+      cache: "no-store",
+    }
+  )
+  const responseNews = await fetch(
+    process.env.API_URL! + "/api/web/getHero?type=news",
+    {
+      headers: {
+        id: process.env.API_KEY!,
+      },
+      cache: "no-store",
+    }
+  )
+  const news = await responseNews.json()
+  const hero = await responseHero.json()
+  const categories = await responseCategories.json()
   return (
     <>
       <section className="relative flex h-[250px] items-center font-bebas md:h-[550px]">
-        <HeroCarousel />
+        <HeroCarousel hero={hero} />
       </section>
       <section className="container flex flex-col items-center justify-center pb-20 font-bebas">
         <div className="py-4 md:pb-10 md:pt-20">
@@ -84,7 +104,7 @@ export default async function IndexPage() {
       </section>
       <section className="container flex flex-col items-center justify-center pb-12">
         <h1 className="pb-6 font-bebas text-4xl uppercase">Novedades</h1>
-        <News />
+        <News news={news} />
       </section>
       <section className="container flex flex-col items-center justify-center pb-12">
         <h1 className="pb-6 text-center font-bebas text-4xl uppercase">

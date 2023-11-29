@@ -11,10 +11,10 @@ import {
 
 const WebRouter = Router();
 
-WebRouter.get("/getHero", getItems);
-WebRouter.post("/createHero", createItem);
-WebRouter.put("/orderHero", orderItem);
-WebRouter.delete("/deleteHeroById/:id", deleteItem);
-WebRouter.put("/updateHero", updateItem);
+WebRouter.get("/getHero", auth, getItems);
+WebRouter.post("/createHero", auth, createItem);
+WebRouter.put("/orderHero", auth, orderItem);
+WebRouter.delete("/deleteHeroById/:id", auth, deleteItem);
+WebRouter.put("/updateHero", auth, updateItem);
 
 export default WebRouter;

@@ -19,6 +19,10 @@ const nextConfig = {
         hostname: "img.clerk.com",
         protocol: "https",
       },
+      {
+        protocol: "https",
+        hostname: "utfs.io",
+      },
     ],
   },
   poweredByHeader: false,
