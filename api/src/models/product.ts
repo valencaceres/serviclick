@@ -5,6 +5,7 @@ const createProduct: any = async (
   family_id: string,
   name: string,
   cost: number,
+  dynamiccharge: number,
   isSubject: boolean,
   frequency: string,
   term: string,
@@ -29,6 +30,7 @@ const createProduct: any = async (
 
     const arrayValues = [
       cost,
+      dynamiccharge,
       isSubject,
       frequency,
       term,
@@ -45,9 +47,10 @@ const createProduct: any = async (
 
     if (id && id !== "") {
       result = await pool.query(
-        "UPDATE app.product SET cost = $1, issubject = $2, frequency = $3, term = $4, beneficiaries = $5, currency = $6, mininsuredcompanyprice = $7, dueday = $8, name = $9, family_id = $10 WHERE id = $11 RETURNING *",
+        "UPDATE app.product SET cost = $1, dynamiccharge = $2, issubject = $3, frequency = $4, term = $5, beneficiaries = $6, currency = $7, mininsuredcompanyprice = $8, dueday = $9, name = $10, family_id = $11 WHERE id = $12 RETURNING *",
         [
           cost,
+          dynamiccharge,
           isSubject,
           frequency,
           term,
@@ -62,9 +65,10 @@ const createProduct: any = async (
       );
     } else {
       result = await pool.query(
-        `INSERT INTO app.product(cost, issubject, frequency, term, beneficiaries, currency, mininsuredcompanyprice, dueday, name, family_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`,
+        `INSERT INTO app.product(cost, dynamiccharge, issubject, frequency, term, beneficiaries, currency, mininsuredcompanyprice, dueday, name, family_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *`,
         [
           cost,
+          dynamiccharge,
           isSubject,
           frequency,
           term,
@@ -351,7 +355,7 @@ const getProductByFamilyId: any = async (
 const getById = async (id: string) => {
   try {
     const sqlQuery = `
-      SELECT  pro.id, pro.family_id, pro.name, pro.cost, pro.issubject,
+      SELECT  pro.id, pro.family_id, pro.name, pro.cost, pro.dynamiccharge, pro.issubject,
               pro.frequency, pro.term, pro.beneficiaries, pro.currency,
               pro.dueday, pro.mininsuredcompanyprice, des.title, des.sub_title,
               des.alias, des.promotional, des.description, des.territorial_scope,
@@ -379,6 +383,7 @@ const getById = async (id: string) => {
       family_id: firstRow.family_id,
       name: firstRow.name,
       cost: firstRow.cost,
+      dynamiccharge: firstRow.dynamiccharge,
       isSubject: firstRow.issubject,
       frequency: firstRow.frequency,
       term: firstRow.term,

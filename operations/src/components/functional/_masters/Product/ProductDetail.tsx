@@ -94,6 +94,10 @@ const formSchema = z.object({
   family_id: z.string(),
   name: z.string(),
   cost: z.string().refine((val) => parseInt(val) >= 0),
+  dynamicCharge: z
+    .string()
+    .refine((val) => parseInt(val) >= 0)
+    .optional(),
   isSubject: z.boolean(),
   frequency: z.enum(["M", "A", "S"]),
   term: z.string(),
@@ -131,6 +135,7 @@ const ProductDetail = ({ product }: any) => {
       family_id: product?.family_id || undefined,
       name: product?.name || "",
       cost: product?.cost?.toString() || "0",
+      dynamicCharge: product?.dynamiccharge.toString() || "0",
       isSubject: product?.isSubject || false,
       frequency: product?.frequency || "M",
       term: product?.term || undefined,
@@ -172,6 +177,7 @@ const ProductDetail = ({ product }: any) => {
         family_id: values.family_id,
         name: values.name,
         cost: parseInt(values.cost),
+        dynamiccharge: parseInt(values.dynamicCharge ?? "0"),
         isSubject: values.isSubject,
         frequency: values.frequency,
         term: values.term,
@@ -444,6 +450,22 @@ const ProductDetail = ({ product }: any) => {
                   />
                 </ContentRow>
                 <ContentRow gap="20px">
+                  <FormField
+                    control={form.control}
+                    name="dynamicCharge"
+                    render={({ field }) => (
+                      <FormItem className="flex w-full flex-col">
+                        <FormLabel htmlFor="dynamicCharge">
+                          Costo carga ($)
+                        </FormLabel>
+                        <Input
+                          {...field}
+                          type="number"
+                          placeholder="ej: 5000"
+                        />
+                      </FormItem>
+                    )}
+                  />
                   <FormField
                     control={form.control}
                     name="cost"
