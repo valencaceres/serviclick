@@ -28,7 +28,7 @@ export default authMiddleware({
       }
     } else {
       // Check if user has the "admin" role and the required permission for it
-      const userRoleInOperaciones = userRoles["admin"];
+      const userRoleInOperaciones = userRoles["web_admin"];
       if (userRoleInOperaciones && roles[userRoleInOperaciones as UserRole]) {
         const rolePermissions = roles[userRoleInOperaciones as UserRole];
         for (const permission of rolePermissions) {
