@@ -1,4 +1,4 @@
-"use client";
+/* "use client";
 
 import { EffectFade, Navigation, Pagination } from "swiper/modules";
 import { type SwiperOptions } from "swiper/types";
@@ -46,3 +46,4 @@ export const HeroCarousel = ({ hero }: { hero: HeroItem[] | undefined }) => {
 
   return <CustomSwiper options={options} slides={slides} />;
 };
+ */

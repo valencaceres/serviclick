@@ -1,4 +1,4 @@
-"use client";
+/* "use client";
 
 import { EffectFade, Navigation, Pagination } from "swiper/modules";
 import { type SwiperOptions } from "swiper/types";
@@ -51,3 +51,4 @@ export const Interests = ({ families, imageList }: FamiliesCarouselProps) => {
 
   return <CustomSwiper options={options} slides={slides} />;
 };
+ */
