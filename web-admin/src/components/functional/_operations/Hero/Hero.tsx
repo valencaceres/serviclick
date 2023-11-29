@@ -284,7 +284,7 @@ export const Hero: React.FC<itemsProps> = ({ type }) => {
           <h2 className="text-center text-xl font-bold text-primary-500 ">
             NOVEDADES
           </h2>
-      {/*     <NewsCarousel news={imageList} /> */}
+          {/*     <NewsCarousel news={imageList} /> */}
         </div>
       )}
       {type === "category" && (
@@ -292,7 +292,7 @@ export const Hero: React.FC<itemsProps> = ({ type }) => {
           <h2 className="text-center text-xl font-bold text-primary-500 ">
             CATEGORIAS
           </h2>
-      {/*     <AssistancesCarousel
+          {/*     <AssistancesCarousel
             assistances={categoryList}
             imageList={imageList}
           /> */}
@@ -303,7 +303,7 @@ export const Hero: React.FC<itemsProps> = ({ type }) => {
           <h2 className="text-center text-xl font-bold text-primary-500 ">
             FAMILIAS
           </h2>
-    {/*       <Interests families={familyList} imageList={imageList} /> */}
+          {/*       <Interests families={familyList} imageList={imageList} /> */}
         </div>
       )}
       <Card className="flex flex-col ">
@@ -529,6 +529,7 @@ export const Hero: React.FC<itemsProps> = ({ type }) => {
                           onClick={() => {
                             deleteById(imagePreview?.id ?? "", type, {
                               onSuccess: async () => {
+                                setImagePreview(undefined);
                                 getAll(type),
                                   toast({
                                     description:
