@@ -11,6 +11,7 @@ interface Assistance {
   family_name: string
   name: string
   url: string | null
+  link: string | null
 }
 
 interface AssistancesCarouselProps {
@@ -54,6 +55,7 @@ export const AssistancesCarousel = ({
         family_id={assistance.family_id}
         title={assistance.name}
         imageLink={assistance.url || ""}
+        link={assistance.link || ""}
       />
     </div>
   ))

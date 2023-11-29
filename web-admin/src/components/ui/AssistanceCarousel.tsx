@@ -51,6 +51,7 @@ export const AssistancesCarousel = ({
           family_id={assistances?.[index]?.family_id}
           title={assistances?.[index]?.name}
           imageLink={image.url}
+          link={image.link}
         />
       </div>
     </SwiperSlide>

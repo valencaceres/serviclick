@@ -198,6 +198,12 @@ export const Hero: React.FC<itemsProps> = ({ type }) => {
                   title: "Imagen subida",
                 });
               setIsDialogOpen(false);
+              form.setValue("text", ""),
+                form.setValue("alt", ""),
+                form.setValue("category_id", undefined),
+                form.setValue("link", ""),
+                form.setValue("family_id", undefined);
+              setFiles([]);
             },
           }
         );
@@ -264,14 +270,21 @@ export const Hero: React.FC<itemsProps> = ({ type }) => {
   }, [imagePreview]);
   return (
     <div className="flex flex-col gap-2">
-      {/*       {type === "hero" && imageList && imageList.length > 0 && <HeroCarousel hero={imageList} />}
-       */}{" "}
-      {type === "news" && imageList && imageList.length > 0 && (
+      {type === "hero" && (
+        <div>
+          <h2 className="text-center text-xl font-bold text-primary-500 ">
+            HERO
+          </h2>
+          {/*           <HeroCarousel hero={imageList} />
+           */}{" "}
+        </div>
+      )}
+      {type === "news" && (
         <div>
           <h2 className="text-center text-xl font-bold text-primary-500 ">
             NOVEDADES
           </h2>
-          <NewsCarousel news={imageList} />
+      {/*     <NewsCarousel news={imageList} /> */}
         </div>
       )}
       {type === "category" && (
@@ -279,10 +292,10 @@ export const Hero: React.FC<itemsProps> = ({ type }) => {
           <h2 className="text-center text-xl font-bold text-primary-500 ">
             CATEGORIAS
           </h2>
-          <AssistancesCarousel
+      {/*     <AssistancesCarousel
             assistances={categoryList}
             imageList={imageList}
-          />
+          /> */}
         </div>
       )}
       {type === "family" && (
@@ -290,7 +303,7 @@ export const Hero: React.FC<itemsProps> = ({ type }) => {
           <h2 className="text-center text-xl font-bold text-primary-500 ">
             FAMILIAS
           </h2>
-          <Interests families={familyList} imageList={imageList} />
+    {/*       <Interests families={familyList} imageList={imageList} /> */}
         </div>
       )}
       <Card className="flex flex-col ">
@@ -443,7 +456,7 @@ export const Hero: React.FC<itemsProps> = ({ type }) => {
         <CardContent className="flex w-full flex-col gap-2 px-6 py-4  md:px-4">
           <div className="flex flex-row gap-2">
             {imageList && imageList?.length > 0 && (
-              <div className=" h-[400px]  w-full overflow-y-scroll">
+              <div className=" h-[200px] w-full   overflow-y-scroll md:h-[400px]">
                 <Reorder.Group
                   axis="y"
                   values={imageList || []}
@@ -484,15 +497,14 @@ export const Hero: React.FC<itemsProps> = ({ type }) => {
                 </Reorder.Group>
               </div>
             )}
-            <div className="border-primary-7 bg-primary-3 hover:border-primary-8 relative h-[400px] w-[1000px] rounded-md border duration-300">
+            <div className="border-primary-7 bg-primary-3 hover:border-primary-8 relative  h-[200px] w-[300px] rounded-md border duration-300 md:w-[500px] xl:h-[400px] xl:w-[1000px]">
               {imagePreview ? (
                 <>
                   <Image
                     src={imagePreview?.url ?? ""}
                     alt={imagePreview?.alt ?? ""}
                     className="h-full w-full rounded-md object-cover"
-                    width={500}
-                    height={500}
+                    fill
                   />
                   <AlertDialog>
                     <AlertDialogTrigger asChild>

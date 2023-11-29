@@ -44,6 +44,7 @@ export const Interests = ({ families, imageList }: FamiliesCarouselProps) => {
         family_id={families?.[index]?.id}
         title={families?.[index]?.name}
         imageLink={image.url}
+        link={image.link}
       />
     </div>
   ));
