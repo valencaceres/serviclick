@@ -116,16 +116,7 @@ export const Hero: React.FC<itemsProps> = ({ type }) => {
       setImageList(list.data);
     }
   }, [list?.data]);
-  useEffect(() => {
-    if (type === "category") {
-      getCategories();
-    }
-  }, [getCategories]);
-  useEffect(() => {
-    if (type === "family") {
-      getFamilies();
-    }
-  }, [getFamilies]);
+
   const { startUpload, isUploading } = useUploadThing("videoAndImage", {
     onClientUploadComplete: () => {
       console.log("uploaded successfully!");
@@ -233,6 +224,26 @@ export const Hero: React.FC<itemsProps> = ({ type }) => {
       console.error("Error during form submission:", error);
     }
   };
+  useEffect(() => {
+    if (type === "category") {
+      getCategories();
+    }
+  }, [getCategories]);
+  useEffect(() => {
+    if (familyList && familyList.length > 0) {
+      form.setValue("family_id", familyList[0]?.id);
+    }
+  }, [familyList, form]);
+  useEffect(() => {
+    if (categoryList && categoryList.length > 0) {
+      form.setValue("category_id", categoryList[0]?.id);
+    }
+  }, [categoryList, form]);
+  useEffect(() => {
+    if (type === "family") {
+      getFamilies();
+    }
+  }, [getFamilies]);
 
   useEffect(() => {
     if (JSON.stringify(prevImageList) !== JSON.stringify(imageList)) {
