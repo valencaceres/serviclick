@@ -471,6 +471,8 @@ const listByFamilies = async (agent: string) => {
     const sqlQuery = `SELECT
                           fam.id AS family_id,
                           fam.name AS family_name,
+                          wef.url as url,
+                          wef.link as link,
                           pro.id AS product_id,
                           pro.name AS product_name,
                           pro.beneficiaries,
@@ -492,7 +494,8 @@ const listByFamilies = async (agent: string) => {
                           INNER JOIN app.assistance asi ON pas.assistance_id = asi.id
                           INNER JOIN app.agent age ON ppl.agent_id = age.id
                           INNER JOIN app.family fam ON pro.family_id = fam.id
-                      WHERE
+                          LEFT JOIN app.www_family wef ON fam.id = wef.family_id
+                           WHERE
                           (age.id::TEXT = $1 OR age.fantasyname = $1)
                           AND ppl.type = 'customer'
                       ORDER BY
