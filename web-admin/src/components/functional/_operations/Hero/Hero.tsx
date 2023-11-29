@@ -57,10 +57,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/Select";
-import { HeroCarousel } from "~/components/ui/HeroCarousel";
+/* import { HeroCarousel } from "~/components/ui/HeroCarousel";
 import { NewsCarousel } from "~/components/ui/News";
 import { AssistancesCarousel } from "~/components/ui/AssistanceCarousel";
-import { Interests } from "~/components/ui/FamilyCarousel";
+import { Interests } from "~/components/ui/FamilyCarousel"; */
 
 interface CustomFile extends File {
   preview: string;
