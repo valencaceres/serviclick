@@ -80,11 +80,13 @@ const formSchema = z.object({
   role_operations: z.string(),
   role_serviclick: z.string(),
   role_retail: z.string(),
+  role_web_admin: z.string(),
   type_role_admin: z.string(),
   type_role_broker: z.string(),
   type_role_operations: z.string(),
   type_role_serviclick: z.string(),
   type_role_retail: z.string(),
+  type_role_web_admin: z.string(),
 });
 
 export const NewUser: React.FC = () => {
@@ -98,10 +100,12 @@ export const NewUser: React.FC = () => {
       role_operations: "operaciones",
       role_serviclick: "serviclick",
       role_retail: "retail",
+      role_web_admin: "web_admin",
       type_role_admin: "user",
       type_role_broker: "user",
       type_role_operations: "user",
       type_role_serviclick: "user",
+      type_role_web_admin: "user",
       type_role_retail: "user",
       email_address: "",
       password: "",
@@ -387,6 +391,35 @@ export const NewUser: React.FC = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Rol del modulo retail</FormLabel>
+                      <FormControl>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger className="max-w-full md:max-w-full">
+                            <SelectValue placeholder="Seleccione rol..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value={"admin"}>
+                              Administrador
+                            </SelectItem>
+                            <SelectItem value={"moderator"}>
+                              Operador
+                            </SelectItem>
+                            <SelectItem value={"user"}>Usuario</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="type_role_web_admin"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Rol del modulo web admin</FormLabel>
                       <FormControl>
                         <Select
                           value={field.value}

@@ -10,6 +10,8 @@ interface Families {
   family_name: string
   product_id: string
   product_name: string
+  link: string
+  url: string
 }
 
 interface FamiliesCarouselProps {
@@ -17,6 +19,9 @@ interface FamiliesCarouselProps {
 }
 
 export const Interests = ({ families }: FamiliesCarouselProps) => {
+  const filteredFamilies = families.filter(
+    (family) => family.url && family.url.trim() !== ""
+  )
   const options: SwiperOptions = {
     modules: [Navigation],
     breakpoints: {
@@ -41,13 +46,14 @@ export const Interests = ({ families }: FamiliesCarouselProps) => {
     navigation: true,
   }
 
-  const slides = families.map((family) => (
-    <div className="shadow-md hover:shadow-none duration-75 w-full max-w-[300px] mx-auto">
+  const slides = filteredFamilies.map((family) => (
+    <div className="mx-auto w-full max-w-[300px] shadow-md duration-75 hover:shadow-none">
       <AssistanceCard
         key={family.family_id}
         family_id={family.family_id}
         title={family.family_name}
-        imageLink={`/families/${family.family_id}.jpg`}
+        imageLink={family.url}
+        link={family.link}
       />
     </div>
   ))

@@ -18,11 +18,13 @@ export interface IClerkUser {
   role_operations: string;
   role_serviclick: string;
   role_retail: string;
+  role_web_admin: string;
   type_role_admin: "user" | "admin" | "moderator";
   type_role_broker: "user" | "admin" | "moderator";
   type_role_operations: "user" | "admin" | "moderator";
   type_role_serviclick: "user" | "admin" | "moderator";
   type_role_retail: "user" | "admin" | "moderator";
+  type_role_web_admin: "user" | "admin" | "moderator";
   email_address: string;
   password: string;
 }

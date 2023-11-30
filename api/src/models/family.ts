@@ -51,7 +51,7 @@ const getFamily: any = async (family_id: string) => {
 const listFamilies: any = async (values: any) => {
   try {
     const result = await pool.query(
-      "SELECT id, name, icon FROM app.family WHERE isactive is true ORDER BY name"
+      "SELECT fam.id, fam.name, fam.icon FROM app.family as fam LEFT JOIN app.www_family wf ON fam.id = wf.family_id WHERE fam.isactive is true ORDER BY wf.number, fam.name"
     );
     return { success: true, data: result.rows, error: null };
   } catch (e) {

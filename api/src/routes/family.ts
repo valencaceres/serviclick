@@ -15,7 +15,13 @@ const FamilyRouter = Router();
 
 FamilyRouter.post("/create", auth, isAuthenticated, isAdmin, createFamily);
 FamilyRouter.put("/update/:id", auth, isAuthenticated, isAdmin, updateFamily);
-FamilyRouter.delete("/delete/:id", auth, isAuthenticated, isAdmin, deleteFamily);
+FamilyRouter.delete(
+  "/delete/:id",
+  auth,
+  isAuthenticated,
+  isAdmin,
+  deleteFamily
+);
 FamilyRouter.get("/get/:id", auth, getFamily);
 FamilyRouter.get("/list", auth, listFamilies);
 

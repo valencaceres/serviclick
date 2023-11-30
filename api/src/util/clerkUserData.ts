@@ -35,6 +35,7 @@ export const fetchCreateClerkUser = async (input: IClerkUser) => {
         [input.role_operations]: input.type_role_operations,
         [input.role_serviclick]: input.type_role_serviclick,
         [input.role_retail]: input.type_role_retail,
+        [input.role_web_admin]: input.type_role_web_admin,
       },
     },
     password: input.password,
@@ -74,6 +75,7 @@ export const fetchUpdateClerkUser = async (id: string, input: IClerkUser) => {
         operations: "user" | "admin" | "moderator";
         serviclick: "user" | "admin" | "moderator";
         retail: "user" | "admin" | "moderator";
+        web_admin: "user" | "admin" | "moderator";
       };
     };
     password?: string;
@@ -88,6 +90,7 @@ export const fetchUpdateClerkUser = async (id: string, input: IClerkUser) => {
         operations: input.type_role_operations,
         serviclick: input.type_role_serviclick,
         retail: input.type_role_retail,
+        web_admin: input.type_role_web_admin,
       },
     },
   };

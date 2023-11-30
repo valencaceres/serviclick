@@ -43,10 +43,9 @@ export default async function PeoplePage() {
     }
     return false
   })
-
   return (
     <>
-      <section className="relative h-[550px] flex items-center px-20">
+      <section className="relative flex h-[550px] items-center px-20">
         <video
           style={{
             objectFit: "cover",
@@ -64,44 +63,44 @@ export default async function PeoplePage() {
         >
           <source src="/people.mp4" type="video/mp4" />
         </video>
-        <div className="z-10 w-96 self-end pb-12 md:self-center md:pb-0 text-center md:text-left">
-          <h1 className="uppercase text-6xl text-background font-bebas">
+        <div className="z-10 w-96 self-end pb-12 text-center md:self-center md:pb-0 md:text-left">
+          <h1 className="font-bebas text-6xl uppercase text-background">
             Asistencias que facilitan tu vida.
           </h1>
         </div>
-        <div className="bg-black absolute w-full h-full z-5 top-0 right-0 bg-opacity-30"></div>
+        <div className="z-5 absolute right-0 top-0 h-full w-full bg-black bg-opacity-30"></div>
       </section>
-      <section className="container flex justify-center flex-col items-center pt-20 pb-12">
-        <h1 className="pb-6 uppercase text-4xl md:text-5xl font-bebas text-center">
+      <section className="container flex flex-col items-center justify-center pb-12 pt-20">
+        <h1 className="pb-6 text-center font-bebas text-4xl uppercase md:text-5xl">
           Selecciona el área de tu interés
         </h1>
         <Interests families={uniqueFamilies} />
       </section>
-      <section className="container flex justify-center flex-col items-center py-10">
-        <h1 className="pb-6 uppercase text-4xl font-bebas">
+      <section className="container flex flex-col items-center justify-center py-10">
+        <h1 className="pb-6 font-bebas text-4xl uppercase">
           Te ayudamos a seleccionar la asistencia ideal para ti
         </h1>
         <AssistanceSuggestionForm families={uniqueFamilies} />
       </section>
-      <section className="container flex justify-center flex-col items-center py-10">
-        <h1 className="pb-6 uppercase text-4xl font-bebas">
+      <section className="container flex flex-col items-center justify-center py-10">
+        <h1 className="pb-6 font-bebas text-4xl uppercase">
           Preguntas frecuentes
         </h1>
         <Faq />
       </section>
-      <section className="relative bg-background h-[480px] sm:h-[600px] lg:h-[600px] duration-75 font-bebas mb-28 md:mb-44 lg:mb-12">
-        <div className="bg-foreground flex flex-col lg:flex-row items-center py-4 h-96 lg:justify-evenly">
-          <div className="flex flex-col py-4 gap-4 items-center justify-center lg:order-2">
-            <h2 className="uppercase text-5xl px-16 text-background flex justify-center lg:justify-start w-full text-center lg:text-start">
+      <section className="relative mb-28 h-[480px] bg-background font-bebas duration-75 sm:h-[600px] md:mb-44 lg:mb-12 lg:h-[600px]">
+        <div className="flex h-96 flex-col items-center bg-foreground py-4 lg:flex-row lg:justify-evenly">
+          <div className="flex flex-col items-center justify-center gap-4 py-4 lg:order-2">
+            <h2 className="flex w-full justify-center px-16 text-center text-5xl uppercase text-background lg:justify-start lg:text-start">
               ¿Cómo obtengo mi asistencia?
             </h2>
-            <ul className="flex flex-col text-center lg:text-start px-12 md:px-24 justify-around gap-4 lg:gap-2 text-xl lg:justify-start flex-wrap w-full lg:list-disc uppercase text-background marker:text-primary">
+            <ul className="flex w-full flex-col flex-wrap justify-around gap-4 px-12 text-center text-xl uppercase text-background marker:text-primary md:px-24 lg:list-disc lg:justify-start lg:gap-2 lg:text-start">
               <li>Rápido</li>
               <li>En pocos pasos</li>
               <li>Accesible</li>
             </ul>
           </div>
-          <div className="flex justify-center lg:w-[800px] lg:h-[450px] shadow-lg rounded-xl mx-4 items-center order-1 lg:order-2 relative lg:-bottom-24 lg:right-16">
+          <div className="relative order-1 mx-4 flex items-center justify-center rounded-xl shadow-lg lg:-bottom-24 lg:right-16 lg:order-2 lg:h-[450px] lg:w-[800px]">
             <video
               style={{
                 objectFit: "cover",

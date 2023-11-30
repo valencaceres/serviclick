@@ -4,45 +4,21 @@ import { Navigation, SwiperOptions } from "swiper"
 
 import "swiper/css"
 import "swiper/css/pagination"
+import { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 
 import { CustomSwiper } from "../slider"
 
-const news = [
-  {
-    id: "novedad-6",
-    image: "/news6.png",
-    link: "/family/52257aa7-4a97-4d02-a08a-7d2324f49630",
-  },
-  {
-    id: "novedad-5",
-    image: "/news5.jpg",
-    link: "/alianza/vinasanpedro",
-  },
-  {
-    id: "novedad-1",
-    image: "/news1.jpg",
-    link: "https://alianza.serviclick.cl/prepago-los-heroes",
-  },
-  {
-    id: "novedad-4",
-    image: "/news4.jpg",
-    link: "/alianza/sindicato1prosegur",
-  },
-  {
-    id: "novedad-2",
-    image: "/news2.jpg",
-    link: "/family/290a790c-f7e3-491f-b528-c218401e5fe0",
-  },
-  {
-    id: "novedad-3",
-    image: "/news3.jpg",
-    link: "/companies",
-  },
-]
+interface News {
+  id: number
+  url: string
+  link: string
+  number: number
+  text: string
+}
 
-export const News = () => {
+export const News = ({ news }: { news: { data: News[] } | undefined }) => {
   const options: SwiperOptions = {
     modules: [Navigation],
     breakpoints: {
@@ -62,15 +38,20 @@ export const News = () => {
     navigation: true,
   }
 
-  const slides = news.map((news) => (
-    <div className="relative mx-auto h-[240px] w-[300px]">
-      <Link href={news.link} passHref>
+  if (!news || !news.data) return null
+
+  const slides = news.data.map((newsItem) => (
+    <div className="relative mx-auto h-[240px] w-[300px]" key={newsItem.id}>
+      <Link href={newsItem.link} passHref>
         <Image
           className="cursor-pointer py-2 duration-75 hover:scale-105"
-          src={news.image}
+          src={newsItem.url}
           alt="News"
           fill
         />
+        <h1 className="absolute z-40 w-full max-w-xs text-center text-3xl uppercase text-white md:max-w-md md:py-20 md:text-start md:text-5xl">
+          {newsItem.text}
+        </h1>{" "}
       </Link>
     </div>
   ))

@@ -10,6 +10,8 @@ interface Assistance {
   family_id: string
   family_name: string
   name: string
+  url: string | null
+  link: string | null
 }
 
 interface AssistancesCarouselProps {
@@ -19,6 +21,11 @@ interface AssistancesCarouselProps {
 export const AssistancesCarousel = ({
   assistances,
 }: AssistancesCarouselProps) => {
+  // Filtrar asistencias con URL no nula
+  const filteredAssistances = assistances.filter(
+    (assistance) => assistance.url !== null
+  )
+
   const options: SwiperOptions = {
     modules: [Navigation],
     breakpoints: {
@@ -39,13 +46,16 @@ export const AssistancesCarousel = ({
     navigation: true,
   }
 
-  const slides = assistances?.map((assistance) => (
-    <div className="shadow-md hover:shadow-none duration-75 w-full max-w-[300px] mx-auto">
+  const slides = filteredAssistances.map((assistance) => (
+    <div
+      className="mx-auto w-full max-w-[300px] shadow-md duration-75 hover:shadow-none"
+      key={assistance.id}
+    >
       <AssistanceCard
-        key={assistance.id}
         family_id={assistance.family_id}
         title={assistance.name}
-        imageLink={`/categories/${assistance.id}.jpg`}
+        imageLink={assistance.url || ""}
+        link={assistance.link || ""}
       />
     </div>
   ))

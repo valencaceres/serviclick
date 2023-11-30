@@ -14,6 +14,7 @@ export async function SiteFooter() {
   )
 
   const categories = await responseCategories.json()
+  const currentYear = new Date().getFullYear()
 
   return (
     <footer className="flex flex-col" id="contact">
@@ -114,7 +115,7 @@ export async function SiteFooter() {
             loading="lazy"
           />
           <p className="text-xs text-[#B2B2B2]">
-            Serviclick 2023 - Todos los derechos reservados.
+            Serviclick {currentYear} - Todos los derechos reservados.
           </p>
         </div>
       </div>
