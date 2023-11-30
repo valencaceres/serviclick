@@ -39,7 +39,6 @@ const CaseStatus = ({ setIsOpen, thisCase }: any) => {
     } else {
       setStatus(false);
     }
-    console.log(status);
     upsert({
       ...caseValue,
       status: {
