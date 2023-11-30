@@ -52,7 +52,7 @@ const CaseStatus = ({ setIsOpen, thisCase }: any) => {
     <ContentCell className="w-[600px]" gap="5px">
       <ContentCell gap="5px">
         <h1 className="select-none text-center text-2xl font-semibold text-secondary-500">
-          Usted {thisCase?.status?.status ? "está cerrando" : "está abriendo"}{" "}
+          Usted {thisCase?.status?.isClosed ? "está abriendo" : "está cerrando"}{" "}
           el caso
         </h1>
         <Label>Ingrese un motivo</Label>
@@ -70,14 +70,14 @@ const CaseStatus = ({ setIsOpen, thisCase }: any) => {
             text="Cancelar"
             iconName="close"
           />
-          {thisCase?.status?.status === true ? (
-            <Button onClick={handleConfirm} text="Confirmar" iconName="lock" />
-          ) : (
+          {thisCase?.status?.isClosed === true ? (
             <Button
               onClick={handleConfirm}
               text="Confirmar"
               iconName="lock_open"
             />
+          ) : (
+            <Button onClick={handleConfirm} text="Confirmar" iconName="lock" />
           )}
         </ContentRow>
       </ContentCell>

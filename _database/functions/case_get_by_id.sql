@@ -1,3 +1,5 @@
+
+drop function app.case_get_by_id;
 CREATE OR REPLACE FUNCTION app.case_get_by_id(p_case_id uuid)
  RETURNS json
  LANGUAGE plpgsql
@@ -267,11 +269,16 @@ begin
 			'specialist', json_specialist,
 			'alliance', json_alliance,
 			'cost', json_cost,
+			'status', json_build_object(
+			'isClosed', cas.isclosed,
+			'description', cas.description_closed),
 			'history', json_history)
 	into	json_case
 	from (	select	cas.id as id,
 					cas.createddate as createddate,
 					cas.number as number,
+					cas.isclosed,
+					cas.description_closed,
 					cas.type as type,
 					lea.id as lead_id,
 					pol.id as policy_id,
