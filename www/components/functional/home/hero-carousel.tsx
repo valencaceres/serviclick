@@ -67,7 +67,7 @@ export const HeroCarousel = ({
         {heroItem.text}
       </h1>
       {heroItem.button_text && heroItem.link && (
-        <div className="absolute z-50 flex h-full w-full items-center  justify-center border border-red-500 ">
+        <div className="absolute z-50 flex h-full w-full items-center  justify-center ">
           <Button
             className="mt-32 cursor-pointer  p-4 text-2xl capitalize md:mt-80"
             onClick={() => router.push(heroItem.link)}
