@@ -18,33 +18,27 @@ interface Route {
 }
 
 const routes = [
-  {
-    text: "Dashboard",
-    roles: ["user", "moderator", "admin"],
-    route: "/",
-  },
-  {
-    text: "Pagina de inicio",
-    roles: ["admin"],
-    subRoutes: [
-      {
-        text: "Noticias",
-        route: "/operations/news",
-      },
-      {
-        text: "Hero",
-        route: "/operations/hero",
-      },
-      {
-        text: "Categorias",
-        route: "/operations/category",
-      },
-      {
-        text: "Familias",
-        route: "/operations/family",
-      },
-    ],
-  },
+{
+  text: "Novedades",
+  roles: ["moderator","admin"],
+  route: "/news",
+},
+{
+  text:"Hero",
+  roles: ["moderator","admin"],
+  route: "/hero",
+},
+{
+  text:"Categorias",
+  roles: ["moderator","admin"],
+  route: "/category",
+},
+{
+  text:"Familias",
+  roles: ["moderator","admin"],
+  route: "/family",
+},
+
 ];
 
 interface MenuProps {

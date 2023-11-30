@@ -504,6 +504,7 @@ const listByFamilies = async (agent: string) => {
                           (age.id::TEXT = $1 OR age.fantasyname = $1)
                           AND ppl.type = 'customer'
                       ORDER BY
+                      wef.number NULLS LAST,
                           fam.name,
                           pro.name,
                           pas.number`;

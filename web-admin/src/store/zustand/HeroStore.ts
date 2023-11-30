@@ -24,6 +24,7 @@ interface userState {
     type: string,
     category_id: string,
     family_id: string,
+    button_text:string,
     options?: { onSuccess?: () => void }
   ) => Promise<void>;
   updateOrder: (
@@ -45,6 +46,7 @@ interface userState {
     link: string,
     category_id: string,
     family_id: string,
+    button_text:string,
     options?: { onSuccess?: () => void }
   ) => Promise<void>;
   deleteById: (
@@ -141,6 +143,7 @@ export const heroStore = create<userState>((set, get) => ({
     link: string,
     category_id: string,
     family_id: string,
+    button_text:string,
     options?: { onSuccess?: () => void }
   ) => {
     try {
@@ -152,6 +155,7 @@ export const heroStore = create<userState>((set, get) => ({
         category_id,
         link,
         family_id,
+        button_text
       });
       set((state) => ({
         ...state,
@@ -178,6 +182,7 @@ export const heroStore = create<userState>((set, get) => ({
     type: string,
     category_id: string,
     family_id: string,
+    button_text:string,
     options?: { onSuccess?: () => void }
   ) => {
     try {
@@ -190,6 +195,7 @@ export const heroStore = create<userState>((set, get) => ({
         category_id,
         link,
         family_id,
+        button_text
       });
       set((state) => ({
         ...state,

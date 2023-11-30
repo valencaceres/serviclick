@@ -72,6 +72,7 @@ const formSchema = z.object({
   link: z.string().optional(),
   category_id: z.string().optional(),
   family_id: z.string().optional(),
+  button_text: z.string().optional(),
 });
 const formSchemaEdit = z.object({
   alt: z.string().optional(),
@@ -79,6 +80,7 @@ const formSchemaEdit = z.object({
   link: z.string().optional(),
   category_id: z.string().optional(),
   family_id: z.string().optional(),
+  button_text: z.string().optional(),
 });
 export const Hero: React.FC<itemsProps> = ({ type }) => {
   const router = useRouter();
@@ -139,6 +141,7 @@ export const Hero: React.FC<itemsProps> = ({ type }) => {
       link: "",
       category_id: undefined,
       family_id: undefined,
+      button_text: "",
     },
   });
   const formEdit = useForm<z.infer<typeof formSchemaEdit>>({
@@ -149,6 +152,7 @@ export const Hero: React.FC<itemsProps> = ({ type }) => {
       link: imagePreview?.link,
       category_id: undefined,
       family_id: undefined,
+      button_text: "",
     },
   });
   const handleSetImagePreviewClick = (clickedImage: HeroItem) => {
@@ -161,6 +165,7 @@ export const Hero: React.FC<itemsProps> = ({ type }) => {
       link: clickedImage.link,
       category_id: clickedImage.category_id,
       family_id: clickedImage.family_id,
+      button_text: clickedImage.button_text,
     });
     setImageId(clickedImage.id);
   };
@@ -177,6 +182,7 @@ export const Hero: React.FC<itemsProps> = ({ type }) => {
           values.link ?? "",
           values.category_id ?? "",
           values.family_id ?? "",
+          values.button_text ?? "",
           {
             onSuccess: () => {
               getAll(type),
@@ -190,6 +196,8 @@ export const Hero: React.FC<itemsProps> = ({ type }) => {
                 form.setValue("category_id", undefined),
                 form.setValue("link", ""),
                 form.setValue("family_id", undefined);
+              form.setValue("button_text", "");
+
               setFiles([]);
             },
           }
@@ -209,6 +217,8 @@ export const Hero: React.FC<itemsProps> = ({ type }) => {
         values.link ?? "",
         values.category_id ?? "",
         values.family_id ?? "",
+        values.button_text ?? "",
+
         {
           onSuccess: () => {
             getAll(type),
@@ -273,6 +283,7 @@ export const Hero: React.FC<itemsProps> = ({ type }) => {
         formEdit.setValue("category_id", imagePreview.category_id),
         formEdit.setValue("link", imagePreview.link),
         formEdit.setValue("family_id", imagePreview.family_id);
+      formEdit.setValue("button_text", imagePreview.button_text);
     }
   }, [imagePreview]);
   return (
@@ -352,12 +363,37 @@ export const Hero: React.FC<itemsProps> = ({ type }) => {
                               </FormItem>
                             )}
                           />
+                          {type === "hero" && (
+                            <FormField
+                              control={form.control}
+                              name="button_text"
+                              render={({ field }) => (
+                                <FormItem className="w-full">
+                                  <FormLabel>
+                                    Texto que se colocara en el boton
+                                  </FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      type="text"
+                                      placeholder="Oferta"
+                                      {...field}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          )}
                           <FormField
                             control={form.control}
                             name="link"
                             render={({ field }) => (
                               <FormItem className="w-full">
-                                <FormLabel>Url de redireccion</FormLabel>
+                                <FormLabel>
+                                  {type === "hero"
+                                    ? "Link del boton"
+                                    : "Url de redireccion"}
+                                </FormLabel>{" "}
                                 <FormControl>
                                   <Input
                                     type="text"
@@ -595,10 +631,33 @@ export const Hero: React.FC<itemsProps> = ({ type }) => {
                                 />
                                 <FormField
                                   control={formEdit.control}
+                                  name="button_text"
+                                  render={({ field }) => (
+                                    <FormItem className="w-full">
+                                      <FormLabel>
+                                        Texto que se coloca en el boton
+                                      </FormLabel>
+                                      <FormControl>
+                                        <Input
+                                          type="text"
+                                          placeholder="Oferta 2 "
+                                          {...field}
+                                        />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                                <FormField
+                                  control={formEdit.control}
                                   name="link"
                                   render={({ field }) => (
                                     <FormItem className="w-full">
-                                      <FormLabel>Url de redireccion</FormLabel>
+                                      <FormLabel>
+                                        {type === "hero"
+                                          ? "Link del boton"
+                                          : "Url de redireccion"}
+                                      </FormLabel>{" "}
                                       <FormControl>
                                         <Input
                                           type="text"

@@ -13,6 +13,8 @@ import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
+import { Button } from "@/components/ui/button"
+
 import { CustomSwiper } from "../slider"
 
 interface HeroItem {
@@ -22,6 +24,7 @@ interface HeroItem {
   number: number
   id: string
   link: string
+  button_text: string
 }
 
 export const HeroCarousel = ({
@@ -49,22 +52,32 @@ export const HeroCarousel = ({
     pagination: { clickable: true },
     scrollbar: { draggable: true },
   }
-
+  console.log(heroData)
   const slides = heroData.map((heroItem) => (
-    <section className="relative flex h-[250px] w-full cursor-pointer items-center justify-center md:h-[550px] md:justify-start">
+    <section className="relative flex h-[250px] w-full  items-center justify-center md:h-[550px] md:justify-start">
       <Image
         src={heroItem.url}
         alt={heroItem.alt}
         fill
         quality={100}
-        className="cursor-pointer object-cover object-top"
+        className=" object-cover object-top"
         loading="lazy"
       />
       <h1 className="absolute z-40 w-full max-w-xs text-center text-5xl uppercase text-white md:max-w-md md:pl-20 md:text-start md:text-6xl">
         {heroItem.text}
       </h1>
+      {heroItem.button_text && heroItem.link && (
+        <div className="absolute z-50 flex h-full w-full items-center  justify-center border border-red-500 ">
+          <Button
+            className="mt-32 cursor-pointer  p-4 text-2xl capitalize md:mt-80"
+            onClick={() => router.push(heroItem.link)}
+          >
+            {heroItem.button_text}
+          </Button>
+        </div>
+      )}
 
-      <Link
+      {/*   <Link
         key={heroItem.id}
         href={`${heroItem.link}`}
         passHref
@@ -72,7 +85,7 @@ export const HeroCarousel = ({
         className={cn("absolute left-0 top-0 z-30 h-full w-full", {
           "bg-black bg-opacity-30": heroItem.text,
         })}
-      ></Link>
+      ></Link> */}
     </section>
   ))
 
