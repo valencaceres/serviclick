@@ -5,8 +5,24 @@ type UserRole = "user" | "moderator" | "admin";
 
 const roles: Record<UserRole, RegExp[]> = {
   user: [/^\/$/],
-  moderator: [/^\/$/, /^\/operations(\/.*)?$/],
-  admin: [/^\/$/, /^\/operations(\/.*)?$/],
+  moderator: [
+    /^\/$/,
+    /^\/news(\/.*)?$/,
+    /^\/$/,
+    /^\/hero(\/.*)?$/,
+    /^\/$/,
+    /^\/category(\/.*)?$/,
+    /^\/family(\/.*)?$/,
+  ],
+  admin: [
+    /^\/$/,
+    /^\/news(\/.*)?$/,
+    /^\/$/,
+    /^\/hero(\/.*)?$/,
+    /^\/$/,
+    /^\/category(\/.*)?$/,
+    /^\/family(\/.*)?$/,
+  ],
 };
 
 export default authMiddleware({

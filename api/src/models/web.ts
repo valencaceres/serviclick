@@ -19,7 +19,8 @@ const createItem: any = async (
   text: string,
   link: string,
   category_id: string,
-  family_id: string
+  family_id: string,
+  button_text: string
 ) => {
   try {
     const maxNumberResult = await pool.query(
@@ -37,6 +38,11 @@ const createItem: any = async (
       result = await pool.query(
         `INSERT INTO app.www_${type}(url, alt, text, number, link, family_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
         [url, alt, text, newNumber, link, family_id]
+      );
+    } else if (type === "hero") {
+      result = await pool.query(
+        `INSERT INTO app.www_${type}(url, alt, text, number, link, button_text) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+        [url, alt, text, newNumber, link, button_text]
       );
     } else {
       result = await pool.query(
@@ -115,7 +121,8 @@ const updateItem = async (
   link: string,
   type: string,
   category_id: string,
-  family_id: string
+  family_id: string,
+  button_text: string
 ) => {
   try {
     let result;
@@ -128,6 +135,11 @@ const updateItem = async (
       result = await pool.query(
         `UPDATE app.www_${type} SET alt = $2, text = $3, link = $4, family_id = $5 WHERE id = $1 RETURNING *`,
         [id, alt, text, link, family_id]
+      );
+    } else if (type === "hero") {
+      result = await pool.query(
+        `UPDATE app.www_${type} SET alt = $2, text = $3, link = $4, button_text = $5 WHERE id = $1 RETURNING *`,
+        [id, alt, text, link, button_text]
       );
     } else {
       result = await pool.query(

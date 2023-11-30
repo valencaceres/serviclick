@@ -23,7 +23,7 @@ const getItems = async (req: any, res: any) => {
   return res.status(200).json(responseData);
 };
 const createItem = async (req: any, res: any) => {
-  const { url, alt, text, link, category_id, family_id } = req.body;
+  const { url, alt, text, link, category_id, family_id, button_text } = req.body;
   const { type } = req.query;
 
   const response = await Web.createItem(
@@ -33,7 +33,8 @@ const createItem = async (req: any, res: any) => {
     text,
     link,
     category_id,
-    family_id
+    family_id,
+    button_text
   );
 
   if (!response.success) {
@@ -52,7 +53,7 @@ const createItem = async (req: any, res: any) => {
   return res.status(200).json(response.data);
 };
 const updateItem = async (req: any, res: any) => {
-  const { id, alt, text, link, category_id, family_id } = req.body;
+  const { id, alt, text, link, category_id, family_id, button_text } = req.body;
 
   const { type } = req.query;
   const response = await Web.updateItem(
@@ -62,7 +63,8 @@ const updateItem = async (req: any, res: any) => {
     type,
     link,
     category_id,
-    family_id
+    family_id,
+    button_text
   );
   if (!response.success) {
     createLogger.error({
