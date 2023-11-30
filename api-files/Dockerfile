@@ -21,7 +21,7 @@ RUN yarn build
 WORKDIR /app/dist
 
 # Exponer el puerto en el que se ejecuta la aplicación
-EXPOSE 3003
+EXPOSE 3019
 
 # Comando para iniciar la aplicación
 CMD ["node", "server.js"]
