@@ -17,6 +17,8 @@ COPY . .
 
 RUN yarn build
 
+RUN apk update && apk upgrade --no-cache libcrypto3 libssl3
+
 # Directorio de trabajo en el contenedor
 WORKDIR /app/dist
 
