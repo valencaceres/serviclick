@@ -705,7 +705,11 @@ const upsert: any = async (
     qualification_id: string;
     comment: string;
   },
-  cost: { fixed: number; extra: number }
+  cost: { fixed: number; extra: number },
+  status: {
+    description: string;
+    isClosed: boolean;
+  }
 ) => {
   try {
     const caseUpsert = await pool.query(_upsert, [
@@ -727,6 +731,7 @@ const upsert: any = async (
       specialist,
       alliance,
       cost,
+      status,
     ]);
 
     return {

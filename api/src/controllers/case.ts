@@ -852,6 +852,7 @@ const upsert = async (req: any, res: any) => {
     event,
     files,
     procedure_id,
+    status,
     refund,
     specialist,
     alliance,
@@ -876,7 +877,8 @@ const upsert = async (req: any, res: any) => {
     refund,
     specialist,
     alliance,
-    cost
+    cost,
+    status
   );
   if (!response.success) {
     createLogger.error({
