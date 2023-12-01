@@ -2,12 +2,15 @@ import axios from "axios";
 import { IClerkUser } from "../interfaces/person";
 export const fetchtAllClerkUsers = async () => {
   try {
-    const response = await axios.get("https://api.clerk.com/v1/users", {
-      headers: {
-        Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`,
-      },
-    });
-
+    const response = await axios.get(
+      "https://api.clerk.com/v1/users?limit=500&offset=0&order_by=-created_at",
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`,
+        },
+      }
+    );
+    console.log(response.data);
     return {
       success: true,
       data: response.data,
@@ -72,7 +75,7 @@ export const fetchUpdateClerkUser = async (id: string, input: IClerkUser) => {
       roles: {
         admin: "user" | "admin" | "moderator";
         broker: "user" | "admin" | "moderator";
-        operations: "user" | "admin" | "moderator";
+        operaciones: "user" | "admin" | "moderator";
         serviclick: "user" | "admin" | "moderator";
         retail: "user" | "admin" | "moderator";
         web_admin: "user" | "admin" | "moderator";
@@ -87,7 +90,7 @@ export const fetchUpdateClerkUser = async (id: string, input: IClerkUser) => {
       roles: {
         admin: input.type_role_admin,
         broker: input.type_role_broker,
-        operations: input.type_role_operations,
+        operaciones: input.type_role_operations,
         serviclick: input.type_role_serviclick,
         retail: input.type_role_retail,
         web_admin: input.type_role_web_admin,
