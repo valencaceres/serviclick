@@ -2,12 +2,15 @@ import axios from "axios";
 import { IClerkUser } from "../interfaces/person";
 export const fetchtAllClerkUsers = async () => {
   try {
-    const response = await axios.get("https://api.clerk.com/v1/users", {
-      headers: {
-        Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`,
-      },
-    });
-
+    const response = await axios.get(
+      "https://api.clerk.com/v1/users?limit=500&offset=0&order_by=-created_at",
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`,
+        },
+      }
+    );
+    console.log(response.data);
     return {
       success: true,
       data: response.data,
