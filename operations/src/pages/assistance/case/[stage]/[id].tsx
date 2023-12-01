@@ -286,7 +286,7 @@ const AssistanceCasePage = () => {
       <CaseHistory setShowModal={setShowModal} showModal={showModal} />
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />
-        {caseId?.status?.isClosed === true ? (
+        {caseValue?.status?.isClosed === true ? (
           <ButtonIcon iconName="lock_open" onClick={setOpenModalStatus} />
         ) : (
           <ButtonIcon iconName="lock" onClick={setOpenModalStatus} />
