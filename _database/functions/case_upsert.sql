@@ -1,4 +1,5 @@
-CREATE OR REPLACE FUNCTION app.case_upsert(p_case_id uuid, p_user_id character varying, p_type character varying, p_insured json, p_beneficiary json, p_customer json, p_retail json, p_product json, p_assistance json, p_lead_id uuid, p_values json[], p_event json, p_files json[], p_procedure_id uuid, p_refund json, p_specialist json, p_alliance json, p_cost json)
+drop function app.case_upsert;
+CREATE OR REPLACE FUNCTION app.case_upsert(p_case_id uuid, p_user_id character varying, p_type character varying, p_insured json, p_beneficiary json, p_customer json, p_retail json, p_product json, p_assistance json, p_lead_id uuid, p_values json[], p_event json, p_files json[], p_procedure_id uuid, p_refund json, p_specialist json, p_alliance json, p_cost json, p_status json)
  RETURNS json
  LANGUAGE plpgsql
 AS $function$
@@ -10,6 +11,8 @@ declare
 	p_beneficiary_id uuid;
 	p_product_id uuid;
 	p_assistance_id uuid;
+   p_is_closed boolean;
+    p_description_closed varchar;
 	p_refund_json JSON;
 	item JSON;
 	json_case JSON;
@@ -17,8 +20,24 @@ declare
 	json_files JSON;
 	json_history JSON;
 	json_result JSON;
+    json_status JSON;
 
 begin
+	
+	 p_is_closed := (p_status->>'isClosed')::boolean;
+    p_description_closed := p_status->>'description';
+
+ 
+    IF p_case_id IS NOT NULL THEN
+        UPDATE app.case
+        SET
+            isclosed = p_is_closed,
+            description_closed = p_description_closed
+        WHERE
+            id = p_case_id;
+
+        RAISE NOTICE 'Updated app.case with id: %', p_case_id;
+    END IF;
 	
 	if not p_retail is null then
 		p_retail_id := (p_retail->>'id')::uuid;

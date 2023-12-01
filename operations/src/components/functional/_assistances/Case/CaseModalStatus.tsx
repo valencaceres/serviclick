@@ -33,27 +33,38 @@ const CaseStatus = ({ setIsOpen, thisCase }: any) => {
       },
     });
   };
-  const handleConfirm = () => {
-    if (caseValue?.status?.isClosed === false) {
-      setStatus(true);
-    } else {
-      setStatus(false);
-    }
+  const handleConfirmStatusFalse = () => {
     upsert({
       ...caseValue,
       status: {
-        isClosed: status,
+        isClosed: false,
         description: caseValue?.status?.description,
       },
     });
     setIsOpen(false);
   };
+  const handleConfirmStatusTrue = () => {
+    upsert({
+      ...caseValue,
+      status: {
+        isClosed: true,
+        description: caseValue?.status?.description,
+      },
+    });
+    setIsOpen(false);
+  };
+  useEffect(() => {
+    if (caseValue?.status?.isClosed === false) {
+      setStatus(true);
+    } else if (caseValue?.status?.isClosed === true) {
+      setStatus(false);
+    }
+  }, [caseValue?.status?.isClosed]);
   return (
     <ContentCell className="w-[600px]" gap="5px">
       <ContentCell gap="5px">
         <h1 className="select-none text-center text-2xl font-semibold text-secondary-500">
-          Usted {thisCase?.status?.isClosed ? "está abriendo" : "está cerrando"}{" "}
-          el caso
+          Usted {status ? "está cerrando" : "está abriendo"} el caso
         </h1>
         <Label>Ingrese un motivo</Label>
         <TextArea
@@ -61,7 +72,7 @@ const CaseStatus = ({ setIsOpen, thisCase }: any) => {
           height="100px"
           id="description"
           className={"w-full"}
-          value={thisCase?.status?.description}
+          value={caseValue?.status?.description}
           onChange={handleChange}
         />
         <ContentRow className="justify-between" gap="5px">
@@ -70,14 +81,18 @@ const CaseStatus = ({ setIsOpen, thisCase }: any) => {
             text="Cancelar"
             iconName="close"
           />
-          {thisCase?.status?.isClosed === true ? (
+          {status ? (
             <Button
-              onClick={handleConfirm}
+              onClick={handleConfirmStatusTrue}
+              text="Confirmar"
+              iconName="lock"
+            />
+          ) : (
+            <Button
+              onClick={handleConfirmStatusFalse}
               text="Confirmar"
               iconName="lock_open"
             />
-          ) : (
-            <Button onClick={handleConfirm} text="Confirmar" iconName="lock" />
           )}
         </ContentRow>
       </ContentCell>
