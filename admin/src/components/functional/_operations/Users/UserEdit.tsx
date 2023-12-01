@@ -121,7 +121,7 @@ export const UserEdit: React.FC = () => {
         email_address: user?.data?.email_addresses[0]?.email_address,
         type_role_admin: user.data?.public_metadata?.roles?.admin,
         type_role_broker: user.data?.public_metadata?.roles?.broker,
-        type_role_operations: user.data?.public_metadata?.roles?.operations,
+        type_role_operations: user.data?.public_metadata?.roles?.operaciones,
         type_role_serviclick: user.data?.public_metadata?.roles?.serviclick,
         type_role_retail: user.data?.public_metadata?.roles?.retail,
         type_role_web_admin: user.data?.public_metadata?.roles?.web_admin,
@@ -168,7 +168,6 @@ export const UserEdit: React.FC = () => {
   }
   const watchAllFields = form.watch();
   const isEqual = watchAllFields.password === watchAllFields.passwordConfirm;
-
   return (
     <>
       <div className="flex w-full flex-col gap-4 pb-20">
@@ -373,7 +372,7 @@ export const UserEdit: React.FC = () => {
                   name="type_role_operations"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Rol del modulo operations</FormLabel>
+                      <FormLabel>Rol del modulo operaciones</FormLabel>
                       <FormControl>
                         <Select
                           value={field.value}
@@ -498,7 +497,7 @@ export const UserEdit: React.FC = () => {
                   watchAllFields.type_role_broker !==
                     user.data?.public_metadata?.roles?.broker ||
                   watchAllFields.type_role_operations !==
-                    user.data?.public_metadata?.roles?.operations ||
+                    user.data?.public_metadata?.roles?.operaciones ||
                   watchAllFields.type_role_serviclick !==
                     user.data?.public_metadata?.roles?.serviclick ||
                   watchAllFields.type_role_retail !==
@@ -526,7 +525,7 @@ export const UserEdit: React.FC = () => {
                       type_role_broker:
                         user.data?.public_metadata?.roles?.broker,
                       type_role_operations:
-                        user.data?.public_metadata?.roles?.operations,
+                        user.data?.public_metadata?.roles?.operaciones,
                       type_role_serviclick:
                         user.data?.public_metadata?.roles?.serviclick,
                       type_role_web_admin:

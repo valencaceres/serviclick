@@ -40,7 +40,7 @@ export interface User {
       admin: string;
       broker: string;
       retail: string;
-      operations: string;
+      operaciones: string;
       serviclick: string;
       web_admin:string;
     };

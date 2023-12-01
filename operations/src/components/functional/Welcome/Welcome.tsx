@@ -3,7 +3,6 @@ import { useUser } from "@clerk/nextjs";
 
 import { Content, ContentCell } from "../../layout/Content";
 
-
 import { useUI } from "../../../hooks";
 import Image from "next/image";
 
