@@ -72,7 +72,7 @@ export const fetchUpdateClerkUser = async (id: string, input: IClerkUser) => {
       roles: {
         admin: "user" | "admin" | "moderator";
         broker: "user" | "admin" | "moderator";
-        operations: "user" | "admin" | "moderator";
+        operaciones: "user" | "admin" | "moderator";
         serviclick: "user" | "admin" | "moderator";
         retail: "user" | "admin" | "moderator";
         web_admin: "user" | "admin" | "moderator";
@@ -87,7 +87,7 @@ export const fetchUpdateClerkUser = async (id: string, input: IClerkUser) => {
       roles: {
         admin: input.type_role_admin,
         broker: input.type_role_broker,
-        operations: input.type_role_operations,
+        operaciones: input.type_role_operations,
         serviclick: input.type_role_serviclick,
         retail: input.type_role_retail,
         web_admin: input.type_role_web_admin,
