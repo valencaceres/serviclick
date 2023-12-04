@@ -16,7 +16,7 @@ import {
   TableIcons,
   TableCellText,
 } from "~/components/ui";
-
+import { useRouter } from "next/router";
 import { useCase } from "~/store/hooks";
 import { useUser } from "@clerk/nextjs";
 import { IApplicant } from "../../../../interfaces/applicant";
@@ -34,12 +34,13 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
     assistances,
     getServicesAndValues,
     caseId,
+    getById,
   } = useCase();
   const { user } = useUser();
 
   const [applicant, setApplicant] = useState<IApplicant>();
   const [hasLoadedServices, setHasLoadedServices] = useState<boolean>(false);
-
+  const router = useRouter();
   const isValidAmount = !(
     caseValue?.assistance.assigned.currency === "$" &&
     caseValue.assistance.used.total_amount >=
@@ -93,7 +94,12 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
       setHasLoadedServices(true);
     }
   }, [caseId, caseValue, hasLoadedServices, assistances]);
-
+  useEffect(() => {
+    if (router.query.id === "new") {
+      getById("nulll");
+    }
+  }, [router.query.id, getById]);
+  const caseIdd = caseValue.case_id === null;
   const handleChangeValue = (e: any, id: string) => {
     if (Array.isArray(caseValue.values)) {
       const values = caseValue.values.map((item) => {
@@ -223,7 +229,12 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
           data={assistances}
           dataValue={"id"}
           dataText={"name"}
-          enabled={user?.publicMetadata?.roles?.operaciones === "admin"}
+          enabled={
+            caseValue.case_id === "" ||
+            caseValue.case_id === null ||
+            (caseValue.assistance.id !== "" &&
+              user?.publicMetadata?.roles?.operaciones === "admin")
+          }
         />
         <ContentRow gap="5px">
           <InputText

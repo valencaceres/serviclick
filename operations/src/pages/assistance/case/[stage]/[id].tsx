@@ -260,7 +260,6 @@ const AssistanceCasePage = () => {
       }
     }
   }, [stageKey, caseId, router.query.id]);
-
   useEffect(() => {
     setIsProcessing(false);
     if (router.isReady) {
@@ -286,17 +285,18 @@ const AssistanceCasePage = () => {
       <CaseHistory setShowModal={setShowModal} showModal={showModal} />
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />
-        {caseValue?.status?.isClosed === true ? (
-          <ButtonIcon iconName="lock_open" onClick={setOpenModalStatus} />
-        ) : (
-          <ButtonIcon iconName="lock" onClick={setOpenModalStatus} />
-        )}
+        {caseValue.case_id !== null &&
+          caseValue.case_id !== "" &&
+          (caseValue?.status?.isClosed === true ? (
+            <ButtonIcon iconName="lock_open" onClick={setOpenModalStatus} />
+          ) : (
+            <ButtonIcon iconName="lock" onClick={setOpenModalStatus} />
+          ))}
         <ButtonIcon iconName="arrow_back" onClick={handleClickBack} />
-
         <ButtonIcon
           iconName="save"
           onClick={handleClickSave}
-          disabled={!isEnabledSave || caseId.status?.isClosed === true}
+          disabled={!isEnabledSave || caseValue.status?.isClosed === true}
         />
       </FloatMenu>
       {caseValue.case_id !== null && caseValue.case_id !== "" && (

@@ -32,7 +32,6 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   const [applicant, setApplicant] = useState<IApplicant>();
   const [confirmHour, setConfirmHour] = useState(false);
   const [confirmVisit, setConfirmVisit] = useState(false);
-
   const minDate = new Date();
   const router = useRouter();
 
@@ -186,7 +185,6 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
       );
     }
   }, [caseValue.assistance, caseValue.alliance?.partner_id]);
-
   return (
     <ContentCell gap="20px">
       <ContentCell gap="5px">
@@ -319,7 +317,7 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
               ></ContentRow>
             </>
           )}
-          {caseValue.alliance?.partner_id && (
+          {caseValue.alliance?.partner_district && (
             <>
               <InputText
                 label="Districto alianza"
