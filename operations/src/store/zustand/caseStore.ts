@@ -58,6 +58,7 @@ interface caseState {
   upsert: (data: ICase) => void;
   resetNoRut: (applicantCode: "insured" | "beneficiary", rut: string) => void;
   reset: () => void;
+  resetCaseId: () => void;
 }
 
 const initialCase: ICase = {
@@ -327,6 +328,12 @@ export const caseStore = create<caseState>((set) => ({
     set((state) => ({
       ...state,
       case: initialCase,
+    }));
+  },
+  resetCaseId: () => {
+    set((state) => ({
+      ...state,
+      caseId: initialCase,
     }));
   },
 }));

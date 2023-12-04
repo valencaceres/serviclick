@@ -34,7 +34,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
     assistances,
     getServicesAndValues,
     caseId,
-    getById,
+    resetCaseId,
   } = useCase();
   const { user } = useUser();
 
@@ -96,10 +96,10 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
   }, [caseId, caseValue, hasLoadedServices, assistances]);
   useEffect(() => {
     if (router.query.id === "new") {
-      getById("nulll");
+      resetCaseId();
     }
-  }, [router.query.id, getById]);
-  const caseIdd = caseValue.case_id === null;
+  }, [router.query.id, resetCaseId]);
+
   const handleChangeValue = (e: any, id: string) => {
     if (Array.isArray(caseValue.values)) {
       const values = caseValue.values.map((item) => {
