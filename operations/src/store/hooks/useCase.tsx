@@ -36,6 +36,7 @@ const useCase = () => {
     upsert,
     resetNoRut,
     reset,
+    resetCaseId,
   } = caseStore();
 
   return {
@@ -59,6 +60,7 @@ const useCase = () => {
     upsert,
     resetNoRut,
     reset,
+    resetCaseId,
   };
 };
 
