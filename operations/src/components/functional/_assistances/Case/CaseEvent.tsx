@@ -153,7 +153,7 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
               onChange={handleChange}
               maxTime={minDate?.toISOString().split("T")[0]}
               disabled={
-                caseId?.event?.date !== null &&
+                caseValue?.event?.date !== null &&
                 user?.publicMetadata.roles?.operaciones !== "admin"
               }
               timeFormat=""
@@ -169,7 +169,7 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
               dataText={"district_name"}
               width="290px"
               enabled={
-                caseId.event?.location === "" ||
+                caseId.event?.location === null ||
                 (user?.publicMetadata?.roles?.operaciones === "admin" &&
                   caseId.event?.location != null)
               }
@@ -183,9 +183,8 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
             width="530px"
             height="110px"
             disabled={
-              caseId?.event?.description !== null ||
-              (caseId?.event?.description !== null &&
-                user?.publicMetadata.roles?.operaciones !== "admin")
+              caseValue?.event?.description !== null &&
+              user?.publicMetadata.roles?.operaciones !== "admin"
             }
           />
           <ComboBox
