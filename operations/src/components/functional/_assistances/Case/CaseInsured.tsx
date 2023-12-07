@@ -76,7 +76,7 @@ const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
 
     switch (id) {
       case "rut":
-        resetNoRut("insured", value);
+        resetNoRut("insured", value, true);
         setIsValidField({ ...isValidField, [id]: isValidRut(value) });
         return;
       case "phone":
@@ -120,7 +120,6 @@ const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
 
   const handleBlur = (e: any) => {
     const value = e.target.value;
-
     switch (e.target.id) {
       case "rut":
         const formattedRut = formatRut(value);
@@ -128,7 +127,9 @@ const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
           ...caseValue,
           insured: { ...caseValue.insured, rut: formattedRut },
         });
-        getApplicantByRut(formattedRut);
+
+        getApplicantByRut(formattedRut, caseValue.type, caseValue);
+
         return;
     }
   };

@@ -104,16 +104,20 @@ const upsert = async (req: any, res: any) => {
     message: "OK",
   });
 
+  const beneficiaryUpsert = response.data.beneficiary_upsert;
+
+  const valuesArray = beneficiaryUpsert.replace(/^\(|\)$/g, "").split(",");
   const data = {
-    rut: response.data.rut,
-    name: response.data.name,
-    paternalLastName: response.data.paternallastname,
-    maternalLastName: response.data.maternallastname,
-    address: response.data.address,
-    district: response.data.district,
-    email: response.data.email,
-    phone: response.data.phone,
-    birthDate: response.data.birthdate,
+    id: valuesArray[0],
+    rut: valuesArray[1],
+    name: valuesArray[2],
+    paternalLastName: valuesArray[3],
+    maternalLastName: valuesArray[4],
+    address: valuesArray[5],
+    district: valuesArray[6],
+    email: valuesArray[7],
+    phone: valuesArray[8],
+    birthDate: valuesArray[9],
   };
 
   res.status(200).json(data);

@@ -246,6 +246,48 @@ const getAll: any = async () => {
   }
 };
 
+const getProductsAndRetail: any = async () => {
+  try {
+    const result = await pool.query(
+      `
+      SELECT
+        ret.id AS retail_id,
+        ret.rut AS retail_rut,
+        ret.name AS retail_name,
+        array_agg(jsonb_build_object('id', pro.id, 'name', pro.name,'productplan_id', pla.id )) AS products
+      FROM
+        app.retail ret
+      JOIN
+        app.retailproduct rpt ON ret.id = rpt.retail_id
+      JOIN
+        app.product pro ON rpt.product_id = pro.id
+       JOIN
+        app.productplan pla on pro.id = pla.product_id and ret.id = pla.agent_id
+      WHERE
+        ret.isactive IS TRUE
+      GROUP BY
+        ret.id, ret.rut, ret.name, ret.legalrepresentative, ret.line, ret.fantasyname,
+        ret.address, ret.district, ret.email, ret.phone;`
+    );
+
+    const data = result.rows.map((row) => {
+      const { retail_id, retail_rut, retail_name, products } = row;
+
+      const retailInfo = {
+        id: retail_id,
+        rut: retail_rut,
+        name: retail_name,
+        products: products || [],
+      };
+
+      return retailInfo;
+    });
+
+    return { success: true, data, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
 const getBySearchValues: any = async (rut: string, name: string) => {
   try {
     const result = await pool.query(_getBySearchValues(rut, name));
@@ -621,6 +663,7 @@ export {
   getById,
   getByRut,
   getAll,
+  getProductsAndRetail,
   updateLogo,
   updatePaymentCodes,
   deleteById,

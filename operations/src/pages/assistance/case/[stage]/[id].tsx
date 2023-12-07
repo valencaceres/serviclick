@@ -11,7 +11,7 @@ import CaseStatus from "~/components/functional/_assistances/Case/CaseModalStatu
 import { stagePages } from "../../../../data/stages";
 
 import { useDistrict, useUI } from "~/hooks";
-import { useCase, useApplicant, useProcedure } from "~/store/hooks";
+import { useCase, useProcedure } from "~/store/hooks";
 import { Modal, Window } from "~/components/ui/Modal";
 type Stage = keyof typeof stagePages;
 
@@ -31,23 +31,18 @@ const AssistanceCasePage = () => {
       onLoad: () =>
         setTitleUI(
           `Caso${
-            caseValue.case_id ? " N°" + caseNumber.toString() : ""
+            caseValue?.case_id ? " N°" + caseNumber.toString() : ""
           } - Datos del beneficiario`
         ),
       save: () => saveApplicant(),
-      next: () =>
-        router.push(
-          `/assistance/case/${
-            caseValue.type === "I" ? "product" : "insured"
-          }/${urlID}`
-        ),
+      next: () => router.push(`/assistance/case/${beneficiaryType}/${urlID}`),
       back: () => router.push(`/assistance/case`),
     },
     insured: {
       onLoad: () =>
         setTitleUI(
           `Caso${
-            caseValue.case_id ? " N°" + caseNumber.toString() : ""
+            caseValue?.case_id ? " N°" + caseNumber.toString() : ""
           } - Datos del titular`
         ),
       save: () => saveInsured(),
@@ -62,7 +57,7 @@ const AssistanceCasePage = () => {
       onLoad: () =>
         setTitleUI(
           `Caso${
-            caseValue.case_id ? " N°" + caseNumber.toString() : ""
+            caseValue?.case_id ? " N°" + caseNumber.toString() : ""
           } - Datos del servicio`
         ),
       save: () => {
@@ -76,7 +71,7 @@ const AssistanceCasePage = () => {
       back: () =>
         router.push(
           `/assistance/case/${
-            caseValue.type === "I" ? "applicant" : "insured"
+            caseValue?.type === "I" ? "applicant" : "insured"
           }/${caseValue?.case_id}`
         ),
     },
@@ -84,7 +79,7 @@ const AssistanceCasePage = () => {
       onLoad: () =>
         setTitleUI(
           `Caso${
-            caseValue.case_id ? " N°" + caseNumber.toString() : ""
+            caseValue?.case_id ? " N°" + caseNumber.toString() : ""
           } - Datos del evento`
         ),
       save: () => saveStage(),
@@ -96,7 +91,7 @@ const AssistanceCasePage = () => {
       onLoad: () =>
         setTitleUI(
           `Caso${
-            caseValue.case_id ? " N°" + caseNumber.toString() : ""
+            caseValue?.case_id ? " N°" + caseNumber.toString() : ""
           } - Antecedentes (adjuntos)`
         ),
       save: () => saveStage(),
@@ -110,63 +105,61 @@ const AssistanceCasePage = () => {
       onLoad: () =>
         setTitleUI(
           `Caso${
-            caseValue.case_id ? " N°" + caseNumber.toString() : ""
+            caseValue?.case_id ? " N°" + caseNumber.toString() : ""
           } - Reembolso`
         ),
       save: () => saveStage(),
       next: () => router.push(`/assistance/case`),
       back: () =>
-        router.push(`/assistance/case/attachment/${caseValue.case_id}`),
+        router.push(`/assistance/case/attachment/${caseValue?.case_id}`),
     },
     imed: {
       onLoad: () =>
         setTitleUI(
           `Caso${
-            caseValue.case_id ? " N°" + caseNumber.toString() : ""
+            caseValue?.case_id ? " N°" + caseNumber.toString() : ""
           } - Devolución IMED`
         ),
       save: () => saveStage(),
       next: () => router.push(`/assistance/case`),
       back: () =>
-        router.push(`/assistance/case/attachment/${caseValue.case_id}`),
+        router.push(`/assistance/case/attachment/${caseValue?.case_id}`),
     },
     specialist: {
       onLoad: () =>
         setTitleUI(
           `Caso${
-            caseValue.case_id ? " N°" + caseNumber.toString() : ""
+            caseValue?.case_id ? " N°" + caseNumber.toString() : ""
           } - Envío de especialista`
         ),
       save: () => saveStage(),
       next: () => router.push(`/assistance/case`),
       back: () =>
-        router.push(`/assistance/case/attachment/${caseValue.case_id}`),
+        router.push(`/assistance/case/attachment/${caseValue?.case_id}`),
     },
     alliance: {
       onLoad: () =>
         setTitleUI(
           `Caso${
-            caseValue.case_id ? " N°" + caseNumber.toString() : ""
+            caseValue?.case_id ? " N°" + caseNumber.toString() : ""
           } - Designación de alianza`
         ),
       save: () => saveStage(),
       next: () => router.push(`/assistance/case`),
       back: () =>
-        router.push(`/assistance/case/attachment/${caseValue.case_id}`),
+        router.push(`/assistance/case/attachment/${caseValue?.case_id}`),
     },
   };
 
   const { setTitleUI } = useUI();
   const { listAllDistrict } = useDistrict();
-  const {
-    upsert: applicantUpsert,
-    isLoading: isLoadingApplicant,
-    applicant,
-  } = useApplicant();
+
   const {
     getById: getCaseById,
     upsert: caseUpsert,
     caseValue,
+    upsertApplicant: applicantUpsert,
+    applicant,
     isLoading: isLoadingCase,
     caseId,
   } = useCase();
@@ -180,23 +173,42 @@ const AssistanceCasePage = () => {
   const [showModal, setShowModal] = useState(false);
   const [openModalStatus, setIsOpenModalStatus] = useState<boolean>(false);
   const [caseNumber, setCaseNumber] = useState<string | number>("");
+  const [beneficiaryType, setBeneficiaryType] = useState<string>("");
 
   const matchingProcedure = procedureList.find(
-    (procedure) => procedure.id === caseValue.procedure_id
+    (procedure) => procedure.id === caseValue?.procedure_id
   );
 
   const saveApplicant = () => {
     if (caseValue.type) {
+      const isTypeC = caseValue.type === "C";
       const applicant =
-        caseValue?.type === "I" ? caseValue.insured : caseValue.beneficiary;
+        caseValue.type === "I"
+          ? caseValue.insured
+          : caseValue.type === "B"
+          ? caseValue.beneficiary
+          : isTypeC && !caseValue.insured.name
+          ? caseValue.beneficiary
+          : caseValue.insured;
+
+      const caseType =
+        caseValue.type === "I"
+          ? "I"
+          : caseValue.type === "B"
+          ? "B"
+          : isTypeC && !caseValue.insured.name
+          ? "B"
+          : "I";
+
       if (applicant) {
-        applicantUpsert(caseValue?.type, applicant);
+        applicantUpsert(caseType, applicant, caseValue);
+        stateMachine[stageKey].next();
       }
     }
   };
 
   const saveInsured = () => {
-    applicantUpsert("I", caseValue.insured);
+    applicantUpsert("I", caseValue.insured, caseValue);
     if (window.location.href.includes("/insured/new")) {
       stateMachine[stageKey].next();
     }
@@ -232,18 +244,18 @@ const AssistanceCasePage = () => {
     getAll();
     // stateMachine[stageKey].onLoad();
   }, []);
-  useEffect(() => {
+  /*  useEffect(() => {
     if (window.location.href.includes("/applicant/new") && applicant.id) {
       stateMachine[stageKey].next();
     }
-  }, [applicant.id, router]);
+  }, [applicant.id, router]); */
 
   useEffect(() => {
     setItWasFound(false);
 
-    if (caseValue.case_id !== null) {
+    if (caseValue?.case_id !== null) {
       setItWasFound(true);
-      setUrlID(caseValue.case_id ?? null);
+      setUrlID(caseValue?.case_id ?? null);
 
       if (isProcessing) {
         // setIsProcessing(false);
@@ -260,6 +272,29 @@ const AssistanceCasePage = () => {
       }
     }
   }, [stageKey, caseId, router.query.id]);
+  useEffect(() => {
+    if (caseValue?.type === "I") {
+      setBeneficiaryType("product");
+    } else if (caseValue?.type === "B") {
+      setBeneficiaryType("insured");
+    } else if (caseValue?.type === "C") {
+      if (
+        (caseValue?.insured && Object.keys(caseValue?.insured).length === 0) ||
+        (caseValue?.insured && caseValue?.insured.name === "") ||
+        caseValue?.insured === null
+      ) {
+        setBeneficiaryType("insured");
+      } else if (
+        (caseValue?.beneficiary &&
+          Object.keys(caseValue?.beneficiary).length === 0) ||
+        (caseValue?.beneficiary && caseValue?.beneficiary?.name === "") ||
+        caseValue?.beneficiary === null
+      ) {
+        setBeneficiaryType("product");
+      }
+    }
+  }, [caseValue?.type, caseValue?.insured, caseValue?.beneficiary]);
+
   useEffect(() => {
     setIsProcessing(false);
     if (router.isReady) {
@@ -285,8 +320,8 @@ const AssistanceCasePage = () => {
       <CaseHistory setShowModal={setShowModal} showModal={showModal} />
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />
-        {caseValue.case_id !== null &&
-          caseValue.case_id !== "" &&
+        {caseValue?.case_id !== null &&
+          caseValue?.case_id !== "" &&
           (caseValue?.status?.isClosed === true ? (
             <ButtonIcon iconName="lock_open" onClick={setOpenModalStatus} />
           ) : (
@@ -296,10 +331,10 @@ const AssistanceCasePage = () => {
         <ButtonIcon
           iconName="save"
           onClick={handleClickSave}
-          disabled={!isEnabledSave || caseValue.status?.isClosed === true}
+          disabled={!isEnabledSave || caseValue?.status?.isClosed === true}
         />
       </FloatMenu>
-      {caseValue.case_id !== null && caseValue.case_id !== "" && (
+      {caseValue?.case_id !== null && caseValue?.case_id !== "" && (
         <>
           <Modal showModal={showModal}>
             <Window setClosed={setClosed}>
@@ -314,7 +349,7 @@ const AssistanceCasePage = () => {
         </>
       )}
 
-      <LoadingMessage showModal={isLoadingApplicant || isLoadingCase} />
+      <LoadingMessage showModal={isLoadingCase} />
     </ContentHalfRow>
   ) : (
     <div>None</div>

@@ -10,6 +10,7 @@ import {
   IProduct,
   IAssistance,
 } from "../../interfaces/case";
+import { IApplicant } from "~/interfaces/applicant";
 
 interface ICaseServices {
   insured_id: string;
@@ -23,6 +24,7 @@ interface ICaseServices {
 interface caseState {
   products: IProduct[] | null;
   assistances: IAssistance[] | null;
+  applicant: IApplicant;
   case: ICase;
   caseId: ICase;
   caseList: {
@@ -42,7 +44,11 @@ interface caseState {
   isError: boolean;
   error: string;
   setCase: (data: ICase) => void;
-  getApplicantByRut: (rut: string) => void;
+  getApplicantByRut: (
+    rut: string,
+    typeApplicant: string,
+    caseValue: ICase | null
+  ) => void;
   getRetails: () => void;
   getStatus: () => void;
   getAll: (
@@ -56,8 +62,18 @@ interface caseState {
   getById: (id: string) => void;
   getServicesAndValues: (data: ICaseServices) => void;
   upsert: (data: ICase) => void;
-  resetNoRut: (applicantCode: "insured" | "beneficiary", rut: string) => void;
+  upsertApplicant: (
+    type: string,
+    data: IApplicant,
+    caseValue: ICase | null
+  ) => void;
+  resetNoRut: (
+    applicantCode: "insured" | "beneficiary",
+    rut: string,
+    isInsured: boolean
+  ) => void;
   reset: () => void;
+  resetApplicant: () => void;
   resetCaseId: () => void;
 }
 
@@ -67,7 +83,7 @@ const initialCase: ICase = {
   user_id: "",
   date: "",
   time: "",
-  type: "I",
+  type: "C",
   lead_id: "",
   policy: {
     id: null,
@@ -126,6 +142,21 @@ const initialCase: ICase = {
     isClosed: false,
     description: "",
   },
+  productplan_id: null,
+};
+
+const initialApplicant: IApplicant = {
+  type: "",
+  id: "",
+  rut: "",
+  name: "",
+  paternalLastName: "",
+  maternalLastName: "",
+  address: "",
+  district: "",
+  email: "",
+  phone: "",
+  birthDate: "",
 };
 
 export const caseStore = create<caseState>((set) => ({
@@ -133,6 +164,7 @@ export const caseStore = create<caseState>((set) => ({
   assistances: [],
   caseId: initialCase,
   case: initialCase,
+  applicant: initialApplicant,
   caseList: {
     summary: {
       cases: 0,
@@ -244,18 +276,54 @@ export const caseStore = create<caseState>((set) => ({
     }
   },
 
-  getApplicantByRut: async (rut: string) => {
+  getApplicantByRut: async (
+    rut: string,
+    typeApplicant: string,
+    caseValue: ICase | null
+  ) => {
     try {
       set((state) => ({ ...state, isLoading: true }));
 
       const { data } = await apiInstance.get(`/case/getApplicantByRut/${rut}`);
+      const {
+        type,
+        retail,
+        customer: existingCustomer,
+        insured,
+        beneficiary,
+        products,
+      } = data;
 
-      const { type, retail, customer, insured, beneficiary, products } = data;
+      let customer = existingCustomer || {};
+
+      if (!customer.id) {
+        customer.id = insured.id || "";
+        customer.name = insured.name || "";
+        customer.rut = insured.rut || "";
+      }
+
+      if (caseValue && caseValue.customer && caseValue.customer.id) {
+        customer = caseValue.customer;
+      }
+
+      const shouldUpdateBeneficiary =
+        typeApplicant !== "C" ||
+        caseValue?.beneficiary?.name === null ||
+        caseValue?.beneficiary?.name === "";
 
       set((state) => ({
         ...state,
         products,
-        case: { ...state.case, type, retail, customer, insured, beneficiary },
+        case: {
+          ...state.case,
+          type: shouldUpdateBeneficiary ? "C" : type,
+          retail,
+          customer,
+          insured,
+          beneficiary: shouldUpdateBeneficiary
+            ? beneficiary
+            : caseValue?.beneficiary,
+        },
         isLoading: false,
       }));
     } catch (e) {
@@ -276,7 +344,6 @@ export const caseStore = create<caseState>((set) => ({
         `/case/getServicesAndValues`,
         data
       );
-
       const { lead_id, assistances, assistance, values } = response;
       set((state) => ({
         ...state,
@@ -303,6 +370,7 @@ export const caseStore = create<caseState>((set) => ({
     try {
       set((state) => ({ ...state, isLoading: true }));
       const { data: response } = await apiInstance.post(`/case/upsert`, data);
+      console.log("respuesta caso ins:", response);
       set((state) => ({ ...state, case: response, isLoading: false }));
     } catch (e) {
       set((state) => ({
@@ -313,17 +381,110 @@ export const caseStore = create<caseState>((set) => ({
       }));
     }
   },
+  upsertApplicant: async (
+    type: string,
+    data: IApplicant,
+    caseValue: ICase | null
+  ) => {
+    try {
+      set((state) => ({ ...state, isLoading: true }));
 
-  resetNoRut: (applicantCode: "insured" | "beneficiary", rut: string) => {
-    set((state) => ({
-      ...state,
-      case: {
-        ...initialCase,
-        [applicantCode]: { ...initialCase[applicantCode], rut },
-      },
-    }));
+      const update =
+        type === "C"
+          ? data.type === "I"
+            ? "insured"
+            : "beneficiary"
+          : type === "I"
+          ? "insured"
+          : type === "B"
+          ? "beneficiary"
+          : null;
+
+      let variableToUpdate: string;
+      if (caseValue) {
+        if (
+          (caseValue.insured && Object.keys(caseValue.insured).length === 0) ||
+          (caseValue.insured && caseValue.insured.name === "") ||
+          caseValue.insured === null
+        ) {
+          variableToUpdate = "beneficiary";
+        } else if (
+          (caseValue.beneficiary &&
+            Object.keys(caseValue.beneficiary).length === 0) ||
+          (caseValue.beneficiary && caseValue.beneficiary.name === "") ||
+          caseValue.beneficiary === null
+        ) {
+          variableToUpdate = "insured";
+        } else {
+        }
+      }
+
+      const shouldUpdateCustomer =
+        caseValue !== null &&
+        caseValue.type === "C" &&
+        ((caseValue.insured !== null &&
+          typeof caseValue.insured === "object" &&
+          caseValue.insured.name !== "" &&
+          (caseValue.beneficiary === null ||
+            (typeof caseValue.beneficiary === "object" &&
+              (Object.keys(caseValue.beneficiary).length === 0 ||
+                caseValue.beneficiary.name === "")))) ||
+          (caseValue.beneficiary !== null &&
+            typeof caseValue.beneficiary === "object" &&
+            caseValue.beneficiary.name !== "" &&
+            (caseValue.insured === null ||
+              (typeof caseValue.insured === "object" &&
+                (Object.keys(caseValue.insured).length === 0 ||
+                  caseValue.insured.name === "")))));
+
+      const response = await apiInstance.post(`/${update}/upsert`, data);
+      set((state) => ({
+        ...state,
+        case: {
+          ...state.case,
+          ...(shouldUpdateCustomer
+            ? {
+                customer: {
+                  id: response?.data?.id,
+                  name: response?.data?.name,
+                  rut: response?.data?.rut,
+                },
+              }
+            : {}),
+          [variableToUpdate]: response?.data,
+        },
+
+        applicant: data,
+        isLoading: false,
+      }));
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
   },
 
+  resetNoRut: (
+    applicantCode: "insured" | "beneficiary",
+    rut: string,
+    isInsured: boolean
+  ) => {
+    set((state) => ({
+      ...state,
+      case: isInsured
+        ? {
+            ...state.case,
+            [applicantCode]: { ...initialCase[applicantCode], rut },
+          }
+        : {
+            ...initialCase,
+            [applicantCode]: { ...initialCase[applicantCode], rut },
+          },
+    }));
+  },
   reset: () => {
     set((state) => ({
       ...state,
@@ -334,6 +495,12 @@ export const caseStore = create<caseState>((set) => ({
     set((state) => ({
       ...state,
       caseId: initialCase,
+    }));
+  },
+  resetApplicant: () => {
+    set((state) => ({
+      ...state,
+      applicant: initialApplicant,
     }));
   },
 }));

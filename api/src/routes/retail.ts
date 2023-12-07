@@ -24,6 +24,7 @@ import {
   getPayments,
   updateAgent,
   addLeadFromExcel,
+  getProductsAndRetail,
 } from "../controllers/retail";
 import isAuthenticated from "../middlewares/isAuthenticated";
 import isAdmin from "../middlewares/isAdmin";
@@ -71,6 +72,7 @@ RetailRouter.get("/getByUserId/:user_id", getByUserId);
 RetailRouter.get("/getProductsById/:id", getProductsById);
 RetailRouter.get("/getCollectionById/:id", getCollectionById);
 RetailRouter.get("/getPayments/:id", getPayments);
+RetailRouter.get("/getProductsAndRetail", getProductsAndRetail);
 RetailRouter.put(
   "/updateAgent/:retailId",
   auth,

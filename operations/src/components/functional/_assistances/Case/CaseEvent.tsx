@@ -74,7 +74,7 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
       getCaseByid(router.query.id as string);
     }
   }, [router.query.id]);
-
+  console.log(caseValue);
   return (
     <ContentCell gap="20px">
       <ContentCell gap="5px">

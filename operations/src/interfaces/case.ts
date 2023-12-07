@@ -150,6 +150,7 @@ export interface ICase {
   cost: ICost | null;
   history: IHistory[];
   status: IStatus;
+  productplan_id: string | null;
 }
 
 export interface ICaseItem {

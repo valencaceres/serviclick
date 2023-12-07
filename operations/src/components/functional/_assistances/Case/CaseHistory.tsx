@@ -26,7 +26,7 @@ const CaseHistory = ({ showModal, setShowModal }: any) => {
   const router = useRouter();
 
   const { caseValue } = useCase();
-  const userIds = caseValue.history?.map((m: any) => m.user);
+  const userIds = caseValue?.history?.map((m: any) => m.user);
   const { data: operators } = useQueryCase().useGetUserByClerkId(userIds);
 
   return (
@@ -90,7 +90,7 @@ const CaseHistory = ({ showModal, setShowModal }: any) => {
               ? "1 acción"
               : `${caseValue?.history?.length} acciones`}
           </ContentCellSummary>
-          {caseValue.case_id !== null && caseValue.case_id !== "" && (
+          {caseValue?.case_id !== null && caseValue?.case_id !== "" && (
             <Button
               text="Chat"
               iconName="chat"

@@ -16,6 +16,7 @@ interface IRadioButtonItem {
   label: string;
   name: string;
   value: string;
+  disabled?: boolean;
 }
 
 const RadioButtonGroup = ({
@@ -38,6 +39,7 @@ const RadioButtonItem = ({
   label,
   name,
   value,
+  disabled = true,
 }: IRadioButtonItem) => {
   return (
     <label className={styles.radio}>
@@ -47,11 +49,10 @@ const RadioButtonItem = ({
         value={value}
         checked={checked}
         onChange={onChange}
-        disabled={true}
+        disabled={disabled}
       />
       <span className={styles.label}>{label}</span>
     </label>
   );
 };
-
 export { RadioButtonGroup, RadioButtonItem };

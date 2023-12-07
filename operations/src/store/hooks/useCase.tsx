@@ -4,6 +4,7 @@ const useCase = () => {
   const {
     case: caseValue,
     caseList,
+    applicant,
     retailList,
     statusList,
     products,
@@ -15,6 +16,7 @@ const useCase = () => {
   } = caseStore((state) => ({
     case: state.case,
     caseId: state.caseId,
+    applicant: state.applicant,
     caseList: state.caseList,
     retailList: state.retailList,
     statusList: state.statusList,
@@ -34,14 +36,17 @@ const useCase = () => {
     getServicesAndValues,
     getApplicantByRut,
     upsert,
+    upsertApplicant,
     resetNoRut,
     reset,
+    resetApplicant,
     resetCaseId,
   } = caseStore();
 
   return {
     caseValue,
     caseId,
+    applicant,
     caseList,
     retailList,
     statusList,
@@ -58,8 +63,10 @@ const useCase = () => {
     getServicesAndValues,
     getApplicantByRut,
     upsert,
+    upsertApplicant,
     resetNoRut,
     reset,
+    resetApplicant,
     resetCaseId,
   };
 };
