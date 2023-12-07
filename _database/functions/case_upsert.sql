@@ -1,5 +1,5 @@
 drop function app.case_upsert;
-CREATE OR REPLACE FUNCTION app.case_upsert(p_case_id uuid, p_user_id character varying, p_type character varying, p_insured json, p_beneficiary json, p_customer json, p_retail json, p_product json, p_assistance json, p_lead_id uuid, p_values json[], p_event json, p_files json[], p_procedure_id uuid, p_refund json, p_specialist json, p_alliance json, p_cost json, p_status json)
+CREATE OR REPLACE FUNCTION app.case_upsert(p_case_id uuid, p_user_id character varying, p_type character varying, p_insured json, p_beneficiary json, p_customer json, p_retail json, p_product json, p_assistance json, p_lead_id uuid, p_values json[], p_event json, p_files json[], p_procedure_id uuid, p_refund json, p_specialist json, p_alliance json, p_cost json, p_status json, p_productplan_id uuid DEFAULT NULL)
  RETURNS json
  LANGUAGE plpgsql
 AS $function$
@@ -8,10 +8,20 @@ declare
 	p_retail_id uuid;
 	p_customer_id uuid;
 	p_insured_id uuid;
+	p_insured_rut character varying;
+    p_insured_name character varying;
+    p_insured_paternal_last_name character varying;
+    p_insured_maternal_last_name character varying;
+    p_insured_address character varying;
+    p_insured_district character varying;
+    p_insured_email character varying;
+    p_insured_phone character varying;
+    p_insured_birthdate character varying;
 	p_beneficiary_id uuid;
 	p_product_id uuid;
 	p_assistance_id uuid;
-   p_is_closed boolean;
+	v_new_lead_id uuid;
+    p_is_closed boolean;
     p_description_closed varchar;
 	p_refund_json JSON;
 	item JSON;
@@ -21,6 +31,7 @@ declare
 	json_history JSON;
 	json_result JSON;
     json_status JSON;
+    lead_upsert_result RECORD;
 
 begin
 	
@@ -28,17 +39,57 @@ begin
     p_description_closed := p_status->>'description';
 
  
-    IF p_case_id IS NOT NULL THEN
-        UPDATE app.case
-        SET
+    if p_case_id is not null then
+        update app.case
+        set
             isclosed = p_is_closed,
             description_closed = p_description_closed
-        WHERE
+        where
             id = p_case_id;
 
-        RAISE NOTICE 'Updated app.case with id: %', p_case_id;
-    END IF;
-	
+        raise notice  'Updated app.case with id: %', p_case_id;
+    end if;
+  if p_lead_id is null then  
+    select
+        p_insured->>'rut',
+        p_insured->>'name',
+        p_insured->>'paternalLastName',
+        p_insured->>'maternalLastName',
+        p_insured->>'address',
+        p_insured->>'district',
+        p_insured->>'email',
+        p_insured->>'phone',
+        p_insured->>'birthDate'
+    into
+        p_insured_rut,
+        p_insured_name,
+        p_insured_paternal_last_name,
+        p_insured_maternal_last_name,
+        p_insured_address,
+        p_insured_district,
+        p_insured_email,
+        p_insured_phone,
+        p_insured_birthdate;
+
+
+      lead_upsert_result:=app.lead_upsert(
+        p_productplan_id,
+        p_insured_rut,
+        p_insured_name,
+        p_insured_paternal_last_name,
+        p_insured_maternal_last_name,
+        p_insured_address,
+        p_insured_district,
+        p_insured_email,
+        p_insured_phone,
+        p_insured_birthdate,
+        CURRENT_DATE::text,
+        null
+    );
+       p_lead_id := lead_upsert_result.lead_id;
+
+end if;
+
 	if not p_retail is null then
 		p_retail_id := (p_retail->>'id')::uuid;
 	end if;
@@ -62,7 +113,6 @@ begin
 	if not p_assistance is null then
 		p_assistance_id := (p_assistance->>'id')::uuid;
 	end if;
-	
 	if p_case_id is null then
 	
 		insert	into app.case(
@@ -81,7 +131,7 @@ begin
 				p_beneficiary_id,
 				p_product_id,
 				p_assistance_id,
-				p_lead_id
+      			p_lead_id
 		returning id into p_case_id;
 		
 	end if;
