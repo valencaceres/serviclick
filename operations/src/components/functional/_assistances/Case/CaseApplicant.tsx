@@ -187,6 +187,7 @@ const CaseApplicant = ({
       }
     }
   }, []);
+  console.log(caseValue);
   return (
     <ContentCell gap="20px">
       <ContentRow gap="5px" align="space-between">

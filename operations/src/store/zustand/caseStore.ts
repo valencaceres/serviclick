@@ -283,7 +283,6 @@ export const caseStore = create<caseState>((set) => ({
   ) => {
     try {
       set((state) => ({ ...state, isLoading: true }));
-
       const { data } = await apiInstance.get(`/case/getApplicantByRut/${rut}`);
       const {
         type,
@@ -307,14 +306,13 @@ export const caseStore = create<caseState>((set) => ({
       }
 
       const shouldUpdateBeneficiary =
-        typeApplicant !== "C" ||
+        (type !== "C" && typeApplicant === "C") ||
         caseValue?.beneficiary?.name === null ||
         caseValue?.beneficiary?.name === "";
       const shouldUpdateCustomer =
         caseValue &&
         caseValue.beneficiary !== null &&
         caseValue?.beneficiary.name !== "";
-
       const shouldUpdateCustomerId =
         caseValue && caseValue.type === "C" && caseValue.insured.name === "";
       const updatedCustomerId = shouldUpdateCustomerId
@@ -437,6 +435,10 @@ export const caseStore = create<caseState>((set) => ({
           (caseValue.beneficiary && caseValue.beneficiary.name === "") ||
           caseValue.beneficiary === null
         ) {
+          variableToUpdate = "insured";
+        } else if (caseValue.type === "B") {
+          variableToUpdate = "beneficiary";
+        } else if (caseValue.type === "I") {
           variableToUpdate = "insured";
         } else {
           variableToUpdate = "insured";

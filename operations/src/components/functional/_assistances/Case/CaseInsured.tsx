@@ -120,6 +120,7 @@ const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
 
   const handleBlur = (e: any) => {
     const value = e.target.value;
+    console.log("ejecuta")
     switch (e.target.id) {
       case "rut":
         const formattedRut = formatRut(value);
@@ -137,6 +138,7 @@ const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
   useEffect(() => {
     setIsEnabledSave(checkCompleteFields());
   }, [caseValue]);
+  console.log(caseValue);
   return (
     <ContentCell gap="20px">
       <ContentRow gap="5px" align="space-between">

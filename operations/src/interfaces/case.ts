@@ -6,7 +6,7 @@ interface IPolicy {
   endDate: string;
 }
 
-interface IRetail {
+export interface IRetail {
   id: string;
   rut: string;
   name: string;
