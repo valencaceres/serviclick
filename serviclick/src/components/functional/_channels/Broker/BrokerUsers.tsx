@@ -63,9 +63,7 @@ const BrokerUsers = ({ addNewUser, editUser, deleteUser }: any) => {
               <TableCell width="300px">
                 {item.user?.first_name + " " + item.user?.last_name}
               </TableCell>
-              <TableCell width="232px">
-                {item.user?.email_addresses[0]?.email_address}
-              </TableCell>
+              <TableCell width="232px">{item.user?.email}</TableCell>
               <TableCell width="120px">
                 {item?.profilecode === "A" ? "Administrador" : "Vendedor"}
               </TableCell>
