@@ -95,7 +95,7 @@ CaseRouter.get("/getStatistics", auth, getStatistics);
 CaseRouter.post("/createCaseSummary", auth, createCaseSummary);
 CaseRouter.get("/getApplicantByRut/:rut", auth, getApplicantByRut);
 CaseRouter.post("/getServicesAndValues", auth, getServicesAndValues);
-CaseRouter.post("/upsert", upsert);
+CaseRouter.post("/upsert", auth, upsert);
 CaseRouter.put("/updateReimbursment/:id", auth, isAdmin, updateReimbursment);
 CaseRouter.get("/getReimbursments", getAllReimbursments);
 

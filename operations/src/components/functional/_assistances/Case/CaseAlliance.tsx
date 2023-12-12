@@ -149,7 +149,15 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   useEffect(() => {
     if (caseValue) {
       const applicant =
-        caseValue?.type === "I" ? caseValue.insured : caseValue.beneficiary;
+        caseValue?.type === "I"
+          ? caseValue?.insured
+          : caseValue?.type === "C"
+          ? caseValue?.beneficiary &&
+            Object.keys(caseValue.beneficiary).length > 0 &&
+            caseValue.beneficiary.name !== ""
+            ? caseValue?.beneficiary
+            : caseValue?.insured
+          : caseValue?.beneficiary;
       if (applicant) {
         setApplicant(applicant);
       }
@@ -198,16 +206,17 @@ const CaseAlliance = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
             disabled={true}
           />
         )}
-        {caseValue.customer.rut !== caseValue.insured.rut && (
-          <InputText
-            id="customer"
-            label="Titular"
-            type="text"
-            value={caseValue ? caseValue.customer?.name || "" : ""}
-            width="530px"
-            disabled={true}
-          />
-        )}
+        {caseValue.customer.rut !== caseValue.insured.rut &&
+          caseValue.type !== "C" && (
+            <InputText
+              id="customer"
+              label="Titular"
+              type="text"
+              value={caseValue ? caseValue.customer?.name || "" : ""}
+              width="530px"
+              disabled={true}
+            />
+          )}
         {caseValue.type === "C" && (
           <InputText
             label="Titular"

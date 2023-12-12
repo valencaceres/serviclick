@@ -13,10 +13,10 @@ import {
 import { IApplicant } from "~/interfaces/applicant";
 
 interface ICaseServices {
-  insured_id: string;
+  insured_id: string | null;
   beneficiary_id: string | null;
   retail_id: string | null;
-  customer_id: string;
+  customer_id: string | null;
   product_id: string;
   assistance_id: string | null;
 }
@@ -92,7 +92,7 @@ const initialCase: ICase = {
   },
   retail: null,
   customer: {
-    id: "",
+    id: null,
     rut: "",
     name: "",
   },
@@ -297,7 +297,7 @@ export const caseStore = create<caseState>((set) => ({
       let customer = existingCustomer || {};
 
       if (!customer.id) {
-        customer.id = insured.id || "";
+        customer.id = insured.id || null;
         customer.name = insured.name || "";
         customer.rut = insured.rut || "";
       }
@@ -310,15 +310,39 @@ export const caseStore = create<caseState>((set) => ({
         typeApplicant !== "C" ||
         caseValue?.beneficiary?.name === null ||
         caseValue?.beneficiary?.name === "";
+      const shouldUpdateCustomer =
+        caseValue &&
+        caseValue.beneficiary !== null &&
+        caseValue?.beneficiary.name !== "";
+
+      const shouldUpdateCustomerId =
+        caseValue && caseValue.type === "C" && caseValue.insured.name === "";
+      const updatedCustomerId = shouldUpdateCustomerId
+        ? customer?.id
+        : caseValue?.customer?.id;
+
+      const shouldUpdateType =
+        caseValue &&
+        caseValue.insured.name === "" &&
+        caseValue.beneficiary === null &&
+        type !== "";
 
       set((state) => ({
         ...state,
         products,
         case: {
           ...state.case,
-          type: shouldUpdateBeneficiary ? "C" : type,
+          type: shouldUpdateType ? type : "C",
           retail,
-          customer,
+          customer: {
+            id: updatedCustomerId,
+            name: shouldUpdateCustomer
+              ? caseValue?.customer?.name
+              : customer?.name,
+            rut: shouldUpdateCustomer
+              ? caseValue?.customer?.rut
+              : customer?.rut,
+          },
           insured,
           beneficiary: shouldUpdateBeneficiary
             ? beneficiary
@@ -370,7 +394,6 @@ export const caseStore = create<caseState>((set) => ({
     try {
       set((state) => ({ ...state, isLoading: true }));
       const { data: response } = await apiInstance.post(`/case/upsert`, data);
-      console.log("respuesta caso ins:", response);
       set((state) => ({ ...state, case: response, isLoading: false }));
     } catch (e) {
       set((state) => ({
@@ -400,7 +423,7 @@ export const caseStore = create<caseState>((set) => ({
           ? "beneficiary"
           : null;
 
-      let variableToUpdate: string;
+      let variableToUpdate: string = "";
       if (caseValue) {
         if (
           (caseValue.insured && Object.keys(caseValue.insured).length === 0) ||
@@ -416,9 +439,9 @@ export const caseStore = create<caseState>((set) => ({
         ) {
           variableToUpdate = "insured";
         } else {
+          variableToUpdate = "insured";
         }
       }
-
       const shouldUpdateCustomer =
         caseValue !== null &&
         caseValue.type === "C" &&
@@ -437,6 +460,11 @@ export const caseStore = create<caseState>((set) => ({
                 (Object.keys(caseValue.insured).length === 0 ||
                   caseValue.insured.name === "")))));
 
+      const shouldUpdateIdCustomer =
+        caseValue !== null &&
+        caseValue.type === "C" &&
+        (caseValue.beneficiary === null ||
+          (caseValue.beneficiary !== null && caseValue.beneficiary.rut === ""));
       const response = await apiInstance.post(`/${update}/upsert`, data);
       set((state) => ({
         ...state,
@@ -445,7 +473,7 @@ export const caseStore = create<caseState>((set) => ({
           ...(shouldUpdateCustomer
             ? {
                 customer: {
-                  id: response?.data?.id,
+                  id: shouldUpdateIdCustomer ? response?.data?.id : null,
                   name: response?.data?.name,
                   rut: response?.data?.rut,
                 },

@@ -13,7 +13,7 @@ interface IRetail {
 }
 
 interface ICustomer {
-  id: string;
+  id: string | null;
   rut: string;
   name: string;
 }

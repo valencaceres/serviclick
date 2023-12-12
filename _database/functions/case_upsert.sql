@@ -49,30 +49,54 @@ begin
 
         raise notice  'Updated app.case with id: %', p_case_id;
     end if;
-  if p_lead_id is null then  
-    select
-        p_insured->>'rut',
-        p_insured->>'name',
-        p_insured->>'paternalLastName',
-        p_insured->>'maternalLastName',
-        p_insured->>'address',
-        p_insured->>'district',
-        p_insured->>'email',
-        p_insured->>'phone',
-        p_insured->>'birthDate'
-    into
-        p_insured_rut,
-        p_insured_name,
-        p_insured_paternal_last_name,
-        p_insured_maternal_last_name,
-        p_insured_address,
-        p_insured_district,
-        p_insured_email,
-        p_insured_phone,
-        p_insured_birthdate;
+ if p_lead_id is null then
+    -- Utilizar información del beneficiario si está presente
+    if p_beneficiary is not null then
+        select
+            p_beneficiary->>'rut',
+            p_beneficiary->>'name',
+            p_beneficiary->>'paternalLastName',
+            p_beneficiary->>'maternalLastName',
+            p_beneficiary->>'address',
+            p_beneficiary->>'district',
+            p_beneficiary->>'email',
+            p_beneficiary->>'phone',
+            p_beneficiary->>'birthDate'
+        into
+            p_insured_rut,
+            p_insured_name,
+            p_insured_paternal_last_name,
+            p_insured_maternal_last_name,
+            p_insured_address,
+            p_insured_district,
+            p_insured_email,
+            p_insured_phone,
+            p_insured_birthdate;
+    else
+        -- Utilizar información del asegurado si no hay información del beneficiario
+        select
+            p_insured->>'rut',
+            p_insured->>'name',
+            p_insured->>'paternalLastName',
+            p_insured->>'maternalLastName',
+            p_insured->>'address',
+            p_insured->>'district',
+            p_insured->>'email',
+            p_insured->>'phone',
+            p_insured->>'birthDate'
+        into
+            p_insured_rut,
+            p_insured_name,
+            p_insured_paternal_last_name,
+            p_insured_maternal_last_name,
+            p_insured_address,
+            p_insured_district,
+            p_insured_email,
+            p_insured_phone,
+            p_insured_birthdate;
+    end if;
 
-
-      lead_upsert_result:=app.lead_upsert(
+    lead_upsert_result := app.lead_upsert(
         p_productplan_id,
         p_insured_rut,
         p_insured_name,
@@ -86,15 +110,16 @@ begin
         CURRENT_DATE::text,
         null
     );
-       p_lead_id := lead_upsert_result.lead_id;
-
+  p_lead_id := lead_upsert_result.lead_id;
+	p_customer_id:= lead_upsert_result.customer_id;
 end if;
+     
 
 	if not p_retail is null then
 		p_retail_id := (p_retail->>'id')::uuid;
 	end if;
 
-	if not p_customer is null then
+	if not p_customer is null and p_customer_id is null then
 		p_customer_id := (p_customer->>'id')::uuid;
 	end if;
 

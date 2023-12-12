@@ -155,7 +155,7 @@ const CaseApplicant = ({
     setCase({
       ...caseValue,
       [newApplicantType]: mergedApplicant,
-      [applicantType]: {},
+      [applicantType]: value === "B" ? {} : null,
     });
 
     setApplicantType(newApplicantType);
@@ -168,6 +168,25 @@ const CaseApplicant = ({
     setApplicantType(caseValue?.type === "B" ? "beneficiary" : "insured");
   }, [caseValue?.type]);
 
+  useEffect(() => {
+    if (caseValue?.type === "I") {
+      setApplicantType("insured");
+    } else if (caseValue?.type === "B") {
+      setApplicantType("beneficiary");
+    } else if (caseValue?.type === "C") {
+      if (
+        caseValue?.beneficiary &&
+        Object.keys(caseValue.beneficiary).length > 0
+      ) {
+        setApplicantType("beneficiary");
+      } else if (
+        caseValue?.insured &&
+        Object.keys(caseValue.insured).length > 0
+      ) {
+        setApplicantType("insured");
+      }
+    }
+  }, []);
   return (
     <ContentCell gap="20px">
       <ContentRow gap="5px" align="space-between">
@@ -288,7 +307,7 @@ const CaseApplicant = ({
               name={applicantType}
               value="I"
               onChange={handleChangeType}
-              disabled={caseValue?.type !== "C"}
+              disabled={caseValue?.type !== "C" || caseValue.case_id !== null}
             />
             <RadioButtonItem
               label="Carga"
@@ -296,7 +315,7 @@ const CaseApplicant = ({
               name={applicantType}
               value="B"
               onChange={handleChangeType}
-              disabled={caseValue?.type !== "C"}
+              disabled={caseValue?.type !== "C" || caseValue.case_id !== null}
             />
           </RadioButtonGroup>
         </ContentRow>
