@@ -30,9 +30,9 @@ const CaseDocumentsTable = ({ caseValue, thisStage, handleSubmit }: any) => {
   );
 
   const handleChangeInput = (e: any, item: any) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      const documentId = item.id;
+    if (e?.target?.files && e?.target?.files?.length > 0) {
+      const file = e?.target?.files[0];
+      const documentId = item?.id;
       handleSubmit(file, documentId);
     }
   };
@@ -50,9 +50,9 @@ const CaseDocumentsTable = ({ caseValue, thisStage, handleSubmit }: any) => {
       <TableDetail>
         {documents?.length > 0 ? (
           documents?.map((item: any, idx: number) => (
-            <TableRow key={item.id}>
+            <TableRow key={item?.id}>
               <TableCell width="300px" align="center">
-                {item.name}
+                {item?.name}
               </TableCell>
 
               <TableCell width="100px" align="center">
@@ -66,7 +66,7 @@ const CaseDocumentsTable = ({ caseValue, thisStage, handleSubmit }: any) => {
                       accept=".csv,.jpg,.png,.pdf,.jpeg"
                     />
                     {attachments?.find(
-                      (a: any) => a.document_id === item.id
+                      (a: any) => a?.document_id === item?.id
                     ) ? (
                       <Icon iconName="check" />
                     ) : (
@@ -77,10 +77,12 @@ const CaseDocumentsTable = ({ caseValue, thisStage, handleSubmit }: any) => {
               </TableCell>
               <TableCell width="110px" align="center">
                 <TableIcons>
-                  {attachments?.find((a: any) => a.document_id === item.id) ? (
+                  {attachments?.find(
+                    (a: any) => a?.document_id === item?.id
+                  ) ? (
                     <Link
                       className="flex items-center"
-                      href={attachments[idx].viewLink}
+                      href={attachments[idx]?.viewLink}
                       target="_blank"
                     >
                       <Icon iconName="open_in_new" button={true} />
