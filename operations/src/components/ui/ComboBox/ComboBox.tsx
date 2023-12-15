@@ -41,7 +41,6 @@ const ComboBox = ({
         disabled={!enabled}
         value={value}
         onChange={onChange}
-        placeholder=" "
         className={styles.combo + (label ? "" : " " + styles.noLabel)}
         style={{ display: display ? "block" : "none" }}
       >
