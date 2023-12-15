@@ -691,6 +691,7 @@ const upsert: any = async (
     scheduled_time: string;
     confirmed: boolean;
     completed: boolean;
+    cancel: boolean;
     qualification_id: string;
     comment: string;
   },
@@ -701,6 +702,7 @@ const upsert: any = async (
     scheduled_time: string;
     confirmed: boolean;
     completed: boolean;
+    cancel: boolean;
     qualification_id: string;
     comment: string;
   },

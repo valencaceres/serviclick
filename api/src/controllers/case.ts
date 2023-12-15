@@ -859,7 +859,6 @@ const upsert = async (req: any, res: any) => {
     cost,
     productplan_id,
   } = req.body;
-
   const response = await Case.upsert(
     case_id,
     user_id,
@@ -889,7 +888,6 @@ const upsert = async (req: any, res: any) => {
     });
     return res.status(500).json({ error: "Error inserting/updating case" });
   }
-  console.log("respuesta:", response);
   createLogger.info({
     controller: `case/upsert`,
     message: `OK - Services found`,

@@ -149,6 +149,42 @@ const AssistanceCasePage = () => {
       back: () =>
         router.push(`/assistance/case/attachment/${caseValue?.case_id}`),
     },
+    close: {
+      onLoad: () =>
+        setTitleUI(
+          `Caso${
+            caseValue?.case_id ? " N°" + caseNumber.toString() : ""
+          } - Caso cerrado`
+        ),
+      save: () => saveStage(),
+      next: () => router.push(`/assistance/case`),
+      back: () =>
+        router.push(`/assistance/case/attachment/${caseValue?.case_id}`),
+    },
+    anulled_alliance: {
+      onLoad: () =>
+        setTitleUI(
+          `Caso${
+            caseValue?.case_id ? " N°" + caseNumber.toString() : ""
+          } - Designación de alianza (anulado)`
+        ),
+      save: () => saveStage(),
+      next: () => router.push(`/assistance/case`),
+      back: () =>
+        router.push(`/assistance/case/attachment/${caseValue?.case_id}`),
+    },
+    anulled_specialist: {
+      onLoad: () =>
+        setTitleUI(
+          `Caso${
+            caseValue?.case_id ? " N°" + caseNumber.toString() : ""
+          } - Envio de especialista (anulado)`
+        ),
+      save: () => saveStage(),
+      next: () => router.push(`/assistance/case`),
+      back: () =>
+        router.push(`/assistance/case/attachment/${caseValue?.case_id}`),
+    },
   };
 
   const { setTitleUI } = useUI();

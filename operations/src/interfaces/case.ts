@@ -83,6 +83,7 @@ interface ISpecialist {
   scheduled_time: string;
   confirmed: boolean;
   completed: boolean;
+  cancel: boolean;
   qualification_id: string | null;
   qualification_name: string;
   comment: string;
@@ -101,6 +102,7 @@ interface IAlliance {
   scheduled_time: string;
   confirmed: boolean;
   completed: boolean;
+  cancel: boolean;
   qualification_id: string | null;
   qualification_name: string;
   comment: string;

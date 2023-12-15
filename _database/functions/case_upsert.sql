@@ -39,16 +39,25 @@ begin
     p_description_closed := p_status->>'description';
 
  
-    if p_case_id is not null then
-        update app.case
-        set
-            isclosed = p_is_closed,
-            description_closed = p_description_closed
-        where
-            id = p_case_id;
+  IF p_case_id IS NOT NULL THEN
+    UPDATE app.case
+    SET
+        isclosed = p_is_closed,
+        description_closed = p_description_closed
+    WHERE
+        id = p_case_id;
 
-        raise notice  'Updated app.case with id: %', p_case_id;
-    end if;
+    RAISE NOTICE 'Updated app.case with id: %', p_case_id;
+
+    IF p_is_closed is false THEN
+     
+        DELETE FROM app.casestage
+        WHERE case_id = p_case_id AND stage_id = 'c96b7b6f-a1d6-4c1b-b3dc-dc073862e328'::uuid;
+    END IF;
+
+    RAISE NOTICE 'Updated app.case with id: %', p_case_id;
+END IF;
+   
  if p_lead_id is null then
     -- Utilizar información del beneficiario si está presente
     if p_beneficiary is not null then
@@ -344,44 +353,72 @@ end if;
 			);
 			
 		end if;
+	IF p_procedure_id = 'bc1698ca-9800-40d9-a2ed-8f595b36c06f'::uuid AND (p_specialist->>'cancel')::boolean IS TRUE THEN
+    PERFORM app.case_stage_upsert(
+        p_case_id,
+        '505d568a-2d98-41ce-96a0-48b294e0a39e'::uuid,
+        p_user_id
+    );
+END IF;
+
+IF  (p_specialist->>'cancel')::boolean IS FALSE THEN
+    DELETE FROM app.casestage
+    WHERE case_id = p_case_id AND stage_id = '505d568a-2d98-41ce-96a0-48b294e0a39e'::uuid;
+END IF;
 	
-		if p_procedure_id = 'fb3ca6af-cad1-4f90-ad6b-9d393f1e9566' and not p_alliance is null then
-		
-			insert	into app.casestagepartner (
-					case_id,
-					partner_id,
-					specialty_id,
-					scheduled_date,
-					scheduled_time,
-					confirmed,
-					completed,
-					qualification_id,
-					comment)
-			values(	p_case_id,
-					(p_alliance->>'partner_id')::uuid,
-					(p_alliance->>'specialty_id')::uuid,
-					(p_alliance->>'scheduled_date')::date,
-					(p_alliance->>'scheduled_time')::time,
-		    		(p_alliance->>'confirmed')::boolean,
-		    		(p_alliance->>'completed')::boolean,
-					(p_alliance->>'qualification_id')::uuid,
-					(p_alliance->>'comment')::varchar)
-			on 		conflict (case_id)
-		    do 		update
-		    set 	confirmed_date = (p_alliance->>'scheduled_date')::date,
-		    		confirmed_time = (p_alliance->>'scheduled_time')::time,
-		    		confirmed = (p_alliance->>'confirmed')::boolean,
-		    		completed = (p_alliance->>'completed')::boolean,
-		    		qualification_id = (p_alliance->>'qualification_id')::uuid,
-					comment = (p_alliance->>'comment')::varchar;
-			
-			perform	app.case_stage_upsert (
-				p_case_id,
-				'e1a1797a-0dfd-44fc-bf24-cd9a1dbd3730'::uuid,
-				p_user_id
-			);
-		
-		end if;
+	
+	IF p_procedure_id = 'fb3ca6af-cad1-4f90-ad6b-9d393f1e9566' AND NOT p_alliance IS NULL THEN
+    INSERT INTO app.casestagepartner (
+        case_id,
+        partner_id,
+        specialty_id,
+        scheduled_date,
+        scheduled_time,
+        confirmed,
+        completed,
+        qualification_id,
+        comment
+    )
+    VALUES (
+        p_case_id,
+        (p_alliance->>'partner_id')::uuid,
+        (p_alliance->>'specialty_id')::uuid,
+        (p_alliance->>'scheduled_date')::date,
+        (p_alliance->>'scheduled_time')::time,
+        (p_alliance->>'confirmed')::boolean,
+        (p_alliance->>'completed')::boolean,
+        (p_alliance->>'qualification_id')::uuid,
+        (p_alliance->>'comment')::varchar
+    )
+    ON CONFLICT (case_id)
+    DO UPDATE
+    SET
+        confirmed_date = (p_alliance->>'scheduled_date')::date,
+        confirmed_time = (p_alliance->>'scheduled_time')::time,
+        confirmed = (p_alliance->>'confirmed')::boolean,
+        completed = (p_alliance->>'completed')::boolean,
+        qualification_id = (p_alliance->>'qualification_id')::uuid,
+        comment = (p_alliance->>'comment')::varchar;
+
+    PERFORM app.case_stage_upsert (
+        p_case_id,
+        'e1a1797a-0dfd-44fc-bf24-cd9a1dbd3730'::uuid,
+        p_user_id
+    );
+END IF;
+
+IF p_procedure_id = 'bc1698ca-9800-40d9-a2ed-8f595b36c06f'::uuid AND (p_alliance->>'cancel')::boolean IS TRUE THEN
+    PERFORM app.case_stage_upsert(
+        p_case_id,
+        'f978d038-72e9-4b2e-b55d-758551e622d7'::uuid,
+        p_user_id
+    );
+END IF;
+
+IF (p_alliance->>'cancel')::boolean IS FALSE THEN
+    DELETE FROM app.casestage
+    WHERE case_id = p_case_id AND stage_id = 'f978d038-72e9-4b2e-b55d-758551e622d7'::uuid;
+END IF;
 	
 	end if;
 
@@ -411,6 +448,13 @@ end if;
 		*/
 	
 	end if;
+ IF p_is_closed THEN
+        PERFORM app.case_stage_upsert (
+            p_case_id,
+            'c96b7b6f-a1d6-4c1b-b3dc-dc073862e328'::uuid,
+            p_user_id
+        );
+ end if;
 	
 	RETURN	app.case_get_by_id(p_case_id);
 	
