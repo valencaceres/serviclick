@@ -11,6 +11,7 @@ import {
   IAssistance,
 } from "../../interfaces/case";
 import { IApplicant } from "~/interfaces/applicant";
+import axios from "axios";
 
 interface ICaseServices {
   insured_id: string | null;
@@ -20,11 +21,16 @@ interface ICaseServices {
   product_id: string;
   assistance_id: string | null;
 }
+interface UFPrice {
+  uf: string;
+  today: Date;
+}
 
 interface caseState {
   products: IProduct[] | null;
   assistances: IAssistance[] | null;
   applicant: IApplicant;
+  pdfBase64: string;
   case: ICase;
   caseId: ICase;
   caseList: {
@@ -38,6 +44,7 @@ interface caseState {
     };
     data: ICaseItem[];
   };
+  ufValue: UFPrice;
   retailList: IRetailItem[];
   statusList: IStatusItem[];
   isLoading: boolean;
@@ -59,13 +66,16 @@ interface caseState {
     records: number,
     page: number
   ) => void;
+  getUfValue: () => void;
   getById: (id: string) => void;
   getServicesAndValues: (data: ICaseServices) => void;
   upsert: (data: ICase) => void;
+  getPdfContract: (product_plan_id: string) => void;
   upsertApplicant: (
     type: string,
     data: IApplicant,
-    caseValue: ICase | null
+    caseValue: ICase | null,
+    applicantToUpdate: string
   ) => void;
   resetNoRut: (
     applicantCode: "insured" | "beneficiary",
@@ -75,6 +85,7 @@ interface caseState {
   reset: () => void;
   resetApplicant: () => void;
   resetCaseId: () => void;
+  resetPdf: () => void;
 }
 
 const initialCase: ICase = {
@@ -113,6 +124,7 @@ const initialCase: ICase = {
   product: {
     id: "",
     name: "",
+    productPlan_id: "",
   },
   assistance: {
     id: "",
@@ -162,6 +174,11 @@ const initialApplicant: IApplicant = {
 export const caseStore = create<caseState>((set) => ({
   products: [],
   assistances: [],
+  ufValue: {
+    uf: "",
+    today: new Date(),
+  },
+  pdfBase64: "",
   caseId: initialCase,
   case: initialCase,
   applicant: initialApplicant,
@@ -357,6 +374,22 @@ export const caseStore = create<caseState>((set) => ({
       }));
     }
   },
+  getPdfContract: async (product_plan_id: string) => {
+    try {
+      set((state) => ({ ...state, isLoading: true }));
+      const { data } = await apiInstance.get(
+        `/product/getContract/${product_plan_id}`
+      );
+      set((state) => ({ ...state, pdfBase64: data?.base64, isLoading: false }));
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
+  },
 
   getServicesAndValues: async (data: ICaseServices) => {
     try {
@@ -402,10 +435,25 @@ export const caseStore = create<caseState>((set) => ({
       }));
     }
   },
+  getUfValue: async () => {
+    try {
+      set((state) => ({ ...state, isLoading: true }));
+      const { data } = await axios.get(`https://api.santa.cl/uf`);
+      set((state) => ({ ...state, ufValue: data, isLoading: false }));
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
+  },
   upsertApplicant: async (
     type: string,
     data: IApplicant,
-    caseValue: ICase | null
+    caseValue: ICase | null,
+    applicantToUpdate: string
   ) => {
     try {
       set((state) => ({ ...state, isLoading: true }));
@@ -421,29 +469,6 @@ export const caseStore = create<caseState>((set) => ({
           ? "beneficiary"
           : null;
 
-      let variableToUpdate: string = "";
-      if (caseValue) {
-        if (
-          (caseValue.insured && Object.keys(caseValue.insured).length === 0) ||
-          (caseValue.insured && caseValue.insured.name === "") ||
-          caseValue.insured === null
-        ) {
-          variableToUpdate = "beneficiary";
-        } else if (
-          (caseValue.beneficiary &&
-            Object.keys(caseValue.beneficiary).length === 0) ||
-          (caseValue.beneficiary && caseValue.beneficiary.name === "") ||
-          caseValue.beneficiary === null
-        ) {
-          variableToUpdate = "insured";
-        } else if (caseValue.type === "B") {
-          variableToUpdate = "beneficiary";
-        } else if (caseValue.type === "I") {
-          variableToUpdate = "insured";
-        } else {
-          variableToUpdate = "insured";
-        }
-      }
       const shouldUpdateCustomer =
         caseValue !== null &&
         caseValue.type === "C" &&
@@ -481,7 +506,7 @@ export const caseStore = create<caseState>((set) => ({
                 },
               }
             : {}),
-          [variableToUpdate]: response?.data,
+          [applicantToUpdate]: response?.data,
         },
 
         applicant: data,
@@ -531,6 +556,12 @@ export const caseStore = create<caseState>((set) => ({
     set((state) => ({
       ...state,
       applicant: initialApplicant,
+    }));
+  },
+  resetPdf: () => {
+    set((state) => ({
+      ...state,
+      pdfBase64: "",
     }));
   },
 }));

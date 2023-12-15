@@ -57,5 +57,5 @@ ProductRouter.get(
 ProductRouter.get("/getAll", auth, getAll);
 ProductRouter.get("/getByRetailRut/:rut", auth, getByRetailRut);
 ProductRouter.get("/listByFamilies/:agent", auth, listByFamilies);
-ProductRouter.get("/getContract/:product_id/:agent_id", getPdfContractById);
+ProductRouter.get("/getContract/:productplan_id", getPdfContractById);
 export default ProductRouter;

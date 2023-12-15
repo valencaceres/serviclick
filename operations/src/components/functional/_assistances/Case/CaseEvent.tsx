@@ -95,41 +95,63 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
             width="530px"
           />
         )}
-        {caseValue.customer.rut !== caseValue.insured.rut &&
-          caseValue.type !== "C" && (
-            <InputText
-              id="customer"
-              label="Titular"
-              type="text"
-              value={caseValue ? caseValue.customer?.name || "" : ""}
-              width="530px"
-            />
-          )}
         {caseValue.type === "C" &&
           caseValue.insured.rut !== caseValue.customer.rut && (
             <InputText
+              id="insured"
               label="Titular"
               type="text"
               value={
                 caseValue
-                  ? `${caseValue.insured?.name} ${caseValue.insured?.paternalLastName} ${caseValue.insured?.maternalLastName}` ||
+                  ? `${caseValue?.insured?.name} ${caseValue?.insured?.paternalLastName} ${caseValue?.insured?.maternalLastName}` ||
                     ""
                   : ""
               }
               width="530px"
+              disabled={itWasFound}
             />
           )}
-        <InputText
-          label="Beneficiario"
-          type="text"
-          value={
-            caseValue
-              ? `${applicant?.name} ${applicant?.paternalLastName} ${applicant?.maternalLastName}` ||
-                ""
-              : ""
-          }
-          width="530px"
-        />
+        {caseValue.type != "B" && (
+          <InputText
+            label="Beneficiario"
+            type="text"
+            value={
+              caseValue
+                ? `${applicant?.name} ${applicant?.paternalLastName} ${applicant?.maternalLastName}` ||
+                  ""
+                : ""
+            }
+            width="530px"
+          />
+        )}
+        {caseValue.type === "B" && (
+          <InputText
+            id="insured"
+            label="Titular"
+            type="text"
+            value={
+              caseValue
+                ? `${caseValue?.insured?.name} ${caseValue?.insured?.paternalLastName} ${caseValue?.insured?.maternalLastName}` ||
+                  ""
+                : ""
+            }
+            width="530px"
+            disabled={itWasFound}
+          />
+        )}
+        {caseValue.type === "B" && (
+          <InputText
+            label="Beneficiario"
+            type="text"
+            value={
+              caseValue
+                ? `${caseValue?.beneficiary?.name} ${caseValue?.beneficiary?.paternalLastName} ${caseValue?.beneficiary?.maternalLastName}` ||
+                  ""
+                : ""
+            }
+            width="530px"
+          />
+        )}
       </ContentCell>
       <ContentCell gap="20px">
         <ContentCell gap="5px">
@@ -193,9 +215,8 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
             width="530px"
             height="110px"
             disabled={
-              caseId?.event?.description !== null ||
-              (caseId?.event?.description !== null &&
-                user?.publicMetadata.roles?.operaciones !== "admin")
+              caseId?.event?.description !== null &&
+              user?.publicMetadata.roles?.operaciones !== "admin"
             }
           />
           <ComboBox

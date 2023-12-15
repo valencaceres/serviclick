@@ -22,6 +22,9 @@ export const stagePages = {
   applicant: {
     component: (
       <CaseApplicant
+        setApplicantToUpdate={(applicantToUpdate: string): void => {
+          throw new Error("Function not implemented.");
+        }}
         setIsEnabledSave={(isEnabled: boolean): void => {
           throw new Error("Function not implemented.");
         }}
@@ -32,6 +35,9 @@ export const stagePages = {
   insured: {
     component: (
       <CaseInsured
+        setApplicantToUpdate={(applicantToUpdate: string): void => {
+          throw new Error("Function not implemented.");
+        }}
         setIsEnabledSave={(isEnabled: boolean): void => {
           throw new Error("Function not implemented.");
         }}

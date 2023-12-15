@@ -16,10 +16,22 @@ interface ICaseProductProps {
 
 const CaseImed = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
   const router = useRouter();
-  const { caseValue, setCase, getById: getCaseByid, caseId } = useCase();
+  const {
+    caseValue,
+    setCase,
+    getById: getCaseByid,
+    caseId,
+    ufValue,
+    getUfValue,
+  } = useCase();
   const { user } = useUser();
 
   const [applicant, setApplicant] = useState<IApplicant>();
+
+  const valueInChileanCurrency =
+    caseValue?.assistance.assigned.currency === "U"
+      ? Number(ufValue?.uf) * caseValue.assistance.assigned.amount
+      : null;
 
   const handleChange = (e: any) => {
     const value = e.target.value;
@@ -86,6 +98,10 @@ const CaseImed = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
     }
   }, [router.query.id]);
 
+  useEffect(() => {
+    getUfValue();
+  }, []);
+
   return (
     <ContentCell gap="20px">
       <ContentCell gap="5px">
@@ -99,44 +115,63 @@ const CaseImed = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
             disabled={true}
           />
         )}
-        {caseValue.customer.rut !== caseValue.insured.rut &&
-          caseValue.type !== "C" && (
-            <InputText
-              id="customer"
-              label="Titular"
-              type="text"
-              value={caseValue ? caseValue.customer?.name || "" : ""}
-              width="530px"
-              disabled={true}
-            />
-          )}
         {caseValue.type === "C" &&
           caseValue.insured.rut !== caseValue.customer.rut && (
             <InputText
+              id="insured"
               label="Titular"
               type="text"
               value={
                 caseValue
-                  ? `${caseValue.insured?.name} ${caseValue.insured?.paternalLastName} ${caseValue.insured?.maternalLastName}` ||
+                  ? `${caseValue?.insured?.name} ${caseValue?.insured?.paternalLastName} ${caseValue?.insured?.maternalLastName}` ||
                     ""
                   : ""
               }
               width="530px"
-              disabled={true}
+              disabled={itWasFound}
             />
           )}
-        <InputText
-          label="Beneficiario"
-          type="text"
-          value={
-            caseValue
-              ? `${applicant?.name} ${applicant?.paternalLastName} ${applicant?.maternalLastName}` ||
-                ""
-              : ""
-          }
-          width="530px"
-          disabled={true}
-        />
+        {caseValue.type != "B" && (
+          <InputText
+            label="Beneficiario"
+            type="text"
+            value={
+              caseValue
+                ? `${applicant?.name} ${applicant?.paternalLastName} ${applicant?.maternalLastName}` ||
+                  ""
+                : ""
+            }
+            width="530px"
+          />
+        )}
+        {caseValue.type === "B" && (
+          <InputText
+            id="insured"
+            label="Titular"
+            type="text"
+            value={
+              caseValue
+                ? `${caseValue?.insured?.name} ${caseValue?.insured?.paternalLastName} ${caseValue?.insured?.maternalLastName}` ||
+                  ""
+                : ""
+            }
+            width="530px"
+            disabled={itWasFound}
+          />
+        )}
+        {caseValue.type === "B" && (
+          <InputText
+            label="Beneficiario"
+            type="text"
+            value={
+              caseValue
+                ? `${caseValue?.beneficiary?.name} ${caseValue?.beneficiary?.paternalLastName} ${caseValue?.beneficiary?.maternalLastName}` ||
+                  ""
+                : ""
+            }
+            width="530px"
+          />
+        )}
       </ContentCell>
       <ContentCell gap="20px">
         <ContentCell gap="5px">
@@ -265,6 +300,29 @@ const CaseImed = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
             )}
           </ContentRow>
         </ContentCell>
+        {ufValue && (
+          <InputText
+            label={
+              caseValue?.assistance.assigned.currency === "U"
+                ? "Valor UF en pesos de la asistencia ($)"
+                : "Valor UF al dia de hoy ($)"
+            }
+            value={
+              caseValue?.assistance.assigned.currency === "U"
+                ? (valueInChileanCurrency ?? "").toLocaleString("es-CL", {
+                    style: "currency",
+                    currency: "CLP",
+                  })
+                : (Number(ufValue?.uf) ?? "").toLocaleString("es-CL", {
+                    style: "currency",
+                    currency: "CLP",
+                  })
+            }
+            type="text"
+            width="530px"
+            disabled={true}
+          />
+        )}
       </ContentCell>
     </ContentCell>
   );

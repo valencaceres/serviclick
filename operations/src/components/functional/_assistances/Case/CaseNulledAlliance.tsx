@@ -93,9 +93,7 @@ const CaseNulledAlliance = ({
       },
       user_id: user?.id ?? "",
     });
-    router.push(
-      `/assistance/case/${caseValue.history[1].code}/${caseValue.case_id}`
-    );
+    router.push(`/assistance/case/alliance/${caseValue.case_id}`);
   };
 
   const checkCompleteFields = () => {
@@ -180,43 +178,63 @@ const CaseNulledAlliance = ({
             disabled={true}
           />
         )}
-        {caseValue.customer.rut !== caseValue.insured.rut &&
-          caseValue.type !== "C" && (
+        {caseValue.type === "C" &&
+          caseValue.insured.rut !== caseValue.customer.rut && (
             <InputText
-              id="customer"
+              id="insured"
               label="Titular"
               type="text"
-              value={caseValue ? caseValue.customer?.name || "" : ""}
+              value={
+                caseValue
+                  ? `${caseValue?.insured?.name} ${caseValue?.insured?.paternalLastName} ${caseValue?.insured?.maternalLastName}` ||
+                    ""
+                  : ""
+              }
               width="530px"
-              disabled={true}
+              disabled={itWasFound}
             />
           )}
-        {caseValue.type === "C" && (
+        {caseValue.type != "B" && (
           <InputText
-            label="Titular"
+            label="Beneficiario"
             type="text"
             value={
               caseValue
-                ? `${caseValue.insured?.name} ${caseValue.insured?.paternalLastName} ${caseValue.insured?.maternalLastName}` ||
+                ? `${applicant?.name} ${applicant?.paternalLastName} ${applicant?.maternalLastName}` ||
                   ""
                 : ""
             }
             width="530px"
-            disabled={true}
           />
         )}
-        <InputText
-          label="Beneficiario"
-          type="text"
-          value={
-            caseValue
-              ? `${applicant?.name} ${applicant?.paternalLastName} ${applicant?.maternalLastName}` ||
-                ""
-              : ""
-          }
-          width="530px"
-          disabled={true}
-        />
+        {caseValue.type === "B" && (
+          <InputText
+            id="insured"
+            label="Titular"
+            type="text"
+            value={
+              caseValue
+                ? `${caseValue?.insured?.name} ${caseValue?.insured?.paternalLastName} ${caseValue?.insured?.maternalLastName}` ||
+                  ""
+                : ""
+            }
+            width="530px"
+            disabled={itWasFound}
+          />
+        )}
+        {caseValue.type === "B" && (
+          <InputText
+            label="Beneficiario"
+            type="text"
+            value={
+              caseValue
+                ? `${caseValue?.beneficiary?.name} ${caseValue?.beneficiary?.paternalLastName} ${caseValue?.beneficiary?.maternalLastName}` ||
+                  ""
+                : ""
+            }
+            width="530px"
+          />
+        )}
       </ContentCell>
       <ContentCell gap="20px">
         <ContentCell gap="5px">

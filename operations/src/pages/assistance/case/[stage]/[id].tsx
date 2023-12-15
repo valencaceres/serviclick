@@ -210,11 +210,10 @@ const AssistanceCasePage = () => {
   const [openModalStatus, setIsOpenModalStatus] = useState<boolean>(false);
   const [caseNumber, setCaseNumber] = useState<string | number>("");
   const [beneficiaryType, setBeneficiaryType] = useState<string>("");
-
+  const [applicantToUpdate, setApplicantToUpdate] = useState<string>("");
   const matchingProcedure = procedureList.find(
     (procedure) => procedure.id === caseValue?.procedure_id
   );
-
   const saveApplicant = () => {
     if (caseValue.type) {
       const isTypeC = caseValue.type === "C";
@@ -237,14 +236,14 @@ const AssistanceCasePage = () => {
           : "I";
 
       if (applicant) {
-        applicantUpsert(caseType, applicant, caseValue);
+        applicantUpsert(caseType, applicant, caseValue, applicantToUpdate);
         stateMachine[stageKey].next();
       }
     }
   };
 
   const saveInsured = () => {
-    applicantUpsert("I", caseValue.insured, caseValue);
+    applicantUpsert("I", caseValue.insured, caseValue, applicantToUpdate);
     if (window.location.href.includes("/insured/new")) {
       stateMachine[stageKey].next();
     }
@@ -352,6 +351,7 @@ const AssistanceCasePage = () => {
       {React.cloneElement(stagePages[stageKey].component, {
         setIsEnabledSave,
         itWasFound,
+        setApplicantToUpdate,
       })}
       <CaseHistory setShowModal={setShowModal} showModal={showModal} />
       <FloatMenu>

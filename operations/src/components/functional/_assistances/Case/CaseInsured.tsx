@@ -31,9 +31,14 @@ interface IInitialValues {
 interface ICaseInsuredProps {
   setIsEnabledSave: (isEnabled: boolean) => void;
   itWasFound: boolean;
+  setApplicantToUpdate: (applicantToUpdate: string) => void;
 }
 
-const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
+const CaseInsured = ({
+  setIsEnabledSave,
+  itWasFound,
+  setApplicantToUpdate,
+}: ICaseInsuredProps) => {
   const router = useRouter();
   const { user } = useUser();
   const { setTitleUI, title } = useUI();
@@ -137,6 +142,9 @@ const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
   useEffect(() => {
     setIsEnabledSave(checkCompleteFields());
   }, [caseValue]);
+  useEffect(() => {
+    setApplicantToUpdate("insured");
+  }, [setApplicantToUpdate]);
 
   return (
     <ContentCell gap="20px">

@@ -21,6 +21,7 @@ interface ICustomer {
 export interface IProduct {
   id: string;
   name: string;
+  productPlan_id: string;
 }
 
 export interface IAssistance {

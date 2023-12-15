@@ -36,11 +36,13 @@ interface IInitialValues {
 interface ICaseApplicantProps {
   setIsEnabledSave: (isEnabled: boolean) => void;
   itWasFound: boolean;
+  setApplicantToUpdate: (applicantToUpdate: string) => void;
 }
 
 const CaseApplicant = ({
   setIsEnabledSave,
   itWasFound,
+  setApplicantToUpdate,
 }: ICaseApplicantProps) => {
   const router = useRouter();
 
@@ -171,23 +173,27 @@ const CaseApplicant = ({
   useEffect(() => {
     if (caseValue?.type === "I") {
       setApplicantType("insured");
+      setApplicantToUpdate("insured");
     } else if (caseValue?.type === "B") {
       setApplicantType("beneficiary");
+      setApplicantToUpdate("beneficiary");
     } else if (caseValue?.type === "C") {
       if (
         caseValue?.beneficiary &&
         Object.keys(caseValue.beneficiary).length > 0
       ) {
         setApplicantType("beneficiary");
+        setApplicantToUpdate("beneficiary");
       } else if (
         caseValue?.insured &&
         Object.keys(caseValue.insured).length > 0
       ) {
         setApplicantType("insured");
+        setApplicantToUpdate("insured");
       }
     }
-  }, []);
-  
+  }, [caseValue.type, caseValue.beneficiary, caseValue.insured]);
+
   return (
     <ContentCell gap="20px">
       <ContentRow gap="5px" align="space-between">

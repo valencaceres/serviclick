@@ -38,12 +38,16 @@ begin
 	 p_is_closed := (p_status->>'isClosed')::boolean;
     p_description_closed := p_status->>'description';
 
- 
+ 	if not p_assistance is null then
+		p_assistance_id := (p_assistance->>'id')::uuid;
+	end if;
+
   IF p_case_id IS NOT NULL THEN
     UPDATE app.case
     SET
         isclosed = p_is_closed,
-        description_closed = p_description_closed
+        description_closed = p_description_closed,
+        assistance_id = p_assistance_id
     WHERE
         id = p_case_id;
 
@@ -144,9 +148,7 @@ end if;
 		p_product_id := (p_product->>'id')::uuid;
 	end if;
 
-	if not p_assistance is null then
-		p_assistance_id := (p_assistance->>'id')::uuid;
-	end if;
+
 	if p_case_id is null then
 	
 		insert	into app.case(
@@ -407,7 +409,7 @@ END IF;
     );
 END IF;
 
-IF p_procedure_id = 'bc1698ca-9800-40d9-a2ed-8f595b36c06f'::uuid AND (p_alliance->>'cancel')::boolean IS TRUE THEN
+IF p_procedure_id = 'fb3ca6af-cad1-4f90-ad6b-9d393f1e9566'::uuid AND (p_alliance->>'cancel')::boolean IS TRUE THEN
     PERFORM app.case_stage_upsert(
         p_case_id,
         'f978d038-72e9-4b2e-b55d-758551e622d7'::uuid,

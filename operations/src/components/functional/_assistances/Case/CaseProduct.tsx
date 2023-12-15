@@ -71,6 +71,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
         product: {
           id: selectedProduct?.id || caseValue?.product?.id,
           name: selectedProduct?.name || caseValue?.product?.name,
+          productPlan_id: caseValue.productplan_id ?? "",
         },
         productplan_id:
           selectedProduct?.productplan_id || caseValue?.productplan_id,
@@ -137,7 +138,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
       resetCaseId();
     }
   }, [router.query.id, resetCaseId]);
-
+  console.log(caseValue);
   const handleChangeValue = (e: any, id: string) => {
     if (Array.isArray(caseValue.values)) {
       const values = caseValue.values.map((item) => {
@@ -192,7 +193,6 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
     setRetail(caseValue?.retail ?? null);
   }, []);
 
-  console.log(caseValue);
   return (
     <ContentCell gap="20px">
       <ContentCell gap="5px">
@@ -248,17 +248,47 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
               disabled={itWasFound}
             />
           )}
-        <InputText
-          label="Beneficiario"
-          type="text"
-          value={
-            caseValue
-              ? `${applicant?.name} ${applicant?.paternalLastName} ${applicant?.maternalLastName}` ||
-                ""
-              : ""
-          }
-          width="530px"
-        />
+        {caseValue.type != "B" && (
+          <InputText
+            label="Beneficiario"
+            type="text"
+            value={
+              caseValue
+                ? `${applicant?.name} ${applicant?.paternalLastName} ${applicant?.maternalLastName}` ||
+                  ""
+                : ""
+            }
+            width="530px"
+          />
+        )}
+        {caseValue.type === "B" && (
+          <InputText
+            id="insured"
+            label="Titular"
+            type="text"
+            value={
+              caseValue
+                ? `${caseValue?.insured?.name} ${caseValue?.insured?.paternalLastName} ${caseValue?.insured?.maternalLastName}` ||
+                  ""
+                : ""
+            }
+            width="530px"
+            disabled={itWasFound}
+          />
+        )}
+        {caseValue.type === "B" && (
+          <InputText
+            label="Beneficiario"
+            type="text"
+            value={
+              caseValue
+                ? `${caseValue?.beneficiary?.name} ${caseValue?.beneficiary?.paternalLastName} ${caseValue?.beneficiary?.maternalLastName}` ||
+                  ""
+                : ""
+            }
+            width="530px"
+          />
+        )}
       </ContentCell>
       <ContentCell gap="5px">
         {caseValue?.case_id !== null ? (

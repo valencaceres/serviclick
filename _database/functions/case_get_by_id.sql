@@ -1,5 +1,5 @@
-
 drop function app.case_get_by_id;
+
 CREATE OR REPLACE FUNCTION app.case_get_by_id(p_case_id uuid)
  RETURNS json
  LANGUAGE plpgsql
@@ -247,7 +247,9 @@ begin
 				'birthDate', cas.beneficiary_birthdate) end,
 			'product', json_build_object(
 				'id', cas.product_id,
-				'name', cas.product_name),
+				'name', cas.product_name,
+				'productPlan_id', cas.productplan_id
+				),
 			'assistance', json_build_object(
 				'id', cas.assistance_id,
 				'name', cas.assistance_name,
@@ -322,14 +324,17 @@ begin
 		            cas.event_date as event_date,
 		            case when cas.event_location is null then '' else cas.event_location end as event_location,
 		            cas.event_description as event_description,
-		            cas.procedure_id as procedure_id
+		            cas.procedure_id as procedure_id,
+		            ppl.id as productplan_id
 			from 	app.case cas
-						inner join app.customer cus on cas.customer_id = cus.id
+					left outer join app.customer cus on cas.customer_id = cus.id
 						inner join app.insured ins on cas.insured_id = ins.id
 						inner join app.product pro on cas.product_id = pro.id
 						inner join app.assistance asi on cas.assistance_id = asi.id
 						inner join app.productassistance pas on asi.id = pas.assistance_id and pro.id = pas.product_id
 						inner join app.lead lea on cas.lead_id = lea.id
+						inner join app.leadproduct lpr on lea.id = lpr.lead_id
+						inner join app.productplan ppl on lpr.productplan_id = ppl.plan_id 
 						inner join app.policy pol on lea.policy_id = pol.id
 						left outer join app.retail ret on cas.retail_id = ret.id				
 						left outer join app.beneficiary ben on cas.beneficiary_id = ben.id

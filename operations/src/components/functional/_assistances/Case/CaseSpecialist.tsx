@@ -355,12 +355,17 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
             </>
           ) : (
             <>
-              <InputText
-                label="Comuna "
-                value={caseValue?.specialist?.district_name ?? ""}
-                type="text"
-                disabled={true}
+              <ComboBox
+                id="location"
+                label="Comuna"
+                value={caseValue ? caseValue?.event?.location || "" : ""}
+                placeHolder=":: Seleccione una comuna ::"
+                onChange={handleChange}
+                data={districtList}
+                dataValue={"id"}
+                dataText={"district_name"}
                 width="530px"
+                enabled={false}
               />
               <InputText
                 label="Especialista"
