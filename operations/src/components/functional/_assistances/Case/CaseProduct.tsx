@@ -111,6 +111,15 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
       const selectedAssistance = assistances.find(
         (item) => item.id === e.target.value
       );
+
+      getServicesAndValues({
+        insured_id: caseValue?.insured.id || null,
+        beneficiary_id: caseValue?.beneficiary?.id || null,
+        retail_id: caseValue?.retail?.id || null,
+        customer_id: caseValue?.customer.id || null,
+        product_id: caseValue?.product.id,
+        assistance_id: selectedAssistance?.id || null,
+      });
       setCase({
         ...caseValue,
         assistance: selectedAssistance || caseValue?.assistance,
@@ -138,7 +147,6 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
       resetCaseId();
     }
   }, [router.query.id, resetCaseId]);
-  console.log(caseValue);
   const handleChangeValue = (e: any, id: string) => {
     if (Array.isArray(caseValue.values)) {
       const values = caseValue.values.map((item) => {
@@ -192,7 +200,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
   useEffect(() => {
     setRetail(caseValue?.retail ?? null);
   }, []);
-  console.log(caseValue);
+
   return (
     <ContentCell gap="20px">
       <ContentCell gap="5px">

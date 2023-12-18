@@ -1,3 +1,4 @@
+drop function app.case_get_services_and_values;
 CREATE OR REPLACE FUNCTION app.case_get_services_and_values(p_insured_id uuid, p_beneficiary_id uuid, p_retail_id uuid, p_customer_id uuid, p_product_id uuid, p_assistance_id uuid)
  RETURNS json
  LANGUAGE plpgsql
@@ -54,7 +55,6 @@ begin
 			where 	pro.id = p_product_id) product;
     
 	
-	if p_assistance_id is null then
 	
 		select	json_agg(json_build_object(
 					'id', asi.id, 
@@ -82,7 +82,6 @@ begin
 				order 	by
 						pas.number) as asi;
 					
-	else
 	
 		if not p_lead_id is null then
 			
@@ -94,13 +93,12 @@ begin
 							count(1) as events,
 							sum(case when cre.amount is null then 0 else cre.amount end) as total_amount
 					from 	app.case cas
-								left outer join app.casereimbursment cre on cas.id = cre.case_id and cre.status = 'OK'
+								left outer join app.casereimbursment cre on cas.id = cre.case_id and cre.status = 'Aprobado'
 					where 	cas.lead_id = p_lead_id and
 							cas.assistance_id = p_assistance_id
 					group 	by
 							cas.lead_id) as used;
 		
-		end if;
 	
 		select	json_build_object(
 					'id', assistance.id,
