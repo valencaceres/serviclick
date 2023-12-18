@@ -1,5 +1,4 @@
 drop function app.case_get_by_id;
-
 CREATE OR REPLACE FUNCTION app.case_get_by_id(p_case_id uuid)
  RETURNS json
  LANGUAGE plpgsql
@@ -139,6 +138,14 @@ begin
 				'scheduled_time', cas.time,
 				'confirmed', cas.confirmed,
 				'completed', cas.completed,
+					'cancel', CASE 
+            WHEN EXISTS (
+              SELECT 1
+              FROM app.casestage
+              WHERE case_id = p_case_id AND stage_id = '505d568a-2d98-41ce-96a0-48b294e0a39e'::uuid
+            ) THEN true
+            ELSE false
+          END,
 				'qualification_id', cas.qualification_id,
 				'qualification_name', cas.qualification_name,
 				'comment', cas.comment)
@@ -177,8 +184,17 @@ begin
 				'scheduled_time', cas.time,
 				'confirmed', cas.confirmed,
 				'completed', cas.completed,
+				'cancel', CASE 
+            WHEN EXISTS (
+              SELECT 1
+              FROM app.casestage
+              WHERE case_id = p_case_id AND stage_id = 'f978d038-72e9-4b2e-b55d-758551e622d7'::uuid
+            ) THEN true
+            ELSE false
+          END,
 				'qualification_id', cas.qualification_id,
 				'qualification_name', cas.qualification_name,
+			
 				'comment', cas.comment)
 	into	json_alliance
 	from (	select 	csp.case_id,
