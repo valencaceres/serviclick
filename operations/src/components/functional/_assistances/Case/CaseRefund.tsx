@@ -202,7 +202,7 @@ const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
               id="assistance"
               label={
                 caseValue?.assistance.assigned.currency === "U"
-                  ? "Monto Disponible (UF)"
+                  ? "Monto Asignado (UF)"
                   : "Monto Disponible ($)"
               }
               type="text"
@@ -227,7 +227,31 @@ const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
               disabled={itWasFound}
             />
           </ContentRow>
-
+          <ContentRow>
+            {ufValue && (
+              <InputText
+                label={
+                  caseValue?.assistance.assigned.currency === "U"
+                    ? "Valor UF en pesos de la asistencia ($)"
+                    : "Valor UF al dia de hoy ($)"
+                }
+                value={
+                  caseValue?.assistance.assigned.currency === "U"
+                    ? (valueInChileanCurrency ?? "").toLocaleString("es-CL", {
+                        style: "currency",
+                        currency: "CLP",
+                      })
+                    : (Number(ufValue?.uf) ?? "").toLocaleString("es-CL", {
+                        style: "currency",
+                        currency: "CLP",
+                      })
+                }
+                type="text"
+                width="530px"
+                disabled={true}
+              />
+            )}
+          </ContentRow>
           <ContentRow gap="5px">
             {caseId?.refund?.amount?.required && caseId.refund.status ? (
               <>
@@ -243,6 +267,12 @@ const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
                   type="text"
                   width="190px"
                   disabled={true}
+                  isValid={
+                    Number(caseValue.refund?.amount?.required) <
+                    (caseValue.assistance.assigned.currency === "U"
+                      ? Number(valueInChileanCurrency)
+                      : Number(caseValue.assistance.assigned.maximum))
+                  }
                 />
                 <InputText
                   label="Estado"
@@ -264,6 +294,12 @@ const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
                 type="number"
                 width="190px"
                 onChange={handleChange}
+                isValid={
+                  Number(caseValue.refund?.amount?.required) <
+                  (caseValue.assistance.assigned.currency === "U"
+                    ? Number(valueInChileanCurrency)
+                    : Number(caseValue.assistance.assigned.maximum))
+                }
               />
             )}
           </ContentRow>
@@ -281,6 +317,12 @@ const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
                 type="text"
                 width="190px"
                 disabled={true}
+                isValid={
+                  Number(caseValue.refund?.amount?.required) <
+                  (caseValue.assistance.assigned.currency === "U"
+                    ? Number(valueInChileanCurrency)
+                    : Number(caseValue.assistance.assigned.maximum))
+                }
               />
             )}
             {caseId?.refund?.comment && (
@@ -294,29 +336,6 @@ const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
             )}
           </ContentRow>
         </ContentCell>
-        {ufValue && (
-          <InputText
-            label={
-              caseValue?.assistance.assigned.currency === "U"
-                ? "Valor UF en pesos de la asistencia ($)"
-                : "Valor UF al dia de hoy ($)"
-            }
-            value={
-              caseValue?.assistance.assigned.currency === "U"
-                ? (valueInChileanCurrency ?? "").toLocaleString("es-CL", {
-                    style: "currency",
-                    currency: "CLP",
-                  })
-                : (Number(ufValue?.uf) ?? "").toLocaleString("es-CL", {
-                    style: "currency",
-                    currency: "CLP",
-                  })
-            }
-            type="text"
-            width="530px"
-            disabled={true}
-          />
-        )}
       </ContentCell>
     </ContentCell>
   );

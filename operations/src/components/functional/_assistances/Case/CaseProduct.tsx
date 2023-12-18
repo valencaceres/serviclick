@@ -192,7 +192,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
   useEffect(() => {
     setRetail(caseValue?.retail ?? null);
   }, []);
-
+  console.log(caseValue);
   return (
     <ContentCell gap="20px">
       <ContentCell gap="5px">

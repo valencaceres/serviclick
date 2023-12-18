@@ -152,22 +152,22 @@ const CaseInsured = ({
         <InputText
           label="N° Caso"
           value={
-            caseValue.case_id !== "" ? caseValue.case_number.toString() : ""
+            caseValue?.case_id !== "" ? caseValue?.case_number.toString() : ""
           }
           type="text"
           disabled={true}
-          width="100px"
+          width="150px"
         />
         <InputText
           label="Fecha/hora de apertura"
-          value={`${caseValue.date} ${caseValue.time}` || ""}
+          value={`${caseValue?.date} ${caseValue?.time}` || ""}
           type="text"
           disabled={true}
-          width="200px"
+          width="100%"
         />
       </ContentRow>
       <ContentCell gap="5px">
-        <ContentRow gap="5px">
+        <ContentRow gap="5px" align="space-between">
           <InputText
             id="rut"
             label="Rut"
@@ -177,7 +177,7 @@ const CaseInsured = ({
             onBlur={handleBlur}
             onFocus={handleFocus}
             maxLength={9}
-            width="260px"
+            width="150px"
             isValid={isValidField.rut}
             disabled={
               itWasFound ||
@@ -190,6 +190,7 @@ const CaseInsured = ({
             type="date"
             value={caseValue ? caseValue.insured?.birthDate || "" : ""}
             onChange={handleChange}
+            width="150px"
           />
         </ContentRow>
         <InputText
@@ -197,6 +198,7 @@ const CaseInsured = ({
           label="Nombres"
           type="text"
           value={caseValue ? caseValue.insured?.name || "" : ""}
+          width="535px"
           onChange={handleChange}
         />
         <InputText
@@ -205,6 +207,7 @@ const CaseInsured = ({
           type="text"
           value={caseValue ? caseValue.insured?.paternalLastName || "" : ""}
           onChange={handleChange}
+          width="535px"
         />
         <InputText
           id="maternalLastName"
@@ -212,6 +215,7 @@ const CaseInsured = ({
           type="text"
           value={caseValue ? caseValue.insured?.maternalLastName || "" : ""}
           onChange={handleChange}
+          width="535px"
         />
         <InputText
           id="address"
@@ -219,6 +223,7 @@ const CaseInsured = ({
           type="text"
           value={caseValue ? caseValue.insured?.address || "" : ""}
           onChange={handleChange}
+          width="535px"
         />
         <ComboBox
           id="district"
@@ -226,7 +231,7 @@ const CaseInsured = ({
           value={caseValue ? caseValue.insured?.district || "" : ""}
           placeHolder=":: Seleccione una comuna ::"
           onChange={handleChange}
-          width={"100%"}
+          width={"535px"}
           data={districtList}
           dataValue={"district_name"}
           dataText={"district_name"}
@@ -239,7 +244,7 @@ const CaseInsured = ({
               type="text"
               value={caseValue ? caseValue.insured?.email || "" : ""}
               onChange={handleChange}
-              width={"100%"}
+              width={"380px"}
               isValid={isValidField.email}
             />
             <InputText
@@ -249,7 +254,7 @@ const CaseInsured = ({
               value={caseValue ? caseValue.insured?.phone || "" : ""}
               onChange={handleChange}
               maxLength={9}
-              width={"265px"}
+              width={"380px"}
               isValid={isValidField.phone}
             />
           </ContentCell>
