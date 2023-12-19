@@ -52,7 +52,7 @@ export const HeroCarousel = ({
     pagination: { clickable: true },
     scrollbar: { draggable: true },
   }
-  console.log(heroData)
+
   const slides = heroData.map((heroItem) => (
     <section className="relative flex h-[250px] w-full  items-center justify-center md:h-[550px] md:justify-start">
       <Image
