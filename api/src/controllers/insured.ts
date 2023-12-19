@@ -142,18 +142,29 @@ const upsert = async (req: any, res: any) => {
   });
   const insuredUpsertString = response.data.insured_upsert;
 
+  // Función para eliminar comillas dobles de una cadena
+  const removeQuotes = (input: any) => {
+    if (typeof input === "string" || input instanceof String) {
+      return input.replace(/^"(.*)"$/, "$1");
+    }
+    return input;
+  };
+
   const valuesArray = insuredUpsertString.replace(/^\(|\)$/g, "").split(",");
+
+  const sanitizedValuesArray = valuesArray.map(removeQuotes);
+
   const data = {
-    id: valuesArray[0],
-    rut: valuesArray[1],
-    name: valuesArray[2],
-    paternalLastName: valuesArray[3],
-    maternalLastName: valuesArray[4],
-    address: valuesArray[5],
-    district: valuesArray[6],
-    email: valuesArray[7],
-    phone: valuesArray[8],
-    birthDate: valuesArray[9],
+    id: sanitizedValuesArray[0],
+    rut: sanitizedValuesArray[1],
+    name: sanitizedValuesArray[2],
+    paternalLastName: sanitizedValuesArray[3],
+    maternalLastName: sanitizedValuesArray[4],
+    address: sanitizedValuesArray[5],
+    district: sanitizedValuesArray[6],
+    email: sanitizedValuesArray[7],
+    phone: sanitizedValuesArray[8],
+    birthDate: sanitizedValuesArray[9],
   };
   res.status(200).json(data);
 };
