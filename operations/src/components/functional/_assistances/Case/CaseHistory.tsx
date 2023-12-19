@@ -27,9 +27,11 @@ const CaseHistory = ({ showModal, setShowModal }: any) => {
   const [pdfModal, setPdfModal] = useState(false);
   const { caseValue, pdfBase64, getPdfContract, resetPdf } = useCase();
   const userIds = caseValue?.history?.map((m: any) => m.user);
-  const { getUsers, usersList } = useCase();
+
+  const { getUsers, usersList, resetUserLists } = useCase();
   useEffect(() => {
     if (caseValue?.history?.length > 0) {
+      resetUserLists();
       getUsers(userIds);
     }
   }, [router, getUsers]);
@@ -42,6 +44,7 @@ const CaseHistory = ({ showModal, setShowModal }: any) => {
       getPdfContract(caseValue?.product.productPlan_id);
     }
   }, [caseValue?.product.productPlan_id]);
+
   return (
     <Fragment>
       <ContentCell gap="5px">

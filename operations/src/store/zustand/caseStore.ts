@@ -36,6 +36,7 @@ interface caseState {
   pdfBase64: string;
   case: ICase;
   usersList: UserResponse;
+  usersListChat: UserResponse;
   caseId: ICase;
   caseList: {
     summary: {
@@ -61,6 +62,7 @@ interface caseState {
     caseValue: ICase | null
   ) => void;
   getUsers: (ids: string[]) => void;
+  getUsersChat: (ids: string[]) => void;
   getRetails: () => void;
   getStatus: () => void;
   getAll: (
@@ -91,6 +93,8 @@ interface caseState {
   resetApplicant: () => void;
   resetCaseId: () => void;
   resetPdf: () => void;
+  resetUserLists: () => void;
+  resetUserListsChat: () => void;
 }
 
 const initialCase: ICase = {
@@ -184,6 +188,9 @@ export const caseStore = create<caseState>((set) => ({
     today: new Date(),
   },
   usersList: {
+    data: [],
+  },
+  usersListChat: {
     data: [],
   },
   pdfBase64: "",
@@ -305,9 +312,31 @@ export const caseStore = create<caseState>((set) => ({
       set((state) => ({ ...state, isLoading: true }));
 
       const { data } = await apiInstance.post(`/user/getByIds`, { ids });
+
       set((state) => ({
         ...state,
         usersList: data,
+        usersListChat: data,
+        isLoading: false,
+      }));
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
+  },
+  getUsersChat: async (ids: string[]) => {
+    try {
+      set((state) => ({ ...state, isLoading: true }));
+
+      const { data } = await apiInstance.post(`/user/getByIds`, { ids });
+
+      set((state) => ({
+        ...state,
+        usersListChat: data,
         isLoading: false,
       }));
     } catch (e) {
@@ -520,6 +549,7 @@ export const caseStore = create<caseState>((set) => ({
         (caseValue.beneficiary === null ||
           (caseValue.beneficiary !== null && caseValue.beneficiary.rut === ""));
       const response = await apiInstance.post(`/${update}/upsert`, data);
+
       set((state) => ({
         ...state,
         case: {
@@ -589,6 +619,22 @@ export const caseStore = create<caseState>((set) => ({
     set((state) => ({
       ...state,
       pdfBase64: "",
+    }));
+  },
+  resetUserLists: () => {
+    set((state) => ({
+      ...state,
+      usersList: {
+        data: [],
+      },
+    }));
+  },
+  resetUserListsChat: () => {
+    set((state) => ({
+      ...state,
+      usersListChat: {
+        data: [],
+      },
     }));
   },
 }));
