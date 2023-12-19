@@ -4,6 +4,7 @@ const useCase = () => {
   const {
     case: caseValue,
     caseList,
+    usersList,
     ufValue,
     pdfBase64,
     applicant,
@@ -18,6 +19,7 @@ const useCase = () => {
   } = caseStore((state) => ({
     case: state.case,
     caseId: state.caseId,
+    usersList: state.usersList,
     pdfBase64: state.pdfBase64,
     ufValue: state.ufValue,
     applicant: state.applicant,
@@ -47,6 +49,7 @@ const useCase = () => {
     resetApplicant,
     getPdfContract,
     resetCaseId,
+    getUsers,
     resetPdf,
   } = caseStore();
 
@@ -61,6 +64,7 @@ const useCase = () => {
     statusList,
     products,
     assistances,
+    usersList,
     isLoading,
     isError,
     error,
@@ -78,6 +82,7 @@ const useCase = () => {
     reset,
     getPdfContract,
     resetPdf,
+    getUsers,
     resetApplicant,
     resetCaseId,
   };

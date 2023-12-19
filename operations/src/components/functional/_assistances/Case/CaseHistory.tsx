@@ -20,8 +20,6 @@ import Icon from "~/components/ui/Icon";
 import PDFViewer from "~/components/ui/PDFViewer/PdfViewer";
 import { LoadingMessage } from "~/components/ui/LoadingMessage";
 import { useCase } from "~/store/hooks";
-import { useQueryCase } from "~/hooks/query";
-import { useUser } from "@clerk/nextjs";
 import Button from "~/components/ui/Button";
 import { Modal, Window } from "~/components/ui/Modal";
 const CaseHistory = ({ showModal, setShowModal }: any) => {
@@ -29,7 +27,12 @@ const CaseHistory = ({ showModal, setShowModal }: any) => {
   const [pdfModal, setPdfModal] = useState(false);
   const { caseValue, pdfBase64, getPdfContract, resetPdf } = useCase();
   const userIds = caseValue?.history?.map((m: any) => m.user);
-  const { data: operators } = useQueryCase().useGetUserByClerkId(userIds);
+  const { getUsers, usersList } = useCase();
+  useEffect(() => {
+    if (caseValue?.history?.length > 0) {
+      getUsers(userIds);
+    }
+  }, [router, getUsers]);
   const handleCloseModalPdf = () => {
     setPdfModal(false);
   };
@@ -55,7 +58,7 @@ const CaseHistory = ({ showModal, setShowModal }: any) => {
           </TableHeader>
           <TableDetail>
             {caseValue?.history.map((stage, idx: number) => {
-              const user = operators?.data.find(
+              const user = usersList?.data.find(
                 (user: any) => user.id === stage.user
               );
               return (

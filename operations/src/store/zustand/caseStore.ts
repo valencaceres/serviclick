@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 import { apiInstance } from "../../utils/api";
-
+import { User } from "@clerk/nextjs/dist/types/server";
 import {
   ICase,
   ICaseItem,
@@ -13,6 +13,9 @@ import {
 import { IApplicant } from "~/interfaces/applicant";
 import axios from "axios";
 
+interface UserResponse {
+  data: { id: string; first_name: string; last_name: string }[];
+}
 interface ICaseServices {
   insured_id: string | null;
   beneficiary_id: string | null;
@@ -32,6 +35,7 @@ interface caseState {
   applicant: IApplicant;
   pdfBase64: string;
   case: ICase;
+  usersList: UserResponse;
   caseId: ICase;
   caseList: {
     summary: {
@@ -56,6 +60,7 @@ interface caseState {
     typeApplicant: string,
     caseValue: ICase | null
   ) => void;
+  getUsers: (ids: string[]) => void;
   getRetails: () => void;
   getStatus: () => void;
   getAll: (
@@ -178,6 +183,9 @@ export const caseStore = create<caseState>((set) => ({
     uf: "",
     today: new Date(),
   },
+  usersList: {
+    data: [],
+  },
   pdfBase64: "",
   caseId: initialCase,
   case: initialCase,
@@ -281,6 +289,25 @@ export const caseStore = create<caseState>((set) => ({
         ...state,
         case: data,
         caseId: data,
+        isLoading: false,
+      }));
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
+  },
+  getUsers: async (ids: string[]) => {
+    try {
+      set((state) => ({ ...state, isLoading: true }));
+
+      const { data } = await apiInstance.post(`/user/getByIds`, { ids });
+      set((state) => ({
+        ...state,
+        usersList: data,
         isLoading: false,
       }));
     } catch (e) {

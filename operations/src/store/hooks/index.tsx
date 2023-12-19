@@ -1,6 +1,5 @@
 import useSpecialist from "./useSpecialist";
 import usePartner from "./usePartner";
-import useSocket from "./useSocket";
 import useRetail from "./useRetail";
 import useQualification from "./useQualification";
 import useProcedure from "./useProcedure";
@@ -14,7 +13,6 @@ import useCustomer from "./useCustomer";
 export {
   useSpecialist,
   usePartner,
-  useSocket,
   useRetail,
   useQualification,
   useProcedure,
