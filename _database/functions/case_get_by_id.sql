@@ -230,11 +230,40 @@ begin
 			'policy', json_build_object(
 				'id', cas.policy_id,
 				'startDate', cas.policy_startdate,
-				'endDate', cas.policy_enddate),
-			'retail', case when cas.retail_id is null then null else json_build_object(
-				'id', cas.retail_id,
-				'rut', cas.retail_rut,
-				'name', cas.retail_name) end,
+				'endDate', cas.policy_enddate),		
+	'retail', CASE
+    WHEN cas.retail_id IS NULL THEN
+        CASE
+            WHEN cas.broker_id IS NULL THEN
+                CASE
+                    WHEN cas.agent_id IS NULL THEN
+                        NULL
+                    ELSE
+                        json_build_object(
+                            'id', cas.agent_id,
+                            'rut', '',
+                            'name', cas.agent_name
+                        )
+                END
+            ELSE
+                json_build_object(
+                    'id', cas.broker_id,
+                    'rut', cas.broker_rut,
+                    'name', cas.broker_name
+                )
+        END
+    ELSE
+        json_build_object(
+            'id', cas.retail_id,
+            'rut', cas.retail_rut,
+            'name', cas.retail_name
+        )
+END,
+'customer', json_build_object(
+    'id', cas.customer_id,
+    'rut', cas.customer_rut,
+    'name', cas.customer_name
+),
 			'customer', json_build_object(
 				'id', cas.customer_id,
 				'rut', cas.customer_rut,
@@ -341,6 +370,11 @@ begin
 		            case when cas.event_location is null then '' else cas.event_location end as event_location,
 		            cas.event_description as event_description,
 		            cas.procedure_id as procedure_id,
+		            bro.id as broker_id,
+		            bro.name as broker_name,
+		            bro.rut as broker_rut,
+		            agn.name as agent_name, 
+		            agn.id as agent_id,
 		            ppl.id as productplan_id
 			from 	app.case cas
 					left outer join app.customer cus on cas.customer_id = cus.id
@@ -352,7 +386,9 @@ begin
 						inner join app.leadproduct lpr on lea.id = lpr.lead_id
 						inner join app.productplan ppl on lpr.productplan_id = ppl.plan_id 
 						inner join app.policy pol on lea.policy_id = pol.id
-						left outer join app.retail ret on cas.retail_id = ret.id				
+						left outer join app.retail ret on cas.retail_id = ret.id
+						left outer join app.agent agn on cas.retail_id = agn.id
+            			left outer join app.broker bro on cas.retail_id = bro.id
 						left outer join app.beneficiary ben on cas.beneficiary_id = ben.id
 			where 	cas.id = p_case_id) as cas;
 	

@@ -7,6 +7,7 @@ const useCase = () => {
     usersList,
     ufValue,
     pdfBase64,
+    retails,
     applicant,
     retailList,
     usersListChat,
@@ -20,6 +21,7 @@ const useCase = () => {
   } = caseStore((state) => ({
     case: state.case,
     caseId: state.caseId,
+    retails: state.retails,
     usersList: state.usersList,
     usersListChat: state.usersListChat,
     pdfBase64: state.pdfBase64,
@@ -63,6 +65,7 @@ const useCase = () => {
     caseId,
     applicant,
     pdfBase64,
+    retails,
     usersListChat,
     ufValue,
     caseList,

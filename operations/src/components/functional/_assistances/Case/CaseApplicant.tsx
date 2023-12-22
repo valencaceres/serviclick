@@ -126,7 +126,6 @@ const CaseApplicant = ({
         return;
     }
   };
-
   const handleBlur = (e: any) => {
     const value = e.target.value;
 
@@ -192,7 +191,7 @@ const CaseApplicant = ({
         setApplicantToUpdate("insured");
       }
     }
-  }, [caseValue.type, caseValue.beneficiary, caseValue.insured]);
+  }, [caseValue?.type, caseValue?.beneficiary, caseValue?.insured]);
 
   return (
     <ContentCell gap="20px">
@@ -200,7 +199,7 @@ const CaseApplicant = ({
         <InputText
           label="N° Caso"
           value={
-            caseValue?.case_id !== "" ? caseValue?.case_number.toString() : ""
+            caseValue?.case_id !== "" ? caseValue?.case_number?.toString() : ""
           }
           type="text"
           disabled={true}

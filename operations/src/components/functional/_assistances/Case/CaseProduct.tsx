@@ -21,7 +21,7 @@ import { useCase, useRetail } from "~/store/hooks";
 import { useUser } from "@clerk/nextjs";
 import { IApplicant } from "../../../../interfaces/applicant";
 import { IRetProduct } from "~/interfaces/retail";
-import { IRetail } from "~/interfaces/case";
+import { IProduct, IRetail } from "~/interfaces/case";
 interface ICaseProductProps {
   setIsEnabledSave: (isEnabled: boolean) => void;
   itWasFound: boolean;
@@ -36,6 +36,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
     getServicesAndValues,
     caseId,
     resetCaseId,
+    retails,
   } = useCase();
   const { retailList, getAll, resetRetail } = useRetail();
   const { user } = useUser();
@@ -44,12 +45,34 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
   const [hasLoadedServices, setHasLoadedServices] = useState<boolean>(false);
   const [productList, setProductList] = useState<IRetProduct[]>([]);
   const [retail, setRetail] = useState<IRetail | null>(null);
+  const [productListFiltered, setProcuctListFiltered] = useState<IProduct[]>(
+    []
+  );
   const router = useRouter();
   const isValidAmount = !(
-    caseValue?.assistance.assigned.currency === "$" &&
-    caseValue?.assistance.used.total_amount >=
-      caseValue?.assistance.assigned.amount
+    caseValue?.assistance?.assigned?.currency === "$" &&
+    caseValue?.assistance?.used.total_amount >=
+      caseValue?.assistance?.assigned?.amount
   );
+
+  const uniqueRetailIds = new Set<string>();
+  const uniqueRetails: IRetail[] = retails.filter((retail) => {
+    if (!uniqueRetailIds.has(retail?.id)) {
+      uniqueRetailIds.add(retail?.id);
+      return true;
+    }
+    return false;
+  });
+
+  const uniqueProductIds = new Set<string>();
+  const uniqueProducts: IProduct[] =
+    products?.filter((product) => {
+      if (!uniqueProductIds.has(product.id)) {
+        uniqueProductIds.add(product.id);
+        return true;
+      }
+      return false;
+    }) || [];
 
   const handleChangeProduct = (e: any) => {
     getServicesAndValues({
@@ -72,12 +95,13 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
           id: selectedProduct?.id || caseValue?.product?.id,
           name: selectedProduct?.name || caseValue?.product?.name,
           productPlan_id: caseValue.productplan_id ?? "",
+          agent_id: caseValue.product.agent_id ?? "",
         },
         productplan_id:
           selectedProduct?.productplan_id || caseValue?.productplan_id,
       });
-    } else if (products) {
-      const selectedProduct = products.find(
+    } else if (uniqueProducts) {
+      const selectedProduct = uniqueProducts.find(
         (item) => item.id === e.target.value
       );
       setCase({
@@ -87,25 +111,48 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
       });
     }
   };
-
   const handleChangeRetail = (e: any) => {
-    if (retailList) {
-      const selectedRetail = retailList.find(
-        (item) => item.id === e.target.value
-      );
-      setCase({
-        ...caseValue,
-        retail: {
-          id: selectedRetail?.id || "",
-          name: selectedRetail?.name || "",
-          rut: selectedRetail?.rut || "",
-        },
-      });
-      if (selectedRetail) {
-        setProductList(selectedRetail.products || []);
+    if (caseValue?.type === "C") {
+      if (retailList) {
+        const selectedRetail = retailList.find(
+          (item) => item.id === e.target.value
+        );
+        setCase({
+          ...caseValue,
+          retail: {
+            id: selectedRetail?.id || "",
+            name: selectedRetail?.name || "",
+            rut: selectedRetail?.rut || "",
+          },
+        });
+        if (selectedRetail) {
+          setProductList(selectedRetail.products || []);
+        }
+      }
+    } else {
+      if (uniqueRetails) {
+        const selectedRetail = uniqueRetails.find(
+          (item) => item.id === e.target.value
+        );
+        setCase({
+          ...caseValue,
+          retail: {
+            id: selectedRetail?.id || "",
+            name: selectedRetail?.name || "",
+            rut: selectedRetail?.rut || "",
+          },
+        });
+        if (selectedRetail) {
+          const filteredProducts = uniqueProducts.filter(
+            (product) => product.agent_id === selectedRetail.id
+          );
+
+          setProcuctListFiltered(filteredProducts);
+        }
       }
     }
   };
+
   const handleChangeAssistance = (e: any) => {
     if (assistances) {
       const selectedAssistance = assistances.find(
@@ -129,11 +176,11 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
   useEffect(() => {
     if (caseId && !hasLoadedServices) {
       getServicesAndValues({
-        insured_id: caseValue?.insured.id || null,
+        insured_id: caseValue?.insured?.id || null,
         beneficiary_id: caseValue?.beneficiary?.id || null,
         retail_id: caseValue?.retail?.id || null,
-        customer_id: caseValue?.customer.id || null,
-        product_id: caseValue?.product.id,
+        customer_id: caseValue?.customer?.id || null,
+        product_id: caseValue?.product?.id,
         assistance_id: null,
       });
     }
@@ -160,7 +207,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
   };
 
   const checkCompleteFields = () => {
-    if (caseValue?.assistance.id !== "" && caseValue?.product.id !== "") {
+    if (caseValue?.assistance?.id !== "" && caseValue?.product?.id !== "") {
       return true;
     }
     return false;
@@ -169,7 +216,6 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
   useEffect(() => {
     setIsEnabledSave(checkCompleteFields());
   }, [caseValue, setIsEnabledSave]);
-
   useEffect(() => {
     if (caseValue) {
       const applicant =
@@ -195,16 +241,42 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
     } else {
       resetRetail();
     }
-  }, [caseValue?.retail, caseValue.type]);
+  }, [caseValue?.retail, caseValue?.type]);
 
   useEffect(() => {
     setRetail(caseValue?.retail ?? null);
   }, []);
 
+  useEffect(() => {
+    setCase({
+      ...caseValue,
+      user_id: user?.id || "",
+      retail: {
+        id: uniqueRetails[0]?.id || "",
+        name: uniqueRetails[0]?.name || "",
+        rut: uniqueRetails[0]?.rut || "",
+      },
+    });
+    if (caseValue?.retail?.id) {
+      const filteredProducts = uniqueProducts.filter(
+        (product) => product.agent_id === caseValue?.retail?.id
+      );
+      setProcuctListFiltered(filteredProducts);
+    }
+  }, [retails]);
+
   return (
     <ContentCell gap="20px">
       <ContentCell gap="5px">
-        {retail === null ? (
+        {caseId.retail && caseValue.retail?.rut !== caseValue.customer.rut ? (
+          <InputText
+            id="retail"
+            label="Empresa"
+            type="text"
+            value={caseValue?.retail?.name || ""}
+            width="530px"
+          />
+        ) : caseValue?.type === "C" && retail === null ? (
           <ComboBox
             id="assistance"
             label="Empresa"
@@ -219,18 +291,24 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
             dataText={"name"}
           />
         ) : (
-          <InputText
-            id="retail"
+          <ComboBox
+            id="assistance"
             label="Empresa"
-            type="text"
-            value={caseValue ? caseValue.retail?.name || "" : ""}
+            placeHolder=":: Seleccione una empresa ::"
+            value={
+              caseValue && caseValue.retail ? caseValue.retail.id || "" : ""
+            }
+            onChange={handleChangeRetail}
             width="530px"
-            disabled={itWasFound}
+            data={uniqueRetails}
+            enabled={uniqueRetails.length > 1 ? true : false}
+            dataValue={"id"}
+            dataText={"name"}
           />
         )}
 
         {caseValue?.customer?.rut !== caseValue?.insured?.rut &&
-          caseValue.type !== "C" && (
+          caseValue?.type !== "C" && (
             <InputText
               id="customer"
               label="Titular"
@@ -240,7 +318,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
               disabled={itWasFound}
             />
           )}
-        {caseValue.type === "C" &&
+        {caseValue?.type === "C" &&
           caseValue.insured.rut !== caseValue.customer.rut && (
             <InputText
               id="insured"
@@ -256,7 +334,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
               disabled={itWasFound}
             />
           )}
-        {caseValue.type != "B" && (
+        {caseValue?.type != "B" && (
           <InputText
             label="Beneficiario"
             type="text"
@@ -269,7 +347,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
             width="530px"
           />
         )}
-        {caseValue.type === "B" && (
+        {caseValue?.type === "B" && (
           <InputText
             id="insured"
             label="Titular"
@@ -284,7 +362,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
             disabled={itWasFound}
           />
         )}
-        {caseValue.type === "B" && (
+        {caseValue?.type === "B" && (
           <InputText
             label="Beneficiario"
             type="text"
@@ -321,7 +399,11 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
               }
               onChange={handleChangeProduct}
               width="530px"
-              data={retail === null ? productList : products}
+              data={
+                caseValue?.type === "C" || retail === null
+                  ? productList
+                  : products
+              }
               dataValue={"id"}
               dataText={"name"}
               enabled={!itWasFound}
@@ -345,7 +427,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
           enabled={
             caseValue?.case_id === "" ||
             caseValue?.case_id === null ||
-            (caseValue?.assistance.id !== "" &&
+            (caseValue?.assistance?.id !== "" &&
               user?.publicMetadata?.roles?.operaciones === "admin")
           }
         />
@@ -353,7 +435,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
           <InputText
             id="assistance"
             label={
-              caseValue?.assistance.assigned.currency === "U"
+              caseValue?.assistance?.assigned?.currency === "U"
                 ? "Monto Disponible (UF)"
                 : "Monto Disponible ($)"
             }

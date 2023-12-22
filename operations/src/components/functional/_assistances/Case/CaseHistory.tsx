@@ -40,10 +40,10 @@ const CaseHistory = ({ showModal, setShowModal }: any) => {
   };
   useEffect(() => {
     resetPdf();
-    if (caseValue?.product.productPlan_id !== "") {
-      getPdfContract(caseValue?.product.productPlan_id);
+    if (caseValue?.product?.productPlan_id !== "") {
+      getPdfContract(caseValue?.product?.productPlan_id);
     }
-  }, [caseValue?.product.productPlan_id]);
+  }, [caseValue?.product?.productPlan_id]);
 
   return (
     <Fragment>
@@ -60,7 +60,7 @@ const CaseHistory = ({ showModal, setShowModal }: any) => {
             <TableCellEnd />
           </TableHeader>
           <TableDetail>
-            {caseValue?.history.map((stage, idx: number) => {
+            {caseValue?.history?.map((stage, idx: number) => {
               const user = usersList?.data.find(
                 (user: any) => user.id === stage.user
               );

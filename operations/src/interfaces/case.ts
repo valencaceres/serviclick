@@ -8,7 +8,7 @@ interface IPolicy {
 
 export interface IRetail {
   id: string;
-  rut: string;
+  rut?: string;
   name: string;
 }
 
@@ -22,6 +22,8 @@ export interface IProduct {
   id: string;
   name: string;
   productPlan_id: string;
+  agent_id?: string;
+  lead_id?: string;
 }
 
 export interface IAssistance {

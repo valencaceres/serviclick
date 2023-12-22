@@ -4,173 +4,173 @@ CREATE OR REPLACE FUNCTION app.case_get_services_and_values(p_insured_id uuid, p
  LANGUAGE plpgsql
 AS $function$
 
-declare
-	p_lead_id uuid;
-	json_product JSON;
-   	json_assistances JSON;
-   	json_assistance JSON;
-   	json_used JSON;
-	json_values JSON;
-	json_result JSON;
+DECLARE
+    p_lead_id uuid;
+    json_product JSON;
+    json_assistances JSON;
+    json_assistance JSON;
+    json_used JSON;
+    json_values JSON;
+    json_result JSON;
 
-begin
-	
-	if p_beneficiary_id is null then
-	
-		select	lea.id as lead_id
-		from 	app.lead lea
-					inner join app.leadinsured lin on lea.id = lin.lead_id
-					inner join app.leadproduct lpr on lea.id = lpr.lead_id
-					left outer join app.retail ret on lea.agent_id = ret.id
-		where 	not lea.policy_id is null and
-				lea.customer_id = p_customer_id and
-				lin.insured_id = p_insured_id and
-				lpr.product_id = p_product_id and
-				((p_retail_id is null) or (ret.id = p_retail_id))
-		into 	p_lead_id;
-	
-	else
-	
-		select	lea.id as lead_id
-		from 	app.lead lea
-					inner join app.leadinsured lin on lea.id = lin.lead_id
-					inner join app.leadproduct lpr on lea.id = lpr.lead_id
-					inner join app.leadbeneficiary lbe on lea.id = lbe.lead_id and lin.insured_id = lbe.insured_id
-					left outer join app.retail ret on lea.agent_id = ret.id
-		where 	not lea.policy_id is null and
-				lea.customer_id = p_customer_id and
-				lin.insured_id = p_insured_id and
-				lbe.beneficiary_id = p_beneficiary_id and
-				lpr.product_id = p_product_id and
-				((p_retail_id is null) or (ret.id = p_retail_id))
-		into 	p_lead_id;
-	
-	end if;
-	
-	select	to_json(product)
-	into	json_product
-	from (	select 	pro.id as id,
-					pro.name as name
-			from 	app.product pro
-			where 	pro.id = p_product_id) product;
-    
-	
-	
-		select	json_agg(json_build_object(
-					'id', asi.id, 
-					'name', asi.name,
-					'assigned', json_build_object(
-						'amount', asi.amount,
-						'currency', asi.currency,
-						'maximum', asi.maximum,
-						'events', asi.events,
-						'lack', asi.lack),
-					'used', jsonb_build_object(
-						'events', 0,
-            			'total_amount', 0)))
-		into	json_assistances
-		from (	select 	asi.id as id,
-						asi.name as name,
-						pas.amount as amount,
-						pas.currency as currency,
-						pas.maximum as maximum,
-						pas.events as events,
-						pas.lack as lack
-				from 	app.productassistance pas
-							inner join app.assistance asi on pas.assistance_id = asi.id
-				where 	pas.product_id = p_product_id
-				order 	by
-						pas.number) as asi;
-					
-	
-		if not p_lead_id is null then
-			
-			select	json_build_object(
-						'events', used.events,
-						'total_amount', used.total_amount)
-			into	json_used
-			from (	select  cas.lead_id,
-							count(1) as events,
-							sum(case when cre.amount is null then 0 else cre.amount end) as total_amount
-					from 	app.case cas
-								left outer join app.casereimbursment cre on cas.id = cre.case_id and cre.status = 'Aprobado'
-					where 	cas.lead_id = p_lead_id and
-							cas.assistance_id = p_assistance_id
-					group 	by
-							cas.lead_id) as used;
-		
-	
-		select	json_build_object(
-					'id', assistance.id,
-					'name', assistance.name,
-					'assigned', json_build_object(
-						'amount', assistance.amount,
-						'currency', assistance.currency,
-						'maximum', assistance.maximum,
-						'events', assistance.events,
-						'lack', assistance.lack),
-					'used', case when json_used is null then json_build_object('events', 0, 'total_amount', 0) else json_used end)
-		into	json_assistance
-		from (	select 	asi.id as id,
-						asi.name as name,
-						pas.amount as amount,
-						pas.currency as currency,
-						pas.maximum as maximum,
-						pas.events as events,
-						pas.lack as lack
-				from 	app.productassistance pas
-							inner join app.assistance asi on pas.assistance_id = asi.id
-				where 	pas.product_id = p_product_id and
-						asi.id = p_assistance_id
-				order 	by
-						pas.number) as assistance;
-		
-	end if;
-				
-	select	json_agg(values)
-	into	json_values
-	from (	select	distinct
-					val.id,
-					val.name,
-					case when lpv.value is null then '' else lpv.value end as value,
-					val.family_id,
-					ava.line_order
-			from 	app.assistancevalue ava
-						inner join app.value val on ava.value_id = val.id
-						inner join app.productassistance pas on ava.assistance_id = pas.assistance_id
-						left outer join app.leadproductvalue lpv on pas.product_id = lpv.product_id and lpv.lead_id = p_lead_id and lpv.insured_id = p_insured_id and val.id = lpv.value_id
-			where 	pas.product_id = p_product_id
-			order 	by
-					val.family_id,
-					ava.line_order) as values;
-	
-	select	case when json_assistances is null then
-				json_build_object(
-					'insured_id', p_insured_id,
-					'beneficiary_id', p_beneficiary_id, 
-					'retail_id', p_retail_id, 
-					'customer_id', p_customer_id,
-					'lead_id', p_lead_id,
-					'product', json_product, 
-					'assistance', json_assistance,
-					'values', json_values)
-			else
-				json_build_object(
-					'insured_id', p_insured_id,
-					'beneficiary_id', p_beneficiary_id, 
-					'retail_id', p_retail_id, 
-					'customer_id', p_customer_id,
-					'lead_id', p_lead_id,
-					'product', json_product, 
-					'assistances', json_assistances, 
-					'assistance', json_assistance,
-					'used', json_used,
-					'values', json_values)
-			end
-    into	json_result;
+BEGIN
 
-    return	json_result;
-	
+    IF p_beneficiary_id IS NULL THEN
+
+        SELECT lea.id
+        INTO p_lead_id
+        FROM app.lead lea
+            INNER JOIN app.leadinsured lin ON lea.id = lin.lead_id
+            INNER JOIN app.leadproduct lpr ON lea.id = lpr.lead_id
+            LEFT OUTER JOIN app.retail ret ON lea.agent_id = ret.id
+        WHERE NOT lea.policy_id IS NULL
+            AND lea.customer_id = p_customer_id
+            AND lin.insured_id = p_insured_id
+            AND lpr.product_id = p_product_id
+            AND (p_retail_id IS NULL OR ret.id = p_retail_id);
+
+    ELSE
+
+        SELECT lea.id
+        INTO p_lead_id
+        FROM app.lead lea
+            INNER JOIN app.leadinsured lin ON lea.id = lin.lead_id
+            INNER JOIN app.leadproduct lpr ON lea.id = lpr.lead_id
+            INNER JOIN app.leadbeneficiary lbe ON lea.id = lbe.lead_id AND lin.insured_id = lbe.insured_id
+            LEFT OUTER JOIN app.retail ret ON lea.agent_id = ret.id
+            LEFT OUTER JOIN app.agent age on lea.agent_id = age.id
+             LEFT OUTER JOIN app.broker bro on lea.agent_id = bro.id
+        WHERE NOT lea.policy_id IS NULL
+            AND lea.customer_id = p_customer_id
+            AND lin.insured_id = p_insured_id
+            AND lbe.beneficiary_id = p_beneficiary_id
+            AND lpr.product_id = p_product_id
+            AND (p_retail_id IS NULL OR ret.id = p_retail_id or age.id = p_retail_id or bro.id = p_retail_id);
+
+    END IF;
+
+    SELECT TO_JSON(product)
+    INTO json_product
+    FROM (
+        SELECT pro.id, pro.name
+        FROM app.product pro
+        WHERE pro.id = p_product_id
+    ) product;
+
+    SELECT JSON_AGG(
+        JSON_BUILD_OBJECT(
+            'id', asi.id, 
+            'name', asi.name,
+            'assigned', JSON_BUILD_OBJECT(
+                'amount', asi.amount,
+                'currency', asi.currency,
+                'maximum', asi.maximum,
+                'events', asi.events,
+                'lack', asi.lack
+            ),
+            'used', JSONB_BUILD_OBJECT('events', 0, 'total_amount', 0)
+        )
+    )
+    INTO json_assistances
+    FROM (
+        SELECT asi.id, asi.name, pas.amount, pas.currency, pas.maximum, pas.events, pas.lack
+        FROM app.productassistance pas
+        INNER JOIN app.assistance asi ON pas.assistance_id = asi.id
+        WHERE pas.product_id = p_product_id
+        ORDER BY pas.number
+    ) asi;
+
+    IF NOT p_lead_id IS NULL THEN
+
+        SELECT JSON_BUILD_OBJECT(
+            'events', used.events,
+            'total_amount', used.total_amount
+        )
+        INTO json_used
+        FROM (
+            SELECT cas.lead_id,
+                COUNT(1) AS events,
+                SUM(CASE WHEN cre.amount IS NULL THEN 0 ELSE cre.amount END) AS total_amount
+            FROM app.case cas
+            LEFT OUTER JOIN app.casereimbursment cre ON cas.id = cre.case_id AND cre.status = 'OK'
+            WHERE cas.lead_id = p_lead_id AND cas.assistance_id = p_assistance_id
+            GROUP BY cas.lead_id
+        ) AS used;
+
+    END IF;
+
+    SELECT JSON_BUILD_OBJECT(
+        'id', assistance.id,
+        'name', assistance.name,
+        'assigned', JSON_BUILD_OBJECT(
+            'amount', assistance.amount,
+            'currency', assistance.currency,
+            'maximum', assistance.maximum,
+            'events', assistance.events,
+            'lack', assistance.lack
+        ),
+        'used', CASE WHEN json_used IS NULL THEN JSON_BUILD_OBJECT('events', 0, 'total_amount', 0) ELSE json_used END
+    )
+    INTO json_assistance
+    FROM (
+        SELECT asi.id, asi.name, pas.amount, pas.currency, pas.maximum, pas.events, pas.lack
+        FROM app.productassistance pas
+        INNER JOIN app.assistance asi ON pas.assistance_id = asi.id
+        WHERE pas.product_id = p_product_id AND asi.id = p_assistance_id
+        ORDER BY pas.number
+    ) AS assistance;
+
+    SELECT JSON_AGG(values)
+    INTO json_values
+    FROM (
+        SELECT DISTINCT
+            val.id,
+            val.name,
+            CASE WHEN lpv.value IS NULL THEN '' ELSE lpv.value END AS value,
+            val.family_id,
+            ava.line_order
+        FROM app.assistancevalue ava
+        INNER JOIN app.value val ON ava.value_id = val.id
+        INNER JOIN app.productassistance pas ON ava.assistance_id = pas.assistance_id
+        LEFT OUTER JOIN app.leadproductvalue lpv ON pas.product_id = lpv.product_id
+            AND lpv.lead_id = p_lead_id
+            AND lpv.insured_id = p_insured_id
+            AND val.id = lpv.value_id
+        WHERE pas.product_id = p_product_id
+        ORDER BY val.family_id, ava.line_order
+    ) AS values;
+
+    SELECT CASE
+        WHEN json_assistances IS NOT NULL THEN
+            JSON_BUILD_OBJECT(
+                'insured_id', p_insured_id,
+                'beneficiary_id', p_beneficiary_id, 
+                'retail_id', p_retail_id, 
+                'customer_id', p_customer_id,
+                'lead_id', p_lead_id,
+                'product', json_product, 
+                'assistances', json_assistances,
+                'assistance', json_assistance,
+                'values', json_values
+            )
+        ELSE
+            JSON_BUILD_OBJECT(
+                'insured_id', p_insured_id,
+                'beneficiary_id', p_beneficiary_id, 
+                'retail_id', p_retail_id, 
+                'customer_id', p_customer_id,
+                'lead_id', p_lead_id,
+                'product', json_product, 
+                'assistance', json_assistance,
+                'used', json_used,
+                'values', json_values
+            )
+    END
+    INTO json_result;
+
+    RETURN json_result;
+
 END;
+
 $function$
 ;

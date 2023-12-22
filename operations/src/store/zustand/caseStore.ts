@@ -9,6 +9,7 @@ import {
   IStatusItem,
   IProduct,
   IAssistance,
+  IRetail,
 } from "../../interfaces/case";
 import { IApplicant } from "~/interfaces/applicant";
 import axios from "axios";
@@ -34,6 +35,7 @@ interface caseState {
   assistances: IAssistance[] | null;
   applicant: IApplicant;
   pdfBase64: string;
+  retails: IRetail[];
   case: ICase;
   usersList: UserResponse;
   usersListChat: UserResponse;
@@ -134,6 +136,7 @@ const initialCase: ICase = {
     id: "",
     name: "",
     productPlan_id: "",
+    agent_id: "",
   },
   assistance: {
     id: "",
@@ -183,6 +186,7 @@ const initialApplicant: IApplicant = {
 export const caseStore = create<caseState>((set) => ({
   products: [],
   assistances: [],
+  retails: [],
   ufValue: {
     uf: "",
     today: new Date(),
@@ -359,7 +363,7 @@ export const caseStore = create<caseState>((set) => ({
       const { data } = await apiInstance.get(`/case/getApplicantByRut/${rut}`);
       const {
         type,
-        retail,
+        retails,
         customer: existingCustomer,
         insured,
         beneficiary,
@@ -401,10 +405,10 @@ export const caseStore = create<caseState>((set) => ({
       set((state) => ({
         ...state,
         products,
+        retails,
         case: {
           ...state.case,
           type: shouldUpdateType ? type : "C",
-          retail,
           customer: {
             id: updatedCustomerId,
             name: shouldUpdateCustomer
@@ -456,6 +460,7 @@ export const caseStore = create<caseState>((set) => ({
         data
       );
       const { lead_id, assistances, assistance, values } = response;
+
       set((state) => ({
         ...state,
         assistances,
