@@ -255,7 +255,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
       setProcuctListFiltered(filteredProducts);
     }
   }, []);
-
+  console.log(caseValue);
   useEffect(() => {
     setCase({
       ...caseValue,
@@ -304,8 +304,8 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
           ))}
         {router.query.id !== "new" && (
           <>
-            {caseValue.retail &&
-              caseValue.retail.rut !== caseValue.customer.rut && (
+            {caseValue?.retail &&
+              caseValue?.retail?.rut !== caseValue.customer?.rut && (
                 <InputText
                   id="retail"
                   label="Empresa"

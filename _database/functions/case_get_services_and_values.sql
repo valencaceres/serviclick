@@ -22,12 +22,14 @@ BEGIN
         FROM app.lead lea
             INNER JOIN app.leadinsured lin ON lea.id = lin.lead_id
             INNER JOIN app.leadproduct lpr ON lea.id = lpr.lead_id
-            LEFT OUTER JOIN app.retail ret ON lea.agent_id = ret.id
+                LEFT OUTER JOIN app.retail ret ON lea.agent_id = ret.id
+            LEFT OUTER JOIN app.agent age on lea.agent_id = age.id
+             LEFT OUTER JOIN app.broker bro on lea.agent_id = bro.id
         WHERE NOT lea.policy_id IS NULL
             AND lea.customer_id = p_customer_id
             AND lin.insured_id = p_insured_id
             AND lpr.product_id = p_product_id
-            AND (p_retail_id IS NULL OR ret.id = p_retail_id);
+            AND (p_retail_id IS NULL OR ret.id = p_retail_id or age.id = p_retail_id or bro.id = p_retail_id);
 
     ELSE
 
