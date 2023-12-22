@@ -248,6 +248,15 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
   }, []);
 
   useEffect(() => {
+    if (caseValue?.retail === null) {
+      const filteredProducts = uniqueProducts.filter(
+        (product) => product.agent_id === uniqueRetails[0]?.id
+      );
+      setProcuctListFiltered(filteredProducts);
+    }
+  }, []);
+
+  useEffect(() => {
     setCase({
       ...caseValue,
       user_id: user?.id || "",
@@ -257,54 +266,55 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
         rut: uniqueRetails[0]?.rut || "",
       },
     });
-    if (caseValue?.retail?.id) {
-      const filteredProducts = uniqueProducts.filter(
-        (product) => product.agent_id === caseValue?.retail?.id
-      );
-      setProcuctListFiltered(filteredProducts);
-    }
   }, [retails]);
 
   return (
     <ContentCell gap="20px">
       <ContentCell gap="5px">
-        {caseId.retail && caseValue.retail?.rut !== caseValue.customer.rut ? (
-          <InputText
-            id="retail"
-            label="Empresa"
-            type="text"
-            value={caseValue?.retail?.name || ""}
-            width="530px"
-          />
-        ) : caseValue?.type === "C" && retail === null ? (
-          <ComboBox
-            id="assistance"
-            label="Empresa"
-            placeHolder=":: Seleccione una empresa ::"
-            value={
-              caseValue && caseValue.retail ? caseValue.retail.id || "" : ""
-            }
-            onChange={handleChangeRetail}
-            width="530px"
-            data={retailList}
-            dataValue={"id"}
-            dataText={"name"}
-          />
-        ) : (
-          <ComboBox
-            id="assistance"
-            label="Empresa"
-            placeHolder=":: Seleccione una empresa ::"
-            value={
-              caseValue && caseValue.retail ? caseValue.retail.id || "" : ""
-            }
-            onChange={handleChangeRetail}
-            width="530px"
-            data={uniqueRetails}
-            enabled={uniqueRetails.length > 1 ? true : false}
-            dataValue={"id"}
-            dataText={"name"}
-          />
+        {router.query.id === "new" &&
+          (caseValue?.type === "C" && caseId.retail === null ? (
+            <ComboBox
+              id="assistance"
+              label="Empresa"
+              placeHolder=":: Seleccione una empresa ::"
+              value={
+                caseValue && caseValue.retail ? caseValue.retail.id || "" : ""
+              }
+              onChange={handleChangeRetail}
+              width="530px"
+              data={retailList}
+              dataValue={"id"}
+              dataText={"name"}
+            />
+          ) : (
+            <ComboBox
+              id="assistance"
+              label="Empresa"
+              placeHolder=":: Seleccione una empresa ::"
+              value={
+                caseValue && caseValue.retail ? caseValue.retail.id || "" : ""
+              }
+              onChange={handleChangeRetail}
+              width="530px"
+              data={uniqueRetails}
+              enabled={uniqueRetails.length > 1 ? true : false}
+              dataValue={"id"}
+              dataText={"name"}
+            />
+          ))}
+        {router.query.id !== "new" && (
+          <>
+            {caseValue.retail &&
+              caseValue.retail.rut !== caseValue.customer.rut && (
+                <InputText
+                  id="retail"
+                  label="Empresa"
+                  type="text"
+                  value={caseValue?.retail?.name || ""}
+                  width="530px"
+                />
+              )}
+          </>
         )}
 
         {caseValue?.customer?.rut !== caseValue?.insured?.rut &&
@@ -399,11 +409,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
               }
               onChange={handleChangeProduct}
               width="530px"
-              data={
-                caseValue?.type === "C" || retail === null
-                  ? productList
-                  : products
-              }
+              data={caseValue.type === "C" ? productList : productListFiltered}
               dataValue={"id"}
               dataText={"name"}
               enabled={!itWasFound}
