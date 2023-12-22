@@ -174,3 +174,4 @@ END;
 
 $function$
 ;
+ --p_assistance_id puede ser null 
