@@ -1,5 +1,6 @@
 import { create } from "zustand";
-
+import { IRetail } from "~/interfaces/retail";
+import { apiInstance } from "~/utils/api";
 interface retailState {
   dataLoading: {
     total: number;
@@ -8,9 +9,11 @@ interface retailState {
     success: any;
     error: any;
   };
+  list: IRetail[];
   isLoading: boolean;
   isError: boolean;
   error: string;
+  getAll: () => void;
   setDataLoading: (data: any) => void;
   reset: () => void;
   resetAll: () => void;
@@ -22,6 +25,7 @@ const initialData: any = {
   isError: false,
   error: "",
 };
+const initialRetail: IRetail[] = [];
 
 export const retailStore = create<retailState>((set, get) => ({
   dataLoading: {
@@ -31,6 +35,7 @@ export const retailStore = create<retailState>((set, get) => ({
     success: new Set(),
     error: new Set(),
   },
+  list: initialRetail,
   isLoading: false,
   isError: false,
   error: "",
@@ -50,6 +55,24 @@ export const retailStore = create<retailState>((set, get) => ({
           : state.dataLoading.error,
       },
     }));
+  },
+  getAll: async () => {
+    try {
+      set((state) => ({ ...state, isLoading: true }));
+      const { data } = await apiInstance.get(`/retail/getProductsAndRetail`);
+      set((state) => ({
+        ...state,
+        list: data,
+        isLoading: false,
+      }));
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
   },
 
   reset: () =>

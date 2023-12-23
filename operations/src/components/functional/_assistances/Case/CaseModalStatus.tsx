@@ -16,6 +16,7 @@ import { ButtonIcon, Label } from "~/components/ui";
 
 const CaseStatus = ({ setIsOpen, thisCase }: any) => {
   const router = useRouter();
+  const { user } = useUser();
   const { id, stage } = router.query;
   const queryClient = useQueryClient();
   const [status, setStatus] = useState<boolean>(false);
@@ -31,6 +32,7 @@ const CaseStatus = ({ setIsOpen, thisCase }: any) => {
         description: caseValue?.status?.description,
         [id]: value,
       },
+      user_id: user?.id ?? "",
     });
   };
   const handleConfirmStatusFalse = () => {
@@ -40,8 +42,12 @@ const CaseStatus = ({ setIsOpen, thisCase }: any) => {
         isClosed: false,
         description: caseValue?.status?.description,
       },
+      user_id: user?.id ?? "",
     });
     setIsOpen(false);
+    router.push(
+      `/assistance/case/${caseValue?.history[1]?.code}/${caseValue?.case_id}`
+    );
   };
   const handleConfirmStatusTrue = () => {
     upsert({
@@ -50,8 +56,10 @@ const CaseStatus = ({ setIsOpen, thisCase }: any) => {
         isClosed: true,
         description: caseValue?.status?.description,
       },
+      user_id: user?.id ?? "",
     });
     setIsOpen(false);
+    router.push(`/assistance/case/close/${caseValue?.case_id}`);
   };
   useEffect(() => {
     if (caseValue?.status?.isClosed === false) {

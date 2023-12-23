@@ -53,7 +53,7 @@ CaseRouter.get("/getAll", auth, getAll);
 CaseRouter.get("/getRetails", auth, getRetails);
 CaseRouter.get("/getStatus", auth, getStatus);
 CaseRouter.get("/getBeneficiaryByRut/:rut", auth, getBeneficiaryByRut);
-CaseRouter.get("/getById/:id", auth, getById);
+CaseRouter.get("/getById/:id", getById);
 CaseRouter.get("/getAttachById/:case_id/:casestage_id", auth, getAttachById);
 CaseRouter.get("/getAttachByIdAdmin/:case_id", auth, getAttachById);
 
@@ -94,8 +94,8 @@ CaseRouter.get("/getChatByCase/:case_id", auth, getChatByCase);
 CaseRouter.get("/getStatistics", auth, getStatistics);
 CaseRouter.post("/createCaseSummary", auth, createCaseSummary);
 CaseRouter.get("/getApplicantByRut/:rut", auth, getApplicantByRut);
-CaseRouter.post("/getServicesAndValues", auth, getServicesAndValues);
-CaseRouter.post("/upsert", upsert);
+CaseRouter.post("/getServicesAndValues", getServicesAndValues);
+CaseRouter.post("/upsert", auth, upsert);
 CaseRouter.put("/updateReimbursment/:id", auth, isAdmin, updateReimbursment);
 CaseRouter.get("/getReimbursments", getAllReimbursments);
 

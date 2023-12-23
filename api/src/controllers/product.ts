@@ -1041,20 +1041,18 @@ const listByFamilies = async (req: any, res: any) => {
 
 const getPdfContractById = async (req: any, res: any) => {
   try {
-    const { product_id, agent_id } = req.params;
-    const result = await ProductPlan.getByProductIdModel(product_id, agent_id);
-    const filteredData = result?.data?.filter(
-      (item: any) => item.type === "customer"
-    );
-    const rutaVirtual = `/files/pdf/products/${filteredData[0]?.id}.pdf`;
+    const { productplan_id } = req.params;
 
-    const response = await axios.get(`http://localhost:3001${rutaVirtual}`, {
+    const rutaVirtual = `/files/pdf/products/${productplan_id}.pdf`;
+    const response = await axios.get(`${process.env.API_URL}${rutaVirtual}`, {
       responseType: "arraybuffer",
     });
+    const base64 = response.data.toString("base64");
 
     if (response.status === 200) {
-      res.setHeader("Content-Type", "application/pdf");
-      res.send(response.data);
+      res.send({
+        base64,
+      });
     } else {
       res.status(404).json({ error: "PDF not found" });
     }
@@ -1064,7 +1062,6 @@ const getPdfContractById = async (req: any, res: any) => {
       message: "OK",
     });
   } catch (error) {
-    console.error("Error en el controlador getPdfContractById:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };

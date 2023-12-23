@@ -9,7 +9,9 @@ import CaseAttachment from "~/components/functional/_assistances/Case/CaseAttach
 import CaseImed from "~/components/functional/_assistances/Case/CaseImed";
 import CaseRefund from "~/components/functional/_assistances/Case/CaseRefund";
 import CaseSpecialist from "~/components/functional/_assistances/Case/CaseSpecialist";
-
+import CaseClosed from "~/components/functional/_assistances/Case/CaseClosed";
+import CaseNulledAlliance from "~/components/functional/_assistances/Case/CaseNulledAlliance";
+import CaseNulledSpecialist from "~/components/functional/_assistances/Case/CaseNulledSpecialist";
 interface IStagePages {
   [key: string]: {
     component: JSX.Element;
@@ -20,6 +22,9 @@ export const stagePages = {
   applicant: {
     component: (
       <CaseApplicant
+        setApplicantToUpdate={(applicantToUpdate: string): void => {
+          throw new Error("Function not implemented.");
+        }}
         setIsEnabledSave={(isEnabled: boolean): void => {
           throw new Error("Function not implemented.");
         }}
@@ -30,6 +35,9 @@ export const stagePages = {
   insured: {
     component: (
       <CaseInsured
+        setApplicantToUpdate={(applicantToUpdate: string): void => {
+          throw new Error("Function not implemented.");
+        }}
         setIsEnabledSave={(isEnabled: boolean): void => {
           throw new Error("Function not implemented.");
         }}
@@ -108,6 +116,35 @@ export const stagePages = {
     ),
   },
   // cost: { component: <CaseCost /> },
-  // close: { component: <CaseClose /> },
+  close: {
+    component: (
+      <CaseClosed
+        setIsEnabledSave={(isEnabled: boolean): void => {
+          throw new Error("Function not implemented.");
+        }}
+        itWasFound={false}
+      />
+    ),
+  },
+  anulled_alliance: {
+    component: (
+      <CaseNulledAlliance
+        setIsEnabledSave={(isEnabled: boolean): void => {
+          throw new Error("Function not implemented.");
+        }}
+        itWasFound={false}
+      />
+    ),
+  },
+  anulled_specialist: {
+    component: (
+      <CaseNulledSpecialist
+        setIsEnabledSave={(isEnabled: boolean): void => {
+          throw new Error("Function not implemented.");
+        }}
+        itWasFound={false}
+      />
+    ),
+  },
   // reopen: { component: <CaseReopen /> },
 };

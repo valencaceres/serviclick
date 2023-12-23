@@ -486,7 +486,10 @@ const getByClerkId = async (req: any, res: any) => {
     const validResults = results.filter((result) => result.data);
 
     if (validResults.length > 0) {
-      return res.status(200).json({ success: true, data: validResults });
+      return res.status(200).json({
+        success: true,
+        data: validResults.map((result) => result.data),
+      });
     } else {
       return res
         .status(500)

@@ -6,14 +6,14 @@ interface IPolicy {
   endDate: string;
 }
 
-interface IRetail {
+export interface IRetail {
   id: string;
-  rut: string;
+  rut?: string;
   name: string;
 }
 
 interface ICustomer {
-  id: string;
+  id: string | null;
   rut: string;
   name: string;
 }
@@ -21,6 +21,9 @@ interface ICustomer {
 export interface IProduct {
   id: string;
   name: string;
+  productPlan_id: string;
+  agent_id?: string;
+  lead_id?: string;
 }
 
 export interface IAssistance {
@@ -83,6 +86,7 @@ interface ISpecialist {
   scheduled_time: string;
   confirmed: boolean;
   completed: boolean;
+  cancel: boolean;
   qualification_id: string | null;
   qualification_name: string;
   comment: string;
@@ -101,6 +105,7 @@ interface IAlliance {
   scheduled_time: string;
   confirmed: boolean;
   completed: boolean;
+  cancel: boolean;
   qualification_id: string | null;
   qualification_name: string;
   comment: string;
@@ -150,6 +155,7 @@ export interface ICase {
   cost: ICost | null;
   history: IHistory[];
   status: IStatus;
+  productplan_id: string | null;
 }
 
 export interface ICaseItem {

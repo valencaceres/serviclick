@@ -42,11 +42,9 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const BrokerUsers = ({ addNewUser, editUser, deleteUser }: any) => {
   const router = useRouter();
-
   const { broker } = useBroker();
 
   const { data } = useBrokerQuery().useGetAgents(router.query.id as string);
-
   return (
     <ContentCell gap="5px">
       <Table width="739px" height="226px">
@@ -61,9 +59,11 @@ const BrokerUsers = ({ addNewUser, editUser, deleteUser }: any) => {
           {data?.map((item: any, idx: number) => (
             <TableRow key={idx}>
               <TableCell width="300px">
-                {item.user?.first_name + " " + item.user?.last_name}
+                {item.user?.data?.first_name + " " + item.user?.data?.last_name}
               </TableCell>
-              <TableCell width="232px">{item.user?.email}</TableCell>
+              <TableCell width="232px">
+                {item.user?.data?.email_addresses[0]?.email_address}
+              </TableCell>
               <TableCell width="120px">
                 {item?.profilecode === "A" ? "Administrador" : "Vendedor"}
               </TableCell>

@@ -35,7 +35,7 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   const [applicant, setApplicant] = useState<IApplicant>();
   const [confirmHour, setConfirmHour] = useState(false);
   const [confirmVisit, setConfirmVisit] = useState(false);
-
+  const [cancel, setCancel] = useState(false);
   const handleChange = (e: any) => {
     const value = e.target.value;
     const id = e.target.id;
@@ -55,6 +55,7 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
       specialist: {
         completed: confirmVisit,
         confirmed: confirmHour,
+        cancel: false,
         scheduled_date: caseValue.specialist?.scheduled_date || "",
         scheduled_time: caseValue.specialist?.scheduled_time || "",
         comment: caseValue.specialist?.comment || "",
@@ -82,6 +83,7 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
       specialist: {
         completed: confirmVisit,
         confirmed: e,
+        cancel: cancel,
         scheduled_date: caseValue.specialist?.scheduled_date || "",
         scheduled_time: caseValue.specialist?.scheduled_time || "",
         comment: caseValue.specialist?.comment || "",
@@ -94,6 +96,7 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
         specialty_id: caseValue.specialist?.specialty_id || "",
         specialty_name: caseValue.specialist?.specialty_name || "",
       },
+      user_id: user?.id ?? "",
     });
     router.push("/assistance/case");
   };
@@ -103,6 +106,7 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
       specialist: {
         completed: e,
         confirmed: confirmHour,
+        cancel: cancel,
         scheduled_date: caseValue.specialist?.scheduled_date || "",
         scheduled_time: caseValue.specialist?.scheduled_time || "",
         comment: caseValue.specialist?.comment || "",
@@ -115,8 +119,32 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
         specialty_id: caseValue.specialist?.specialty_id || "",
         specialty_name: caseValue.specialist?.specialty_name || "",
       },
+      user_id: user?.id ?? "",
     });
     router.push("/assistance/case");
+  };
+  const sendCancel = (e: boolean) => {
+    caseUpsert({
+      ...caseValue,
+      specialist: {
+        completed: confirmVisit,
+        confirmed: confirmHour,
+        cancel: e,
+        scheduled_date: caseValue.specialist?.scheduled_date || "",
+        scheduled_time: caseValue.specialist?.scheduled_time || "",
+        comment: caseValue.specialist?.comment || "",
+        district_id: caseValue.event?.location || "",
+        district_name: caseValue.specialist?.district_name || "",
+        qualification_id: caseValue.specialist?.qualification_id || "",
+        qualification_name: caseValue.specialist?.qualification_name || "",
+        specialist_id: caseValue.specialist?.specialist_id || "",
+        specialist_name: caseValue.specialist?.specialist_name || "",
+        specialty_id: caseValue.specialist?.specialty_id || "",
+        specialty_name: caseValue.specialist?.specialty_name || "",
+      },
+      user_id: user?.id ?? "",
+    });
+    router.push(`/assistance/case/anulled_specialist/${caseValue.case_id}`);
   };
 
   const handleChangeCost = (e: any) => {
@@ -158,7 +186,15 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   useEffect(() => {
     if (caseValue) {
       const applicant =
-        caseValue?.type === "I" ? caseValue.insured : caseValue.beneficiary;
+        caseValue?.type === "I"
+          ? caseValue?.insured
+          : caseValue?.type === "C"
+          ? caseValue?.beneficiary &&
+            Object.keys(caseValue.beneficiary).length > 0 &&
+            caseValue.beneficiary.name !== ""
+            ? caseValue?.beneficiary
+            : caseValue?.insured
+          : caseValue?.beneficiary;
       if (applicant) {
         setApplicant(applicant);
       }
@@ -170,6 +206,7 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
     if (caseValue.specialist) {
       setConfirmHour(caseValue.specialist.confirmed);
       setConfirmVisit(caseValue.specialist.completed);
+      setCancel(caseValue.specialist.cancel);
     }
   }, [caseValue]);
 
@@ -209,28 +246,30 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
             width="530px"
           />
         )}
-        {caseValue.customer.rut !== caseValue.insured.rut && (
-          <InputText
-            id="customer"
-            label="Titular"
-            type="text"
-            value={caseValue ? caseValue.customer?.name || "" : ""}
-            width="530px"
-          />
-        )}
-        {caseValue.type === "C" && (
-          <InputText
-            label="Titular"
-            type="text"
-            value={
-              caseValue
-                ? `${caseValue.insured?.name} ${caseValue.insured?.paternalLastName} ${caseValue.insured?.maternalLastName}` ||
-                  ""
-                : ""
-            }
-            width="530px"
-          />
-        )}
+        {caseValue.customer.rut !== caseValue.insured.rut &&
+          caseValue.type !== "C" && (
+            <InputText
+              id="customer"
+              label="Titular"
+              type="text"
+              value={caseValue ? caseValue.customer?.name || "" : ""}
+              width="530px"
+            />
+          )}
+        {caseValue.type === "C" &&
+          caseValue.insured.rut !== caseValue.customer.rut && (
+            <InputText
+              label="Titular"
+              type="text"
+              value={
+                caseValue
+                  ? `${caseValue.insured?.name} ${caseValue.insured?.paternalLastName} ${caseValue.insured?.maternalLastName}` ||
+                    ""
+                  : ""
+              }
+              width="530px"
+            />
+          )}
         <InputText
           label="Beneficiario"
           type="text"
@@ -316,15 +355,20 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
             </>
           ) : (
             <>
-              <InputText
-                label="Comuna "
-                value={caseValue?.specialist?.district_name ?? ""}
-                type="text"
-                disabled={true}
+              <ComboBox
+                id="location"
+                label="Comuna"
+                value={caseValue ? caseValue?.event?.location || "" : ""}
+                placeHolder=":: Seleccione una comuna ::"
+                onChange={handleChange}
+                data={districtList}
+                dataValue={"id"}
+                dataText={"district_name"}
                 width="530px"
+                enabled={false}
               />
               <InputText
-                label="Alianza"
+                label="Especialista"
                 value={caseValue?.specialist?.specialist_name ?? ""}
                 type="text"
                 disabled={true}
@@ -382,7 +426,7 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                 <p
                   className="cursor-pointer  font-semibold text-blue-500"
                   onClick={() => {
-                    sendConfirmation(false);
+                    sendCancel(true);
                   }}
                 >
                   Anular
@@ -403,7 +447,7 @@ const CaseSpecialist = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
                   <p
                     className="cursor-pointer  font-semibold text-blue-500"
                     onClick={() => {
-                      sendConfirmationVisit(false);
+                      sendCancel(true);
                     }}
                   >
                     No Realizada

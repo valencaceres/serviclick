@@ -112,6 +112,34 @@ const getAll = async (req: any, res: any) => {
   }
 };
 
+const getProductsAndRetail = async (req: any, res: any) => {
+  try {
+    const retailResponse = await Retail.getProductsAndRetail();
+
+    if (!retailResponse.success) {
+      createLogger.error({
+        model: "retail/getProductsAndRetail",
+        error: retailResponse.error,
+      });
+      res.status(500).json({ error: "Error retrieving retails" });
+      return;
+    }
+
+    createLogger.info({
+      controller: "retail/getProductsAndRetail",
+      message: "OK",
+    });
+    res.status(200).json(retailResponse.data);
+  } catch (error) {
+    createLogger.error({
+      controller: "retail/getProductsAndRetail",
+      error: (error as Error).message,
+    });
+    res.status(500).json({ error: "Error retrieving retails" });
+    return;
+  }
+};
+
 const getById = async (req: any, res: any) => {
   try {
     const { id } = req.params;
@@ -773,6 +801,7 @@ export {
   getById,
   getByRut,
   getAll,
+  getProductsAndRetail,
   getBySearchValues,
   getCustomersByRetailIdAndProductId,
   updateLogo,

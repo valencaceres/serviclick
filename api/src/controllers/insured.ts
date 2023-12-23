@@ -136,24 +136,36 @@ const upsert = async (req: any, res: any) => {
     res.status(500).json({ error: "Error creating insured" });
     return;
   }
-
   createLogger.info({
     controller: "insured/upsert",
     message: "OK",
   });
+  const insuredUpsertString = response.data.insured_upsert;
 
-  const data = {
-    rut: response.data.rut,
-    name: response.data.name,
-    paternalLastName: response.data.paternallastname,
-    maternalLastName: response.data.maternallastname,
-    address: response.data.address,
-    district: response.data.district,
-    email: response.data.email,
-    phone: response.data.phone,
-    birthDate: response.data.birthdate,
+  // Función para eliminar comillas dobles de una cadena
+  const removeQuotes = (input: any) => {
+    if (typeof input === "string" || input instanceof String) {
+      return input.replace(/^"(.*)"$/, "$1");
+    }
+    return input;
   };
 
+  const valuesArray = insuredUpsertString.replace(/^\(|\)$/g, "").split(",");
+
+  const sanitizedValuesArray = valuesArray.map(removeQuotes);
+
+  const data = {
+    id: sanitizedValuesArray[0],
+    rut: sanitizedValuesArray[1],
+    name: sanitizedValuesArray[2],
+    paternalLastName: sanitizedValuesArray[3],
+    maternalLastName: sanitizedValuesArray[4],
+    address: sanitizedValuesArray[5],
+    district: sanitizedValuesArray[6],
+    email: sanitizedValuesArray[7],
+    phone: sanitizedValuesArray[8],
+    birthDate: sanitizedValuesArray[9],
+  };
   res.status(200).json(data);
 };
 

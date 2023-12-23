@@ -31,9 +31,14 @@ interface IInitialValues {
 interface ICaseInsuredProps {
   setIsEnabledSave: (isEnabled: boolean) => void;
   itWasFound: boolean;
+  setApplicantToUpdate: (applicantToUpdate: string) => void;
 }
 
-const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
+const CaseInsured = ({
+  setIsEnabledSave,
+  itWasFound,
+  setApplicantToUpdate,
+}: ICaseInsuredProps) => {
   const router = useRouter();
   const { user } = useUser();
   const { setTitleUI, title } = useUI();
@@ -76,7 +81,7 @@ const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
 
     switch (id) {
       case "rut":
-        resetNoRut("insured", value);
+        resetNoRut("insured", value, true);
         setIsValidField({ ...isValidField, [id]: isValidRut(value) });
         return;
       case "phone":
@@ -120,7 +125,6 @@ const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
 
   const handleBlur = (e: any) => {
     const value = e.target.value;
-
     switch (e.target.id) {
       case "rut":
         const formattedRut = formatRut(value);
@@ -128,7 +132,9 @@ const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
           ...caseValue,
           insured: { ...caseValue.insured, rut: formattedRut },
         });
-        getApplicantByRut(formattedRut);
+
+        getApplicantByRut(formattedRut, caseValue.type, caseValue);
+
         return;
     }
   };
@@ -136,28 +142,32 @@ const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
   useEffect(() => {
     setIsEnabledSave(checkCompleteFields());
   }, [caseValue]);
+  useEffect(() => {
+    setApplicantToUpdate("insured");
+  }, [setApplicantToUpdate]);
+
   return (
     <ContentCell gap="20px">
       <ContentRow gap="5px" align="space-between">
         <InputText
           label="N° Caso"
           value={
-            caseValue.case_id !== "" ? caseValue.case_number.toString() : ""
+            caseValue?.case_id !== "" ? caseValue?.case_number.toString() : ""
           }
           type="text"
           disabled={true}
-          width="100px"
+          width="150px"
         />
         <InputText
           label="Fecha/hora de apertura"
-          value={`${caseValue.date} ${caseValue.time}` || ""}
+          value={`${caseValue?.date} ${caseValue?.time}` || ""}
           type="text"
           disabled={true}
-          width="200px"
+          width="100%"
         />
       </ContentRow>
       <ContentCell gap="5px">
-        <ContentRow gap="5px">
+        <ContentRow gap="5px" align="space-between">
           <InputText
             id="rut"
             label="Rut"
@@ -167,9 +177,12 @@ const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
             onBlur={handleBlur}
             onFocus={handleFocus}
             maxLength={9}
-            width="260px"
+            width="150px"
             isValid={isValidField.rut}
-            disabled={itWasFound}
+            disabled={
+              itWasFound ||
+              (caseValue.type === "B" && caseValue.insured.rut !== "")
+            }
           />
           <InputText
             id="birthDate"
@@ -177,6 +190,7 @@ const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
             type="date"
             value={caseValue ? caseValue.insured?.birthDate || "" : ""}
             onChange={handleChange}
+            width="150px"
           />
         </ContentRow>
         <InputText
@@ -184,6 +198,7 @@ const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
           label="Nombres"
           type="text"
           value={caseValue ? caseValue.insured?.name || "" : ""}
+          width="535px"
           onChange={handleChange}
         />
         <InputText
@@ -192,6 +207,7 @@ const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
           type="text"
           value={caseValue ? caseValue.insured?.paternalLastName || "" : ""}
           onChange={handleChange}
+          width="535px"
         />
         <InputText
           id="maternalLastName"
@@ -199,6 +215,7 @@ const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
           type="text"
           value={caseValue ? caseValue.insured?.maternalLastName || "" : ""}
           onChange={handleChange}
+          width="535px"
         />
         <InputText
           id="address"
@@ -206,6 +223,7 @@ const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
           type="text"
           value={caseValue ? caseValue.insured?.address || "" : ""}
           onChange={handleChange}
+          width="535px"
         />
         <ComboBox
           id="district"
@@ -213,7 +231,7 @@ const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
           value={caseValue ? caseValue.insured?.district || "" : ""}
           placeHolder=":: Seleccione una comuna ::"
           onChange={handleChange}
-          width={"100%"}
+          width={"535px"}
           data={districtList}
           dataValue={"district_name"}
           dataText={"district_name"}
@@ -226,7 +244,7 @@ const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
               type="text"
               value={caseValue ? caseValue.insured?.email || "" : ""}
               onChange={handleChange}
-              width={"100%"}
+              width={"380px"}
               isValid={isValidField.email}
             />
             <InputText
@@ -236,7 +254,7 @@ const CaseInsured = ({ setIsEnabledSave, itWasFound }: ICaseInsuredProps) => {
               value={caseValue ? caseValue.insured?.phone || "" : ""}
               onChange={handleChange}
               maxLength={9}
-              width={"265px"}
+              width={"380px"}
               isValid={isValidField.phone}
             />
           </ContentCell>

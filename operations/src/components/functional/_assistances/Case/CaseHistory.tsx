@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 import {
@@ -17,17 +17,33 @@ import {
   TableCellEnd,
 } from "~/components/ui/Table";
 import Icon from "~/components/ui/Icon";
+import PDFViewer from "~/components/ui/PDFViewer/PdfViewer";
 import { LoadingMessage } from "~/components/ui/LoadingMessage";
 import { useCase } from "~/store/hooks";
-import { useQueryCase } from "~/hooks/query";
-import { useUser } from "@clerk/nextjs";
 import Button from "~/components/ui/Button";
+import { Modal, Window } from "~/components/ui/Modal";
 const CaseHistory = ({ showModal, setShowModal }: any) => {
   const router = useRouter();
+  const [pdfModal, setPdfModal] = useState(false);
+  const { caseValue, pdfBase64, getPdfContract, resetPdf } = useCase();
+  const userIds = caseValue?.history?.map((m: any) => m.user);
 
-  const { caseValue } = useCase();
-  const userIds = caseValue.history?.map((m: any) => m.user);
-  const { data: operators } = useQueryCase().useGetUserByClerkId(userIds);
+  const { getUsers, usersList, resetUserLists } = useCase();
+  useEffect(() => {
+    if (caseValue?.history?.length > 0) {
+      resetUserLists();
+      getUsers(userIds);
+    }
+  }, [router, getUsers]);
+  const handleCloseModalPdf = () => {
+    setPdfModal(false);
+  };
+  useEffect(() => {
+    resetPdf();
+    if (caseValue?.product?.productPlan_id !== "") {
+      getPdfContract(caseValue?.product?.productPlan_id);
+    }
+  }, [caseValue?.product?.productPlan_id]);
 
   return (
     <Fragment>
@@ -44,8 +60,8 @@ const CaseHistory = ({ showModal, setShowModal }: any) => {
             <TableCellEnd />
           </TableHeader>
           <TableDetail>
-            {caseValue?.history.map((stage, idx: number) => {
-              const user = operators?.data.find(
+            {caseValue?.history?.map((stage, idx: number) => {
+              const user = usersList?.data.find(
                 (user: any) => user.id === stage.user
               );
               return (
@@ -80,6 +96,7 @@ const CaseHistory = ({ showModal, setShowModal }: any) => {
             })}
           </TableDetail>
         </Table>
+
         <ContentRow className="justify-between">
           <ContentCellSummary
             color={caseValue?.history?.length > 0 ? "blue" : "#959595"}
@@ -90,7 +107,21 @@ const CaseHistory = ({ showModal, setShowModal }: any) => {
               ? "1 acción"
               : `${caseValue?.history?.length} acciones`}
           </ContentCellSummary>
-          {caseValue.case_id !== null && caseValue.case_id !== "" && (
+          {pdfBase64 !== "" && (
+            <>
+              <Button
+                text="Contrato"
+                iconName="history_edu"
+                onClick={() => setPdfModal(true)}
+              />
+              <Modal showModal={pdfModal}>
+                <Window title="Documento" setClosed={handleCloseModalPdf}>
+                  <PDFViewer base64={pdfBase64} />
+                </Window>
+              </Modal>
+            </>
+          )}
+          {caseValue?.case_id !== null && caseValue?.case_id !== "" && (
             <Button
               text="Chat"
               iconName="chat"

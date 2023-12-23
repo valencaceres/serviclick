@@ -29,13 +29,8 @@ interface SheetPortalProps
   extends SheetPrimitive.DialogPortalProps,
     VariantProps<typeof portalVariants> {}
 
-const SheetPortal = ({
-  position,
-  className,
-  children,
-  ...props
-}: SheetPortalProps) => (
-  <SheetPrimitive.Portal className={cn(className)} {...props}>
+const SheetPortal = ({ position, children, ...props }: SheetPortalProps) => (
+  <SheetPrimitive.Portal {...props}>
     <div className={portalVariants({ position })}>{children}</div>
   </SheetPrimitive.Portal>
 )
@@ -160,7 +155,7 @@ const SheetContent = React.forwardRef<
       {...props}
     >
       {children}
-      <SheetPrimitive.Close className="absolute right-4 top-4 rounded-sm hover:bg-primary text-primary hover:text-background opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-primary">
+      <SheetPrimitive.Close className="absolute right-4 top-4 rounded-sm text-primary opacity-70 ring-offset-background transition-opacity hover:bg-primary hover:text-background hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-primary">
         <X className="h-8 w-8 font-extrabold" />
         <span className="sr-only">Close</span>
       </SheetPrimitive.Close>

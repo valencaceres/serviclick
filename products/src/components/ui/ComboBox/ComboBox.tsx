@@ -30,15 +30,16 @@ const ComboBox = ({
   return (
     <div
       className={`${styles.comboBox}${!enabled ? " " + styles.disabled : ""}`}
-      style={{ width }}>
+      style={{ width }}
+    >
       <select
         id={id}
         disabled={!enabled}
         value={value}
         onChange={onChange}
-        placeholder=" "
         className={styles.combo + (label ? "" : " " + styles.noLabel)}
-        style={{ display: display ? "block" : "none" }}>
+        style={{ display: display ? "block" : "none" }}
+      >
         {placeHolder && <option value="">{placeHolder}</option>}
         {data.map((item: any, idx: number) => (
           <option key={idx} value={item[dataValue]}>

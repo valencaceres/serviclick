@@ -1,14 +1,23 @@
 import { useUser } from "../../../hooks";
 import { useQueryCase } from "~/hooks/query";
+import { useCase } from "~/store/hooks";
 import format from "date-fns/format";
+import { useEffect } from "react";
 const ChatMessage = ({ messages }: any) => {
   const userIds = messages?.map((m: any) => m.user_id);
-  const { data: operators } = useQueryCase().useGetUserByClerkId(userIds);
+  const { getUsersChat, usersListChat, resetUserListsChat } = useCase();
+  useEffect(() => {
+    if (messages?.length > 0) {
+      resetUserListsChat();
+      getUsersChat(userIds);
+    }
+  }, [messages, getUsersChat, resetUserListsChat]);
+
   return (
     <div className="border-tertiary flex h-[600px] flex-col gap-2 overflow-y-auto rounded-md border border-opacity-50 p-2">
       {messages?.length > 0 ? (
         messages?.map((m: any) => {
-          const user = operators?.data.find(
+          const user = usersListChat?.data.find(
             (user: any) => user.id === m.user_id
           );
 

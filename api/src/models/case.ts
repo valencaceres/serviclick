@@ -174,7 +174,6 @@ const create: any = async (
 const getById: any = async (id: string) => {
   try {
     const result = await pool.query(_getById, [id]);
-
     return { success: true, data: result.rows[0].case_get_by_id, error: null };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
@@ -692,6 +691,7 @@ const upsert: any = async (
     scheduled_time: string;
     confirmed: boolean;
     completed: boolean;
+    cancel: boolean;
     qualification_id: string;
     comment: string;
   },
@@ -702,6 +702,7 @@ const upsert: any = async (
     scheduled_time: string;
     confirmed: boolean;
     completed: boolean;
+    cancel: boolean;
     qualification_id: string;
     comment: string;
   },
@@ -709,7 +710,8 @@ const upsert: any = async (
   status: {
     description: string;
     isClosed: boolean;
-  }
+  },
+  productplan_id: string
 ) => {
   try {
     const caseUpsert = await pool.query(_upsert, [
@@ -732,6 +734,7 @@ const upsert: any = async (
       alliance,
       cost,
       status,
+      productplan_id,
     ]);
 
     return {

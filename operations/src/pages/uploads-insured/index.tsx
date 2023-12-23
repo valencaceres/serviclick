@@ -99,7 +99,7 @@
 
 import React, { useState, useEffect } from "react";
 
-import { useSocket, useRetail } from "../../store/hooks";
+import { useRetail } from "../../store/hooks";
 
 const UploadInsuredPage = () => {
   // const { connect, on, emit } = useSocket();

@@ -1,5 +1,5 @@
 drop function app.case_upsert;
-CREATE OR REPLACE FUNCTION app.case_upsert(p_case_id uuid, p_user_id character varying, p_type character varying, p_insured json, p_beneficiary json, p_customer json, p_retail json, p_product json, p_assistance json, p_lead_id uuid, p_values json[], p_event json, p_files json[], p_procedure_id uuid, p_refund json, p_specialist json, p_alliance json, p_cost json, p_status json)
+CREATE OR REPLACE FUNCTION app.case_upsert(p_case_id uuid, p_user_id character varying, p_type character varying, p_insured json, p_beneficiary json, p_customer json, p_retail json, p_product json, p_assistance json, p_lead_id uuid, p_values json[], p_event json, p_files json[], p_procedure_id uuid, p_refund json, p_specialist json, p_alliance json, p_cost json, p_status json, p_productplan_id uuid DEFAULT NULL)
  RETURNS json
  LANGUAGE plpgsql
 AS $function$
@@ -8,10 +8,20 @@ declare
 	p_retail_id uuid;
 	p_customer_id uuid;
 	p_insured_id uuid;
+	p_insured_rut character varying;
+    p_insured_name character varying;
+    p_insured_paternal_last_name character varying;
+    p_insured_maternal_last_name character varying;
+    p_insured_address character varying;
+    p_insured_district character varying;
+    p_insured_email character varying;
+    p_insured_phone character varying;
+    p_insured_birthdate character varying;
 	p_beneficiary_id uuid;
 	p_product_id uuid;
 	p_assistance_id uuid;
-   p_is_closed boolean;
+	v_new_lead_id uuid;
+    p_is_closed boolean;
     p_description_closed varchar;
 	p_refund_json JSON;
 	item JSON;
@@ -21,29 +31,108 @@ declare
 	json_history JSON;
 	json_result JSON;
     json_status JSON;
+    lead_upsert_result RECORD;
 
 begin
 	
 	 p_is_closed := (p_status->>'isClosed')::boolean;
     p_description_closed := p_status->>'description';
 
- 
-    IF p_case_id IS NOT NULL THEN
-        UPDATE app.case
-        SET
-            isclosed = p_is_closed,
-            description_closed = p_description_closed
-        WHERE
-            id = p_case_id;
+ 	if not p_assistance is null then
+		p_assistance_id := (p_assistance->>'id')::uuid;
+	end if;
 
-        RAISE NOTICE 'Updated app.case with id: %', p_case_id;
+  IF p_case_id IS NOT NULL THEN
+    UPDATE app.case
+    SET
+        isclosed = p_is_closed,
+        description_closed = p_description_closed,
+        assistance_id = p_assistance_id
+    WHERE
+        id = p_case_id;
+
+    RAISE NOTICE 'Updated app.case with id: %', p_case_id;
+
+    IF p_is_closed is false THEN
+     
+        DELETE FROM app.casestage
+        WHERE case_id = p_case_id AND stage_id = 'c96b7b6f-a1d6-4c1b-b3dc-dc073862e328'::uuid;
     END IF;
-	
+
+    RAISE NOTICE 'Updated app.case with id: %', p_case_id;
+END IF;
+   
+ if p_lead_id is null then
+    -- Utilizar información del beneficiario si está presente
+    if p_beneficiary is not null then
+        select
+            p_beneficiary->>'rut',
+            p_beneficiary->>'name',
+            p_beneficiary->>'paternalLastName',
+            p_beneficiary->>'maternalLastName',
+            p_beneficiary->>'address',
+            p_beneficiary->>'district',
+            p_beneficiary->>'email',
+            p_beneficiary->>'phone',
+            p_beneficiary->>'birthDate'
+        into
+            p_insured_rut,
+            p_insured_name,
+            p_insured_paternal_last_name,
+            p_insured_maternal_last_name,
+            p_insured_address,
+            p_insured_district,
+            p_insured_email,
+            p_insured_phone,
+            p_insured_birthdate;
+    else
+        -- Utilizar información del asegurado si no hay información del beneficiario
+        select
+            p_insured->>'rut',
+            p_insured->>'name',
+            p_insured->>'paternalLastName',
+            p_insured->>'maternalLastName',
+            p_insured->>'address',
+            p_insured->>'district',
+            p_insured->>'email',
+            p_insured->>'phone',
+            p_insured->>'birthDate'
+        into
+            p_insured_rut,
+            p_insured_name,
+            p_insured_paternal_last_name,
+            p_insured_maternal_last_name,
+            p_insured_address,
+            p_insured_district,
+            p_insured_email,
+            p_insured_phone,
+            p_insured_birthdate;
+    end if;
+
+    lead_upsert_result := app.lead_upsert(
+        p_productplan_id,
+        p_insured_rut,
+        p_insured_name,
+        p_insured_paternal_last_name,
+        p_insured_maternal_last_name,
+        p_insured_address,
+        p_insured_district,
+        p_insured_email,
+        p_insured_phone,
+        p_insured_birthdate,
+        CURRENT_DATE::text,
+        null
+    );
+  p_lead_id := lead_upsert_result.lead_id;
+	p_customer_id:= lead_upsert_result.customer_id;
+end if;
+     
+
 	if not p_retail is null then
 		p_retail_id := (p_retail->>'id')::uuid;
 	end if;
 
-	if not p_customer is null then
+	if not p_customer is null and p_customer_id is null then
 		p_customer_id := (p_customer->>'id')::uuid;
 	end if;
 
@@ -59,10 +148,7 @@ begin
 		p_product_id := (p_product->>'id')::uuid;
 	end if;
 
-	if not p_assistance is null then
-		p_assistance_id := (p_assistance->>'id')::uuid;
-	end if;
-	
+
 	if p_case_id is null then
 	
 		insert	into app.case(
@@ -81,7 +167,7 @@ begin
 				p_beneficiary_id,
 				p_product_id,
 				p_assistance_id,
-				p_lead_id
+      			p_lead_id
 		returning id into p_case_id;
 		
 	end if;
@@ -269,44 +355,72 @@ begin
 			);
 			
 		end if;
+	IF p_procedure_id = 'bc1698ca-9800-40d9-a2ed-8f595b36c06f'::uuid AND (p_specialist->>'cancel')::boolean IS TRUE THEN
+    PERFORM app.case_stage_upsert(
+        p_case_id,
+        '505d568a-2d98-41ce-96a0-48b294e0a39e'::uuid,
+        p_user_id
+    );
+END IF;
+
+IF  (p_specialist->>'cancel')::boolean IS FALSE THEN
+    DELETE FROM app.casestage
+    WHERE case_id = p_case_id AND stage_id = '505d568a-2d98-41ce-96a0-48b294e0a39e'::uuid;
+END IF;
 	
-		if p_procedure_id = 'fb3ca6af-cad1-4f90-ad6b-9d393f1e9566' and not p_alliance is null then
-		
-			insert	into app.casestagepartner (
-					case_id,
-					partner_id,
-					specialty_id,
-					scheduled_date,
-					scheduled_time,
-					confirmed,
-					completed,
-					qualification_id,
-					comment)
-			values(	p_case_id,
-					(p_alliance->>'partner_id')::uuid,
-					(p_alliance->>'specialty_id')::uuid,
-					(p_alliance->>'scheduled_date')::date,
-					(p_alliance->>'scheduled_time')::time,
-		    		(p_alliance->>'confirmed')::boolean,
-		    		(p_alliance->>'completed')::boolean,
-					(p_alliance->>'qualification_id')::uuid,
-					(p_alliance->>'comment')::varchar)
-			on 		conflict (case_id)
-		    do 		update
-		    set 	confirmed_date = (p_alliance->>'scheduled_date')::date,
-		    		confirmed_time = (p_alliance->>'scheduled_time')::time,
-		    		confirmed = (p_alliance->>'confirmed')::boolean,
-		    		completed = (p_alliance->>'completed')::boolean,
-		    		qualification_id = (p_alliance->>'qualification_id')::uuid,
-					comment = (p_alliance->>'comment')::varchar;
-			
-			perform	app.case_stage_upsert (
-				p_case_id,
-				'e1a1797a-0dfd-44fc-bf24-cd9a1dbd3730'::uuid,
-				p_user_id
-			);
-		
-		end if;
+	
+	IF p_procedure_id = 'fb3ca6af-cad1-4f90-ad6b-9d393f1e9566' AND NOT p_alliance IS NULL THEN
+    INSERT INTO app.casestagepartner (
+        case_id,
+        partner_id,
+        specialty_id,
+        scheduled_date,
+        scheduled_time,
+        confirmed,
+        completed,
+        qualification_id,
+        comment
+    )
+    VALUES (
+        p_case_id,
+        (p_alliance->>'partner_id')::uuid,
+        (p_alliance->>'specialty_id')::uuid,
+        (p_alliance->>'scheduled_date')::date,
+        (p_alliance->>'scheduled_time')::time,
+        (p_alliance->>'confirmed')::boolean,
+        (p_alliance->>'completed')::boolean,
+        (p_alliance->>'qualification_id')::uuid,
+        (p_alliance->>'comment')::varchar
+    )
+    ON CONFLICT (case_id)
+    DO UPDATE
+    SET
+        confirmed_date = (p_alliance->>'scheduled_date')::date,
+        confirmed_time = (p_alliance->>'scheduled_time')::time,
+        confirmed = (p_alliance->>'confirmed')::boolean,
+        completed = (p_alliance->>'completed')::boolean,
+        qualification_id = (p_alliance->>'qualification_id')::uuid,
+        comment = (p_alliance->>'comment')::varchar;
+
+    PERFORM app.case_stage_upsert (
+        p_case_id,
+        'e1a1797a-0dfd-44fc-bf24-cd9a1dbd3730'::uuid,
+        p_user_id
+    );
+END IF;
+
+IF p_procedure_id = 'fb3ca6af-cad1-4f90-ad6b-9d393f1e9566'::uuid AND (p_alliance->>'cancel')::boolean IS TRUE THEN
+    PERFORM app.case_stage_upsert(
+        p_case_id,
+        'f978d038-72e9-4b2e-b55d-758551e622d7'::uuid,
+        p_user_id
+    );
+END IF;
+
+IF (p_alliance->>'cancel')::boolean IS FALSE THEN
+    DELETE FROM app.casestage
+    WHERE case_id = p_case_id AND stage_id = 'f978d038-72e9-4b2e-b55d-758551e622d7'::uuid;
+END IF;
 	
 	end if;
 
@@ -336,6 +450,13 @@ begin
 		*/
 	
 	end if;
+ IF p_is_closed THEN
+        PERFORM app.case_stage_upsert (
+            p_case_id,
+            'c96b7b6f-a1d6-4c1b-b3dc-dc073862e328'::uuid,
+            p_user_id
+        );
+ end if;
 	
 	RETURN	app.case_get_by_id(p_case_id);
 	

@@ -17,10 +17,22 @@ interface ICaseProductProps {
 const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
   const router = useRouter();
 
-  const { caseValue, setCase, getById: getCaseByid, caseId } = useCase();
+  const {
+    caseValue,
+    setCase,
+    getById: getCaseByid,
+    caseId,
+    ufValue,
+    getUfValue,
+  } = useCase();
   const { user } = useUser();
 
   const [applicant, setApplicant] = useState<IApplicant>();
+
+  const valueInChileanCurrency =
+    caseValue?.assistance.assigned.currency === "U"
+      ? Number(ufValue?.uf) * caseValue.assistance.assigned.amount
+      : null;
 
   const handleChange = (e: any) => {
     const value = e.target.value;
@@ -64,7 +76,15 @@ const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
   useEffect(() => {
     if (caseValue) {
       const applicant =
-        caseValue?.type === "I" ? caseValue.insured : caseValue.beneficiary;
+        caseValue?.type === "I"
+          ? caseValue?.insured
+          : caseValue?.type === "C"
+          ? caseValue?.beneficiary &&
+            Object.keys(caseValue.beneficiary).length > 0 &&
+            caseValue.beneficiary.name !== ""
+            ? caseValue?.beneficiary
+            : caseValue?.insured
+          : caseValue?.beneficiary;
       if (applicant) {
         setApplicant(applicant);
       }
@@ -77,6 +97,9 @@ const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
       getCaseByid(router.query.id as string);
     }
   }, [router.query.id]);
+  useEffect(() => {
+    getUfValue();
+  }, []);
 
   return (
     <ContentCell gap="20px">
@@ -90,39 +113,63 @@ const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
             width="530px"
           />
         )}
-        {caseValue.customer.rut !== caseValue.insured.rut && (
+        {caseValue.type === "C" &&
+          caseValue.insured.rut !== caseValue.customer.rut && (
+            <InputText
+              id="insured"
+              label="Titular"
+              type="text"
+              value={
+                caseValue
+                  ? `${caseValue?.insured?.name} ${caseValue?.insured?.paternalLastName} ${caseValue?.insured?.maternalLastName}` ||
+                    ""
+                  : ""
+              }
+              width="530px"
+              disabled={itWasFound}
+            />
+          )}
+        {caseValue.type != "B" && (
           <InputText
-            id="customer"
-            label="Titular"
-            type="text"
-            value={caseValue ? caseValue.customer?.name || "" : ""}
-            width="530px"
-          />
-        )}
-        {caseValue.type === "C" && (
-          <InputText
-            label="Titular"
+            label="Beneficiario"
             type="text"
             value={
               caseValue
-                ? `${caseValue.insured?.name} ${caseValue.insured?.paternalLastName} ${caseValue.insured?.maternalLastName}` ||
+                ? `${applicant?.name} ${applicant?.paternalLastName} ${applicant?.maternalLastName}` ||
                   ""
                 : ""
             }
             width="530px"
           />
         )}
-        <InputText
-          label="Beneficiario"
-          type="text"
-          value={
-            caseValue
-              ? `${applicant?.name} ${applicant?.paternalLastName} ${applicant?.maternalLastName}` ||
-                ""
-              : ""
-          }
-          width="530px"
-        />
+        {caseValue.type === "B" && (
+          <InputText
+            id="insured"
+            label="Titular"
+            type="text"
+            value={
+              caseValue
+                ? `${caseValue?.insured?.name} ${caseValue?.insured?.paternalLastName} ${caseValue?.insured?.maternalLastName}` ||
+                  ""
+                : ""
+            }
+            width="530px"
+            disabled={itWasFound}
+          />
+        )}
+        {caseValue.type === "B" && (
+          <InputText
+            label="Beneficiario"
+            type="text"
+            value={
+              caseValue
+                ? `${caseValue?.beneficiary?.name} ${caseValue?.beneficiary?.paternalLastName} ${caseValue?.beneficiary?.maternalLastName}` ||
+                  ""
+                : ""
+            }
+            width="530px"
+          />
+        )}
       </ContentCell>
       <ContentCell gap="20px">
         <ContentCell gap="5px">
@@ -155,7 +202,7 @@ const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
               id="assistance"
               label={
                 caseValue?.assistance.assigned.currency === "U"
-                  ? "Monto Disponible (UF)"
+                  ? "Monto Asignado (UF)"
                   : "Monto Disponible ($)"
               }
               type="text"
@@ -180,7 +227,31 @@ const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
               disabled={itWasFound}
             />
           </ContentRow>
-
+          <ContentRow>
+            {ufValue && (
+              <InputText
+                label={
+                  caseValue?.assistance.assigned.currency === "U"
+                    ? "Valor UF en pesos de la asistencia ($)"
+                    : "Valor UF al dia de hoy ($)"
+                }
+                value={
+                  caseValue?.assistance.assigned.currency === "U"
+                    ? (valueInChileanCurrency ?? "").toLocaleString("es-CL", {
+                        style: "currency",
+                        currency: "CLP",
+                      })
+                    : (Number(ufValue?.uf) ?? "").toLocaleString("es-CL", {
+                        style: "currency",
+                        currency: "CLP",
+                      })
+                }
+                type="text"
+                width="530px"
+                disabled={true}
+              />
+            )}
+          </ContentRow>
           <ContentRow gap="5px">
             {caseId?.refund?.amount?.required && caseId.refund.status ? (
               <>
@@ -196,6 +267,12 @@ const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
                   type="text"
                   width="190px"
                   disabled={true}
+                  isValid={
+                    Number(caseValue.refund?.amount?.required) <
+                    (caseValue.assistance.assigned.currency === "U"
+                      ? Number(valueInChileanCurrency)
+                      : Number(caseValue.assistance.assigned.maximum))
+                  }
                 />
                 <InputText
                   label="Estado"
@@ -217,6 +294,12 @@ const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
                 type="number"
                 width="190px"
                 onChange={handleChange}
+                isValid={
+                  Number(caseValue.refund?.amount?.required) <
+                  (caseValue.assistance.assigned.currency === "U"
+                    ? Number(valueInChileanCurrency)
+                    : Number(caseValue.assistance.assigned.maximum))
+                }
               />
             )}
           </ContentRow>
@@ -234,6 +317,12 @@ const CaseRefund = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
                 type="text"
                 width="190px"
                 disabled={true}
+                isValid={
+                  Number(caseValue.refund?.amount?.required) <
+                  (caseValue.assistance.assigned.currency === "U"
+                    ? Number(valueInChileanCurrency)
+                    : Number(caseValue.assistance.assigned.maximum))
+                }
               />
             )}
             {caseId?.refund?.comment && (

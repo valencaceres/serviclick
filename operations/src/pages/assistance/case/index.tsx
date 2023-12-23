@@ -7,7 +7,7 @@ import ButtonIcon from "~/components/ui/ButtonIcon";
 import CaseTable from "~/components/functional/_assistances/Case/CaseTable";
 
 import { useUI } from "~/hooks";
-import { useCase, useApplicant } from "~/store/hooks";
+import { useCase } from "~/store/hooks";
 
 interface IFilters {
   retail_id: string;
@@ -30,8 +30,13 @@ const initialFilters: IFilters = {
 const CasePage = () => {
   const router = useRouter();
 
-  const { reset: resetApplicant } = useApplicant();
-  const { getAll, caseList, reset: resetCase, isLoading } = useCase();
+  const {
+    getAll,
+    caseList,
+    reset: resetCase,
+    isLoading,
+    resetApplicant,
+  } = useCase();
 
   const { setTitleUI } = useUI();
   const [isNextClick, setIsNextClick] = useState(false);

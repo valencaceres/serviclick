@@ -36,11 +36,13 @@ interface IInitialValues {
 interface ICaseApplicantProps {
   setIsEnabledSave: (isEnabled: boolean) => void;
   itWasFound: boolean;
+  setApplicantToUpdate: (applicantToUpdate: string) => void;
 }
 
 const CaseApplicant = ({
   setIsEnabledSave,
   itWasFound,
+  setApplicantToUpdate,
 }: ICaseApplicantProps) => {
   const router = useRouter();
 
@@ -61,7 +63,13 @@ const CaseApplicant = ({
 
   const checkCompleteFields = () => {
     const applicant =
-      caseValue?.type === "I" ? caseValue.insured : caseValue.beneficiary;
+      caseValue?.type === "I"
+        ? caseValue?.insured
+        : caseValue?.type === "C"
+        ? caseValue?.insured && Object.keys(caseValue.insured).length > 0
+          ? caseValue?.insured
+          : caseValue?.beneficiary
+        : caseValue?.beneficiary;
     if (
       applicant &&
       applicant.rut !== "" &&
@@ -88,7 +96,7 @@ const CaseApplicant = ({
 
     switch (id) {
       case "rut":
-        resetNoRut(applicantType, value);
+        resetNoRut(applicantType, value, false);
         setIsValidField({ ...isValidField, [id]: isValidRut(value) });
         break;
       case "phone":
@@ -104,7 +112,6 @@ const CaseApplicant = ({
       [applicantType]: { ...caseValue[applicantType], [id]: value },
     });
   };
-
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     const id = e.target.id;
     const value = e.target.value;
@@ -119,7 +126,6 @@ const CaseApplicant = ({
         return;
     }
   };
-
   const handleBlur = (e: any) => {
     const value = e.target.value;
 
@@ -130,20 +136,62 @@ const CaseApplicant = ({
           ...caseValue,
           [applicantType]: { ...caseValue[applicantType], rut: formattedRut },
         });
-        getApplicantByRut(formattedRut);
+        getApplicantByRut(formattedRut, caseValue.type, caseValue || null);
         return;
     }
   };
 
   const handleChangeType = (e: React.FocusEvent<HTMLInputElement>) => {
     const value = e.target.value as "I" | "B" | "C";
-    setCase({ ...caseValue, type: value });
+    const newApplicantType = value === "I" ? "insured" : "beneficiary";
+
+    const currentApplicant = caseValue?.[applicantType] || ({} as any);
+    const newApplicant = caseValue?.[newApplicantType] || ({} as any);
+    currentApplicant.type = value;
+    const mergedApplicant = {
+      ...newApplicant,
+      ...currentApplicant,
+    };
+
+    setCase({
+      ...caseValue,
+      [newApplicantType]: mergedApplicant,
+      [applicantType]: value === "B" ? {} : null,
+    });
+
+    setApplicantType(newApplicantType);
   };
 
   useEffect(() => {
     setIsEnabledSave(checkCompleteFields());
-    setApplicantType(caseValue.type === "I" ? "insured" : "beneficiary");
   }, [caseValue]);
+  useEffect(() => {
+    setApplicantType(caseValue?.type === "B" ? "beneficiary" : "insured");
+  }, [caseValue?.type]);
+
+  useEffect(() => {
+    if (caseValue?.type === "I") {
+      setApplicantType("insured");
+      setApplicantToUpdate("insured");
+    } else if (caseValue?.type === "B") {
+      setApplicantType("beneficiary");
+      setApplicantToUpdate("beneficiary");
+    } else if (caseValue?.type === "C") {
+      if (
+        caseValue?.beneficiary &&
+        Object.keys(caseValue.beneficiary).length > 0
+      ) {
+        setApplicantType("beneficiary");
+        setApplicantToUpdate("beneficiary");
+      } else if (
+        caseValue?.insured &&
+        Object.keys(caseValue.insured).length > 0
+      ) {
+        setApplicantType("insured");
+        setApplicantToUpdate("insured");
+      }
+    }
+  }, [caseValue?.type, caseValue?.beneficiary, caseValue?.insured]);
 
   return (
     <ContentCell gap="20px">
@@ -151,7 +199,7 @@ const CaseApplicant = ({
         <InputText
           label="N° Caso"
           value={
-            caseValue.case_id !== "" ? caseValue.case_number.toString() : ""
+            caseValue?.case_id !== "" ? caseValue?.case_number?.toString() : ""
           }
           type="text"
           disabled={true}
@@ -159,7 +207,7 @@ const CaseApplicant = ({
         />
         <InputText
           label="Fecha/hora de apertura"
-          value={`${caseValue.date} ${caseValue.time}` || ""}
+          value={`${caseValue?.date} ${caseValue?.time}` || ""}
           type="text"
           disabled={true}
           width="100%"
@@ -261,17 +309,19 @@ const CaseApplicant = ({
           <RadioButtonGroup label="Tipo" width="150px">
             <RadioButtonItem
               label="Titular"
-              checked={caseValue.type === "I"}
-              name={caseValue.type}
+              checked={applicantType === "insured"}
+              name={applicantType}
               value="I"
               onChange={handleChangeType}
+              disabled={caseValue?.type !== "C" || caseValue.case_id !== null}
             />
             <RadioButtonItem
               label="Carga"
-              checked={caseValue.type === "B"}
-              name={caseValue.type}
+              checked={applicantType === "beneficiary"}
+              name={applicantType}
               value="B"
               onChange={handleChangeType}
+              disabled={caseValue?.type !== "C" || caseValue.case_id !== null}
             />
           </RadioButtonGroup>
         </ContentRow>
