@@ -320,7 +320,6 @@ export const caseStore = create<caseState>((set) => ({
       set((state) => ({
         ...state,
         usersList: data,
-        usersListChat: data,
         isLoading: false,
       }));
     } catch (e) {
@@ -460,7 +459,6 @@ export const caseStore = create<caseState>((set) => ({
         data
       );
       const { lead_id, assistances, assistance, values } = response;
-
       set((state) => ({
         ...state,
         assistances,

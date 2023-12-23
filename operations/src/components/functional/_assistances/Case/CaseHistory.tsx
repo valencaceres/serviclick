@@ -29,12 +29,7 @@ const CaseHistory = ({ showModal, setShowModal }: any) => {
   const userIds = caseValue?.history?.map((m: any) => m.user);
 
   const { getUsers, usersList, resetUserLists } = useCase();
-  useEffect(() => {
-    if (caseValue?.history?.length > 0) {
-      resetUserLists();
-      getUsers(userIds);
-    }
-  }, [router, getUsers]);
+
   const handleCloseModalPdf = () => {
     setPdfModal(false);
   };
