@@ -197,6 +197,8 @@ const AssistanceCasePage = () => {
     upsertApplicant: applicantUpsert,
     applicant,
     isLoading: isLoadingCase,
+    resetUserLists,
+    getUsers,
     caseId,
   } = useCase();
   const { getAll, procedureList } = useProcedure();
@@ -345,6 +347,14 @@ const AssistanceCasePage = () => {
       setStageKey(stage as Stage);
     }
   }, [router, getCaseById]);
+
+  useEffect(() => {
+    resetUserLists();
+    const userIds = caseValue?.history?.map((m: any) => m.user);
+    if (caseValue.history.length > 0) {
+      getUsers(userIds);
+    }
+  }, [caseValue.history]);
 
   return stagePages[stageKey] ? (
     <ContentHalfRow>
