@@ -15,8 +15,8 @@ import {
   TableRow,
 } from "../../../ui/Table";
 
-import { dbDateToText } from "../../../../utils/date";
 import { formatAmount } from "../../../../utils/format";
+import { IContractorData } from "~/interfaces/customer";
 
 interface IPayment {
   collected: number;
@@ -24,32 +24,35 @@ interface IPayment {
   due: number;
 }
 
-const ContractorSubscription = ({ contractor }: any) => {
+const ContractorSubscription: React.FC<{ contractor: IContractorData }> = ({
+  contractor,
+}) => {
   const [payment, setPayment] = useState<IPayment>({
     collected: 0,
     paid: 0,
     due: 0,
   });
 
-  useEffect(() => {
-    if (contractor?.payment.length > 0) {
-      setPayment({
-        collected: contractor.payment.reduce(
-          (acum: number, item: any) => acum + item.collected_amount,
-          0
-        ),
-        paid: contractor.payment.reduce(
-          (acum: number, item: any) => acum + +item.paid_amount,
-          0
-        ),
-        due: contractor.payment.reduce(
-          (acum: number, item: any) =>
-            acum + (item.collected_amount - item.paid_amount),
-          0
-        ),
-      });
-    }
-  }, [contractor]);
+  const totalCharged = contractor?.origins
+    .filter((item: any) => item?.balance && item.balance.length > 0)
+    .reduce(
+      (acc, item) => acc + ((item?.balance && item.balance[0]?.charged) || 0),
+      0
+    );
+
+  const totalPaid = contractor?.origins
+    .filter((item: any) => item?.balance && item.balance.length > 0)
+    .reduce(
+      (acc, item) => acc + ((item?.balance && item.balance[0]?.paid) || 0),
+      0
+    );
+
+  const totalBalance = contractor?.origins
+    .filter((item: any) => item?.balance && item.balance.length > 0)
+    .reduce(
+      (acc, item) => acc + ((item?.balance && item.balance[0]?.balance) || 0),
+      0
+    );
 
   return (
     <Fragment>
@@ -64,40 +67,39 @@ const ContractorSubscription = ({ contractor }: any) => {
             <TableCellEnd />
           </TableHeader>
           <TableDetail>
-            {contractor?.payment.map((item: any, idx: number) => (
-              <TableRow key={idx}>
-                <TableCell width="434px">{item.product_name}</TableCell>
-                <TableCell width="100px" align="center">
-                  {dbDateToText(item.createDate)}
-                </TableCell>
-                <TableCell width="100px" align="right">
-                  {formatAmount(item.collected_amount.toString(), "P")}
-                </TableCell>
-                <TableCell width="100px" align="right">
-                  {formatAmount(item.paid_amount.toString(), "P")}
-                </TableCell>
-                <TableCell width="100px" align="right">
-                  {formatAmount(
-                    (item.collected_amount - item.paid_amount).toString(),
-                    "P"
-                  )}
-                </TableCell>
-              </TableRow>
-            ))}
+            {contractor?.origins
+              .filter((item: any) => item?.balance !== null)
+              .map((item: any, idx: number) => (
+                <TableRow key={idx}>
+                  <TableCell width="434px">{item?.product?.name}</TableCell>
+                  <TableCell width="100px" align="center">
+                    {item?.dates?.purchase}
+                  </TableCell>
+                  <TableCell width="100px" align="right">
+                    {formatAmount(item?.balance[0]?.charged?.toString(), "P")}
+                  </TableCell>
+                  <TableCell width="100px" align="right">
+                    {formatAmount(item?.balance[0]?.paid?.toString(), "P")}
+                  </TableCell>
+                  <TableCell width="100px" align="right">
+                    {formatAmount(item?.balance[0]?.balance?.toString(), "P")}
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableDetail>
         </Table>
         <ContentRow gap="5px">
           <ContentCellSummary color="blue">{`${formatAmount(
-            payment.collected.toString(),
+            totalCharged?.toString(),
             "P"
           )} recaudado`}</ContentCellSummary>
           <ContentCellSummary color="blue">{`${formatAmount(
-            payment.paid.toString(),
+            totalPaid?.toString(),
             "P"
           )} pagado`}</ContentCellSummary>
-          <ContentCellSummary color={payment.due > 0 ? "red" : "green"}>
-            {payment.due > 0
-              ? `${formatAmount(payment.due.toString(), "P")} adeudado`
+          <ContentCellSummary color={totalBalance > 0 ? "red" : "green"}>
+            {totalBalance > 0
+              ? `${formatAmount(totalBalance?.toString(), "P")} adeudado`
               : "Sin deuda"}
           </ContentCellSummary>
         </ContentRow>

@@ -31,6 +31,10 @@ const ComboBox = ({
   enabled = true,
   currency,
 }: ComboBoxT) => {
+  const getPropertyByPath = (obj: any, path: string) => {
+    return path.split(".").reduce((acc, part) => acc && acc[part], obj);
+  };
+
   return enabled ? (
     <div
       className={`${styles.comboBox}${!enabled ? " " + styles.disabled : ""}`}
@@ -46,8 +50,8 @@ const ComboBox = ({
       >
         {placeHolder && <option value="">{placeHolder}</option>}
         {data?.map((item: any, idx: number) => (
-          <option key={idx} value={item[dataValue]}>
-            {item[dataText]}
+          <option key={idx} value={getPropertyByPath(item, dataValue)}>
+            {getPropertyByPath(item, dataText)}
           </option>
         ))}
       </select>
@@ -58,8 +62,15 @@ const ComboBox = ({
       label={label}
       width={width}
       value={
-        data?.filter((item: any) => item[dataValue] === value).length > 0
-          ? data?.filter((item: any) => item[dataValue] === value)[0][dataText]
+        data?.filter(
+          (item: any) => getPropertyByPath(item, dataValue) === value
+        ).length > 0
+          ? getPropertyByPath(
+              data?.filter(
+                (item: any) => getPropertyByPath(item, dataValue) === value
+              )[0],
+              dataText
+            )
           : ""
       }
       disabled={!enabled}

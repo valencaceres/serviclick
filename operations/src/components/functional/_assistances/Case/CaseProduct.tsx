@@ -255,7 +255,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
       setProcuctListFiltered(filteredProducts);
     }
   }, []);
-  console.log(caseValue);
+
   useEffect(() => {
     setCase({
       ...caseValue,

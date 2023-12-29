@@ -39,17 +39,26 @@ import { formatRut, unFormatRut } from "~/utils/rut";
 import { emailRegEx, numberRegEx, rutRegEx } from "~/utils/regEx";
 import { rutValidate } from "~/utils/validations";
 import { useQueryInsured, useQueryLead } from "~/hooks/query";
-
+import { IContractorData } from "~/interfaces/customer";
 import { LoadingMessage } from "~/components/ui/LoadingMessage";
+import { useCustomer } from "~/store/hooks";
 
-const ContractorInsured = ({ contractor }: any) => {
+const ContractorInsured: React.FC<{ contractor: IContractorData }> = ({
+  contractor,
+}) => {
   const { subscriptionItem, getSubscriptionById } = useContractor();
   const [isUploading, setIsUploading] = useState(false);
 
   const [isFileDialogOpen, setIsFileDialogOpen] = useState(false);
+  const { product, selectProduct } = useCustomer();
 
   const handleChangeProduct = (e: any) => {
-    getSubscriptionById(e.target.value);
+    const existingProduct = contractor.origins.find(
+      (item: any) => item?.product?.id === e.target.value
+    );
+    if (existingProduct) {
+      selectProduct(existingProduct);
+    }
   };
 
   return (
@@ -59,11 +68,11 @@ const ContractorInsured = ({ contractor }: any) => {
           <ComboBox
             label="Nombre del producto"
             width="425px"
-            value={subscriptionItem.subscription_id?.toString()}
+            value={product.product.id}
             onChange={handleChangeProduct}
-            data={contractor?.subscriptions}
-            dataValue="subscription_id"
-            dataText="product_name"
+            data={contractor?.origins}
+            dataValue="product.id"
+            dataText="product.name"
           />
           <InputText
             label="Campaña"
@@ -84,49 +93,53 @@ const ContractorInsured = ({ contractor }: any) => {
             <TableCellEnd />
           </TableHeader>
           <TableDetail>
-            {subscriptionItem.insured?.map((item, idx: number) => (
-              <TableRow key={idx}>
+            {product && (
+              <TableRow>
                 <TableCell width="60px" align="center">
-                  {idx + 1}
+                  1
                 </TableCell>
                 <TableCell width="120px" align="right">
-                  {item.rut}
+                  {product.insured.rut}
                 </TableCell>
                 <TableCell width="444px">
-                  {item.name +
-                    " " +
-                    item.paternalLastName +
-                    " " +
-                    item.maternalLastName}
+                  {`${product.insured.name} ${product.insured.paternalLastName} ${product.insured.maternalLastName}`}
                 </TableCell>
                 <TableCell width="120px" align="center">
-                  {dbDateToText(item.incorporation)}
+                  {dbDateToText(product?.dates?.purchase)}
                 </TableCell>
                 <TableCell width="90px" align="center">
-                  {item.beneficiaries?.length === 0
+                  {product.beneficiaries?.length === 0
                     ? "No tiene"
-                    : item.beneficiaries?.length}
+                    : product.beneficiaries?.length}
                 </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableDetail>
         </Table>
         <ContentRow align="space-between">
           <ContentRow gap="5px">
             <ContentCellSummary
-              color={subscriptionItem.insured?.length > 0 ? "blue" : "#959595"}
+              color={
+                Object.keys(subscriptionItem.insured).length > 0
+                  ? "blue"
+                  : "#959595"
+              }
             >
-              {subscriptionItem.insured?.length > 0
-                ? subscriptionItem.insured?.length === 1
-                  ? `${subscriptionItem.insured?.length} beneficiario`
-                  : `${subscriptionItem.insured?.length} beneficiarios`
+              {Object.keys(subscriptionItem.insured).length > 0
+                ? Object.keys(subscriptionItem.insured).length === 1
+                  ? `${
+                      Object.keys(subscriptionItem.insured).length
+                    } beneficiario`
+                  : `${
+                      Object.keys(subscriptionItem.insured).length
+                    } beneficiarios`
                 : `No hay beneficiarios`}
             </ContentCellSummary>
           </ContentRow>
-          {subscriptionItem.subscription_id !== "" && (
+          {product.subscription_id !== 0 && (
             <div className="space-x-2">
               <AddInsuredFromExcel
-                subscriptionId={subscriptionItem.subscription_id}
+                subscriptionId={product?.subscription_id?.toString()}
                 isOpen={isFileDialogOpen}
                 setIsOpen={setIsFileDialogOpen}
                 isUploading={isUploading}
@@ -199,7 +212,7 @@ const AddInsuredFromExcel = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger>
+      <DialogTrigger className="hidden">
         <Button>Carga masiva</Button>
       </DialogTrigger>
       <DialogContent className="bg-white">
@@ -235,7 +248,7 @@ const AddInsuredFromExcel = ({
 const AddInsured = () => {
   return (
     <Dialog>
-      <DialogTrigger>
+      <DialogTrigger className="hidden">
         <Button>Agregar beneficiario</Button>
       </DialogTrigger>
       <DialogContent className="bg-white">

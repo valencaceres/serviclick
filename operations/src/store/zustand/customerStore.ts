@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 import { apiInstance } from "../../utils/api";
 
-import { ICustomer, ICustomerItem } from "../../interfaces/customer";
+import { ICustomer, ICustomerItem, IContractorData, Origin } from "../../interfaces/customer";
 
 interface customerState {
   list: {
@@ -17,6 +17,8 @@ interface customerState {
     };
     data: ICustomerItem[];
   };
+  product: Origin
+  contractor: IContractorData
   customer: ICustomer;
   isLoading: boolean;
   isError: boolean;
@@ -27,6 +29,8 @@ interface customerState {
     records: number | null,
     page: number | null
   ) => void;
+  getContractorById: (id: string) => void;
+  selectProduct: (product: Origin) => void;
   reset: () => void;
   resetAll: () => void;
 }
@@ -44,6 +48,87 @@ const initialData: ICustomer = {
   specialties: [],
 };
 
+const initialContractorData: IContractorData = {
+  customer: {
+    id: "",
+    rut: "",
+    name: "",
+    paternalLastName: "",
+    maternalLastName: "",
+    address: "",
+    district: "",
+    email: "",
+    phone: "",
+  },
+  origins: [
+    {
+      subscription_id: 0,
+      type: "",
+      name: "",
+      product: {
+        id: "",
+        name: "",
+        assistances: [],
+      },
+      insured: {
+        id: "",
+        rut: "",
+        name: "",
+        paternalLastName: "",
+        maternalLastName: "",
+        address: "",
+        district: "",
+        email: "",
+        phone: "",
+      },
+      beneficiaries: null,
+      price: {
+        value: 0,
+        frequency: "",
+      },
+      dates: {
+        purchase: "",
+        init: "",
+        end: null,
+      },
+      balance: null,
+    },
+  ],
+  type: "P",
+};
+const Product: Origin = {
+  subscription_id: 0,
+  type: "",
+  name: "",
+  product: {
+    id: "",
+    name: "",
+    assistances: [],
+  },
+  insured: {
+    id: "",
+    rut: "",
+    name: "",
+    paternalLastName: "",
+    maternalLastName: "",
+    address: "",
+    district: "",
+    email: "",
+    phone: "",
+  },
+  beneficiaries: null,
+  price: {
+    value: 0,
+    frequency: "",
+  },
+  dates: {
+    purchase: "",
+    init: "",
+    end: null,
+  },
+  balance: null,
+};
+
 export const customerStore = create<customerState>((set, get) => ({
   list: {
     summary: {
@@ -57,7 +142,9 @@ export const customerStore = create<customerState>((set, get) => ({
     },
     data: [],
   },
+  product: Product,
   customer: initialData,
+  contractor: initialContractorData,
   isLoading: false,
   isError: false,
   error: "",
@@ -108,6 +195,30 @@ export const customerStore = create<customerState>((set, get) => ({
       }));
     }
   },
+
+  getContractorById: async (id: string) => {
+    try {
+      set((state) => ({ ...state, isLoading: true }));
+
+      const { data } = await apiInstance.get(`contractor/getCustomerById/${id}`);
+      set((state) => ({
+        ...state,
+        contractor: data,
+        product: data.origins[0],
+        isLoading: false,
+        isError: false,
+      }));
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
+  },
+  selectProduct: (product: Origin) =>
+    set((state) => ({ ...state, product: product })),
 
   reset: () =>
     set((state) => ({

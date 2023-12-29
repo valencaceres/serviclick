@@ -8,16 +8,14 @@ import { ContractorDetail } from "../../../components/functional/_entities/Contr
 
 import { useUI } from "../../../hooks";
 import { useQueryContractor } from "~/hooks/query";
-
+import { useCustomer } from "~/store/hooks";
 const ContractorDetailPage = () => {
   const router = useRouter();
 
   const { setTitleUI } = useUI();
+  const { contractor: contractor, getContractorById } = useCustomer();
 
-  const { data: contractor } = useQueryContractor().useGetById(
-    router.query.id as string
-  );
-
+  const [leadProductSelected, setLeadProductSelected] = useState<any>(null);
   const handleClickHome = () => {
     router.push("/");
   };
@@ -29,6 +27,11 @@ const ContractorDetailPage = () => {
   useEffect(() => {
     setTitleUI("Cliente");
   }, []);
+  useEffect(() => {
+    if (router.query.id) {
+      getContractorById(router.query.id as string);
+    }
+  }, [router.query.id]);
 
   return (
     <Fragment>

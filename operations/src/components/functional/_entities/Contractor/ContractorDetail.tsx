@@ -8,10 +8,7 @@ import ContractorBeneficiaries from "./ContractorBeneficiaries";
 import ContractorSubscriptionList from "./ContractorSubscriptionList";
 import ContractorSubscription from "./ContractorSubscription";
 
-import {
-  ContentCell,
-  ContentRow,
-} from "../../../layout/Content";
+import { ContentCell, ContentRow } from "../../../layout/Content";
 
 import { LoadingMessage } from "../../../ui/LoadingMessage";
 import { Section } from "../../../ui/Section";
@@ -21,8 +18,11 @@ import ButtonIcon from "../../../ui/ButtonIcon";
 import { useContractor } from "../../../../hooks";
 
 import { contractor } from "../../../../interfaces";
+import { IContractorData } from "~/interfaces/customer";
 
-const ContractorDetail = ({ contractor }: any) => {
+const ContractorDetail: React.FC<{ contractor: IContractorData }> = ({
+  contractor,
+}) => {
   const { pathname } = useRouter();
   const { contractorLoading, getSubscriptionById } = useContractor();
 
@@ -31,7 +31,6 @@ const ContractorDetail = ({ contractor }: any) => {
   const handleSuscriptionRowClick = (item: contractor.ISubscription) => {
     getSubscriptionById(item.subscription_id);
   };
-
   return (
     <Fragment>
       <ContentCell align="center" gap="20px">

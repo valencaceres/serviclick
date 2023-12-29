@@ -9,6 +9,7 @@ import {
   _selectInsured,
   _selectPayment,
   _selectBeneficiaryId,
+  _getCustomerById,
 } from "../queries/contractor";
 
 interface IBeneficiary {
@@ -488,6 +489,16 @@ const getByBeneficiaryId: any = async (id: string) => {
   }
 };
 
+const getCustomerById: any = async (id: string) => {
+  try {
+    const result = await pool.query(_getCustomerById, [id]);
+    return { success: true, data: result.rows[0].customer_get_by_id, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+
 export {
   create,
   getAll,
@@ -499,4 +510,5 @@ export {
   getPaymentById,
   getProductsByContractor,
   getByBeneficiaryId,
+  getCustomerById,
 };
