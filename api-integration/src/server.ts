@@ -1,5 +1,5 @@
-import config from "./utils/config";
-import createLogger from "./utils/logger";
+import config from "./util/config";
+import createLogger from "./util/logger";
 import app from "./app";
 
 const { apiPort } = config;
