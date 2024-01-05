@@ -16,7 +16,6 @@ import {
   TableCell,
   TableCellEnd,
 } from "../../../ui/Table";
-import { dbDateToText } from "../../../../utils/date";
 import { Button } from "~/components/ui/ButtonC";
 import {
   Dialog,
@@ -31,7 +30,6 @@ import ComboBox from "~/components/ui/ComboBox";
 
 import { useQueryLead, useQueryProduct } from "~/hooks/query";
 import { useQueryClient } from "@tanstack/react-query";
-import { useContractor } from "~/hooks";
 import {
   Popover,
   PopoverContent,
@@ -42,37 +40,52 @@ import { format } from "date-fns";
 import { Calendar } from "~/components/ui/Calendar";
 
 import { es } from "date-fns/locale";
+import { useCustomer } from "~/store/hooks";
 
 const ContractorSubscriptionList = ({ contractor, subscriptionClick }: any) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const { getSubscriptionById } = useContractor();
 
-  useEffect(() => {
-    if (contractor) {
-      if (contractor?.subscriptions?.length > 0) {
-        getSubscriptionById(contractor?.subscriptions[0]?.subscription_id);
-      }
+  const { selectProduct, product } = useCustomer();
+
+  const handleChangeProduct = (productId: string) => {
+    const existingProduct = contractor?.origins?.find(
+      (item: any) => item?.product?.id === productId
+    );
+    if (existingProduct) {
+      selectProduct(existingProduct);
     }
-  }, [contractor]);
+  };
+  const formatDate = (dateString: string | undefined) => {
+    if (!dateString) return "";
+
+    const date = new Date(dateString);
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const day = date.getDate().toString().padStart(2, "0");
+    const year = date.getFullYear();
+
+    return `${month}/${day}/${year}`;
+  };
 
   return (
     <ContentCell gap="5px">
       <Table width="485px" height="563px">
         <TableHeader>
+          <TableCell width="60px">N°</TableCell>
           <TableCell width="360px">Producto</TableCell>
           <TableCell width="110px">Adquisición</TableCell>
           <TableCellEnd />
         </TableHeader>
         <TableDetail>
-          {contractor?.subscriptions?.map((item: any, idx: number) => (
+          {contractor?.origins?.map((item: any, idx: number) => (
             <TableRow
               key={idx}
               link={true}
-              onClick={() => subscriptionClick(item)}
+              onClick={() => handleChangeProduct(item?.product?.id)}
             >
-              <TableCell width="360px">{item.product_name}</TableCell>
+              <TableCell width="60px">{item?.subscription_id}</TableCell>
+              <TableCell width="360px">{item?.product?.name}</TableCell>
               <TableCell width="110px" align="center">
-                {item.createDate}
+                {formatDate(item?.dates?.purchase)}
               </TableCell>
             </TableRow>
           ))}
@@ -80,12 +93,12 @@ const ContractorSubscriptionList = ({ contractor, subscriptionClick }: any) => {
       </Table>
       <ContentRow align="space-between">
         <ContentCellSummary
-          color={contractor?.subscriptions?.length > 0 ? "blue" : "#959595"}
+          color={contractor?.origins?.length > 0 ? "blue" : "#959595"}
         >
-          {contractor?.subscriptions?.length > 0
-            ? contractor?.subscriptions?.length === 1
-              ? `${contractor?.subscriptions?.length} suscripción`
-              : `${contractor?.subscriptions?.length} suscripciones`
+          {contractor?.origins?.length > 0
+            ? contractor?.origins?.length === 1
+              ? `${contractor?.origins?.length} suscripción`
+              : `${contractor?.origins?.length} suscripciones`
             : `No hay suscripciones`}
         </ContentCellSummary>
         <AddSubscription
@@ -128,7 +141,9 @@ const AddSubscription = ({
   const plan = watch("plan");
   const agent = watch("agent");
 
-  const { data } = useQueryProduct().useGetByRetailRut(contractor?.rut);
+  const { data } = useQueryProduct().useGetByRetailRut(
+    contractor?.customer?.rut
+  );
   const { mutate: addProduct } = useQueryLead().useAddProduct();
 
   const add = () => {

@@ -51,7 +51,6 @@ export interface IContractorBeneficiary {
 export interface IContractorInsured {
   id: string;
   rut: string;
-  birthdate: string;
   name: string;
   paternalLastName: string;
   maternalLastName: string;
@@ -59,8 +58,6 @@ export interface IContractorInsured {
   district: string;
   email: string;
   phone: string;
-  incorporation: string;
-  beneficiaries: IContractorBeneficiary[];
 }
 
 export interface IContractorSubscription {

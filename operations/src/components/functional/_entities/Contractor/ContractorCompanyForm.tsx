@@ -136,14 +136,17 @@ const ContractorCompanyForm = ({
 
   useEffect(() => {
     if (contractor?.type !== "") {
-      setValue("rut", contractor?.rut);
-      setValue("name", contractor?.name);
-      setValue("legalRepresentative", contractor?.legalRepresentative);
-      setValue("line", contractor?.line);
-      setValue("address", contractor?.address);
-      setValue("district", contractor?.district);
-      setValue("email", contractor?.email);
-      setValue("phone", contractor?.phone);
+      setValue("rut", contractor?.customer?.rut);
+      setValue("name", contractor?.customer?.name);
+      setValue(
+        "legalRepresentative",
+        contractor?.customer?.legalRepresentative
+      );
+      setValue("line", contractor?.customer?.line);
+      setValue("address", contractor?.customer?.address);
+      setValue("district", contractor?.customer?.district);
+      setValue("email", contractor?.customer?.email);
+      setValue("phone", contractor?.customer?.phone);
     }
     if (contractorData) {
       setValue("rut", contractorData?.rut);
@@ -156,7 +159,6 @@ const ContractorCompanyForm = ({
       setValue("phone", contractorData?.phone);
     }
   }, [contractor, contractorData, setValue]);
-
   return (
     <form onSubmit={handleSubmit(send)}>
       <ContentCell gap="5px" className={styles.contentCell}>

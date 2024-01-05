@@ -18,13 +18,20 @@ import {
 
 import { formatAmount } from "../../../../utils/format";
 
-import { useContractor } from "../../../../hooks";
-
-const ContractorProduct = ({ contractor }: any) => {
-  const { subscriptionItem, getSubscriptionById } = useContractor();
+import { IContractorData } from "~/interfaces/customer";
+import { useCustomer } from "~/store/hooks";
+const ContractorProduct: React.FC<{ contractor: IContractorData }> = ({
+  contractor,
+}) => {
+  const { selectProduct, product } = useCustomer();
 
   const handleChangeProduct = (e: any) => {
-    getSubscriptionById(e.target.value);
+    const existingProduct = contractor.origins.find(
+      (item: any) => item?.product?.id === e.target.value
+    );
+    if (existingProduct) {
+      selectProduct(existingProduct);
+    }
   };
 
   return (
@@ -33,11 +40,11 @@ const ContractorProduct = ({ contractor }: any) => {
         <ComboBox
           label="Producto"
           width="100%"
-          value={subscriptionItem.subscription_id?.toString()}
+          value={product.product.id}
           onChange={handleChangeProduct}
-          data={contractor?.subscriptions}
-          dataValue="subscription_id"
-          dataText="product_name"
+          data={contractor?.origins}
+          dataValue="product.id"
+          dataText="product.name"
         />
         <InputText
           label="Adquisición"
@@ -45,7 +52,7 @@ const ContractorProduct = ({ contractor }: any) => {
           disabled={true}
           width="150px"
           maxLength={9}
-          value={subscriptionItem.createDate}
+          value={product?.dates?.purchase}
           onChange={() => {}}
           isValid={true}
         />
@@ -55,7 +62,7 @@ const ContractorProduct = ({ contractor }: any) => {
           disabled={true}
           width="150px"
           maxLength={9}
-          value={subscriptionItem.startDate}
+          value={product?.dates?.init}
           onChange={() => {}}
           isValid={true}
         />
@@ -70,20 +77,20 @@ const ContractorProduct = ({ contractor }: any) => {
           <TableCellEnd />
         </TableHeader>
         <TableDetail>
-          {subscriptionItem.assistances?.map((item, idx) => (
+          {product?.product?.assistances?.map((item, idx) => (
             <TableRow key={idx}>
-              <TableCell width="320px">{item.name}</TableCell>
+              <TableCell width="320px">{item?.name}</TableCell>
               <TableCell width="100px" align="center">
-                {formatAmount(item.amount.toString(), item.currency)}
+                {formatAmount(item?.amount?.toString(), item?.currency)}
               </TableCell>
               <TableCell width="244px" align="center">
-                {item.maximum}
+                {item?.maximum}
               </TableCell>
               <TableCell width="80px" align="center">{`${
-                item.events === 0 ? "Ilimitado" : item.events
+                item?.events === 0 ? "Ilimitado" : item?.events
               }`}</TableCell>
               <TableCell width="90px" align="center">
-                {item.lack}
+                {item?.lack}
               </TableCell>
             </TableRow>
           ))}
@@ -91,12 +98,12 @@ const ContractorProduct = ({ contractor }: any) => {
       </Table>
       <ContentRow align="space-between">
         <ContentCellSummary
-          color={subscriptionItem.assistances?.length > 0 ? "blue" : "#959595"}
+          color={product?.product?.assistances?.length > 0 ? "blue" : "#959595"}
         >
-          {subscriptionItem.assistances?.length > 0
-            ? subscriptionItem.assistances?.length === 1
-              ? `${subscriptionItem.assistances?.length} servicio`
-              : `${subscriptionItem.assistances?.length} servicios`
+          {product?.product?.assistances?.length > 0
+            ? product?.product?.assistances?.length === 1
+              ? `${product?.product?.assistances?.length} servicio`
+              : `${product?.product?.assistances?.length} servicios`
             : `No hay servicios`}
         </ContentCellSummary>
       </ContentRow>

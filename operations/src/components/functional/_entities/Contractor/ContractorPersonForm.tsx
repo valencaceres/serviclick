@@ -129,14 +129,14 @@ const ContractorPersonForm = ({ contractor, isEditing, setIsEditing }: any) => {
 
   useEffect(() => {
     if (contractor?.type !== "") {
-      setValue("rut", contractor?.rut);
-      setValue("name", contractor?.name);
-      setValue("paternalLastName", contractor?.paternalLastName);
-      setValue("maternalLastName", contractor?.maternalLastName);
-      setValue("address", contractor?.address);
-      setValue("district", contractor?.district);
-      setValue("email", contractor?.email);
-      setValue("phone", contractor?.phone);
+      setValue("rut", contractor?.customer?.rut);
+      setValue("name", contractor?.customer?.name);
+      setValue("paternalLastName", contractor?.customer?.paternalLastName);
+      setValue("maternalLastName", contractor?.customer?.maternalLastName);
+      setValue("address", contractor?.customer?.address);
+      setValue("district", contractor?.customer?.district);
+      setValue("email", contractor?.customer?.email);
+      setValue("phone", contractor?.customer?.phone);
     }
     if (contractorData) {
       setValue("rut", contractorData?.rut);

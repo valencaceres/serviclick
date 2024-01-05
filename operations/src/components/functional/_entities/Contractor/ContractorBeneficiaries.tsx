@@ -38,29 +38,35 @@ import { useContractor, useDistrict } from "../../../../hooks";
 import { useQueryBeneficiary, useQueryLead } from "~/hooks/query";
 
 import { IContractorInsured } from "~/interfaces/contractor";
+import { useCustomer } from "~/store/hooks";
 
 const ContractorBeneficiaries = ({ contractor }: any) => {
-  const { subscriptionItem, getSubscriptionById } = useContractor();
-
   const [rutInsured, setRutInsured] = useState("");
   const [insured, setInsured] = useState<IContractorInsured | undefined>(
     undefined
   );
 
+  const { selectProduct, product } = useCustomer();
+
   const handleChangeProduct = (e: any) => {
-    getSubscriptionById(e.target.value);
+    const existingProduct = contractor.origins.find(
+      (item: any) => item?.product?.id === e.target.value
+    );
+    if (existingProduct) {
+      selectProduct(existingProduct);
+    }
   };
 
   const handleChangeInsured = (e: any) => {
     if (e.target.value !== "") {
-      const selectedInsured = subscriptionItem.insured.find(
-        (item: any) => item.rut === e.target.value
-      );
-      if (!selectedInsured) {
-        return setInsured(undefined);
+      if (product.insured && product.insured.rut === e.target.value) {
+        setInsured(product?.insured);
+        setRutInsured(product.insured.rut);
+      } else {
+        console.error("No se encontró el asegurado con el rut proporcionado");
+        setInsured(undefined);
+        setRutInsured("");
       }
-      setInsured(selectedInsured);
-      setRutInsured(selectedInsured.rut);
     } else {
       setInsured(undefined);
       setRutInsured("");
@@ -68,9 +74,9 @@ const ContractorBeneficiaries = ({ contractor }: any) => {
   };
 
   useEffect(() => {
-    setInsured(subscriptionItem.insured[0]);
-    setRutInsured(subscriptionItem.insured[0]?.rut);
-  }, [subscriptionItem]);
+    setInsured(product?.insured);
+    setRutInsured(product?.insured?.rut);
+  }, [product?.insured]);
 
   return (
     <Fragment>
@@ -79,11 +85,11 @@ const ContractorBeneficiaries = ({ contractor }: any) => {
           <ComboBox
             label="Nombre del producto"
             width="425px"
-            value={subscriptionItem.subscription_id?.toString()}
+            value={product.product.id}
             onChange={handleChangeProduct}
-            data={contractor?.subscriptions}
-            dataValue="subscription_id"
-            dataText="product_name"
+            data={contractor?.origins}
+            dataValue="product.id"
+            dataText="product.name"
           />
           <InputText
             label="Campaña"
@@ -108,15 +114,16 @@ const ContractorBeneficiaries = ({ contractor }: any) => {
             width="650px"
             value={insured?.rut || ""}
             onChange={handleChangeInsured}
-            data={subscriptionItem.insured?.map((item) => ({
-              rut: item.rut,
-              fullName:
-                item.name +
-                " " +
-                item.paternalLastName +
-                " " +
-                item.maternalLastName,
-            }))}
+            data={
+              product?.insured
+                ? [
+                    {
+                      rut: insured?.rut,
+                      fullName: `${insured?.name} ${insured?.paternalLastName} ${insured?.maternalLastName}`,
+                    },
+                  ]
+                : []
+            }
             dataValue="rut"
             dataText="fullName"
           />
@@ -131,9 +138,8 @@ const ContractorBeneficiaries = ({ contractor }: any) => {
           <TableCellEnd />
         </TableHeader>
         <TableDetail>
-          {subscriptionItem.insured
-            .filter((item) => item.rut === rutInsured)[0]
-            ?.beneficiaries.map((item: any, idx: number) => (
+          {product?.beneficiaries &&
+            product?.beneficiaries.map((item: any, idx: number) => (
               <TableRow key={idx}>
                 <TableCell width="60px" align="center">
                   {idx + 1}
@@ -157,35 +163,21 @@ const ContractorBeneficiaries = ({ contractor }: any) => {
         <ContentRow gap="5px">
           <ContentCellSummary
             color={
-              subscriptionItem.insured?.filter(
-                (item) => item.rut === rutInsured
-              )[0]?.beneficiaries.length > 0
+              product &&
+              product?.beneficiaries &&
+              product?.beneficiaries?.length > 0
                 ? "blue"
                 : "#959595"
             }
           >
-            {subscriptionItem.insured?.filter(
-              (item) => item.rut === rutInsured
-            )[0]?.beneficiaries.length > 0
-              ? subscriptionItem.insured?.filter(
-                  (item) => item.rut === rutInsured
-                )[0]?.beneficiaries.length === 1
-                ? `${
-                    subscriptionItem.insured?.filter(
-                      (item) => item.rut === rutInsured
-                    )[0]?.beneficiaries.length
-                  } carga`
-                : `${
-                    subscriptionItem.insured?.filter(
-                      (item) => item.rut === rutInsured
-                    )[0]?.beneficiaries.length
-                  } cargas`
+            {(product?.beneficiaries?.length ?? 0) > 0
+              ? (product?.beneficiaries?.length ?? 0) === 1
+                ? `${product?.beneficiaries?.length} carga`
+                : `${product?.beneficiaries?.length} cargas`
               : `No hay cargas`}
           </ContentCellSummary>
         </ContentRow>
-        {subscriptionItem.subscription_id !== "" && (
-          <AddBeneficiary insured={insured} />
-        )}
+        {product?.subscription_id !== 0 && <AddBeneficiary insured={insured} />}
       </ContentRow>
     </Fragment>
   );

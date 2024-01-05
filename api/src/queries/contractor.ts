@@ -308,3 +308,5 @@ LEFT OUTER JOIN app.agent age ON lea.agent_id = age.id
 WHERE NOT bro.id IS NULL OR NOT age.id IS NULL
 ORDER BY name
 `;
+
+export const _getCustomerById = `select app.customer_get_by_id($1)`;

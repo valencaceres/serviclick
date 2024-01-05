@@ -299,6 +299,27 @@ const getByBeneficiaryId = async (req: any, res: any) => {
   res.status(200).json(contractorResponse.data);
 };
 
+const getCustomerById  = async (req: any, res: any) => {
+  const { id } = req.params;
+
+  const customerResponse = await Contractor.getCustomerById(id);
+
+  if (!customerResponse.success) {
+    createLogger.error({
+      model: "model/getCustomerById",
+      error: customerResponse.error,
+    });
+    res.status(500).json({ error: "Error retrieving customer" });
+    return;
+  }
+
+  createLogger.info({
+    controller: "contractor/getCustomerById",
+    message: "OK",
+  });
+  res.status(200).json(customerResponse.data);
+};
+
 export {
   create,
   getAll,
@@ -309,5 +330,6 @@ export {
   getInsuredBySubscriptionId,
   getPaymentById,
   getProductsByContractor,
-  getByBeneficiaryId
+  getByBeneficiaryId,
+  getCustomerById
 };
