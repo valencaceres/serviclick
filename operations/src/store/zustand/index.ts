@@ -7,6 +7,7 @@ import { assistanceStore } from "./assistanceStore";
 import { specialtyStore } from "./specialtyStore";
 import { insuredStore } from "./insuredStore";
 import { customerStore } from "./customerStore";
+import {attachmentStore} from "./attachment";
 
 export {
   specialistStore,
@@ -18,4 +19,5 @@ export {
   specialtyStore,
   insuredStore,
   customerStore,
+  attachmentStore
 };

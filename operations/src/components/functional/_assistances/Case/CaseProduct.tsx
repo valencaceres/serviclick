@@ -63,7 +63,6 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
     }
     return false;
   });
-
   const uniqueProductIds = new Set<string>();
   const uniqueProducts: IProduct[] =
     products?.filter((product) => {
@@ -254,8 +253,14 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
       );
       setProcuctListFiltered(filteredProducts);
     }
+    if (caseValue.retail !== null && router.query.id === "new") {
+      const filteredProducts = uniqueProducts.filter(
+        (product) => product.agent_id === caseValue.retail?.id
+      );
+      setProcuctListFiltered(filteredProducts);
+    }
   }, []);
-  console.log(caseValue);
+
   useEffect(() => {
     setCase({
       ...caseValue,
