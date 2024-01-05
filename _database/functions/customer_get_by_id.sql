@@ -1,9 +1,9 @@
-drop function app.customer_get_by_id;
-create or replace function app.customer_get_by_id(
-	p_id uuid)
-	
-returns JSON as
-$$
+-- DROP FUNCTION app.customer_get_by_id(uuid);
+
+CREATE OR REPLACE FUNCTION app.customer_get_by_id(p_id uuid)
+ RETURNS json
+ LANGUAGE plpgsql
+AS $function$
 
 declare
 	json_customer json;
@@ -31,6 +31,7 @@ begin
 				'origins', json_agg(json_build_object(
 					'subscription_id', cus.subscription_id,
 					'type', cus.origin_type,
+					'lead_user', cus.lead_user_id,
 					'name', cus.origin_name,
 					'product', json_build_object(
 						'id', cus.product_id,
@@ -138,6 +139,7 @@ begin
 					cus.district as customer_district,
 					cus.email as customer_email,
 					cus.phone as customer_phone,
+					case when not lea.user_id is null then lea.user_id end as lead_user_id,
 					case
 						when not ret.id is null then 'Empresa' 
 						when not bro.id is null then 'Broker'
@@ -184,7 +186,5 @@ begin
 	return	json_report;
 
 end;
-$$
-language plpgsql;
-
--- select app.customer_get_by_id('0d205ed9-945c-4b39-869d-b08a9e34af86')
+$function$
+;
