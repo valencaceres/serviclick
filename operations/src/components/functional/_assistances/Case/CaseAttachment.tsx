@@ -2,14 +2,13 @@ import React, { Fragment, useEffect, useState } from "react";
 import { ContentCell } from "~/components/layout/Content";
 import { InputText } from "~/components/ui";
 import { IApplicant } from "~/interfaces/applicant";
-import { useCase } from "~/store/hooks";
+import { useCase, useAttachment } from "~/store/hooks";
 import CaseDocumentsTable from "../../Case/CaseDocumentsTable";
 import { useToast } from "~/components/ui/use-toast";
 import { useQueryAssistances } from "~/hooks/query";
 import { useQueryClient } from "@tanstack/react-query";
 import useStage from "~/store/hooks/useStage";
 import { useRouter } from "next/router";
-
 interface ICaseEventProps {
   setIsEnabledSave: (isEnabled: boolean) => void;
   itWasFound: boolean;
@@ -18,7 +17,7 @@ interface ICaseEventProps {
 const CaseAttachment = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   const router = useRouter();
   const queryClient = useQueryClient();
-
+  const { getDocumentsById, getAttachByiD } = useAttachment();
   const { stage } = router.query;
   const { toast } = useToast();
 
@@ -33,7 +32,7 @@ const CaseAttachment = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   const handleSubmit = (file: any, documentId: any) => {
     const formData = new FormData();
     formData.append("case_id", caseValue?.case_id as string);
-    formData.append("document_id", documentId.toString());
+    formData.append("document_id", documentId?.toString());
     formData.append("files", file);
 
     uploadDocuments(formData, {
@@ -43,6 +42,8 @@ const CaseAttachment = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
           description: "Se ha subido correctamente el documento.",
         });
         queryClient.invalidateQueries(["case"]);
+        getDocumentsById(caseValue?.assistance?.id);
+        getAttachByiD(caseValue?.case_id as string, thisStage);
       },
       onError: () => {
         toast({

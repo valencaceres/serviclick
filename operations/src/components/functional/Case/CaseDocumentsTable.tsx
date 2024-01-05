@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import {
   Table,
   TableHeader,
@@ -9,25 +9,34 @@ import {
   TableCellEnd,
 } from "../../ui/Table";
 import Icon from "../../ui/Icon";
+import { useAttachment } from "~/store/hooks";
 import { useQueryAssistances, useQueryCase } from "../../../hooks/query";
 import Link from "next/link";
 
 const CaseDocumentsTable = ({ caseValue, thisStage, handleSubmit }: any) => {
   const [assistance, setAssistance] = useState<any>(null);
-
+  const {
+    getDocumentsById,
+    attach: attachments,
+    attachment: documents,
+    resetAttach,
+    resetDocuments,
+    getAttachByiD,
+    isLoading,
+  } = useAttachment();
   useEffect(() => {
     if (caseValue) {
       setAssistance(caseValue?.assistance?.id);
     }
   }, [caseValue?.assistance?.id, caseValue]);
-
-  const { data: documents } =
-    useQueryAssistances().useGetDocumentsById(assistance);
-
-  const { data: attachments } = useQueryCase().useGetAttach(
-    caseValue?.case_id as string,
-    thisStage
-  );
+  useEffect(() => {
+    resetDocuments();
+    resetAttach();
+  }, []);
+  useEffect(() => {
+    getDocumentsById(assistance);
+    getAttachByiD(caseValue?.case_id as string, thisStage);
+  }, [assistance, caseValue?.case_id, thisStage]);
 
   const handleChangeInput = (e: any, item: any) => {
     if (e?.target?.files && e?.target?.files?.length > 0) {

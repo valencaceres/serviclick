@@ -9,7 +9,7 @@ import useSpecialty from "./useSpecialty";
 import useStage from "./useStage";
 import useInsured from "./useInsured";
 import useCustomer from "./useCustomer";
-
+import useAttachment from "./useAttachment";
 export {
   useSpecialist,
   usePartner,
@@ -22,4 +22,5 @@ export {
   useStage,
   useInsured,
   useCustomer,
+  useAttachment,
 };

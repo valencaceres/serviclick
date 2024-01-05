@@ -68,12 +68,15 @@ const AssistanceCasePage = () => {
           router.push(`/assistance/case/event/${caseValue?.case_id}`);
         }
       },
-      back: () =>
+      back: () => {
+        const targetCaseId =
+          router.query.id === "new" ? "new" : caseValue?.case_id;
         router.push(
           `/assistance/case/${
             caseValue?.type === "I" ? "applicant" : "insured"
-          }/${caseValue?.case_id}`
-        ),
+          }/${targetCaseId}`
+        );
+      },
     },
     event: {
       onLoad: () =>
