@@ -10,6 +10,7 @@ import {
   _getRetails,
   _getStatus,
   _getReimbursment,
+  _getAllExports
 } from "../queries/case";
 import { IData } from "../interfaces/case";
 
@@ -207,6 +208,32 @@ const getAll: any = async (
   }
 };
 
+
+
+const getAllExports: any = async (
+  retail_id: string,
+  case_date: string,
+  event_date: string,
+  records: number,
+  page: number
+) => {
+  try {
+    const result = await pool.query(_getAllExports, [
+      retail_id,
+      case_date,
+      event_date,
+      records,
+      page,
+    ]);
+    return {
+      success: true,
+      data: result.rows[0].case_get_report || [],
+      error: null,
+    };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
 const getBeneficiaryData: any = async (rut: string) => {
   try {
     const result = await pool.query(_getBeneficiaryData, [rut]);
@@ -355,7 +382,17 @@ const getAssistanceData: any = async (
     return { success: false, data: null, error: (e as Error).message };
   }
 };
+const getCaseDates = async () => {
+  try {
+    const caseDatesResult = await pool.query('SELECT * FROM app.get_case_dates()');
+    
+    const {  createdDates, eventDates } = caseDatesResult.rows[0].get_case_dates;
+    return { success: true, data:{createdDates, eventDates}, error: null };
 
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
 const discountAssistanceData = async (
   insured_id: string,
   assistance_id: string,
@@ -848,9 +885,11 @@ export {
   createCaseSummary,
   getApplicantByRut,
   getServicesAndValues,
+  getAllExports,
   upsert,
   getRetails,
   getStatus,
   updateReimbursment,
   getReimbursment,
+  getCaseDates
 };

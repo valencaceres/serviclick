@@ -1,6 +1,6 @@
 import createLogger from "../util/logger";
 import { getFileViewLink, uploadFile } from "../util/s3";
-
+import  xlsx from "xlsx";
 import * as Case from "../models/case";
 import * as CaseStage from "../models/caseStage";
 import * as CaseStageAttach from "../models/caseStageAttach";
@@ -972,7 +972,6 @@ const updateReimbursment = async (req: any, res: any) => {
     amount,
     comment
   );
-  console.log(req.body);
   if (!reimbursmentsResponse.success) {
     createLogger.error({
       model: `reimbursment/update`,
@@ -989,6 +988,86 @@ const updateReimbursment = async (req: any, res: any) => {
   return res.status(200).json(reimbursmentsResponse);
 };
 
+const getAllExports = async (req: any, res: any) => {
+  const { retail_id, case_date, event_date, records, page } =
+    req.query;
+
+  const caseResponse = await Case.getAllExports(
+    retail_id,
+    case_date,
+    event_date,
+    records,
+    page
+  );
+
+  if (!caseResponse.success) {
+    createLogger.error({
+      model: `case/getAllExports`,
+      error: caseResponse.error,
+    });
+    return res.status(500).json({ error: "Error retrieving cases" });
+  }
+
+  createLogger.info({
+    model: `case/getAllExports`,
+    message: `Cases retrieved successfully`,
+  });
+
+  return res.status(200).json(caseResponse.data);
+};
+const getCaseDates = async (req: any, res: any) => {
+
+  const caseResponse = await Case.getCaseDates();
+
+  if (!caseResponse.success) {
+    createLogger.error({
+      model: `case/getCaseDates`,
+      error: caseResponse.error,
+    });
+    return res.status(500).json({ error: "Error retrieving dates" });
+  }
+
+  createLogger.info({
+    model: `case/getCaseDates`,
+    message: `dates retrieved successfully`,
+  });
+
+  return res.status(200).json(caseResponse.data);
+};
+
+const exportCases = async (req:any, res:any) => {
+  try {
+    const { retail_id, applicant_rut, applicant_name, stage_id, records, page } = req.query;
+    const caseResponse = await Case.getAll(
+      retail_id,
+      applicant_rut,
+      applicant_name,
+      stage_id,
+      records,
+      page
+    );
+
+    if (caseResponse && caseResponse.data.data && caseResponse.data.data.length > 0) {
+      const workbook = xlsx.utils.book_new();
+      const worksheet = xlsx.utils.json_to_sheet(caseResponse.data.data);
+      xlsx.utils.book_append_sheet(workbook, worksheet, 'Casos');
+
+      const excelBuffer = xlsx.write(workbook, { bookType: 'xlsx', type: 'buffer' });
+      
+      res.setHeader('Content-Disposition', 'attachment; filename=casos.xlsx');
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.send(excelBuffer);
+    } else {
+      return res.status(404).json({ error: "No hay casos para exportar." });
+    }
+  } catch (error) {
+    createLogger.error({
+      model: 'case/exportCases',
+      error: error,
+    });
+    return res.status(500).json({ error: "Error al obtener casos." });
+  }
+};
 export {
   create,
   uploadDocument,
@@ -1008,6 +1087,7 @@ export {
   getAllReimbursements,
   updateReimbursementStatus,
   createChatMessage,
+  getAllExports,
   getChatByCase,
   getStatistics,
   createCaseSummary,
@@ -1018,4 +1098,6 @@ export {
   getStatus,
   updateReimbursment,
   getAllReimbursments,
+  getCaseDates,
+  exportCases
 };

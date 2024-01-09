@@ -54,7 +54,8 @@ const routes = [
   {
     text: "Reportes",
     roles: ["admin"],
-    subRoutes: [{ text: "Dashboard", route: "/dashboard" }],
+    subRoutes: [{ text: "Dashboard", route: "/reports/dashboard" },
+  {text: "Exportaciones", route: "/reports/exports"}],
   },
   {
     text: "Gestión de Subidas",
