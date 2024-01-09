@@ -65,8 +65,7 @@ const initialContractorData: IContractorData = {
       subscription_id: 0,
       type: "",
       name: "",
-      lead_user:  "",
-
+      lead_user: "",
       product: {
         id: "",
         name: "",
@@ -103,7 +102,6 @@ const Product: Origin = {
   type: "",
   name: "",
   lead_user: "",
-
   product: {
     id: "",
     name: "",

@@ -21,6 +21,7 @@ interface Assistance {
 export interface Product {
   id: string;
   name: string;
+
   assistances: Assistance[];
 }
 
@@ -73,8 +74,9 @@ interface Balance {
 export interface Origin {
   subscription_id: number;
   type: string;
+  lead_user: string;
+
   name: string;
-  lead_user:string;
   product: Product;
   insured: Insured;
   beneficiaries: Beneficiary[] | null;

@@ -18,14 +18,14 @@ import {
 
 import { formatAmount } from "../../../../utils/format";
 import { IContractorData } from "~/interfaces/customer";
-import { useCustomer, useCase } from "~/store/hooks";
+import { useCustomer, useUser } from "~/store/hooks";
 import { useRouter } from "next/router";
 const ContractorProduct: React.FC<{ contractor: IContractorData }> = ({
   contractor,
 }) => {
   const { selectProduct, product } = useCustomer();
   const router = useRouter();
-  const { usersList, getUsers, resetUserLists } = useCase();
+  const { usersList, getUsers, resetUserLists } = useUser();
   const handleChangeProduct = (e: any) => {
     const existingProduct = contractor.origins.find(
       (item: any) => item?.product?.id === e.target.value
