@@ -13,7 +13,7 @@ const ContractorDetailPage = () => {
   const router = useRouter();
 
   const { setTitleUI } = useUI();
-  const { contractor: contractor, getContractorById } = useCustomer();
+  const { contractor: contractor, getContractorById, resetContractor} = useCustomer();
 
   const [leadProductSelected, setLeadProductSelected] = useState<any>(null);
   const handleClickHome = () => {
@@ -28,6 +28,8 @@ const ContractorDetailPage = () => {
     setTitleUI("Cliente");
   }, []);
   useEffect(() => {
+    resetContractor()
+
     if (router.query.id) {
       getContractorById(router.query.id as string);
     }
