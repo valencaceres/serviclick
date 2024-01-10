@@ -215,7 +215,9 @@ const getAllExports: any = async (
   case_date: string,
   event_date: string,
   records: number,
-  page: number
+  page: number,
+  isExport: boolean
+
 ) => {
   try {
     const result = await pool.query(_getAllExports, [
@@ -224,6 +226,7 @@ const getAllExports: any = async (
       event_date,
       records,
       page,
+      isExport
     ]);
     return {
       success: true,

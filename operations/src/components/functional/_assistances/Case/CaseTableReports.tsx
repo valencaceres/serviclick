@@ -37,41 +37,15 @@ const CaseTableReports = ({
 }: any) => {
   const router = useRouter();
 
-  const { getRetails, retailsList: retailList, list: caseList ,caseDate, caseEventDate, getCaseDates,excel, exportCases} = useExportCase();
-  
+  const { getRetails, retailsList: retailList, list: caseList ,caseDate, caseEventDate, getCaseDates, exportCases, isLoading} = useExportCase();
+
   const handleExport = async () => {
     exportCases(
       filters.retail_id,
       filters.case_date,
       filters.event_date,
       filters.records,
-      1,
-      (data) => {
-        console.log("Exportación exitosa:", data);
-  
-        if (excel) {
-          const blob = data; 
-  
-          if (blob) {
-            console.log("blob:", blob);
-            const blobUrl = window.URL.createObjectURL(blob);
-  
-            const link = document.createElement('a');
-            link.href = blobUrl;
-            link.download = 'casos.xlsx';
-  
-            document.body.appendChild(link);
-            link.click();
-  
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(blobUrl);
-          } else {
-            console.error("Blob is null or undefined");
-          }
-        } else {
-          console.error("Excel object is null or undefined");
-        }
-      }
+      1
     );
   };
   useEffect(() => {
@@ -176,7 +150,7 @@ const CaseTableReports = ({
               ? "1 caso"
               : `${caseList.summary.cases} casos`}
           </ContentCellSummary>
-          <Button onClick={handleExport} text="Exportar casos a Excel" />
+          <Button loading={isLoading} onClick={handleExport} text="Exportar casos a Excel" />
 
           <ContentRow gap="5px" align="flex-end">
             <ButtonIcon

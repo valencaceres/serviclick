@@ -90,7 +90,6 @@ export const caseExportStore = create<caseState>((set) => ({
     event_date: string,
     records: number,
     page: number,
-    onSuccess?: OnSuccessCallback
   ) => {
     try {
       set((state) => ({ ...state, isLoading: true }));
@@ -120,14 +119,20 @@ export const caseExportStore = create<caseState>((set) => ({
         .map(([key, value]) => `${key}=${value}`)
         .join("&");
 
-      const url = `/case/exportCases${queryParams ? `?${queryParams}` : ""}`;
-      const response = await apiInstance.get(url);
+        const url = `/case/exportCases${queryParams ? `?${queryParams}` : ""}`;
+        const response = await apiInstance.get(url, { responseType: 'arraybuffer' });
+       
+if (response && response.data && response.data.byteLength > 0) {
+  const byteArray = new Uint8Array(response.data);
+  const blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
 
-      if (onSuccess && response?.data) {
-        onSuccess(response.data);
-      }
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'casos.xlsx';
 
-      set((state) => ({ ...state, excel: response?.data, isLoading: false }));
+  link.click();
+}
+      set((state) => ({ ...state, isLoading: false }));
     } catch (e) {
       set((state) => ({
         ...state,
@@ -205,7 +210,6 @@ export const caseExportStore = create<caseState>((set) => ({
     try {
       set((state) => ({ ...state, isLoading: true }));
       const { data } = await apiInstance.get(`/case/getAllCaseDates`);
-     console.log("data:",data);
      
       set((state) => ({ ...state, caseDates:data?.createdDates, caseEventDates:data?.eventDates, isLoading: false }));
     } catch (e) {

@@ -40,7 +40,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
   } = useCase();
   const { retailList, getAll, resetRetail } = useRetail();
   const { user } = useUser();
-
+  
   const [applicant, setApplicant] = useState<IApplicant>();
   const [hasLoadedServices, setHasLoadedServices] = useState<boolean>(false);
   const [productList, setProductList] = useState<IRetProduct[]>([]);
