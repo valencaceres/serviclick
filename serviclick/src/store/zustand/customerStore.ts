@@ -33,6 +33,7 @@ interface customerState {
   selectProduct: (product: Origin) => void;
   reset: () => void;
   resetAll: () => void;
+  resetContractor: () => void;
 }
 
 const initialData: ICustomer = {
@@ -232,4 +233,12 @@ export const customerStore = create<customerState>((set, get) => ({
     })),
 
   resetAll: () => set({}, true),
+  resetContractor: () =>
+  set((state) => ({
+    ...state,
+    contractor: initialContractorData,
+    isLoading: false,
+    isError: false,
+    error: "",
+  })),
 }));
