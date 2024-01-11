@@ -33,6 +33,9 @@ import {
   upsert,
   getRetails,
   getStatus,
+  getAllExports,
+  getCaseDates,
+  exportCases
 } from "../controllers/case";
 import isAuthenticated from "../middlewares/isAuthenticated";
 import isAdmin from "../middlewares/isAdmin";
@@ -98,5 +101,8 @@ CaseRouter.post("/getServicesAndValues", getServicesAndValues);
 CaseRouter.post("/upsert", auth, upsert);
 CaseRouter.put("/updateReimbursment/:id", auth, isAdmin, updateReimbursment);
 CaseRouter.get("/getReimbursments", getAllReimbursments);
+CaseRouter.get("/getAllExports",auth, getAllExports);
+CaseRouter.get("/getAllCaseDates", auth, getCaseDates);
+CaseRouter.get("/exportCases", auth, exportCases);
 
 export default CaseRouter;

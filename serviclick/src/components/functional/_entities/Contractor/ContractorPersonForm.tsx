@@ -138,17 +138,8 @@ const ContractorPersonForm = ({ contractor, isEditing, setIsEditing }: any) => {
       setValue("email", contractor?.customer?.email);
       setValue("phone", contractor?.customer?.phone);
     }
-    if (contractorData) {
-      setValue("rut", contractorData?.rut);
-      setValue("name", contractorData?.name);
-      setValue("paternalLastName", contractorData?.paternalLastName);
-      setValue("maternalLastName", contractorData?.maternalLastName);
-      setValue("address", contractorData?.address);
-      setValue("district", contractorData?.district);
-      setValue("email", contractorData?.email);
-      setValue("phone", contractorData?.phone);
-    }
-  }, [contractor, contractorData, setValue]);
+   
+  }, [contractor, setValue]);
 
   return (
     <form onSubmit={handleSubmit(send)}>
