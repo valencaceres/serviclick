@@ -1,7 +1,4 @@
 import { useState, Fragment, useEffect } from "react";
-import * as FileSaver from 'file-saver';
-
-import { unFormatRut, formatRut } from "~/utils";
 
 import {
   ContentCell,
@@ -9,7 +6,6 @@ import {
   ContentCellSummary,
 } from "../../../layout/Content";
 
-import InputText from "../../../ui/InputText";
 import ButtonIcon from "../../../ui/ButtonIcon";
 import {
   Table,
@@ -25,7 +21,28 @@ import { useExportCase } from "~/store/hooks";
 import { useRouter } from "next/router";
 import { ComboBox} from "~/components/ui";
 import  ComboboxDates from "~/components/ui/ComboBox/ComboboxDatesindex"
-import Button from "~/components/ui/Button";
+interface CaseDate {
+  month: string;
+  year: string;
+}
+const monthTranslations: Record<string, string> = {
+  'Hoy': 'Hoy',
+  'Esta semana': 'Esta semana',
+  'January': 'Enero',
+  'February': 'Febrero',
+  'March': 'Marzo',
+  'April': 'Abril',
+  'May': 'Mayo',
+  'June': 'Junio',
+  'July': 'Julio',
+  'August': 'Agosto',
+  'September': 'Septiembre',
+  'October': 'Octubre',
+  'November': 'Noviembre',
+  'December': 'Diciembre',
+  'All': 'Todos'
+};
+
 const CaseTableReports = ({
   filters,
   setFilters,
@@ -37,22 +54,77 @@ const CaseTableReports = ({
 }: any) => {
   const router = useRouter();
 
-  const { getRetails, retailsList: retailList, list: caseList ,caseDate, caseEventDate, getCaseDates, exportCases, isLoading} = useExportCase();
+  const { getRetails, retailsList: retailList, list: caseList ,caseDate, caseEventDate, getCaseDates, isLoading} = useExportCase();
+  const [retailListWithAll, setRetailListWithAll] = useState<{ id: null; name: string; }[]>([]);
+  const [caseDateWithAll, setCaseDateWithAll] = useState<CaseDate[]>([]);
+  const [caseEventDateWithAll, setCaseEventDateWithAll] = useState<CaseDate[]>([]);
+  const [isLoadingComponent, setIsLoadingComponent] = useState(true);
 
-  const handleExport = async () => {
-    exportCases(
-      filters.retail_id,
-      filters.case_date,
-      filters.event_date,
-      filters.records,
-      1
-    );
-  };
   useEffect(() => {
     getRetails();
     getCaseDates();
   }, [getCaseDates, getRetails]);
 
+  useEffect(() => {
+    if (retailList) {
+      const retailListWithAll = [{ id: null, name: "Todos" }, ...retailList];
+      setRetailListWithAll(retailListWithAll);
+    }
+  }, [retailList]);
+  useEffect(() => {
+    if (caseDate) {
+      const modifiedCaseDate = [
+        { month: "Hoy", year: "" },
+        { month: "Esta semana", year: "" },
+        ...caseDate,
+
+        { month: "Todos", year: "" },
+      ];
+      setCaseDateWithAll(modifiedCaseDate);
+    }
+  }, [caseDate]);
+  
+  useEffect(() => {
+    if (caseEventDate) {
+      const modifiedCaseEventDate = [
+      
+        ...caseEventDate,
+
+        { month: "Todos", year: "" },
+      ];
+      setCaseEventDateWithAll(modifiedCaseEventDate);
+    }
+  }, [caseEventDate]);
+  const caseDateWithAllTranslated = caseDateWithAll.map(date => {
+    const monthName = monthTranslations[date.month.trim()] || date.month.trim();
+    return { ...date, month: monthName };
+  });
+  const caseEventDateWithAllTranslated = caseEventDateWithAll.map(date => {
+    const monthName = monthTranslations[date.month.trim()] || date.month.trim();
+    return { ...date, month: monthName };
+  });
+
+  let caseListData =caseList || { data: [], summary: { cases: 0 }, pagination: { total: 0, page: 1 } };
+
+  useEffect(() => {
+    console.log(filters)
+    if (filters.retail_id === "" || (filters.case_date === "" && filters.event_date === "")) {
+      console.log("ejecutos")
+      caseListData.data = [];
+      caseListData.summary.cases = 0;
+      caseListData.pagination.total = 0;
+      caseListData.pagination.page = 1;
+      setIsLoadingComponent(false);
+
+      }
+       else {
+        console.log("ejecutostraiak")
+
+      caseListData.data = caseList.data;
+    }
+   
+  }, [filters, caseList]);
+ console.log("case:", caseList.data)
   return (
     <Fragment>
       <ContentCell gap="5px">
@@ -65,7 +137,7 @@ const CaseTableReports = ({
             onChange={(e: any) =>
               setFilters({ ...filters, retail_id: e.target.value })
             }
-            data={retailList}
+            data={retailListWithAll}
             dataValue={"id"}
             dataText={"name"}
             width="350px"
@@ -78,7 +150,7 @@ const CaseTableReports = ({
             onChange={(e: any) =>
               setFilters({ ...filters, case_date: e.target.value, event_date: "" })
             }
-            data={caseDate}
+            data={caseDateWithAllTranslated}
             dataValue={"month"}
             dataText={"month"}
             width="350px"
@@ -91,16 +163,12 @@ const CaseTableReports = ({
             onChange={(e: any) =>
               setFilters({ ...filters, event_date: e.target.value, case_date: "", })
             }
-            data={caseEventDate}
+            data={caseEventDateWithAllTranslated}
             dataValue={"month"}
             dataText={"month"}
             width="350px"
           />
-           
-          
-         
-         
-          <ButtonIcon onClick={() => search()} iconName="search" color="gray" />
+          <ButtonIcon disabled={filters.retail_id === "" || (filters.case_date === "" && filters.event_date === "")} onClick={() => search()} iconName="search" color="gray" />
         </ContentRow>
         <Table width="1100px">
           <TableHeader>
@@ -111,9 +179,10 @@ const CaseTableReports = ({
             <TableCell width="210px">Estado</TableCell>
             <TableCellEnd />
           </TableHeader>
+          {isLoadingComponent === false && (
           <TableDetail>
-            {caseList.data &&
-              caseList.data.map((caseItem: any, idx: number) => (
+            {caseListData.data && 
+              caseListData.data.map((caseItem: any, idx: number) => (
                 <TableRow key={idx}>
                   <TableCell align="center" width="100px">
                     {caseItem.number}
@@ -125,20 +194,11 @@ const CaseTableReports = ({
                   </TableCell>
                   <TableCell width="210px">
                     {caseItem.stage_name}
-                    <TableIcons>
-                      <Icon
-                        iconName="edit"
-                        onClick={() =>
-                          router.push(
-                            `/assistance/case/${caseItem.code}/${caseItem.id}`
-                          )
-                        }
-                      />
-                    </TableIcons>
+                   
                   </TableCell>
                 </TableRow>
               ))}
-          </TableDetail>
+          </TableDetail>)}
         </Table>
         <ContentRow gap="5px" align="space-between">
           <ContentCellSummary
@@ -150,7 +210,6 @@ const CaseTableReports = ({
               ? "1 caso"
               : `${caseList.summary.cases} casos`}
           </ContentCellSummary>
-          <Button loading={isLoading} onClick={handleExport} text="Exportar casos a Excel" />
 
           <ContentRow gap="5px" align="flex-end">
             <ButtonIcon
