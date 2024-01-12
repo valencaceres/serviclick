@@ -8,7 +8,6 @@ DECLARE
     created_dates json[];
     event_dates json[];
 BEGIN
-    -- Cambiar el localizador para nombres de meses en español en sistemas Unix
 
     SELECT ARRAY(
         SELECT DISTINCT ON (EXTRACT(YEAR FROM createddate), EXTRACT(MONTH FROM createddate))
