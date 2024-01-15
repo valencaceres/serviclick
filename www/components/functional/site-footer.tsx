@@ -15,7 +15,6 @@ export async function SiteFooter() {
 
   const categories = await responseCategories.json()
   const currentYear = new Date().getFullYear()
-  console.log(categories)
 
   if (!Array.isArray(categories) || categories.length === 0) {
     return null; 
@@ -24,8 +23,12 @@ export async function SiteFooter() {
 
   return (
     <footer className="flex flex-col" id="contact">
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-slate-50 px-16 py-6">
-        <div className="flex flex-col gap-2">
+      <div className=" bg-slate-50 flex flex-col  ">
+      <h2  className="  px-16 py-2">Los descuentos y beneficios de salud son entregados en línea a través de i-Med o a través de red de prestadores propios</h2>
+      <div className="flex flex-wrap items-center px-16 py-4 justify-between gap-4">
+        <div className="flex flex-col gap-2 ">
+      
+
           <h2 className="font-bebas text-2xl uppercase">Contacto Comercial</h2>
           <div>
             <Link href="tel:6000860580" className="hover:underline" passHref>
@@ -124,6 +127,7 @@ export async function SiteFooter() {
             Serviclick {currentYear} - Todos los derechos reservados.
           </p>
         </div>
+      </div>
       </div>
     </footer>
   )

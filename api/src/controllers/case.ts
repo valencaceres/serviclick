@@ -1119,7 +1119,6 @@ const exportCases = async (req:any, res:any) => {
       model: 'case/exportCases',
       error: error,
     });
-    console.error(error)
     return res.status(500).json({ error: "Error retrieving case." });
   }
 };

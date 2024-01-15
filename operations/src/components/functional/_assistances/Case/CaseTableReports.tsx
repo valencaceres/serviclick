@@ -21,27 +21,12 @@ import { useExportCase } from "~/store/hooks";
 import { useRouter } from "next/router";
 import { ComboBox} from "~/components/ui";
 import  ComboboxDates from "~/components/ui/ComboBox/ComboboxDatesindex"
+import { monthTranslations } from "~/data/masters";   
 interface CaseDate {
   month: string;
   year: string;
 }
-const monthTranslations: Record<string, string> = {
-  'Hoy': 'Hoy',
-  'Esta semana': 'Esta semana',
-  'January': 'Enero',
-  'February': 'Febrero',
-  'March': 'Marzo',
-  'April': 'Abril',
-  'May': 'Mayo',
-  'June': 'Junio',
-  'July': 'Julio',
-  'August': 'Agosto',
-  'September': 'Septiembre',
-  'October': 'Octubre',
-  'November': 'Noviembre',
-  'December': 'Diciembre',
-  'All': 'Todos'
-};
+
 
 const CaseTableReports = ({
   filters,
@@ -107,9 +92,7 @@ const CaseTableReports = ({
   let caseListData =caseList || { data: [], summary: { cases: 0 }, pagination: { total: 0, page: 1 } };
 
   useEffect(() => {
-    console.log(filters)
     if (filters.retail_id === "" || (filters.case_date === "" && filters.event_date === "")) {
-      console.log("ejecutos")
       caseListData.data = [];
       caseListData.summary.cases = 0;
       caseListData.pagination.total = 0;
@@ -118,13 +101,12 @@ const CaseTableReports = ({
 
       }
        else {
-        console.log("ejecutostraiak")
 
       caseListData.data = caseList.data;
     }
    
   }, [filters, caseList]);
- console.log("case:", caseList.data)
+
   return (
     <Fragment>
       <ContentCell gap="5px">
