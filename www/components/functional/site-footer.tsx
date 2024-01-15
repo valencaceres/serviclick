@@ -15,6 +15,12 @@ export async function SiteFooter() {
 
   const categories = await responseCategories.json()
   const currentYear = new Date().getFullYear()
+  console.log(categories)
+
+  if (!Array.isArray(categories) || categories.length === 0) {
+    return null; 
+  }
+  
 
   return (
     <footer className="flex flex-col" id="contact">
