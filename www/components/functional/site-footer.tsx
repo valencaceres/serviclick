@@ -24,7 +24,7 @@ export async function SiteFooter() {
   return (
     <footer className="flex flex-col" id="contact">
       <div className=" bg-slate-50 flex flex-col  ">
-      <h2  className="  px-16 py-2">Los descuentos y beneficios de salud son entregados en línea a través de i-Med o a través de red de prestadores propios</h2>
+      <h2  className="  text-center font-bold px-16 py-2">Los descuentos y beneficios de salud son entregados en línea a través de i-Med o a través de red de prestadores propios</h2>
       <div className="flex flex-wrap items-center px-16 py-4 justify-between gap-4">
         <div className="flex flex-col gap-2 ">
       
