@@ -480,9 +480,11 @@ const listByFamilies = async (agent: string) => {
                           wef.link as link,
                           pro.id AS product_id,
                           pro.name AS product_name,
-                          pro.beneficiaries,
+                          pro.beneficiaries as beneficiaries,
                           ppl.id AS productplan_id,
                           ppl.price,
+                          ppl.beneficiary_price as beneficiary_price,
+                          ppf.base64 as pdfbase,
                           age.fantasyname AS agent_slug,
                           age.name AS agent_name,
                           asi.id AS assistance_id,
@@ -495,6 +497,7 @@ const listByFamilies = async (agent: string) => {
                       FROM
                           app.product pro
                           INNER JOIN app.productplan ppl ON pro.id = ppl.product_id
+                          left join app.productplanpdf ppf on ppl.id = ppf.productplan_id
                           INNER JOIN app.productassistance pas ON pro.id = pas.product_id
                           INNER JOIN app.assistance asi ON pas.assistance_id = asi.id
                           INNER JOIN app.agent age ON ppl.agent_id = age.id
@@ -517,6 +520,26 @@ const listByFamilies = async (agent: string) => {
   }
 };
 
+const getSuscriptionsByAgentId = async (agent: string) => {
+  try {
+    const sqlQuery = `SELECT
+    id,
+    agent_id
+FROM
+    app.lead
+WHERE
+    agent_id::TEXT = $1
+ORDER BY
+    createdate DESC;
+                    `;
+
+    const result = await pool.query(sqlQuery, [agent]);
+
+    return { success: true, data: result.rows, error: null };
+  } catch (error) {
+    return { success: false, data: null, error: (error as Error).message };
+  }
+};
 export {
   createProduct,
   updateProduct,
@@ -530,4 +553,5 @@ export {
   getFamilies,
   getByRetailRut,
   listByFamilies,
+  getSuscriptionsByAgentId
 };

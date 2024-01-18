@@ -83,7 +83,7 @@ const Beneficiary = () => {
   };
 
   const { ui } = useUI();
-  const { product } = useProduct();
+  const { product, setProduct } = useProduct();
   const { beneficiary, getBeneficiaryByRut } = useBeneficiary();
   const { lead, getLeadById, createLead, leadIsLoading } = useLead();
   const { getAllRelationships } = useRelationship();
@@ -286,6 +286,20 @@ const Beneficiary = () => {
     }
   }, [lead.id, leadIsLoading, isProcessing]);
 
+  useEffect(() => {
+    if (beneficiaries?.length > 0) {
+      setProduct({
+        ...product,
+        plan: {
+          ...product?.plan,
+          price:
+            product?.plan?.price +
+            beneficiaries?.length * (product?.plan?.beneficiary_price ?? 0),
+        },
+      });
+    }
+  }, [beneficiaries?.length]);
+
   return (
     <Body>
       <Content>
@@ -388,8 +402,16 @@ const Beneficiary = () => {
         <ModalWindow
           showModal={showModal}
           setClosed={handleCloseClick}
-          title={`Beneficiario`}>
+          title={`Beneficiario`}
+        >
           <Col gap="20px">
+            {product?.plan?.beneficiary_price > 0 && (
+              <h2 style={{ textAlign: "center", color: "#fca5a5" }}>
+                Cada carga tiene un costo de $
+                {product?.plan?.beneficiary_price ?? 0}
+              </h2>
+            )}
+
             <BeneficiaryForm
               getByRut={getBeneficiaryByRut} //getByRut
               initialDataForm={initialDataForm}

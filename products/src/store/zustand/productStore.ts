@@ -33,6 +33,7 @@ const initialData: IProduct = {
   dueDay: 0,
   plan: {
     id: "",
+    beneficiary_price: 0, 
     createDate: "",
     productId: "",
     planId: 0,
@@ -88,6 +89,7 @@ export const productStore = create<productState>((set, get) => ({
       const { data } = await apiInstance.get(
         `/product/getByProductPlanId/${productPlan_id}`
       );
+      console.log("data:", data)
       set((state) => ({ ...state, product: data, isLoading: false }));
     } catch (e) {
       set((state) => ({

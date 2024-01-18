@@ -1,8 +1,11 @@
+import { useEffect, useRef, useState } from "react"
 import { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
+import { ConnectionMoments } from "@/components/functional/connectionmoments"
+import { HeroCarousel } from "@/components/functional/video-section"
 
 export const metadata: Metadata = {
   title: {
@@ -21,112 +24,92 @@ export const metadata: Metadata = {
   },
 }
 
-export default function AboutUsPage() {
+export default async function AboutUsPage() {
+  const responseSuscriptions = await fetch(
+    process.env.API_URL! +
+      "/api/product/getSuscriptionsByAgentId/3abd9e95-4883-46bb-aaa9-c00e221cfd0b",
+    {
+      headers: {
+        id: process.env.API_KEY!,
+      },
+      cache: "no-store",
+    }
+  )
+  const suscriptions = await responseSuscriptions.json()
+
   return (
     <>
-      <section className="relative h-[450px] flex items-center px-20">
+      <section className="relative flex h-[450px] items-center px-20">
         <Image
-          src="/quienessomos.jpeg"
-          alt="Quienes somos"
+          src="/coaniquem/bannerphoto.jpg"
+          alt="Sobre nosotros"
           quality={100}
           fill={true}
           className="absolute z-0 object-cover object-right md:object-center"
         />
-        <div className="z-10 w-full flex items-center">
-          <h1 className="text-6xl font-bebas uppercase text-white">
-            Sobre nosotros
+        <div className="z-10 flex w-full items-center">
+          <h1 className="font-bebas text-6xl uppercase text-white">
+            doble razón para unirte
           </h1>
         </div>
-        <div className="bg-black absolute w-full h-full z-5 top-0 right-0 bg-opacity-30"></div>
+        <div className="z-5 absolute right-0 top-0 h-full w-full bg-black bg-opacity-30"></div>
       </section>
-      <section className="py-12 w-full flex justify-start">
-        <div className="w-[60px] md:w-[120px] mt-2 pr-6 lg:w-[300px] h-3 bg-primary rounded-r-full"></div>
-        <div className="flex gap-4">
-          <div className="flex flex-col gap-4 px-4 max-w-4xl">
-            <h1 className="uppercase text-4xl font-bebas">Nuestra historia</h1>
-            <p>
-              Nuestra compañía fue fundada en 2002 con el propósito de brindar
-              servicios de protección integral que mejoren la calidad de vida de
-              las personas. Formamos parte de MHM Empresas y tenemos presencia
-              en Chile y Latinoamérica. Nos enfocamos en resolver todas tus
-              necesidades de manera accesible, eficiente y dinámica, con el
-              objetivo de mejorar tu vida.
-            </p>
+
+      <section className="container flex flex-col items-start justify-center  py-12 pb-20">
+        <div className="flex flex-col gap-8  px-4 py-4 md:pb-10 md:pt-20">
+          <h2 className=" text-2xl  font-semibold md:text-4xl">
+            Nuestra Misión
+          </h2>
+          <div className="text-center">
+            <h2 className="text-xl font-semibold md:text-2xl">
+              ¿Cómo ayudamos a COANIQUEM?
+            </h2>
+
+            <div className="flex flex-row justify-between">
+              <Image
+                src="/coaniquem/icons/iconhands.png"
+                alt="Sobre nosotros"
+                quality={100}
+                width={100}
+                height={50}
+                className="w-1/3 md:w-1/6"
+              />
+              <Image
+                src="/coaniquem/icons/iconarrow.png"
+                alt="Sobre nosotros"
+                quality={100}
+                width={100}
+                height={50}
+                className="w-1/3 md:w-1/6"
+              />
+              <Image
+                src="/coaniquem/icons/iconheart.png"
+                alt="Sobre nosotros"
+                quality={100}
+                width={100}
+                height={50}
+                className="w-1/3 md:w-1/6"
+              />
+            </div>
           </div>
+          <h2 className="text-center text-xl font-semibold md:text-2xl">
+            Al suscribir tu Asistencia, Serviclick donará a COANIQUEM para
+            ayudar a los niños, niñas y adolescentes en su rehabilitación.
+          </h2>
         </div>
       </section>
-      <section className="bg-foreground text-background flex justify-center">
-        <div className="flex flex-auto items-center justify-between flex-wrap max-w-8xl">
-          <div className="py-4 px-6 lg:px-20 w-full md:w-2/3 flex flex-col gap-4">
-            <h1 className="uppercase text-4xl font-bebas text-center">
-              Nuestra misión
-            </h1>
-            <p>
-              En Serviclick, nuestro objetivo es brindar servicios que
-              beneficien a todos nuestros grupos de interés, y es por eso que
-              llevamos a cabo nuestro trabajo con respeto, promoviendo la
-              confianza, la equidad y la transparencia. Buscamos impulsar una
-              transformación social en la que la calidad de vida y el respeto
-              por la dignidad de cada persona sean valores fundamentales.
-            </p>
-          </div>
-          <div className="w-full md:w-1/3 h-[300px] object-cover relative">
-            <Image
-              src="/ourmission.jpeg"
-              alt="Nuestra misión"
-              fill={true}
-              className="object-cover"
-              loading="lazy"
-            />
-          </div>
+      <HeroCarousel suscriptions={suscriptions} />
+      <section className="w-full  py-12 md:py-24 lg:py-32">
+        <div className="flex items-center justify-center">
+          <div className="h-4 w-1/4 rounded-r-full border-r  border-white bg-red-500 md:w-full" />
+          <h2 className=" w-full  text-center text-2xl font-semibold md:text-4xl">
+            Momentos de conexión
+          </h2>
+          <div className="h-4 w-1/4 rounded-l-full border-l border-white bg-red-500  md:w-full" />
         </div>
       </section>
-      <section className="bg-primary text-background flex justify-center">
-        <div className="flex flex-auto items-center justify-between flex-wrap-reverse max-w-8xl">
-          <div className="w-full md:w-1/3 h-[300px] object-cover relative">
-            <Image
-              src="/ourvision.jpeg"
-              alt="Nuestra visión"
-              fill={true}
-              className="object-cover"
-              loading="lazy"
-            />
-          </div>
-          <div className="py-4 px-6 lg:px-20 w-full md:w-2/3 flex flex-col gap-4">
-            <h1 className="uppercase text-4xl font-bebas text-center">
-              Nuestra visión
-            </h1>
-            <p>
-              Nuestro objetivo es convertirnos en un referente mundial en la
-              calidad de servicio, brindando protección y facilitando medidas de
-              seguridad ante imprevistos. Buscamos proporcionar un acceso
-              sencillo a nuestros servicios, mejorando así las expectativas y la
-              calidad de vida de todas las personas. Nos esforzamos por crear un
-              futuro mejor, donde todos puedan sentirse protegidos y confiados
-              gracias a nuestra destacada calidad de servicio.
-            </p>
-          </div>
-        </div>
-      </section>
-      <section className="text-center bg-slate-50 py-24 flex flex-col gap-6 items-center">
-        <h1 className="text-6xl text-foreground uppercase font-bebas">
-          ¡Trabaja con nosotros!
-        </h1>
-        <h2 className="text-4xl text-foreground uppercase font-bebas">
-          Únete a MHM Empresas
-        </h2>
-        <Link
-          href={
-            "https://docs.google.com/forms/d/e/1FAIpQLSfLbQMt9eU4nCMWl2Ny26GqRb2E-3BDYn3G8ifLwVqEQQTcRg/viewform?usp=sf_link"
-          }
-          target="_blank"
-          passHref
-        >
-          <Button className="w-[250px] text-2xl uppercase font-bebas">
-            Enviar CV
-          </Button>
-        </Link>
-      </section>
+
+      <ConnectionMoments />
       <GrupoMHM />
     </>
   )
@@ -134,9 +117,9 @@ export default function AboutUsPage() {
 
 export function GrupoMHM() {
   return (
-    <section className="py-20 flex flex-col gap-8 items-center justify-center">
-      <h1 className="uppercase text-4xl text-center font-bebas">Grupo MHM</h1>
-      <div className="flex flex-wrap w-full max-w-5xl justify-center items-center">
+    <section className="flex flex-col items-center justify-center gap-8 py-20">
+      <h1 className="text-center font-bebas text-4xl uppercase">Grupo MHM</h1>
+      <div className="flex w-full max-w-5xl flex-wrap items-center justify-center">
         <Image
           src="/mhm1.png"
           alt="MHM1"

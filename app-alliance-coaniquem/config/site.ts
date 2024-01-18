@@ -4,17 +4,26 @@ export const siteConfig: SiteConfig = {
   name: "Serviclick - Todas las soluciones en la palma de tu mano",
   description: "Soluciones en la palma de tu mano.",
   secondaryNav: [
-
+    {
+      title: "Serviclick",
+      href: "https://www.serviclick.cl/",
+    },
+    {
+      title: "contacto & ubicación",
+      href:"#contact"
+    }
+    
   ],
   mainNav: [
     {
-      title: "Contacto",
-      href: "/people",
+      title: "Sobre nuestra alianza",
+      href:"/aboutus"
     },
     {
-      title: "Sobre nosotros",
-      href: "/companies",
-    },
+      title: "Volver a planes", 
+      href:"/"
+    }
+   
   ],
   links: {
     instagram: "https://www.instagram.com/serviclick.cl",

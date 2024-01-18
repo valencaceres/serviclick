@@ -63,4 +63,16 @@ const getProcessById: any = async (id: string) => {
   }
 };
 
-export { createAgent, updateAgent, deleteAgent, listAgents, getProcessById };
+const getById: any = async (id: string) => {
+  try {
+    const result = await pool.query(
+      `SELECT id, channel_id, name, fantasyname FROM app.agent WHERE id = $1 and isActive IS true`,
+      [id]
+    );
+    return { success: true, data: result.rows[0], error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+}
+
+export { createAgent, updateAgent, deleteAgent, listAgents, getProcessById,getById };

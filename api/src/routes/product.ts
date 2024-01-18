@@ -17,6 +17,7 @@ import {
   getByRetailRut,
   listByFamilies,
   getPdfContractById,
+  getSuscriptionsByAgentId
 } from "../controllers/product";
 import isAuthenticated from "../middlewares/isAuthenticated";
 import isAdmin from "../middlewares/isAdmin";
@@ -56,6 +57,7 @@ ProductRouter.get(
 );
 ProductRouter.get("/getAll", auth, getAll);
 ProductRouter.get("/getByRetailRut/:rut", auth, getByRetailRut);
-ProductRouter.get("/listByFamilies/:agent", auth, listByFamilies);
+ProductRouter.get("/listByFamilies/:agent", listByFamilies);
 ProductRouter.get("/getContract/:productplan_id", getPdfContractById);
+ProductRouter.get("/getSuscriptionsByAgentId/:agent", auth, getSuscriptionsByAgentId);
 export default ProductRouter;

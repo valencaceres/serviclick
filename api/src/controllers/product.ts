@@ -940,6 +940,7 @@ const getByProductPlanId = async (req: any, res: any) => {
     dueDay: productPlanResponse.data[0].dueday,
     plan: {
       id: productPlanResponse.data[0].productplan_id,
+      beneficiary_price: productPlanResponse.data[0].beneficiary_price,
       createDate: productPlanResponse.data[0].createdate,
       planId: productPlanResponse.data[0].plan_id,
       customerType: productPlanResponse.data[0].customer_type,
@@ -1039,6 +1040,30 @@ const listByFamilies = async (req: any, res: any) => {
   return res.status(200).json(result.data);
 };
 
+
+const getSuscriptionsByAgentId = async (req: any, res: any) => {
+  const { agent } = req.params;
+
+  const result = await Product.getSuscriptionsByAgentId(agent);
+
+  if (!result.success) {
+    createLogger.error({
+      model: "product/getSuscriptionsByAgentId",
+      error: result.error,
+    });
+
+    res.status(500).json({ error: "Error listing product" });
+    return;
+  }
+
+  createLogger.info({
+    controller: "products/getSuscriptionsByAgentId",
+    message: "OK",
+  });
+
+  return res.status(200).json(result.data);
+};
+
 const getPdfContractById = async (req: any, res: any) => {
   try {
     const { productplan_id } = req.params;
@@ -1082,4 +1107,5 @@ export {
   getByRetailRut,
   listByFamilies,
   getPdfContractById,
+  getSuscriptionsByAgentId
 };

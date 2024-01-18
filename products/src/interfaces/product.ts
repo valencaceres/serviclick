@@ -18,6 +18,7 @@ export interface IProduct {
   id: string;
   familyId: string;
   name: string;
+ 
   promotional: string;
   cost: number;
   isSubject: boolean;
@@ -39,6 +40,7 @@ export interface IProductPlan {
   productId: string;
   planId: number;
   customerType: string;
+  beneficiary_price: number;
   price: number;
   frequencyCode: string;
   agentId: string;
