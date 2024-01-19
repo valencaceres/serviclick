@@ -64,7 +64,7 @@ export const TestimonialsSection = () => {
         <SideScroll setShouldClick={setShouldClick}>
           <div className="flex gap-4 px-8">
             {testimonialsArray.map((testimonial) => (
-              <Card className="relative flex w-[390px] flex-col overflow-hidden rounded-[79px] bg-[#F3F4F6] p-6 shadow-md md:h-full md:w-[450px]">
+              <Card className="relative flex w-[390px] flex-col overflow-hidden rounded-[79px] bg-[#F3F4F6] p-6 shadow-md md:h-full md:w-[450px] min-[1840px]:w-[700px] min-[1840px]:h-[350px]">
                 <div className="absolute right-10 top-3">
                   <Image
                     src={testimonial.image}
