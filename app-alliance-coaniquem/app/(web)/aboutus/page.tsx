@@ -120,14 +120,7 @@ export default async function AboutUsPage() {
         <TestimonialsSection />
       </section>
 
-      <GrupoMHM />
-    </>
-  )
-}
-
-export function GrupoMHM() {
-  return (
-    <section className=" -mt-[275px]  flex flex-col items-center justify-center  gap-8 py-20 md:-mt-[500px]">
+      <section className=" -mt-[275px]  flex flex-col items-center justify-center  gap-8 py-20 md:-mt-[500px]">
       <Image
         src="/logomhm.png"
         alt="MHM1"
@@ -190,5 +183,6 @@ export function GrupoMHM() {
         />
       </div>
     </section>
+    </>
   )
 }
