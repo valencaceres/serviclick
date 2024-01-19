@@ -5,12 +5,13 @@ import styles from "./MainLayout.module.scss";
 
 import Back from "@/components/functional/navigation/Back";
 
-import { useUI, useProduct } from "@/store/hooks";
+import { useUI, useProduct, useLead } from "@/store/hooks";
 
 import { currencyFormat } from "@/utils/format";
 import Badge from "@/components/ui/Badge/Badge";
 import Head from "next/head";
 import Script from "next/script";
+import { useEffect, useState } from "react";
 
 interface Props {
   children: JSX.Element | JSX.Element[];
@@ -66,6 +67,21 @@ const Screen = ({ children }: Props) => {
 const HeaderServiClick = () => {
   const { ui } = useUI();
   const { product } = useProduct();
+  const { lead, leadIsLoading } = useLead();
+  const [badgePrice, setBadgePrice] = useState(product?.plan?.price || 0);
+  useEffect(() => {
+    if (lead?.insured[0]?.beneficiaries?.length > 0) {
+      setBadgePrice(
+        Number(
+          (
+            product?.plan?.price +
+            lead?.insured[0]?.beneficiaries?.length *
+              (product?.plan?.beneficiary_price ?? 0)
+          ).toString() || 0
+        )
+      );
+    }
+  }, [lead?.insured[0]?.beneficiaries?.length]);
 
   return (
     <div className={styles.screenHeader}>
@@ -77,7 +93,7 @@ const HeaderServiClick = () => {
       <div className={styles.right}>
         <h1>{ui.stage.name}</h1>
         {ui.stage.code !== "description" && (
-          <Badge>{currencyFormat(product?.plan.price || 0)}</Badge>
+          <Badge>{currencyFormat(badgePrice)}</Badge>
         )}
       </div>
     </div>

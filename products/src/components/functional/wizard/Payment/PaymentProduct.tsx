@@ -62,7 +62,11 @@ const PaymentProduct = ({ product, lead }: IPaymentProduct) => {
           label="Valor a pagar ($)"
           width="170px"
           value={formatAmount(
-            (product.plan.price * lead.insured.length).toString(),
+            (
+              product?.plan?.price +
+              lead.insured[0].beneficiaries.length *
+                (product?.plan?.beneficiary_price ?? 0)
+            ).toString(),
             "P"
           )}
         />
@@ -116,7 +120,11 @@ const PaymentProduct = ({ product, lead }: IPaymentProduct) => {
         label="Valor a pagar ($)"
         width="170px"
         value={formatAmount(
-          (product.plan.price * lead.insured.length).toString(),
+          (
+            product?.plan?.price +
+            lead.insured[0].beneficiaries.length *
+              (product?.plan?.beneficiary_price ?? 0)
+          ).toString(),
           "P"
         )}
       />

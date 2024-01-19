@@ -16,20 +16,7 @@ import { useProduct } from "@/store/hooks";
 const PaymentBeneficiaries = ({ lead }: any) => {
   const isDesktop = useMediaQuery({ minWidth: 1200 });
   const { setProduct, product } = useProduct();
-  useEffect(() => {
-    if (lead?.insured[0]?.beneficiaries?.length > 0) {
-      setProduct({
-        ...product,
-        plan: {
-          ...product?.plan,
-          price:
-            product?.plan?.price +
-            lead?.insured[0]?.beneficiaries.length *
-              (product?.plan?.beneficiary_price ?? 0),
-        },
-      });
-    }
-  }, [lead?.insured[0]?.beneficiaries?.length]);
+
   return (
     <Col>
       {isDesktop ? (

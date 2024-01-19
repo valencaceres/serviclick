@@ -286,20 +286,6 @@ const Beneficiary = () => {
     }
   }, [lead.id, leadIsLoading, isProcessing]);
 
-  useEffect(() => {
-    if (beneficiaries?.length > 0) {
-      setProduct({
-        ...product,
-        plan: {
-          ...product?.plan,
-          price:
-            product?.plan?.price +
-            beneficiaries?.length * (product?.plan?.beneficiary_price ?? 0),
-        },
-      });
-    }
-  }, [beneficiaries?.length]);
-
   return (
     <Body>
       <Content>
