@@ -249,7 +249,7 @@ export const AssistanceSection = ({ uniqueAssistancesArray }: any) => {
                       <TableCell className="py-6 text-center text-lg font-bold uppercase">
                         {coverage.coverage_name}
                       </TableCell>
-                      <TableCell className="py-6 text-center text-lg font-bold uppercase">
+                      <TableCell className="py-6 text-center text-2xl font-bold uppercase">
                         {coverage.coverage_amount !== "0" ? (
                           <div className="flex flex-col text-red-500">
                             <span>{coverage.coverage_amount} UF</span>
