@@ -107,7 +107,7 @@ export default async function IndexPage() {
           muted
           id="video"
         >
-          <source src="/coaniquem/herovideo.mov" type="video/mp4" />
+          <source src="/coaniquem/herovideo.mp4" type="video/mp4" />
         </video>
         <div className="z-10 w-[400px] self-end pb-12 text-center md:self-center md:pb-0 md:text-left">
           <h1

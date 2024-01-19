@@ -106,7 +106,7 @@ export const AssistanceSection = ({ uniqueAssistancesArray }: any) => {
         }
     }
   }
-  console.log(uniqueAssistancesArray[1])
+  
   return (
     <section className="flex flex-col items-center justify-center gap-32 py-10">
       {uniqueAssistancesArray
