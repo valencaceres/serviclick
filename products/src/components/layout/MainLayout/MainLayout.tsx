@@ -68,7 +68,7 @@ const HeaderServiClick = () => {
   const { ui } = useUI();
   const { product } = useProduct();
   const { lead, leadIsLoading } = useLead();
-  const [badgePrice, setBadgePrice] = useState(product?.plan?.price || 0);
+  const [badgePrice, setBadgePrice] = useState(product?.plan?.price);
   useEffect(() => {
     if (lead?.insured[0]?.beneficiaries?.length > 0) {
       setBadgePrice(
@@ -77,12 +77,12 @@ const HeaderServiClick = () => {
             product?.plan?.price +
             lead?.insured[0]?.beneficiaries?.length *
               (product?.plan?.beneficiary_price ?? 0)
-          ).toString() || 0
+          ).toString()
         )
       );
     }
   }, [lead?.insured[0]?.beneficiaries?.length]);
-
+  console.log(product);
   return (
     <div className={styles.screenHeader}>
       <div className={styles.left}>
@@ -93,7 +93,21 @@ const HeaderServiClick = () => {
       <div className={styles.right}>
         <h1>{ui.stage.name}</h1>
         {ui.stage.code !== "description" && (
-          <Badge>{currencyFormat(badgePrice)}</Badge>
+          <Badge>
+            {currencyFormat(
+              isNaN(
+                product?.plan?.price +
+                  lead.insured[0]?.beneficiaries?.length *
+                    (product?.plan?.beneficiary_price ?? 0)
+              )
+                ? product?.plan?.price
+                : Number(
+                    product?.plan?.price +
+                      lead.insured[0]?.beneficiaries?.length *
+                        (product?.plan?.beneficiary_price ?? 0)
+                  )
+            )}
+          </Badge>
         )}
       </div>
     </div>

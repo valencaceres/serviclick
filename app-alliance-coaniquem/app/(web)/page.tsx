@@ -3,10 +3,6 @@ import "swiper/css/navigation"
 import { Metadata } from "next"
 
 import { AssistanceSection } from "@/components/functional/assistance-section"
-import { Alliances } from "@/components/functional/home/alliances"
-import { Clients } from "@/components/functional/home/clients"
-import { HeroCarousel } from "@/components/functional/home/hero-carousel"
-import { News } from "@/components/functional/home/news"
 
 export const metadata: Metadata = {
   title: {
@@ -95,8 +91,33 @@ export default async function IndexPage() {
   const uniqueAssistancesArray = Object.values(uniqueAssistances)
   return (
     <>
-      <section className="relative flex h-[250px] items-center font-bebas md:h-[550px]">
-        <HeroCarousel />
+      <section className="relative flex h-[500px] items-center px-20">
+        <video
+          style={{
+            objectFit: "cover",
+            width: "100%",
+            height: "100%",
+            position: "absolute",
+            objectPosition: "top",
+            top: 0,
+            left: 0,
+          }}
+          autoPlay
+          loop
+          muted
+          id="video"
+        >
+          <source src="/coaniquem/herovideo.mov" type="video/mp4" />
+        </video>
+        <div className="z-10 w-[400px] self-end pb-12 text-center md:self-center md:pb-0 md:text-left">
+          <h1
+            className="font-bebas text-6xl uppercase text-background"
+            style={{ display: "flex", flexDirection: "column" }}
+          >
+            <span>CUIDA DE TI,</span>
+            <span>CUIDA DE ELLOS</span>
+          </h1>
+        </div>
       </section>
       <section className="container flex flex-col items-center justify-center pb-20">
         <div className="flex flex-col gap-8 py-4 md:pb-10 md:pt-20">

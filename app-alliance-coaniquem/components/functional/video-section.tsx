@@ -5,7 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 
 export const HeroCarousel = ({ suscriptions }: any) => {
-  const videoProgress = Array.isArray(suscriptions) ? suscriptions.length : 0
+  const videoProgress = 1000000 /* Array.isArray(suscriptions) ? suscriptions.length : 0 */
 
   const videoRef = useRef<HTMLVideoElement | null>(null)
 
@@ -59,6 +59,7 @@ export const HeroCarousel = ({ suscriptions }: any) => {
               left: 0,
             }}
             autoPlay
+            loop
             muted
             id="video"
           >

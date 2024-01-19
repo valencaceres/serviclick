@@ -11,7 +11,8 @@ export const ConnectionMoments = () => {
   const [shouldClick, setShouldClick] = useState(true)
 
   return (
-    <section className="w-full  py-12 md:py-24 lg:py-32">
+    <section className="relative w-full py-12  md:py-24 lg:py-32">
+      <div className="z-0 h-[150px]  w-full bg-slate-200 md:h-[250px]"></div>
       <motion.div
         initial={{
           opacity: 0,
@@ -24,11 +25,13 @@ export const ConnectionMoments = () => {
           transition: { delay: 1 * 0.1 },
           y: 0,
         }}
-        transition={{ duration: 0.75 }}
-        className="mx-auto w-full bg-slate-400"
+        transition={{
+          duration: 0.75,
+        }}
+        className="relative -top-[170px] z-10 mx-auto w-full md:-top-[300px] "
       >
         <SideScroll setShouldClick={setShouldClick}>
-          <div className="flex gap-4">
+          <div className=" flex h-[200px] gap-4 px-8 md:h-[350px]">
             <Image
               src="/connection-moments/1.png"
               alt="momentos de conexion"

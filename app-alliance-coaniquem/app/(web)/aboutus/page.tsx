@@ -5,6 +5,7 @@ import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
 import { ConnectionMoments } from "@/components/functional/connectionmoments"
+import { TestimonialsSection } from "@/components/functional/testimonials"
 import { HeroCarousel } from "@/components/functional/video-section"
 
 export const metadata: Metadata = {
@@ -52,7 +53,6 @@ export default async function AboutUsPage() {
             doble razón para unirte
           </h1>
         </div>
-        <div className="z-5 absolute right-0 top-0 h-full w-full bg-black bg-opacity-30"></div>
       </section>
 
       <section className="container flex flex-col items-start justify-center  py-12 pb-20">
@@ -107,9 +107,19 @@ export default async function AboutUsPage() {
           </h2>
           <div className="h-4 w-1/4 rounded-l-full border-l border-white bg-red-500  md:w-full" />
         </div>
+
+        <ConnectionMoments />
+      </section>
+      <section className="  -mt-[200px] w-full py-12  md:-mt-[500px] md:py-24 lg:py-32">
+        <div className="flex items-center justify-center">
+          <h2 className=" w-full  text-center text-2xl font-semibold md:text-4xl">
+            Testimonios
+          </h2>
+        </div>
+
+        <TestimonialsSection />
       </section>
 
-      <ConnectionMoments />
       <GrupoMHM />
     </>
   )
@@ -117,9 +127,17 @@ export default async function AboutUsPage() {
 
 export function GrupoMHM() {
   return (
-    <section className="flex flex-col items-center justify-center gap-8 py-20">
-      <h1 className="text-center font-bebas text-4xl uppercase">Grupo MHM</h1>
-      <div className="flex w-full max-w-5xl flex-wrap items-center justify-center">
+    <section className=" -mt-[275px]  flex flex-col items-center justify-center  gap-8 py-20 md:-mt-[500px]">
+      <Image
+        src="/logomhm.png"
+        alt="MHM1"
+        width={300}
+        height={80}
+        loading="lazy"
+        quality={100}
+        unoptimized
+      />
+      <div className="flex w-full max-w-5xl  flex-wrap items-center justify-center gap-4">
         <Image
           src="/mhm1.png"
           alt="MHM1"
@@ -164,14 +182,6 @@ export function GrupoMHM() {
         />
         <Image
           src="/mhm6.png"
-          alt="MHM5"
-          width={300}
-          height={80}
-          loading="lazy"
-          unoptimized
-        />
-        <Image
-          src="/mhm7.png"
           alt="MHM5"
           width={300}
           height={80}
