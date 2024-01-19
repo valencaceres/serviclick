@@ -198,7 +198,7 @@ export const AssistanceSection = ({ uniqueAssistancesArray }: any) => {
                       "fb36d896-5c12-41ca-b99e-1d0b3aa85a08",
                     ].includes(coverage.assistance_id)
                   )
-                  ?.slice(0, 6)
+             
                   ?.map((coverage: any) => {
                     const { name, image } = getCustomCoverageInfo(coverage)
 
