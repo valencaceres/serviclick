@@ -4,6 +4,7 @@ import Image from "next/image"
 import AssistanceSuggestionForm from "@/components/functional/people/assistance-suggestion-form"
 import Faq from "@/components/functional/people/faq"
 import { Interests } from "@/components/functional/people/interests"
+import Mainteance from "@/components/functional/maintenance"
 
 export const metadata: Metadata = {
   title: {
@@ -43,6 +44,13 @@ export default async function PeoplePage() {
     }
     return false
   })
+
+  if (!Array.isArray(families) || families.length === 0){
+    return (
+      <Mainteance />
+      )
+  }
+
   return (
     <>
       <section className="relative flex h-[550px] items-center px-20">

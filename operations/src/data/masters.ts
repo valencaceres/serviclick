@@ -110,3 +110,21 @@ export const reimbursementActions = [
     name: "Rechazar reembolso",
   },
 ];
+
+export const  monthTranslations: Record<string, string> = {
+  'Hoy': 'Hoy',
+  'Esta semana': 'Esta semana',
+  'January': 'Enero',
+  'February': 'Febrero',
+  'March': 'Marzo',
+  'April': 'Abril',
+  'May': 'Mayo',
+  'June': 'Junio',
+  'July': 'Julio',
+  'August': 'Agosto',
+  'September': 'Septiembre',
+  'October': 'Octubre',
+  'November': 'Noviembre',
+  'December': 'Diciembre',
+  'All': 'Todos'
+};

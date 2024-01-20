@@ -33,42 +33,7 @@ const config = {
   waitForConnections: true,
   connectionLimit: 100,
   queueLimit: 0,
-  reveniu: {
-    URL: {
-      plan: `https://${environment["prod"].domain}/api/v1/plans/`,
-      subscription: `https://${environment["prod"].domain}/api/v1/subscriptions/`,
-    },
-    apiKey: {
-      "Reveniu-Secret-Key":
-        environment["prod"].secretKey || "EuG-6eULAwlqRRaLLi9HUcLSbO4I-ipd60zY",
-    },
-    feedbackURL: {
-      success:
-        environment["prod"].feedBack.success ||
-        "http://localhost:3000/resume/success",
-      error:
-        environment["prod"].feedBack.error ||
-        "http://localhost:3000/resume/error",
-    },
-  },
-  email: {
-    URL: {
-      send: "https://api-email.serviclick.cl/api/email/send",
-    },
-    apiKey: { id: "12345678" },
-  },
-  pdf: {
-    URL: {
-      contract: "https://api-pdf.serviclick.cl/api/document/contract",
-      annex: "https://api-pdf.serviclick.cl/api/document/annex",
-    },
-    apiKey: { id: "97689458-b21c-4abf-9bb3-a05ac52b4791" },
-  },
-  webHook: {
-    URL: {
-      reveniu: environment["prod"].feedBack.webHook,
-    },
-  },
+ 
 };
 
 export default config;

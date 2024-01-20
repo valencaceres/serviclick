@@ -24,6 +24,7 @@ const useCustomer = () => {
     reset: resetCustomer,
     getContractorById,
     selectProduct,
+    resetContractor,
   } = customerStore();
 
   return {
@@ -38,6 +39,7 @@ const useCustomer = () => {
     getContractorById,
     selectProduct,
     resetCustomer,
+    resetContractor
   };
 };
 

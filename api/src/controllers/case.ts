@@ -1,6 +1,6 @@
 import createLogger from "../util/logger";
 import { getFileViewLink, uploadFile } from "../util/s3";
-
+import  xlsx from "xlsx";
 import * as Case from "../models/case";
 import * as CaseStage from "../models/caseStage";
 import * as CaseStageAttach from "../models/caseStageAttach";
@@ -13,6 +13,7 @@ import * as Insured from "../models/insured";
 import * as Beneficiary from "../models/beneficiary";
 import * as Customer from "../models/customer";
 import { fetchClerkUser } from "../util/clerkUserData";
+import format from "date-fns/format";
 
 const create = async (req: any, res: any) => {
   const {
@@ -972,7 +973,6 @@ const updateReimbursment = async (req: any, res: any) => {
     amount,
     comment
   );
-  console.log(req.body);
   if (!reimbursmentsResponse.success) {
     createLogger.error({
       model: `reimbursment/update`,
@@ -988,6 +988,182 @@ const updateReimbursment = async (req: any, res: any) => {
 
   return res.status(200).json(reimbursmentsResponse);
 };
+
+const getAllExports = async (req: any, res: any) => {
+  const { retail_id, case_date, event_date, records, page } =
+    req.query;
+
+  const caseResponse = await Case.getAllExports(
+    retail_id,
+    case_date,
+    event_date,
+    records,
+    page,
+   false
+  );
+
+  if (!caseResponse.success) {
+    createLogger.error({
+      model: `case/getAllExports`,
+      error: caseResponse.error,
+    });
+    return res.status(500).json({ error: "Error retrieving cases" });
+  }
+
+  createLogger.info({
+    model: `case/getAllExports`,
+    message: `Cases retrieved successfully`,
+  });
+
+  return res.status(200).json(caseResponse.data);
+};
+const getCaseDates = async (req: any, res: any) => {
+
+  const caseResponse = await Case.getCaseDates();
+
+  if (!caseResponse.success) {
+    createLogger.error({
+      model: `case/getCaseDates`,
+      error: caseResponse.error,
+    });
+    return res.status(500).json({ error: "Error retrieving dates" });
+  }
+
+  createLogger.info({
+    model: `case/getCaseDates`,
+    message: `dates retrieved successfully`,
+  });
+
+  return res.status(200).json(caseResponse.data);
+};
+
+const exportCases = async (req:any, res:any) => {
+  try {
+
+    const { retail_id, case_date, event_date, records, page } = req.query;
+    const caseResponse = await Case.getAllExports(
+      retail_id,
+      case_date, event_date,
+      records,
+      page,
+      true
+    );
+    if (caseResponse && caseResponse.data.data && caseResponse.data.data.length > 0) {
+      const groupedData = groupCasesByRetailName(caseResponse.data.data);
+  
+      const workbook = xlsx.utils.book_new();
+  
+      for (const retailName in groupedData) {
+          if (groupedData.hasOwnProperty(retailName)) {
+            
+              const dataForExcel = (groupedData[retailName] as any[]).map((caseItem) => {
+                const formattedDiscount = caseItem.register_imedamount ? formatCurrency(caseItem.register_imedamount) : '-';
+                const formattedReimbursement = caseItem.register_amount ? formatCurrency(caseItem.register_amount) : '-';
+                const formattedDate = formatDate(caseItem.createddate);
+                const formattedBirthdate = formatDate(caseItem.applicant_birthdate);
+
+                return {
+                      'CODIGO ASISTENCIA': caseItem.product_name,
+                      'N° CASO': caseItem.number,
+                      'N° POLIZA': caseItem.policy_id,
+                      'RUT ASEGURADO': caseItem.applicant_rut,
+                      'FECHA DE ATENCION': formattedDate,
+                      'BENEFICIARIO': caseItem.applicant_relationship,
+                      'NACIMIENTO': formattedBirthdate,
+                      'TIPO DE ATENCION': caseItem.assistance_name,
+                      'MONTO DE REEMBOLSO': formattedReimbursement,
+                      'DESCUENTO POR I-MED': formattedDiscount,
+                      'REGION': caseItem.applicant_district,
+                      'CONTACTO': caseItem.applicant_phone,
+                  };
+              });
+  
+              const worksheet = xlsx.utils.json_to_sheet(dataForExcel);
+              centerTextInWorksheet(worksheet);
+              xlsx.utils.book_append_sheet(workbook, worksheet, retailName);
+  
+              const colWidths = [
+                  { wpx: 200 }, 
+                  { wpx: 50 },
+                  { wpx: 75 },
+                  { wpx: 100 },
+                  { wpx: 110 },
+                  { wpx: 100 },
+                  { wpx: 100 },
+                  { wpx: 200 },
+                  { wpx: 150 },
+                  { wpx: 150 },
+                  { wpx: 100 },
+                  { wpx: 100 },
+                  { wpx: 100 },
+                  { wpx: 100 },
+                  { wpx: 100 }
+              
+              ];
+  
+              worksheet['!cols'] = colWidths;
+          }
+      }
+  
+      const excelBuffer = xlsx.write(workbook, { bookType: 'xlsx', type: 'buffer' });
+  
+      res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
+      res.setHeader('Content-Disposition', 'attachment; filename=casos.xlsx');
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8');
+      res.send(excelBuffer);
+  } else {
+      return res.status(404).json({ error: "there is no cases to export." });
+    }
+  } catch (error) {
+    createLogger.error({
+      model: 'case/exportCases',
+      error: error,
+    });
+    return res.status(500).json({ error: "Error retrieving case." });
+  }
+};
+function groupCasesByRetailName(cases: any) {
+  const groupedData: { [key: string]: any[] } = {};
+
+  cases.forEach((caseItem:any) => {
+      const retailName = caseItem.retail_name || 'No Retail'; 
+      if (!groupedData[retailName]) {
+          groupedData[retailName] = [];
+      }
+      groupedData[retailName].push(caseItem);
+  });
+
+  return groupedData;
+}
+const formatDate = (dateString: string) => {
+  try {
+      const date = new Date(dateString);
+      return format(date, 'dd-MM-yyyy');
+  } catch (error) {
+      return  `Error formateando fecha ${dateString} `;
+  }
+};
+function centerTextInWorksheet(worksheet: any) {
+  const range = xlsx.utils.decode_range(worksheet['!ref']);
+  
+  for (let R = range.s.r; R <= range.e.r; ++R) {
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+          const cell_address = { c: C, r: R };
+          const cell_ref = xlsx.utils.encode_cell(cell_address);
+          const cell = worksheet[cell_ref];
+          if (cell && cell.t === 's') {
+              if (!cell.s) cell.s = {};
+              cell.s.alignment = { horizontal: 'center', vertical: 'center', wrapText: true };
+          } else {
+              worksheet[cell_ref] = { ...cell, s: { alignment: { horizontal: 'center', vertical: 'center', wrapText: true } } };
+          }
+      }
+  }
+}
+function formatCurrency(amount: number | string) {
+  const numericAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
+  return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(numericAmount);
+}
 
 export {
   create,
@@ -1008,6 +1184,7 @@ export {
   getAllReimbursements,
   updateReimbursementStatus,
   createChatMessage,
+  getAllExports,
   getChatByCase,
   getStatistics,
   createCaseSummary,
@@ -1018,4 +1195,6 @@ export {
   getStatus,
   updateReimbursment,
   getAllReimbursments,
+  getCaseDates,
+  exportCases
 };

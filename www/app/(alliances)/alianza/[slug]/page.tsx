@@ -12,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import Mainteance from "@/components/functional/maintenance"
 
 let meta: Metadata
 
@@ -100,6 +101,11 @@ export default async function Page({ params }: { params: { slug: string } }) {
       shortcut: "/favicon-16x16.png",
       apple: "/apple-touch-icon.png",
     },
+  }
+  if (!Array.isArray(families) || families.length === 0){
+    return (
+      <Mainteance />
+      )
   }
   return (
     <>

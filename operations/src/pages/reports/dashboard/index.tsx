@@ -21,7 +21,7 @@ import {
   CardTitle,
 } from "~/components/ui/Card";
 import { WalletIcon } from "lucide-react";
-import { useQueryCase } from "../../hooks/query";
+import { useQueryCase } from "../../../hooks/query";
 const formatToCurrency = (value: number) => {
   return value.toLocaleString("es-CL", {
     style: "currency",
