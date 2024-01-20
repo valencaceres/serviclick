@@ -7,6 +7,7 @@ import { AssistancesCarousel } from "@/components/functional/home/assistances-ca
 import { Clients } from "@/components/functional/home/clients"
 import { HeroCarousel } from "@/components/functional/home/hero-carousel"
 import { News } from "@/components/functional/home/news"
+import Mainteance from "@/components/functional/maintenance"
 
 export const metadata: Metadata = {
   title: {
@@ -57,6 +58,13 @@ export default async function IndexPage() {
   const news = await responseNews.json()
   const hero = await responseHero.json()
   const categories = await responseCategories.json()
+
+    if (!Array.isArray(categories) || categories.length === 0){
+      return (
+        <Mainteance />
+        )
+    }
+
   return (
     <>
       <section className="relative flex h-[250px] items-center font-bebas md:h-[550px]">
@@ -120,4 +128,5 @@ export default async function IndexPage() {
       </section>
     </>
   )
+
 }

@@ -33,7 +33,8 @@ const CasePage = () => {
     isLoading,
     getRetails,
     retailsList,
-    list: caseList
+    list: caseList,
+    exportCases
    
   } = useExportCase();
   const {  
@@ -58,6 +59,16 @@ const CasePage = () => {
 
   const handleClickSearch = () => {
     getAll(
+      filters.retail_id,
+      filters.case_date,
+      filters.event_date,
+      filters.records,
+      1
+    );
+  };
+
+  const handleExport = async () => {
+    exportCases(
       filters.retail_id,
       filters.case_date,
       filters.event_date,
@@ -126,8 +137,8 @@ const CasePage = () => {
       />
       <FloatMenu>
         <ButtonIcon iconName="home" onClick={handleClickHome} />
-        <ButtonIcon iconName="refresh" onClick={handleClickRefresh} />
-        <ButtonIcon iconName="add" onClick={handleClickNew} />
+        <ButtonIcon  disabled={filters.retail_id === "" || (filters.case_date === "" && filters.event_date === "")} iconName="refresh" onClick={handleClickRefresh} />
+        <ButtonIcon disabled={filters.retail_id === "" || (filters.case_date === "" && filters.event_date === "")} iconName="cloud_upload" loading={isLoading} onClick={handleExport}  />
       </FloatMenu>
     </Fragment>
   );

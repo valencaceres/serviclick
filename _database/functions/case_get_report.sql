@@ -1,15 +1,8 @@
--- DROP FUNCTION app.case_get_report;
+-- DROP FUNCTION app.case_get_report(uuid, varchar, varchar, int4, int4, bool);
 
-CREATE OR REPLACE FUNCTION app.case_get_report(
-    p_retail_id uuid,
-    p_date_case character varying DEFAULT NULL::character varying,
-    p_date_event character varying DEFAULT NULL::character varying,
-    p_records integer DEFAULT NULL::integer,
-    p_page integer DEFAULT NULL::integer,
-    p_export boolean DEFAULT false
-)
-RETURNS json
-LANGUAGE plpgsql
+CREATE OR REPLACE FUNCTION app.case_get_report(p_retail_id uuid, p_date_case character varying DEFAULT NULL::character varying, p_date_event character varying DEFAULT NULL::character varying, p_records integer DEFAULT NULL::integer, p_page integer DEFAULT NULL::integer, p_export boolean DEFAULT false)
+ RETURNS json
+ LANGUAGE plpgsql
 AS $function$
 DECLARE
     p_cases  int;
@@ -26,23 +19,48 @@ BEGIN
         INNER JOIN app.stage sta ON cas.stage_id = sta.id
         LEFT OUTER JOIN app.beneficiary ben ON cas.beneficiary_id = ben.id
         LEFT OUTER JOIN app.retail ret ON cas.retail_id = ret.id
-    WHERE
-        ((p_retail_id IS NULL) OR (lea.agent_id = p_retail_id)) AND
-        (
-            ((p_date_case IS NULL) AND (p_date_event IS NULL))
-            OR
-            (
-                (p_date_case IS NOT NULL) AND (TO_CHAR(cas.createddate, 'YYYY-MM') = p_date_case)
-                AND
-                (p_date_event IS NULL)
-            )
-            OR
-            (
-                (p_date_event IS NOT NULL) AND (TO_CHAR(cas.event_date, 'YYYY-MM') = p_date_event)
-                AND
-                (p_date_case IS NULL)
-            )
-        );
+ WHERE
+            ((p_retail_id IS NULL) OR (lea.agent_id = p_retail_id)) AND
+               (
+                     (
+    (p_date_case IS NULL) 
+    AND (p_date_event IS NULL OR p_date_event IN ('Todos', 'Hoy', 'Esta semana'))
+)  OR
+(
+    (
+        p_date_case = 'Todos'
+        OR (
+            p_date_case = 'Hoy' 
+            AND TO_CHAR(cas.createddate, 'YYYY-MM-DD') = TO_CHAR(NOW(), 'YYYY-MM-DD')
+        )
+        OR (
+            p_date_case = 'Esta semana' 
+            AND TO_CHAR(cas.createddate, 'IYYY-IW') = TO_CHAR(NOW(), 'IYYY-IW')
+        )
+        OR TO_CHAR(cas.createddate, 'YYYY-MM') = p_date_case
+    ) 
+    AND
+    (p_date_event IS NULL OR p_date_event IN ('Todos', 'Hoy', 'Esta semana'))
+)
+OR
+(
+    (
+        p_date_event = 'Todos'
+        OR (
+            p_date_event = 'Hoy' 
+            AND TO_CHAR(cas.event_date, 'YYYY-MM-DD') = TO_CHAR(NOW(), 'YYYY-MM-DD')
+        )
+        OR (
+            p_date_event = 'Esta semana' 
+            AND TO_CHAR(cas.event_date, 'IYYY-IW') = TO_CHAR(NOW(), 'IYYY-IW')
+        )
+        OR TO_CHAR(cas.event_date, 'YYYY-MM') = p_date_event
+    ) 
+    AND
+    (p_date_case IS NULL)
+)
+                );
+
 
   IF p_export THEN
     SELECT JSON_BUILD_OBJECT(
@@ -110,19 +128,43 @@ BEGIN
             WHERE
                 ((p_retail_id IS NULL) OR (lea.agent_id = p_retail_id)) AND
                 (
-                    ((p_date_case IS NULL) AND (p_date_event IS NULL))
-                    OR
-                    (
-                        (p_date_case IS NOT NULL) AND (TO_CHAR(cas.createddate, 'YYYY-MM') = p_date_case)
-                        AND
-                        (p_date_event IS NULL)
-                    )
-                    OR
-                    (
-                        (p_date_event IS NOT NULL) AND (TO_CHAR(cas.event_date, 'YYYY-MM') = p_date_event)
-                        AND
-                        (p_date_case IS NULL)
-                    )
+                     (
+    (p_date_case IS NULL) 
+    AND (p_date_event IS NULL OR p_date_event IN ('Todos', 'Hoy', 'Esta semana'))
+)  OR
+(
+    (
+        p_date_case = 'Todos'
+        OR (
+            p_date_case = 'Hoy' 
+            AND TO_CHAR(cas.createddate, 'YYYY-MM-DD') = TO_CHAR(NOW(), 'YYYY-MM-DD')
+        )
+        OR (
+            p_date_case = 'Esta semana' 
+            AND TO_CHAR(cas.createddate, 'IYYY-IW') = TO_CHAR(NOW(), 'IYYY-IW')
+        )
+        OR TO_CHAR(cas.createddate, 'YYYY-MM') = p_date_case
+    ) 
+    AND
+    (p_date_event IS NULL OR p_date_event IN ('Todos', 'Hoy', 'Esta semana'))
+)
+OR
+(
+    (
+        p_date_event = 'Todos'
+        OR (
+            p_date_event = 'Hoy' 
+            AND TO_CHAR(cas.event_date, 'YYYY-MM-DD') = TO_CHAR(NOW(), 'YYYY-MM-DD')
+        )
+        OR (
+            p_date_event = 'Esta semana' 
+            AND TO_CHAR(cas.event_date, 'IYYY-IW') = TO_CHAR(NOW(), 'IYYY-IW')
+        )
+        OR TO_CHAR(cas.event_date, 'YYYY-MM') = p_date_event
+    ) 
+    AND
+    (p_date_case IS NULL)
+)
                 )
             ORDER BY
                 cas.number DESC
@@ -175,22 +217,48 @@ BEGIN
                 INNER JOIN app.stage sta ON cas.stage_id = sta.id
                 LEFT OUTER JOIN app.beneficiary ben ON cas.beneficiary_id = ben.id
                 LEFT OUTER JOIN app.retail ret ON cas.retail_id = ret.id
+                  LEFT OUTER JOIN app.broker bro ON cas.retail_id = bro.id
+            LEFT OUTER JOIN app.agent age ON cas.retail_id = age.id
             WHERE
                 ((p_retail_id IS NULL) OR (lea.agent_id = p_retail_id)) AND
-                (
-                    ((p_date_case IS NULL) AND (p_date_event IS NULL))
-                    OR
-                    (
-                        (p_date_case IS NOT NULL) AND (TO_CHAR(cas.createddate, 'YYYY-MM') = p_date_case)
-                        AND
-                        (p_date_event IS NULL)
-                    )
-                    OR
-                    (
-                        (p_date_event IS NOT NULL) AND (TO_CHAR(cas.event_date, 'YYYY-MM') = p_date_event)
-                        AND
-                        (p_date_case IS NULL)
-                    )
+               (
+                     (
+    (p_date_case IS NULL) 
+    AND (p_date_event IS NULL OR p_date_event IN ('Todos', 'Hoy', 'Esta semana'))
+)  OR
+(
+    (
+        p_date_case = 'Todos'
+        OR (
+            p_date_case = 'Hoy' 
+            AND TO_CHAR(cas.createddate, 'YYYY-MM-DD') = TO_CHAR(NOW(), 'YYYY-MM-DD')
+        )
+        OR (
+            p_date_case = 'Esta semana' 
+            AND TO_CHAR(cas.createddate, 'IYYY-IW') = TO_CHAR(NOW(), 'IYYY-IW')
+        )
+        OR TO_CHAR(cas.createddate, 'YYYY-MM') = p_date_case
+    ) 
+    AND
+    (p_date_event IS NULL OR p_date_event IN ('Todos', 'Hoy', 'Esta semana'))
+)
+OR
+(
+    (
+        p_date_event = 'Todos'
+        OR (
+            p_date_event = 'Hoy' 
+            AND TO_CHAR(cas.event_date, 'YYYY-MM-DD') = TO_CHAR(NOW(), 'YYYY-MM-DD')
+        )
+        OR (
+            p_date_event = 'Esta semana' 
+            AND TO_CHAR(cas.event_date, 'IYYY-IW') = TO_CHAR(NOW(), 'IYYY-IW')
+        )
+        OR TO_CHAR(cas.event_date, 'YYYY-MM') = p_date_event
+    ) 
+    AND
+    (p_date_case IS NULL)
+)
                 )
             ORDER BY
                 cas.number DESC
@@ -203,4 +271,5 @@ BEGIN
 
     RETURN json_cases;
 END;
-$function$;
+$function$
+;

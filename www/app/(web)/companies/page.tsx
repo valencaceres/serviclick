@@ -4,6 +4,7 @@ import AssistanceQuoteForm from "@/components/functional/companies/assistance-qu
 import { Details } from "@/components/functional/companies/details"
 
 import { GrupoMHM } from "../aboutus/page"
+import Mainteance from "@/components/functional/maintenance"
 
 export const metadata: Metadata = {
   title: {
@@ -34,7 +35,11 @@ export default async function CompaniesPage() {
     }
   )
   const families = await responseFamilies.json()
-
+  if (!Array.isArray(families) || families.length === 0){
+    return (
+      <Mainteance />
+      )
+  }
   let uniqueFamilyNames = new Set()
   let uniqueFamilies = families.filter((family: { family_name: unknown }) => {
     if (!uniqueFamilyNames.has(family.family_name)) {
@@ -43,7 +48,7 @@ export default async function CompaniesPage() {
     }
     return false
   })
-
+  
   return (
     <>
       <section className="relative h-[550px] flex items-center px-20">

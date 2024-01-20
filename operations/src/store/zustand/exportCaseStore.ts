@@ -92,27 +92,35 @@ export const caseExportStore = create<caseState>((set) => ({
     page: number,
   ) => {
     try {
+
       set((state) => ({ ...state, isLoading: true }));
-
-      const formattedCaseDate = case_date
-        ? `${new Date(case_date).getFullYear()}-${(new Date(case_date).getMonth() + 1)
+      const cleanCaseDate = case_date.trim();
+      const cleanEventDate = event_date.trim();
+  
+      const formattedCaseDate = ["Todos", "Hoy", "Esta semana"].includes(cleanCaseDate)
+      ? cleanCaseDate 
+      : cleanCaseDate 
+        ? `${new Date(cleanCaseDate).getFullYear()}-${(new Date(cleanCaseDate).getMonth() + 1)
             .toString()
             .padStart(2, "0")}`
         : "";
-
-      const formattedEventDate = event_date
-        ? `${new Date(event_date).getFullYear()}-${(new Date(event_date).getMonth() + 1)
+    const formattedEventDate = ["Todos", "Hoy", "Esta semana"].includes(cleanEventDate)
+      ? cleanEventDate 
+      : cleanEventDate 
+        ? `${new Date(cleanEventDate).getFullYear()}-${(new Date(cleanEventDate).getMonth() + 1)
             .toString()
             .padStart(2, "0")}`
         : "";
+    
+      const retailIdParam = retail_id === "Todos" ? "" :  retail_id;
 
-      const params = {
-        retail_id: retail_id,
-        case_date: formattedCaseDate,
-        event_date: formattedEventDate,
-        records,
-        page,
-      };
+    const params = {
+      retail_id: retailIdParam,
+      case_date: formattedCaseDate,
+      event_date: formattedEventDate,
+      records,
+      page,
+    };
 
       const queryParams = Object.entries(params)
         .filter(([_, value]) => value !== "")
@@ -168,20 +176,28 @@ if (response && response.data && response.data.byteLength > 0) {
     try {
       set((state) => ({ ...state, isLoading: true }));
 
-      const formattedCaseDate = case_date
-      ? `${new Date(case_date).getFullYear()}-${(new Date(case_date).getMonth() + 1)
-          .toString()
-          .padStart(2, "0")}`
-      : "";
-
-    const formattedEventDate = event_date
-      ? `${new Date(event_date).getFullYear()}-${(new Date(event_date).getMonth() + 1)
-          .toString()
-          .padStart(2, "0")}`
-      : "";
+      const cleanCaseDate = case_date.trim();
+      const cleanEventDate = event_date.trim();
+  
+      const formattedCaseDate = ["Todos", "Hoy", "Esta semana"].includes(cleanCaseDate)
+      ? cleanCaseDate 
+      : cleanCaseDate 
+        ? `${new Date(cleanCaseDate).getFullYear()}-${(new Date(cleanCaseDate).getMonth() + 1)
+            .toString()
+            .padStart(2, "0")}`
+        : "";
+    const formattedEventDate = ["Todos", "Hoy", "Esta semana"].includes(cleanEventDate)
+      ? cleanEventDate 
+      : cleanEventDate 
+        ? `${new Date(cleanEventDate).getFullYear()}-${(new Date(cleanEventDate).getMonth() + 1)
+            .toString()
+            .padStart(2, "0")}`
+        : "";
+    
+      const retailIdParam = retail_id === "Todos" ? "" :  retail_id;
 
     const params = {
-      retail_id: retail_id,
+      retail_id: retailIdParam,
       case_date: formattedCaseDate,
       event_date: formattedEventDate,
       records,
