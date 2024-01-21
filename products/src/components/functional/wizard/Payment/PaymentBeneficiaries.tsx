@@ -10,9 +10,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/Table";
+import { useEffect } from "react";
+import { useProduct } from "@/store/hooks";
 
 const PaymentBeneficiaries = ({ lead }: any) => {
   const isDesktop = useMediaQuery({ minWidth: 1200 });
+  const { setProduct, product } = useProduct();
 
   return (
     <Col>

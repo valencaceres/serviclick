@@ -110,6 +110,7 @@ const getProductById: any = async (id: string) => {
               pla.discount_type,
               pla.discount_percent,
               pla.discount_cicles,
+              pla.beneficiary_price as beneficiary_price,
               asi.id as assistance_id,
               asi.name as assistance_name,
               pas.amount,

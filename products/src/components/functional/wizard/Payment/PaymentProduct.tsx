@@ -62,7 +62,17 @@ const PaymentProduct = ({ product, lead }: IPaymentProduct) => {
           label="Valor a pagar ($)"
           width="170px"
           value={formatAmount(
-            (product.plan.price * lead.insured.length).toString(),
+            !isNaN(
+              (product?.plan?.price || 0) +
+                (lead?.insured[0]?.beneficiaries?.length || 0) *
+                  (product?.plan?.beneficiary_price || 0)
+            )
+              ? (
+                  (product?.plan?.price || 0) +
+                  (lead?.insured[0]?.beneficiaries?.length || 0) *
+                    (product?.plan?.beneficiary_price || 0)
+                ).toString()
+              : (product?.plan?.price || 0).toString(),
             "P"
           )}
         />
@@ -116,7 +126,17 @@ const PaymentProduct = ({ product, lead }: IPaymentProduct) => {
         label="Valor a pagar ($)"
         width="170px"
         value={formatAmount(
-          (product.plan.price * lead.insured.length).toString(),
+          !isNaN(
+            (product?.plan?.price || 0) +
+              (lead?.insured[0]?.beneficiaries?.length || 0) *
+                (product?.plan?.beneficiary_price || 0)
+          )
+            ? (
+                (product?.plan?.price || 0) +
+                (lead?.insured[0]?.beneficiaries?.length || 0) *
+                  (product?.plan?.beneficiary_price || 0)
+              ).toString()
+            : (product?.plan?.price || 0).toString(),
           "P"
         )}
       />

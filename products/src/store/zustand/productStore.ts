@@ -33,6 +33,7 @@ const initialData: IProduct = {
   dueDay: 0,
   plan: {
     id: "",
+    beneficiary_price: 0, 
     createDate: "",
     productId: "",
     planId: 0,

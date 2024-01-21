@@ -110,7 +110,8 @@ const Contractor = () => {
           text="Registrar"
           onClick={handleClickRegister}
           width="200px"
-          enabled={completedForm}></Button>
+          enabled={completedForm}
+        ></Button>
       </Footer>
       {leadIsLoading && <Loading />}
       <Tooltip>
