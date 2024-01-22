@@ -1,13 +1,10 @@
-import { useEffect, useRef, useState } from "react"
 import { Metadata } from "next"
 import Image from "next/image"
-import Link from "next/link"
 
-import { Button } from "@/components/ui/button"
 import { ConnectionMoments } from "@/components/functional/connectionmoments"
 import { TestimonialsSection } from "@/components/functional/testimonials"
 import { HeroCarousel } from "@/components/functional/video-section"
-
+import { config } from "@/utils/config"
 export const metadata: Metadata = {
   title: {
     default: "Sobre nosotros",
@@ -27,11 +24,11 @@ export const metadata: Metadata = {
 
 export default async function AboutUsPage() {
   const responseSuscriptions = await fetch(
-    process.env.API_URL! +
+    config.server! +
       "/api/product/getSuscriptionsByAgentId/3abd9e95-4883-46bb-aaa9-c00e221cfd0b",
     {
       headers: {
-        id: process.env.API_KEY!,
+        id: config.apiKey!,
       },
       cache: "no-store",
     }
