@@ -60,7 +60,6 @@ const CaseApplicant = ({
     phone: true,
     email: true,
   });
-  console.log(caseValue);
   const checkCompleteFields = () => {
     const applicant =
       caseValue?.type === "I"

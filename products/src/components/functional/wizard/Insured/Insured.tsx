@@ -19,6 +19,7 @@ import {
   useInsured,
   useLead,
   useProduct,
+  useContractor,
 } from "@/store/hooks";
 
 import { IFieldFormString } from "@/interfaces/form";
@@ -52,6 +53,7 @@ const Insured = () => {
   const { ui } = useUI();
   const { getAllDistricts, districtList, districtIsLoading } = useDistrict();
   const { insured, getInsuredByRut } = useInsured();
+  const {  contractor } = useContractor();
   const { createLead, setLead, lead, leadIsLoading } = useLead();
   const { product } = useProduct();
 
@@ -151,6 +153,7 @@ const Insured = () => {
         value: event.target.value,
         isValid: true,
       },
+    
     });
     setSearch(true);
   };
@@ -246,7 +249,7 @@ const Insured = () => {
   useEffect(() => {
     getAllDistricts();
   }, []);
-
+  
   useEffect(() => {
     const isValid =
       formData.birthDate.value !== "" &&
@@ -323,10 +326,12 @@ const Insured = () => {
         email,
         phone,
       } = lead.customer;
-
+      const {
+        birthDate
+      } = contractor;
       setFormData({
         rut: { value: rut, isValid: true },
-        birthDate: { value: "", isValid: false },
+        birthDate: { value: birthDate ?? "", isValid: false },
         name: { value: name, isValid: true },
         paternalLastName: { value: paternalLastName, isValid: true },
         maternalLastName: { value: maternalLastName, isValid: true },

@@ -31,7 +31,6 @@ const PaymentProduct = ({ product, lead }: IPaymentProduct) => {
       return `${oDate[2]}-${oDate[1]}-${oDate[0]}`;
     }
   };
-
   return lead && lead.insured && lead.insured.length > 0 && isDesktop ? (
     <Col width="712px" align="center">
       <Row>
@@ -56,7 +55,7 @@ const PaymentProduct = ({ product, lead }: IPaymentProduct) => {
         <InfoText
           label="Cantidad de beneficiarios"
           width="170px"
-          value={lead.insured?.length || 0}
+          value={lead?.insured[0]?.beneficiaries?.length || 0}
         />
         <InfoText
           label="Valor a pagar ($)"

@@ -149,7 +149,6 @@ const Beneficiary = () => {
       },
     });
   };
-
   const editBeneficiary = (item: any, idx: number) => {
     setPosition(idx + 1);
     fillForm(item);
@@ -212,7 +211,7 @@ const Beneficiary = () => {
     });
     setShowModal(true);
   };
-
+  
   const handleClickSave = () => {
     if (lead && lead.insured && lead.insured.length > 0) {
       setIsProcessing(true);
@@ -256,11 +255,11 @@ const Beneficiary = () => {
     setIsButtonAddEnabled(isValid);
   }, [beneficiaryForm]);
 
-  // useEffect(() => {
-  //   if (beneficiary) {
-  //     fillForm(beneficiary);
-  //   }
-  // }, [beneficiary]);
+ useEffect(() => {
+   if (beneficiary) {
+       fillForm(beneficiary);
+     }
+   }, [beneficiary]);
 
   useEffect(() => {
     setIsButtonEnabled(beneficiaries.length > 0);
@@ -373,47 +372,50 @@ const Beneficiary = () => {
           <Row align="space-between" width="100%">
             <Summary color={beneficiaries.length > 0 ? "blue" : "#959595"}>
               {beneficiaries.length === 0
-                ? "No tiene cargas asociadas"
+                ? `No tiene cargas asociadas (max ${product.beneficiaries})`
                 : beneficiaries.length === 1
-                ? "1 carga"
-                : `${beneficiaries.length} cargas`}
+                ? `1 carga  (max ${product.beneficiaries})`
+                : `${beneficiaries.length} cargas (max ${product.beneficiaries})`}
             </Summary>
             <ButtonIcon
               iconName="add"
               color="gray"
+              disabled={beneficiaries.length >= product.beneficiaries}
               onClick={handleClickNewBeneficiary}
             />
           </Row>
         </Col>
-        <ModalWindow
-          showModal={showModal}
-          setClosed={handleCloseClick}
-          title={`Beneficiario`}
-        >
-          <Col gap="20px">
-            {product?.plan?.beneficiary_price > 0 && (
-              <h2 style={{ textAlign: "center", color: "#fca5a5" }}>
-                Cada carga tiene un costo de $
-                {product?.plan?.beneficiary_price ?? 0}
-              </h2>
-            )}
+        {beneficiaries.length < product.beneficiaries && (
+          <ModalWindow
+            showModal={showModal}
+            setClosed={handleCloseClick}
+            title={`Beneficiario`}
+          >
+            <Col gap="20px">
+              {product?.plan?.beneficiary_price > 0 && (
+                <h2 style={{ textAlign: "center", color: "#fca5a5" }}>
+                  Cada carga tiene un costo de $
+                  {product?.plan?.beneficiary_price ?? 0}
+                </h2>
+              )}
 
-            <BeneficiaryForm
-              getByRut={getBeneficiaryByRut} //getByRut
-              initialDataForm={initialDataForm}
-              formData={beneficiaryForm}
-              setFormData={setBeneficiaryForm}
-            />
-            <Row align="center" width="100%">
-              <Button
-                text="Registrar"
-                width="150px"
-                onClick={addBeneficiary}
-                enabled={isButtonAddEnabled}
+              <BeneficiaryForm
+                getByRut={getBeneficiaryByRut} //getByRut
+                initialDataForm={initialDataForm}
+                formData={beneficiaryForm}
+                setFormData={setBeneficiaryForm}
               />
-            </Row>
-          </Col>
-        </ModalWindow>
+              <Row align="center" width="100%">
+                <Button
+                  text="Registrar"
+                  width="150px"
+                  onClick={addBeneficiary}
+                  enabled={isButtonAddEnabled}
+                />
+              </Row>
+            </Col>
+          </ModalWindow>
+        )}
       </Content>
       <Footer>
         <Button

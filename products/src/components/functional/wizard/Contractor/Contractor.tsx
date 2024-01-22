@@ -39,7 +39,7 @@ const Contractor = () => {
 
   const [completedForm, setCompletedForm] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-
+ console.log("contra", contractor)
   const setLeadContractor = (data: any) => {
     setLead({
       ...lead,
