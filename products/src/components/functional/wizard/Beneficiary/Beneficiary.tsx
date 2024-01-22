@@ -84,7 +84,7 @@ const Beneficiary = () => {
 
   const { ui } = useUI();
   const { product, setProduct } = useProduct();
-  const { beneficiary, getBeneficiaryByRut } = useBeneficiary();
+  const { beneficiary, getBeneficiaryByRut,beneficiaryList:beneficiaries , setBeneficiaryList:setBeneficiaries} = useBeneficiary();
   const { lead, getLeadById, createLead, leadIsLoading } = useLead();
   const { getAllRelationships } = useRelationship();
 
@@ -95,7 +95,6 @@ const Beneficiary = () => {
     rut: { value: "", isValid: true },
     ...initialDataForm,
   });
-  const [beneficiaries, setBeneficiaries] = useState<IBeneficiary[]>([]);
   const [position, setPosition] = useState<number>(0);
   const [isProcessing, setIsProcessing] = useState(false);
 

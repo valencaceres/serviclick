@@ -23,6 +23,7 @@ const useBeneficiary = () => {
     setBeneficiary,
     getByRut: getBeneficiaryByRut,
     reset: resetBeneficiary,
+    setBeneficiaryList,
   } = beneficiaryStore();
 
   return {
@@ -32,6 +33,7 @@ const useBeneficiary = () => {
     beneficiaryIsError,
     beneficiaryError,
     setBeneficiary,
+    setBeneficiaryList,
     getBeneficiaryByRut,
     resetBeneficiary,
   };
