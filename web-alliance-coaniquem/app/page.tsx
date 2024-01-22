@@ -3,7 +3,7 @@ import "swiper/css/navigation"
 import { Metadata } from "next"
 
 import { AssistanceSection } from "@/components/functional/assistance-section"
-
+import { config } from "@/utils/config"
 export const metadata: Metadata = {
   title: {
     default: "Serviclick - Todas las soluciones en la palma de tu mano",
@@ -23,11 +23,11 @@ export const metadata: Metadata = {
 
 export default async function IndexPage() {
   const responseAssistances = await fetch(
-    process.env.API_URL! +
+   config.server! +
       "/api/product/listByFamilies/3abd9e95-4883-46bb-aaa9-c00e221cfd0b",
     {
       headers: {
-        id: process.env.API_KEY!,
+        id: config.apiKey!,
       },
       cache: "no-store",
     }

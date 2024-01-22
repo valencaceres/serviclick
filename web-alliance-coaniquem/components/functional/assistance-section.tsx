@@ -12,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table"
-
+import { config } from "@/utils/config"
 export const AssistanceSection = ({ uniqueAssistancesArray }: any) => {
   const downloadFile = ({
     Base64Content,
@@ -48,7 +48,6 @@ export const AssistanceSection = ({ uniqueAssistancesArray }: any) => {
       nameProduct: assistance.product_name,
     })
   }
-
   const getCustomCoverageInfo = (coverage: any) => {
     switch (coverage.assistance_id) {
       case "d1af12a5-08fa-47cd-98f9-e5b98d2917e2":
@@ -160,9 +159,8 @@ export const AssistanceSection = ({ uniqueAssistancesArray }: any) => {
                 <div className="flex w-full items-center justify-center">
                   <div className="flex  justify-evenly  md:w-1/2 ">
                     <Link
-                      href={`https://productos.serviclick.cl/contractor?productPlanId=${assistance.productplan_id}`}
-                      /*                       href={`http://localhost:3012/contractor?productPlanId=${assistance.productplan_id}`}
-                       */ passHref
+                      href={`${config.products}/contractor?productPlanId=${assistance.productplan_id}`}
+               passHref
                       target="_blank"
                     >
                       <Button className="w-full rounded-none text-lg font-bold uppercase">
@@ -307,7 +305,7 @@ export const AssistanceSection = ({ uniqueAssistancesArray }: any) => {
               </div>
               {assistance.coverages.map((coverage: any) => (
                 <div
-                  key={coverage.id}
+                  key={coverage.assistance_id}
                   className="m-2 rounded-md bg-slate-50 px-4 py-2 text-center"
                 >
                   <h2 className="font-bold uppercase">
