@@ -13,4 +13,5 @@ export const allowedOrigins = [
   "https://alianza.serviclick.cl",
   "https://asegurado.serviclick.cl",
   "https://web-admin.serviclick.cl",
+  "https://coaniquem.serviclick.cl",
 ];
