@@ -39,7 +39,7 @@ export default async function AboutUsPage() {
     <>
       <section className="relative flex h-[450px] items-center px-20">
         <Image
-          src="/coaniquem/banneraboutus.jpg"
+          src="/coaniquem/banner-aboutus.jpg"
           alt="Sobre nosotros"
           quality={100}
           fill={true}
