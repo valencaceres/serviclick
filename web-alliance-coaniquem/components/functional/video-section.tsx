@@ -5,7 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 
 export const HeroCarousel = ({ suscriptions }: any) => {
-  const videoProgress = 1000000 /* Array.isArray(suscriptions) ? suscriptions.length : 0 */
+  const videoProgress = 100000 /* Array.isArray(suscriptions) ? suscriptions.length : 0 */
 
   const videoRef = useRef<HTMLVideoElement | null>(null)
 
@@ -13,10 +13,10 @@ export const HeroCarousel = ({ suscriptions }: any) => {
     const handleTimeUpdate = () => {
       if (videoRef.current) {
         const currentPercentage =
-          (videoRef.current.currentTime / videoRef.current.duration) * 1000000
+          (videoRef.current.currentTime / videoRef.current.duration) * 100000
 
         if (currentPercentage >= videoProgress) {
-          const newTime = (videoProgress / 1000000) * videoRef.current.duration
+          const newTime = (videoProgress / 100000) * videoRef.current.duration
           videoRef.current.currentTime = newTime
           videoRef.current.pause()
 
@@ -43,7 +43,7 @@ export const HeroCarousel = ({ suscriptions }: any) => {
         </h1>
         <div className="relative flex items-center justify-center ">
           <p className="absolute left-0 top-0 text-left text-xl font-semibold md:text-2xl">
-            Julio 2024
+            Diciembre 2024
           </p>
           <p className="absolute bottom-0 left-0 text-left text-xl font-semibold md:text-2xl">
             Enero 2024
@@ -66,7 +66,7 @@ export const HeroCarousel = ({ suscriptions }: any) => {
             <source src={`/coaniquem/icons/heartvideo.mp4`} type="video/mp4" />
           </video>
           <p className="absolute right-0 top-0 text-right text-xl font-semibold md:text-2xl">
-            1.000.000 suscripciones
+            100.000 suscripciones
           </p>
           <p className="absolute bottom-0 right-0 text-right text-xl font-semibold md:text-2xl">
             0 suscripciones
