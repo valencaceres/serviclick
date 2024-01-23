@@ -30,12 +30,12 @@ const Header = () => {
       }
     >
       <div className={"relative flex w-full items-center pl-2 md:w-1/2"}>
-        {isSignedIn && user?.publicMetadata.roles.admin && (
+        {isSignedIn && user?.publicMetadata.roles.web_admin && (
           <Menu isOpen={isOpen} setIsOpen={setIsOpen} />
         )}
         <div
           className={`select-none ${
-            isSignedIn && user?.publicMetadata.roles.admin ? "pl-16" : ""
+            isSignedIn && user?.publicMetadata.roles.web_admin ? "pl-16" : ""
           }`}
         >
           <Link href="/">
@@ -64,7 +64,7 @@ const Header = () => {
         }
       >
         {title}
-        {isSignedIn && !user?.publicMetadata.roles.admin && <UserButton />}
+        {isSignedIn && !user?.publicMetadata.roles.web_admin && <UserButton />}
       </div>
     </header>
   );

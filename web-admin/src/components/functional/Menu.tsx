@@ -18,27 +18,26 @@ interface Route {
 }
 
 const routes = [
-{
-  text: "Novedades",
-  roles: ["moderator","admin"],
-  route: "/news",
-},
-{
-  text:"Hero",
-  roles: ["moderator","admin"],
-  route: "/hero",
-},
-{
-  text:"Categorias",
-  roles: ["moderator","admin"],
-  route: "/category",
-},
-{
-  text:"Familias",
-  roles: ["moderator","admin"],
-  route: "/family",
-},
-
+  {
+    text: "Novedades",
+    roles: ["moderator", "admin"],
+    route: "/news",
+  },
+  {
+    text: "Hero",
+    roles: ["moderator", "admin"],
+    route: "/hero",
+  },
+  {
+    text: "Categorias",
+    roles: ["moderator", "admin"],
+    route: "/category",
+  },
+  {
+    text: "Familias",
+    roles: ["moderator", "admin"],
+    route: "/family",
+  },
 ];
 
 interface MenuProps {
@@ -126,7 +125,7 @@ interface MenuItemProps {
 const MenuItem: React.FC<MenuItemProps> = ({ route, isOpen, setIsOpen }) => {
   const { pathname } = useRouter();
   const { user } = useUser();
-  const userRoles = user?.publicMetadata.roles?.admin;
+  const userRoles = user?.publicMetadata.roles?.web_admin;
 
   const userHasRole = (role: string) => {
     return userRoles === role;
