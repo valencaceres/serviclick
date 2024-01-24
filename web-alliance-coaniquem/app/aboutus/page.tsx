@@ -1,10 +1,11 @@
 import { Metadata } from "next"
 import Image from "next/image"
+import { config } from "@/utils/config"
 
 import { ConnectionMoments } from "@/components/functional/connectionmoments"
 import { TestimonialsSection } from "@/components/functional/testimonials"
 import { HeroCarousel } from "@/components/functional/video-section"
-import { config } from "@/utils/config"
+
 export const metadata: Metadata = {
   title: {
     default: "Sobre nosotros",
@@ -39,7 +40,7 @@ export default async function AboutUsPage() {
     <>
       <section className="relative flex h-[450px] items-center px-20">
         <Image
-          src="/coaniquem/bannerphoto.jpg"
+          src="/coaniquem/banner-aboutus.jpg"
           alt="Sobre nosotros"
           quality={100}
           fill={true}
@@ -54,11 +55,21 @@ export default async function AboutUsPage() {
 
       <section className="container flex flex-col items-start justify-center  py-12 pb-20">
         <div className="flex flex-col gap-8  px-4 py-4 md:pb-10 md:pt-20">
-          <h2 className=" text-2xl  font-semibold md:text-4xl">
-            Nuestra Misión
-          </h2>
+          <div className="flex flex-col gap-2">
+            <h2 className=" text-2xl  font-semibold md:text-4xl">
+              Nuestra Misión
+            </h2>
+            <p className="text-center text-xl md:text-2xl">
+              En Serviclick, nuestro propósito es proteger a las familias ante
+              imprevistos, otorgando servicios de protección integral. Hoy
+              donaremos por ti a esta causa que permitirá financiar parte de la
+              rehabilitación de todos los niños que han sufrido quemaduras.
+              Súmate a esta noble causa y protégete al mismo tiempo que apoyas a
+              Coaniquem.
+            </p>
+          </div>
           <div className="text-center">
-            <h2 className="text-xl font-semibold md:text-2xl">
+            <h2 className="text-2xl font-semibold md:text-3xl">
               ¿Cómo ayudamos a COANIQUEM?
             </h2>
 
@@ -118,18 +129,8 @@ export default async function AboutUsPage() {
       </section>
 
       <section className=" -mt-[275px]  flex flex-col items-center justify-center  gap-8 py-20 md:-mt-[500px]">
-      <Image
-        src="/logomhm.png"
-        alt="MHM1"
-        width={300}
-        height={80}
-        loading="lazy"
-        quality={100}
-        unoptimized
-      />
-      <div className="flex w-full max-w-5xl  flex-wrap items-center justify-center gap-4">
         <Image
-          src="/mhm1.png"
+          src="/logomhm.png"
           alt="MHM1"
           width={300}
           height={80}
@@ -137,49 +138,59 @@ export default async function AboutUsPage() {
           quality={100}
           unoptimized
         />
-        <Image
-          src="/mhm2.png"
-          alt="MHM2"
-          width={300}
-          height={80}
-          loading="lazy"
-          quality={100}
-          unoptimized
-        />
-        <Image
-          src="/mhm3.png"
-          alt="MHM3"
-          width={300}
-          height={80}
-          loading="lazy"
-          unoptimized
-        />
-        <Image
-          src="/mhm4.png"
-          alt="MHM4"
-          width={300}
-          height={80}
-          loading="lazy"
-          unoptimized
-        />
-        <Image
-          src="/mhm5.png"
-          alt="MHM5"
-          width={300}
-          height={80}
-          loading="lazy"
-          unoptimized
-        />
-        <Image
-          src="/mhm6.png"
-          alt="MHM5"
-          width={300}
-          height={80}
-          loading="lazy"
-          unoptimized
-        />
-      </div>
-    </section>
+        <div className="flex w-full max-w-5xl  flex-wrap items-center justify-center gap-4">
+          <Image
+            src="/mhm1.png"
+            alt="MHM1"
+            width={300}
+            height={80}
+            loading="lazy"
+            quality={100}
+            unoptimized
+          />
+          <Image
+            src="/mhm2.png"
+            alt="MHM2"
+            width={300}
+            height={80}
+            loading="lazy"
+            quality={100}
+            unoptimized
+          />
+          <Image
+            src="/mhm3.png"
+            alt="MHM3"
+            width={300}
+            height={80}
+            loading="lazy"
+            unoptimized
+          />
+          <Image
+            src="/mhm4.png"
+            alt="MHM4"
+            width={300}
+            height={80}
+            loading="lazy"
+            unoptimized
+          />
+          <Image
+            src="/mhm5.png"
+            alt="MHM5"
+            width={300}
+            height={80}
+            loading="lazy"
+            unoptimized
+          />
+          <Image
+            src="/mhm6.png"
+            alt="MHM5"
+            width={300}
+            height={80}
+            loading="lazy"
+            unoptimized
+          />
+        </div>
+      </section>
     </>
   )
 }

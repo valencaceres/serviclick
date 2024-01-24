@@ -5,7 +5,7 @@ import styles from "./MainLayout.module.scss";
 
 import Back from "@/components/functional/navigation/Back";
 
-import { useUI, useProduct, useLead } from "@/store/hooks";
+import { useUI, useProduct, useLead, useBeneficiary } from "@/store/hooks";
 
 import { currencyFormat } from "@/utils/format";
 import Badge from "@/components/ui/Badge/Badge";
@@ -67,22 +67,8 @@ const Screen = ({ children }: Props) => {
 const HeaderServiClick = () => {
   const { ui } = useUI();
   const { product } = useProduct();
-  const { lead, leadIsLoading } = useLead();
-  const [badgePrice, setBadgePrice] = useState(product?.plan?.price);
-  useEffect(() => {
-    if (lead?.insured[0]?.beneficiaries?.length > 0) {
-      setBadgePrice(
-        Number(
-          (
-            product?.plan?.price +
-            lead?.insured[0]?.beneficiaries?.length *
-              (product?.plan?.beneficiary_price ?? 0)
-          ).toString()
-        )
-      );
-    }
-  }, [lead?.insured[0]?.beneficiaries?.length]);
-  console.log(product);
+  const { lead } = useLead();
+const {beneficiaryList} = useBeneficiary()
   return (
     <div className={styles.screenHeader}>
       <div className={styles.left}>
@@ -97,13 +83,13 @@ const HeaderServiClick = () => {
             {currencyFormat(
               isNaN(
                 product?.plan?.price +
-                  lead.insured[0]?.beneficiaries?.length *
+                beneficiaryList?.length *
                     (product?.plan?.beneficiary_price ?? 0)
               )
                 ? product?.plan?.price
                 : Number(
                     product?.plan?.price +
-                      lead.insured[0]?.beneficiaries?.length *
+                    beneficiaryList?.length *
                         (product?.plan?.beneficiary_price ?? 0)
                   )
             )}

@@ -1,7 +1,7 @@
 import { useMediaQuery } from "react-responsive";
 
 import { Col } from "@/components/layout/Generic";
-
+import {formatDate} from "@/utils/format"
 import {
   Table,
   TableCell,
@@ -45,7 +45,8 @@ const PaymentBeneficiaries = ({ lead }: any) => {
                     </TableCell>
                     <TableCell width="300px">{`${itemBeneficiary.name} ${itemBeneficiary.paternalLastName} ${itemBeneficiary.maternalLastName}`}</TableCell>
                     <TableCell width="100px">
-                      {itemBeneficiary.birthDate}
+                    {formatDate(itemBeneficiary.birthDate)}
+
                     </TableCell>
                     <TableCell width="130px">
                       {itemBeneficiary.relationship}

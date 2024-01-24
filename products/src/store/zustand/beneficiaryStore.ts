@@ -7,6 +7,7 @@ import { apiInstance } from "@/utils/api";
 interface beneficiaryState {
   beneficiary: IBeneficiary;
   beneficiaryList: IBeneficiary[];
+  
   isLoading: boolean;
   isError: boolean;
   error: string;
@@ -14,6 +15,7 @@ interface beneficiaryState {
   setIsError: (isError: boolean) => void;
   setError: (error: string) => void;
   setBeneficiary: (beneficiary: IBeneficiary) => void;
+  setBeneficiaryList: (beneficiaryList: IBeneficiary[]) => void;
   getByRut: (rut: string) => void;
   reset: () => void;
   resetAll: () => void;
@@ -54,6 +56,9 @@ export const beneficiaryStore = create<beneficiaryState>((set, get) => ({
 
   setBeneficiary: (beneficiary: IBeneficiary) => {
     set((state) => ({ ...state, beneficiary }));
+  },
+  setBeneficiaryList: (beneficiaryList: IBeneficiary[]) => {
+    set((state) => ({ ...state, beneficiaryList }));
   },
 
   getByRut: async (rut: string) => {

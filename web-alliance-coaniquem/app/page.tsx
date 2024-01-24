@@ -1,9 +1,10 @@
 import "swiper/css"
 import "swiper/css/navigation"
 import { Metadata } from "next"
+import { config } from "@/utils/config"
 
 import { AssistanceSection } from "@/components/functional/assistance-section"
-import { config } from "@/utils/config"
+
 export const metadata: Metadata = {
   title: {
     default: "Serviclick - Todas las soluciones en la palma de tu mano",
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
 
 export default async function IndexPage() {
   const responseAssistances = await fetch(
-   config.server! +
+    config.server! +
       "/api/product/listByFamilies/3abd9e95-4883-46bb-aaa9-c00e221cfd0b",
     {
       headers: {
@@ -97,6 +98,7 @@ export default async function IndexPage() {
             objectFit: "cover",
             width: "100%",
             height: "100%",
+            borderRadius: "14px",
             position: "absolute",
             objectPosition: "top",
             top: 0,
@@ -105,10 +107,11 @@ export default async function IndexPage() {
           autoPlay
           loop
           muted
-          id="video"
+          id="video1"
         >
           <source src="/coaniquem/herovideo.mp4" type="video/mp4" />
         </video>
+
         <div className="z-10 w-[400px] self-end pb-12 text-center md:self-center md:pb-0 md:text-left">
           <h1
             className="font-bebas text-6xl uppercase text-background"

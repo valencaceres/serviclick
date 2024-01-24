@@ -44,12 +44,12 @@ export async function SiteFooter() {
                 <p>comercial@serviclick.cl</p>
               </Link>
               <Link
-                href="https://goo.gl/maps/2pH3KDzeW7bvhLcJ6"
+                href="https://maps.app.goo.gl/dvwEgthEfVh9nKsw7"
                 target="_blank"
                 className="hover:underline"
                 passHref
               >
-                <p>Enrique Mac Iver 440 Oficina 702</p>
+                <p>Huérfanos 669, Piso 7</p>
               </Link>
             </div>
             <div className="flex gap-5">
@@ -78,7 +78,7 @@ export async function SiteFooter() {
           </div>
           <div className="w-full md:max-w-xs">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.453997366536!2d-70.64997342342978!3d-33.437476596849514!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9662c5a2593b4d79%3A0xefa90de0cacfe9fc!2sEnrique%20Mac%20Iver%20440%2C%20oficina%20702%2C%208320123%20Santiago%2C%20Regi%C3%B3n%20Metropolitana!5e0!3m2!1ses!2scl!4v1686844453837!5m2!1ses!2scl"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.3949892401565!2d-70.64891292564879!3d-33.43901439692419!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9662c5a2109d29ef%3A0x542b57bba39b11b0!2sHu%C3%A9rfanos%20669%2C%208320174%20Santiago%2C%20Regi%C3%B3n%20Metropolitana%2C%20Chile!5e0!3m2!1ses!2sar!4v1706041391095!5m2!1ses!2sar"
               className="w-full border-none"
               allowFullScreen={false}
               loading="lazy"

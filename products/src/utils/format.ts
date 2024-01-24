@@ -26,4 +26,20 @@ const formatAmount = (amount: string, currency: string) => {
   }
 };
 
-export { unFormatRut, formatRut, currencyFormat, formatAmount };
+function formatDate(dateString: string) {
+  const dateObject = new Date(dateString);
+
+  const day = dateObject.getDate();
+  const month = dateObject.getMonth() + 1;
+  const year = dateObject.getFullYear();
+
+  const formattedDay = String(day).padStart(2, '0');
+  const formattedMonth = String(month).padStart(2, '0');
+
+  const formattedDate = `${formattedDay}/${formattedMonth}/${year}`;
+
+  return formattedDate;
+}
+
+
+export { unFormatRut, formatRut, currencyFormat, formatAmount, formatDate };

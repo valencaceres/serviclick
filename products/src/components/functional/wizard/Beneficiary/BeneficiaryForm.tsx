@@ -24,7 +24,6 @@ const BeneficiaryForm = ({
 }: BeneficiaryT) => {
   const { districtList } = useDistrict();
   const { relationshipList } = useRelationship();
-  const { beneficiary } = useBeneficiary();
 
   const isValidRut = (rut: string) => {
     return (
@@ -108,7 +107,6 @@ const BeneficiaryForm = ({
       },
     });
   };
-
   const handleChangeAddress = (event: any) => {
     setFormData({
       ...formData,
