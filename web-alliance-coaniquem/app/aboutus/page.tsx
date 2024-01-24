@@ -59,7 +59,7 @@ export default async function AboutUsPage() {
             <h2 className=" text-2xl  font-semibold md:text-4xl">
               Nuestra Misión
             </h2>
-            <p className="text-center text-xl md:text-2xl">
+            <p className=" text-xl md:text-2xl">
               En Serviclick, nuestro propósito es proteger a las familias ante
               imprevistos, otorgando servicios de protección integral. Hoy
               donaremos por ti a esta causa que permitirá financiar parte de la

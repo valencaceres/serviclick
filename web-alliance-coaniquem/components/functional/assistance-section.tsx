@@ -49,6 +49,15 @@ export const AssistanceSection = ({ uniqueAssistancesArray }: any) => {
       nameProduct: assistance.product_name,
     })
   }
+  const sortedAssistancesArray = [...uniqueAssistancesArray]
+
+  sortedAssistancesArray?.sort((a, b) => {
+    const priceA = a.price || 0
+    const priceB = b.price || 0
+
+    return priceA - priceB
+  })
+
   const getCustomCoverageInfo = (coverage: any) => {
     switch (coverage.assistance_id) {
       case "d1af12a5-08fa-47cd-98f9-e5b98d2917e2":
@@ -109,7 +118,7 @@ export const AssistanceSection = ({ uniqueAssistancesArray }: any) => {
 
   return (
     <section className="flex flex-col items-center justify-center gap-32 py-10">
-      {uniqueAssistancesArray?.slice()?.map((assistance: any) => (
+      {sortedAssistancesArray?.slice()?.map((assistance: any) => (
         <div
           id={assistance.product_name}
           key={assistance.product_id}
