@@ -49,6 +49,15 @@ export const AssistanceSection = ({ uniqueAssistancesArray }: any) => {
       nameProduct: assistance.product_name,
     })
   }
+  const sortedAssistancesArray = [...uniqueAssistancesArray]
+
+  sortedAssistancesArray?.sort((a, b) => {
+    const priceA = a.price || 0
+    const priceB = b.price || 0
+
+    return priceA - priceB
+  })
+
   const getCustomCoverageInfo = (coverage: any) => {
     switch (coverage.assistance_id) {
       case "d1af12a5-08fa-47cd-98f9-e5b98d2917e2":
@@ -106,10 +115,9 @@ export const AssistanceSection = ({ uniqueAssistancesArray }: any) => {
         }
     }
   }
-
   return (
     <section className="flex flex-col items-center justify-center gap-32 py-10">
-      {uniqueAssistancesArray?.slice()?.map((assistance: any) => (
+      {sortedAssistancesArray?.slice()?.map((assistance: any) => (
         <div
           id={assistance.product_name}
           key={assistance.product_id}
@@ -248,7 +256,18 @@ export const AssistanceSection = ({ uniqueAssistancesArray }: any) => {
                     <TableCell className="py-6 text-center text-2xl font-bold uppercase">
                       {coverage.coverage_amount !== "0" ? (
                         <div className="flex flex-col text-red-500">
-                          <span>{coverage.coverage_amount} UF</span>
+                          {coverage.coverage_currency === "P"
+                            ? Number(
+                                coverage.coverage_amount.replace(/\$|,/g, "")
+                              ).toLocaleString("es-CL", {
+                                style: "currency",
+                                currency: "CLP",
+                              })
+                            : coverage.coverage_currency === "U"
+                            ? `${Number(
+                                coverage.coverage_amount.replace(/\$|,/g, "")
+                              )} UF`
+                            : null}
                         </div>
                       ) : (
                         <>
@@ -311,7 +330,18 @@ export const AssistanceSection = ({ uniqueAssistancesArray }: any) => {
                 </h2>
                 {coverage.coverage_amount !== "0" ? (
                   <div className="flex flex-col text-red-500">
-                    <span>{coverage.coverage_amount} UF</span>
+                    {coverage.coverage_currency === "P"
+                      ? Number(
+                          coverage.coverage_amount.replace(/\$|,/g, "")
+                        ).toLocaleString("es-CL", {
+                          style: "currency",
+                          currency: "CLP",
+                        })
+                      : coverage.coverage_currency === "U"
+                      ? `${Number(
+                          coverage.coverage_amount.replace(/\$|,/g, "")
+                        )} UF`
+                      : null}
                   </div>
                 ) : (
                   <>
