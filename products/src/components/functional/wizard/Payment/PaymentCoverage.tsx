@@ -12,9 +12,10 @@ import {
 import InfoText from "@/components/ui/InfoText";
 
 import { formatAmount } from "@/utils/format";
-
+import { useLead } from "@/store/hooks";
 const PaymentCoverage = ({ product }: any) => {
   const isDesktop = useMediaQuery({ minWidth: 1200 });
+  const { lead } = useLead();
 
   return isDesktop ? (
     <Col>
@@ -42,7 +43,7 @@ const PaymentCoverage = ({ product }: any) => {
                   {item.maximum}
                 </TableCell>
                 <TableCell align="center" width="90px">
-                  {item.events}
+                  {item.events + (lead?.insured[0]?.beneficiaries?.length || 0)}
                 </TableCell>
                 <TableCell align="center" width="100px">
                   {item.lack}
@@ -51,6 +52,11 @@ const PaymentCoverage = ({ product }: any) => {
             ))}
         </TableDetail>
       </Table>
+      <p style={{ maxWidth: "700px", textAlign: "center" }}>
+        Al agregar cargas a su plan de asistencia, se efectuará un aumento de
+        una unidad en el límite máximo de eventos anuales por cada carga
+        agregada, según lo estipulado en el presente contrato.
+      </p>
     </Col>
   ) : (
     <Col>
@@ -71,8 +77,15 @@ const PaymentCoverage = ({ product }: any) => {
                   {item.amount > 0 && <br />}
                   {item.amount > 0 && formatAmount(item.amount, item.currency)}
                   <br />
-                  {item.events === 0 ? "Ilimitados" : item.events}
-                  {" eventos en el año"}
+                  {item.events === 0 ? (
+                    "Ilimitados"
+                  ) : (
+                    <>
+                      {item.events +
+                        (lead?.insured[0]?.beneficiaries?.length || 0)}{" "}
+                      eventos en el año
+                    </>
+                  )}
                   {" ("}
                   {item.lack}
                   {" días carencia)"}
@@ -81,6 +94,11 @@ const PaymentCoverage = ({ product }: any) => {
             ))}
         </TableDetail>
       </Table>
+      <p style={{ maxWidth: "300px", textAlign: "center" }}>
+        Al agregar cargas a su plan de asistencia, se efectuará un aumento de
+        una unidad en el límite máximo de eventos anuales por cada carga
+        agregada, según lo estipulado en el presente contrato.
+      </p>
     </Col>
   );
 };
