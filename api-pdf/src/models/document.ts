@@ -352,7 +352,7 @@ const createAnnex: any = async (data: any) => {
         };
       })
     );
-
+      pdfTextLine(pdf, `Al agregar cargas a su plan de asistencia, se efectuará un aumento de una unidad en el límite máximo de eventos anuales por cada carga agregada, según lo estipulado en el presente contrato.`, "justify", true, true);
     assistances.map((assistance: any, idx: number) => {
       pdfTextLine(
         pdf,

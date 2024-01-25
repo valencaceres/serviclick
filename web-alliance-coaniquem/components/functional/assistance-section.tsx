@@ -115,7 +115,6 @@ export const AssistanceSection = ({ uniqueAssistancesArray }: any) => {
         }
     }
   }
-  console.log(sortedAssistancesArray[1])
 
   return (
     <section className="flex flex-col items-center justify-center gap-32 py-10">
@@ -256,38 +255,60 @@ export const AssistanceSection = ({ uniqueAssistancesArray }: any) => {
                       {coverage.coverage_name}
                     </TableCell>
                     <TableCell className="py-6 text-center text-2xl font-bold uppercase">
-                      {coverage.coverage_amount !== "0" ? (
-                        <div className="flex flex-col text-red-500">
-                          {coverage.coverage_currency === "P"
-                            ? Number(
-                                coverage.coverage_amount.replace(/\$|,/g, "")
-                              ).toLocaleString("es-CL", {
-                                style: "currency",
-                                currency: "CLP",
-                              })
-                            : coverage.coverage_currency === "U"
-                            ? `${Number(
-                                coverage.coverage_amount.replace(/\$|,/g, "")
-                              )} UF`
-                            : null}
-                        </div>
-                      ) : (
-                        <>
-                          {coverage.coverage_maximum.includes("%") ? (
-                            <span
-                              className="text-2xl"
-                              dangerouslySetInnerHTML={{
-                                __html: coverage.coverage_maximum.replace(
-                                  /(\d+%)/g,
-                                  '<span class="text-red-500">$1</span>'
-                                ),
-                              }}
-                            />
-                          ) : (
-                            <span>{coverage.coverage_maximum}</span>
+                      <div className="flex flex-col">
+                        <p>
+                          {coverage.coverage_maximum != "0" && (
+                            <>
+                              <span
+                                className="text-2xl"
+                                dangerouslySetInnerHTML={{
+                                  __html: coverage.coverage_maximum.replace(
+                                    /(\d+%)/g,
+                                    '<span class="text-red-500">$1</span>'
+                                  ),
+                                }}
+                              />
+                              <span>
+                                {coverage.coverage_amount > 0 &&
+                                coverage.coverage_maximum !== ""
+                                  ? ` con tope: `
+                                  : ""}
+                              </span>
+                            </>
                           )}
-                        </>
-                      )}
+
+                          <span className="">
+                            <span className="text-red-500">
+                              {`${
+                                coverage.coverage_currency === "P" &&
+                                coverage.coverage_amount > 0
+                                  ? "$"
+                                  : ""
+                              }${
+                                coverage.coverage_amount > 0
+                                  ? Number(
+                                      coverage.coverage_amount
+                                    ).toLocaleString("es-CL", {
+                                      minimumFractionDigits: 0,
+                                      maximumFractionDigits:
+                                        coverage.coverage_amount % 1 === 0
+                                          ? 0
+                                          : 1,
+                                    })
+                                  : ""
+                              }`}
+                            </span>
+                            <span className="text-red-500">
+                              {`${
+                                coverage.coverage_currency === "U" &&
+                                coverage.coverage_amount > 0
+                                  ? "UF"
+                                  : ""
+                              }`.replace(".0", "")}
+                            </span>
+                          </span>
+                        </p>
+                      </div>
                     </TableCell>
                     <TableCell className="py-6 text-center text-lg font-bold uppercase">
                       {coverage.coverage_events !== undefined &&
@@ -315,6 +336,12 @@ export const AssistanceSection = ({ uniqueAssistancesArray }: any) => {
                 ))}
               </TableBody>
             </Table>
+            <p className="mt-8 text-center text-2xl font-semibold">
+              ¡Más cargas, más eventos! Al añadir cargas a tu plan, incrementas
+              el límite máximo de eventos al año. Por ejemplo, si el máximo era
+              3 con el valor base, al agregar una carga aumenta a 4 eventos. Y
+              si añades dos cargas, ¡se eleva a 5 eventos y así!
+            </p>
           </div>
           <div className="w-full max-w-7xl md:hidden">
             <div className="mx-2 rounded-md bg-foreground py-2">
@@ -330,38 +357,60 @@ export const AssistanceSection = ({ uniqueAssistancesArray }: any) => {
                 <h2 className="font-bold uppercase">
                   {coverage.coverage_name}
                 </h2>
-                {coverage.coverage_amount !== "0" ? (
-                  <div className="flex flex-col text-red-500">
-                    {coverage.coverage_currency === "P"
-                      ? Number(
-                          coverage.coverage_amount.replace(/\$|,/g, "")
-                        ).toLocaleString("es-CL", {
-                          style: "currency",
-                          currency: "CLP",
-                        })
-                      : coverage.coverage_currency === "U"
-                      ? `${Number(
-                          coverage.coverage_amount.replace(/\$|,/g, "")
-                        )} UF`
-                      : null}
-                  </div>
-                ) : (
-                  <>
-                    {coverage.coverage_maximum.includes("%") ? (
-                      <span
-                        className="text-2xl"
-                        dangerouslySetInnerHTML={{
-                          __html: coverage.coverage_maximum.replace(
-                            /(\d+%)/g,
-                            '<span class="text-red-500">$1</span>'
-                          ),
-                        }}
-                      />
-                    ) : (
-                      <span>{coverage.coverage_maximum}</span>
+                <div className="flex flex-col">
+                  <p>
+                    {coverage.coverage_maximum != "0" && (
+                      <>
+                        <span
+                          className="text-2xl"
+                          dangerouslySetInnerHTML={{
+                            __html: coverage.coverage_maximum.replace(
+                              /(\d+%)/g,
+                              '<span class="text-red-500">$1</span>'
+                            ),
+                          }}
+                        />
+                        <span>
+                          {coverage.coverage_amount > 0 &&
+                          coverage.coverage_maximum !== ""
+                            ? ` con tope: `
+                            : ""}
+                        </span>
+                      </>
                     )}
-                  </>
-                )}
+
+                    <span className="">
+                      <span className="text-red-500">
+                        {`${
+                          coverage.coverage_currency === "P" &&
+                          coverage.coverage_amount > 0
+                            ? "$"
+                            : ""
+                        }${
+                          coverage.coverage_amount > 0
+                            ? Number(coverage.coverage_amount).toLocaleString(
+                                "es-CL",
+                                {
+                                  minimumFractionDigits: 0,
+                                  maximumFractionDigits:
+                                    coverage.coverage_amount % 1 === 0 ? 0 : 1,
+                                }
+                              )
+                            : ""
+                        }`}
+                      </span>
+                      <span className="text-red-500">
+                        {`${
+                          coverage.coverage_currency === "U" &&
+                          coverage.coverage_amount > 0
+                            ? "UF"
+                            : ""
+                        }`.replace(".0", "")}
+                      </span>
+                    </span>
+                  </p>
+                </div>
+
                 <h3 className="font-bold uppercase">
                   {coverage.coverage_events !== undefined &&
                   !isNaN(coverage.coverage_events) ? (
@@ -386,6 +435,12 @@ export const AssistanceSection = ({ uniqueAssistancesArray }: any) => {
                 </div>
               </div>
             ))}
+            <p className="mt-8 text-center text-2xl font-semibold">
+              ¡Más cargas, más eventos! Al añadir cargas a tu plan, incrementas
+              el límite máximo de eventos al año. Por ejemplo, si el máximo era
+              3 con el valor base, al agregar una carga aumenta a 4 eventos. Y
+              si añades dos cargas, ¡se eleva a 5 eventos y así!
+            </p>
           </div>
         </div>
       ))}
