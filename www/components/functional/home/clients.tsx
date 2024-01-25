@@ -44,13 +44,14 @@ export const Clients = () => {
   }
 
   const slides = clients.map((client) => (
-    <div className="h-[120px] w-[200px] relative mx-auto">
+    <div className="relative mx-auto h-[120px] w-[200px]">
       <Image
-        className="cursor-pointer hover:scale-105 duration-75 pb-8"
+        className="cursor-pointer pb-8 duration-75 hover:scale-105"
         src={client.image}
         alt="News"
         loading="lazy"
         fill
+        sizes="(max-width: 640px) 100vw, (max-width: 768px) 70vw, 100vw"
       />
     </div>
   ))

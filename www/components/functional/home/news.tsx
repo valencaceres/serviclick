@@ -42,16 +42,19 @@ export const News = ({ news }: { news: { data: News[] } | undefined }) => {
 
   const slides = news.data.map((newsItem) => (
     <div className="relative mx-auto h-[240px] w-[300px]" key={newsItem.id}>
-      <Link href={newsItem.link} passHref>
-        <Image
-          className="cursor-pointer py-2 duration-75 hover:scale-105"
-          src={newsItem.url}
-          alt="News"
-          fill
-        />
-        <h1 className="absolute z-40 w-full max-w-xs text-center text-3xl uppercase text-white md:max-w-md md:py-20 md:text-start md:text-5xl">
-          {newsItem.text}
-        </h1>{" "}
+      <Link href={newsItem.link} passHref key={newsItem.id}>
+        <div className="relative mx-auto h-[240px] w-[300px]">
+          <Image
+            className="cursor-pointer py-2 duration-75 hover:scale-105"
+            src={newsItem.url}
+            alt="News"
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 70vw, 100vw"
+          />
+          <h1 className="absolute z-40 w-full max-w-xs text-center text-3xl uppercase text-white md:max-w-md md:py-20 md:text-start md:text-5xl">
+            {newsItem.text}
+          </h1>{" "}
+        </div>
       </Link>
     </div>
   ))
