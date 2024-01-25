@@ -36,7 +36,7 @@ export const Alliances = () => {
   }
 
   const slides = alliances.map((client) => (
-    <div className="relative mx-auto h-[120px] w-[200px]">
+    <div key={client.image} className="relative mx-auto h-[120px] w-[200px]">
       <Image
         className="cursor-pointer pb-8 duration-75 hover:scale-105"
         src={client.image}
