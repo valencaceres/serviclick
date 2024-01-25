@@ -66,10 +66,10 @@ export const AssistanceSection = ({ uniqueAssistancesArray }: any) => {
           image: "d1af12a5-08fa-47cd-98f9-e5b98d2917e2",
         }
 
-      case "1ef18ac5-25ff-43b9-b01e-f204e9434fb2":
+      case "f4b73c1f-990f-4bd0-9cc1-353bf5efe807":
         return {
           name: "TRANSLADO MÉDICO TERRESTRE",
-          image: "1ef18ac5-25ff-43b9-b01e-f204e9434fb2",
+          image: "f4b73c1f-990f-4bd0-9cc1-353bf5efe807",
         }
       case "16f9b7e9-63f8-4024-be64-83a57ebf8c02":
         return {
@@ -115,6 +115,8 @@ export const AssistanceSection = ({ uniqueAssistancesArray }: any) => {
         }
     }
   }
+  console.log(sortedAssistancesArray[1])
+
   return (
     <section className="flex flex-col items-center justify-center gap-32 py-10">
       {sortedAssistancesArray?.slice()?.map((assistance: any) => (
@@ -194,7 +196,7 @@ export const AssistanceSection = ({ uniqueAssistancesArray }: any) => {
                     "722337ea-404b-4263-a0a9-e3099eebd04e",
                     "722337ea-404b-4263-a0a9-e3099eebd04e",
                     "d1af12a5-08fa-47cd-98f9-e5b98d2917e2",
-                    "1ef18ac5-25ff-43b9-b01e-f204e9434fb2",
+                    "f4b73c1f-990f-4bd0-9cc1-353bf5efe807",
                     "16f9b7e9-63f8-4024-be64-83a57ebf8c02",
                     "42efc9bb-81c3-480a-bb93-099702c5740a",
                     "80bf7afe-e9db-41f7-a8da-b8869f0811ac",
