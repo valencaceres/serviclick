@@ -523,12 +523,15 @@ export const Hero: React.FC<itemsProps> = ({ type }) => {
                       onClick={() => handleSetImagePreviewClick(image)}
                     >
                       <div className="absolute left-0 top-0 z-10 h-full w-full rounded-md bg-transparent"></div>
-                      <Image
-                        src={image.url}
-                        alt={image.alt}
-                        className="rounded-md object-cover"
-                        fill
-                      />
+                      <div className="relative h-full w-full">
+                        <Image
+                          src={image.url}
+                          alt={"edit image"}
+                          fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 768px) 80vw, 1200px"
+                          className="rounded-md object-cover"
+                        />
+                      </div>
                       <h2 className="absolute left-40 top-1/2 self-center text-xl font-bold text-white">
                         {image.text}
                       </h2>

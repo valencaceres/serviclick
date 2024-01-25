@@ -10,7 +10,6 @@ import { formatAmount } from "@/utils/format";
 import { calculateValidity } from "@/utils/functions";
 import { IProduct } from "@/interfaces/product";
 import { ILead } from "@/interfaces/lead";
-
 interface IPaymentProduct {
   product: IProduct;
   lead: ILead;

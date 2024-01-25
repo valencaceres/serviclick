@@ -4,7 +4,6 @@ import Image from "next/image"
 import { Navigation, Pagination } from "swiper"
 import { Swiper, SwiperSlide } from "swiper/react"
 
-import SideScroll from "../ui/side-scroll"
 import "swiper/css"
 import "swiper/css/navigation"
 import "swiper/css/pagination"
@@ -14,7 +13,7 @@ export const ConnectionMoments = () => {
   const options = {
     modules: [Navigation, Pagination],
     breakpoints: {
-      1800: {
+      2000: {
         slidesPerView: 4,
       },
       1280: {
@@ -59,7 +58,7 @@ export const ConnectionMoments = () => {
               <Image
                 src={imagePath}
                 alt={`momento de conexión ${index + 1}`}
-                width={700}
+                width={600}
                 height={400}
                 loading="lazy"
                 unoptimized

@@ -22,7 +22,7 @@ export function NavPrimary(siteConfig: SiteConfig) {
   const segment = useSelectedLayoutSegment()
 
   const pathName = usePathname()
-  console.log(pathName)
+
   return (
     <>
       <Link href="/" className="flex items-center space-x-2">
