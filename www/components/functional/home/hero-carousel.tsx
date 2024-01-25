@@ -53,22 +53,15 @@ export const HeroCarousel = ({
     scrollbar: { draggable: true },
   }
 
-  const slides = heroData?.map((heroItem) => (
+  const slides = heroData.map((heroItem) => (
     <section className="relative flex h-[250px] w-full  items-center justify-center md:h-[550px] md:justify-start">
       <Image
         src={heroItem.url}
         alt={heroItem.alt}
         fill
         quality={100}
-        className={`object-cover object-top${
-          heroItem.link && heroItem.link !== "" ? " cursor-pointer" : ""
-        }`}
+        className={"object-cover object-top"}
         loading="lazy"
-        onClick={() => {
-          if (heroItem.link && heroItem.link !== "") {
-            window.open(heroItem.link, "_blank")
-          }
-        }}
       />
       <h1 className="absolute z-40 w-full max-w-xs text-center text-5xl uppercase text-white md:max-w-md md:pl-20 md:text-start md:text-6xl">
         {heroItem.text}
