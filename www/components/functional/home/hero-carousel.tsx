@@ -53,8 +53,11 @@ export const HeroCarousel = ({
     scrollbar: { draggable: true },
   }
 
-  const slides = heroData?.map((heroItem) => (
-    <section className="relative flex h-[250px] w-full  items-center justify-center md:h-[550px] md:justify-start">
+  const slides = heroData.map((heroItem) => (
+    <section
+      key={heroItem.url}
+      className="relative flex h-[250px] w-full  items-center justify-center md:h-[550px] md:justify-start"
+    >
       <Image
         src={heroItem.url}
         alt={heroItem.alt}

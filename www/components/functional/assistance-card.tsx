@@ -7,7 +7,7 @@ type AssistanceCardProps = {
   family_id: string
   title: string
   imageLink: string
-  link:string
+  link: string
 }
 
 export const AssistanceCard = ({
@@ -26,6 +26,7 @@ export const AssistanceCard = ({
             fill={true}
             className="object-cover object-center"
             loading="lazy"
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 70vw, 100vw"
           />
         </div>
       </div>
@@ -34,17 +35,17 @@ export const AssistanceCard = ({
       </div>
       {link ? (
         <Link href={link} passHref={true}>
-  <Button className="w-full rounded-none bg-foreground font-bebas text-2xl uppercase">
-          Ver más
-        </Button>        </Link>
+          <Button className="w-full rounded-none bg-foreground font-bebas text-2xl uppercase">
+            Ver más
+          </Button>{" "}
+        </Link>
       ) : (
         <Link href={`/family/${family_id}`} passHref={true}>
           <Button className="w-full rounded-none bg-foreground font-bebas text-2xl uppercase">
-          Ver más
-        </Button>  
+            Ver más
+          </Button>
         </Link>
       )}
-  
     </article>
   )
 }
