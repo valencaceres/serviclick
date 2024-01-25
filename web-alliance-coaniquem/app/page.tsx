@@ -128,13 +128,16 @@ export default async function IndexPage() {
             ¡SÚMATE A ESTA NOBLE CAUSA!{" "}
           </h1>
           <p className="text-center text-xl font-semibold md:text-2xl">
-            Serviclick se unió a COANIQUEM, solo faltas tú.  Suscribe tu
-            Asistencia y  nosotros donamos por ti. Estarás ayudando a los niños,
-            niñas y adolescentes en su rehabilitación. ¡Únete a la mejor causa!.
+            Serviclick se unió a COANIQUEM, solo faltas tú. Suscribe tu
+            asistencia y nosotros donaremos un 27% del costo del plan a la
+            rehabilitación de los niños, niñas y adolescentes con quemaduras.
+          </p>
+          <p className="text-center text-xl font-semibold md:text-2xl">
+            ¡Únete a la mejor causa!{" "}
           </p>
         </div>
       </section>
-      <section id="products" className="">
+      <section id="products" className="-mt-16">
         <AssistanceSection uniqueAssistancesArray={uniqueAssistancesArray} />
       </section>
     </>
