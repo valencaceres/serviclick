@@ -528,6 +528,7 @@ export const Hero: React.FC<itemsProps> = ({ type }) => {
                           src={image.url}
                           alt={"edit image"}
                           fill
+                          priority
                           sizes="(max-width: 640px) 100vw, (max-width: 768px) 80vw, 1200px"
                           className="rounded-md object-cover"
                         />
