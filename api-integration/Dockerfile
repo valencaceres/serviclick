@@ -13,7 +13,6 @@ COPY ./src/util/certificate.crt /app/dist/util/certificate.crt
 # Instalar las dependencias y construir la aplicación
 RUN yarn install
 
-
 COPY . .
 
 RUN yarn build
@@ -22,7 +21,7 @@ RUN yarn build
 WORKDIR /app/dist
 
 # Exponer el puerto en el que se ejecuta la aplicación
-EXPOSE 3019
+EXPOSE 3016
 
 # Comando para iniciar la aplicación
 CMD ["node", "server.js"]
