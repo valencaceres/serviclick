@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 
@@ -9,7 +9,25 @@ export const HeroCarousel = ({ suscriptions }: any) => {
 
   const videoRef = useRef<HTMLVideoElement | null>(null)
 
+  const loadVideoCb = useCallback(() => {
+    if (videoRef.current) {
+      const video = videoRef.current
+      video.controls = false
+      video.muted = true
+      video.autoplay = true
+
+      setTimeout(() => {
+        const promise = video?.play()
+        if (promise?.then) {
+          promise.then(() => {}).catch(() => {})
+        }
+      }, 0)
+    }
+  }, [])
+
   useEffect(() => {
+    loadVideoCb()
+
     const handleTimeUpdate = () => {
       if (videoRef.current) {
         const currentPercentage =
@@ -34,7 +52,8 @@ export const HeroCarousel = ({ suscriptions }: any) => {
         videoRef.current.removeEventListener("timeupdate", handleTimeUpdate)
       }
     }
-  }, [videoProgress])
+  }, [videoProgress, loadVideoCb])
+
   return (
     <section className="container flex flex-col items-center justify-center pb-20">
       <div className=" flex flex-col gap-8 py-4 md:pb-10 md:pt-20">
@@ -58,9 +77,9 @@ export const HeroCarousel = ({ suscriptions }: any) => {
               top: 0,
               left: 0,
             }}
-            autoPlay
             loop
             muted
+            autoPlay
             id="video"
           >
             <source src={`/coaniquem/icons/heartvideo.mp4`} type="video/mp4" />

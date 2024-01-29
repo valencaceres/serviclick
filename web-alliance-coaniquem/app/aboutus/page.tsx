@@ -44,6 +44,7 @@ export default async function AboutUsPage() {
           alt="Sobre nosotros"
           quality={100}
           fill={true}
+          sizes="(max-width: 640px) 100vw, (max-width: 768px) 80vw, 1200px"
           className="absolute z-0 object-cover object-right md:object-center"
         />
         <div className="z-10 flex w-full items-center">
