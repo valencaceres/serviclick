@@ -1480,11 +1480,50 @@ const addBeneficiary = async (req: any, res: any) => {
   return res.status(200).json(leadBeneficiaryResponse.data);
 };
 
+const removeBeneficiary = async (req: any, res: any) => {
+  const { insured_id, beneficiary_id, subscription_id } = req.body;
+
+  const leadResponse = await Lead.getBySubscriptionId(subscription_id);
+  if (!leadResponse.success) {
+    createLogger.error({
+      model: "lead/getBySubscriptionId",
+      error: leadResponse.error,
+    });
+
+    res.status(500).json({ error: "error retrieving lead" });
+    return;
+  }
+
+  const { id: lead_id } = leadResponse.data;
+
+  const leadBeneficiaryResponse = await LeadBeneficiary.removeBeneficiary(
+    lead_id,
+    insured_id,
+    beneficiary_id
+  );
+
+  if (!leadBeneficiaryResponse.success) {
+    createLogger.error({
+      model: "leadBeneficiary/remove",
+      error: leadBeneficiaryResponse.error,
+    });
+    res.status(500).json({ error: "error removing lead beneficiary" });
+    return;
+  }
+
+  createLogger.info({
+    controller: "lead/removeBeneficiary",
+    message: "Lead Beneficiary deleted",
+  });
+
+  return res.status(200).json(leadBeneficiaryResponse.data.rows[0]);
+};
+
 const addFromCase = async (req: any, res: any) => {
   const { subscription_id, beneficiary_id, insured_id } = req.body;
 
+  console.log("sus:",subscription_id)
   const leadResponse = await Lead.getBySubscriptionId(subscription_id);
-
   if (!leadResponse.success) {
     createLogger.error({
       model: "lead/getBySubscriptionId",
@@ -1762,4 +1801,5 @@ export {
   getContract,
   addInsuredFromExcel,
   addFromCase,
+  removeBeneficiary,
 };

@@ -36,7 +36,7 @@ interface Insured {
   phone: string;
 }
 
-interface Beneficiary {
+export interface Beneficiary {
   id: string;
   rut: string;
   name: string;

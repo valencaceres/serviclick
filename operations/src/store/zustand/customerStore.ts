@@ -2,8 +2,7 @@ import { create } from "zustand";
 
 import { apiInstance } from "../../utils/api";
 
-import { ICustomer, ICustomerItem, IContractorData, Origin } from "../../interfaces/customer";
-
+import { ICustomer, ICustomerItem, IContractorData, Origin , Beneficiary} from "../../interfaces/customer";
 interface customerState {
   list: {
     summary: {
@@ -17,6 +16,7 @@ interface customerState {
     };
     data: ICustomerItem[];
   };
+  beneficiaryList: Beneficiary[]
   product: Origin
   contractor: IContractorData
   customer: ICustomer;
@@ -33,6 +33,7 @@ interface customerState {
   selectProduct: (product: Origin) => void;
   reset: () => void;
   resetAll: () => void;
+  setBeneficiaryList: (beneficiaryList: Beneficiary[]) => void;
   resetContractor: () => void;
 
 }
@@ -149,6 +150,7 @@ export const customerStore = create<customerState>((set, get) => ({
     data: [],
   },
   product: Product,
+  beneficiaryList: Product.beneficiaries || [],
   customer: initialData,
   contractor: initialContractorData,
   isLoading: false,
@@ -207,6 +209,7 @@ export const customerStore = create<customerState>((set, get) => ({
       set((state) => ({ ...state, isLoading: true }));
 
       const { data } = await apiInstance.get(`contractor/getCustomerById/${id}`);
+      
       set((state) => ({
         ...state,
         contractor: data,
@@ -224,7 +227,10 @@ export const customerStore = create<customerState>((set, get) => ({
     }
   },
   selectProduct: (product: Origin) =>
-    set((state) => ({ ...state, product: product })),
+    set((state) => ({ ...state, product: product, beneficiaryList: product.beneficiaries || []})),
+
+    setBeneficiaryList: (beneficiaryList: Beneficiary[]) =>
+    set((state) => ({ ...state, beneficiaryList: beneficiaryList })),
 
   reset: () =>
     set((state) => ({

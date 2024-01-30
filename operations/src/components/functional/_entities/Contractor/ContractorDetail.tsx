@@ -25,7 +25,6 @@ const ContractorDetail: React.FC<{ contractor: IContractorData }> = ({
 }) => {
   const { pathname } = useRouter();
   const { contractorLoading, getSubscriptionById } = useContractor();
-
   const [isEditing, setIsEditing] = useState(false);
 
   const handleSuscriptionRowClick = (item: contractor.ISubscription) => {

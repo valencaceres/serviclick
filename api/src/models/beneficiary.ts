@@ -131,7 +131,8 @@ const upsert: any = async (
   district: string,
   email: string,
   phone: string,
-  birthDate: string
+  birthDate: string,
+  normalizedRelationship: string,
 ) => {
   try {
     const arrayValues = [
@@ -144,10 +145,11 @@ const upsert: any = async (
       email,
       phone,
       birthDate,
+      normalizedRelationship,
     ];
 
     const resultBeneficiary = await pool.query(
-      `SELECT app.beneficiary_upsert($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+      `SELECT app.beneficiary_upsert($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
       arrayValues
     );
 
