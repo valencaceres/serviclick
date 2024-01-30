@@ -4,7 +4,7 @@ import { NextFunction, Request, Response } from "express";
 const auth = (req: Request, res: Response, next: NextFunction) => {
   const { apiKey } = config;
 
-  if (req.headers.id !== apiKey) {
+  if (req.headers["api-key"] !== apiKey) {
     res.status(401).json({ message: "Incorrect api key" });
     return;
   }

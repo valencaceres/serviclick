@@ -1,5 +1,5 @@
+-- DROP FUNCTION app.beneficiary_upsert();
 
-drop function app.beneficiary_upsert();
 CREATE OR REPLACE FUNCTION app.beneficiary_upsert(p_rut character varying, p_name character varying, p_paternallastname character varying, p_maternallastname character varying, p_address character varying, p_district character varying, p_email character varying, p_phone character varying, p_birthdate character varying, p_relationship character varying)
  RETURNS TABLE(beneficiary_id uuid, beneficiary_rut character varying, beneficiary_name character varying, beneficiary_paternallastname character varying, beneficiary_maternallastname character varying, beneficiary_address character varying, beneficiary_district character varying, beneficiary_email character varying, beneficiary_phone character varying, beneficiary_birthdate date, beneficiary_relationship character varying)
  LANGUAGE plpgsql

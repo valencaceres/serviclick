@@ -1,11 +1,14 @@
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
 import pool from "../util/database";
 
-const createToken: any = async (retail_id: string, email: string, password: string) => {
+const createToken: any = async (
+  retail_id: string,
+  email: string,
+  password: string
+) => {
   try {
-    // Verificar las credenciales
     const loginResult = await pool.query(
-      "SELECT email, password_hash FROM app.integrationusers WHERE email = $1",
+      "SELECT id, email, hash FROM app.integrationuser WHERE email = $1",
       [email]
     );
 
@@ -14,18 +17,20 @@ const createToken: any = async (retail_id: string, email: string, password: stri
     }
 
     const user = loginResult.rows[0];
-    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+    const isPasswordValid = await bcrypt.compare(password, user.hash);
 
     if (!isPasswordValid) {
       return { success: false, data: null, error: "Invalid email or password" };
     }
 
+    const { id: integrationuser_id } = loginResult.rows[0];
+
     const result = await pool.query(
-      "INSERT INTO app.integrationtoken (email, agent_id) VALUES ($1, $2) RETURNING email, token, agent_id",
-      [email, retail_id]
+      "INSERT INTO app.integrationtoken(integrationuser_id) VALUES ($1) RETURNING token",
+      [integrationuser_id]
     );
 
-    return { success: true, data: result.rows[0], error: null };
+    return { success: true, data: result.rows[0].token, error: null };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
   }
