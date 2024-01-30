@@ -56,6 +56,7 @@ export const DynamicFamily: FC<DynamicFamilyProps> = ({
       nameProduct: assistance.product_name,
     })
   }
+
   const icons = [
     {
       number: 1,
@@ -223,7 +224,7 @@ export const DynamicFamily: FC<DynamicFamilyProps> = ({
                 <div className="flex w-full items-center justify-center">
                   <div className="flex  justify-evenly  md:w-1/2 ">
                     <Link
-                      href={`${config.products}/contractor?productPlanId=${assistance.productplan_id}`}
+                      href={`https://productos.serviclick.cl/contractor?productPlanId=${assistance.productplan_id}`}
                       passHref
                       target="_blank"
                     >
