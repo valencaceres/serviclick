@@ -31,7 +31,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   const assistances = families.filter(
     (family: { family_id: string }) => family.family_id === params.id
   )
-
+  console.log(assistances)
   let uniqueAssistances = assistances.reduce((acc: any, current: any) => {
     let key = current.product_name.replace(" Familiar", "")
 
@@ -108,6 +108,7 @@ export default async function Page({ params }: { params: { id: string } }) {
       apple: "/apple-touch-icon.png",
     },
   }
+
   return (
     <>
       {params.id === "52257aa7-4a97-4d02-a08a-7d2324f49630" ? (
