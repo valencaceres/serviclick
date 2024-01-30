@@ -31,7 +31,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   const assistances = families.filter(
     (family: { family_id: string }) => family.family_id === params.id
   )
-  console.log(assistances)
+
   let uniqueAssistances = assistances.reduce((acc: any, current: any) => {
     let key = current.product_name.replace(" Familiar", "")
 
