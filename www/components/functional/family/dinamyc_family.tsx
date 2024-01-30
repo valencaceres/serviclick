@@ -82,8 +82,12 @@ export const DynamicFamily: FC<DynamicFamilyProps> = ({
       text: "ATENCIÓN PSICOLÓGICA",
     },
   ]
-  const uniqueAssistance = uniqueAssistancesArray[0]
   const normalizeName = (name: string) => name.toLowerCase().trim()
+  const assistanceCorrect =
+    uniqueAssistancesArray?.filter((item: any) =>
+      ["asistencia integral pro"].includes(normalizeName(item?.product_name))
+    ) || []
+  const uniqueAssistance = assistanceCorrect[0]
 
   const dentalArray = uniqueAssistance?.coverages
     ?.filter((item: any) =>
@@ -148,7 +152,7 @@ export const DynamicFamily: FC<DynamicFamilyProps> = ({
           className="absolute z-0 object-cover"
         />
         <div className="z-10 flex h-full w-full flex-col items-center justify-end gap-6 lg:flex-row lg:items-end lg:justify-center lg:gap-16">
-          {uniqueAssistancesArray?.map((assistance: any) => (
+          {assistanceCorrect?.map((assistance: any) => (
             <>
               <Link
                 key={assistance.product_id}
@@ -161,7 +165,7 @@ export const DynamicFamily: FC<DynamicFamilyProps> = ({
                   variant="secondary"
                   className="w-96 bg-secondary/90 px-6 py-8 text-xl uppercase hover:bg-secondary/90 lg:bg-secondary"
                 >
-                  ASISTENCIA INTEGRAL PRO
+                  {assistance.product_name}
                 </Button>
               </Link>
             </>
@@ -170,14 +174,14 @@ export const DynamicFamily: FC<DynamicFamilyProps> = ({
         <div className="z-5 absolute right-0 top-0 h-full w-full bg-black bg-opacity-30"></div>
       </section>
       <section className="flex flex-col items-center justify-center gap-32 py-10">
-        {uniqueAssistancesArray?.slice()?.map((assistance: any) => (
+        {assistanceCorrect?.slice()?.map((assistance: any) => (
           <div
             id={assistance.product_name}
             key={assistance.product_id}
             className="flex w-full flex-col items-center gap-6"
           >
             <h1 className="text-center text-3xl font-bold uppercase">
-              ASISTENCIA INTEGRAL PRO
+              {assistance.product_name}
             </h1>
             <div className="flex flex-col gap-4 md:flex-row lg:gap-20">
               <div className="flex flex-col gap-2">
@@ -223,7 +227,7 @@ export const DynamicFamily: FC<DynamicFamilyProps> = ({
                 <div className="flex w-full items-center justify-center">
                   <div className="flex  justify-evenly  md:w-1/2 ">
                     <Link
-                      href={`${config.products}/contractor?productPlanId=${assistance.productplan_id}`}
+                      href={`https://productos.serviclick.cl/contractor?productPlanId=${assistance.productplan_id}`}
                       passHref
                       target="_blank"
                     >

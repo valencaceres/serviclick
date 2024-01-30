@@ -108,6 +108,7 @@ export default async function Page({ params }: { params: { id: string } }) {
       apple: "/apple-touch-icon.png",
     },
   }
+
   return (
     <>
       {params.id === "52257aa7-4a97-4d02-a08a-7d2324f49630" ? (
