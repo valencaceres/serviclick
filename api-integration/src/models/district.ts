@@ -1,6 +1,6 @@
 import pool from "../util/database";
 
-const listAll: any = async () => {
+const getAll: any = async () => {
   try {
     const result = await pool.query(
       "SELECT id, region_number,  region_name, province_name, district_name  FROM app.district ORDER BY district_name"
@@ -11,4 +11,4 @@ const listAll: any = async () => {
   }
 };
 
-export { listAll };
+export { getAll };

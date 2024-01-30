@@ -3,9 +3,8 @@ import * as Lead from "../models/lead";
 
 import { UpsertRequest } from "../interfaces/leadRequest";
 
-
 const Upsert = async (req: any, res: any) => {
-    const requestData: UpsertRequest = req.body;
+  const requestData: UpsertRequest = req.body;
 
   const leadResponse = await Lead.upsert(requestData);
   if (!leadResponse.success) {
@@ -13,7 +12,9 @@ const Upsert = async (req: any, res: any) => {
       model: "lead/Upsert",
       error: leadResponse.error,
     });
-    res.status(500).json({ error: "Error creating lead " });
+    res
+      .status(500)
+      .json({ success: false, data: null, error: "Error creating lead " });
     return;
   }
 
@@ -21,7 +22,7 @@ const Upsert = async (req: any, res: any) => {
     controller: "lead/Upsert",
     message: "OK",
   });
-  res.status(200).json(leadResponse.data);
+  res.status(200).json({ success: true, data: leadResponse.data, error: null });
 };
 
 export { Upsert };

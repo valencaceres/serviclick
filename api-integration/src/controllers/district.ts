@@ -1,23 +1,26 @@
 import createLogger from "../util/logger";
 import * as District from "../models/district";
 
-const listAll = async (req: any, res: any) => {
-  const districtResponse = await District.listAll();
- console.log(req.body)
+const getAll = async (req: any, res: any) => {
+  const districtResponse = await District.getAll();
   if (!districtResponse.success) {
     createLogger.error({
-      model: "district/listAll",
+      model: "district/getAll",
       error: districtResponse.error,
     });
-    res.status(500).json({ error: "Error listing districts" });
+    res
+      .status(500)
+      .json({ success: false, data: null, error: "Error listing districts" });
     return;
   }
 
   createLogger.info({
-    controller: "district/listAll",
+    controller: "district/getAll",
     message: "OK",
   });
-  res.status(200).json(districtResponse.data);
+  res
+    .status(200)
+    .json({ success: true, data: districtResponse.data, error: null });
 };
 
-export { listAll };
+export { getAll };
