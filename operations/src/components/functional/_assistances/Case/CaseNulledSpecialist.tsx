@@ -182,7 +182,7 @@ const CaseNulledSpecialist = ({
         {caseValue.retail?.rut !== caseValue.customer.rut && (
           <InputText
             id="retail"
-            label="Empresa"
+            label="Origen"
             type="text"
             value={caseValue ? caseValue.retail?.name || "" : ""}
             width="530px"

@@ -1,3 +1,5 @@
+-- DROP FUNCTION app.case_get_all(uuid, varchar, varchar, uuid, int4, int4);
+
 CREATE OR REPLACE FUNCTION app.case_get_all(p_retail_id uuid, p_applicant_rut character varying, p_applicant_name character varying, p_stage_id uuid, p_records integer, p_page integer)
  RETURNS json
  LANGUAGE plpgsql
