@@ -8,7 +8,7 @@ import { VideoSection } from "@/components/functional/home/usevideo"
 
 export const metadata: Metadata = {
   title: {
-    default: "Serviclick - Todas las soluciones en la palma de tu mano",
+    default: "Serviclick - Alianza Coaniquem ",
     template: `%s - ${"Soluciones en la palma de tu mano."}`,
   },
   description: "Soluciones en la palma de tu mano.",
