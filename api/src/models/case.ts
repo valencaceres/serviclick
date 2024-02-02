@@ -8,6 +8,7 @@ import {
   _getServicesAndValues,
   _upsert,
   _getRetails,
+  _getOrigins,
   _getStatus,
   _getReimbursment,
   _getAllExports
@@ -797,6 +798,17 @@ const getRetails: any = async () => {
   }
 };
 
+const getOrigins: any = async () => {
+  try {
+    const result = await pool.query(_getOrigins);
+
+    return { success: true, data: result.rows[0].case_get_origins, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+}
+
+
 const getStatus = async () => {
   try {
     const result = await pool.query(_getStatus);
@@ -892,6 +904,7 @@ export {
   upsert,
   getRetails,
   getStatus,
+  getOrigins,
   updateReimbursment,
   getReimbursment,
   getCaseDates

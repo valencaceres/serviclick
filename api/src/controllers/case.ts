@@ -916,6 +916,22 @@ const getRetails = async (req: any, res: any) => {
   return res.status(200).json(response.data);
 };
 
+const getOrigins = async (req: any, res: any) => {
+  const response = await Case.getOrigins();
+  if(!response.success) {
+    createLogger.error({
+      model: `case/getOrigins`,
+      error: response.error,
+    });
+    return res.status(500).json({ error: "Error retrieving origins" });
+  }
+  createLogger.info({
+    controller: `case/getOrigins`,
+    message: `OK - Origins found`,
+  });
+  return res.status(200).json(response.data);
+};
+
 const getStatus = async (req: any, res: any) => {
   const response = await Case.getStatus();
 
@@ -1195,6 +1211,7 @@ export {
   getStatus,
   updateReimbursment,
   getAllReimbursments,
+  getOrigins,
   getCaseDates,
   exportCases
 };

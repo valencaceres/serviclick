@@ -153,7 +153,7 @@ if (response && response.data && response.data.byteLength > 0) {
   getRetails: async () => {
     try {
       set((state) => ({ ...state, isLoading: true }));
-      const { data } = await apiInstance.get(`/case/getRetails`);
+      const { data } = await apiInstance.get(`/case/getOrigins`);
       set((state) => ({ ...state, retailList: data, isLoading: false }));
     } catch (e) {
       set((state) => ({

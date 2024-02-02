@@ -59,7 +59,7 @@ const CaseTableReports = ({
   useEffect(() => {
     getRetails();
     getCaseDates();
-  }, [getCaseDates, getRetails]);
+  }, []);
 
   useEffect(() => {
     if (retailList) {
