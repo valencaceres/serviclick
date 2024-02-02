@@ -1,4 +1,4 @@
--- DROP FUNCTION app.case_get_report(uuid, varchar, varchar, int4, int4, bool);
+-- DROP FUNCTION app.case_get_report();
 
 CREATE OR REPLACE FUNCTION app.case_get_report(p_retail_id uuid, p_date_case character varying DEFAULT NULL::character varying, p_date_event character varying DEFAULT NULL::character varying, p_records integer DEFAULT NULL::integer, p_page integer DEFAULT NULL::integer, p_export boolean DEFAULT false)
  RETURNS json
@@ -200,11 +200,21 @@ OR
                 cas.id,
                 cas.number,
                 cas.createddate,
-                CASE WHEN ret.id IS NULL THEN cus.id ELSE ret.id END AS customer_id,
-                CASE WHEN ret.id IS NULL THEN CONCAT(cus.name, ' ', cus.paternallastname, ' ', cus.maternallastname) ELSE ret.name END AS customer_name,
-                CASE WHEN ben.id IS NULL THEN ins.rut ELSE ben.rut END AS applicant_rut,
-                CASE WHEN ben.id IS NULL THEN CONCAT(ins.name, ' ', ins.paternallastname, ' ', ins.maternallastname) ELSE CONCAT(ben.name, ' ', ben.paternallastname, ' ', ben.maternallastname) END AS applicant_name,
-                asi.name AS assistance_name,
+               	 CASE
+                WHEN ret.id IS NOT NULL THEN ret.id
+                WHEN age.id IS NOT NULL THEN age.id
+                WHEN bro.id IS NOT NULL THEN bro.id
+                ELSE cus.id
+            end as customer_id,
+					CASE
+                WHEN ret.id IS NOT NULL THEN ret.name
+                WHEN age.id IS NOT NULL THEN age.name
+                WHEN bro.id IS NOT NULL THEN bro.name
+                ELSE concat(cus.name, ' ', cus.paternallastname, ' ', cus.maternallastname)
+            end  as customer_name,
+					case when ins.id is not null then ins.rut else ben.rut end as applicant_rut,
+					case when ins.id is not null then concat(ins.name, ' ', ins.paternallastname, ' ', ins.maternallastname) else concat(ben.name, ' ', ben.paternallastname, ' ', ben.maternallastname) end as applicant_name,
+					asi.name as assistance_name,
                 cas.stage_id AS stage_id,
                 sta.code AS stage_code,
                 sta.name AS stage_name

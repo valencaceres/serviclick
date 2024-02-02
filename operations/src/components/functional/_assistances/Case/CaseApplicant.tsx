@@ -192,7 +192,7 @@ const CaseApplicant = ({
     }
   }, [caseValue?.type, caseValue?.beneficiary, caseValue?.insured]);
 
-  useEffect(() => {
+    useEffect(() => {
     if (caseValue.type === "I") {
       setCase({
         ...caseValue,
@@ -200,7 +200,7 @@ const CaseApplicant = ({
         beneficiary: null,
       });
     }
-  }, [caseValue?.type]);
+  }, [caseValue?.type]); 
 
   return (
     <ContentCell gap="20px">

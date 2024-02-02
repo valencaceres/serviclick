@@ -389,9 +389,9 @@ const getAssistanceData: any = async (
 const getCaseDates = async () => {
   try {
     const caseDatesResult = await pool.query('SELECT * FROM app.case_get_dates()');
-    
-    const {  createdDates, eventDates } = caseDatesResult.rows[0].get_case_dates;
-    return { success: true, data:{createdDates, eventDates}, error: null };
+
+    const { createdDates, eventDates } = caseDatesResult.rows[0].case_get_dates; 
+    return { success: true, data: { createdDates, eventDates }, error: null };
 
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };

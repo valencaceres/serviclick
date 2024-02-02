@@ -79,7 +79,7 @@ const CaseTableReports = ({
       setCaseDateWithAll(modifiedCaseDate);
     }
   }, [caseDate]);
-
+  console.log(caseDate);
   useEffect(() => {
     if (caseEventDate) {
       const modifiedCaseEventDate = [
@@ -184,8 +184,8 @@ const CaseTableReports = ({
         <Table width="1100px">
           <TableHeader>
             <TableCell width="100px">N° Caso</TableCell>
-            <TableCell width="220px">Cliente</TableCell>
-            <TableCell width="300px">Asegurado / Beneficiario</TableCell>
+            <TableCell width="220px">Origen</TableCell>
+            <TableCell width="300px">Titular</TableCell>
             <TableCell width="250px">Servicio</TableCell>
             <TableCell width="210px">Estado</TableCell>
             <TableCellEnd />
