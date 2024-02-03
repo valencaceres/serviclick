@@ -32,6 +32,7 @@ import {
   getServicesAndValues,
   upsert,
   getRetails,
+  getOrigins,
   getStatus,
   getAllExports,
   getCaseDates,
@@ -54,6 +55,7 @@ CaseRouter.post(
 );
 CaseRouter.get("/getAll", auth, getAll);
 CaseRouter.get("/getRetails", auth, getRetails);
+CaseRouter.get("/getOrigins", auth, getOrigins);
 CaseRouter.get("/getStatus", auth, getStatus);
 CaseRouter.get("/getBeneficiaryByRut/:rut", auth, getBeneficiaryByRut);
 CaseRouter.get("/getById/:id",auth, getById);

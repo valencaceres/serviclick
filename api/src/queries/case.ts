@@ -72,7 +72,7 @@ export const _getRetails = `
                 inner join app.case cas on ret.id = cas.retail_id
         order 	by
                 ret.name`;
-
+export const _getOrigins = `select app.case_get_origins()`;
 export const _getStatus = `
         select	distinct
 		sta.id,

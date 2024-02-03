@@ -62,9 +62,9 @@ const CaseTable = ({
         <ContentRow gap="5px" align="center">
           <ComboBox
             id="retail_id"
-            label="Empresa"
+            label="Origen"
             value={filters?.retail_id || ""}
-            placeHolder=":: Seleccione empresa ::"
+            placeHolder=":: Seleccione un origen ::"
             onChange={(e: any) =>
               setFilters({ ...filters, retail_id: e.target.value })
             }
@@ -74,7 +74,7 @@ const CaseTable = ({
             width="250px"
           />
           <InputText
-            label="Rut"
+            label="Rut Titular"
             width="150px"
             value={filters?.applicant_rut || ""}
             onBlur={handleBlur}
@@ -88,7 +88,7 @@ const CaseTable = ({
             }}
           />
           <InputText
-            label="Beneficiario"
+            label="Beneficiario Titular"
             width="390px"
             value={filters?.applicant_name || ""}
             onChange={(e: any) => {
@@ -117,8 +117,8 @@ const CaseTable = ({
         <Table width="1100px">
           <TableHeader>
             <TableCell width="100px">N° Caso</TableCell>
-            <TableCell width="220px">Cliente</TableCell>
-            <TableCell width="300px">Asegurado / Beneficiario</TableCell>
+            <TableCell width="220px">Origen</TableCell>
+            <TableCell width="300px">Titular</TableCell>
             <TableCell width="250px">Servicio</TableCell>
             <TableCell width="210px">Estado</TableCell>
             <TableCellEnd />

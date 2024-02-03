@@ -1,3 +1,5 @@
+-- DROP FUNCTION app.case_get_all(uuid, varchar, varchar, uuid, int4, int4);
+
 CREATE OR REPLACE FUNCTION app.case_get_all(p_retail_id uuid, p_applicant_rut character varying, p_applicant_name character varying, p_stage_id uuid, p_records integer, p_page integer)
  RETURNS json
  LANGUAGE plpgsql
@@ -20,10 +22,12 @@ begin
 				inner join app.stage sta on cas.stage_id = sta.id
 				left outer join app.beneficiary ben on cas.beneficiary_id = ben.id
 				left outer join app.retail ret on cas.retail_id = ret.id
+				left outer join app.agent age on cas.retail_id = age.id
+				left outer join app.broker bro on cas.retail_id = bro.id
 	where 	((p_retail_id is null) or (lea.agent_id = p_retail_id)) and
 			((p_stage_id is null) or (cas.stage_id = p_stage_id)) and
-			((p_applicant_rut is null) or (case when ben.id is null then ins.rut else ben.rut end = p_applicant_rut)) and
-			((p_applicant_name is null) or (lower(trim(case when ben.id is null then concat(ins.name, ' ', ins.paternallastname, ' ', ins.maternallastname) else concat(ben.name, ' ', ben.paternallastname, ' ', ben.maternallastname) end)) like concat('%', lower(trim(p_applicant_name)), '%')));
+			((p_applicant_rut is null) or (case when ins.id is not null then ins.rut else ben.rut end = p_applicant_rut)) and
+			((p_applicant_name is null) or (lower(trim(case when ins.id is not null then concat(ins.name, ' ', ins.paternallastname, ' ', ins.maternallastname) else concat(ben.name, ' ', ben.paternallastname, ' ', ben.maternallastname) end)) like concat('%', lower(trim(p_applicant_name)), '%')));
 			
 	if p_records is null then
 		p_records := p_cases;
@@ -59,10 +63,20 @@ begin
 	from (	select	cas.id,
 					cas.number,
 					cas.createddate,
-					case when ret.id is null then cus.id else ret.id end as customer_id,
-					case when ret.id is null then concat(cus.name, ' ', cus.paternallastname, ' ', cus.maternallastname) else ret.name end as customer_name,
-					case when ben.id is null then ins.rut else ben.rut end as applicant_rut,
-					case when ben.id is null then concat(ins.name, ' ', ins.paternallastname, ' ', ins.maternallastname) else concat(ben.name, ' ', ben.paternallastname, ' ', ben.maternallastname) end as applicant_name,
+					 CASE
+                WHEN ret.id IS NOT NULL THEN ret.id
+                WHEN age.id IS NOT NULL THEN age.id
+                WHEN bro.id IS NOT NULL THEN bro.id
+                ELSE cus.id
+            end as customer_id,
+					CASE
+                WHEN ret.id IS NOT NULL THEN ret.name
+                WHEN age.id IS NOT NULL THEN age.name
+                WHEN bro.id IS NOT NULL THEN bro.name
+                ELSE concat(cus.name, ' ', cus.paternallastname, ' ', cus.maternallastname)
+            end  as customer_name,
+					case when ins.id is not null then ins.rut else ben.rut end as applicant_rut,
+					case when ins.id is not null then concat(ins.name, ' ', ins.paternallastname, ' ', ins.maternallastname) else concat(ben.name, ' ', ben.paternallastname, ' ', ben.maternallastname) end as applicant_name,
 					asi.name as assistance_name,
 					cas.stage_id as stage_id,
 					sta.code as stage_code,
@@ -75,10 +89,12 @@ begin
 						inner join app.stage sta on cas.stage_id = sta.id
 						left outer join app.beneficiary ben on cas.beneficiary_id = ben.id
 						left outer join app.retail ret on cas.retail_id = ret.id
+						left outer join app.agent age on cas.retail_id = age.id
+						left outer join app.broker bro on cas.retail_id = bro.id
 			where 	((p_retail_id is null) or (lea.agent_id = p_retail_id)) and
 					((p_stage_id is null) or (cas.stage_id = p_stage_id)) and
-					((p_applicant_rut is null) or (case when ben.id is null then ins.rut else ben.rut end = p_applicant_rut)) and
-					((p_applicant_name is null) or (lower(trim(case when ben.id is null then concat(ins.name, ' ', ins.paternallastname, ' ', ins.maternallastname) else concat(ben.name, ' ', ben.paternallastname, ' ', ben.maternallastname) end)) like concat('%', lower(trim(p_applicant_name)), '%')))
+					((p_applicant_rut is null) or (case when ins.id is not null then ins.rut else ben.rut end = p_applicant_rut)) and
+					((p_applicant_name is null) or (lower(trim(case when ins.id is not null then concat(ins.name, ' ', ins.paternallastname, ' ', ins.maternallastname) else concat(ben.name, ' ', ben.paternallastname, ' ', ben.maternallastname) end)) like concat('%', lower(trim(p_applicant_name)), '%')))
 			order 	by
 					cas.number desc
 			limit 	p_records

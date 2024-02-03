@@ -1,4 +1,5 @@
-drop function app.case_get_applicant_by_rut;
+-- DROP FUNCTION app.case_get_applicant_by_rut(varchar);
+
 CREATE OR REPLACE FUNCTION app.case_get_applicant_by_rut(p_rut character varying)
  RETURNS json
  LANGUAGE plpgsql
@@ -10,30 +11,13 @@ BEGIN
     SELECT
         json_build_object(
             'type', result.type,
-            'retails', jsonb_agg(
-                CASE
-                    WHEN result.retail_id IS NOT NULL THEN json_build_object(
-                        'id', result.retail_id,
-                        'rut', result.retail_rut,
-                        'name', result.retail_name
-                    )
-                    WHEN result.agent_id IS NOT NULL THEN json_build_object(
-                        'id', result.agent_id,
-                        'name', result.agent_name
-                    )
-                    WHEN result.broker_id IS NOT NULL THEN json_build_object(
-                        'id', result.broker_id,
-                        'rut', result.broker_rut,
-                        'name', result.broker_name
-                    )
-                    ELSE NULL
-                END
-            ),
+       
             'customer', json_build_object(
                 'id', result.customer_id,
                 'rut', result.customer_rut,
                 'name', result.customer_name
             ),
+
             'insured', json_build_object(
                 'id', result.insured_id,
                 'rut', result.insured_rut,
@@ -58,28 +42,50 @@ BEGIN
                 'phone', result.beneficiary_phone,
                 'birthDate', result.beneficiary_birthdate
             ) END,
+              'retails', (
+    SELECT DISTINCT jsonb_agg(jsonb_build_object(
+        'id', COALESCE(ret.id, age.id, bro.id),
+        'name', COALESCE(ret.name, age.name, bro.name)
+      
+    ))
+     FROM app.insured ins
+            INNER JOIN app.leadinsured lin ON ins.id = lin.insured_id           
+            INNER JOIN app.lead lea ON lin.lead_id = lea.id AND NOT lea.policy_id IS NULL
+            INNER JOIN app.leadproduct lpr ON lea.id = lpr.lead_id
+            INNER JOIN app.productplan ppl ON lpr.product_id = ppl.product_id AND lpr.productplan_id = ppl.plan_id
+            INNER JOIN app.product pro ON ppl.product_id = pro.id
+            INNER JOIN app.customer cus ON lea.customer_id = cus.id                        
+            LEFT OUTER JOIN app.retail ret ON ppl.agent_id = ret.id
+           LEFT OUTER JOIN app.agent age on ppl.agent_id = age.id
+           LEFT OUTER JOIN app.broker bro on ppl.agent_id = bro.id
+            LEFT OUTER JOIN app.leadbeneficiary lbe ON lea.id = lbe.lead_id AND lbe.insured_id = ins.id
+            LEFT OUTER JOIN app.beneficiary ben ON lbe.beneficiary_id = ben.id
+      
+
+        WHERE ins.rut = p_rut OR (ben.rut = p_rut AND ben.rut IS NOT NULL)
+),
            'products', (
     select distinct jsonb_agg(jsonb_build_object(
         'id', pro.id,
         'name', pro.name,
         'agent_id', ppl.agent_id
     ))
-    FROM app.insured ins
-    INNER JOIN app.leadinsured lin ON ins.id = lin.insured_id           
+           FROM app.insured ins
+            INNER JOIN app.leadinsured lin ON ins.id = lin.insured_id           
             INNER JOIN app.lead lea ON lin.lead_id = lea.id AND NOT lea.policy_id IS NULL
             INNER JOIN app.leadproduct lpr ON lea.id = lpr.lead_id
             INNER JOIN app.productplan ppl ON lpr.product_id = ppl.product_id AND lpr.productplan_id = ppl.plan_id
             INNER JOIN app.product pro ON ppl.product_id = pro.id
-    WHERE ins.id = result.insured_id
+            LEFT OUTER JOIN app.leadbeneficiary lbe ON lea.id = lbe.lead_id AND lbe.insured_id = ins.id
+            LEFT OUTER JOIN app.beneficiary ben ON lbe.beneficiary_id = ben.id
+     
+        WHERE ins.rut = p_rut OR (ben.rut = p_rut AND ben.rut IS NOT NULL)
 )
         )
     INTO json_result
     FROM (
-        SELECT DISTINCT
+        SELECT  distinct
             CASE WHEN ins.rut = p_rut THEN 'I' ELSE 'B' END AS type,
-            ret.id::varchar AS retail_id,
-            ret.rut AS retail_rut,
-            ret.name AS retail_name,
             cus.id AS customer_id,
             cus.rut AS customer_rut,
             CONCAT(cus.name, ' ', cus.paternallastname, ' ', cus.maternallastname) AS customer_name,
@@ -105,12 +111,9 @@ BEGIN
             ben.birthdate AS beneficiary_birthdate,
             pro.id AS product_id,
             pro.name AS product_name,
-            ppl.agent_id as product_agent_id,
-            age.name as agent_name,
-            age.id as agent_id,
-            bro.name as broker_name,
-            bro.rut as broker_rut,
-            bro.id as broker_id
+            ppl.agent_id as product_agent_id
+            
+         
         FROM app.insured ins
             INNER JOIN app.leadinsured lin ON ins.id = lin.insured_id           
             INNER JOIN app.lead lea ON lin.lead_id = lea.id AND NOT lea.policy_id IS NULL
@@ -120,13 +123,11 @@ BEGIN
             INNER JOIN app.customer cus ON lea.customer_id = cus.id                        
             LEFT OUTER JOIN app.leadbeneficiary lbe ON lea.id = lbe.lead_id AND lbe.insured_id = ins.id
             LEFT OUTER JOIN app.beneficiary ben ON lbe.beneficiary_id = ben.id
-            LEFT OUTER JOIN app.retail ret ON ppl.agent_id = ret.id
-            LEFT OUTER JOIN app.agent age on ppl.agent_id = age.id
-            LEFT OUTER JOIN app.broker bro on ppl.agent_id = bro.id
+     
         WHERE ins.rut = p_rut OR (ben.rut = p_rut AND ben.rut IS NOT NULL)
         ORDER BY customer_name, product_name
     ) AS result
-    GROUP BY
+    GROUP by
         result.type,
         result.insured_id,
         result.insured_rut,
@@ -153,12 +154,16 @@ BEGIN
         result.product_id,
         result.customer_id,
         result.customer_rut,
-        result.customer_name,
-        result.retail_id,
-        result.retail_rut,
-        result.retail_name;
+        result.customer_name;
+
+      
+
+  
+  
+     
 
     RETURN CASE WHEN json_result IS NULL THEN json_build_object('type', 'C') ELSE json_result END;
 END;
 
-$function$;
+$function$
+;

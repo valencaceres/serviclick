@@ -916,6 +916,22 @@ const getRetails = async (req: any, res: any) => {
   return res.status(200).json(response.data);
 };
 
+const getOrigins = async (req: any, res: any) => {
+  const response = await Case.getOrigins();
+  if(!response.success) {
+    createLogger.error({
+      model: `case/getOrigins`,
+      error: response.error,
+    });
+    return res.status(500).json({ error: "Error retrieving origins" });
+  }
+  createLogger.info({
+    controller: `case/getOrigins`,
+    message: `OK - Origins found`,
+  });
+  return res.status(200).json(response.data);
+};
+
 const getStatus = async (req: any, res: any) => {
   const response = await Case.getStatus();
 
@@ -1020,7 +1036,7 @@ const getAllExports = async (req: any, res: any) => {
 const getCaseDates = async (req: any, res: any) => {
 
   const caseResponse = await Case.getCaseDates();
-
+   
   if (!caseResponse.success) {
     createLogger.error({
       model: `case/getCaseDates`,
@@ -1055,7 +1071,7 @@ const exportCases = async (req:any, res:any) => {
   
       for (const retailName in groupedData) {
           if (groupedData.hasOwnProperty(retailName)) {
-            
+            const safeSheetName = retailName.replace(/[\\\/\?\*\[\]]/g, '_').substring(0, 30);
               const dataForExcel = (groupedData[retailName] as any[]).map((caseItem) => {
                 const formattedDiscount = caseItem.register_imedamount ? formatCurrency(caseItem.register_imedamount) : '-';
                 const formattedReimbursement = caseItem.register_amount ? formatCurrency(caseItem.register_amount) : '-';
@@ -1067,20 +1083,20 @@ const exportCases = async (req:any, res:any) => {
                       'N° CASO': caseItem.number,
                       'N° POLIZA': caseItem.policy_id,
                       'RUT ASEGURADO': caseItem.applicant_rut,
-                      'FECHA DE ATENCION': formattedDate,
+                      'FECHA DE ATENCIÓN': formattedDate,
                       'BENEFICIARIO': caseItem.applicant_relationship,
                       'NACIMIENTO': formattedBirthdate,
-                      'TIPO DE ATENCION': caseItem.assistance_name,
+                      'TIPO DE ATENCIÓN': caseItem.assistance_name,
                       'MONTO DE REEMBOLSO': formattedReimbursement,
                       'DESCUENTO POR I-MED': formattedDiscount,
-                      'REGION': caseItem.applicant_district,
+                      'REGIÓN': caseItem.applicant_district,
                       'CONTACTO': caseItem.applicant_phone,
                   };
               });
   
               const worksheet = xlsx.utils.json_to_sheet(dataForExcel);
               centerTextInWorksheet(worksheet);
-              xlsx.utils.book_append_sheet(workbook, worksheet, retailName);
+              xlsx.utils.book_append_sheet(workbook, worksheet, safeSheetName);
   
               const colWidths = [
                   { wpx: 200 }, 
@@ -1115,6 +1131,7 @@ const exportCases = async (req:any, res:any) => {
       return res.status(404).json({ error: "there is no cases to export." });
     }
   } catch (error) {
+    console.error(error)
     createLogger.error({
       model: 'case/exportCases',
       error: error,
@@ -1195,6 +1212,7 @@ export {
   getStatus,
   updateReimbursment,
   getAllReimbursments,
+  getOrigins,
   getCaseDates,
   exportCases
 };

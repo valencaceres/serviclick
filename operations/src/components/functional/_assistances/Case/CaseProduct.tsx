@@ -40,7 +40,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
   } = useCase();
   const { retailList, getAll, resetRetail } = useRetail();
   const { user } = useUser();
-  
+
   const [applicant, setApplicant] = useState<IApplicant>();
   const [hasLoadedServices, setHasLoadedServices] = useState<boolean>(false);
   const [productList, setProductList] = useState<IRetProduct[]>([]);
@@ -272,7 +272,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
       },
     });
   }, [retails]);
-
+  console.log(caseValue);
   return (
     <ContentCell gap="20px">
       <ContentCell gap="5px">
@@ -280,8 +280,8 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
           (caseValue?.type === "C" && caseId.retail === null ? (
             <ComboBox
               id="assistance"
-              label="Empresa"
-              placeHolder=":: Seleccione una empresa ::"
+              label="Origen"
+              placeHolder=":: Seleccione un origen ::"
               value={
                 caseValue && caseValue.retail ? caseValue.retail.id || "" : ""
               }
@@ -294,8 +294,8 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
           ) : (
             <ComboBox
               id="assistance"
-              label="Empresa"
-              placeHolder=":: Seleccione una empresa ::"
+              label="Origen"
+              placeHolder=":: Seleccione una origen ::"
               value={
                 caseValue && caseValue.retail ? caseValue.retail.id || "" : ""
               }
@@ -313,7 +313,7 @@ const CaseProduct = ({ setIsEnabledSave, itWasFound }: ICaseProductProps) => {
               caseValue?.retail?.rut !== caseValue.customer?.rut && (
                 <InputText
                   id="retail"
-                  label="Empresa"
+                  label="Origen"
                   type="text"
                   value={caseValue?.retail?.name || ""}
                   width="530px"

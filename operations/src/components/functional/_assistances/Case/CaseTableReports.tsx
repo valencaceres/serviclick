@@ -19,14 +19,13 @@ import {
 import Icon from "../../../ui/Icon";
 import { useExportCase } from "~/store/hooks";
 import { useRouter } from "next/router";
-import { ComboBox} from "~/components/ui";
-import  ComboboxDates from "~/components/ui/ComboBox/ComboboxDatesindex"
-import { monthTranslations } from "~/data/masters";   
+import { ComboBox } from "~/components/ui";
+import ComboboxDates from "~/components/ui/ComboBox/ComboboxDatesindex";
+import { monthTranslations } from "~/data/masters";
 interface CaseDate {
   month: string;
   year: string;
 }
-
 
 const CaseTableReports = ({
   filters,
@@ -39,16 +38,28 @@ const CaseTableReports = ({
 }: any) => {
   const router = useRouter();
 
-  const { getRetails, retailsList: retailList, list: caseList ,caseDate, caseEventDate, getCaseDates, isLoading} = useExportCase();
-  const [retailListWithAll, setRetailListWithAll] = useState<{ id: null; name: string; }[]>([]);
+  const {
+    getRetails,
+    retailsList: retailList,
+    list: caseList,
+    caseDate,
+    caseEventDate,
+    getCaseDates,
+    isLoading,
+  } = useExportCase();
+  const [retailListWithAll, setRetailListWithAll] = useState<
+    { id: null; name: string }[]
+  >([]);
   const [caseDateWithAll, setCaseDateWithAll] = useState<CaseDate[]>([]);
-  const [caseEventDateWithAll, setCaseEventDateWithAll] = useState<CaseDate[]>([]);
+  const [caseEventDateWithAll, setCaseEventDateWithAll] = useState<CaseDate[]>(
+    []
+  );
   const [isLoadingComponent, setIsLoadingComponent] = useState(true);
 
   useEffect(() => {
     getRetails();
     getCaseDates();
-  }, [getCaseDates, getRetails]);
+  }, []);
 
   useEffect(() => {
     if (retailList) {
@@ -68,11 +79,10 @@ const CaseTableReports = ({
       setCaseDateWithAll(modifiedCaseDate);
     }
   }, [caseDate]);
-  
+  console.log(caseDate);
   useEffect(() => {
     if (caseEventDate) {
       const modifiedCaseEventDate = [
-      
         ...caseEventDate,
 
         { month: "Todos", year: "" },
@@ -80,31 +90,34 @@ const CaseTableReports = ({
       setCaseEventDateWithAll(modifiedCaseEventDate);
     }
   }, [caseEventDate]);
-  const caseDateWithAllTranslated = caseDateWithAll.map(date => {
+  const caseDateWithAllTranslated = caseDateWithAll.map((date) => {
     const monthName = monthTranslations[date.month.trim()] || date.month.trim();
     return { ...date, month: monthName };
   });
-  const caseEventDateWithAllTranslated = caseEventDateWithAll.map(date => {
+  const caseEventDateWithAllTranslated = caseEventDateWithAll.map((date) => {
     const monthName = monthTranslations[date.month.trim()] || date.month.trim();
     return { ...date, month: monthName };
   });
 
-  let caseListData =caseList || { data: [], summary: { cases: 0 }, pagination: { total: 0, page: 1 } };
+  let caseListData = caseList || {
+    data: [],
+    summary: { cases: 0 },
+    pagination: { total: 0, page: 1 },
+  };
 
   useEffect(() => {
-    if (filters.retail_id === "" || (filters.case_date === "" && filters.event_date === "")) {
+    if (
+      filters.retail_id === "" ||
+      (filters.case_date === "" && filters.event_date === "")
+    ) {
       caseListData.data = [];
       caseListData.summary.cases = 0;
       caseListData.pagination.total = 0;
       caseListData.pagination.page = 1;
       setIsLoadingComponent(false);
-
-      }
-       else {
-
+    } else {
       caseListData.data = caseList.data;
     }
-   
   }, [filters, caseList]);
 
   return (
@@ -113,9 +126,9 @@ const CaseTableReports = ({
         <ContentRow gap="5px" align="center">
           <ComboBox
             id="retail_id"
-            label="Empresa"
+            label="Origen"
             value={filters?.retail_id || ""}
-            placeHolder=":: Seleccione empresa ::"
+            placeHolder=":: Seleccione un origen ::"
             onChange={(e: any) =>
               setFilters({ ...filters, retail_id: e.target.value })
             }
@@ -124,63 +137,81 @@ const CaseTableReports = ({
             dataText={"name"}
             width="350px"
           />
-                  <ComboboxDates
+          <ComboboxDates
             id="case_date"
             label="Fecha del caso"
-            value={filters?.case_date  || ""}
+            value={filters?.case_date || ""}
             placeHolder=":: Seleccione fecha ::"
             onChange={(e: any) =>
-              setFilters({ ...filters, case_date: e.target.value, event_date: "" })
+              setFilters({
+                ...filters,
+                case_date: e.target.value,
+                event_date: "",
+              })
             }
             data={caseDateWithAllTranslated}
             dataValue={"month"}
             dataText={"month"}
             width="350px"
           />
-              <ComboboxDates
+          <ComboboxDates
             id="case_event_date"
             label="Fecha del evento del caso"
             value={filters?.event_date || ""}
             placeHolder=":: Seleccione fecha ::"
             onChange={(e: any) =>
-              setFilters({ ...filters, event_date: e.target.value, case_date: "", })
+              setFilters({
+                ...filters,
+                event_date: e.target.value,
+                case_date: "",
+              })
             }
             data={caseEventDateWithAllTranslated}
             dataValue={"month"}
             dataText={"month"}
             width="350px"
           />
-          <ButtonIcon disabled={filters.retail_id === "" || (filters.case_date === "" && filters.event_date === "")} onClick={() => search()} iconName="search" color="gray" />
+          <ButtonIcon
+            disabled={
+              filters.retail_id === "" ||
+              (filters.case_date === "" && filters.event_date === "")
+            }
+            onClick={() => search()}
+            iconName="search"
+            color="gray"
+          />
         </ContentRow>
         <Table width="1100px">
           <TableHeader>
             <TableCell width="100px">N° Caso</TableCell>
-            <TableCell width="220px">Cliente</TableCell>
-            <TableCell width="300px">Asegurado / Beneficiario</TableCell>
+            <TableCell width="220px">Origen</TableCell>
+            <TableCell width="300px">Titular</TableCell>
             <TableCell width="250px">Servicio</TableCell>
             <TableCell width="210px">Estado</TableCell>
             <TableCellEnd />
           </TableHeader>
           {isLoadingComponent === false && (
-          <TableDetail>
-            {caseListData.data && 
-              caseListData.data.map((caseItem: any, idx: number) => (
-                <TableRow key={idx}>
-                  <TableCell align="center" width="100px">
-                    {caseItem.number}
-                  </TableCell>
-                  <TableCell width="220px">{caseItem.customer_name}</TableCell>
-                  <TableCell width="300px">{caseItem.applicant_name}</TableCell>
-                  <TableCell width="250px">
-                    {caseItem.assistance_name}
-                  </TableCell>
-                  <TableCell width="210px">
-                    {caseItem.stage_name}
-                   
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableDetail>)}
+            <TableDetail>
+              {caseListData.data &&
+                caseListData.data.map((caseItem: any, idx: number) => (
+                  <TableRow key={idx}>
+                    <TableCell align="center" width="100px">
+                      {caseItem.number}
+                    </TableCell>
+                    <TableCell width="220px">
+                      {caseItem.customer_name}
+                    </TableCell>
+                    <TableCell width="300px">
+                      {caseItem.applicant_name}
+                    </TableCell>
+                    <TableCell width="250px">
+                      {caseItem.assistance_name}
+                    </TableCell>
+                    <TableCell width="210px">{caseItem.stage_name}</TableCell>
+                  </TableRow>
+                ))}
+            </TableDetail>
+          )}
         </Table>
         <ContentRow gap="5px" align="space-between">
           <ContentCellSummary
