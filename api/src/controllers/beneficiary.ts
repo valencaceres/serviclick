@@ -76,8 +76,9 @@ const upsert = async (req: any, res: any) => {
     email,
     phone,
     birthDate,
+    relationship,
   } = req.body;
-
+  const normalizedRelationship = relationship && relationship.trim() !== "" ? relationship.trim() : null;
   const response = await BeneficiaryModel.upsert(
     rut,
     name,
@@ -87,7 +88,8 @@ const upsert = async (req: any, res: any) => {
     district,
     email,
     phone,
-    birthDate
+    birthDate,
+    normalizedRelationship
   );
 
   if (!response.success) {
@@ -129,6 +131,7 @@ const upsert = async (req: any, res: any) => {
     email: sanitizedValuesArray[7],
     phone: sanitizedValuesArray[8],
     birthDate: sanitizedValuesArray[9],
+    relationship: sanitizedValuesArray[10],
   };
   res.status(200).json(data);
 };

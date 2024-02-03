@@ -138,7 +138,6 @@ const ContractorPersonForm = ({ contractor, isEditing, setIsEditing }: any) => {
       setValue("email", contractor?.customer?.email);
       setValue("phone", contractor?.customer?.phone);
     }
-    
   }, [contractor, setValue]);
 
   return (

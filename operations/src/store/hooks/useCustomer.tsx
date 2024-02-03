@@ -5,6 +5,7 @@ const useCustomer = () => {
     list: customerList,
     customer,
     product,
+    beneficiaryList,
     contractor,
     isLoading: customerIsLoading,
     isError: customerIsError,
@@ -12,6 +13,7 @@ const useCustomer = () => {
   } = customerStore((state) => ({
     list: state.list,
     product: state.product,
+    beneficiaryList: state.beneficiaryList,
     contractor: state.contractor,
     customer: state.customer,
     isLoading: state.isLoading,
@@ -24,6 +26,7 @@ const useCustomer = () => {
     reset: resetCustomer,
     getContractorById,
     selectProduct,
+    setBeneficiaryList,
     resetContractor,
   } = customerStore();
 
@@ -31,15 +34,17 @@ const useCustomer = () => {
     customerList,
     customer,
     product,
+    beneficiaryList,
     contractor,
     customerIsLoading,
     customerIsError,
     customerError,
     getByRutOrName,
     getContractorById,
+    setBeneficiaryList,
     selectProduct,
     resetCustomer,
-    resetContractor
+    resetContractor,
   };
 };
 

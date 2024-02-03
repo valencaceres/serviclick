@@ -9,11 +9,17 @@ import { ContractorDetail } from "../../../components/functional/_entities/Contr
 import { useUI } from "../../../hooks";
 import { useQueryContractor } from "~/hooks/query";
 import { useCustomer } from "~/store/hooks";
+import useRelationship from "~/store/hooks/useRelationship";
 const ContractorDetailPage = () => {
   const router = useRouter();
 
   const { setTitleUI } = useUI();
-  const { contractor: contractor, getContractorById, resetContractor} = useCustomer();
+  const {
+    contractor: contractor,
+    getContractorById,
+    resetContractor,
+  } = useCustomer();
+  const { getAllRelationships } = useRelationship();
 
   const [leadProductSelected, setLeadProductSelected] = useState<any>(null);
   const handleClickHome = () => {
@@ -26,9 +32,10 @@ const ContractorDetailPage = () => {
 
   useEffect(() => {
     setTitleUI("Cliente");
+    getAllRelationships();
   }, []);
   useEffect(() => {
-    resetContractor()
+    resetContractor();
 
     if (router.query.id) {
       getContractorById(router.query.id as string);

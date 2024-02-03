@@ -35,6 +35,19 @@ const createModel: any = async (
   }
 };
 
+const removeBeneficiary: any = async (lead_id: string, insured_id: string, beneficiary_id: string) => {
+  try {
+    const result = await pool.query(
+      `DELETE FROM app.leadbeneficiary WHERE lead_id = $1 AND insured_id = $2 AND beneficiary_id = $3 RETURNING *`,
+      [lead_id, insured_id, beneficiary_id]
+    );
+
+    return { success: true, data: result, error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 const getByLeadId: any = async (lead_id: string) => {
   try {
     const result = await pool.query(
@@ -61,4 +74,4 @@ const getByLeadId: any = async (lead_id: string) => {
   }
 };
 
-export { createModel, getByLeadId, deleteByLeadId };
+export { createModel, getByLeadId, deleteByLeadId, removeBeneficiary };

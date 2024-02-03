@@ -16,6 +16,7 @@ import {
   getContract,
   addInsuredFromExcel,
   addFromCase,
+  removeBeneficiary,
 } from "../controllers/lead";
 import isAuthenticated from "../middlewares/isAuthenticated";
 import isAdmin from "../middlewares/isAdmin";
@@ -61,6 +62,7 @@ LeadRouter.post(
   isAdmin,
   addBeneficiary
 );
+LeadRouter.delete("/removeBeneficiary", auth, isAuthenticated, isAdmin, removeBeneficiary);
 LeadRouter.get("/getStatistics", auth, isAuthenticated, isAdmin, getStatistics);
 LeadRouter.get(
   "/getContract/:lead_id",

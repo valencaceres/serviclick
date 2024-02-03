@@ -17,6 +17,7 @@ import {
   TableCellEnd,
   TableDetail,
   TableHeader,
+  TableIcons,
   TableRow,
 } from "../../../ui/Table";
 import ComboBox from "../../../ui/ComboBox";
@@ -29,7 +30,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/Dialog";
-
+import { useRouter } from "next/router";
 import { emailRegEx, numberRegEx, rutRegEx } from "~/utils/regEx";
 import { rutValidate } from "~/utils/validations";
 import { formatRut, unFormatRut } from "~/utils/rut";
@@ -38,15 +39,39 @@ import { useContractor, useDistrict } from "../../../../hooks";
 import { useQueryBeneficiary, useQueryLead } from "~/hooks/query";
 
 import { IContractorInsured } from "~/interfaces/contractor";
-import { useCustomer } from "~/store/hooks";
-
+import { useBeneficiary, useCustomer } from "~/store/hooks";
+import { ScrollArea } from "~/components/ui/Scroll-area";
+import useRelationship from "~/store/hooks/useRelationship";
+import Icon from "~/components/ui/Icon";
+import { IBeneficiary } from "~/store/zustand/beneficiaryStore";
+import { Card, CardHeader, CardTitle } from "~/components/ui/Card";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "~/components/ui/AlertDialog";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "~/components/ui/Accordion";
 const ContractorBeneficiaries = ({ contractor }: any) => {
   const [rutInsured, setRutInsured] = useState("");
   const [insured, setInsured] = useState<IContractorInsured | undefined>(
     undefined
   );
-
-  const { selectProduct, product } = useCustomer();
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [beneficiaryToEdit, setBeneficiaryToEdit] = useState<IBeneficiary>();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false);
+  const { selectProduct, product, beneficiaryList } = useCustomer();
 
   const handleChangeProduct = (e: any) => {
     const existingProduct = contractor.origins.find(
@@ -135,11 +160,14 @@ const ContractorBeneficiaries = ({ contractor }: any) => {
           <TableCell width="120px">Rut</TableCell>
           <TableCell width="505px">Nombre completo</TableCell>
           <TableCell width="150px">Parentesco</TableCell>
+          <TableCell width="50px"></TableCell>
+          <TableCell width="50px"></TableCell>
+
           <TableCellEnd />
         </TableHeader>
         <TableDetail>
-          {product?.beneficiaries &&
-            product?.beneficiaries.map((item: any, idx: number) => (
+          {beneficiaryList &&
+            beneficiaryList?.map((item: any, idx: number) => (
               <TableRow key={idx}>
                 <TableCell width="60px" align="center">
                   {idx + 1}
@@ -155,6 +183,28 @@ const ContractorBeneficiaries = ({ contractor }: any) => {
                     item.maternalLastName}
                 </TableCell>
                 <TableCell width="150px">{item.relationship}</TableCell>
+                <TableCell width="50px">
+                  <TableIcons>
+                    <Icon
+                      onClick={() => {
+                        setBeneficiaryToEdit(item),
+                          setIsOpen(true),
+                          setIsEdit(true);
+                      }}
+                      iconName="edit"
+                    />
+                  </TableIcons>
+                </TableCell>
+                <TableCell width="50px">
+                  <TableIcons>
+                    <Icon
+                      onClick={() => {
+                        setBeneficiaryToEdit(item), setIsOpenDelete(true);
+                      }}
+                      iconName="delete"
+                    />
+                  </TableIcons>
+                </TableCell>
               </TableRow>
             ))}
         </TableDetail>
@@ -177,7 +227,24 @@ const ContractorBeneficiaries = ({ contractor }: any) => {
               : `No hay cargas`}
           </ContentCellSummary>
         </ContentRow>
-        {product?.subscription_id !== 0 && <AddBeneficiary insured={insured} />}
+        {product?.subscription_id !== 0 && (
+          <AddBeneficiary
+            setIsEdit={setIsEdit}
+            edit={isEdit}
+            beneficiaryToEdit={beneficiaryToEdit}
+            insured={insured}
+            setIsOpen={setIsOpen}
+            isOpen={isOpen}
+            subscription_id={product.subscription_id}
+          />
+        )}
+        <DeleteBeneficiary
+          subscription_id={product.subscription_id}
+          open={isOpenDelete}
+          onOpenChange={setIsOpenDelete}
+          beneficiary={beneficiaryToEdit}
+          insured_id={insured?.id}
+        />
       </ContentRow>
     </Fragment>
   );
@@ -185,28 +252,59 @@ const ContractorBeneficiaries = ({ contractor }: any) => {
 
 export default ContractorBeneficiaries;
 
-const AddBeneficiary = ({ insured }: any) => {
+const AddBeneficiary = ({
+  insured,
+  edit,
+  beneficiaryToEdit,
+  setIsEdit,
+  setIsOpen,
+  subscription_id,
+  isOpen,
+}: any) => {
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger>
-        <Button className="h-10 w-10 rounded-full p-2">
+        <Button
+          onClick={() => {
+            setIsEdit(false);
+            setIsOpen(true);
+          }}
+        >
           <PlusIcon />
         </Button>
       </DialogTrigger>
-      <DialogContent className="bg-white">
-        <DialogHeader>
-          <DialogTitle>Agregar Beneficiario</DialogTitle>
-          <DialogDescription>
-            Completa los datos para agregar un beneficiario.
-          </DialogDescription>
-        </DialogHeader>
-        <NewBeneficiaryForm insured={insured} />
+      <DialogContent className="bg-white lg:h-[700px]  ">
+        <ScrollArea className="px-4">
+          <DialogHeader>
+            <DialogTitle>
+              {edit === true ? "Editar Beneficiario" : "Agregar Beneficiario"}
+            </DialogTitle>
+            <DialogDescription>
+              {edit
+                ? "Completa los datos para editar al beneficiario."
+                : "Completa los datos para agregar un beneficiario."}
+            </DialogDescription>
+          </DialogHeader>
+          <NewBeneficiaryForm
+            beneficiaryToEdit={beneficiaryToEdit}
+            edit={edit}
+            insured={insured}
+            setIsOpen={setIsOpen}
+            subscription_id={subscription_id}
+          />
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );
 };
 
-const NewBeneficiaryForm = ({ insured }: any) => {
+const NewBeneficiaryForm = ({
+  insured,
+  edit,
+  beneficiaryToEdit,
+  setIsOpen,
+  subscription_id,
+}: any) => {
   const {
     reset,
     register,
@@ -243,13 +341,20 @@ const NewBeneficiaryForm = ({ insured }: any) => {
   const phone = watch("phone");
   const relationship = watch("relationship");
 
+  const router = useRouter();
   const { list: districtList } = useDistrict();
+  const {
+    getContractorById,
+    selectProduct,
+    product,
+    setBeneficiaryList,
+    beneficiaryList,
+  } = useCustomer();
   const { subscriptionItem, getSubscriptionById } = useContractor();
-
   const { mutate: addBeneficiary } = useQueryLead().useAddBeneficiary();
-
   const { data: person } = useQueryBeneficiary().useGetByRut(rut);
-
+  const { relationshipList } = useRelationship();
+  const { upsertBeneficiary, beneficiaryLoading } = useBeneficiary();
   const isValidRut = (rut: string) => {
     if (
       (rutRegEx.test(unFormatRut(rut)) &&
@@ -295,36 +400,72 @@ const NewBeneficiaryForm = ({ insured }: any) => {
   };
 
   const send = async (data: any) => {
-    try {
-      addBeneficiary(
-        {
-          insured_id: insured?.id,
-          subscription_id: subscriptionItem.subscription_id,
-          beneficiary_data: {
-            rut,
-            name,
-            paternalLastName,
-            maternalLastName,
-            birthDate,
-            address,
-            district,
-            email,
-            phone,
-            relationship,
+    if (edit === false) {
+      try {
+        addBeneficiary(
+          {
+            insured_id: insured?.id,
+            subscription_id: subscription_id,
+            beneficiary_data: {
+              rut,
+              name,
+              paternalLastName,
+              maternalLastName,
+              birthDate,
+              address,
+              district,
+              email,
+              phone,
+              relationship,
+            },
           },
-        },
-        {
-          onSuccess: () => {
-            reset();
-            getSubscriptionById(Number(subscriptionItem.subscription_id));
-          },
-        }
-      );
-    } catch (error) {
-      console.log(error);
+          {
+            onSuccess: (e) => {
+              setIsOpen(false);
+
+              setBeneficiaryList([
+                ...beneficiaryList,
+                {
+                  id: e?.beneficiary_id,
+
+                  rut,
+                  name,
+                  paternalLastName,
+                  maternalLastName,
+                  birthDate,
+                  address,
+                  district,
+                  email,
+                  phone,
+                  relationship,
+                },
+              ]);
+              reset();
+              getSubscriptionById(Number(subscription_id));
+            },
+          }
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    if (edit === true) {
+      upsertBeneficiary({
+        id: beneficiaryToEdit?.id,
+        rut,
+        name,
+        paternalLastName,
+        maternalLastName,
+        birthDate,
+        address,
+        district,
+        email,
+        phone,
+        relationship,
+      });
+      setIsOpen(false);
     }
   };
-
   useEffect(() => {
     if (person) {
       setValue("name", person.name);
@@ -338,6 +479,21 @@ const NewBeneficiaryForm = ({ insured }: any) => {
     }
   }, [person]);
 
+  useEffect(() => {
+    if (edit && beneficiaryToEdit) {
+      setValue("rut", beneficiaryToEdit.rut);
+      setValue("name", beneficiaryToEdit.name);
+      setValue("paternalLastName", beneficiaryToEdit.paternalLastName);
+      setValue("maternalLastName", beneficiaryToEdit.maternalLastName);
+      setValue("birthDate", beneficiaryToEdit.birthDate);
+      setValue("address", beneficiaryToEdit.address);
+      setValue("district", beneficiaryToEdit.district);
+      setValue("email", beneficiaryToEdit.email);
+      setValue("phone", beneficiaryToEdit.phone);
+      setValue("relationship", beneficiaryToEdit.relationship);
+    }
+  }, [edit, beneficiaryToEdit]);
+
   return (
     <form onSubmit={handleSubmit(send)} className="flex flex-col gap-2 py-2">
       <div className="flex w-full flex-col">
@@ -345,6 +501,7 @@ const NewBeneficiaryForm = ({ insured }: any) => {
           Rut
         </Label>
         <Input
+          disabled={edit}
           errorText={errors.rut?.message}
           {...register("rut", {
             required: "Este campo es requerido",
@@ -521,24 +678,90 @@ const NewBeneficiaryForm = ({ insured }: any) => {
         <Label htmlFor="email" className="text-xs text-dusty-gray">
           Parentesco
         </Label>
-        <Input
-          errorText={errors.relationship?.message}
-          {...register("relationship", {
-            required: "Este campo es requerido",
-          })}
-          type="text"
-          id="relationship"
-          placeholder="Parentesco"
-          maxLength={9}
-          className={`w-full ${
-            errors?.relationship?.message?.length ? "border-red-500" : ""
-          }`}
+        <ComboBox
+          label="Parentesco"
+          width="100%"
           value={relationship}
+          onChange={(e: any) => {
+            setValue("relationship", e.target.value);
+          }}
+          placeHolder="Seleccione parentesco"
+          data={relationshipList}
+          dataValue="name"
+          dataText="name"
         />
       </div>
+
       <DialogFooter>
-        <Button>Agregar</Button>
+        {beneficiaryLoading ? (
+          <span>Cargando...</span>
+        ) : (
+          <Button disabled={beneficiaryLoading}>
+            {edit ? "Editar" : "Agregar"}
+          </Button>
+        )}
       </DialogFooter>
     </form>
+  );
+};
+
+const DeleteBeneficiary = ({
+  beneficiary,
+  open,
+  onOpenChange,
+  insured_id,
+  subscription_id,
+}: any) => {
+  const { removeLeadBeneficiary, beneficiaryLoading } = useBeneficiary();
+  const router = useRouter();
+  const [confirmBeneficiaryName, setConfirmBeneficiaryName] =
+    useState<string>("");
+
+  return (
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle className="text-red-500">
+            ¿Estás absolutamente seguro/a?
+          </AlertDialogTitle>
+          <AlertDialogDescription className="text-red-500">
+            Esta acción no se puede deshacer. Esta eliminará el beneficiario de
+            la suscripcion permanentemente.
+          </AlertDialogDescription>
+          <div className="py-2">
+            <Label htmlFor="field-name" className="text-red-500">
+              Escribe {""}
+              <span className="font-bold">{`"${
+                beneficiary?.name ?? ""
+              }"`}</span>{" "}
+              para confirmar
+            </Label>
+            <Input
+              id="field-name"
+              placeholder="Nombre del beneficiario"
+              value={confirmBeneficiaryName}
+              onChange={(e) => setConfirmBeneficiaryName(e.target.value)}
+            />
+          </div>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+          <AlertDialogAction
+            type="button"
+            disabled={confirmBeneficiaryName !== beneficiary?.name}
+            onClick={() => {
+              removeLeadBeneficiary(
+                insured_id,
+                beneficiary?.id,
+                subscription_id
+              );
+            }}
+            className="bg-red-500 font-bold text-white hover:bg-red-600 focus:bg-red-500 active:bg-red-600"
+          >
+            Eliminar
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };
