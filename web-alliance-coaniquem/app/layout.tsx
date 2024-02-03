@@ -40,14 +40,14 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <head />
         <Script
           strategy="lazyOnload"
-          src={`https://www.googletagmanager.com/gtag/js?id=G-KR0658EHGJ`}
+          src={`https://www.googletagmanager.com/gtag/js?id=G-G5JLEFGF76`}
         />
         <Script strategy="lazyOnload">
           {`
                     window.dataLayer = window.dataLayer || [];
                     function gtag(){dataLayer.push(arguments);}
                     gtag('js', new Date());
-                    gtag('config', 'G-KR0658EHGJ', {
+                    gtag('config', 'G-G5JLEFGF76', {
                     page_path: window.location.pathname,
                     });
                 `}
