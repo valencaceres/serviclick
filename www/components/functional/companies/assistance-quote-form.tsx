@@ -27,6 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../ui/select"
+import withScrollAnimation from "../withScrollAnimation"
 
 const FormSchema = z.object({
   size: z.string().min(1),
@@ -48,10 +49,7 @@ interface Families {
 interface AssistanceQuoteFormProps {
   families: Families[]
 }
-
-export default function AssistanceQuoteForm({
-  families,
-}: AssistanceQuoteFormProps) {
+function AssistanceQuoteForm({ families }: AssistanceQuoteFormProps) {
   const { toast } = useToast()
   const router = useRouter()
 
@@ -288,7 +286,7 @@ export default function AssistanceQuoteForm({
       </Form>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="border-none focus:border-none">
-          <div className="flex flex-col gap-4 text-center items-center">
+          <div className="flex flex-col items-center gap-4 text-center">
             <h1 className="text-4xl font-semibold text-primary">
               ¡Felicidades!
             </h1>
@@ -336,3 +334,5 @@ export default function AssistanceQuoteForm({
     </>
   )
 }
+
+export default withScrollAnimation(AssistanceQuoteForm)

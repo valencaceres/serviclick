@@ -2,9 +2,10 @@ import { Metadata } from "next"
 
 import AssistanceQuoteForm from "@/components/functional/companies/assistance-quote-form"
 import { Details } from "@/components/functional/companies/details"
-
-import { GrupoMHM } from "../aboutus/page"
+import DetailsSection from "@/components/functional/companies/details-section"
+import HeroCompaniesSection from "@/components/functional/companies/hero-companies-section"
 import Mainteance from "@/components/functional/maintenance"
+import GrupoMHM from "@/components/functional/mhm-group"
 
 export const metadata: Metadata = {
   title: {
@@ -35,10 +36,8 @@ export default async function CompaniesPage() {
     }
   )
   const families = await responseFamilies.json()
-  if (!Array.isArray(families) || families.length === 0){
-    return (
-      <Mainteance />
-      )
+  if (!Array.isArray(families) || families.length === 0) {
+    return <Mainteance />
   }
   let uniqueFamilyNames = new Set()
   let uniqueFamilies = families.filter((family: { family_name: unknown }) => {
@@ -48,39 +47,13 @@ export default async function CompaniesPage() {
     }
     return false
   })
-  
+
   return (
     <>
-      <section className="relative h-[550px] flex items-center px-20">
-        <video
-          style={{
-            objectFit: "cover",
-            width: "100%",
-            height: "100%",
-            position: "absolute",
-            objectPosition: "top",
-            top: 0,
-            left: 0,
-          }}
-          autoPlay
-          loop
-          muted
-          id="video"
-        >
-          <source src="/companies.mp4" type="video/mp4" />
-        </video>
-        <div className="z-10 w-96">
-          <h1 className="uppercase text-6xl text-background font-bebas text-center md:text-start">
-            Juntos somos un gran equipo.
-          </h1>
-        </div>
-        <div className="bg-black absolute w-full h-full z-5 top-0 right-0 bg-opacity-30"></div>
-      </section>
-      <section className="container flex justify-center flex-col items-center py-10">
-        <Details />
-      </section>
-      <section className="container flex justify-center flex-col items-center py-10">
-        <h1 className="pb-6 uppercase text-4xl font-bebas text-center">
+      <HeroCompaniesSection />
+      <DetailsSection />
+      <section className="container flex flex-col items-center justify-center py-10">
+        <h1 className="pb-6 text-center font-bebas text-4xl uppercase">
           Cotiza la asistencia para tu empresa
         </h1>
         <AssistanceQuoteForm families={uniqueFamilies} />

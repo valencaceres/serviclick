@@ -61,6 +61,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <div className="relative flex min-h-[100dvh] flex-col">
               <SiteHeader siteConfig={siteConfig} />
+
               <div className="flex-1">{children}</div>
               <SiteFooter />
             </div>

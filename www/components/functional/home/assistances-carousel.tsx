@@ -1,5 +1,7 @@
 "use client"
 
+import { motion } from "framer-motion"
+import { useInView } from "react-intersection-observer"
 import { Navigation, SwiperOptions } from "swiper"
 
 import { AssistanceCard } from "../assistance-card"
@@ -21,7 +23,6 @@ interface AssistancesCarouselProps {
 export const AssistancesCarousel = ({
   assistances,
 }: AssistancesCarouselProps) => {
-  // Filtrar asistencias con URL no nula
   const filteredAssistances = assistances.filter(
     (assistance) => assistance.url !== null
   )
