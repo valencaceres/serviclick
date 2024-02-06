@@ -46,10 +46,9 @@ const ProductList = () => {
     <div className={styles.products}>
       <div className={styles.menu}>
         {products.map((product, idx: number) => (
-          <div className="relative">
+          <div key={idx} className="relative">
             <button
               className={styles.option}
-              key={idx}
               onClick={() => handleClickOption(product)}
             >
               {product.name}
