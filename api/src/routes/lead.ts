@@ -58,8 +58,7 @@ LeadRouter.post("/addInsured", auth, isAuthenticated, isAdmin, addInsured);
 LeadRouter.post(
   "/addBeneficiary",
   auth,
-  isAuthenticated,
-  isAdmin,
+
   addBeneficiary
 );
 LeadRouter.delete("/removeBeneficiary", auth, isAuthenticated, isAdmin, removeBeneficiary);

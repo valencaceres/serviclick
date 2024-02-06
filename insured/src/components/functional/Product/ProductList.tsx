@@ -42,19 +42,27 @@ const ProductList = () => {
   const handleClickOption = (product: any) => {
     router.push(`/product?id=${product.id}`);
   };
-
   return (
     <div className={styles.products}>
       <div className={styles.menu}>
         {products.map((product, idx: number) => (
-          <button
-            className={styles.option}
-            key={idx}
-            onClick={() => handleClickOption(product)}>
-            {product.name}
-          </button>
+          <div className="relative">
+            <button
+              className={styles.option}
+              key={idx}
+              onClick={() => handleClickOption(product)}
+            >
+              {product.name}
+            </button>
+            {product.collection[0].balance > 0 && (
+              <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-4 py-2 rounded-full text-xs font-semibold">
+                Adeudado: {product.collection[0].balance}
+              </span>
+            )}
+          </div>
         ))}
       </div>
+
       <Tooltip isShow={showTooltip} onClose={handleCloseTooltip}>
         <div>
           Mediante esta opción podrás revisar la información de los productos
