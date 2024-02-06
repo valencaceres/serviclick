@@ -1,6 +1,6 @@
--- DROP FUNCTION app.spinsuredprofile(text);
+-- DROP FUNCTION app.insured_profile(text);
 
-CREATE OR REPLACE FUNCTION app.spinsuredprofile(v_ins_rut text)
+CREATE OR REPLACE FUNCTION app.insured_profile(v_ins_rut text)
  RETURNS json
  LANGUAGE sql
 AS $function$
