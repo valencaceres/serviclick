@@ -35,14 +35,7 @@ const MhmGroup = () => {
           loading="lazy"
           unoptimized
         />
-        <Image
-          src="/mhm4.png"
-          alt="MHM4"
-          width={300}
-          height={80}
-          loading="lazy"
-          unoptimized
-        />
+
         <Image
           src="/mhm5.png"
           alt="MHM5"

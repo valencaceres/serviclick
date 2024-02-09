@@ -10,11 +10,12 @@ const withScrollAnimation = (Component: any) => {
     })
 
     const variants = {
-      hidden: { opacity: 0 },
+      hidden: { scale: 0.9, opacity: 0 },
       show: {
+        scale: 1,
         opacity: 1,
         transition: {
-          duration: 0.5,
+          duration: 1,
         },
       },
     }

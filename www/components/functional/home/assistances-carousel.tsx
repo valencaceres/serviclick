@@ -4,8 +4,8 @@ import { motion } from "framer-motion"
 import { useInView } from "react-intersection-observer"
 import { Navigation, SwiperOptions } from "swiper"
 
-import { AssistanceCard } from "../assistance-card"
-import { CustomSwiper } from "../slider"
+import AssistanceCard from "../assistance-card"
+import { CustomCarousel } from "../carousel"
 
 interface Assistance {
   id: string
@@ -27,29 +27,9 @@ export const AssistancesCarousel = ({
     (assistance) => assistance.url !== null
   )
 
-  const options: SwiperOptions = {
-    modules: [Navigation],
-    breakpoints: {
-      1280: {
-        slidesPerView: 4,
-      },
-      960: {
-        slidesPerView: 3,
-      },
-      480: {
-        slidesPerView: 2,
-      },
-      0: {
-        slidesPerView: 1,
-      },
-    },
-    loop: true,
-    navigation: true,
-  }
-
   const slides = filteredAssistances.map((assistance) => (
     <div
-      className="mx-auto w-full max-w-[300px] shadow-md duration-75 hover:shadow-none"
+      className="mx-auto w-full max-w-[300px] gap-4 shadow-md duration-75 hover:shadow-none"
       key={assistance.id}
     >
       <AssistanceCard
@@ -61,5 +41,5 @@ export const AssistancesCarousel = ({
     </div>
   ))
 
-  return <CustomSwiper options={options} slides={slides} />
+  return <CustomCarousel slides={slides} />
 }

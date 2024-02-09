@@ -51,7 +51,7 @@ const OriginFamily: FC<DynamicFamilyProps> = ({
             </>
           ))}
         </div>
-        <div className="z-5 absolute right-0 top-0 h-full w-full bg-black bg-opacity-30"></div>
+        <div className="z-5 absolute inset-0 right-0 top-0 h-full w-full bg-gradient-to-t from-[#03495C] to-transparent opacity-60 "></div>
       </section>
       <section className="flex flex-col items-center justify-center gap-32 py-10">
         {uniqueAssistancesArray?.map((assistance: any) => (

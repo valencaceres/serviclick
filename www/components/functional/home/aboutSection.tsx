@@ -19,7 +19,7 @@ const AboutUsSection = () => {
             <li>Oportuno</li>
           </ul>
         </div>
-        <div className="relative order-1 mx-4 flex items-center justify-center rounded-xl shadow-lg lg:-bottom-24 lg:left-16 lg:order-2 lg:h-[450px] lg:w-[800px]">
+        <div className="relative order-1 mx-4 flex items-center justify-center rounded-xl shadow-lg lg:-bottom-24 lg:left-16 lg:order-2 lg:h-[450px] lg:w-[810px]">
           <video
             style={{
               objectFit: "cover",

@@ -8,7 +8,7 @@ const VisionSection = () => {
   return (
     <section className="flex justify-center bg-primary text-background">
       <div className="max-w-8xl flex flex-auto flex-wrap-reverse items-center justify-between">
-        <div className="relative h-[300px] w-full object-cover md:w-1/3">
+        <div className="relative h-[300px] w-full object-cover md:w-1/2">
           <Image
             src="/ourvision.jpeg"
             alt="Nuestra visión"
@@ -17,7 +17,7 @@ const VisionSection = () => {
             loading="lazy"
           />
         </div>
-        <div className="flex w-full flex-col gap-4 px-6 py-4 md:w-2/3 lg:px-20">
+        <div className="flex w-full flex-col gap-4 px-6 py-4 md:w-1/2 lg:px-20">
           <h1 className="text-center font-bebas text-4xl uppercase">
             Nuestra visión
           </h1>

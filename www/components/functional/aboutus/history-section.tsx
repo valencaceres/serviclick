@@ -9,7 +9,7 @@ const HistorySection = () => {
       <div className="flex gap-4">
         <div className="flex max-w-4xl flex-col gap-4 px-4">
           <h1 className="font-bebas text-4xl uppercase">Nuestra historia</h1>
-          <p>
+          <p className="text-xl">
             Nuestra compañía fue fundada en 2002 con el propósito de brindar
             servicios de protección integral que mejoren la calidad de vida de
             las personas. Formamos parte de MHM Empresas y tenemos presencia en

@@ -23,7 +23,6 @@ const AssistanceSection = ({ assistances }: AssistancesCarouselProps) => {
           SELECCIONA LA ASISTENCIA QUE NECESITAS
         </h1>
       </div>
-
       <AssistancesCarousel assistances={assistances} />
     </section>
   )

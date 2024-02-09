@@ -52,10 +52,11 @@ export default async function CompaniesPage() {
     <>
       <HeroCompaniesSection />
       <DetailsSection />
-      <section className="container flex flex-col items-center justify-center py-10">
+      <section className="container flex w-full flex-col items-center justify-center py-10">
         <h1 className="pb-6 text-center font-bebas text-4xl uppercase">
           Cotiza la asistencia para tu empresa
         </h1>
+
         <AssistanceQuoteForm families={uniqueFamilies} />
       </section>
       <GrupoMHM />
