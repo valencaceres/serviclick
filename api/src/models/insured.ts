@@ -171,9 +171,10 @@ const getById: any = async (id: string) => {
 const getProfile: any = async (rut: string) => {
   try {
     const result = await pool.query(`SELECT app.insured_profile($1)`, [rut]);
+ 
     return {
       success: true,
-      data: result.rows[0].spinsuredprofile,
+      data: result.rows[0].insured_profile,
       error: null,
     };
   } catch (e) {
