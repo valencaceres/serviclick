@@ -32,8 +32,10 @@ function FaqAccordion() {
         <AccordionContent>
           <Accordion type="single" collapsible>
             <AccordionItem value="item-1">
-              <AccordionTrigger>¿Cómo obtengo mi asistencia?</AccordionTrigger>
-              <AccordionContent>
+              <AccordionTrigger className="font-bold">
+                ¿Cómo obtengo mi asistencia?
+              </AccordionTrigger>
+              <AccordionContent className="font-semibold">
                 <p>
                   Si deseas contratar nuestra asistencia, simplemente haz clic
                   en el botón "¡Lo quiero!" o contáctanos al 600 0860 580 o a
@@ -42,10 +44,10 @@ function FaqAccordion() {
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-2">
-              <AccordionTrigger>
+              <AccordionTrigger className="font-bold">
                 ¿Necesito Tarjeta de Crédito para suscribir mi asistencia?
               </AccordionTrigger>
-              <AccordionContent>
+              <AccordionContent className="font-semibold">
                 <p>
                   Puedes utilizar tanto tarjetas de débito como tarjetas de
                   crédito que sean compatibles con nuestro sistema de pago
@@ -54,16 +56,18 @@ function FaqAccordion() {
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-3">
-              <AccordionTrigger>¿Tiene deducible?</AccordionTrigger>
-              <AccordionContent>
+              <AccordionTrigger className="font-bold">
+                ¿Tiene deducible?
+              </AccordionTrigger>
+              <AccordionContent className="font-semibold">
                 <p>No, no hay deducible.</p>
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-4">
-              <AccordionTrigger>
+              <AccordionTrigger className="font-bold">
                 ¿Existe límite de edad para suscribirme?
               </AccordionTrigger>
-              <AccordionContent>
+              <AccordionContent className="font-semibold">
                 <p>No tenemos límites de edad para suscripción.</p>
               </AccordionContent>
             </AccordionItem>
@@ -79,37 +83,37 @@ function FaqAccordion() {
         <AccordionContent>
           <Accordion type="single" collapsible>
             <AccordionItem value="item-1">
-              <AccordionTrigger>
+              <AccordionTrigger className="font-bold">
                 ¿Puedo suscribir a alguien más a la asistencia?
               </AccordionTrigger>
-              <AccordionContent>
+              <AccordionContent className="font-semibold">
                 <p>
                   Sí, puedes suscribir a todas las personas que desees proteger.
                 </p>
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-2">
-              <AccordionTrigger>
+              <AccordionTrigger className="font-bold">
                 ¿Puedo contratar más de una asistencia?
               </AccordionTrigger>
-              <AccordionContent>
+              <AccordionContent className="font-semibold">
                 <p>Sí, puedes contratar tantas asistencias como desees.</p>
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-3">
-              <AccordionTrigger>
+              <AccordionTrigger className="font-bold">
                 ¿Debo tener una previsión de salud?
               </AccordionTrigger>
-              <AccordionContent>
+              <AccordionContent className="font-semibold">
                 <p>Debes tener previsión Fonasa o Isapre.</p>
               </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value="item-4">
-              <AccordionTrigger>
+              <AccordionTrigger className="font-bold">
                 ¿Debo contratar por un período de 12 meses obligatoriamente?
               </AccordionTrigger>
-              <AccordionContent>
+              <AccordionContent className="font-semibold">
                 <p>
                   No, nuestras Asistencias no requieren un compromiso de
                   permanencia de 12 meses. Puedes disfrutar del servicio durante
@@ -118,10 +122,10 @@ function FaqAccordion() {
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-5">
-              <AccordionTrigger>
+              <AccordionTrigger className="font-bold">
                 ¿Necesito ser mayor de edad para contratar?
               </AccordionTrigger>
-              <AccordionContent>
+              <AccordionContent className="font-semibold">
                 <p>
                   Sí, debes ser mayor de edad y contar con una tarjeta de débito
                   o crédito para realizar el pago mensual.
@@ -140,10 +144,10 @@ function FaqAccordion() {
         <AccordionContent>
           <Accordion type="single" collapsible>
             <AccordionItem value="item-1">
-              <AccordionTrigger>
+              <AccordionTrigger className="font-bold">
                 ¿Puedo utilizar mi Asistencia el mismo mes en que me suscribo?
               </AccordionTrigger>
-              <AccordionContent>
+              <AccordionContent className="font-semibold">
                 <p>
                   Sí, puedes utilizarla durante el mismo mes de suscripción. Sin
                   embargo, es importante tener en cuenta que existe un período
@@ -153,10 +157,10 @@ function FaqAccordion() {
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-2">
-              <AccordionTrigger>
+              <AccordionTrigger className="font-bold">
                 ¿En qué parte del país puedo utilizar los servicios?
               </AccordionTrigger>
-              <AccordionContent>
+              <AccordionContent className="font-semibold">
                 <p>
                   Puedes utilizar nuestros servicios en todo el país, excepto en
                   territorios insulares y antárticos.
@@ -164,10 +168,10 @@ function FaqAccordion() {
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-3">
-              <AccordionTrigger>
+              <AccordionTrigger className="font-bold">
                 ¿A quién debo contactar una vez que me haya suscrito?
               </AccordionTrigger>
-              <AccordionContent>
+              <AccordionContent className="font-semibold">
                 <p>
                   Puedes comunicarte con nosotros de forma gratuita al 600 0860
                   580 o a través de WhatsApp al +56939325099.
@@ -184,10 +188,10 @@ function FaqAccordion() {
         <AccordionContent>
           <Accordion type="single" collapsible>
             <AccordionItem value="item-1">
-              <AccordionTrigger>
+              <AccordionTrigger className="font-bold">
                 ¿Debo tener seguro para poder suscribirme?
               </AccordionTrigger>
-              <AccordionContent>
+              <AccordionContent className="font-semibold">
                 <p>
                   No es necesario tener un seguro, aunque nuestro servicio de
                   Asistencia funciona como complemento a cualquier seguro
@@ -196,8 +200,10 @@ function FaqAccordion() {
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-2">
-              <AccordionTrigger>¿Cómo opera la Asistencia?</AccordionTrigger>
-              <AccordionContent>
+              <AccordionTrigger className="font-bold">
+                ¿Cómo opera la Asistencia?
+              </AccordionTrigger>
+              <AccordionContent className="font-semibold">
                 <p className="pb-1">
                   La Asistencia debe ser solicitada previamente a través de
                   llamada telefónica al número 600 086 0580, donde un ejecutivo
@@ -221,8 +227,10 @@ function FaqAccordion() {
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-3">
-              <AccordionTrigger>¿Qué cubre?</AccordionTrigger>
-              <AccordionContent>
+              <AccordionTrigger className="font-bold">
+                ¿Qué cubre?
+              </AccordionTrigger>
+              <AccordionContent className="font-semibold">
                 <div className="grid grid-cols-1 md:grid-cols-2">
                   <ul className="list-disc px-3">
                     <li>Urgencia médica por enfermedad</li>
@@ -248,8 +256,10 @@ function FaqAccordion() {
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-4">
-              <AccordionTrigger>¿Qué NO cubre?</AccordionTrigger>
-              <AccordionContent>
+              <AccordionTrigger className="font-bold">
+                ¿Qué NO cubre?
+              </AccordionTrigger>
+              <AccordionContent className="font-semibold">
                 <div className="grid grid-cols-1 md:grid-cols-2">
                   <ul className="list-disc px-3">
                     <li>Gastos de hospitalización</li>
@@ -293,28 +303,40 @@ function FaqTabs() {
     <Tabs
       value={selected}
       onValueChange={setSelected}
-      className="hidden w-full max-w-2xl xl:block"
+      className="hidden w-full max-w-7xl xl:block"
     >
-      <TabsList>
-        <TabsTrigger className="flex-col p-0 text-center" value="subscription">
+      <TabsList className="flex max-w-7xl flex-row gap-1 p-0 2xl:gap-2  ">
+        <TabsTrigger
+          className="min-w-[295px] max-w-[295px] flex-col p-0 text-center 2xl:min-w-[310px] 2xl:max-w-[310px] "
+          value="subscription"
+        >
           <span className="py-4">Suscripción</span>
           <div className="flex h-[20px] w-full justify-center bg-background">
             {selected === "subscription" && <Icons.triangle />}
           </div>
         </TabsTrigger>
-        <TabsTrigger className="flex-col p-0 text-center" value="assistances">
+        <TabsTrigger
+          className="min-w-[295px] max-w-[295px] flex-col p-0   text-center 2xl:min-w-[310px] 2xl:max-w-[310px]"
+          value="assistances"
+        >
           <span className="py-4">Asistencias</span>
           <div className="flex h-[20px] w-full justify-center bg-background">
             {selected === "assistances" && <Icons.triangle />}
           </div>
         </TabsTrigger>
-        <TabsTrigger className="flex-col p-0 text-center" value="my-assistance">
+        <TabsTrigger
+          className="min-w-[295px] max-w-[295px] flex-col p-0   text-center 2xl:min-w-[310px] 2xl:max-w-[310px]"
+          value="my-assistance"
+        >
           <span className="py-4">Mis asistencias</span>
           <div className="flex h-[20px] w-full justify-center bg-background">
             {selected === "my-assistance" && <Icons.triangle />}
           </div>
         </TabsTrigger>
-        <TabsTrigger className="flex-col p-0 text-center" value="others">
+        <TabsTrigger
+          className="min-w-[295px] max-w-[295px] flex-col p-0   text-center 2xl:min-w-[310px] 2xl:max-w-[310px]"
+          value="others"
+        >
           <span className="py-4">Otros</span>
           <div className="flex h-[20px] w-full justify-center bg-background">
             {selected === "others" && <Icons.triangle />}
@@ -322,10 +344,16 @@ function FaqTabs() {
         </TabsTrigger>
       </TabsList>
       <TabsContent value="subscription">
-        <Accordion type="single" collapsible>
+        <Accordion
+          type="single"
+          className="flex flex-col gap-2 bg-white"
+          collapsible
+        >
           <AccordionItem value="item-1">
-            <AccordionTrigger>¿Cómo obtengo mi asistencia?</AccordionTrigger>
-            <AccordionContent>
+            <AccordionTrigger className="font-bold">
+              ¿Cómo obtengo mi asistencia?
+            </AccordionTrigger>
+            <AccordionContent className="font-semibold">
               <p>
                 Si deseas contratar nuestra asistencia, simplemente haz clic en
                 el botón "¡Lo quiero!" o contáctanos al 600 0860 580 o a través
@@ -334,10 +362,10 @@ function FaqTabs() {
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-2">
-            <AccordionTrigger>
+            <AccordionTrigger className="font-bold">
               ¿Necesito Tarjeta de Crédito para suscribir mi asistencia?
             </AccordionTrigger>
-            <AccordionContent>
+            <AccordionContent className="font-semibold">
               <p>
                 Puedes utilizar tanto tarjetas de débito como tarjetas de
                 crédito que sean compatibles con nuestro sistema de pago Webpay.
@@ -345,55 +373,61 @@ function FaqTabs() {
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-3">
-            <AccordionTrigger>¿Tiene deducible?</AccordionTrigger>
-            <AccordionContent>
+            <AccordionTrigger className="font-bold">
+              ¿Tiene deducible?
+            </AccordionTrigger>
+            <AccordionContent className="font-semibold">
               <p>No, no hay deducible.</p>
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-4">
-            <AccordionTrigger>
+            <AccordionTrigger className="font-bold">
               ¿Existe límite de edad para suscribirme?
             </AccordionTrigger>
-            <AccordionContent>
+            <AccordionContent className="font-semibold">
               <p>No tenemos límites de edad para suscripción.</p>
             </AccordionContent>
           </AccordionItem>
         </Accordion>
       </TabsContent>
       <TabsContent value="assistances">
-        <Accordion type="single" collapsible>
+        <Accordion
+          type="single"
+          className="flex flex-col gap-2 bg-white"
+          collapsible
+        >
           <AccordionItem value="item-1">
-            <AccordionTrigger>
+            <AccordionTrigger className="font-bold">
               ¿Puedo suscribir a alguien más a la asistencia?
             </AccordionTrigger>
-            <AccordionContent>
+            <AccordionContent className="font-semibold">
               <p>
                 Sí, puedes suscribir a todas las personas que desees proteger.
               </p>
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-2">
-            <AccordionTrigger>
+            <AccordionTrigger className="font-bold">
               ¿Puedo contratar más de una asistencia?
             </AccordionTrigger>
-            <AccordionContent>
+            <AccordionContent className="font-semibold">
               <p>Sí, puedes contratar tantas asistencias como desees.</p>
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-3">
-            <AccordionTrigger>
+            <AccordionTrigger className="font-bold">
               ¿Debo tener una previsión de salud?
             </AccordionTrigger>
-            <AccordionContent>
+            <AccordionContent className="font-semibold">
               <p>Debes tener previsión Fonasa o Isapre.</p>
             </AccordionContent>
           </AccordionItem>
 
           <AccordionItem value="item-4">
-            <AccordionTrigger>
+            <AccordionTrigger className="font-bold">
               ¿Debo contratar por un período de 12 meses obligatoriamente?
             </AccordionTrigger>
-            <AccordionContent>
+            <AccordionContent className="font-semibold">
               <p>
                 No, nuestras Asistencias no requieren un compromiso de
                 permanencia de 12 meses. Puedes disfrutar del servicio durante
@@ -402,10 +436,10 @@ function FaqTabs() {
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-5">
-            <AccordionTrigger>
+            <AccordionTrigger className="font-bold">
               ¿Necesito ser mayor de edad para contratar?
             </AccordionTrigger>
-            <AccordionContent>
+            <AccordionContent className="font-semibold">
               <p>
                 Sí, debes ser mayor de edad y contar con una tarjeta de débito o
                 crédito para realizar el pago mensual.
@@ -415,12 +449,16 @@ function FaqTabs() {
         </Accordion>
       </TabsContent>
       <TabsContent value="my-assistance">
-        <Accordion type="single" collapsible>
+        <Accordion
+          className="flex flex-col gap-2 bg-white"
+          type="single"
+          collapsible
+        >
           <AccordionItem value="item-1">
-            <AccordionTrigger>
+            <AccordionTrigger className="font-bold">
               ¿Puedo utilizar mi Asistencia el mismo mes en que me suscribo?
             </AccordionTrigger>
-            <AccordionContent>
+            <AccordionContent className="font-semibold">
               <p>
                 Sí, puedes utilizarla durante el mismo mes de suscripción. Sin
                 embargo, es importante tener en cuenta que existe un período de
@@ -430,10 +468,10 @@ function FaqTabs() {
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-2">
-            <AccordionTrigger>
+            <AccordionTrigger className="font-bold">
               ¿En qué parte del país puedo utilizar los servicios?
             </AccordionTrigger>
-            <AccordionContent>
+            <AccordionContent className="font-semibold">
               <p>
                 Puedes utilizar nuestros servicios en todo el país, excepto en
                 territorios insulares y antárticos.
@@ -441,10 +479,10 @@ function FaqTabs() {
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-3">
-            <AccordionTrigger>
+            <AccordionTrigger className="font-bold">
               ¿A quién debo contactar una vez que me haya suscrito?
             </AccordionTrigger>
-            <AccordionContent>
+            <AccordionContent className="font-semibold">
               <p>
                 Puedes comunicarte con nosotros de forma gratuita al 600 0860
                 580 o a través de WhatsApp al +56939325099.
@@ -454,12 +492,16 @@ function FaqTabs() {
         </Accordion>
       </TabsContent>
       <TabsContent value="others">
-        <Accordion type="single" collapsible>
+        <Accordion
+          className="flex flex-col gap-2 bg-white"
+          type="single"
+          collapsible
+        >
           <AccordionItem value="item-1">
-            <AccordionTrigger>
+            <AccordionTrigger className="font-bold">
               ¿Debo tener seguro para poder suscribirme?
             </AccordionTrigger>
-            <AccordionContent>
+            <AccordionContent className="font-semibold">
               <p>
                 No es necesario tener un seguro, aunque nuestro servicio de
                 Asistencia funciona como complemento a cualquier seguro
@@ -468,8 +510,10 @@ function FaqTabs() {
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-2">
-            <AccordionTrigger>¿Cómo opera la Asistencia?</AccordionTrigger>
-            <AccordionContent>
+            <AccordionTrigger className="font-bold">
+              ¿Cómo opera la Asistencia?
+            </AccordionTrigger>
+            <AccordionContent className="font-semibold">
               <p className="pb-1">
                 La Asistencia debe ser solicitada previamente a través de
                 llamada telefónica al número 600 086 0580, donde un ejecutivo de
@@ -492,8 +536,10 @@ function FaqTabs() {
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-3">
-            <AccordionTrigger>¿Qué cubre?</AccordionTrigger>
-            <AccordionContent>
+            <AccordionTrigger className="font-bold">
+              ¿Qué cubre?
+            </AccordionTrigger>
+            <AccordionContent className="font-semibold">
               <div className="grid grid-cols-1 md:grid-cols-2">
                 <ul className="list-disc px-3">
                   <li>Urgencia médica por enfermedad</li>
@@ -519,8 +565,10 @@ function FaqTabs() {
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-4">
-            <AccordionTrigger>¿Qué NO cubre?</AccordionTrigger>
-            <AccordionContent>
+            <AccordionTrigger className="font-bold">
+              ¿Qué NO cubre?
+            </AccordionTrigger>
+            <AccordionContent className="font-semibold">
               <div className="grid grid-cols-1 md:grid-cols-2">
                 <ul className="list-disc px-3">
                   <li>Gastos de hospitalización</li>

@@ -15,11 +15,13 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
+import withScrollAnimation from "../withScrollAnimation"
+
 interface DynamicFamilyProps {
   uniqueAssistancesArray: any[]
 }
 
-export const DynamicFamily: FC<DynamicFamilyProps> = ({
+const DynamicFamily: FC<DynamicFamilyProps> = ({
   uniqueAssistancesArray,
 }: DynamicFamilyProps) => {
   const downloadFile = ({
@@ -162,7 +164,6 @@ export const DynamicFamily: FC<DynamicFamilyProps> = ({
                 <Button
                   type="button"
                   key={assistance.product_id}
-                  variant="secondary"
                   className="w-96 bg-secondary/90 px-6 py-8 text-xl uppercase hover:bg-secondary/90 lg:bg-secondary"
                 >
                   {assistance.product_name}
@@ -171,7 +172,7 @@ export const DynamicFamily: FC<DynamicFamilyProps> = ({
             </>
           ))}
         </div>
-        <div className="z-5 absolute right-0 top-0 h-full w-full bg-black bg-opacity-30"></div>
+        <div className="z-5 absolute inset-0 right-0 top-0 h-full w-full bg-gradient-to-t from-[#03495C] to-transparent opacity-60 "></div>
       </section>
       <section className="flex flex-col items-center justify-center gap-32 py-10">
         {assistanceCorrect?.slice()?.map((assistance: any) => (
@@ -515,3 +516,4 @@ export const DynamicFamily: FC<DynamicFamilyProps> = ({
     </>
   )
 }
+export default withScrollAnimation(DynamicFamily)

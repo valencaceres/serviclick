@@ -34,6 +34,8 @@ export interface IProduct {
   id: string;
   name: string;
   price: number;
+  subscription_id: string;
+  beneficiaries_max: number;
   collection: ICollection[];
   assistances: IAssistance[];
   beneficiaries: IBeneficiary[];

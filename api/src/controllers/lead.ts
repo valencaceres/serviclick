@@ -1118,6 +1118,7 @@ const getProductByInsuredIdController = async (req: any, res: any) => {
 
 const addBeneficiariesController = async (req: any, res: any) => {
   const { lead_id, insured_id, beneficiaries } = req.body;
+  console.log("req.bodu", req.body)
   const responseBeneficiaries = await addBeneficiariesData(
     beneficiaries,
     lead_id,

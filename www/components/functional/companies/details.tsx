@@ -1,17 +1,26 @@
+import { useState } from "react"
+
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import { Icons } from "../icons"
 
 export const Details = () => {
+  const [selected, setSelected] = useState("insurance")
+
   return (
     <>
-      <Accordion className="w-full max-w-4xl" type="single" collapsible>
+      <Accordion
+        className="w-full max-w-4xl xl:hidden"
+        type="single"
+        collapsible
+      >
         <AccordionItem value="insurance">
           <AccordionTrigger>
             <div className="flex w-full items-center gap-2 text-xl">
@@ -74,35 +83,89 @@ export const Details = () => {
           </AccordionContent>
         </AccordionItem>
       </Accordion>
-      {/* <Tabs defaultValue="insurance" className="w-full hidden xl:block">
-        <TabsList>
+      <Tabs
+        value={selected}
+        onValueChange={setSelected}
+        className="hidden w-full xl:block"
+      >
+        <TabsList className="flex flex-row gap-0.5">
           <TabsTrigger
-            className="md:max-w-full xl:max-w-[300px] flex gap-2 text-lg"
+            className="flex flex-col gap-2 p-0 text-lg md:max-w-full xl:max-w-[265px] 2xl:max-w-[300px]"
             value="insurance"
           >
-            <Icons.building />
-            Industria seguros
+            <div className=" h-full w-full  p-0 ">
+              <div className="flex justify-center  bg-white">
+                <Icons.building
+                  width={50}
+                  height={50}
+                  color={selected === "insurance" ? "#03495C" : "#D9D9D9"}
+                />{" "}
+              </div>
+              <div> Industria seguros</div>
+            </div>
+
+            <div className="flex h-[20px] w-full justify-center bg-background">
+              {selected === "insurance" && <Icons.triangle />}
+            </div>
           </TabsTrigger>
           <TabsTrigger
-            className="md:max-w-full xl:max-w-[300px] flex gap-2 text-lg"
+            className="flex flex-col gap-2 p-0 text-lg md:max-w-full xl:max-w-[265px] 2xl:max-w-[300px]"
             value="pymes"
           >
-            <Icons.store />
-            PYMES & MYPYMES
+            <div className=" h-full w-full  p-0 ">
+              <div className="flex justify-center  bg-white">
+                <Icons.store
+                  width={50}
+                  height={50}
+                  color={selected === "pymes" ? "#03495C" : "#D9D9D9"}
+                />{" "}
+              </div>
+              <div>PYMES & MYPYMES</div>
+            </div>
+            <div className="flex h-[20px] w-full justify-center bg-background">
+              {selected === "pymes" && <Icons.triangle />}
+            </div>
           </TabsTrigger>
           <TabsTrigger
-            className="md:max-w-full xl:max-w-[300px] flex gap-2 text-lg"
+            className="flex flex-col gap-2 p-0 text-lg md:max-w-full
+            xl:max-w-[265px] 2xl:max-w-[300px]"
             value="commercial-insurance"
           >
-            <Icons.share />
-            Seguros comerciales
+            <div className=" h-full w-full p-0 ">
+              <div className="flex justify-center bg-white">
+                <Icons.share
+                  width={50}
+                  height={50}
+                  color={
+                    selected === "commercial-insurance" ? "#03495C" : "#D9D9D9"
+                  }
+                />{" "}
+              </div>
+              <div> Seguros comerciales</div>
+            </div>
+
+            <div className="flex h-[20px] w-full justify-center bg-background">
+              {selected === "commercial-insurance" && <Icons.triangle />}
+            </div>
           </TabsTrigger>
           <TabsTrigger
-            className="md:max-w-full xl:max-w-[300px] flex gap-2 text-lg"
+            className="flex flex-col gap-2 p-0 text-lg md:max-w-full xl:max-w-[265px] 2xl:max-w-[300px]"
             value="network"
           >
-            <Icons.users />
-            Prestadores & Redes de apoyo
+            <div className=" h-full w-full p-0 ">
+              <div className="flex justify-center bg-white">
+                <Icons.users
+                  width={50}
+                  height={50}
+                  color={selected === "network" ? "#03495C" : "#D9D9D9"}
+                />{" "}
+              </div>
+              <div> Prestadores & Redes de apoyo</div>
+            </div>
+
+            <div className="flex h-[20px] w-full justify-center bg-background">
+              {selected === "network" && <Icons.triangle />}
+            </div>
           </TabsTrigger>
         </TabsList>
         <TabsContent value="insurance" className="p-4 xl:mx-16">
@@ -133,7 +196,7 @@ export const Details = () => {
           información, contáctanos a través de nuestro WhatsApp al +56939325099
           y uno de nuestros ejecutivos estará encantado de asistirte.
         </TabsContent>
-      </Tabs> */}
+      </Tabs>
     </>
   )
 }

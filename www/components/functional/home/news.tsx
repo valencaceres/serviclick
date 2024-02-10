@@ -8,7 +8,7 @@ import { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 
-import { CustomSwiper } from "../slider"
+import { CustomCarousel } from "../carousel"
 
 interface News {
   id: number
@@ -19,25 +19,6 @@ interface News {
 }
 
 export const News = ({ news }: { news: { data: News[] } | undefined }) => {
-  const options: SwiperOptions = {
-    modules: [Navigation],
-    breakpoints: {
-      1280: {
-        slidesPerView: 4,
-      },
-      960: {
-        slidesPerView: 3,
-      },
-      480: {
-        slidesPerView: 2,
-      },
-      0: {
-        slidesPerView: 1,
-      },
-    },
-    navigation: true,
-  }
-
   if (!news || !news.data) return null
 
   const slides = news.data.map((newsItem) => (
@@ -57,5 +38,5 @@ export const News = ({ news }: { news: { data: News[] } | undefined }) => {
     </Link>
   ))
 
-  return <CustomSwiper options={options} slides={slides} />
+  return <CustomCarousel slides={slides} />
 }

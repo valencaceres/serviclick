@@ -27,6 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../ui/select"
+import withScrollAnimation from "../withScrollAnimation"
 
 const FormSchema = z.object({
   size: z.string().min(1),
@@ -48,10 +49,7 @@ interface Families {
 interface AssistanceQuoteFormProps {
   families: Families[]
 }
-
-export default function AssistanceQuoteForm({
-  families,
-}: AssistanceQuoteFormProps) {
+function AssistanceQuoteForm({ families }: AssistanceQuoteFormProps) {
   const { toast } = useToast()
   const router = useRouter()
 
@@ -111,184 +109,186 @@ export default function AssistanceQuoteForm({
 
   return (
     <>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full max-w-xl space-y-4"
-        >
-          <FormField
-            control={form.control}
-            name="size"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Tamaño empresa</FormLabel>
-                <FormControl>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value || undefined}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecciona el tamaño de tu empresa" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {companySizes.map((size) => (
-                        <SelectItem key={size.value} value={size.value}>
-                          {size.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="area"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Área de interés</FormLabel>
-                <FormControl>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecciona tu área de interés" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {families.map((family) => (
-                        <SelectItem
-                          key={family.family_id}
-                          value={family.family_name}
-                        >
-                          {family.family_name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="region"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Región</FormLabel>
-                <FormControl>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecciona tu región" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="h-56">
-                      {locations.regions.map((region) => (
-                        <SelectItem key={region.name} value={region.name}>
-                          {region.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="district"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Comuna</FormLabel>
-                <FormControl>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    disabled={!selectedRegion}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecciona tu comuna" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="max-h-[224px]">
-                      {locations.regions
-                        .find((region) => region.name === selectedRegion)
-                        ?.districts.map((district) => (
-                          <SelectItem key={district} value={district}>
-                            {district}
+      <div className="flex h-fit  w-full  items-center justify-center rounded-xl border  border-secondary p-4 lg:w-[450px] ">
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="w-full max-w-xl space-y-4"
+          >
+            <FormField
+              control={form.control}
+              name="size"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tamaño empresa</FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value || undefined}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecciona el tamaño de tu empresa" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {companySizes.map((size) => (
+                          <SelectItem key={size.value} value={size.value}>
+                            {size.label}
                           </SelectItem>
                         ))}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="company"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nombre empresa</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Escribe el nombre de la empresa"
-                    {...field}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>E-mail</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Escribe tu e-mail"
-                    type="email"
-                    {...field}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="area"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Área de interés</FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecciona tu área de interés" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {families.map((family) => (
+                          <SelectItem
+                            key={family.family_id}
+                            value={family.family_name}
+                          >
+                            {family.family_name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="region"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Región</FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecciona tu región" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className="h-56">
+                        {locations.regions.map((region) => (
+                          <SelectItem key={region.name} value={region.name}>
+                            {region.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="district"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Comuna</FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      disabled={!selectedRegion}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecciona tu comuna" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className="max-h-[224px]">
+                        {locations.regions
+                          .find((region) => region.name === selectedRegion)
+                          ?.districts.map((district) => (
+                            <SelectItem key={district} value={district}>
+                              {district}
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="company"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nombre empresa</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Escribe el nombre de la empresa"
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>E-mail</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Escribe tu e-mail"
+                      type="email"
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nombre completo</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Escribe tu nombre y apellido"
-                    {...field}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <div className="flex justify-center">
-            <Button>Aceptar</Button>
-          </div>
-        </form>
-      </Form>
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nombre completo</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Escribe tu nombre y apellido"
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <div className="flex justify-center">
+              <Button>Aceptar</Button>
+            </div>
+          </form>
+        </Form>
+      </div>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="border-none focus:border-none">
-          <div className="flex flex-col gap-4 text-center items-center">
+          <div className="flex flex-col items-center gap-4 text-center">
             <h1 className="text-4xl font-semibold text-primary">
               ¡Felicidades!
             </h1>
@@ -336,3 +336,5 @@ export default function AssistanceQuoteForm({
     </>
   )
 }
+
+export default withScrollAnimation(AssistanceQuoteForm)

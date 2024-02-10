@@ -2,16 +2,20 @@ import { create } from "zustand";
 
 import { apiInstance } from "../../utils/api";
 
-import { IProfile } from "../../interfaces/insured";
+import { IProfile, IBeneficiary } from "../../interfaces/insured";
 
 interface insuredState {
   profile: IProfile;
   isLoading: boolean;
   isError: boolean;
   error: string;
+  beneficiaryList: IBeneficiary[]
+
   getProfile: (rut: string) => void;
   reset: () => void;
   resetAll: () => void;
+  setBeneficiaryList: (beneficiaryList: IBeneficiary[]) => void;
+
 }
 
 const initialData: IProfile = {
@@ -33,6 +37,7 @@ const initialData: IProfile = {
 export const insuredStore = create<insuredState>((set, get) => ({
   profile: initialData,
   isLoading: false,
+  beneficiaryList: [],
   isError: false,
   error: "",
 
@@ -55,6 +60,8 @@ export const insuredStore = create<insuredState>((set, get) => ({
       }));
     }
   },
+  setBeneficiaryList: (beneficiaryList: IBeneficiary[]) =>
+  set((state) => ({ ...state, beneficiaryList: beneficiaryList })),
 
   reset: () => set((state) => ({ ...state, insured: initialData })),
   resetAll: () => set({}, true),

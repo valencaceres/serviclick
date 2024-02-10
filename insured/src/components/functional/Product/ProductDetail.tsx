@@ -9,31 +9,36 @@ import {
   TableDetail,
   TableRow,
   TableCell,
+  TableIcons,
 } from "../../ui/Table";
 import Loading from "../../ui/Loading";
 
 import { useUI, useInsured } from "../../../zustand/hooks";
 
-import { IProduct } from "../../../interfaces/insured";
+import { IBeneficiary, IProduct } from "../../../interfaces/insured";
 
 import styles from "./Product.module.scss";
-
+import AddBeneficiary from "../Beneficiary/AddBeneficiary";
+import Icon from "../../ui/Icon";
 const ProductDetail = ({ id }: any) => {
   const { ui } = useUI();
-  const { insuredProfile } = useInsured();
+  const { insuredProfile, beneficiaryList, setBeneficiaryList } = useInsured();
 
   const { products } = insuredProfile;
-
   const [product, setProduct] = useState<IProduct>();
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [beneficiaryToEdit, setBeneficiaryToEdit] = useState<IBeneficiary>();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false);
 
   useEffect(() => {
     const productSearch: IProduct[] = products.filter((item) => item.id === id);
 
     if (productSearch && productSearch.length > 0) {
       setProduct(productSearch[0]);
+      setBeneficiaryList(productSearch[0]?.beneficiaries);
     }
   }, []);
-
   return product && product.id ? (
     <Content>
       <Col gap="5px">
@@ -53,7 +58,7 @@ const ProductDetail = ({ id }: any) => {
                 type="date"
                 label="Fecha Adquisición"
                 width="140px"
-                value={product.collection[0].incorporation}
+                value={product?.collection?.[0]?.incorporation}
                 onChange={() => {}}
                 disabled={true}
               />
@@ -62,7 +67,7 @@ const ProductDetail = ({ id }: any) => {
                   id="txtInitDate"
                   label="Valor mensual"
                   width="140px"
-                  value={product.collection[0].fee_value.toString()}
+                  value={product?.collection?.[0]?.fee_value?.toString()}
                   onChange={() => {}}
                   disabled={true}
                 />
@@ -70,7 +75,7 @@ const ProductDetail = ({ id }: any) => {
                   id="txtInitDate"
                   label="Meses cobrados"
                   width="140px"
-                  value={product.collection[0].fees_charged.toString()}
+                  value={product?.collection?.[0]?.fees_charged?.toString()}
                   onChange={() => {}}
                   disabled={true}
                 />
@@ -78,7 +83,7 @@ const ProductDetail = ({ id }: any) => {
                   id="txtInitDate"
                   label="Total cobrado"
                   width="140px"
-                  value={product.collection[0].charged.toString()}
+                  value={product?.collection?.[0]?.charged?.toString()}
                   onChange={() => {}}
                   disabled={true}
                 />
@@ -86,7 +91,7 @@ const ProductDetail = ({ id }: any) => {
                   id="txtInitDate"
                   label="Total pagado"
                   width="140px"
-                  value={product.collection[0].paid.toString()}
+                  value={product?.collection?.[0]?.paid?.toString()}
                   onChange={() => {}}
                   disabled={true}
                 />
@@ -94,7 +99,7 @@ const ProductDetail = ({ id }: any) => {
                   id="txtInitDate"
                   label="Total adeudado"
                   width="140px"
-                  value={product.collection[0].balance.toString()}
+                  value={product?.collection?.[0]?.balance?.toString()}
                   onChange={() => {}}
                   disabled={true}
                 />
@@ -108,7 +113,7 @@ const ProductDetail = ({ id }: any) => {
                   type="date"
                   label="Fecha Adquisición"
                   width="100%"
-                  value={product.collection[0].incorporation}
+                  value={product?.collection?.[0]?.incorporation}
                   onChange={() => {}}
                   disabled={true}
                 />
@@ -116,7 +121,7 @@ const ProductDetail = ({ id }: any) => {
                   id="txtInitDate"
                   label="Valor mensual"
                   width="100%"
-                  value={product.collection[0].fee_value.toString()}
+                  value={product?.collection?.[0]?.fee_value.toString()}
                   onChange={() => {}}
                   disabled={true}
                 />
@@ -126,7 +131,7 @@ const ProductDetail = ({ id }: any) => {
                   id="txtInitDate"
                   label="Meses cobrados"
                   width="100%"
-                  value={product.collection[0].fees_charged.toString()}
+                  value={product?.collection?.[0]?.fees_charged.toString()}
                   onChange={() => {}}
                   disabled={true}
                 />
@@ -134,7 +139,7 @@ const ProductDetail = ({ id }: any) => {
                   id="txtInitDate"
                   label="Total cobrado"
                   width="100%"
-                  value={product.collection[0].charged.toString()}
+                  value={product?.collection?.[0]?.charged?.toString()}
                   onChange={() => {}}
                   disabled={true}
                 />
@@ -144,7 +149,7 @@ const ProductDetail = ({ id }: any) => {
                   id="txtInitDate"
                   label="Total pagado"
                   width="100%"
-                  value={product.collection[0].paid.toString()}
+                  value={product?.collection?.[0]?.paid?.toString()}
                   onChange={() => {}}
                   disabled={true}
                 />
@@ -152,7 +157,7 @@ const ProductDetail = ({ id }: any) => {
                   id="txtInitDate"
                   label="Total adeudado"
                   width="100%"
-                  value={product.collection[0].balance.toString()}
+                  value={product?.collection?.[0]?.balance?.toString()}
                   onChange={() => {}}
                   disabled={true}
                 />
@@ -201,7 +206,8 @@ const ProductDetail = ({ id }: any) => {
                         style={{
                           width: "calc(100% - 120px)",
                           paddingRight: "10px",
-                        }}>
+                        }}
+                      >
                         <b>{coverageItem.name}</b>
                       </div>
                       <div style={{ width: "120px" }}>
@@ -221,57 +227,111 @@ const ProductDetail = ({ id }: any) => {
           )}
         </Col>
         <Col gap="5px">
-          {ui.isDesktop ? (
-            <Table width="940px" height="auto">
-              <TableHeader>
-                <TableCell width="40px" align="center">{`#`}</TableCell>
-                <TableCell width="130px">Rut</TableCell>
-                <TableCell width="500px">Nombre Completo</TableCell>
-                <TableCell width="120px">Nacimiento</TableCell>
-                <TableCell width="130px">Parentesco</TableCell>
-              </TableHeader>
-              <TableDetail>
-                {product.beneficiaries &&
-                  product.beneficiaries &&
-                  product.beneficiaries.map(
-                    (itemBeneficiary: any, idx: number) => (
+          {product?.beneficiaries?.length > 0 &&
+            (ui.isDesktop ? (
+              <Table width="940px" height="auto">
+                <TableHeader>
+                  <TableCell width="40px" align="center">{`#`}</TableCell>
+                  <TableCell width="130px">Rut</TableCell>
+                  <TableCell width="500px">Nombre Completo</TableCell>
+                  <TableCell width="120px">Nacimiento</TableCell>
+                  <TableCell width="130px">Parentesco</TableCell>
+                  <TableCell width="50px"></TableCell>
+                </TableHeader>
+                <TableDetail>
+                  {product.beneficiaries &&
+                    beneficiaryList &&
+                    beneficiaryList.map((itemBeneficiary: any, idx: number) => (
                       <TableRow key={idx}>
                         <TableCell width="40px" align="center">
                           {idx + 1}
                         </TableCell>
-                        <TableCell width="130px" align="right">
+                        <TableCell width="140px" align="right">
                           {itemBeneficiary.rut}
                         </TableCell>
-                        <TableCell width="500px">{`${itemBeneficiary.name} ${itemBeneficiary.paternalLastName} ${itemBeneficiary.maternalLastName}`}</TableCell>
-                        <TableCell width="120px">
-                          {itemBeneficiary.birthdate}
+                        <TableCell width="480px">{`${itemBeneficiary.name} ${
+                          itemBeneficiary.paternallastName ??
+                          itemBeneficiary.paternalLastName ??
+                          itemBeneficiary.paternallastname
+                        } ${
+                          itemBeneficiary.maternallastName ??
+                          itemBeneficiary.maternalLastName ??
+                          itemBeneficiary.maternallastname
+                        }`}</TableCell>
+                        <TableCell width="130px">
+                          {itemBeneficiary.birthdate ??
+                            itemBeneficiary.birthDate}
                         </TableCell>
                         <TableCell width="130px">
                           {itemBeneficiary.relationship}
                         </TableCell>
+                        <TableCell width="50px">
+                          <TableIcons>
+                            <Icon
+                              onClick={() => {
+                                setBeneficiaryToEdit(itemBeneficiary),
+                                  setIsOpen(true),
+                                  setIsEdit(true);
+                              }}
+                              iconName="edit"
+                            />
+                          </TableIcons>
+                        </TableCell>
                       </TableRow>
-                    )
-                  )}
-              </TableDetail>
-            </Table>
-          ) : (
-            <Table height="auto">
-              <TableHeader>
-                <TableCell width="320px">Nombre Completo</TableCell>
-              </TableHeader>
-              <TableDetail>
-                {product.beneficiaries &&
-                  product.beneficiaries &&
-                  product.beneficiaries.map(
-                    (itemBeneficiary: any, idx: number) => (
+                    ))}
+                </TableDetail>
+              </Table>
+            ) : (
+              <Table height="auto">
+                <TableHeader>
+                  <TableCell width="320px">Nombre Completo</TableCell>
+                  <TableCell width="50px"></TableCell>
+                </TableHeader>
+                <TableDetail>
+                  {product.beneficiaries &&
+                    beneficiaryList &&
+                    beneficiaryList.map((itemBeneficiary: any, idx: number) => (
                       <TableRow key={idx}>
-                        <TableCell width="320px">{`${itemBeneficiary.name} ${itemBeneficiary.paternalLastName} ${itemBeneficiary.maternalLastName}`}</TableCell>
+                        <TableCell width="320px">{`${itemBeneficiary.name} ${
+                          itemBeneficiary.paternallastName ??
+                          itemBeneficiary.paternalLastName ??
+                          itemBeneficiary.paternallastname
+                        } ${
+                          itemBeneficiary.maternallastName ??
+                          itemBeneficiary.maternalLastName ??
+                          itemBeneficiary.maternallastname
+                        }`}</TableCell>
+                        <TableCell width="50px">
+                          <TableIcons>
+                            <Icon
+                              onClick={() => {
+                                setBeneficiaryToEdit(itemBeneficiary),
+                                  setIsOpen(true),
+                                  setIsEdit(true);
+                              }}
+                              iconName="edit"
+                            />
+                          </TableIcons>
+                        </TableCell>
                       </TableRow>
-                    )
-                  )}
-              </TableDetail>
-            </Table>
-          )}
+                    ))}
+                </TableDetail>
+              </Table>
+            ))}
+          {product?.beneficiaries?.length > 0 &&
+            product?.beneficiaries_max > 0 && (
+              <AddBeneficiary
+                setIsEdit={setIsEdit}
+                edit={isEdit}
+                beneficiaryToEdit={beneficiaryToEdit}
+                insured={insuredProfile?.insured}
+                setIsOpen={setIsOpen}
+                isOpen={isOpen}
+                subscription_id={product?.subscription_id}
+                maxBeneficiaries={product?.beneficiaries_max}
+                beneficiaries={beneficiaryList}
+              />
+            )}
         </Col>
       </Col>
     </Content>
