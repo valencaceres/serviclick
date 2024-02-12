@@ -3,10 +3,18 @@ import { useState, useEffect } from "react";
 import { Content, Col, Row, Footer } from "@/components/layout/Generic";
 
 import ComboBox from "@/components/ui/ComboBox";
-import InputText from "@/components/ui/InputText";
+import SelectBox from "@/components/ui/Select-Ui-Box";
+import InputText from "@/components/ui/Input-ui-box";
 import CustomerType from "@/components/ui/CustomerType";
 import Loading from "@/components/ui/Loading";
-
+import { Input } from "@/components/ui/input-ui";
+import { Label } from "@/components/ui/label-ui";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectLabel,
+} from "@/components/ui/select-ui";
 import { unFormatRut, formatRut } from "@/utils/format";
 import { numberRegEx, rutRegEx, emailRegEx } from "@/utils/regEx";
 import { rutValidate } from "@/utils/validations";
@@ -140,7 +148,7 @@ const Person = ({ data, setData, setCompletedForm, getByRut }: any) => {
     setFormData({
       ...formData,
       district: {
-        value: event.target.value,
+        value: event,
         isValid: true,
       },
     });
@@ -270,7 +278,7 @@ const Person = ({ data, setData, setCompletedForm, getByRut }: any) => {
         onChange={handleChangeAddress}
         isValid={formData?.address.isValid}
       />
-      <ComboBox
+      <SelectBox
         width="340px"
         label="Comuna"
         placeHolder=":: Seleccione comuna ::"

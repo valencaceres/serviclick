@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useMediaQuery } from "react-responsive";
 
-import PaymentSection from "./PaymentSection";
+import PaymentSection from "./PaymentSectionCard";
 import PaymentPerson from "./PaymentPerson";
 import PaymentInsured from "./PaymentInsured";
 import PaymentCoverage from "./PaymentCoverage";
@@ -10,10 +10,8 @@ import PaymentProduct from "./PaymentProduct";
 import PaymentBeneficiaries from "./PaymentBeneficiaries";
 import PaymentTerms from "./PaymentTerms";
 import PaymentType from "./PaymentType";
-
 import { Body, Content, Footer, Col, Row } from "@/components/layout/Generic";
-
-import Button from "@/components/ui/Button/Button";
+import { Button } from "@/components/ui/button-ui";
 import Loading from "@/components/ui/Loading";
 import Tooltip from "@/components/ui/Tooltip";
 import ModalWindow from "@/components/ui/ModalWindow/index";
@@ -21,7 +19,7 @@ import ModalWindow from "@/components/ui/ModalWindow/index";
 import { useProduct, useLead, useUI, useAgent } from "@/store/hooks";
 
 import styles from "./Payment.module.scss";
-
+import { Card, CardContent, CardFooter } from "@/components/ui/card-ui";
 import { termsAndCondicions } from "@/data/termsAndConditions";
 import { config } from "@/utils/config";
 
@@ -179,104 +177,161 @@ const Payment = () => {
         <Col gap="10px">
           {isDesktop ? (
             <>
-              <Row gap="10px">
-                <PaymentSection
-                  title="Contratante"
-                  selected={isSelectedContractor}
-                  state={setIsSelectedContractor}>
-                  <PaymentPerson data={lead.customer} />
-                </PaymentSection>
-                <PaymentSection
-                  title="Beneficiario"
-                  selected={isSelectedinsured}
-                  state={setIsSelectedinsured}>
-                  <PaymentInsured data={lead.insured && lead.insured[0]} />
-                </PaymentSection>
-              </Row>
-              <PaymentSection
-                title="Producto"
-                selected={isSelectedProduct}
-                state={setIsSelectedProduct}>
-                <PaymentCoverage product={product} />
-              </PaymentSection>
-              {product.beneficiaries > 0 && (
-                <PaymentSection
-                  title="Cargas"
-                  selected={isSelectedBeneficiaries}
-                  state={setIsSelectedBeneficiaries}>
-                  <PaymentBeneficiaries lead={lead} />
-                </PaymentSection>
-              )}
-              <PaymentSection
-                title="Valores"
-                selected={isSelectedPayment}
-                state={setIsSelectedPayment}>
-                <PaymentProduct lead={lead} product={product} />
-              </PaymentSection>
-              <PaymentTerms
-                state={setIsSelectedTerms}
-                onClick={handleClickTerms}
-              />
+              <Card className="mt-4 mb-4">
+                {" "}
+                <CardContent className="py-4 flex flex-col gap-4">
+                  <Row gap="10px">
+                    <PaymentSection
+                      title="Contratante"
+                      selected={isSelectedContractor}
+                      state={setIsSelectedContractor}
+                    >
+                      <PaymentPerson data={lead.customer} />
+                    </PaymentSection>
+                    <PaymentSection
+                      title="Beneficiario"
+                      selected={isSelectedinsured}
+                      state={setIsSelectedinsured}
+                    >
+                      <PaymentInsured data={lead.insured && lead.insured[0]} />
+                    </PaymentSection>
+                  </Row>
+                  <PaymentSection
+                    title="Producto"
+                    selected={isSelectedProduct}
+                    state={setIsSelectedProduct}
+                  >
+                    <PaymentCoverage product={product} />
+                  </PaymentSection>
+                  {product.beneficiaries > 0 && (
+                    <PaymentSection
+                      title="Cargas"
+                      selected={isSelectedBeneficiaries}
+                      state={setIsSelectedBeneficiaries}
+                    >
+                      <PaymentBeneficiaries lead={lead} />
+                    </PaymentSection>
+                  )}
+                  <PaymentSection
+                    title="Valores"
+                    selected={isSelectedPayment}
+                    state={setIsSelectedPayment}
+                  >
+                    <PaymentProduct lead={lead} product={product} />
+                  </PaymentSection>
+                  <PaymentTerms
+                    state={setIsSelectedTerms}
+                    onClick={handleClickTerms}
+                  />
+                </CardContent>
+                <CardFooter className="w-full">
+                  {process.process.code === "S" ? (
+                    <Button
+                      className={`text-white w-full ${
+                        isButtonEnabled ? "bg-[#03495C]" : "bg-gray-400"
+                      } ${
+                        !isButtonEnabled && "cursor-not-allowed"
+                      }  active:bg-opacity-80`}
+                      onClick={handleClickSuscribe}
+                      disabled={!isButtonEnabled}
+                    >
+                      Suscribir descuento por planilla
+                    </Button>
+                  ) : (
+                    <Button
+                      className={`text-white w-full ${
+                        isButtonEnabled ? "bg-[#03495C]" : "bg-gray-400"
+                      } ${
+                        !isButtonEnabled && "cursor-not-allowed"
+                      }  active:bg-opacity-80`}
+                      onClick={handleClickPay}
+                      disabled={!isButtonEnabled}
+                    >
+                      Pagar
+                    </Button>
+                  )}
+                </CardFooter>
+              </Card>
             </>
           ) : (
-            <Col gap="10px">
-              <PaymentSection
-                title="Contratante"
-                selected={isSelectedContractor}
-                state={setIsSelectedContractor}>
-                <PaymentPerson data={lead.customer} />
-              </PaymentSection>
-              <PaymentSection
-                title="Beneficiario"
-                selected={isSelectedinsured}
-                state={setIsSelectedinsured}>
-                <PaymentInsured data={lead.insured && lead.insured[0]} />
-              </PaymentSection>
-              <PaymentSection
-                title="Producto"
-                selected={isSelectedProduct}
-                state={setIsSelectedProduct}>
-                <PaymentCoverage product={product} />
-              </PaymentSection>
-              {product.beneficiaries > 0 && (
-                <PaymentSection
-                  title="Cargas"
-                  selected={isSelectedBeneficiaries}
-                  state={setIsSelectedBeneficiaries}>
-                  <PaymentBeneficiaries lead={lead} />
-                </PaymentSection>
-              )}
-              <PaymentSection
-                title="Valores"
-                selected={isSelectedPayment}
-                state={setIsSelectedPayment}>
-                <PaymentProduct lead={lead} product={product} />
-              </PaymentSection>
-              <PaymentTerms
-                state={setIsSelectedTerms}
-                onClick={handleClickTerms}
-              />
-            </Col>
+            <Card className="mt-4 mb-4">
+              <CardContent className="flex flex-col gap-4 py-4">
+                <Col gap="10px">
+                  <PaymentSection
+                    title="Contratante"
+                    selected={isSelectedContractor}
+                    state={setIsSelectedContractor}
+                  >
+                    <PaymentPerson data={lead.customer} />
+                  </PaymentSection>
+                  <PaymentSection
+                    title="Beneficiario"
+                    selected={isSelectedinsured}
+                    state={setIsSelectedinsured}
+                  >
+                    <PaymentInsured data={lead.insured && lead.insured[0]} />
+                  </PaymentSection>
+                  <PaymentSection
+                    title="Producto"
+                    selected={isSelectedProduct}
+                    state={setIsSelectedProduct}
+                  >
+                    <PaymentCoverage product={product} />
+                  </PaymentSection>
+                  {product.beneficiaries > 0 && (
+                    <PaymentSection
+                      title="Cargas"
+                      selected={isSelectedBeneficiaries}
+                      state={setIsSelectedBeneficiaries}
+                    >
+                      <PaymentBeneficiaries lead={lead} />
+                    </PaymentSection>
+                  )}
+                  <PaymentSection
+                    title="Valores"
+                    selected={isSelectedPayment}
+                    state={setIsSelectedPayment}
+                  >
+                    <PaymentProduct lead={lead} product={product} />
+                  </PaymentSection>
+                  <PaymentTerms
+                    state={setIsSelectedTerms}
+                    onClick={handleClickTerms}
+                  />
+                </Col>
+              </CardContent>
+              <CardFooter className="w-full">
+                {process.process.code === "S" ? (
+                  <Button
+                    className={`text-white w-full ${
+                      isButtonEnabled ? "bg-[#03495C]" : "bg-gray-400"
+                    } ${
+                      !isButtonEnabled && "cursor-not-allowed"
+                    }  active:bg-opacity-80`}
+                    onClick={handleClickSuscribe}
+                    disabled={!isButtonEnabled}
+                  >
+                    Suscribir descuento por planilla
+                  </Button>
+                ) : (
+                  <Button
+                    className={`text-white w-full ${
+                      isButtonEnabled ? "bg-[#03495C]" : "bg-gray-400"
+                    } ${
+                      !isButtonEnabled && "cursor-not-allowed"
+                    }  active:bg-opacity-80`}
+                    onClick={handleClickPay}
+                    disabled={!isButtonEnabled}
+                  >
+                    Pagar
+                  </Button>
+                )}
+              </CardFooter>
+            </Card>
           )}
         </Col>
       </Content>
-      <Footer>
-        {process.process.code === "S" ? (
-          <Button
-            text="Suscribir descuento por planilla"
-            width="300px"
-            onClick={handleClickSuscribe}
-            enabled={isButtonEnabled}
-          />
-        ) : (
-          <Button
-            text="Pagar"
-            width="200px"
-            onClick={handleClickPay}
-            enabled={isButtonEnabled}
-          />
-        )}
-      </Footer>
+
       {leadIsLoading && <Loading />}
       <Tooltip>
         <h1>Revisa la información</h1>
@@ -296,13 +351,15 @@ const Payment = () => {
       <ModalWindow
         showModal={showTerms}
         setClosed={handleClickCloseTerms}
-        title="Términos y condiciones">
+        title="Términos y condiciones"
+      >
         <div className={styles.termsContainer}>{termsAndCondicions.data}</div>
       </ModalWindow>
       <ModalWindow
         showModal={showPaymentType}
         setClosed={handleClickClosePaymentType}
-        title="Seleccione una opción">
+        title="Seleccione una opción"
+      >
         <PaymentType data={paymentTypeData} />
       </ModalWindow>
     </Body>

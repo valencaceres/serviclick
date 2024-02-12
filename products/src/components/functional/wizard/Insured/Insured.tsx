@@ -2,10 +2,9 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
 import { Body, Content, Footer, Col, Row } from "@/components/layout/Generic";
-
-import Button from "@/components/ui/Button/Button";
-import ComboBox from "@/components/ui/ComboBox";
-import InputText from "@/components/ui/InputText";
+import { Card, CardContent, CardFooter } from "@/components/ui/card-ui";
+import { Button } from "@/components/ui/button-ui";
+import InputText from "@/components/ui/Input-ui-box";
 import Loading from "@/components/ui/Loading";
 import Tooltip from "@/components/ui/Tooltip";
 
@@ -23,6 +22,7 @@ import {
 } from "@/store/hooks";
 
 import { IFieldFormString } from "@/interfaces/form";
+import SelectBox from "@/components/ui/Select-Ui-Box";
 
 interface ICustomerForm {
   rut: IFieldFormString;
@@ -53,7 +53,7 @@ const Insured = () => {
   const { ui } = useUI();
   const { getAllDistricts, districtList, districtIsLoading } = useDistrict();
   const { insured, getInsuredByRut } = useInsured();
-  const {  contractor } = useContractor();
+  const { contractor } = useContractor();
   const { createLead, setLead, lead, leadIsLoading } = useLead();
   const { product } = useProduct();
 
@@ -153,7 +153,6 @@ const Insured = () => {
         value: event.target.value,
         isValid: true,
       },
-    
     });
     setSearch(true);
   };
@@ -206,7 +205,7 @@ const Insured = () => {
     setFormData({
       ...formData,
       district: {
-        value: event.target.value,
+        value: event,
         isValid: true,
       },
     });
@@ -249,7 +248,7 @@ const Insured = () => {
   useEffect(() => {
     getAllDistricts();
   }, []);
-  
+
   useEffect(() => {
     const isValid =
       formData.birthDate.value !== "" &&
@@ -326,9 +325,7 @@ const Insured = () => {
         email,
         phone,
       } = lead.customer;
-      const {
-        birthDate
-      } = contractor;
+      const { birthDate } = contractor;
       setFormData({
         rut: { value: rut, isValid: true },
         birthDate: { value: birthDate ?? "", isValid: false },
@@ -352,7 +349,9 @@ const Insured = () => {
             : product.beneficiaries > 0
             ? "beneficiaries"
             : "payment"
-        }?productPlanId=${ui.product.productPlan_id}&leadId=${lead.id}&userId=${ui.userId}`
+        }?productPlanId=${ui.product.productPlan_id}&leadId=${lead.id}&userId=${
+          ui.userId
+        }`
       );
       setIsProcessing(false);
     }
@@ -366,89 +365,95 @@ const Insured = () => {
 
   return (
     <Body>
-      <Content>
-        <Col width="340px">
-          <Row align="space-between" width="100%">
+      <Card className="mt-4 mb-4">
+        <CardContent className="py-4">
+          <Col width="340px">
+            <Row align="space-between" width="100%">
+              <InputText
+                label="Rut"
+                width="150px"
+                value={formData?.rut.value}
+                onChange={handleChangeRut}
+                onBlur={handleBlurRut}
+                onFocus={handleFocusRut}
+                isValid={formData?.rut.isValid}
+              />
+              <InputText
+                type="date"
+                label="Fecha de nacimiento"
+                width="150px"
+                maxLength={10}
+                value={formData?.birthDate.value}
+                onChange={handleChangeBirthDate}
+                isValid={formData?.birthDate.isValid}
+              />
+            </Row>
             <InputText
-              label="Rut"
-              width="150px"
-              value={formData?.rut.value}
-              onChange={handleChangeRut}
-              onBlur={handleBlurRut}
-              onFocus={handleFocusRut}
-              isValid={formData?.rut.isValid}
+              label="Nombres"
+              value={formData?.name.value}
+              onChange={handleChangeName}
+              isValid={formData?.name.isValid}
             />
             <InputText
-              type="date"
-              label="Fecha de nacimiento"
-              width="150px"
-              maxLength={10}
-              value={formData?.birthDate.value}
-              onChange={handleChangeBirthDate}
-              isValid={formData?.birthDate.isValid}
+              label="Apellido paterno"
+              value={formData?.paternalLastName.value}
+              onChange={handleChangePaternalLastName}
+              isValid={formData?.paternalLastName.isValid}
             />
-          </Row>
-          <InputText
-            label="Nombres"
-            value={formData?.name.value}
-            onChange={handleChangeName}
-            isValid={formData?.name.isValid}
-          />
-          <InputText
-            label="Apellido paterno"
-            value={formData?.paternalLastName.value}
-            onChange={handleChangePaternalLastName}
-            isValid={formData?.paternalLastName.isValid}
-          />
-          <InputText
-            label="Apellido materno"
-            value={formData?.maternalLastName.value}
-            onChange={handleChangeMaternalLastName}
-            isValid={formData?.maternalLastName.isValid}
-          />
-          <InputText
-            label="Dirección"
-            value={formData?.address.value}
-            onChange={handleChangeAddress}
-            isValid={formData?.address.isValid}
-          />
-          <ComboBox
-            width="340px"
-            label="Comuna"
-            placeHolder=":: Seleccione comuna ::"
-            value={formData?.district.value}
-            onChange={handleChangeDistrict}
-            data={districtList}
-            dataValue="district_name"
-            dataText="district_name"
-          />
-          <InputText
-            type="email"
-            maxLength={250}
-            width="340px"
-            label="Correo electrónico"
-            value={formData?.email.value}
-            onChange={handleChangeEmail}
-            isValid={formData?.email.isValid}
-          />
-          <InputText
-            type="tel"
-            maxLength={9}
-            width="150px"
-            label="Teléfono"
-            value={formData?.phone.value}
-            onChange={handleChangePhone}
-            isValid={formData?.phone.isValid}
-          />
-        </Col>
-      </Content>
-      <Footer>
-        <Button
-          text="Registrar"
-          onClick={handleClickRegister}
-          width="200px"
-          enabled={completedForm}></Button>
-      </Footer>
+            <InputText
+              label="Apellido materno"
+              value={formData?.maternalLastName.value}
+              onChange={handleChangeMaternalLastName}
+              isValid={formData?.maternalLastName.isValid}
+            />
+            <InputText
+              label="Dirección"
+              value={formData?.address.value}
+              onChange={handleChangeAddress}
+              isValid={formData?.address.isValid}
+            />
+            <SelectBox
+              width="340px"
+              label="Comuna"
+              placeHolder=":: Seleccione comuna ::"
+              value={formData?.district.value}
+              onChange={handleChangeDistrict}
+              data={districtList}
+              dataValue="district_name"
+              dataText="district_name"
+            />
+            <InputText
+              type="email"
+              maxLength={250}
+              width="340px"
+              label="Correo electrónico"
+              value={formData?.email.value}
+              onChange={handleChangeEmail}
+              isValid={formData?.email.isValid}
+            />
+            <InputText
+              type="tel"
+              maxLength={9}
+              width="150px"
+              label="Teléfono"
+              value={formData?.phone.value}
+              onChange={handleChangePhone}
+              isValid={formData?.phone.isValid}
+            />
+          </Col>
+        </CardContent>
+        <CardFooter className="w-full ">
+          <Button
+            className={`text-white w-full ${
+              completedForm ? "bg-[#03495C]" : "bg-gray-400"
+            } ${!completedForm && "cursor-not-allowed"}  active:bg-opacity-80`}
+            onClick={handleClickRegister}
+            disabled={!completedForm}
+          >
+            Registrar
+          </Button>
+        </CardFooter>
+      </Card>
       {(districtIsLoading || leadIsLoading) && <Loading />}
       <Tooltip>
         <h1>Datos del Beneficiario</h1>
