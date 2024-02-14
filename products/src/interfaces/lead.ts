@@ -2,6 +2,7 @@ interface ICustomer {
   id: string;
   rut: string;
   name: string;
+  birthDate: string;
   paternalLastName: string;
   maternalLastName: string;
   address: string;

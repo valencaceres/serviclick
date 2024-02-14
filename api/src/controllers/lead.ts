@@ -765,7 +765,10 @@ const createController = async (req: any, res: any) => {
     subscription,
     user_id,
   } = req.body;
-
+  
+   if (insured.length > 0 && !customer.birthDate) {
+    customer.birthDate = insured[0].birthDate;
+  }
   let { success, data, error } = await create({
     id,
     customer,

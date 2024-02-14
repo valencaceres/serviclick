@@ -9,9 +9,12 @@ const PaymentTerms = ({ state, onClick }: any) => {
 
   return (
     <Row align="center" width="100%">
-      <p className={styles.terms}>
+      <p className="flex justify-center items-center gap-5 mt-0 text-base font-semibold text-gray-600">
         <input type="checkbox" onChange={(e: any) => state(e.target.checked)} />
-        Acepta nuestros <a onClick={onClick}>Términos y Condiciones</a>
+        Acepta nuestros{" "}
+        <a onClick={onClick} className="text-base">
+          Términos y Condiciones
+        </a>
       </p>
     </Row>
   );

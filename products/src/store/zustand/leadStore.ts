@@ -28,6 +28,7 @@ const initialData: ILead = {
     id: "",
     rut: "",
     name: "",
+    birthDate: "",
     paternalLastName: "",
     maternalLastName: "",
     address: "",

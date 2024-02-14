@@ -9,25 +9,33 @@ export interface IStage {
   code: string;
   name: string;
   component: any;
+  number: number;
 }
 
 export const stages: IStage[] = [
   {
-    code: "description",
-    name: "Descripción del producto",
-    component: <Description />,
-  },
-  {
     code: "contractor",
     name: "Datos del Contratante",
     component: <Contractor />,
+    number: 1,
   },
-  { code: "insured", name: "Datos del Beneficiario", component: <Insured /> },
-  { code: "product", name: "Datos del Producto", component: <Product /> },
+  {
+    code: "insured",
+    name: "Datos del Beneficiario",
+    component: <Insured />,
+    number: 2,
+  },
+  {
+    code: "product",
+    name: "Datos del Producto",
+    component: <Product />,
+    number: 3,
+  },
   {
     code: "beneficiaries",
     name: "Datos de las Cargas",
     component: <Beneficiary />,
+    number: 4,
   },
-  { code: "payment", name: "Pago", component: <Payment /> },
+  { code: "payment", name: "Pago", component: <Payment />, number: 5 },
 ];

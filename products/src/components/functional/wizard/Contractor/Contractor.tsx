@@ -2,10 +2,15 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
 import { Body, Content, Footer } from "@/components/layout/Generic";
-
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card-ui";
+import { Button } from "@/components/ui/button-ui";
 import Person from "@/components/functional/entities/Person";
 
-import Button from "@/components/ui/Button/Button";
 import Loading from "@/components/ui/Loading";
 import Tooltip from "@/components/ui/Tooltip";
 import { currencyFormat } from "@/utils/format";
@@ -39,7 +44,7 @@ const Contractor = () => {
 
   const [completedForm, setCompletedForm] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  
+
   const setLeadContractor = (data: any) => {
     setLead({
       ...lead,
@@ -97,22 +102,28 @@ const Contractor = () => {
 
   return (
     <Body>
-      <Content>
-        <Person
-          data={lead.customer}
-          setData={setLeadContractor}
-          setCompletedForm={setCompletedForm}
-          getByRut={getByRut}
-        />
-      </Content>
-      <Footer>
-        <Button
-          text="Registrar"
-          onClick={handleClickRegister}
-          width="200px"
-          enabled={completedForm}
-        ></Button>
-      </Footer>
+      <Card className="mt-4 mb-4">
+        <CardContent className="py-4">
+          <Person
+            data={lead.customer}
+            setData={setLeadContractor}
+            setCompletedForm={setCompletedForm}
+            getByRut={getByRut}
+          />
+        </CardContent>
+        <CardFooter className="w-full ">
+          <Button
+            className={`text-white w-full ${
+              completedForm ? "bg-[#03495C]" : "bg-gray-400"
+            } ${!completedForm && "cursor-not-allowed"}  active:bg-opacity-80`}
+            onClick={handleClickRegister}
+            disabled={!completedForm}
+          >
+            Registrar
+          </Button>
+        </CardFooter>
+      </Card>
+
       {leadIsLoading && <Loading />}
       <Tooltip>
         <h1>Datos del Contratante</h1>

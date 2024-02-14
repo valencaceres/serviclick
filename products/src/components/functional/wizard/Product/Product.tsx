@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
 import { Body, Content, Footer, Col } from "@/components/layout/Generic";
-
-import Button from "@/components/ui/Button/Button";
+import { Card, CardContent, CardFooter } from "@/components/ui/card-ui";
+import InputText from "@/components/ui/Input-ui-box";
+import { Button } from "@/components/ui/button-ui";
 import Loading from "@/components/ui/Loading";
-import InputText from "@/components/ui/InputText";
 import Tooltip from "@/components/ui/Tooltip";
 
 import { useUI, useProduct, useLead } from "@/store/hooks";
@@ -99,7 +99,9 @@ const Product = () => {
       router.push(
         `/${
           product.beneficiaries > 0 ? "beneficiaries" : "payment"
-        }?productPlanId=${ui.product.productPlan_id}&leadId=${lead.id}&userId=${ui.userId}`
+        }?productPlanId=${ui.product.productPlan_id}&leadId=${lead.id}&userId=${
+          ui.userId
+        }`
       );
       setIsProcessing(false);
     }
@@ -107,32 +109,39 @@ const Product = () => {
 
   return (
     <Body>
-      <Content>
-        <Col width="340px">
-          {lead &&
-            lead.insured &&
-            lead.insured.length > 0 &&
-            lead.insured[0].values &&
-            lead.insured[0].values.map((item, idx: number) => (
-              <InputText
-                key={idx}
-                maxLength={250}
-                width="340px"
-                label={item.value_name}
-                value={values ? values[idx].value : ""}
-                onChange={(e: any) => handleChangeValue(e, idx)}
-              />
-            ))}
-        </Col>
-      </Content>
-      <Footer>
-        <Button
-          text="Registrar"
-          width="200px"
-          onClick={handleClickSave}
-          enabled={isButtonEnabled}
-        />
-      </Footer>
+      <Card className="mt-4 mb-4">
+        <CardContent className="py-4">
+          <Col width="340px">
+            {lead &&
+              lead.insured &&
+              lead.insured.length > 0 &&
+              lead.insured[0].values &&
+              lead.insured[0].values.map((item, idx: number) => (
+                <InputText
+                  key={idx}
+                  maxLength={250}
+                  width="340px"
+                  label={item.value_name}
+                  value={values ? values[idx].value : ""}
+                  onChange={(e: any) => handleChangeValue(e, idx)}
+                />
+              ))}
+          </Col>
+        </CardContent>
+        <CardFooter className="w-full ">
+          <Button
+            className={`text-white w-full ${
+              isButtonEnabled ? "bg-[#03495C]" : "bg-gray-400"
+            } ${
+              !isButtonEnabled && "cursor-not-allowed"
+            }  active:bg-opacity-80`}
+            onClick={handleClickSave}
+            disabled={!isButtonEnabled}
+          >
+            Registrar
+          </Button>
+        </CardFooter>
+      </Card>
       {leadIsLoading && <Loading />}
       <Tooltip>
         <h1>Datos del Producto</h1>

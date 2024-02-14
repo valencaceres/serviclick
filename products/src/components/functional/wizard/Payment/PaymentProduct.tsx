@@ -10,6 +10,7 @@ import { formatAmount } from "@/utils/format";
 import { calculateValidity } from "@/utils/functions";
 import { IProduct } from "@/interfaces/product";
 import { ILead } from "@/interfaces/lead";
+import InputText from "@/components/ui/Input-ui-box";
 interface IPaymentProduct {
   product: IProduct;
   lead: ILead;
@@ -24,41 +25,59 @@ const PaymentProduct = ({ product, lead }: IPaymentProduct) => {
     S: "Semanal",
   };
 
-  const infoDate = (date: string) => {
+  const infoDate = (date: string | undefined) => {
     if (date) {
-      const oDate = date.split("-");
+      const oDate = date.split("T")[0].split("-");
       return `${oDate[2]}-${oDate[1]}-${oDate[0]}`;
     }
+    return "";
   };
+
   return lead && lead.insured && lead.insured.length > 0 && isDesktop ? (
     <Col width="712px" align="center">
       <Row>
-        <InfoText
+        <InputText
+          disabled
+          isCompleted={true}
           label="Inicio de vigencia"
           width="170px"
           value={infoDate(calculateValidity(product.assistances))}
         />
-        <InfoText label="Frecuencia" width="170px" value={product.frequency} />
-        <InfoText
+        <InputText
+          disabled
+          isCompleted={true}
+          label="Frecuencia"
+          width="170px"
+          value={product.frequency}
+        />
+        <InputText
           label="Duracción"
           width="170px"
+          disabled
+          isCompleted={true}
           value={`${product.term} meses`}
         />
       </Row>
       <Row>
-        <InfoText
+        <InputText
           label="Valor unitario ($)"
           width="170px"
+          disabled
+          isCompleted={true}
           value={formatAmount(product.plan.price.toString(), "P")}
         />
-        <InfoText
+        <InputText
           label="Cantidad de beneficiarios"
           width="170px"
-          value={lead?.insured[0]?.beneficiaries?.length || 0}
+          disabled
+          isCompleted={true}
+          value={(lead?.insured[0]?.beneficiaries?.length || 0).toString()}
         />
-        <InfoText
+        <InputText
           label="Valor a pagar ($)"
           width="170px"
+          disabled
+          isCompleted={true}
           value={formatAmount(
             !isNaN(
               (product?.plan?.price || 0) +
@@ -95,34 +114,46 @@ const PaymentProduct = ({ product, lead }: IPaymentProduct) => {
     </Col>
   ) : (
     <Col width="300px" align="center">
-      <InfoText
+      <InputText
         label="Inicio de vigencia"
         width="170px"
+        disabled
+        isCompleted={true}
         value={infoDate(calculateValidity(product.assistances))}
       />
-      <InfoText
+      <InputText
         label="Frecuencia"
         width="170px"
+        disabled
+        isCompleted={true}
         value={frequency[product.frequency]}
       />
-      <InfoText
+      <InputText
         label="Duracción"
         width="170px"
+        disabled
+        isCompleted={true}
         value={`${product.term} meses`}
       />
-      <InfoText
+      <InputText
         label="Valor unitario ($)"
         width="170px"
+        disabled
+        isCompleted={true}
         value={formatAmount(product.plan.price.toString(), "P")}
       />
-      <InfoText
+      <InputText
         label="Cantidad de beneficiarios"
         width="170px"
-        value={lead.insured.length}
+        disabled
+        isCompleted={true}
+        value={lead.insured.length.toString()}
       />
-      <InfoText
+      <InputText
         label="Valor a pagar ($)"
         width="170px"
+        disabled
+        isCompleted={true}
         value={formatAmount(
           !isNaN(
             (product?.plan?.price || 0) +

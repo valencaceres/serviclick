@@ -3,54 +3,112 @@ import { useMediaQuery } from "react-responsive";
 
 import {
   Table,
+  TableBody,
   TableCell,
-  TableCellEnd,
-  TableDetail,
   TableHeader,
   TableRow,
-} from "@/components/ui/Table";
+} from "@/components/ui/table-ui";
 import InfoText from "@/components/ui/InfoText";
 
 import { formatAmount } from "@/utils/format";
 import { useLead } from "@/store/hooks";
+import InputText from "@/components/ui/Input-ui-box";
 const PaymentCoverage = ({ product }: any) => {
   const isDesktop = useMediaQuery({ minWidth: 1200 });
   const { lead } = useLead();
 
   return isDesktop ? (
     <Col>
-      <InfoText label="Nombre del producto" value={product.name} />
-      <Table height="auto">
+      <InputText
+        disabled
+        isCompleted={true}
+        label="Nombre del producto"
+        value={product.name}
+      />
+      <Table>
         <TableHeader>
-          <TableCell width="251px">Servicio</TableCell>
-          <TableCell width="100px">Monto</TableCell>
-          <TableCell width="150px">Límite</TableCell>
-          <TableCell width="90px">Eventos</TableCell>
-          <TableCell width="100px">Carencia</TableCell>
-          <TableCellEnd />
+          <TableRow>
+            <TableCell
+              className="text-center border-r border-b border-white h-12 bg-gray-200  text-gray-600 font-bold"
+              width="251px"
+            >
+              Servicio
+            </TableCell>
+            <TableCell
+              className="text-center border border-white h-12 bg-gray-200  text-gray-600 font-bold"
+              width="100px"
+            >
+              Monto
+            </TableCell>
+            <TableCell
+              className="text-center border border-white h-12 bg-gray-200  text-gray-600 font-bold"
+              width="150px"
+            >
+              Límite
+            </TableCell>
+            <TableCell
+              className="text-center border border-white h-12 bg-gray-200  text-gray-600 font-bold"
+              width="90px"
+            >
+              Eventos
+            </TableCell>
+            <TableCell
+              className="text-center border-l border-b border-white h-12 bg-gray-200  text-gray-600 font-bold"
+              width="100px"
+            >
+              Carencia
+            </TableCell>
+          </TableRow>
         </TableHeader>
-        <TableDetail>
+        <TableBody>
           {product &&
             product.assistances.map((item: any, idx: number) => (
-              <TableRow key={idx}>
-                <TableCell align="left" width="251px">
+              <TableRow
+                key={idx}
+                className={
+                  idx % 2 === 0
+                    ? "bg-sky-100 font-semibold text-gray-600 hover:bg-gray-200 hover:text-gray-600 hover:font-bold"
+                    : "bg-slate-100 text-gray-600 font-semibold hover:bg-gray-200 hover:text-gray-600 hover:font-bold"
+                }
+              >
+                <TableCell
+                  align="left"
+                  className="border border-white h-12"
+                  width="251px"
+                >
                   {item.name}
                 </TableCell>
-                <TableCell align="center" width="100px">
+                <TableCell
+                  align="center"
+                  className="border border-white h-12"
+                  width="100px"
+                >
                   {formatAmount(item.amount, item.currency)}
                 </TableCell>
-                <TableCell align="center" width="150px">
+                <TableCell
+                  align="center"
+                  className="border border-white h-12"
+                  width="150px"
+                >
                   {item.maximum}
                 </TableCell>
-                <TableCell align="center" width="90px">
+                <TableCell
+                  align="center"
+                  className="border border-white h-12"
+                  width="90px"
+                >
                   {item.events + (lead?.insured[0]?.beneficiaries?.length || 0)}
                 </TableCell>
-                <TableCell align="center" width="100px">
+                <TableCell
+                  align="center"
+                  className="border border-white h-12"
+                  width="100px"
+                >
                   {item.lack}
                 </TableCell>
               </TableRow>
             ))}
-        </TableDetail>
+        </TableBody>
       </Table>
       <p style={{ maxWidth: "700px", textAlign: "center" }}>
         Al agregar cargas a su plan de asistencia, se efectuará un aumento de
@@ -61,38 +119,57 @@ const PaymentCoverage = ({ product }: any) => {
   ) : (
     <Col>
       <InfoText label="Nombre del producto" value={product.name} />
-      <Table height="auto">
+      <Table>
         <TableHeader>
-          <TableCell width="290px">Servicio</TableCell>
-          <TableCellEnd />
+          <TableRow>
+            <TableCell
+              className="text-center border border-gray-400 h-12 bg-gray-200 text-black font-bold"
+              width="290px"
+            >
+              Servicio
+            </TableCell>
+          </TableRow>
         </TableHeader>
-        <TableDetail>
+        <TableBody>
           {product &&
             product.assistances.map((item: any, idx: number) => (
-              <TableRow key={idx}>
-                <TableCell align="left" width="290px">
-                  {item.name}
-                  {item.maximum !== "" && <br />}
-                  {item.maximum !== "" && item.maximum}
-                  {item.amount > 0 && <br />}
-                  {item.amount > 0 && formatAmount(item.amount, item.currency)}
-                  <br />
-                  {item.events === 0 ? (
-                    "Ilimitados"
-                  ) : (
-                    <>
-                      {item.events +
-                        (lead?.insured[0]?.beneficiaries?.length || 0)}{" "}
-                      eventos en el año
-                    </>
+              <TableRow
+                key={idx}
+                className={
+                  idx % 2 === 0
+                    ? "bg-sky-100 font-semibold text-gray-600 hover:bg-gray-200 hover:text-gray-600 hover:font-bold"
+                    : "bg-slate-100 text-gray-600 font-semibold hover:bg-gray-200 hover:text-gray-600 hover:font-bold"
+                }
+              >
+                <TableCell
+                  align="left"
+                  className="border border-white h-12"
+                  width="290px"
+                >
+                  <div className="text-sm font-bold">{item.name}</div>
+                  {item.maximum !== "" && (
+                    <div className="text-xs">{item.maximum}</div>
                   )}
-                  {" ("}
-                  {item.lack}
-                  {" días carencia)"}
+                  {item.amount > 0 && (
+                    <div className="text-xs">
+                      {formatAmount(item.amount, item.currency)}
+                    </div>
+                  )}
+                  <div className="text-xs">
+                    {item.events === 0
+                      ? "Ilimitados"
+                      : `${
+                          item.events +
+                          (lead?.insured[0]?.beneficiaries?.length || 0)
+                        } eventos en el año`}
+                    {" ("}
+                    {item.lack}
+                    {" días carencia)"}
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
-        </TableDetail>
+        </TableBody>
       </Table>
       <p style={{ maxWidth: "300px", textAlign: "center" }}>
         Al agregar cargas a su plan de asistencia, se efectuará un aumento de
