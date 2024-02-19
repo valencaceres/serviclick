@@ -25,6 +25,7 @@ import {
   updateAgent,
   addLeadFromExcel,
   getProductsAndRetail,
+  removeAgent,
 } from "../controllers/retail";
 import isAuthenticated from "../middlewares/isAuthenticated";
 import isAdmin from "../middlewares/isAdmin";
@@ -80,6 +81,7 @@ RetailRouter.put(
   isAdmin,
   updateAgent
 );
+RetailRouter.delete("/removeAgent", auth, isAuthenticated, isAdmin, removeAgent);
 RetailRouter.post(
   "/addLeadFromExcel",
   auth,
@@ -88,5 +90,6 @@ RetailRouter.post(
   upload.single("file"),
   addLeadFromExcel
 );
+
 
 export default RetailRouter;

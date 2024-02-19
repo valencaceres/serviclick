@@ -33,10 +33,27 @@ const useUpdateAgent = () => {
   });
 };
 
+const removeAgent = async (payload: any) => {
+  const { data } = await apiInstance.delete(`/retail/removeAgent`,  { data: payload } );
+
+  return data;
+}
+
+const useRemoveAgent = () => {
+  return useMutation(["removeAgent"], (payload: any) => removeAgent(payload), {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["retailAgents"]);
+    },
+  });
+}
+
+
+
 const useRetail = () => {
   return {
     useGetAgents,
     useUpdateAgent,
+    useRemoveAgent,
   };
 };
 

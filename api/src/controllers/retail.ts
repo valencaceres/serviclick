@@ -3,7 +3,7 @@ import xlsx from "xlsx";
 import createLogger from "../util/logger";
 import { generateGenericPassword } from "../util/user";
 import { fillEmptyEmail, sendMail } from "../util/email";
-import { updateClerkUser } from "../util/clerkUserData";
+import { createClerkUser, updateClerkUser } from "../util/clerkUserData";
 import { formatRut } from "../util/rut";
 
 import * as Retail from "../models/retail";
@@ -441,6 +441,7 @@ const addProduct = async (req: any, res: any) => {
     price.base || null,
     0,
     price.company,
+    price.yearly,
     discount
   );
 
@@ -544,25 +545,87 @@ const getAgents = async (req: any, res: any) => {
   res.status(200).json(response.data);
 };
 
+
 const updateAgent = async (req: any, res: any) => {
   const { retailId } = req.params;
-  const { id, rut, name, lastname, maternallastname, profilecode } = req.body;
-
+  const { agentId, rut, name, paternallastname,  maternallastname,password, profileCode, email, district, isEdit, rol_web_retail, type_role_broker, type_role_web_admin, type_role_operations, type_role_serviclick, type_role_admin  } = req.body;
+ let userId 
+  if(isEdit){
   const response = await updateClerkUser({
-    user_id: id,
+    user_id: agentId,
     first_name: name,
-    last_name: lastname,
-    public_metadata: { rut: rut, maternallastname: maternallastname },
+    last_name: paternallastname,
+    public_metadata: {
+      roles: {
+        broker: type_role_broker,
+        serviclick : type_role_serviclick,
+        operations: type_role_operations,
+        retail: rol_web_retail,
+        admin: type_role_admin,
+        web_admin: type_role_web_admin
+
+      },
+    },
+  });
+  }
+  if(isEdit === false){
+    const response = await createClerkUser({
+
+      first_name: name,
+      last_name: paternallastname,
+      email_address: [email],
+      public_metadata: {
+        roles: {
+          broker: "user",
+          serviclick : "user",
+          operations: "user",
+          retail: rol_web_retail,
+          admin: "user",
+          web_admin: "user"
+        },
+      },
+      password:password,
+    });
+    console.log(response)
+    userId = response.data.id
+  }
+const responseUpdateProfileCode = await UserRetail.updateProfileCode(
+  isEdit ? agentId : userId,
+    retailId,
+    profileCode,
+    email,
+    rut,
+    maternallastname,
+    paternallastname,
+    district,
+    name, isEdit
+  );
+  return res.status(200).json(responseUpdateProfileCode);
+};
+
+const removeAgent = async (req: any, res: any) => {
+  const { agentId, retailId } = req.body;
+  const response = await UserRetail.removeByUserId(agentId, retailId);
+
+  if (!response.success) {
+    createLogger.error({
+      model: "retailUser/removeByUserId",
+      error: response.error,
+    });
+    res.status(500).json({ error: "Error removing retail user" });
+    return;
+  }
+
+  createLogger.info({
+    controller: "retail/removeAgent",
+    message: "OK",
   });
 
-  const profileCode = await UserRetail.updateProfileCode(
-    id,
-    retailId,
-    profilecode
-  );
+  res.status(200).json(response.data);
+}
 
-  return res.status(200).json(profileCode);
-};
+
+
 
 const getByUserId = async (req: any, res: any) => {
   try {
@@ -799,6 +862,7 @@ export {
   addProduct,
   removeProduct,
   getById,
+  removeAgent,
   getByRut,
   getAll,
   getProductsAndRetail,

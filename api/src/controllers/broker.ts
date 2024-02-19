@@ -7,7 +7,7 @@ import * as BrokerProduct from "../models/brokerProduct";
 import * as UserBroker from "../models/userBroker";
 import * as BrokerUser from "../models/brokerUser";
 import * as Product from "./product";
-import { updateClerkUser } from "../util/clerkUserData";
+import { updateClerkUser, createClerkUser } from "../util/clerkUserData";
 
 const createFull = async (req: any, res: any) => {
   try {
@@ -80,6 +80,7 @@ const createFull = async (req: any, res: any) => {
           price.base || null,
           price.customer,
           price.company,
+          price.yearly,
           discount
         );
 
@@ -520,14 +521,16 @@ const addProduct = async (req: any, res: any) => {
     value,
     currency,
     discount,
+    pdfBase64
   } = req.body;
-
+ console.log("baseee:",pdfBase64)
   const responsePlans = await Product.createProductPlans(
     product_id,
     broker_id,
     price.base || null,
     price.customer,
     price.company,
+    price.yearly,
     discount
   );
 
@@ -548,8 +551,9 @@ const addProduct = async (req: any, res: any) => {
   const brokerProductResponse = await BrokerProduct.create(
     broker_id,
     product_id,
-    responsePlans.data?.customer.id | 0,
-    responsePlans.data?.company.id | 0,
+    responsePlans?.data?.customer?.id || null,
+    responsePlans?.data?.company?.id || null,
+    responsePlans?.data?.yearly?.id || null,
     price,
     commisionTypeCode,
     value,
@@ -564,9 +568,7 @@ const addProduct = async (req: any, res: any) => {
     res.status(500).json({ error: "Error creating broker product" });
     return;
   }
-
   const brokerProducts = await BrokerProduct.getByBrokerId(broker_id);
-
   if (!brokerProducts.success) {
     createLogger.error({
       model: "brokerProduct/getByBrokerId",
@@ -574,6 +576,26 @@ const addProduct = async (req: any, res: any) => {
     });
     res.status(500).json({ error: "Error retrieving broker product" });
     return;
+  }
+  
+  if (pdfBase64 != "") {
+    let response;
+    if (responsePlans.data?.customer?.product_plan_id && responsePlans.data?.yearly?.product_plan_id) {
+      response = await Product.insertPdf(responsePlans.data.customer.product_plan_id, pdfBase64);
+    } else if (responsePlans.data?.customer?.product_plan_id) {
+      response = await Product.insertPdf(responsePlans.data.customer.product_plan_id, pdfBase64);
+    } else if (responsePlans.data?.yearly?.product_plan_id) {
+      response = await Product.insertPdf( responsePlans.data.yearly.product_plan_id, pdfBase64);
+    } 
+  
+    if (!response || !response.success) {
+      createLogger.error({
+        model: "brokerProduct/InsertPdf",
+        error: response ? response.error : "No response received",
+      });
+      res.status(500).json({ error: "Error inserting pdf" });
+      return;
+    }
   }
 
   res.status(200).json(brokerProducts.data);
@@ -634,23 +656,82 @@ const getAgents = async (req: any, res: any) => {
 
 const updateAgent = async (req: any, res: any) => {
   const { brokerId } = req.params;
-  const { id, rut, name, lastname, maternallastname, profilecode } = req.body;
-
+  const { agentId, rut, name, paternallastname,  maternallastname,password, profileCode, email, district, isEdit, rol_web_broker, type_role_web_admin, type_role_operations, type_role_serviclick, type_role_retail, type_role_admin  } = req.body;
+ let userId 
+  if(isEdit){
   const response = await updateClerkUser({
-    user_id: id,
+    user_id: agentId,
     first_name: name,
-    last_name: lastname,
-    public_metadata: { rut: rut, maternallastname: maternallastname },
+    last_name: paternallastname,
+    public_metadata: {
+      roles: {
+        broker: rol_web_broker,
+        serviclick : type_role_serviclick,
+        operations: type_role_operations,
+        retail: type_role_retail,
+        admin: type_role_admin,
+        web_admin: type_role_web_admin
+
+      },
+    },
+  });
+  }
+  if(isEdit === false){
+    const response = await createClerkUser({
+
+      first_name: name,
+      last_name: paternallastname,
+      email_address: [email],
+      public_metadata: {
+        roles: {
+          broker: rol_web_broker,
+          serviclick : "user",
+          operations: "user",
+          retail:"user",
+          admin: "user",
+          web_admin: "user"
+        },
+      },
+      password:password,
+    });
+    console.log(response)
+    userId = response.data.id
+  }
+const responseUpdateProfileCode = await BrokerUser.updateProfileCode(
+  isEdit ? agentId : userId,
+    brokerId,
+    profileCode,
+    email,
+    rut,
+    maternallastname,
+    paternallastname,
+    district,
+    name, isEdit
+  );
+  return res.status(200).json(responseUpdateProfileCode);
+};
+
+const removeAgent = async (req: any, res: any) => {
+  const { agentId, brokerId } = req.body;
+  const response = await BrokerUser.removeByUserId(agentId, brokerId);
+
+  if (!response.success) {
+    createLogger.error({
+      model: "brokerUser/removeByUserId",
+      error: response.error,
+    });
+    res.status(500).json({ error: "Error removing broker user" });
+    return;
+  }
+
+  createLogger.info({
+    controller: "broker/removeAgent",
+    message: "OK",
   });
 
-  const profileCode = await BrokerUser.updateProfileCode(
-    id,
-    brokerId,
-    profilecode
-  );
+  res.status(200).json(response.data);
+}
 
-  return res.status(200).json(profileCode);
-};
 
 const getByUserId = async (req: any, res: any) => {
   try {
@@ -747,6 +828,7 @@ export {
   getByUserId,
   getProductsById,
   getCollectionById,
+  removeAgent
 };
 
 export const getBrokerDataById = async (id: string) => {

@@ -25,7 +25,41 @@ const OriginFamily: FC<DynamicFamilyProps> = ({
   uniqueAssistancesArray,
   params,
 }: DynamicFamilyProps) => {
-  console.log(params)
+  const downloadFile = ({
+    Base64Content,
+    nameProduct,
+  }: {
+    Base64Content: string
+    nameProduct: string
+  }) => {
+    const byteCharacters = Buffer.from(Base64Content, "base64").toString(
+      "binary"
+    )
+
+    const byteNumbers = new Array(byteCharacters.length)
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i)
+    }
+    const byteArray = new Uint8Array(byteNumbers)
+
+    const blob = new Blob([byteArray], { type: "application/pdf" })
+    const url = URL.createObjectURL(blob)
+
+    const a = document.createElement("a")
+    a.href = url
+    a.download = nameProduct || "contrato.pdf"
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }
+  const handleDownloadClick = (assistance: any) => {
+    downloadFile({
+      Base64Content: assistance.pdf_base64,
+      nameProduct: assistance.product_name,
+    })
+  }
+
   return (
     <>
       <section className="relative flex h-[450px] items-center px-20 pb-20">
@@ -88,6 +122,33 @@ const OriginFamily: FC<DynamicFamilyProps> = ({
                   </Button>
                 </Link>
               </div>
+
+              {assistance.yearly_price != 0 && (
+                <div className="flex flex-col gap-2">
+                  <h2 className="text-center text-2xl font-bold uppercase text-primary">
+                    Valor por año
+                  </h2>
+                  <h3 className="text-center text-2xl font-extrabold">
+                    $
+                    {assistance.yearly_price
+                      ? assistance.yearly_price.toLocaleString("es-CL", {
+                          style: "currency",
+                          currency: "CLP",
+                        })
+                      : "No disponible"}
+                  </h3>
+                  <Link
+                    href={`https://productos.serviclick.cl/contractor?productPlanId=${assistance.yearly_plan_id}`}
+                    passHref
+                    target="_blank"
+                  >
+                    <Button className="w-full text-lg font-bold uppercase">
+                      Contrata aquí
+                    </Button>
+                  </Link>
+                </div>
+              )}
+
               {assistance.family_price && (
                 <div className="flex flex-col gap-2">
                   <h2 className="text-center text-2xl font-bold uppercase text-primary">
@@ -113,6 +174,14 @@ const OriginFamily: FC<DynamicFamilyProps> = ({
                 </div>
               )}
             </div>
+            {assistance.pdf_base64 && (
+              <Button
+                onClick={() => handleDownloadClick(assistance)}
+                className="rounded-none bg-foreground text-lg font-bold uppercase hover:bg-foreground"
+              >
+                Descargar pdf
+              </Button>
+            )}
             <div className="hidden w-full bg-slate-50 py-8 lg:block">
               <div className="flex justify-center gap-2">
                 {assistance.coverages.slice(0, 5).map((coverage: any) => (

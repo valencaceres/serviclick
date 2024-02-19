@@ -18,6 +18,7 @@ import {
   getCollectById,
   getAgents,
   updateAgent,
+  removeAgent
 } from "../controllers/broker";
 import isAuthenticated from "../middlewares/isAuthenticated";
 import isAdmin from "../middlewares/isAdmin";
@@ -56,5 +57,7 @@ BrokerRouter.put(
   isAdmin,
   updateAgent
 );
+
+BrokerRouter.delete("/removeAgent", auth, isAuthenticated, isAdmin, removeAgent);
 
 export default BrokerRouter;

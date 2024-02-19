@@ -173,7 +173,7 @@ export const createProduct =
   };
 
 export const assignProductPrices =
-  (id: string, agent_id: string, customerprice: number, companyprice: number) =>
+  (id: string, agent_id: string, customerprice: number, companyprice: number, yearlyprice: number) =>
   async (dispatch: any) => {
     dispatch(setLoading(true));
     const { data } = await apiInstance.post(`/product/assignPrices`, {
@@ -181,6 +181,7 @@ export const assignProductPrices =
       agent_id,
       customerprice,
       companyprice,
+      yearlyprice,
     });
     dispatch(setProduct(data));
   };

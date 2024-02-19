@@ -62,10 +62,17 @@ const useProduct = () => {
     id: string,
     agent_id: string,
     customerprice: number,
-    companyprice: number
+    companyprice: number,
+    yearlyprice: number
   ) => {
     dispatch(
-      Product.assignProductPrices(id, agent_id, customerprice, companyprice)
+      Product.assignProductPrices(
+        id,
+        agent_id,
+        customerprice,
+        companyprice,
+        yearlyprice
+      )
     );
   };
 

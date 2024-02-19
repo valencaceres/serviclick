@@ -22,6 +22,8 @@ const updateAgent = async (payload: any) => {
   return data;
 };
 
+
+
 const useUpdateAgent = () => {
   return useMutation(["updateAgent"], (payload: any) => updateAgent(payload), {
     onSuccess: () => {
@@ -30,10 +32,26 @@ const useUpdateAgent = () => {
   });
 };
 
+const removeAgent = async (payload: any) => {
+  const { data } = await apiInstance.delete(`/broker/removeAgent`,  { data: payload } );
+
+  return data;
+}
+
+const useRemoveAgent = () => {
+  return useMutation(["removeAgent"], (payload: any) => removeAgent(payload), {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["brokerAgents"]);
+    },
+  });
+}
+
+
 const useBroker = () => {
   return {
     useGetAgents,
-    useUpdateAgent
+    useUpdateAgent,
+    useRemoveAgent
   };
 };
 

@@ -186,7 +186,32 @@ export const updateClerkUser = async (data: any) => {
 
     return response.data;
   } catch (error) {
-    console.error(`Error updating user data for user: ${data.user_id}`, error);
+    console.error(`Error updating user data for user: ${data.user_id}`);
     return null;
   }
 };
+
+export const createClerkUser = async (data: any) => {
+  try {
+    const response = await axios.post(
+      `https://api.clerk.com/v1/users`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`,
+        },
+      }
+    );
+    return {
+      success: true,
+      data: response.data,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: null,
+      error: "Error creating users",
+    };
+  }
+}

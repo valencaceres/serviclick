@@ -18,10 +18,11 @@ import ModalWindow from "../../../ui/ModalWindow";
 import { Modal } from "../../../ui/Modal";
 import Icon from "../../../ui/Icon";
 import ModalWarning from "../../../ui/ModalWarning";
-
+import RemoveAgent from "./BrokerRemoveAgent";
 import { useBroker } from "../../../../hooks";
-
+import { useDistrict } from "~/store/hooks";
 import styles from "./Broker.module.scss";
+import EditUser from "./BrokerUsersItem";
 
 interface IFormFieldString {
   value: string;
@@ -53,6 +54,7 @@ interface IBrokerProductForm {
     base: IFormFieldNumber;
     customer: IFormFieldNumber;
     company: IFormFieldNumber;
+    yearly: IFormFieldNumber;
   };
   commisionTypeCode: IFormFieldString;
   value: IFormFieldNumber;
@@ -62,6 +64,7 @@ interface IBrokerProductForm {
     percent: IFormFieldNumber;
     cicles: IFormFieldNumber;
   };
+  pdfbase64: any;
 }
 
 interface IBrokerUserForm {
@@ -109,6 +112,7 @@ const BrokerDetail = () => {
       base: { value: 0, isValid: false },
       customer: { value: 0, isValid: false },
       company: { value: 0, isValid: false },
+      yearly: { value: 0, isValid: false },
     },
     commisionTypeCode: {
       value: "",
@@ -121,6 +125,7 @@ const BrokerDetail = () => {
       percent: { value: 0, isValid: true },
       cicles: { value: 0, isValid: true },
     },
+    pdfbase64: "",
   };
 
   const initialDataBrokerUserForm: IBrokerUserForm = {
@@ -143,11 +148,13 @@ const BrokerDetail = () => {
   );
   const [showModalProducts, setShowModalProducts] = useState(false);
   const [showModalUsers, setShowModalUsers] = useState(false);
+  const [userToRemove, setUserToRemove] = useState<any>();
+  const [showAlertUsers, setShowAlertUsers] = useState(false);
   const [isDisabledBrokerForm, setIsDisabledBrokerForm] = useState(true);
   const [productToDelete, setProductToDelete] = useState({ id: "", name: "" });
   const [showWarningDeleteProduct, setShowWarningDeleteProduct] =
     useState(false);
-
+  const { getDistricts } = useDistrict();
   const setClosedWarningDeleteProduct = () => {
     setShowWarningDeleteProduct(false);
   };
@@ -158,6 +165,7 @@ const BrokerDetail = () => {
       return;
     }
     createBroker(broker);
+    setIsDisabledBrokerForm(true);
   };
 
   const handleClickAddNewProduct = () => {
@@ -173,6 +181,7 @@ const BrokerDetail = () => {
         base: { value: item.price.base, isValid: true },
         customer: { value: item.price.customer, isValid: true },
         company: { value: item.price.company, isValid: true },
+        yearly: { value: item.price.yearly, isValid: true },
       },
       commisionTypeCode: {
         value: item.commisionTypeCode,
@@ -185,6 +194,7 @@ const BrokerDetail = () => {
         percent: { value: item.discount.percent, isValid: true },
         cicles: { value: item.discount.cicles, isValid: true },
       },
+      pdfbase64: item.pdfbase64,
     });
     setShowModalProducts(true);
   };
@@ -202,6 +212,10 @@ const BrokerDetail = () => {
   const handleClickAddNewUser = () => {
     setBrokerUserForm(initialDataBrokerUserForm);
     setShowModalUsers(true);
+  };
+  const handleClickRemoveAgent = (item: any) => {
+    setUserToRemove(item);
+    setShowAlertUsers(true);
   };
 
   const handleClickEditUser = (item: any) => {
@@ -226,28 +240,64 @@ const BrokerDetail = () => {
   };
 
   const handleClickSaveProduct = () => {
-    addProduct(broker.id, {
-      product_id: brokerProductForm.product_id.value,
-      name: brokerProductForm.name.value,
-      price: {
-        base: brokerProductForm.price.base.value,
-        customer: brokerProductForm.price.customer.value,
-        company: brokerProductForm.price.company.value,
-      },
-      commisionTypeCode: brokerProductForm.commisionTypeCode.value,
-      value: brokerProductForm.value.value,
-      currency: "P",
-      discount: {
-        type:
-          brokerProductForm.discount.type.value == ""
-            ? "n"
-            : brokerProductForm.discount.type.value,
-        percent: brokerProductForm.discount.percent.value,
-        cicles: brokerProductForm.discount.cicles.value,
-      },
-    });
-  };
+    const file = brokerProductForm.pdfbase64;
+    let base64Pdf = "";
 
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        base64Pdf = reader.result?.toString().split(",")[1] ?? "";
+        addProduct(broker.id, {
+          product_id: brokerProductForm.product_id.value,
+          name: brokerProductForm.name.value,
+          price: {
+            base: brokerProductForm.price.base.value,
+            customer: brokerProductForm.price.customer.value,
+            company: brokerProductForm.price.company.value,
+            yearly: brokerProductForm.price.yearly.value,
+          },
+          commisionTypeCode: brokerProductForm.commisionTypeCode.value,
+          value: brokerProductForm.value.value,
+          currency: "P",
+          discount: {
+            type:
+              brokerProductForm.discount.type.value == ""
+                ? "n"
+                : brokerProductForm.discount.type.value,
+            percent: brokerProductForm.discount.percent.value,
+            cicles: brokerProductForm.discount.cicles.value,
+          },
+          pdfbase64: base64Pdf || "",
+        });
+      };
+
+      reader.readAsDataURL(file);
+    } else {
+      addProduct(broker.id, {
+        product_id: brokerProductForm.product_id.value,
+        name: brokerProductForm.name.value,
+        price: {
+          base: brokerProductForm.price.base.value,
+          customer: brokerProductForm.price.customer.value,
+          company: brokerProductForm.price.company.value,
+          yearly: brokerProductForm.price.yearly.value,
+        },
+        commisionTypeCode: brokerProductForm.commisionTypeCode.value,
+        value: brokerProductForm.value.value,
+        currency: "P",
+        discount: {
+          type:
+            brokerProductForm.discount.type.value == ""
+              ? "n"
+              : brokerProductForm.discount.type.value,
+          percent: brokerProductForm.discount.percent.value,
+          cicles: brokerProductForm.discount.cicles.value,
+        },
+        pdfbase64: "",
+      });
+    }
+  };
   const handleClickSaveUser = () => {
     setBroker({
       ...broker,
@@ -276,6 +326,10 @@ const BrokerDetail = () => {
     }
   }, [router]);
 
+  useEffect(() => {
+    getDistricts();
+  }, []);
+
   return (
     <Fragment>
       <ContentRow gap="20px">
@@ -286,6 +340,7 @@ const BrokerDetail = () => {
             brokerForm={brokerForm}
             setBrokerForm={setBrokerForm}
             editForm={handleClickEditForm}
+            setIsDisabledBrokerForm={setIsDisabledBrokerForm}
           />
         </ContentCell>
         <ContentCell gap="20px">
@@ -300,6 +355,7 @@ const BrokerDetail = () => {
             editUser={handleClickEditUser}
             deleteUser={handleClickDeleteUser}
             setBrokerUserForm={setBrokerUserForm}
+            handleClickRemoveAgent={handleClickRemoveAgent}
           />
         </ContentCell>
       </ContentRow>
@@ -315,19 +371,17 @@ const BrokerDetail = () => {
           setShowModal={setShowModalProducts}
         />
       </ModalWindow>
-      <ModalWindow
-        showModal={showModalUsers}
-        title="User"
-        setClosed={() => setShowModalUsers(false)}
-      >
-        <BrokerUsersItem
-          saveUser={handleClickSaveUser}
-          brokerUserForm={brokerUserForm}
-          setBrokerUserForm={setBrokerUserForm}
-          setShowModal={setShowModalUsers}
-          sendCredentials={handleClickSendCredentials}
-        />
-      </ModalWindow>
+      <EditUser
+        isEdit={false}
+        setOpenDialog={setShowModalUsers}
+        openDialog={showModalUsers}
+      />
+      <RemoveAgent
+        user={userToRemove}
+        isOpen={showAlertUsers}
+        setIsOpen={setShowAlertUsers}
+      />
+
       <Modal showModal={loading}>
         <div className={styles.message}>
           <Icon iconName="refresh" />

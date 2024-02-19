@@ -19,6 +19,7 @@ const BrokerForm = ({
   brokerForm,
   setBrokerForm,
   editForm,
+  setIsDisabledBrokerForm,
 }: any) => {
   const router = useRouter();
 
@@ -26,7 +27,7 @@ const BrokerForm = ({
   const { list: districtList } = useDistrict();
 
   const [enableButtonSave, setEnableButtonSave] = useState(false);
-
+  const [brokerCancel, setBrokerCancel] = useState(broker);
   const ref = useRef<HTMLInputElement>(null);
 
   const handleBlurRut = (event: any) => {
@@ -150,6 +151,24 @@ const BrokerForm = ({
     }
   };
 
+  const handleClickRevertForm = () => {
+    setIsDisabledBrokerForm(true);
+    setBrokerForm({
+      rut: { value: brokerCancel.rut, isValid: true },
+      name: { value: brokerCancel.name, isValid: true },
+      legalRepresentative: {
+        value: brokerCancel.legalRepresentative,
+        isValid: true,
+      },
+      line: { value: brokerCancel.line, isValid: true },
+      fantasyName: { value: brokerCancel.fantasyName, isValid: true },
+      address: { value: brokerCancel.address, isValid: true },
+      district: { value: brokerCancel.district, isValid: true },
+      email: { value: brokerCancel.email, isValid: true },
+      phone: { value: brokerCancel.phone, isValid: true },
+      logo: { value: brokerCancel.logo, isValid: true },
+    });
+  };
   useEffect(() => {
     if (broker.id !== "") {
       setBrokerForm({
@@ -207,6 +226,12 @@ const BrokerForm = ({
     }
     setEnableButtonSave(isValid);
   }, [brokerForm]);
+
+  useEffect(() => {
+    if (!isDisabledBrokerForm) {
+      setBrokerCancel(broker);
+    }
+  }, [!isDisabledBrokerForm]);
 
   return (
     <ContentRow gap="5px">
@@ -310,6 +335,13 @@ const BrokerForm = ({
             isValid={brokerForm?.phone.isValid}
             disabled={isDisabledBrokerForm}
           />
+          {!isDisabledBrokerForm && (
+            <ButtonIcon
+              iconName="close"
+              color="gray"
+              onClick={handleClickRevertForm}
+            />
+          )}
           <ButtonIcon
             iconName={isDisabledBrokerForm ? "edit" : "save"}
             color="gray"

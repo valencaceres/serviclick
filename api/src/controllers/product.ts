@@ -19,11 +19,13 @@ type ProductT = {
   alias: string;
   customerprice: number;
   companyprice: number;
+  yearlyprice: number;
   frequency: "U" | "S" | "M" | "A";
   dueday: number;
 
   customer_plan_id: number;
   company_plan_id: number;
+  yearly_plan_id: number;
 };
 
 type DiscountT = {
@@ -182,13 +184,13 @@ const createProduct = async (req: any, res: any) => {
 
 const createPlans = async (req: any, res: any) => {
   const { product_id, agent_id, price, discount } = req.body;
-
   const responsePlans = await createProductPlans(
     product_id,
     agent_id,
     price.base,
     price.customer,
     price.company,
+    price.yearly,
     discount
   );
 
@@ -210,7 +212,7 @@ const createPlans = async (req: any, res: any) => {
 };
 
 const assignPrices = async (req: any, res: any) => {
-  const { id, agent_id, baseprice, customerprice, companyprice, discount } =
+  const { id, agent_id, baseprice, customerprice, companyprice, yearlyprice, discount } =
     req.body;
   const responsePlans = await createProductPlans(
     id,
@@ -218,6 +220,7 @@ const assignPrices = async (req: any, res: any) => {
     baseprice,
     customerprice,
     companyprice,
+    yearlyprice,
     discount
   );
 
@@ -386,6 +389,7 @@ const listProducts = async (req: any, res: any) => {
       plan: {
         customer: { id: row.customer_plan_id, price: row.customer_plan_price },
         company: { id: row.company_plan_id, price: row.company_plan_price },
+        yearly: {id: row.yearly_plan_id, price: row.yearly_plan_price},
       },
       isSubject: row.issubject,
       frequency: row.frequency,
@@ -434,6 +438,7 @@ const getProductByFamilyId = async (req: any, res: any) => {
       plan: {
         customer: { id: row.customer_plan_id, price: row.customer_plan_price },
         company: { id: row.company_plan_id, price: row.company_plan_price },
+        yearly: {id: row.yearly_plan_id, price: row.yearly_plan_price},
       },
       isSubject: row.issubject,
       frequency: row.frequency,
@@ -606,13 +611,27 @@ const getByIdWithPrices = async (req: any, res: any) => {
   // });
 };
 
+const insertPdf = async (product_plan_id: string, pdfBase64:string) => {
+  const productPdfResponse = await ProductPlan.insertPdf(product_plan_id, pdfBase64);
+  if (!productPdfResponse.success) {
+    createLogger.error({
+      model: "productPlan/insertPdf",
+      error: productPdfResponse.error,
+    });
+    return { success: false, error: productPdfResponse.error };
+  }
+  return { success: true, data: productPdfResponse.data };
+
+}
+
 const createProductPlans = async (
   id: string,
   agent_id: string,
   baseprice: number | null,
   customerprice: number | null,
   companyprice: number | null,
-  discount: DiscountT
+  yearlyprice: number | null,
+  discount: DiscountT,
 ) => {
   const productResponse = await Product.getProduct(id, agent_id);
 
@@ -622,8 +641,7 @@ const createProductPlans = async (
       error: productResponse.error,
     });
     return { success: false, error: productResponse.error };
-  }
-
+  } 
   const {
     name,
     alias,
@@ -631,6 +649,7 @@ const createProductPlans = async (
     dueday,
     customer_plan_id,
     company_plan_id,
+    yearly_plan_id
   }: ProductT = productResponse.data;
 
   // const productPlansDeleted = await Product.deletePlans(id, agent_id);
@@ -649,8 +668,8 @@ const createProductPlans = async (
     M: 3,
     A: 4,
   };
-
-  const productData = {
+ const frecuencyData = FrequencyCode[frequency]
+  let productData = {
     frequency: FrequencyCode[frequency],
     cicles: 1,
     trial_cicles:
@@ -668,8 +687,8 @@ const createProductPlans = async (
     redirect_to: config.reveniu.feedbackURL.success,
     redirect_to_failure: config.reveniu.feedbackURL.error,
   };
-
   let productPlanData: any = { ...productData };
+
   if (discount.type === "p" && discount.percent > 0 && discount.cicles > 0) {
     productPlanData = {
       ...productPlanData,
@@ -685,6 +704,64 @@ const createProductPlans = async (
 
   let companyData: any = null;
   let customerData: any = null;
+  let yearlyData: any = null
+
+
+  if (yearlyprice && yearlyprice > 0) {
+    productPlanData.frequency = 4
+    const planResponseYearly = await axios[
+      yearly_plan_id > 0 ? "patch" : "post"
+    ](
+      `${config.reveniu.URL.plan}${
+        yearly_plan_id > 0 ? yearly_plan_id : ""
+      }`,
+      {
+        ...productPlanData,
+        is_custom_amount: false,
+        price: yearlyprice,
+      },
+      {
+        headers: config.reveniu.apiKey,
+      }
+    );
+
+    createLogger.info({
+      method: yearly_plan_id > 0 ? "patch" : "post",
+      url: `${config.reveniu.URL.plan}${
+        yearly_plan_id > 0 ? yearly_plan_id : ""
+      }`,
+      data: {
+        ...productPlanData,
+        is_custom_amount: false,
+        price: yearlyprice,
+      },
+      response: planResponseYearly.data,
+    });
+
+    const productPlanYearlyResponse = await ProductPlan.createModel(
+      id,
+      agent_id,
+      planResponseYearly.data.id,
+      "yearly",
+      baseprice || 0,
+      yearlyprice,
+      "A",
+      discount
+    );
+    if (!productPlanYearlyResponse.success) {
+      createLogger.error({
+        model: "productPlan/createModel",
+        error: productPlanYearlyResponse.error,
+      });
+      return { success: false, error: productPlanYearlyResponse.error };
+    }
+
+    yearlyData = {
+      id: planResponseYearly.data.id,
+      price: planResponseYearly.data.price,
+      product_plan_id:productPlanYearlyResponse.data.id
+    };
+  }
 
   if (companyprice && companyprice > 0) {
     let new_company_plan_id = company_plan_id > 0 ? company_plan_id : 0;
@@ -761,7 +838,10 @@ const createProductPlans = async (
     };
   }
 
+
+
   if (customerprice && customerprice > 0) {
+    productPlanData.frequency = frecuencyData
     const planResponseCustomer = await axios[
       customer_plan_id > 0 ? "patch" : "post"
     ](
@@ -796,7 +876,7 @@ const createProductPlans = async (
       agent_id,
       planResponseCustomer.data.id,
       "customer",
-      baseprice,
+      baseprice || 0,
       customerprice,
       frequency,
       discount
@@ -813,14 +893,19 @@ const createProductPlans = async (
     customerData = {
       id: planResponseCustomer.data.id,
       price: planResponseCustomer.data.price,
+      product_plan_id:productPlanCustomerResponse.data.id
+
     };
   }
+
 
   return {
     success: true,
     data: {
       customer: customerData,
       company: companyData,
+      yearly: yearlyData,
+
     },
   };
 };
@@ -1022,12 +1107,12 @@ const listByFamilies = async (req: any, res: any) => {
 
   const result = await Product.listByFamilies(agent);
 
+
   if (!result.success) {
     createLogger.error({
       model: "product/listByFamilies",
       error: result.error,
     });
-
     res.status(500).json({ error: "Error listing product" });
     return;
   }
@@ -1107,5 +1192,6 @@ export {
   getByRetailRut,
   listByFamilies,
   getPdfContractById,
-  getSuscriptionsByAgentId
+  getSuscriptionsByAgentId,
+  insertPdf
 };

@@ -22,6 +22,9 @@ import ModalWarning from "../../../ui/ModalWarning";
 import { useRetail } from "../../../../hooks";
 
 import styles from "./Retail.module.scss";
+import { useDistrict } from "~/store/hooks";
+import EditUser from "./RetailEditAgent";
+import RemoveAgent from "./RetailRemoveAgent";
 
 interface IFormFieldString {
   value: string;
@@ -82,6 +85,7 @@ const RetailDetail = () => {
     addProduct,
     removeProduct,
   } = useRetail();
+  const { getDistricts } = useDistrict();
 
   const initialDataRetailForm: IRetailForm = {
     rut: { value: "", isValid: true },
@@ -137,6 +141,8 @@ const RetailDetail = () => {
   );
   const [showModalProducts, setShowModalProducts] = useState(false);
   const [showModalUsers, setShowModalUsers] = useState(false);
+  const [userToRemove, setUserToRemove] = useState<any>();
+  const [showAlertUsers, setShowAlertUsers] = useState(false);
   const [isDisabledRetailForm, setIsDisabledRetailForm] = useState(true);
   const [productToDelete, setProductToDelete] = useState({ id: "", name: "" });
   const [showWarningDeleteProduct, setShowWarningDeleteProduct] =
@@ -152,6 +158,10 @@ const RetailDetail = () => {
       return;
     }
     createRetail(retail);
+  };
+  const handleClickRemoveAgent = (item: any) => {
+    setUserToRemove(item);
+    setShowAlertUsers(true);
   };
 
   const handleClickAddNewProduct = () => {
@@ -269,6 +279,10 @@ const RetailDetail = () => {
     }
   }, [router]);
 
+  useEffect(() => {
+    getDistricts();
+  }, []);
+
   return (
     <Fragment>
       <ContentRow gap="20px">
@@ -279,6 +293,7 @@ const RetailDetail = () => {
             retailForm={retailForm}
             setRetailForm={setRetailForm}
             editForm={handleClickEditForm}
+            setIsDisabledRetailForm={setIsDisabledRetailForm}
           />
         </ContentCell>
         <ContentCell gap="20px">
@@ -293,6 +308,7 @@ const RetailDetail = () => {
             editUser={handleClickEditUser}
             deleteUser={handleClickDeleteUser}
             setRetailUserForm={setRetailUserForm}
+            handleClickRemoveAgent={handleClickRemoveAgent}
           />
         </ContentCell>
       </ContentRow>
@@ -308,19 +324,16 @@ const RetailDetail = () => {
           setShowModal={setShowModalProducts}
         />
       </ModalWindow>
-      <ModalWindow
-        showModal={showModalUsers}
-        title="User"
-        setClosed={() => setShowModalUsers(false)}
-      >
-        <RetailUsersItem
-          saveUser={handleClickSaveUser}
-          retailUserForm={retailUserForm}
-          setRetailUserForm={setRetailUserForm}
-          setShowModal={setShowModalUsers}
-          sendCredentials={handleClickSendCredentials}
-        />
-      </ModalWindow>
+      <EditUser
+        isEdit={false}
+        setOpenDialog={setShowModalUsers}
+        openDialog={showModalUsers}
+      />
+      <RemoveAgent
+        user={userToRemove}
+        isOpen={showAlertUsers}
+        setIsOpen={setShowAlertUsers}
+      />
       <Modal showModal={retailLoading}>
         <div className={styles.message}>
           <Icon iconName="refresh" />
