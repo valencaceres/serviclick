@@ -309,7 +309,7 @@ const BrokerProductsItem = ({
           />
         </ContentRow>
         <ContentRow gap="5px">
-          {initialPdfData != "" ? (
+          {initialPdfData != "" && initialPdfData != null ? (
             <>
               <div className="flex w-full max-w-xl flex-col items-center gap-1.5 ">
                 <div className="w-full">
