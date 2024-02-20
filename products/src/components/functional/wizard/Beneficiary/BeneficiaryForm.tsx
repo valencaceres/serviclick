@@ -1,8 +1,8 @@
 import { Col, Row } from "@/components/layout/Generic";
 
-import InputText from "@/components/ui/InputText";
 import ComboBox from "@/components/ui/ComboBox";
-
+import InputText from "@/components/ui/Input-ui-box";
+import SelectBox from "@/components/ui/Select-Ui-Box";
 import { unFormatRut, formatRut } from "@/utils/format";
 import { numberRegEx, rutRegEx, emailRegEx } from "@/utils/regEx";
 import { rutValidate } from "@/utils/validations";
@@ -155,7 +155,7 @@ const BeneficiaryForm = ({
     setFormData({
       ...formData,
       relationship: {
-        value: event.target.value,
+        value: event,
         isValid: true,
       },
     });
@@ -242,7 +242,7 @@ const BeneficiaryForm = ({
         onChange={handleChangePhone}
         isValid={formData?.phone.isValid}
       />
-      <ComboBox
+      <SelectBox
         width="340px"
         label="Parentesco"
         placeHolder=":: Seleccione parentesco ::"

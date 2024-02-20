@@ -214,6 +214,7 @@ export const customerStore = create<customerState>((set, get) => ({
         ...state,
         contractor: data,
         product: data.origins[0],
+        beneficiaryList: data.origins[0].beneficiaries || [],
         isLoading: false,
         isError: false,
       }));

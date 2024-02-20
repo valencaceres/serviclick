@@ -8,20 +8,22 @@ import { isValidRut } from "@/utils/validations";
 import { dbDateToText } from "@/utils/date";
 
 import { Content, Footer, Col, Row, Body } from "@/components/layout/Generic";
-
-import BeneficiaryForm from "./BeneficiaryForm";
-
+import { Card, CardContent, CardFooter } from "@/components/ui/card-ui";
 import {
   Table,
+  TableBody,
+  TableCaption,
   TableCell,
-  TableCellEnd,
-  TableDetail,
+  TableFooter,
+  TableHead,
   TableHeader,
-  TableIcons,
   TableRow,
-} from "@/components/ui/Table";
+} from "@/components/ui/table-ui";
+import BeneficiaryForm from "./BeneficiaryForm";
+
+import { TableIcons } from "@/components/ui/Table";
 import Icon from "@/components/ui/Icon";
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button-ui";
 import ButtonIcon from "@/components/ui/ButtonIcon";
 import ModalWindow from "@/components/ui/ModalWindow";
 import Loading from "@/components/ui/Loading";
@@ -84,7 +86,12 @@ const Beneficiary = () => {
 
   const { ui } = useUI();
   const { product, setProduct } = useProduct();
-  const { beneficiary, getBeneficiaryByRut,beneficiaryList:beneficiaries , setBeneficiaryList:setBeneficiaries} = useBeneficiary();
+  const {
+    beneficiary,
+    getBeneficiaryByRut,
+    beneficiaryList: beneficiaries,
+    setBeneficiaryList: setBeneficiaries,
+  } = useBeneficiary();
   const { lead, getLeadById, createLead, leadIsLoading } = useLead();
   const { getAllRelationships } = useRelationship();
 
@@ -210,7 +217,7 @@ const Beneficiary = () => {
     });
     setShowModal(true);
   };
-  
+
   const handleClickSave = () => {
     if (lead && lead.insured && lead.insured.length > 0) {
       setIsProcessing(true);
@@ -254,11 +261,11 @@ const Beneficiary = () => {
     setIsButtonAddEnabled(isValid);
   }, [beneficiaryForm]);
 
- useEffect(() => {
-   if (beneficiary) {
-       fillForm(beneficiary);
-     }
-   }, [beneficiary]);
+  useEffect(() => {
+    if (beneficiary) {
+      fillForm(beneficiary);
+    }
+  }, [beneficiary]);
 
   useEffect(() => {
     setIsButtonEnabled(beneficiaries.length > 0);
@@ -286,144 +293,234 @@ const Beneficiary = () => {
 
   return (
     <Body>
-      <Content>
-        <Col>
-          {isDesktop ? (
-            <Table>
-              <TableHeader>
-                <TableCell width="70px" align="center">{`#`}</TableCell>
-                <TableCell width="120px">Rut</TableCell>
-                <TableCell width="300px">Nombre Completo</TableCell>
-                <TableCell width="110px">Nacimiento</TableCell>
-                <TableCell width="150px">Parentesco</TableCell>
-                <TableCell width="60px">&nbsp;</TableCell>
-                <TableCellEnd />
-              </TableHeader>
-              <TableDetail>
-                {beneficiaries.length > 0 &&
-                  beneficiaries.map((itemBeneficiary, idx: number) => (
-                    <TableRow key={idx}>
-                      <TableCell width="70px" align="center">
-                        {idx + 1}
-                      </TableCell>
-                      <TableCell width="120px" align="right">
-                        {itemBeneficiary.rut}
-                      </TableCell>
-                      <TableCell width="300px">{`${itemBeneficiary.name} ${itemBeneficiary.paternalLastName} ${itemBeneficiary.maternalLastName}`}</TableCell>
-                      <TableCell width="110px" align="center">
-                        {dbDateToText(itemBeneficiary.birthDate)}
-                      </TableCell>
-                      <TableCell width="150px">
-                        {itemBeneficiary.relationship}
-                      </TableCell>
-                      <TableCell width="60px" align="center">
-                        <TableIcons>
-                          <Icon
-                            iconName="edit"
-                            onClick={() =>
-                              editBeneficiary(itemBeneficiary, idx)
-                            }
-                          />
-                          <Icon
-                            iconName="delete"
-                            onClick={() =>
-                              deleteBeneficiary(itemBeneficiary.rut)
-                            }
-                          />
-                        </TableIcons>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              </TableDetail>
-            </Table>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableCell width="320px">Nombre Completo</TableCell>
-                <TableCellEnd />
-              </TableHeader>
-              <TableDetail>
-                {beneficiaries.length > 0 &&
-                  beneficiaries.map((itemBeneficiary, idx: number) => (
-                    <TableRow key={idx}>
-                      <TableCell width="320px">
-                        {`${itemBeneficiary.name} ${itemBeneficiary.paternalLastName} ${itemBeneficiary.maternalLastName}`}
-                        <TableIcons>
-                          <Icon
-                            iconName="edit"
-                            onClick={() =>
-                              editBeneficiary(itemBeneficiary, idx)
-                            }
-                          />
-                          <Icon
-                            iconName="delete"
-                            onClick={() =>
-                              deleteBeneficiary(itemBeneficiary.rut)
-                            }
-                          />
-                        </TableIcons>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              </TableDetail>
-            </Table>
-          )}
-          <Row align="space-between" width="100%">
-            <Summary color={beneficiaries.length > 0 ? "blue" : "#959595"}>
-              {beneficiaries.length === 0
-                ? `No tiene cargas asociadas (max ${product.beneficiaries})`
-                : beneficiaries.length === 1
-                ? `1 carga  (max ${product.beneficiaries})`
-                : `${beneficiaries.length} cargas (max ${product.beneficiaries})`}
-            </Summary>
-            <ButtonIcon
-              iconName="add"
-              color="gray"
-              disabled={beneficiaries.length >= product.beneficiaries}
-              onClick={handleClickNewBeneficiary}
-            />
-          </Row>
-        </Col>
-        {beneficiaries.length < product.beneficiaries && (
-          <ModalWindow
-            showModal={showModal}
-            setClosed={handleCloseClick}
-            title={`Beneficiario`}
-          >
-            <Col gap="20px">
-              {product?.plan?.beneficiary_price > 0 && (
-                <h2 style={{ textAlign: "center", color: "#fca5a5" }}>
-                  Cada carga tiene un costo de $
-                  {product?.plan?.beneficiary_price ?? 0}
-                </h2>
-              )}
-
-              <BeneficiaryForm
-                getByRut={getBeneficiaryByRut} //getByRut
-                initialDataForm={initialDataForm}
-                formData={beneficiaryForm}
-                setFormData={setBeneficiaryForm}
+      <Card className="mt-4 mb-4">
+        <CardContent className="py-4">
+          <Col>
+            {isDesktop ? (
+              <div className="min-h-[500px]">
+                <Table>
+                  <TableHeader>
+                    <TableCell
+                      className="text-center border-r border-b border-white h-12 bg-gray-200  text-gray-600 font-bold"
+                      width="70px"
+                      align="center"
+                    >{`#`}</TableCell>
+                    <TableCell
+                      className="text-center border  border-white h-12 bg-gray-200  text-gray-600 font-bold"
+                      width="120px"
+                    >
+                      Rut
+                    </TableCell>
+                    <TableCell
+                      className="text-center border  border-white h-12 bg-gray-200  text-gray-600 font-bold"
+                      width="300px"
+                    >
+                      Nombre Completo
+                    </TableCell>
+                    <TableCell
+                      className="text-center border  border-white h-12 bg-gray-200  text-gray-600 font-bold"
+                      width="110px"
+                    >
+                      Nacimiento
+                    </TableCell>
+                    <TableCell
+                      className="text-center border  border-white h-12 bg-gray-200  text-gray-600 font-bold"
+                      width="150px"
+                    >
+                      Parentesco
+                    </TableCell>
+                    <TableCell
+                      className="text-center border-l border-b border-white h-12 bg-gray-200  text-gray-600 font-bold"
+                      width="60px"
+                    >
+                      &nbsp;
+                    </TableCell>
+                  </TableHeader>
+                  <TableBody>
+                    {beneficiaries.length > 0 &&
+                      beneficiaries.map((itemBeneficiary, idx: number) => (
+                        <TableRow
+                          key={idx}
+                          className={
+                            idx % 2 === 0
+                              ? "bg-sky-100 font-semibold text-gray-600 hover:bg-gray-200 hover:text-gray-600 hover:font-bold"
+                              : "bg-slate-100 text-gray-600 font-semibold hover:bg-gray-200 hover:text-gray-600 hover:font-bold"
+                          }
+                        >
+                          <TableCell
+                            width="70px"
+                            className="border border-white h-12"
+                            align="center"
+                          >
+                            {idx + 1}
+                          </TableCell>
+                          <TableCell
+                            className="border border-white h-12"
+                            width="120px"
+                            align="right"
+                          >
+                            {itemBeneficiary.rut}
+                          </TableCell>
+                          <TableCell
+                            className="border border-white h-12"
+                            width="300px"
+                          >{`${itemBeneficiary.name} ${itemBeneficiary.paternalLastName} ${itemBeneficiary.maternalLastName}`}</TableCell>
+                          <TableCell
+                            className="border border-white h-12"
+                            width="110px"
+                            align="center"
+                          >
+                            {dbDateToText(itemBeneficiary.birthDate)}
+                          </TableCell>
+                          <TableCell
+                            className="border border-white h-12"
+                            width="150px"
+                          >
+                            {itemBeneficiary.relationship}
+                          </TableCell>
+                          <TableCell
+                            className="border border-white h-12"
+                            width="60px"
+                            align="center"
+                          >
+                            <TableIcons>
+                              <div className="flex flex-row gap-3 ">
+                                <Icon
+                                  className="cursor-pointer"
+                                  iconName="edit"
+                                  onClick={() =>
+                                    editBeneficiary(itemBeneficiary, idx)
+                                  }
+                                />
+                                <Icon
+                                  className="text-red-500 cursor-pointer"
+                                  iconName="delete"
+                                  onClick={() =>
+                                    deleteBeneficiary(itemBeneficiary.rut)
+                                  }
+                                />
+                              </div>
+                            </TableIcons>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </Table>
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableCell
+                    className="text-center border border-gray-400 h-12 bg-gray-200 text-black font-bold"
+                    width="320px"
+                  >
+                    Nombre Completo
+                  </TableCell>
+                </TableHeader>
+                <TableBody>
+                  {beneficiaries.length > 0 &&
+                    beneficiaries.map((itemBeneficiary, idx: number) => (
+                      <TableRow
+                        key={idx}
+                        className={
+                          idx % 2 === 0
+                            ? "bg-sky-100 font-semibold text-gray-600 hover:bg-gray-200 hover:text-gray-600 hover:font-bold"
+                            : "bg-slate-100 text-gray-600 font-semibold hover:bg-gray-200 hover:text-gray-600 hover:font-bold"
+                        }
+                      >
+                        <TableCell
+                          className="border border-white h-12"
+                          width="320px"
+                        >
+                          {`${itemBeneficiary.name} ${itemBeneficiary.paternalLastName} ${itemBeneficiary.maternalLastName}`}
+                          <TableIcons>
+                            <div className="flex flex-row gap-3 ">
+                              <Icon
+                                className="cursor-pointer"
+                                iconName="edit"
+                                onClick={() =>
+                                  editBeneficiary(itemBeneficiary, idx)
+                                }
+                              />
+                              <Icon
+                                className="text-red-500 cursor-pointer"
+                                iconName="delete"
+                                onClick={() =>
+                                  deleteBeneficiary(itemBeneficiary.rut)
+                                }
+                              />
+                            </div>
+                          </TableIcons>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            )}
+            <Row align="space-between" width="100%">
+              <Summary color={beneficiaries.length > 0 ? "blue" : "#959595"}>
+                {beneficiaries.length === 0
+                  ? `No tiene cargas asociadas (max ${product.beneficiaries})`
+                  : beneficiaries.length === 1
+                  ? `1 carga  (max ${product.beneficiaries})`
+                  : `${beneficiaries.length} cargas (max ${product.beneficiaries})`}
+              </Summary>
+              <ButtonIcon
+                iconName="add"
+                color="gray"
+                disabled={beneficiaries.length >= product.beneficiaries}
+                onClick={handleClickNewBeneficiary}
               />
-              <Row align="center" width="100%">
-                <Button
-                  text="Registrar"
-                  width="150px"
-                  onClick={addBeneficiary}
-                  enabled={isButtonAddEnabled}
+            </Row>
+          </Col>
+          {beneficiaries.length < product.beneficiaries && (
+            <ModalWindow
+              showModal={showModal}
+              setClosed={handleCloseClick}
+              title={`Beneficiario`}
+            >
+              <Col gap="20px">
+                {product?.plan?.beneficiary_price > 0 && (
+                  <h2 style={{ textAlign: "center", color: "#fca5a5" }}>
+                    Cada carga tiene un costo de $
+                    {product?.plan?.beneficiary_price ?? 0}
+                  </h2>
+                )}
+
+                <BeneficiaryForm
+                  getByRut={getBeneficiaryByRut} //getByRut
+                  initialDataForm={initialDataForm}
+                  formData={beneficiaryForm}
+                  setFormData={setBeneficiaryForm}
                 />
-              </Row>
-            </Col>
-          </ModalWindow>
-        )}
-      </Content>
-      <Footer>
-        <Button
-          text="Registrar"
-          width="200px"
-          onClick={handleClickSave}
-          // enabled={isButtonEnabled}
-        />
-      </Footer>
+                <Row align="center" width="100%">
+                  <Button
+                    className={`text-white w-full ${
+                      isButtonAddEnabled ? "bg-[#03495C]" : "bg-gray-400"
+                    } ${
+                      !isButtonAddEnabled && "cursor-not-allowed"
+                    }  active:bg-opacity-80`}
+                    onClick={addBeneficiary}
+                    disabled={!isButtonAddEnabled}
+                  >
+                    Registrar
+                  </Button>
+                </Row>
+              </Col>
+            </ModalWindow>
+          )}
+        </CardContent>
+        <CardFooter className="justify-center flex">
+          {" "}
+          <Button
+            className={`text-white w-1/2 bg-[#03495C]`}
+            onClick={handleClickSave}
+          >
+            Registrar
+          </Button>{" "}
+        </CardFooter>
+      </Card>
+
       {leadIsLoading && <Loading />}
     </Body>
   );
