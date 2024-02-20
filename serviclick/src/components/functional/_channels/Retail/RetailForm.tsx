@@ -19,6 +19,7 @@ const RetailForm = ({
   retailForm,
   setRetailForm,
   editForm,
+  setIsDisabledRetailForm,
 }: any) => {
   const router = useRouter();
 
@@ -26,6 +27,7 @@ const RetailForm = ({
   const { list: districtList } = useDistrict();
 
   const [enableButtonSave, setEnableButtonSave] = useState(false);
+  const [retailCancel, setRetailCancel] = useState(retail);
 
   const ref = useRef<HTMLInputElement>(null);
 
@@ -148,6 +150,25 @@ const RetailForm = ({
     } else {
       return;
     }
+  };
+
+  const handleClickRevertForm = () => {
+    setIsDisabledRetailForm(true);
+    setRetailForm({
+      rut: { value: retailCancel.rut, isValid: true },
+      name: { value: retailCancel.name, isValid: true },
+      legalRepresentative: {
+        value: retailCancel.legalRepresentative,
+        isValid: true,
+      },
+      line: { value: retailCancel.line, isValid: true },
+      fantasyName: { value: retailCancel.fantasyName, isValid: true },
+      address: { value: retailCancel.address, isValid: true },
+      district: { value: retailCancel.district, isValid: true },
+      email: { value: retailCancel.email, isValid: true },
+      phone: { value: retailCancel.phone, isValid: true },
+      logo: { value: retailCancel.logo, isValid: true },
+    });
   };
 
   useEffect(() => {
@@ -310,6 +331,13 @@ const RetailForm = ({
             isValid={retailForm?.phone.isValid}
             disabled={isDisabledRetailForm}
           />
+          {!isDisabledRetailForm && (
+            <ButtonIcon
+              iconName="close"
+              color="gray"
+              onClick={handleClickRevertForm}
+            />
+          )}
           <ButtonIcon
             iconName={isDisabledRetailForm ? "edit" : "save"}
             color="gray"

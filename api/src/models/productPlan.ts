@@ -12,10 +12,9 @@ const createModel: any = async (
 ) => {
   try {
     const resultProductPlan = await pool.query(
-      "SELECT 1 FROM app.productPlan WHERE agent_id = $1 AND type = $2 AND product_id = $3",
-      [agent_id, type, id]
+      "SELECT 1 FROM app.productPlan WHERE agent_id = $1 AND type = $2 AND product_id = $3 AND plan_id = $4",
+      [agent_id, type, id, plan_id]
     );
-
     let query: string;
 
     if (resultProductPlan.rows.length > 0) {
@@ -48,7 +47,6 @@ const createModel: any = async (
                 discount_cicles) 
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *`;
     }
-
     const result = await pool.query(query, [
       agent_id,
       new Date().toISOString(),
@@ -83,7 +81,6 @@ const getByProductIdModel: any = async (
     return { success: false, data: null, error: (e as Error).message };
   }
 };
-
 const getProductById: any = async (id: string) => {
   try {
     const result = await pool.query(
@@ -163,4 +160,33 @@ const getById: any = async (id: string) => {
   }
 };
 
-export { createModel, getByProductIdModel, getProductById, getById };
+const insertPdf: any = async (product_plan_id: string, pdfBase64: string) => {
+  try {
+    const existingPdf = await pool.query(
+      "SELECT * FROM app.productplanpdf WHERE productplan_id = $1",
+      [product_plan_id]
+    );
+
+    if (existingPdf.rows.length > 0) {
+      const updateResult = await pool.query(
+        "UPDATE app.productplanpdf SET base64 = $1 WHERE productplan_id = $2 RETURNING *",
+        [pdfBase64, product_plan_id]
+      );
+      
+      return { success: true, data: updateResult.rows[0], error: null };
+    } else {
+      const insertResult = await pool.query(
+        "INSERT INTO app.productplanpdf(productplan_id, base64) VALUES ($1, $2) RETURNING *",
+        [product_plan_id, pdfBase64]
+      );
+
+      return { success: true, data: insertResult.rows[0], error: null };
+    }
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+}
+
+
+
+export { createModel, getByProductIdModel, getProductById, getById, insertPdf };

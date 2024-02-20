@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 
 import pool from "../util/database";
+import { fetchClerkUser } from "../util/clerkUserData";
 
 type ProfileT = {
   S: string;
@@ -186,68 +187,93 @@ const getByEmail: any = async (retail_rut: string, email: string) => {
   }
 };
 
-const getByRetailId: any = async (retail_id: string) => {
+  const getByRetailId = async (retail_id: string) => {
+    try {
+      const result = await pool.query(
+        `SELECT * FROM app.userretail WHERE retail_id = $1`,
+        [retail_id]
+      );
+  
+      const retailUsers = await Promise.all(
+        result.rows.map(async (retailUser) => {
+          const clerkUser = await fetchClerkUser(retailUser.user_id);
+          return { ...retailUser, user: clerkUser };
+        })
+      );
+  
+      return { success: true, data: retailUsers };
+    } catch (e) {
+      return { success: false, data: null, error: (e as Error).message };
+    }
+  };
+
+
+
+const updateProfileCode = async (
+  agentId: string,
+  retailId: string,
+  profileCode: string,
+  email: string,
+  rut: string,
+  maternallastname: string,
+  paternallastname: string,
+  district: string,
+  name: string,
+  isEdit: boolean
+) => {
   try {
-    const result = await pool.query(
-      `
-        SELECT  retail_id,
-                rut,
-                name,
-                paternallastname,
-                maternallastname,
-                email,
-                profileCode
-        FROM    app.userretail
-        WHERE   retail_id = $1 and isactive is true
-        ORDER   BY
-                name`,
-      [retail_id]
+    if(isEdit === false){
+      const result = await pool.query(
+        `INSERT INTO app.userretail 
+         (user_id, retail_id, profilecode, email, rut, maternallastname, paternallastname, district, name) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
+        [agentId, retailId, profileCode, email, rut, maternallastname, paternallastname, district, name]
+      );
+
+      return { success: true, data: result.rows[0] };
+    }
+    const existingUser = await pool.query(
+      `SELECT * FROM app.userretail 
+       WHERE user_id = $1 AND retail_id = $2`,
+      [agentId, retailId]
     );
+    if (existingUser.rows.length === 0) {
+      const result = await pool.query(
+        `INSERT INTO app.userretail 
+         (user_id, retail_id, profilecode, email, rut, maternallastname, paternallastname, district, name) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
+        [agentId, retailId, profileCode, email, rut, maternallastname, paternallastname, district, name]
+      );
 
-    const data = result.rows.map((row) => {
-      const {
-        retail_id,
-        rut,
-        name,
-        paternallastname,
-        maternallastname,
-        email,
-        profilecode,
-      } = row;
-      return {
-        retail_id: retail_id,
-        rut: rut,
-        name: name,
-        paternalLastName: paternallastname,
-        maternalLastName: maternallastname,
-        email: email,
-        profileCode: profilecode,
-        profileName: profilecode === "S" ? profileData.S : profileData.A,
-      };
-    });
+      return { success: true, data: result.rows[0] };
+    } else {
+      const result = await pool.query(
+        `UPDATE app.userretail 
+         SET profilecode = $1, email = $2, rut = $3, maternallastname = $4, paternallastname = $5, district = $6, name = $7  
+         WHERE user_id = $8 AND retail_id = $9`,
+        [profileCode, email, rut, maternallastname, paternallastname, district, name, agentId, retailId]
+      );
 
-    return { success: true, data, error: null };
+      return { success: true, data: result.rows[0] };
+    }
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
   }
 };
 
-const updateProfileCode = async (
-  agentId: string,
-  retailId: string,
-  profileCode: string
-) => {
+
+const removeByUserId = async (userId: string, agentId:string) => {
   try {
     const result = await pool.query(
-      `UPDATE app.retailuser SET profilecode = $1 WHERE user_id = $2 AND retail_id = $3`,
-      [profileCode, agentId, retailId]
+      `DELETE FROM app.userretail WHERE user_id = $1 AND retail_id = $2`,
+      [userId, agentId]
     );
 
     return { success: true, data: result.rows[0] };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
   }
-};
+}
 
 export {
   create,
@@ -256,4 +282,5 @@ export {
   getByEmail,
   getByRetailId,
   updateProfileCode,
+  removeByUserId
 };

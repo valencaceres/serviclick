@@ -17,7 +17,6 @@ export default async function Page({ params }: { params: { id: string } }) {
     }
   )
   const families = await responseFamilies.json()
-
   const assistances = families.filter(
     (family: { family_id: string }) => family.family_id === params.id
   )
@@ -43,6 +42,9 @@ export default async function Page({ params }: { params: { id: string } }) {
         beneficiaries: current.beneficiaries,
         beneficiary_price: current.beneficiary_price,
         pdf_base64: current.pdfbase,
+        frequency: current.frequency,
+        yearly_price: current.yearly_price,
+        yearly_plan_id: current.yearly_plan_id,
       }
     } else {
       if (current.product_name.includes("Familiar")) {

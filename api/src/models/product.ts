@@ -253,7 +253,9 @@ const getProduct: any = async (id: string, agent_id: string) => {
                     SUM(case when pla.type = 'customer' then pla.price else 0 end) as customer_plan_price, 
                     SUM(case when pla.type = 'company' then pla.price else 0 end) as company_plan_price,
                     SUM(case when pla.type = 'customer' then pla.plan_id else 0 end) as customer_plan_id, 
-                    SUM(case when pla.type = 'company' then pla.plan_id else 0 end) as company_plan_id
+                    SUM(case when pla.type = 'company' then pla.plan_id else 0 end) as company_plan_id,
+                    SUM(case when pla.type = 'yearly' then pla.plan_id else 0 end) as yearly_plan_id,
+                    SUM(case when pla.type = 'yearly' then pla.price else 0 end) as yearly_plan_price
           FROM      app.product pro inner join app.family fam on pro.family_id = fam.id
                       left outer join app.productplan pla on pro.id = pla.product_id and pla.agent_id = $2
                       left outer join app.productdescription des on pro.id = des.product_id
@@ -291,7 +293,9 @@ const listProducts: any = async (agent_id: string) => {
                   SUM(case when pla.type = 'customer' then pla.price else 0 end) as customer_plan_price, 
                   SUM(case when pla.type = 'company' then pla.price else 0 end) as company_plan_price,
                   SUM(case when pla.type = 'customer' then pla.plan_id else 0 end) as customer_plan_id, 
-                  SUM(case when pla.type = 'company' then pla.plan_id else 0 end) as company_plan_id
+                  SUM(case when pla.type = 'company' then pla.plan_id else 0 end) as company_plan_id,
+                  SUM(case when pla.type = 'yearly' then pla.plan_id else 0 end) as yearly_plan_id,
+                  SUM(case when pla.type = 'yearly' then pla.price else 0 end) as yearly_plan_price
           FROM    app.product pro inner join app.family fam on pro.family_id = fam.id
                                   left outer join app.productplan pla on pro.id = pla.product_id and pla.agent_id = $1
                                   left outer join app.productdescription des on pro.id = des.product_id
@@ -334,7 +338,9 @@ const getProductByFamilyId: any = async (
                   SUM(case when pla.type = 'customer' then pla.price else 0 end) as customer_plan_price, 
                   SUM(case when pla.type = 'company' then pla.price else 0 end) as company_plan_price,
                   SUM(case when pla.type = 'customer' then pla.plan_id else 0 end) as customer_plan_id, 
-                  SUM(case when pla.type = 'company' then pla.plan_id else 0 end) as company_plan_id
+                  SUM(case when pla.type = 'company' then pla.plan_id else 0 end) as company_plan_id,
+                  SUM(case when pla.type = 'yearly' then pla.plan_id else 0 end) as yearly_plan_id,
+                  SUM(case when pla.type = 'yearly' then pla.price else 0 end) as yearly_plan_price
           FROM    app.product pro inner join app.family fam on pro.family_id = fam.id
                                   left outer join app.productplan pla on pro.id = pla.product_id and pla.agent_id = $1
           WHERE   pro.isActive IS true AND
@@ -483,6 +489,9 @@ const listByFamilies = async (agent: string) => {
                           pro.beneficiaries as beneficiaries,
                           ppl.id AS productplan_id,
                           ppl.price,
+                          brp.yearlyprice as yearly_price,
+                          brp.yearly_plan_id as yearly_plan_id,
+                          ppl.frequency as frequency,
                           ppl.beneficiary_price as beneficiary_price,
                           ppf.base64 as pdfbase,
                           age.fantasyname AS agent_slug,
@@ -503,6 +512,7 @@ const listByFamilies = async (agent: string) => {
                           INNER JOIN app.agent age ON ppl.agent_id = age.id
                           INNER JOIN app.family fam ON pro.family_id = fam.id
                           LEFT JOIN app.www_family wef ON fam.id = wef.family_id
+                          left join app.brokerproduct brp on pro.id = brp.product_id
                            WHERE
                           (age.id::TEXT = $1 OR age.fantasyname = $1)
                           AND ppl.type = 'customer'

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import {
   ContentCell,
@@ -39,13 +39,24 @@ import {
 import { Button } from "~/components/ui/ButtonC";
 import { useForm } from "react-hook-form";
 import { useQueryClient } from "@tanstack/react-query";
+import EditUser from "./RetailEditAgent";
 
-const RetailUsers = ({ addNewUser, editUser, deleteUser }: any) => {
+const RetailUsers = ({
+  addNewUser,
+  editUser,
+  deleteUser,
+  handleClickRemoveAgent,
+}: any) => {
   const router = useRouter();
-
   const { retail } = useRetail();
-
   const { data } = useRetailQuery().useGetAgents(router.query.id as string);
+
+  const [openDialog, setOpenDialog] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const handleClickEdit = (item: any) => {
+    setUser(item);
+    setOpenDialog(true);
+  };
 
   return (
     <ContentCell gap="5px">
@@ -60,30 +71,34 @@ const RetailUsers = ({ addNewUser, editUser, deleteUser }: any) => {
         <TableDetail>
           {data?.map((item: any, idx: number) => (
             <TableRow key={idx}>
-              {/* <TableCell width="300px">
-                {item.user?.first_name + " " + item.user?.last_name}
+              <TableCell width="300px">
+                {item.user?.data?.first_name + " " + item.user?.data?.last_name}
               </TableCell>
-              <TableCell width="232px">
-                {item.user?.email_addresses[0]?.email_address}
-              </TableCell>
+              <TableCell width="232px">{item?.email}</TableCell>
               <TableCell width="120px">
                 {item?.profilecode === "A" ? "Administrador" : "Vendedor"}
               </TableCell>
               <TableCell width="68px" align="center">
                 <TableIcons>
-                   <EditUser user={item.user} profilecode={item?.profilecode} />
+                  <Icon
+                    iconName="edit"
+                    onClick={() => {
+                      handleClickEdit(item);
+                    }}
+                  />
+
                   <Icon
                     iconName="delete"
-                    onClick={() => deleteUser(item.user)}
-                  /> 
+                    onClick={() => handleClickRemoveAgent(item)}
+                  />
                 </TableIcons>
-              </TableCell> */}
+              </TableCell>
             </TableRow>
           ))}
         </TableDetail>
       </Table>
       <ContentRow align="space-between">
-        {/* <ContentCellSummary
+        <ContentCellSummary
           color={retail.users.length > 0 ? "blue" : "#959595"}
         >
           {retail.users.length === 0
@@ -91,146 +106,17 @@ const RetailUsers = ({ addNewUser, editUser, deleteUser }: any) => {
             : retail.users.length === 1
             ? "1 usuario asociado"
             : `${retail.users.length} usuarios asociados`}
-        </ContentCellSummary> */}
-        {/* <ButtonIcon iconName="add" color="gray" onClick={addNewUser} /> */}
+        </ContentCellSummary>
+        <ButtonIcon iconName="add" color="gray" onClick={addNewUser} />
       </ContentRow>
+      <EditUser
+        user={user}
+        isEdit={true}
+        setOpenDialog={setOpenDialog}
+        openDialog={openDialog}
+      />
     </ContentCell>
   );
 };
 
 export default RetailUsers;
-
-const EditUser = ({ user, profilecode }: any) => {
-  const router = useRouter();
-  const queryClient = useQueryClient();
-  const [profileCode, setProfileCode] = React.useState(profilecode);
-
-  const {
-    register,
-    handleSubmit,
-    getValues,
-    setValue,
-    setError,
-    clearErrors,
-    formState: { errors, isSubmitting },
-  } = useForm<{
-    rut: string;
-    profilecode: "S" | "A";
-    name: string;
-    lastname: string;
-    maternallastname: string;
-    email: string;
-  }>();
-
-  const { mutate } = useRetailQuery().useUpdateAgent();
-
-  const update = async () => {
-    mutate(
-      {
-        id: user?.id,
-        retailId: router.query.id,
-        rut: getValues("rut"),
-        profilecode: profileCode,
-        name: getValues("name"),
-        lastname: getValues("lastname"),
-        maternallastname: getValues("maternallastname"),
-        email: getValues("email"),
-      },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries(["retailAgents", router.query.id]);
-        },
-      }
-    );
-  };
-
-  return (
-    <Dialog>
-      <DialogTrigger>
-        <Icon iconName="edit" />
-      </DialogTrigger>
-      <DialogContent className="bg-white">
-        <DialogHeader>
-          <DialogTitle>Editar usuario</DialogTitle>
-        </DialogHeader>
-        <form className="w-full" onSubmit={handleSubmit(update)}>
-          <div className="flex gap-2">
-            <fieldset className="w-full">
-              <Label htmlFor="rut">Rut</Label>
-              <Input
-                errorText={errors.rut?.message}
-                {...register("rut")}
-                id="rut"
-                placeholder="Rut"
-                defaultValue={user?.public_metadata?.rut}
-              />
-            </fieldset>
-            <fieldset className="w-full">
-              <Label htmlFor="email">Perfil</Label>
-              <Select
-                defaultValue={profilecode}
-                value={profileCode}
-                onValueChange={setProfileCode}
-              >
-                <SelectTrigger className="rounded-sm border-dusty-gray border-opacity-40 py-6">
-                  <SelectValue placeholder="Tipo de perfil" />
-                </SelectTrigger>
-                <SelectContent className="bg-white">
-                  <SelectItem value="S">Vendedor</SelectItem>
-                  <SelectItem value="A">Administrador</SelectItem>
-                </SelectContent>
-              </Select>
-            </fieldset>
-          </div>
-          <fieldset className="w-full">
-            <Label htmlFor="name">Nombres</Label>
-            <Input
-              {...register("name", {
-                required: "Este campo es requerido",
-              })}
-              id="name"
-              placeholder="Nombres"
-              defaultValue={user?.first_name}
-            />
-          </fieldset>
-          <div className="flex gap-2">
-            <fieldset className="w-full">
-              <Label htmlFor="lastname">Apellido paterno</Label>
-              <Input
-                {...register("lastname", {
-                  required: "Este campo es requerido",
-                })}
-                id="lastname"
-                placeholder="Apellido paterno"
-                defaultValue={user?.last_name}
-              />
-            </fieldset>
-            <fieldset className="w-full">
-              <Label htmlFor="maternallastname">Apellido materno</Label>
-              <Input
-                {...register("maternallastname")}
-                id="maternallastname"
-                placeholder="Apellido materno"
-                defaultValue={user?.public_metadata?.maternallastname}
-              />
-            </fieldset>
-          </div>
-          <fieldset>
-            <Label htmlFor="email">E-mail</Label>
-            <Input
-              {...register("email", {
-                required: "Este campo es requerido",
-              })}
-              id="email"
-              placeholder="E-mail"
-              defaultValue={user?.email_addresses[0]?.email_address}
-            />
-          </fieldset>
-          <Button className="mt-4 w-full" disabled={isSubmitting}>
-            Guardar
-          </Button>
-        </form>
-      </DialogContent>
-    </Dialog>
-  );
-};

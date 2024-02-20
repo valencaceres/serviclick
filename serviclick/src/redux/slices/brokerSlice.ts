@@ -6,6 +6,7 @@ export type PriceT = {
   base: number;
   customer: number;
   company: number;
+  yearly: number;
 };
 
 export type DiscountT = {
@@ -22,6 +23,7 @@ export type ProductT = {
   value: number;
   currency: string;
   discount: DiscountT;
+  pdfbase64: any;
 };
 
 export type UserT = {
@@ -133,7 +135,6 @@ export const create = (values: BrokerT) => async (dispatch: any) => {
 
 export const getById = (id: string) => async (dispatch: any) => {
   const { success, data, error } = await get(`broker/getById/${id}`);
-
   if (!success) {
     return false;
   }

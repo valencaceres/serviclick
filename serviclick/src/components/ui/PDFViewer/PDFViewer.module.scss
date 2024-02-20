@@ -1,0 +1,49 @@
+.contentMainPdf {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+  position: relative;
+  border-radius: 7px;
+  height: auto;
+  background-color: rgb(255, 255, 255);
+  border: 1px solid #cccccc;
+
+  &:hover .controls {
+    transition: all 0.5s;
+    opacity: 1;
+  }
+}
+
+.pdfViewer {
+  position: relative;
+  display: flex;
+  max-height: 75vh;
+  align-items: flex-start;
+  justify-content: center;
+  background-color: #d9d9d9;
+  border-radius: 7px;
+  overflow: auto;
+}
+
+.controls {
+  background-color: #ffffff;
+  position: absolute;
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3;
+  opacity: 0;
+  bottom: 10px;
+  border-radius: 7px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+
+  h5 {
+    font-size: 400;
+    width: 80px;
+    display: flex;
+    align-self: center;
+    justify-content: center;
+  }
+}

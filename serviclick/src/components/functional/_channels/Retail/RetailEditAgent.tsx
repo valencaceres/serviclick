@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useBroker as useBrokerQuery } from "~/hooks/query";
+import { useRetail as useRetailQuery } from "~/hooks/query";
 import { useRouter } from "next/router";
 import {
   Dialog,
@@ -133,13 +133,13 @@ const EditUser = ({ user, isEdit, setOpenDialog, openDialog }: any) => {
     });
   }, [user]);
 
-  const { mutate } = useBrokerQuery().useUpdateAgent();
+  const { mutate } = useRetailQuery().useUpdateAgent();
 
   const update = async (values: z.infer<typeof formSchema>) => {
     mutate(
       {
         agentId: user?.user?.data?.id,
-        brokerId: router.query.id,
+        retailId: router.query.id,
         profileCode: values.profileCode,
         rut: values.rut,
         maternallastname: values.maternallastname,
@@ -147,7 +147,7 @@ const EditUser = ({ user, isEdit, setOpenDialog, openDialog }: any) => {
         district: values.district,
         name: values.name,
         email: values.email_address,
-        rol_web_broker: values.type_role_broker,
+        rol_web_retail: values.type_role_broker,
         isEdit: isEdit,
         type_role_web_admin:
           user?.user?.data?.public_metadata?.roles?.web_admin,
@@ -155,13 +155,13 @@ const EditUser = ({ user, isEdit, setOpenDialog, openDialog }: any) => {
           user?.user?.data?.public_metadata?.roles?.operations,
         type_role_serviclick:
           user?.user?.data?.public_metadata?.roles?.serviclick,
-        type_role_retail: values.type_role_retail,
+        type_role_broker: user?.user?.data?.public_metadata?.roles?.broker,
         type_role_admin: user?.user?.data?.public_metadata?.roles?.admin,
         password: values.password,
       },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries(["brokerAgents", router.query.id]);
+          queryClient.invalidateQueries(["retailAgents", router.query.id]);
           setOpenDialog(false);
           form.reset();
         },
@@ -229,15 +229,15 @@ const EditUser = ({ user, isEdit, setOpenDialog, openDialog }: any) => {
 
               <FormField
                 control={form.control}
-                name="type_role_broker"
+                name="type_role_retail"
                 render={({ field }) => (
                   <FormItem className="px-1">
-                    <FormLabel>rol web broker</FormLabel>
+                    <FormLabel>rol web retail</FormLabel>
                     <FormControl>
                       <Select
                         {...field}
                         defaultValue={
-                          user?.user?.data?.public_metadata?.roles?.broker
+                          user?.user?.data?.public_metadata?.roles?.retail
                         }
                         value={field.value}
                         onValueChange={field.onChange}
@@ -351,9 +351,7 @@ const EditUser = ({ user, isEdit, setOpenDialog, openDialog }: any) => {
                       <Input
                         {...field}
                         id="email"
-                        defaultValue={
-                          user?.user?.data?.email_addresses[0]?.email_address
-                        }
+                        defaultValue={user?.user?.data?.email}
                         placeholder="Correo electrónico"
                         disabled={isEdit}
                       />
