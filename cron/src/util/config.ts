@@ -32,21 +32,21 @@ const config = {
   },
   api: {
     URL: {
-      base: "https://api.serviclick.cl/api",
+      base: process.env.API_BASE_URL,
     },
   },
   email: {
     URL: {
-      send: "https://api-email.serviclick.cl/api/email/send",
+      send: process.env.EMAIL_SEND_URL,
     },
-    apiKey: { id: "12345678" },
+    apiKey: { id: process.env.EMAIL_API_KEY_ID },
   },
   pdf: {
     URL: {
-      contract: "https://api-pdf.serviclick.cl/api/document/contract",
-      annex: "https://api-pdf.serviclick.cl/api/document/annex",
+      contract: process.env.PDF_CONTRACT_URL,
+      annex: process.env.PDF_ANNEX_URL,
     },
-    apiKey: { id: "97689458-b21c-4abf-9bb3-a05ac52b4791" },
+    apiKey: { id: process.env.PDF_API_KEY_ID },
   },
   webHook: {
     URL: {
