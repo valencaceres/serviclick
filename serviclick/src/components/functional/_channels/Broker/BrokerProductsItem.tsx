@@ -117,7 +117,7 @@ const BrokerProductsItem = ({
         yearly: {
           value: event.target.value,
           isValid:
-            event.target.value !== "" && parseInt(event.target.value) > 0,
+            event.target.value !== "" && parseInt(event.target.value) >= 0,
         },
       },
     });
