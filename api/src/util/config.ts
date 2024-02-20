@@ -35,20 +35,18 @@ const config = {
   queueLimit: 0,
   reveniu: {
     URL: {
-      plan: `https://${environment["prod"].domain}/api/v1/plans/`,
-      subscription: `https://${environment["prod"].domain}/api/v1/subscriptions/`,
+      plan: process.env.REVENIU_PLAN_URL,
+      subscription: process.env.REVENIU_SUBSCRIPTION_URL,
     },
     apiKey: {
       "Reveniu-Secret-Key":
-        environment["prod"].secretKey || "EuG-6eULAwlqRRaLLi9HUcLSbO4I-ipd60zY",
+      process.env.REVENIU_SECRET_KEY || "EuG-6eULAwlqRRaLLi9HUcLSbO4I-ipd60zY",
     },
     feedbackURL: {
       success:
-        environment["prod"].feedBack.success ||
-        "http://localhost:3000/resume/success",
+       process.env.REVENIU_FEEDBACK_SUCCESS_URL,
       error:
-        environment["prod"].feedBack.error ||
-        "http://localhost:3000/resume/error",
+       process.env.REVENIU_FEEDBACK_ERROR_URL,
     },
   },
   email: {
@@ -66,7 +64,7 @@ const config = {
   },
   webHook: {
     URL: {
-      reveniu: environment["prod"].feedBack.webHook,
+      reveniu: process.env.REVENIU_WEEBHOOK_URL,
     },
   },
   clerkPemKey: process.env.CLERK_PEM_PUBLIC_KEY,
