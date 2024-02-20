@@ -15,8 +15,8 @@ const config = {
   queueLimit: 0,
   reveniu: {
     URL: {
-      plan: process.env.REVENIU_PLAN_URL,
-      subscription: process.env.REVENIU_SUBSCRIPTION_URL,
+      plan: process.env.REVENIU_PLAN_URL || "https://integration.reveniu.com/api/v1/plans/",
+      subscription: process.env.REVENIU_SUBSCRIPTION_URL || "https://integration.reveniu.com/api/v1/subscriptions/",
     },
     apiKey: {
       "Reveniu-Secret-Key":
@@ -24,9 +24,9 @@ const config = {
     },
     feedbackURL: {
       success:
-       process.env.REVENIU_FEEDBACK_SUCCESS_URL,
+       process.env.REVENIU_FEEDBACK_SUCCESS_URL || "http://localhost:3000/resume/success",
       error:
-       process.env.REVENIU_FEEDBACK_ERROR_URL,
+       process.env.REVENIU_FEEDBACK_ERROR_URL || "http://localhost:3000/resume/error",
     },
   },
   email: {
@@ -44,7 +44,7 @@ const config = {
   },
   webHook: {
     URL: {
-      reveniu: process.env.REVENIU_WEEBHOOK_URL,
+      reveniu: process.env.REVENIU_WEEBHOOK_URL || "https://webhook.serviclick.cl/reveniu",
     },
   },
   clerkPemKey: process.env.CLERK_PEM_PUBLIC_KEY,

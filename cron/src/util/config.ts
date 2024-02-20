@@ -15,9 +15,9 @@ const config = {
   queueLimit: 0,
   reveniu: {
     URL: {
-      base:  process.env.REVENIU_BASE_URL,
-      plan: process.env.REVENIU_PLAN_URL,
-      subscription: process.env.REVENIU_SUBSCRIPTION_URL,
+      base:  process.env.REVENIU_BASE_URL || "https://integration.reveniu.com/api/v1",
+      plan: process.env.REVENIU_PLAN_URL || "https://integration.reveniu.com/api/v1/plans/",
+      subscription: process.env.REVENIU_SUBSCRIPTION_URL || "https://integration.reveniu.com/api/v1/subscriptions/",
     },
     apiKey: {
       "Reveniu-Secret-Key":
@@ -50,8 +50,7 @@ const config = {
   },
   webHook: {
     URL: {
-      reveniu: process.env.REVENIU_WEEBHOOK_URL,
-    },
+      reveniu: process.env.REVENIU_WEEBHOOK_URL || "https://webhook.serviclick.cl/reveniu",    },
   },
 };
 
