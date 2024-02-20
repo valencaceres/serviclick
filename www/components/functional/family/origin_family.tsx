@@ -123,7 +123,7 @@ const OriginFamily: FC<DynamicFamilyProps> = ({
                 </Link>
               </div>
 
-              {assistance.yearly_price != 0 && (
+              {assistance.yearly_price && assistance.yearly_price != 0 && (
                 <div className="flex flex-col gap-2">
                   <h2 className="text-center text-2xl font-bold uppercase text-primary">
                     Valor por año
