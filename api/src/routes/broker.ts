@@ -18,7 +18,8 @@ import {
   getCollectById,
   getAgents,
   updateAgent,
-  removeAgent
+  removeAgent,
+  
 } from "../controllers/broker";
 import isAuthenticated from "../middlewares/isAuthenticated";
 import isAdmin from "../middlewares/isAdmin";

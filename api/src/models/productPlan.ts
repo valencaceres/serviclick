@@ -8,12 +8,13 @@ const createModel: any = async (
   baseprice: number,
   price: number,
   frequency: string,
-  discount: any
+  discount: any,
+  plan_id_extr: string
 ) => {
   try {
     const resultProductPlan = await pool.query(
       "SELECT 1 FROM app.productPlan WHERE agent_id = $1 AND type = $2 AND product_id = $3 AND plan_id = $4",
-      [agent_id, type, id, plan_id]
+      [agent_id, type, id, plan_id_extr]
     );
     let query: string;
 

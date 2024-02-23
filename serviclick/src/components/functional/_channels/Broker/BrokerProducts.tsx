@@ -29,7 +29,7 @@ const BrokerProducts = ({ addNewProduct, editProduct, deleteProduct }: any) => {
           <TableCell width="305px">Producto</TableCell>
           <TableCell width="145px">Descuento</TableCell>
           <TableCell width="100px">Público</TableCell>
-          <TableCell width="100px">Empresa</TableCell>
+          <TableCell width="100px">Anual</TableCell>
           <TableCell width="68px"></TableCell>
           <TableCellEnd />
         </TableHeader>
@@ -59,8 +59,7 @@ const BrokerProducts = ({ addNewProduct, editProduct, deleteProduct }: any) => {
                   .replace(",", ".")}
               </TableCell>
               <TableCell width="100px" align="right">
-                $
-                {item?.price.company?.toLocaleString("en-US").replace(",", ".")}
+                ${item?.price.yearly?.toLocaleString("en-US").replace(",", ".")}
               </TableCell>
               <TableCell width="68px" align="center">
                 <TableIcons>

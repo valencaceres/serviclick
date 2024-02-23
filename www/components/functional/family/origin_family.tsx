@@ -138,7 +138,7 @@ const OriginFamily: FC<DynamicFamilyProps> = ({
                       : "No disponible"}
                   </h3>
                   <Link
-                    href={`https://productos.serviclick.cl/contractor?productPlanId=${assistance.yearly_plan_id}`}
+                    href={`https://productos.serviclick.cl/contractor?productPlanId=${assistance.yearly_product_plan_id}`}
                     passHref
                     target="_blank"
                   >

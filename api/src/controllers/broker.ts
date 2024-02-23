@@ -523,16 +523,13 @@ const addProduct = async (req: any, res: any) => {
     discount,
     pdfBase64
   } = req.body;
- console.log("baseee:",pdfBase64)
-  const responsePlans = await Product.createProductPlans(
-    product_id,
-    broker_id,
-    price.base || null,
-    price.customer,
-    price.company,
-    price.yearly,
-    discount
-  );
+ const responsePlans = await Product.createProductPlans(product_id,
+  broker_id,
+  price.base || null,
+  price.customer,
+  price.company,
+  price.yearly,
+  discount)
 
   if (!responsePlans.success) {
     createLogger.error({
@@ -763,7 +760,6 @@ const getProductsById = async (req: any, res: any) => {
   try {
     const { id } = req.params;
     const { success, data, error } = await Broker.getProductsById(id);
-
     if (!success) {
       createLogger.error({
         model: "broker/getProductsById",
@@ -856,7 +852,6 @@ export const getBrokerDataById = async (id: string) => {
     }
 
     const brokerProductResponse = await BrokerProduct.getByBrokerId(id);
-
     if (!brokerProductResponse.success) {
       return {
         success: false,

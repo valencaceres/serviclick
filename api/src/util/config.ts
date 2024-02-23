@@ -15,6 +15,7 @@ const config = {
   queueLimit: 0,
   reveniu: {
     URL: {
+      base:  process.env.REVENIU_BASE_URL || "https://integration.reveniu.com/api/v1",
       plan: process.env.REVENIU_PLAN_URL || "https://integration.reveniu.com/api/v1/plans/",
       subscription: process.env.REVENIU_SUBSCRIPTION_URL || "https://integration.reveniu.com/api/v1/subscriptions/",
     },
@@ -28,6 +29,7 @@ const config = {
       error:
        process.env.REVENIU_FEEDBACK_ERROR_URL || "http://localhost:3000/resume/error",
     },
+
   },
   email: {
     URL: {

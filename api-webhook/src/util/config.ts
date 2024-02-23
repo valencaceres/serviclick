@@ -9,6 +9,8 @@ const config = {
   dbPassword: process.env.DB_PWD || "password",
   dbName: process.env.DB_NAME || "test",
   dbPort: parseInt(process.env.DB_PORT || "5432"),
+  apiURL: process.env.API_URL || "http://localhost:3001",
+  apiKEYSv: process.env.API_KEY_SV || "1234",
   waitForConnections: true,
   connectionLimit: 100,
   queueLimit: 0,

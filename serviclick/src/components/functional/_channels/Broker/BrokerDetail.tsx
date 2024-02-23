@@ -238,16 +238,42 @@ const BrokerDetail = () => {
       users: [...broker.users.filter((user: any) => user.rut !== item.rut)],
     });
   };
-
   const handleClickSaveProduct = () => {
     const file = brokerProductForm.pdfbase64;
     let base64Pdf = "";
-
+  
     if (file) {
-      const reader = new FileReader();
-
-      reader.onloadend = () => {
-        base64Pdf = reader.result?.toString().split(",")[1] ?? "";
+      if (file instanceof Blob) {
+        const reader = new FileReader();
+  
+        reader.onloadend = () => {
+          base64Pdf = reader.result?.toString().split(",")[1] ?? "";
+          addProduct(broker.id, {
+            product_id: brokerProductForm.product_id.value,
+            name: brokerProductForm.name.value,
+            price: {
+              base: brokerProductForm.price.base.value,
+              customer: brokerProductForm.price.customer.value,
+              company: brokerProductForm.price.company.value,
+              yearly: brokerProductForm.price.yearly.value,
+            },
+            commisionTypeCode: brokerProductForm.commisionTypeCode.value,
+            value: brokerProductForm.value.value,
+            currency: "P",
+            discount: {
+              type:
+                brokerProductForm.discount.type.value == ""
+                  ? "n"
+                  : brokerProductForm.discount.type.value,
+              percent: brokerProductForm.discount.percent.value,
+              cicles: brokerProductForm.discount.cicles.value,
+            },
+            pdfbase64: base64Pdf || "",
+          });
+        };
+  
+        reader.readAsDataURL(file);
+      } else {
         addProduct(broker.id, {
           product_id: brokerProductForm.product_id.value,
           name: brokerProductForm.name.value,
@@ -268,11 +294,8 @@ const BrokerDetail = () => {
             percent: brokerProductForm.discount.percent.value,
             cicles: brokerProductForm.discount.cicles.value,
           },
-          pdfbase64: base64Pdf || "",
-        });
-      };
-
-      reader.readAsDataURL(file);
+          pdfbase64: "",
+        });      }
     } else {
       addProduct(broker.id, {
         product_id: brokerProductForm.product_id.value,
@@ -295,9 +318,9 @@ const BrokerDetail = () => {
           cicles: brokerProductForm.discount.cicles.value,
         },
         pdfbase64: "",
-      });
-    }
+      });    }
   };
+
   const handleClickSaveUser = () => {
     setBroker({
       ...broker,
