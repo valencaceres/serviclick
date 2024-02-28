@@ -24,6 +24,7 @@ export type ProductT = {
   currency: string;
   discount: DiscountT;
   pdfbase64: any;
+  beneficiary_price: number;
 };
 
 export type UserT = {
@@ -192,7 +193,7 @@ export const deleteById = (id: string) => async (dispatch: any) => {
 };
 
 export const addProduct =
-  (id: string, product: ProductT) => async (dispatch: any) => {
+  (id: string, product: ProductT,) => async (dispatch: any) => {
     const { success, data, error } = await post(`broker/addProduct`, {
       broker_id: id,
       ...product,

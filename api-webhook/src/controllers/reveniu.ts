@@ -9,7 +9,6 @@ const reveniuController = async (req: any, res: any) => {
     const { subscription_id } = data.data;
 
     const cronResponse = await cronModel.create(subscription_id, event);
-
     if (!cronResponse.success) {
       createLogger.error({
         model: "cron/create",
@@ -18,31 +17,22 @@ const reveniuController = async (req: any, res: any) => {
       res.status(500).json({ error: cronResponse.error });
       return;
     }
+if (cronResponse.success){
+  const executeWebHook = await apiServiClick.post(
+    "/api/webhook/reveniuWebHook",
+    { id: cronResponse.data?.id, event: cronResponse.data?.event, createddate: cronResponse.data?.createddate, subscription_id: cronResponse.data?.subscription_id}
+  );
 
-    createLogger.info({
-      controller: "reveniu",
-      subscription_id,
-      event,
-      message: "OK",
+  if (executeWebHook.status !== 200) {
+    createLogger.error({
+      url: `${apiServiClick}/api/webhook/reveniuWebHook`,
+      error: executeWebHook.statusText,
     });
-    const executeWebHook = await apiServiClick.post(
-      "/webHook/reveniuWebHook",
-      { subscription_id }
-    );
-    if (executeWebHook.status !== 200) {
-      createLogger.error({
-        url: "https://api.serviclick.cl/api/webHook/reveniuWebHook",
-        error: executeWebHook.statusText,
-      });
-      res.status(500).json({ error: executeWebHook.statusText });
-      return;
-    }
-
-
-
+    res.status(500).json({ error: executeWebHook.statusText });
+    return;
+  } 
+}
     res.status(200).json(cronResponse.data);
- 
-
   } catch (error) {
     createLogger.error({
       controller: "reveniu",

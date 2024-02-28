@@ -10,7 +10,6 @@ const create = async (
   try {
     const dateToFormat = customDate ? new Date(customDate) : new Date();
     const createDate = format(dateToFormat, "yyyy-MM-dd HH:mm:ss");
-
     if (lead_id) {
       const resultLeadPolicy = await pool.query(
         `SELECT policy_id FROM app.lead WHERE id = $1 AND NOT policy_id IS NULL`,

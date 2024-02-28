@@ -18,12 +18,12 @@ import { apiReveniu } from "../util/reveniu";
 
 
 
-const subscriptionActivated = async (req: any, res: any) => {
+/* const subscriptionActivated = async (req: any, res: any) => {
   const { subscription_id } = req.body;
 
   try {
     const leadResponse = await LeadModel.getBySubscriptionId(subscription_id);
-
+    
     if (!leadResponse.success) {
       createLogger.error({
         model: "lead/getBySubscriptionId",
@@ -325,7 +325,7 @@ const subscriptionActivated = async (req: any, res: any) => {
     res.status(500).json({ error: "Error updating subscription" });
     return;
   }
-};
+}; */
 
 const generatePDF = async (req: any, res: any) => {
   const { lead_id } = req.body;
@@ -526,10 +526,8 @@ const generateDocuments = async (
 
 const reveniuWebHook = async (req: any, res: any) => {
   try {
-    const { cron_id, createddate, subscription_id, event } = req.body;
-
+    const { id: cron_id, createddate, subscription_id, event } = req.body;
     if (event === "subscription_activated") {
-      if (event === "subscription_activated") {
         const leadResponse = await LeadModel.getDiscountBySubscriptionId(
           createddate,
           subscription_id
@@ -569,19 +567,18 @@ const reveniuWebHook = async (req: any, res: any) => {
             return;
           }
   
-          const paymentReveniuResponse =   await subscriptionActivatedFunction(subscription_id, res);
-
-  
-  
-          if (paymentReveniuResponse) {
-            createLogger.error({
-              url: `https://api.serviclick.cl/api/webHook/subscriptionActivated`,
-              error: paymentReveniuResponse,
-            });
-            return;
-          }
         }
-  
+        
+        const paymentReveniuResponse =   await subscriptionActivatedFunction(subscription_id);
+
+
+        if (!paymentReveniuResponse) {
+          createLogger.error({
+            model: "subscriptionActivatedFunction(1)",
+            error: paymentReveniuResponse,
+          });
+          return;
+        }
         
   
           const cronResponse = await Cron.process(cron_id);
@@ -602,7 +599,7 @@ const reveniuWebHook = async (req: any, res: any) => {
               success: true,
             },
           });
-        }
+    
     } else if (event === "subscription_payment_succeeded") {
       if (event === "subscription_payment_succeeded") {
         const subscriptionReveniuResponse = await apiReveniu.get(
@@ -611,7 +608,7 @@ const reveniuWebHook = async (req: any, res: any) => {
 
         if (subscriptionReveniuResponse.status !== 200) {
           createLogger.error({
-            url: `${config.reveniu.URL.base}/subscriptions/${subscription_id}`,
+            model: `reveniu/get/subscription_payment_succeded`,
             error: subscriptionReveniuResponse.statusText,
           });
           return;
@@ -630,10 +627,10 @@ const reveniuWebHook = async (req: any, res: any) => {
           `/subscriptions/${subscription_id}/payments`
         );
 
-        if (paymentReveniuResponse.status !== 200) {
+        if (!paymentReveniuResponse) {
           createLogger.error({
             url: `${config.reveniu.URL.base}/subscriptions/${subscription_id}/payments`,
-            error: paymentReveniuResponse.statusText,
+            error: paymentReveniuResponse,
           });
           return;
         }
@@ -748,13 +745,12 @@ const reveniuWebHook = async (req: any, res: any) => {
         } = leadResponse.data;
 
         if (!policy_id) {
-          const policyResponse = await Policy.create(
+          const policyResponse = await Policy.createCron(
             lead_id,
             policy_createdate,
             policy_startdate,
             lack
           );
-
           if (!policyResponse.success) {
             createLogger.error({
               model: `policy/create (2)`,
@@ -762,12 +758,11 @@ const reveniuWebHook = async (req: any, res: any) => {
             });
             return;
           }
-
-          const paymentReveniuResponse = await subscriptionActivated(subscription_id, res);
+          const paymentReveniuResponse = await subscriptionActivatedFunction(subscription_id);
 
           if (!paymentReveniuResponse) {
             createLogger.error({
-              url: `https://api.serviclick.cl/api/webHook/subscriptionActivated`,
+              model: "SubscriptionActivatedFunction(2)",
               error: paymentReveniuResponse,
             });
             return;
@@ -790,21 +785,19 @@ const reveniuWebHook = async (req: any, res: any) => {
 
 
 
-export { generatePDF, subscriptionActivated , reveniuWebHook};
+export { generatePDF, /* subscriptionActivated */ reveniuWebHook};
 
 
 
-const subscriptionActivatedFunction = async (subscription_id: string, res: any) => {
+const subscriptionActivatedFunction = async (subscription_id: string,) => {
   try {
     const leadResponse = await LeadModel.getBySubscriptionId(subscription_id);
-
     if (!leadResponse.success) {
       createLogger.error({
         model: "lead/getBySubscriptionId",
         error: leadResponse.error,
       });
-      res.status(500).json({ error: "Error retrieving lead" });
-      return;
+      return  { success: false, error: "Error retrieving lead" }; 
     }
 
     const {
@@ -825,8 +818,7 @@ const subscriptionActivatedFunction = async (subscription_id: string, res: any) 
         model: "lead/getProductsById",
         error: leadProductResponse.error,
       });
-      res.status(500).json({ error: "Error retrieving products " });
-      return;
+      return { success: false, error: "Error retrieving products " };
     }
 
     const { product_id, price } = leadProductResponse.data;
@@ -842,8 +834,7 @@ const subscriptionActivatedFunction = async (subscription_id: string, res: any) 
         model: "productDescription/getByProductId",
         error: productDescriptionResponse.error,
       });
-      res.status(500).json({ error: "Error retrieving product description" });
-      return;
+      return { success: false, error: "Error retrieving product description" };
     }
 
     const leadInsuredResponse = await LeadModel.getInsuredById(
@@ -855,8 +846,7 @@ const subscriptionActivatedFunction = async (subscription_id: string, res: any) 
         model: "lead/getInsuredById",
         error: leadInsuredResponse.error,
       });
-      res.status(500).json({ erorr: "Error retrieving insured" });
-      return;
+      return { success: false, error: "Error retrieving insured" };
     }
 
     if (company_id) {
@@ -867,8 +857,7 @@ const subscriptionActivatedFunction = async (subscription_id: string, res: any) 
           model: "company/getByIdModel",
           error: companyResponse.error,
         });
-        res.status(500).json({ error: "Error retrieving company" });
-        return;
+        return { success: false, error: "Error retrieving company" };
       }
 
       const responseDocuments = await generateDocuments(
@@ -887,8 +876,7 @@ const subscriptionActivatedFunction = async (subscription_id: string, res: any) 
           model: responseDocuments.model,
           error: responseDocuments.error,
         });
-        res.status(500).json({ error: "Error creating documents" });
-        return;
+        return { success: false, error: "Error creating documents" };
       }
 
       const userCompanyResponse = await UserCompanyModel.create(
@@ -901,8 +889,7 @@ const subscriptionActivatedFunction = async (subscription_id: string, res: any) 
           model: "userCompany/create",
           error: userCompanyResponse.error,
         });
-        res.status(500).json({ error: "Error creating user company" });
-        return;
+        return { success: false, error: "Error creating user company" };
       }
 
       const generatedPassword = generateGenericPassword();
@@ -916,8 +903,7 @@ const subscriptionActivatedFunction = async (subscription_id: string, res: any) 
           model: "userCompany/assignPassword",
           error: userCopmpanyResponse.error,
         });
-        res.status(500).json({ error: "Error assigning password to user company" });
-        return;
+        return { success: false, error: "Error assigning password to user company" };
       }
 
       const attachmentCompany = [
@@ -958,8 +944,7 @@ const subscriptionActivatedFunction = async (subscription_id: string, res: any) 
           model: "email",
           error: emailResponse.error,
         });
-        res.status(500).json({ error: "Error creating email response" });
-        return;
+        return { success: false, error: "Error creating email response" };
       }
     }
 
@@ -975,8 +960,7 @@ const subscriptionActivatedFunction = async (subscription_id: string, res: any) 
           model: "insured/getByIdModel",
           error: insuredResponse.error,
         });
-        res.status(500).json({ error: "Error retrieving insured" });
-        return;
+        return { success: false, error: "Error retrieving insured" };
       }
 
       const responseDocuments = await generateDocuments(
@@ -995,8 +979,7 @@ const subscriptionActivatedFunction = async (subscription_id: string, res: any) 
           model: responseDocuments.model,
           error: responseDocuments.error,
         });
-        res.status(500).json({ error: "Error creating  document" });
-        return;
+        return { success: false, error: "Error creating  document" };
       }
 
       attachmentInsured.push(`contrato_${lead_id}.pdf`);
@@ -1008,7 +991,6 @@ const subscriptionActivatedFunction = async (subscription_id: string, res: any) 
     };
 
     const responses: DetailT[] = [];
-
     leadInsuredResponse.data.map(async (insured: any) => {
       const userInsuredResponse = await UserInsuredModel.create(
         insured.id,
@@ -1071,33 +1053,31 @@ const subscriptionActivatedFunction = async (subscription_id: string, res: any) 
           headers: config.email.apiKey,
         }
       );
-
       if (!emailResponse.data.success) {
         createLogger.error({
           model: "email",
           error: emailResponse.error,
         });
-        res.status(500).json({ error: "Error creating email" });
-        return;
+        return { success: false, error: "Error creating email" };
       }
     });
 
     if (responses.length > 0) {
       return responses;
+      
     }
 
     createLogger.info({
       controller: "webhook/subscriptionActivated",
       message: "OK",
     });
-    res.status(200).json("OK");
+    return { success: true, error: null };
   } catch (e) {
     createLogger.error({
       controller: "webhook/subscriptionActivated",
       error: (e as Error).message,
     });
-    res.status(500).json({ error: "Error updating subscription" });
-    return;
+    return { success: false, error: "Error updating subscription" };
   }
 
 }

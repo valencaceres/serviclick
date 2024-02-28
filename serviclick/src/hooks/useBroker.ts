@@ -65,7 +65,7 @@ const useBroker = () => {
     dispatch(Broker.resetBroker());
   };
 
-  const addProduct = (id: string, product: Broker.ProductT) => {
+  const addProduct = (id: string, product: Broker.ProductT ) => {
     dispatch(Broker.setLoading(true));
     dispatch(Broker.addProduct(id, product));
   };

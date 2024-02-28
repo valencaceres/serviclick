@@ -2,7 +2,7 @@
 import config from "./config";
 import axios from "axios";
 export const apiServiClick = axios.create({
-    baseURL: `https://api.serviclick.cl/api`,
+    baseURL: config.apiURL,
     headers: { id: config.apiKEYSv },
   });
   

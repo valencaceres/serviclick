@@ -1,5 +1,4 @@
 import { Router } from "express";
-
 import auth from "../middlewares/auth";
 import {
   create,
@@ -23,8 +22,7 @@ import {
 } from "../controllers/broker";
 import isAuthenticated from "../middlewares/isAuthenticated";
 import isAdmin from "../middlewares/isAdmin";
-
-const BrokerRouter = Router();
+ const BrokerRouter = Router();
 
 BrokerRouter.post("/create", auth, isAuthenticated, isAdmin, create);
 BrokerRouter.post("/addProduct", auth, isAuthenticated, isAdmin, addProduct);

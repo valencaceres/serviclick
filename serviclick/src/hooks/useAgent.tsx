@@ -6,6 +6,7 @@ import {
   setAgentList,
   setAgent,
   resetAgent,
+  getById,
   AgentT,
 } from "../redux/slices/agentSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
@@ -21,6 +22,9 @@ const useAgent = () => {
 
   const update = (id: string, channel_id: string, name: string) => {
     dispatch(updateAgent(id, channel_id, name));
+  };
+  const getAgentById = (id: string) => {
+    dispatch(getById(id));
   };
 
   const deleteById = (id: string, channel_id: string) => {
@@ -50,6 +54,7 @@ const useAgent = () => {
     listAll,
     setList,
     set,
+    getAgentById,
     reset,
     agent,
     list,

@@ -32,6 +32,7 @@ const RetailProducts = ({ addNewProduct, editProduct, deleteProduct }: any) => {
           <TableCell width="145px">Descuento</TableCell>
           <TableCell width="100px">Normal</TableCell>
           <TableCell width="100px">Empresa</TableCell>
+          <TableCell width="100px">Anual</TableCell>
           <TableCell width="68px"></TableCell>
           <TableCellEnd />
         </TableHeader>
@@ -59,6 +60,9 @@ const RetailProducts = ({ addNewProduct, editProduct, deleteProduct }: any) => {
               </TableCell>
               <TableCell width="100px" align="right">
                 {formatAmount(item.price, item.currency)}
+              </TableCell>
+              <TableCell width="100px" align="right">
+                {formatAmount(item.yearlyprice, item.currency)}
               </TableCell>
               <TableCell width="68px" align="center">
                 <TableIcons>

@@ -441,7 +441,7 @@ const createSubscription = async (
         headers: config.reveniu.apiKey,
       }
     );
-
+    
     const {
       status: status_id,
       interval: interval_id,

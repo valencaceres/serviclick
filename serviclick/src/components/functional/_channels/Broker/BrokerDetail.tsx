@@ -65,6 +65,7 @@ interface IBrokerProductForm {
     cicles: IFormFieldNumber;
   };
   pdfbase64: any;
+  beneficiary_price: IFormFieldNumber;
 }
 
 interface IBrokerUserForm {
@@ -126,6 +127,7 @@ const BrokerDetail = () => {
       cicles: { value: 0, isValid: true },
     },
     pdfbase64: "",
+    beneficiary_price: { value: 0, isValid: false },
   };
 
   const initialDataBrokerUserForm: IBrokerUserForm = {
@@ -152,6 +154,7 @@ const BrokerDetail = () => {
   const [showAlertUsers, setShowAlertUsers] = useState(false);
   const [isDisabledBrokerForm, setIsDisabledBrokerForm] = useState(true);
   const [productToDelete, setProductToDelete] = useState({ id: "", name: "" });
+  const [productBeneficiaries, setProductBeneficiaries] = useState<number>(0);
   const [showWarningDeleteProduct, setShowWarningDeleteProduct] =
     useState(false);
   const { getDistricts } = useDistrict();
@@ -195,7 +198,9 @@ const BrokerDetail = () => {
         cicles: { value: item.discount.cicles, isValid: true },
       },
       pdfbase64: item.pdfbase64,
+      beneficiary_price: { value: item.beneficiary_price, isValid: true },
     });
+    setProductBeneficiaries(item.beneficiaries);
     setShowModalProducts(true);
   };
 
@@ -241,11 +246,10 @@ const BrokerDetail = () => {
   const handleClickSaveProduct = () => {
     const file = brokerProductForm.pdfbase64;
     let base64Pdf = "";
-  
-    if (file) {
+    if (typeof file !== "string" && file) {
       if (file instanceof Blob) {
         const reader = new FileReader();
-  
+
         reader.onloadend = () => {
           base64Pdf = reader.result?.toString().split(",")[1] ?? "";
           addProduct(broker.id, {
@@ -269,33 +273,12 @@ const BrokerDetail = () => {
               cicles: brokerProductForm.discount.cicles.value,
             },
             pdfbase64: base64Pdf || "",
+            beneficiary_price: brokerProductForm.beneficiary_price.value,
           });
         };
-  
+
         reader.readAsDataURL(file);
-      } else {
-        addProduct(broker.id, {
-          product_id: brokerProductForm.product_id.value,
-          name: brokerProductForm.name.value,
-          price: {
-            base: brokerProductForm.price.base.value,
-            customer: brokerProductForm.price.customer.value,
-            company: brokerProductForm.price.company.value,
-            yearly: brokerProductForm.price.yearly.value,
-          },
-          commisionTypeCode: brokerProductForm.commisionTypeCode.value,
-          value: brokerProductForm.value.value,
-          currency: "P",
-          discount: {
-            type:
-              brokerProductForm.discount.type.value == ""
-                ? "n"
-                : brokerProductForm.discount.type.value,
-            percent: brokerProductForm.discount.percent.value,
-            cicles: brokerProductForm.discount.cicles.value,
-          },
-          pdfbase64: "",
-        });      }
+      }
     } else {
       addProduct(broker.id, {
         product_id: brokerProductForm.product_id.value,
@@ -309,6 +292,7 @@ const BrokerDetail = () => {
         commisionTypeCode: brokerProductForm.commisionTypeCode.value,
         value: brokerProductForm.value.value,
         currency: "P",
+        beneficiary_price: brokerProductForm.beneficiary_price.value,
         discount: {
           type:
             brokerProductForm.discount.type.value == ""
@@ -318,7 +302,8 @@ const BrokerDetail = () => {
           cicles: brokerProductForm.discount.cicles.value,
         },
         pdfbase64: "",
-      });    }
+      });
+    }
   };
 
   const handleClickSaveUser = () => {
@@ -392,6 +377,7 @@ const BrokerDetail = () => {
           brokerProductForm={brokerProductForm}
           setBrokerProductForm={setBrokerProductForm}
           setShowModal={setShowModalProducts}
+          beneficiaries={productBeneficiaries}
         />
       </ModalWindow>
       <EditUser

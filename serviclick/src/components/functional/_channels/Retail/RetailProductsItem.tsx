@@ -5,14 +5,19 @@ import { ContentCell, ContentRow } from "../../../layout/Content";
 import ComboBox from "../../../ui/ComboBox";
 import InputText from "../../../ui/InputText";
 import Button from "../../../ui/Button";
-
+import { Button as ButtonUi } from "../../../ui/ButtonC";
 import { useProduct } from "../../../../hooks";
+import { Label } from "~/components/ui/Label";
+import { Input } from "~/components/ui/Input";
+import { Modal, Window } from "~/components/ui/Modal/index";
+import PDFViewer from "~/components/ui/PDFViewer/PdfViewer";
 
 const RetailProductsItem = ({
   retailProductForm,
   setRetailProductForm,
   saveProduct,
   setShowModal,
+  beneficiaries,
 }: any) => {
   const { productList } = useProduct();
 
@@ -32,6 +37,11 @@ const RetailProductsItem = ({
   ];
 
   const [enabledButton, setEnabledButton] = useState(false);
+  const [pdfModal, setPdfModal] = useState(false);
+  const initialPdfData =
+    typeof retailProductForm.pdfbase64 === "string"
+      ? retailProductForm.pdfbase64
+      : null;
 
   const handleChangeProduct = (event: any) => {
     setRetailProductForm({
@@ -162,6 +172,36 @@ const RetailProductsItem = ({
     });
   };
 
+  const handleChangeYearlyPrice = (event: any) => {
+    setRetailProductForm({
+      ...retailProductForm,
+      yearly_price: {
+        value: event.target.value,
+        isValid: event.target.value !== "" && parseInt(event.target.value) > 0,
+      },
+    });
+  };
+
+  const handleChangeBeneficiaryPrice = (event: any) => {
+    setRetailProductForm({
+      ...retailProductForm,
+      beneficiary_price: {
+        value: event.target.value,
+        isValid: event.target.value !== "" && parseInt(event.target.value) > 0,
+      },
+    });
+  };
+  const handleFileChange = (event: any) => {
+    setRetailProductForm({
+      ...retailProductForm,
+      pdfbase64: event.target.files[0],
+    });
+  };
+
+  const handleCloseModalPdf = () => {
+    setPdfModal(false);
+  };
+
   const handleSaveProduct = () => {
     setShowModal(false);
     saveProduct();
@@ -256,6 +296,27 @@ const RetailProductsItem = ({
           />
         </ContentRow>
         <ContentRow gap="5px">
+          <InputText
+            label="Precio anual"
+            width="100%"
+            type="number"
+            maxLength={6}
+            value={retailProductForm.yearly_price.value}
+            onChange={handleChangeYearlyPrice}
+            isValid={retailProductForm.yearly_price.isValid}
+          />
+          <InputText
+            label="Precio por carga"
+            width="100%"
+            type="number"
+            disabled={beneficiaries === 0}
+            maxLength={6}
+            value={retailProductForm.beneficiary_price.value}
+            onChange={handleChangeBeneficiaryPrice}
+            isValid={retailProductForm.beneficiary_price.isValid}
+          />
+        </ContentRow>
+        <ContentRow gap="5px">
           <ComboBox
             id="cmbDiscount"
             label="Tipo de descuento"
@@ -285,6 +346,53 @@ const RetailProductsItem = ({
             onChange={handleChangeDiscountCicles}
             isValid={retailProductForm.discount.cicles.isValid}
           />
+        </ContentRow>
+        <ContentRow gap="5px">
+          {initialPdfData != "" && initialPdfData != null ? (
+            <>
+              <div className="flex w-full max-w-xl flex-col items-center gap-1.5 ">
+                <div className="w-full">
+                  <ButtonUi
+                    className="w-full"
+                    onClick={() => setPdfModal(true)}
+                  >
+                    Ver pdf
+                  </ButtonUi>
+                  <Modal showModal={pdfModal}>
+                    <Window title="Documento" setClosed={handleCloseModalPdf}>
+                      <PDFViewer base64={initialPdfData} />
+                    </Window>
+                  </Modal>
+                </div>
+
+                <div className="flex w-full max-w-xl flex-col gap-1.5 border border-primary-500">
+                  <Label htmlFor="picture" className="text-xl ">
+                    Cambiar pdf
+                  </Label>
+                  <Input
+                    onChange={handleFileChange}
+                    id="picture"
+                    className="border-none p-0"
+                    type="file"
+                  />
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="grid w-full max-w-xl items-center gap-1.5 border border-primary-500">
+                <Label htmlFor="picture" className="text-xl">
+                  Subir pdf
+                </Label>
+                <Input
+                  onChange={handleFileChange}
+                  id="picture"
+                  className="border-none p-0"
+                  type="file"
+                />
+              </div>
+            </>
+          )}
         </ContentRow>
       </ContentCell>
       <Button

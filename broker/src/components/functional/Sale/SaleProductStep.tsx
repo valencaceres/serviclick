@@ -97,7 +97,7 @@ function ProductCard({
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
-  const handleDownloadClick = (assistance: any) => {
+  const handleDownloadClick = (pdfBase64: any) => {
     downloadFile({
       Base64Content: pdfBase64,
       nameProduct: name,
@@ -118,7 +118,7 @@ function ProductCard({
       <CardHeader className="flex h-20 items-center justify-center  rounded-t-md bg-primary-500">
         <CardTitle className="text-teal-blue">{name}</CardTitle>
       </CardHeader>
-      <CardContent className="flex items-center justify-between rounded-b-md bg-teal-blue p-2">
+      <CardContent className="flex flex-col items-center justify-between rounded-b-md bg-teal-blue p-2">
         <div className="flex w-full flex-row gap-2 p-2">
           <Button
             className="flex w-full flex-col items-center justify-center p-6"
@@ -151,6 +151,14 @@ function ProductCard({
             </Button>
           )}
         </div>
+        {pdfBase64 && (
+          <Button
+            onClick={() => handleDownloadClick(pdfBase64)}
+            className="flex w-full flex-col items-center justify-center p-6"
+          >
+            Descargar contrato
+          </Button>
+        )}
       </CardContent>
     </Card>
   );

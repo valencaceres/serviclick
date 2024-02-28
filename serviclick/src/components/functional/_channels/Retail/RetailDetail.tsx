@@ -62,6 +62,9 @@ interface IRetailProductForm {
     percent: IFormFieldNumber;
     cicles: IFormFieldNumber;
   };
+  pdfbase64: any;
+  yearly_price: IFormFieldNumber;
+  beneficiary_price: IFormFieldNumber;
 }
 
 interface IRetailUserForm {
@@ -112,6 +115,8 @@ const RetailDetail = () => {
       value: "",
       isValid: false,
     },
+    yearly_price: { value: 0, isValid: false },
+    beneficiary_price: { value: 0, isValid: false },
     value: { value: 0, isValid: false },
     currency: { value: "", isValid: false },
     discount: {
@@ -119,6 +124,7 @@ const RetailDetail = () => {
       percent: { value: 0, isValid: true },
       cicles: { value: 0, isValid: true },
     },
+    pdfbase64: "",
   };
 
   const initialDataRetailUserForm: IRetailUserForm = {
@@ -147,6 +153,7 @@ const RetailDetail = () => {
   const [productToDelete, setProductToDelete] = useState({ id: "", name: "" });
   const [showWarningDeleteProduct, setShowWarningDeleteProduct] =
     useState(false);
+  const [productBeneficiaries, setProductBeneficiaries] = useState<number>(0);
 
   const setClosedWarningDeleteProduct = () => {
     setShowWarningDeleteProduct(false);
@@ -175,6 +182,9 @@ const RetailDetail = () => {
       name: { value: item.name, isValid: true },
       baseprice: { value: item.baseprice, isValid: true },
       price: { value: item.price, isValid: true },
+      yearly_price: { value: item.yearlyprice || 0, isValid: true },
+      beneficiary_price: { value: item.beneficiary_price || 0, isValid: true },
+      pdfbase64: item.pdfbase64,
       commisionTypeCode: {
         value: item.commisionTypeCode,
         isValid: true,
@@ -187,6 +197,7 @@ const RetailDetail = () => {
         cicles: { value: item.discount.cicles, isValid: true },
       },
     });
+    setProductBeneficiaries(item.beneficiaries);
     setShowModalProducts(true);
   };
 
@@ -227,28 +238,70 @@ const RetailDetail = () => {
   };
 
   const handleClickSaveProduct = () => {
-    addProduct(
-      retail.id,
-      {
-        product_id: retailProductForm.product_id.value,
-        name: retailProductForm.name.value,
-        price: {
-          base: retailProductForm.baseprice.value,
-          customer: 0,
-          company: retailProductForm.price.value,
+    const file = retailProductForm.pdfbase64;
+    let base64Pdf = "";
+    if (typeof file !== "string" && file) {
+      if (file instanceof Blob) {
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+          base64Pdf = reader.result?.toString().split(",")[1] ?? "";
+          addProduct(
+            retail.id,
+            {
+              product_id: retailProductForm.product_id.value,
+              name: retailProductForm.name.value,
+              price: {
+                base: retailProductForm.baseprice.value,
+                customer: 0,
+                company: retailProductForm.price.value,
+              },
+              yearly_price: retailProductForm.yearly_price.value,
+              beneficiary_price: retailProductForm.beneficiary_price.value,
+              pdfbase64: base64Pdf || "",
+              currency: retailProductForm.currency.value,
+              discount: {
+                type:
+                  retailProductForm.discount.type.value == ""
+                    ? "n"
+                    : retailProductForm.discount.type.value,
+                percent: retailProductForm.discount.percent.value,
+                cicles: retailProductForm.discount.cicles.value,
+              },
+            },
+            1
+          );
+        };
+
+        reader.readAsDataURL(file);
+      }
+    } else {
+      addProduct(
+        retail.id,
+        {
+          product_id: retailProductForm.product_id.value,
+          name: retailProductForm.name.value,
+          price: {
+            base: retailProductForm.baseprice.value,
+            customer: 0,
+            company: retailProductForm.price.value,
+          },
+          yearly_price: retailProductForm.yearly_price.value,
+          beneficiary_price: retailProductForm.beneficiary_price.value,
+          pdfbase64: "",
+          currency: retailProductForm.currency.value,
+          discount: {
+            type:
+              retailProductForm.discount.type.value == ""
+                ? "n"
+                : retailProductForm.discount.type.value,
+            percent: retailProductForm.discount.percent.value,
+            cicles: retailProductForm.discount.cicles.value,
+          },
         },
-        currency: retailProductForm.currency.value,
-        discount: {
-          type:
-            retailProductForm.discount.type.value == ""
-              ? "n"
-              : retailProductForm.discount.type.value,
-          percent: retailProductForm.discount.percent.value,
-          cicles: retailProductForm.discount.cicles.value,
-        },
-      },
-      1
-    );
+        1
+      );
+    }
   };
 
   const handleClickSaveUser = () => {
@@ -322,6 +375,7 @@ const RetailDetail = () => {
           retailProductForm={retailProductForm}
           setRetailProductForm={setRetailProductForm}
           setShowModal={setShowModalProducts}
+          beneficiaries={productBeneficiaries}
         />
       </ModalWindow>
       <EditUser

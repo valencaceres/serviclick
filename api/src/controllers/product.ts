@@ -183,7 +183,7 @@ const createProduct = async (req: any, res: any) => {
 };
 
 const createPlans = async (req: any, res: any) => {
-  const { product_id, agent_id, price, discount } = req.body;
+  const { product_id, agent_id, price, discount, beneficiary_price } = req.body;
   const responsePlans = await createProductPlans(
     product_id,
     agent_id,
@@ -191,7 +191,8 @@ const createPlans = async (req: any, res: any) => {
     price.customer,
     price.company,
     price.yearly,
-    discount
+    discount,
+    beneficiary_price,
   );
 
   if (!responsePlans.success) {
@@ -212,7 +213,7 @@ const createPlans = async (req: any, res: any) => {
 };
 
 const assignPrices = async (req: any, res: any) => {
-  const { id, agent_id, baseprice, customerprice, companyprice, yearlyprice, discount } =
+  const { id, agent_id, baseprice, customerprice, companyprice, yearlyprice, discount , beneficiary_price} =
     req.body;
   const responsePlans = await createProductPlans(
     id,
@@ -221,7 +222,8 @@ const assignPrices = async (req: any, res: any) => {
     customerprice,
     companyprice,
     yearlyprice,
-    discount
+    discount,
+    beneficiary_price
   );
 
   if (!responsePlans.success) {
@@ -632,7 +634,9 @@ const createProductPlans = async (
   companyprice: number | null,
   yearlyprice: number | null,
   discount: DiscountT,
+  beneficiary_price: number | null
 ) => {
+  console.log("createProductPlans", id, agent_id, baseprice, customerprice, companyprice, yearlyprice, discount, beneficiary_price)
   const productResponse = await Product.getProduct(id, agent_id);
 
   if (!productResponse.success) {
@@ -707,6 +711,13 @@ let customer_plan_id_new = customer_plan_id
   let companyData: any = null;
   let customerData: any = null;
   let yearlyData: any = null
+  let is_custom_amount = false;
+
+  if (productResponse.data.beneficiaries > 0 && beneficiary_price && beneficiary_price > 0) {
+      is_custom_amount = true;
+  }else{
+    is_custom_amount= false
+  }
 
 
   if (yearlyprice && yearlyprice > 0) {
@@ -734,7 +745,7 @@ let customer_plan_id_new = customer_plan_id
       }`,
       {
         ...productPlanData,
-        is_custom_amount: false,
+        is_custom_amount: is_custom_amount,
         price: yearlyprice ?? 0,
       },
       {
@@ -749,7 +760,7 @@ let customer_plan_id_new = customer_plan_id
       }`,
       data: {
         ...productPlanData,
-        is_custom_amount: false,
+        is_custom_amount: is_custom_amount,
         price: yearlyprice ?? 0 ,
       },
       response: planResponseYearly.data,
@@ -764,7 +775,8 @@ let customer_plan_id_new = customer_plan_id
       yearlyprice ?? 0 ,
       "A",
       discount,
-      yearly_plan_id
+      yearly_plan_id,
+      beneficiary_price
     );
     if (!productPlanYearlyResponse.success) {
       createLogger.error({
@@ -782,6 +794,7 @@ let customer_plan_id_new = customer_plan_id
   }
 
   if (companyprice && companyprice > 0) {
+    productPlanData.frequency = frecuencyData
     let new_company_plan_id = company_plan_id_new > 0 ? company_plan_id_new : 0;
     let company_plan_id_extr = company_plan_id_new > 0 ? company_plan_id_new : 0;
     try {
@@ -842,7 +855,7 @@ let customer_plan_id_new = customer_plan_id
 
       new_company_plan_id = responsePlan.data.id;
     }
-
+    console.log(id , agent_id , new_company_plan_id , "company", baseprice, companyprice ?? 0, frequency, discount, company_plan_id_extr, beneficiary_price)
     const productPlanCompanyResponse = await ProductPlan.createModel(
       id,
       agent_id,
@@ -852,7 +865,8 @@ let customer_plan_id_new = customer_plan_id
       companyprice ?? 0,
       frequency,
       discount,
-      company_plan_id_extr
+      company_plan_id_extr,
+      beneficiary_price
     );
 
     if (!productPlanCompanyResponse.success) {
@@ -867,7 +881,7 @@ let customer_plan_id_new = customer_plan_id
       id: new_company_plan_id,
       price: companyprice ?? 0 ,
     };
-  }
+  } 
 
 
 
@@ -895,7 +909,7 @@ let customer_plan_id_new = customer_plan_id
       }`,
       {
         ...productPlanData,
-        is_custom_amount: false,
+        is_custom_amount: is_custom_amount,
         price: customerprice ?? 0 ,
       },
       {
@@ -915,7 +929,6 @@ let customer_plan_id_new = customer_plan_id
       },
       response: planResponseCustomer.data,
     });
-
     const productPlanCustomerResponse = await ProductPlan.createModel(
       id,
       agent_id,
@@ -925,9 +938,9 @@ let customer_plan_id_new = customer_plan_id
       customerprice ?? 0,
       frequency,
       discount,
-      customer_plan_id
+      customer_plan_id,
+      beneficiary_price
     );
-
     if (!productPlanCustomerResponse.success) {
       createLogger.error({
         model: "productPlan/createModel",
@@ -1155,7 +1168,6 @@ const listByFamilies = async (req: any, res: any) => {
 
   const result = await Product.listByFamilies(agent);
   const filteredData = result?.data?.filter(item => item.hasOwnProperty('family_name') && item.family_name === 'Veterinaria');
-  console.log(filteredData ,"waasa")
   if (!result.success) {
     createLogger.error({
       model: "product/listByFamilies",

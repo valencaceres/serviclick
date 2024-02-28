@@ -71,7 +71,7 @@ const createFull = async (req: any, res: any) => {
           commisionTypeCode,
           value,
           currency,
-          discount,
+          discount,beneficiary_price
         } = product;
 
         const responsePlans = await Product.createProductPlans(
@@ -81,7 +81,8 @@ const createFull = async (req: any, res: any) => {
           price.customer,
           price.company,
           price.yearly,
-          discount
+          discount,
+          beneficiary_price,
         );
 
         if (!responsePlans.success) {
@@ -521,16 +522,19 @@ const addProduct = async (req: any, res: any) => {
     value,
     currency,
     discount,
-    pdfBase64
+    beneficiary_price,
+    pdfbase64
   } = req.body;
- const responsePlans = await Product.createProductPlans(product_id,
+  console.log(req.body)
+const responsePlans = await Product.createProductPlans(product_id,
   broker_id,
   price.base || null,
   price.customer,
   price.company,
   price.yearly,
-  discount)
-
+  discount,
+  beneficiary_price)
+  
   if (!responsePlans.success) {
     createLogger.error({
       controller: "product/createProductPlans",
@@ -539,12 +543,12 @@ const addProduct = async (req: any, res: any) => {
     res.status(500).json({ error: "Error creating product plans" });
     return;
   }
-
+  
   createLogger.info({
     controller: "product/createProductPlans",
     data: responsePlans.data,
   });
-
+  
   const brokerProductResponse = await BrokerProduct.create(
     broker_id,
     product_id,
@@ -555,17 +559,36 @@ const addProduct = async (req: any, res: any) => {
     commisionTypeCode,
     value,
     currency
-  );
-
-  if (!brokerProductResponse.success) {
-    createLogger.error({
-      model: "brokerProduct/create",
-      error: brokerProductResponse.error,
-    });
-    res.status(500).json({ error: "Error creating broker product" });
-    return;
-  }
-  const brokerProducts = await BrokerProduct.getByBrokerId(broker_id);
+    );
+    
+    if (!brokerProductResponse.success) {
+      createLogger.error({
+        model: "brokerProduct/create",
+        error: brokerProductResponse.error,
+      });
+      res.status(500).json({ error: "Error creating broker product" });
+      return;
+    }
+        if (pdfbase64 && pdfbase64 != "") {
+          let response;
+          if (responsePlans.data?.customer?.product_plan_id && responsePlans.data?.yearly?.product_plan_id) {
+            response = await Product.insertPdf(responsePlans.data.customer.product_plan_id, pdfbase64);
+          } else if (responsePlans.data?.customer?.product_plan_id) {
+            response = await Product.insertPdf(responsePlans.data.customer.product_plan_id, pdfbase64);
+          } else if (responsePlans.data?.yearly?.product_plan_id) {
+            response = await Product.insertPdf( responsePlans.data.yearly.product_plan_id, pdfbase64);
+          } 
+        
+          if (!response || !response.success) {
+            createLogger.error({
+              model: "brokerProduct/InsertPdf",
+              error: response ? response.error : "No response received",
+            });
+            res.status(500).json({ error: "Error inserting pdf" });
+            return;
+          }
+        }
+    const brokerProducts = await BrokerProduct.getByBrokerId(broker_id);
   if (!brokerProducts.success) {
     createLogger.error({
       model: "brokerProduct/getByBrokerId",
@@ -575,25 +598,6 @@ const addProduct = async (req: any, res: any) => {
     return;
   }
   
-  if (pdfBase64 != "") {
-    let response;
-    if (responsePlans.data?.customer?.product_plan_id && responsePlans.data?.yearly?.product_plan_id) {
-      response = await Product.insertPdf(responsePlans.data.customer.product_plan_id, pdfBase64);
-    } else if (responsePlans.data?.customer?.product_plan_id) {
-      response = await Product.insertPdf(responsePlans.data.customer.product_plan_id, pdfBase64);
-    } else if (responsePlans.data?.yearly?.product_plan_id) {
-      response = await Product.insertPdf( responsePlans.data.yearly.product_plan_id, pdfBase64);
-    } 
-  
-    if (!response || !response.success) {
-      createLogger.error({
-        model: "brokerProduct/InsertPdf",
-        error: response ? response.error : "No response received",
-      });
-      res.status(500).json({ error: "Error inserting pdf" });
-      return;
-    }
-  }
 
   res.status(200).json(brokerProducts.data);
 };
@@ -691,7 +695,6 @@ const updateAgent = async (req: any, res: any) => {
       },
       password:password,
     });
-    console.log(response)
     userId = response.data.id
   }
 const responseUpdateProfileCode = await BrokerUser.updateProfileCode(

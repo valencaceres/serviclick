@@ -20,6 +20,10 @@ export type ProductT = {
   price: PriceT;
   currency: string;
   discount: DiscountT;
+  pdfbase64: any;
+  yearly_price: number,
+  beneficiary_price:number
+
 };
 
 export type UserT = {

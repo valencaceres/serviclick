@@ -35,9 +35,9 @@ const config = {
   },
   email: {
     URL: {
-      send: "https://api-email.serviclick.cl/api/email/send",
+      send: `${process.env.API_EMAIL_URL}/api/email/send`,
     },
-    apiKey: { id: "12345678" },
+    apiKey: { id: process.env.API_EMAIL_KEY },
   },
 };
 
