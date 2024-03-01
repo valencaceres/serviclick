@@ -8,12 +8,15 @@ const createModel: any = async (
   baseprice: number,
   price: number,
   frequency: string,
-  discount: any
+  discount: any,
+  plan_id_extr: string,
+  beneficiary_price: number
 ) => {
   try {
+    console.log("benprice", beneficiary_price)
     const resultProductPlan = await pool.query(
       "SELECT 1 FROM app.productPlan WHERE agent_id = $1 AND type = $2 AND product_id = $3 AND plan_id = $4",
-      [agent_id, type, id, plan_id]
+      [agent_id, type, id, plan_id_extr]
     );
     let query: string;
 
@@ -27,7 +30,8 @@ const createModel: any = async (
                 frequency = $8,
                 discount_type = $9,
                 discount_percent = $10,
-                discount_cicles = $11
+                discount_cicles = $11,
+                beneficiary_price = $12
         WHERE   agent_id = $1 AND
                 type = $5 AND
                 product_id = $3 RETURNING *`;
@@ -44,8 +48,9 @@ const createModel: any = async (
                 frequency, 
                 discount_type, 
                 discount_percent, 
-                discount_cicles) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *`;
+                discount_cicles,
+                beneficiary_price) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *`;
     }
     const result = await pool.query(query, [
       agent_id,
@@ -59,6 +64,7 @@ const createModel: any = async (
       discount.type,
       discount.percent,
       discount.cicles,
+      beneficiary_price
     ]);
 
     return { success: true, data: result.rows[0], error: null };

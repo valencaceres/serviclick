@@ -183,7 +183,7 @@ const createProduct = async (req: any, res: any) => {
 };
 
 const createPlans = async (req: any, res: any) => {
-  const { product_id, agent_id, price, discount } = req.body;
+  const { product_id, agent_id, price, discount, beneficiary_price } = req.body;
   const responsePlans = await createProductPlans(
     product_id,
     agent_id,
@@ -191,7 +191,8 @@ const createPlans = async (req: any, res: any) => {
     price.customer,
     price.company,
     price.yearly,
-    discount
+    discount,
+    beneficiary_price,
   );
 
   if (!responsePlans.success) {
@@ -212,7 +213,7 @@ const createPlans = async (req: any, res: any) => {
 };
 
 const assignPrices = async (req: any, res: any) => {
-  const { id, agent_id, baseprice, customerprice, companyprice, yearlyprice, discount } =
+  const { id, agent_id, baseprice, customerprice, companyprice, yearlyprice, discount , beneficiary_price} =
     req.body;
   const responsePlans = await createProductPlans(
     id,
@@ -221,7 +222,8 @@ const assignPrices = async (req: any, res: any) => {
     customerprice,
     companyprice,
     yearlyprice,
-    discount
+    discount,
+    beneficiary_price
   );
 
   if (!responsePlans.success) {
@@ -632,7 +634,9 @@ const createProductPlans = async (
   companyprice: number | null,
   yearlyprice: number | null,
   discount: DiscountT,
+  beneficiary_price: number | null
 ) => {
+  console.log("createProductPlans", id, agent_id, baseprice, customerprice, companyprice, yearlyprice, discount, beneficiary_price)
   const productResponse = await Product.getProduct(id, agent_id);
 
   if (!productResponse.success) {
@@ -651,7 +655,9 @@ const createProductPlans = async (
     company_plan_id,
     yearly_plan_id
   }: ProductT = productResponse.data;
-
+ let yearly_plan_id_new = yearly_plan_id
+let company_plan_id_new = company_plan_id
+let customer_plan_id_new = customer_plan_id
   // const productPlansDeleted = await Product.deletePlans(id, agent_id);
 
   // if (!productPlansDeleted.success) {
@@ -705,20 +711,42 @@ const createProductPlans = async (
   let companyData: any = null;
   let customerData: any = null;
   let yearlyData: any = null
+  let is_custom_amount = false;
+
+  if (productResponse.data.beneficiaries > 0 && beneficiary_price && beneficiary_price > 0) {
+      is_custom_amount = true;
+  }else{
+    is_custom_amount= false
+  }
 
 
   if (yearlyprice && yearlyprice > 0) {
     productPlanData.frequency = 4
+   
+    try {
+      const planReveniuResponse = await axios.get(
+        `${config.reveniu.URL.plan}${yearly_plan_id_new}`,
+        {
+          headers: config.reveniu.apiKey,
+        }
+      );
+    } catch (err) {
+      console.log("error 404 not found yearly_plan will be replaced by 0", );
+      yearly_plan_id_new = 0;
+    }
+
+        
+
     const planResponseYearly = await axios[
-      yearly_plan_id > 0 ? "patch" : "post"
+      yearly_plan_id_new > 0 ? "patch" : "post"
     ](
       `${config.reveniu.URL.plan}${
-        yearly_plan_id > 0 ? yearly_plan_id : ""
+        yearly_plan_id_new > 0 ? yearly_plan_id_new : ""
       }`,
       {
         ...productPlanData,
-        is_custom_amount: false,
-        price: yearlyprice,
+        is_custom_amount: is_custom_amount,
+        price: yearlyprice ?? 0,
       },
       {
         headers: config.reveniu.apiKey,
@@ -726,14 +754,14 @@ const createProductPlans = async (
     );
 
     createLogger.info({
-      method: yearly_plan_id > 0 ? "patch" : "post",
+      method: yearly_plan_id_new > 0 ? "patch" : "post",
       url: `${config.reveniu.URL.plan}${
-        yearly_plan_id > 0 ? yearly_plan_id : ""
+        yearly_plan_id_new > 0 ? yearly_plan_id_new : ""
       }`,
       data: {
         ...productPlanData,
-        is_custom_amount: false,
-        price: yearlyprice,
+        is_custom_amount: is_custom_amount,
+        price: yearlyprice ?? 0 ,
       },
       response: planResponseYearly.data,
     });
@@ -744,9 +772,11 @@ const createProductPlans = async (
       planResponseYearly.data.id,
       "yearly",
       baseprice || 0,
-      yearlyprice,
+      yearlyprice ?? 0 ,
       "A",
-      discount
+      discount,
+      yearly_plan_id,
+      beneficiary_price
     );
     if (!productPlanYearlyResponse.success) {
       createLogger.error({
@@ -764,19 +794,32 @@ const createProductPlans = async (
   }
 
   if (companyprice && companyprice > 0) {
-    let new_company_plan_id = company_plan_id > 0 ? company_plan_id : 0;
+    productPlanData.frequency = frecuencyData
+    let new_company_plan_id = company_plan_id_new > 0 ? company_plan_id_new : 0;
+    let company_plan_id_extr = company_plan_id_new > 0 ? company_plan_id_new : 0;
+    try {
+      const planReveniuResponse = await axios.get(
+        `${config.reveniu.URL.plan}${new_company_plan_id}`,
+        {
+          headers: config.reveniu.apiKey,
+        }
+      );
+    } catch (err) {
+      console.log("error 404 not found company plan will be replaced by 0", );
+      new_company_plan_id = 0;
+    }
 
     if (customerprice && customerprice > 0) {
       const planResponseCompany = await axios[
-        company_plan_id > 0 ? "patch" : "post"
+        new_company_plan_id > 0 ? "patch" : "post"
       ](
         `${config.reveniu.URL.plan}${
-          company_plan_id > 0 ? company_plan_id : ""
+          new_company_plan_id > 0 ? new_company_plan_id : ""
         }`,
         {
           ...productPlanData,
           is_custom_amount: true,
-          price: companyprice,
+          price: companyprice ?? 0,
         },
         {
           headers: config.reveniu.apiKey,
@@ -786,14 +829,14 @@ const createProductPlans = async (
       new_company_plan_id = planResponseCompany.data.id;
 
       createLogger.info({
-        method: company_plan_id > 0 ? "patch" : "post",
+        method: new_company_plan_id > 0 ? "patch" : "post",
         url: `${config.reveniu.URL.plan}${
-          company_plan_id > 0 ? company_plan_id : ""
+          new_company_plan_id > 0 ? new_company_plan_id : ""
         }`,
         data: {
           ...productPlanData,
           is_custom_amount: true,
-          price: companyprice,
+          price: companyprice ?? 0,
         },
         response: planResponseCompany.data,
       });
@@ -812,16 +855,18 @@ const createProductPlans = async (
 
       new_company_plan_id = responsePlan.data.id;
     }
-
+    console.log(id , agent_id , new_company_plan_id , "company", baseprice, companyprice ?? 0, frequency, discount, company_plan_id_extr, beneficiary_price)
     const productPlanCompanyResponse = await ProductPlan.createModel(
       id,
       agent_id,
       new_company_plan_id,
       "company",
       baseprice,
-      companyprice,
+      companyprice ?? 0,
       frequency,
-      discount
+      discount,
+      company_plan_id_extr,
+      beneficiary_price
     );
 
     if (!productPlanCompanyResponse.success) {
@@ -834,24 +879,38 @@ const createProductPlans = async (
 
     companyData = {
       id: new_company_plan_id,
-      price: companyprice,
+      price: companyprice ?? 0 ,
     };
-  }
+  } 
 
 
 
   if (customerprice && customerprice > 0) {
     productPlanData.frequency = frecuencyData
+    try {
+      const planReveniuResponse = await axios.get(
+        `${config.reveniu.URL.plan}${customer_plan_id_new}`,
+        {
+          headers: config.reveniu.apiKey,
+        }
+      );
+    } catch (err) {
+      console.log("error 404 not found customer plan will be replaced by 0", );
+      customer_plan_id_new = 0;
+    }
+  
+ 
+
     const planResponseCustomer = await axios[
-      customer_plan_id > 0 ? "patch" : "post"
+      customer_plan_id_new > 0 ? "patch" : "post"
     ](
       `${config.reveniu.URL.plan}${
-        customer_plan_id > 0 ? customer_plan_id : ""
+        customer_plan_id_new > 0 ? customer_plan_id_new : ""
       }`,
       {
         ...productPlanData,
-        is_custom_amount: false,
-        price: customerprice,
+        is_custom_amount: is_custom_amount,
+        price: customerprice ?? 0 ,
       },
       {
         headers: config.reveniu.apiKey,
@@ -859,29 +918,29 @@ const createProductPlans = async (
     );
 
     createLogger.info({
-      method: customer_plan_id > 0 ? "patch" : "post",
+      method: customer_plan_id_new > 0 ? "patch" : "post",
       url: `${config.reveniu.URL.plan}${
-        customer_plan_id > 0 ? customer_plan_id : ""
+        customer_plan_id_new > 0 ? customer_plan_id_new : ""
       }`,
       data: {
         ...productPlanData,
         is_custom_amount: false,
-        price: customerprice,
+        price: customerprice ?? 0,
       },
       response: planResponseCustomer.data,
     });
-
     const productPlanCustomerResponse = await ProductPlan.createModel(
       id,
       agent_id,
       planResponseCustomer.data.id,
       "customer",
       baseprice || 0,
-      customerprice,
+      customerprice ?? 0,
       frequency,
-      discount
+      discount,
+      customer_plan_id,
+      beneficiary_price
     );
-
     if (!productPlanCustomerResponse.success) {
       createLogger.error({
         model: "productPlan/createModel",
@@ -909,6 +968,8 @@ const createProductPlans = async (
     },
   };
 };
+
+
 
 const createProductCoverages = async (id: string, coverages: any) => {
   const errors: any = [];
@@ -1106,8 +1167,7 @@ const listByFamilies = async (req: any, res: any) => {
   const { agent } = req.params;
 
   const result = await Product.listByFamilies(agent);
-
-
+  const filteredData = result?.data?.filter(item => item.hasOwnProperty('family_name') && item.family_name === 'Veterinaria');
   if (!result.success) {
     createLogger.error({
       model: "product/listByFamilies",

@@ -229,6 +229,12 @@ const RetailForm = ({
     setEnableButtonSave(isValid);
   }, [retailForm]);
 
+  useEffect(() => {
+    if (!isDisabledRetailForm) {
+      setRetailCancel(retail);
+    }
+  }, [!isDisabledRetailForm]);
+
   return (
     <ContentRow gap="5px">
       <ContentCell className={styles.contentCellForm} gap="5px">

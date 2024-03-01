@@ -45,6 +45,7 @@ export default async function Page({ params }: { params: { id: string } }) {
         frequency: current.frequency,
         yearly_price: current.yearly_price,
         yearly_plan_id: current.yearly_plan_id,
+        yearly_product_plan_id: current.yearly_product_plan_id,
       }
     } else {
       if (current.product_name.includes("Familiar")) {

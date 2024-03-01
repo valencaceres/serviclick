@@ -491,6 +491,7 @@ const listByFamilies = async (agent: string) => {
                           ppl.price,
                           brp.yearlyprice as yearly_price,
                           brp.yearly_plan_id as yearly_plan_id,
+                          ppy.id as yearly_product_plan_id,
                           ppl.frequency as frequency,
                           ppl.beneficiary_price as beneficiary_price,
                           ppf.base64 as pdfbase,
@@ -513,7 +514,8 @@ const listByFamilies = async (agent: string) => {
                           INNER JOIN app.family fam ON pro.family_id = fam.id
                           LEFT JOIN app.www_family wef ON fam.id = wef.family_id
                           left join app.brokerproduct brp on pro.id = brp.product_id
-                           WHERE
+                          left join app.productplan ppy on ppy.plan_id = brp.yearly_plan_id
+                          WHERE
                           (age.id::TEXT = $1 OR age.fantasyname = $1)
                           AND ppl.type = 'customer'
                       ORDER BY

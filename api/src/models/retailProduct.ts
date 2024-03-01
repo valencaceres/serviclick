@@ -8,7 +8,9 @@ const create: any = async (
   normalPrice: number,
   price: number,
   currency: string,
-  number: number
+  number: number,
+  yearly_price: number,
+  yearly_plan_id: number
 ) => {
   try {
     const arrayValues = [
@@ -19,6 +21,8 @@ const create: any = async (
       price,
       currency,
       number,
+      yearly_price || 0,
+      yearly_plan_id ,
     ];
 
     const resultRetailProduct = await pool.query(
@@ -35,7 +39,9 @@ const create: any = async (
                 normalprice = $4,
                 companyprice = $5,
                 currency = $6,
-                number = $7
+                number = $7,
+                yearlyprice = $8,
+                yearly_plan_id = $9
         WHERE   retail_id = $1 AND
                 product_id = $2 RETURNING *`;
     } else {
@@ -47,8 +53,10 @@ const create: any = async (
                 normalprice,
                 companyprice,
                 currency,
-                number)
-        VALUES( $1, $2, $3, $4, $5, $6, $7) RETURNING *`;
+                number,
+                yearlyprice,
+                yearly_plan_id)
+        VALUES( $1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`;
     }
 
     const result = await pool.query(query, arrayValues);
@@ -61,6 +69,7 @@ const create: any = async (
       price: result.rows[0].companyprice,
       currency: result.rows[0].currency,
       number: result.rows[0].number,
+
     };
 
     return { success: true, data, error: null };
@@ -107,26 +116,39 @@ const getByRetailId: any = async (retail_id: string) => {
               max(pro.beneficiaries) as beneficiaries,
               max(des.promotional) as promotional,
               max(ppl.baseprice) as baseprice,
+              ppl.beneficiary_price as beneficiary_price,
               max(ppl.price) as price,
+              ply.price as yearlyprice,
               max(ppl.frequency) as frequency,
               max(brp.currency) as currency,
               max(ppl.id :: text) as productplan_id,
+              ply.id as productplan_yearly_id,
               max(ppl.discount_type) as discount_type,
               max(ppl.discount_percent) as discount_percent,
               max(ppl.discount_cicles) as discount_cicles,
               max(ppl.plan_id) as plan_id,
+              ply.plan_id as yearly_plan_id,
+              plf.base64 as pdfBase64,
               sum(case when pol.id is null then 0 else 1 end) as subscriptions
        FROM   app.retailProduct brp
                 inner join app.product pro on brp.product_id = pro.id
                 left outer join app.productdescription des on pro.id = des.product_id
                 left outer join app.productplan ppl on pro.id = ppl.product_id and brp.plan_id = ppl.plan_id
+                left outer join app.productplan ply on ply.product_id = pro.id and ply.plan_id = brp.yearly_plan_id
+                left outer join  app.productplanpdf plf ON (ply.id = plf.productplan_id OR ppl.id = plf.productplan_id)
                 left outer join app.leadproduct lpr on ppl.plan_id = lpr.productplan_id
                 left outer join app.lead lea on lpr.lead_id = lea.id
                 left outer join app.policy pol on lea.policy_id = pol.id and (pol.enddate is null or pol.enddate::date >= now()::date)
        WHERE  brp.retail_id = $1 and
               brp.isactive is true
        GROUP  BY
-              brp.product_id
+              brp.product_id,
+              ppl.beneficiary_price,
+              ply.plan_id,
+              plf.base64,
+              ppl.beneficiary_price,
+              ply.price,
+              ply.id
        ORDER  BY
               max(brp.number),
               max(pro.name)`,
@@ -141,14 +163,18 @@ const getByRetailId: any = async (retail_id: string) => {
         promotional,
         baseprice,
         price,
+        yearlyprice,
         currency,
         frequency,
         productplan_id,
         discount_type,
+        productplan_yearly_id,
+        beneficiary_price,
         discount_percent,
         discount_cicles,
         plan_id,
         subscriptions,
+        pdfbase64
       } = row;
 
       return {
@@ -161,6 +187,10 @@ const getByRetailId: any = async (retail_id: string) => {
         currency,
         frequency,
         productplan_id,
+        yearlyprice,
+        productplan_yearly_id,
+        beneficiary_price,
+        pdfbase64,
         plan_id,
         discount: {
           type: discount_type,

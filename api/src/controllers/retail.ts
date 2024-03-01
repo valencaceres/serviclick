@@ -433,7 +433,7 @@ const getCollectById = async (req: any, res: any) => {
 };
 
 const addProduct = async (req: any, res: any) => {
-  const { retail_id, product_id, price, currency, discount, number } = req.body;
+  const { retail_id, product_id, price, currency, discount, number, beneficiary_price, yearly_price, pdfbase64 } = req.body;
 
   const responsePlans = await Product.createProductPlans(
     product_id,
@@ -441,8 +441,9 @@ const addProduct = async (req: any, res: any) => {
     price.base || null,
     0,
     price.company,
-    price.yearly,
-    discount
+    yearly_price,
+    discount,
+    beneficiary_price,
   );
 
   if (!responsePlans.success) {
@@ -466,7 +467,9 @@ const addProduct = async (req: any, res: any) => {
     price.base,
     price.company,
     currency,
-    number
+    number,
+    yearly_price,
+    responsePlans?.data?.yearly?.id || null,
   );
 
   if (!retailProductResponse.success) {
@@ -477,7 +480,25 @@ const addProduct = async (req: any, res: any) => {
     res.status(500).json({ error: "Error creating retail product" });
     return;
   }
-
+  if (pdfbase64 && pdfbase64 != "") {
+    let response;
+    if (responsePlans.data?.company?.product_plan_id && responsePlans.data?.yearly?.product_plan_id) {
+      response = await Product.insertPdf(responsePlans.data.company.product_plan_id, pdfbase64);
+    } else if (responsePlans.data?.company?.product_plan_id) {
+      response = await Product.insertPdf(responsePlans.data.company.product_plan_id, pdfbase64);
+    } else if (responsePlans.data?.yearly?.product_plan_id) {
+      response = await Product.insertPdf( responsePlans.data.yearly.product_plan_id, pdfbase64);
+    } 
+  
+    if (!response || !response.success) {
+      createLogger.error({
+        model: "brokerProduct/InsertPdf",
+        error: response ? response.error : "No response received",
+      });
+      res.status(500).json({ error: "Error inserting pdf" });
+      return;
+    }
+  }
   const retailProducts = await RetailProduct.getByRetailId(retail_id);
 
   if (!retailProducts.success) {
@@ -1150,7 +1171,6 @@ export const getRetailDataById = async (id: string) => {
     }
 
     const retailProductResponse = await RetailProduct.getByRetailId(id);
-
     if (!retailProductResponse.success) {
       return {
         success: false,

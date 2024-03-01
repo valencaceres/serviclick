@@ -62,9 +62,47 @@ function ProductCard({
   frequency,
   productPlan_id,
   price,
+  yearly_price,
+  pdfBase64,
+  yearly_plan_id,
 }: IProduct) {
   const router = useRouter();
   const { user } = useUser();
+
+  const downloadFile = ({
+    Base64Content,
+    nameProduct,
+  }: {
+    Base64Content: string;
+    nameProduct: string;
+  }) => {
+    const byteCharacters = Buffer.from(Base64Content, "base64").toString(
+      "binary"
+    );
+
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+
+    const blob = new Blob([byteArray], { type: "application/pdf" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = nameProduct || "contrato.pdf";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+  const handleDownloadClick = (pdfBase64: any) => {
+    downloadFile({
+      Base64Content: pdfBase64,
+      nameProduct: name,
+    });
+  };
 
   function formatPrice(price: number) {
     return price.toLocaleString("es-CL", {
@@ -73,14 +111,15 @@ function ProductCard({
       maximumFractionDigits: 0,
     });
   }
-  const type = frequency === "M" ? "mensual" : frequency === "A" ? "anual" : "semanal";
+  const type =
+    frequency === "M" ? "mensual" : frequency === "A" ? "anual" : "semanal";
   return (
     <Card className="w-full max-w-xs text-center">
       <CardHeader className="flex h-20 items-center justify-center  rounded-t-md bg-primary-500">
         <CardTitle className="text-teal-blue">{name}</CardTitle>
       </CardHeader>
-      <CardContent className="flex items-center justify-between rounded-b-md bg-teal-blue p-2">
-        <div className="w-full p-2">
+      <CardContent className="flex flex-col items-center justify-between rounded-b-md bg-teal-blue p-2">
+        <div className="flex w-full flex-row gap-2 p-2">
           <Button
             className="flex w-full flex-col items-center justify-center p-6"
             onClick={() =>
@@ -92,7 +131,34 @@ function ProductCard({
             <h2 className="capitalize">{type}</h2>
             <h3 className="text-lg font-semibold">{formatPrice(price)}</h3>
           </Button>
+          {yearly_price && yearly_price > 0 && (
+            <Button
+              className="flex w-full flex-col items-center justify-center p-6"
+              onClick={() =>
+                void router.push(
+                  `https://productos.serviclick.cl/contractor?productPlanId=${yearly_plan_id}&userId=${user?.id}`
+                )
+              }
+            >
+              {" "}
+              <div>
+                <h2 className="capitalize">anual</h2>
+
+                <h3 className="text-lg font-semibold">
+                  {formatPrice(yearly_price)}
+                </h3>
+              </div>
+            </Button>
+          )}
         </div>
+        {pdfBase64 && (
+          <Button
+            onClick={() => handleDownloadClick(pdfBase64)}
+            className="flex w-full flex-col items-center justify-center p-6"
+          >
+            Descargar contrato
+          </Button>
+        )}
       </CardContent>
     </Card>
   );

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-
+import { post, get, erase } from "../../utils/api";
 import { config } from "../../utils/config";
 
 export type AgentT = {
@@ -33,10 +33,15 @@ export const agentSlice = createSlice({
     resetAgent: (state: any) => {
       state.agent = initialState.agent;
     },
+    reset: (state: any) => {
+      state = initialState;
+    }
+
+
   },
 });
 
-export const { setAgentList, setAgent, resetAgent } = agentSlice.actions;
+export const { setAgentList, setAgent, resetAgent, reset } = agentSlice.actions;
 
 export default agentSlice.reducer;
 
@@ -105,3 +110,13 @@ export const listAgents = (channel_id: string) => (dispatch: any) => {
     })
     .catch((error) => console.log(error));
 };
+
+export const getById = (id: string) => async (dispatch: any) => {
+  const { success, data, error } = await get(`agent/getById/${id}`);
+  if (!success) {
+    return false;
+  }
+
+  dispatch(setAgent(data));
+  return true;
+}

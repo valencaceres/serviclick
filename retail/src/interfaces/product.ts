@@ -5,6 +5,9 @@ export interface IProduct {
   currency: string;
   frequency: string;
   price: number;
+  yearly_price: number;
+  pdfBase64: string;
+  yearly_plan_id: string;
 }
 
 export interface IProductPlan {

@@ -20,9 +20,9 @@ const create: any = async (
       company_plan_id,
       yearly_plan_id,
       price.base || 0,
-      price.customer,
-      price.company,
-      price.yearly,
+      price.customer || 0,
+      price.company || 0 ,
+      price.yearly || 0,
       commisionTypeCode,
       value,
       currency,
@@ -140,6 +140,7 @@ const getByBrokerId: any = async (broker_id: string) => {
               plp.price as customerprice,
               plc.price as companyprice,
               ply.price as yearlyprice,
+              plp.beneficiary_price as beneficiary_price,
               brp.commisiontype_code,
               brp.value,
               brp.currency,
@@ -159,9 +160,8 @@ const getByBrokerId: any = async (broker_id: string) => {
                 left outer join app.productplan plp on plp.product_id = pro.id and plp.plan_id = brp.customer_plan_id
                 left outer join app.productplan plc on plc.product_id = pro.id and plc.plan_id = brp.company_plan_id
                 left outer join app.productplan ply on ply.product_id = pro.id and ply.plan_id = brp.yearly_plan_id
-                LEFT OUTER JOIN app.productplanpdf plf ON plf.productplan_id = plp.id 
-                OR plf.productplan_id = plc.id 
-                OR plf.productplan_id = ply.id
+                left outer join  app.productplanpdf plf ON (ply.id = plf.productplan_id OR plp.id = plf.productplan_id)
+              
                 WHERE brp.broker_id = $1 and
               brp.isactive is true
         ORDER BY
@@ -178,14 +178,17 @@ const getByBrokerId: any = async (broker_id: string) => {
         baseprice,
         customerprice,
         companyprice,
+        yearlyprice,
         commisiontype_code,
         value,
         currency,
         productplan_customer_id,
         productplan_company_id,
+        productplan_yearly_id,
         discount_type,
         discount_percent,
         discount_cicles,
+        beneficiary_price,
         pdfbase64,
       } = row;
       return {
@@ -193,14 +196,17 @@ const getByBrokerId: any = async (broker_id: string) => {
         name,
         beneficiaries,
         promotional,
+        beneficiary_price,
         productPlan_id: {
           customer: productplan_customer_id,
           company: productplan_company_id,
+          yearly:  productplan_yearly_id
         },
         price: {
           base: baseprice,
           customer: customerprice,
           company: companyprice,
+          yearly: yearlyprice
         },
         commisionTypeCode: commisiontype_code,
         value,

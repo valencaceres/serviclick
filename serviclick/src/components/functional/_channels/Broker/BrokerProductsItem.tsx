@@ -16,6 +16,7 @@ const BrokerProductsItem = ({
   setBrokerProductForm,
   saveProduct,
   setShowModal,
+  beneficiaries,
 }: any) => {
   const { productList } = useProduct();
 
@@ -31,7 +32,10 @@ const BrokerProductsItem = ({
 
   const [enabledButton, setEnabledButton] = useState(false);
   const [pdfModal, setPdfModal] = useState(false);
-  const initialPdfData = brokerProductForm.pdfbase64;
+  const initialPdfData =
+    typeof brokerProductForm.pdfbase64 === "string"
+      ? brokerProductForm.pdfbase64
+      : null;
 
   const handleChangeProduct = (event: any) => {
     setBrokerProductForm({
@@ -119,6 +123,16 @@ const BrokerProductsItem = ({
           isValid:
             event.target.value !== "" && parseInt(event.target.value) >= 0,
         },
+      },
+    });
+  };
+
+  const handleChangeBeneficiaryPrice = (event: any) => {
+    setBrokerProductForm({
+      ...brokerProductForm,
+      beneficiary_price: {
+        value: event.target.value,
+        isValid: event.target.value !== "" && parseInt(event.target.value) > 0,
       },
     });
   };
@@ -242,7 +256,7 @@ const BrokerProductsItem = ({
         <ContentRow gap="5px">
           <InputText
             label="Precio normal ($)"
-            width="132px"
+            width="100%"
             type="number"
             maxLength={6}
             value={brokerProductForm.price.base.value}
@@ -251,7 +265,7 @@ const BrokerProductsItem = ({
           />
           <InputText
             label="Precio público ($)"
-            width="132px"
+            width="100%"
             type="number"
             maxLength={6}
             value={brokerProductForm.price.customer.value}
@@ -267,16 +281,29 @@ const BrokerProductsItem = ({
             onChange={handleChangecompanyPrice}
             isValid={brokerProductForm.price.company.isValid}
           /> */}
+        </ContentRow>
+        <ContentRow gap="5px">
           <InputText
             label="Precio Anual ($)"
-            width="132px"
+            width="100%"
             type="number"
             maxLength={6}
             value={brokerProductForm.price.yearly.value}
             onChange={handleChangeYearlyPrice}
             isValid={brokerProductForm.price.yearly.isValid}
           />
+          <InputText
+            label="Precio por carga ($)"
+            width="100%"
+            type="number"
+            maxLength={6}
+            disabled={beneficiaries === 0}
+            value={brokerProductForm.beneficiary_price.value}
+            onChange={handleChangeBeneficiaryPrice}
+            isValid={brokerProductForm.beneficiary_price.isValid}
+          />
         </ContentRow>
+
         <ContentRow gap="5px">
           <ComboBox
             id="cmbDiscount"
