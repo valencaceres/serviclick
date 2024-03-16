@@ -2,12 +2,15 @@ import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
+import { config } from "../../../utils/config";
+
 import { Button } from "~/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/Card";
 
 import { useUI } from "~/store/hooks";
 import { IProduct } from "~/interfaces/product";
 import { useBroker } from "~/store/hooks";
+
 export function SaleProductStep({
   previousStep,
 }: {
@@ -124,7 +127,7 @@ function ProductCard({
             className="flex w-full flex-col items-center justify-center p-6"
             onClick={() =>
               void router.push(
-                `https://productos.serviclick.cl/contractor?productPlanId=${productPlan_id}&userId=${user?.id}`
+                `${config.products}/contractor?productPlanId=${productPlan_id}&userId=${user?.id}`
               )
             }
           >
@@ -136,7 +139,7 @@ function ProductCard({
               className="flex w-full flex-col items-center justify-center p-6"
               onClick={() =>
                 void router.push(
-                  `https://productos.serviclick.cl/contractor?productPlanId=${yearly_plan_id}&userId=${user?.id}`
+                  `${config.products}/contractor?productPlanId=${yearly_plan_id}&userId=${user?.id}`
                 )
               }
             >

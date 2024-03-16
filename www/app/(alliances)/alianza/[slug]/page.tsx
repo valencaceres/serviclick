@@ -2,6 +2,8 @@ import { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
 
+import { config } from "../../../../utils/config";
+
 import { alliancesData } from "@/lib/alliance-data"
 import { Button } from "@/components/ui/button"
 import {
@@ -174,7 +176,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                     : "No disponible"}
                 </h3>
                 <Link
-                  href={`https://productos.serviclick.cl/contractor?productPlanId=${assistance.productplan_id}`}
+                  href={`${config.products}/contractor?productPlanId=${assistance.productplan_id}`}
                   passHref
                   target="_blank"
                 >
@@ -197,7 +199,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                       : "No disponible"}
                   </h3>
                   <Link
-                    href={`https://productos.serviclick.cl/contractor?productPlanId=${assistance.family_productplan_id}`}
+                    href={`${config.products}/contractor?productPlanId=${assistance.family_productplan_id}`}
                     passHref
                     target="_blank"
                   >

@@ -4,6 +4,8 @@ import React, { FC } from "react"
 import Image from "next/image"
 import Link from "next/link"
 
+import { config } from "../../../utils/config";
+
 import { Button } from "@/components/ui/button"
 import {
   Table,
@@ -113,7 +115,7 @@ const OriginFamily: FC<DynamicFamilyProps> = ({
                     : "No disponible"}
                 </h3>
                 <Link
-                  href={`https://productos.serviclick.cl/contractor?productPlanId=${assistance.productplan_id}`}
+                  href={`${config.products}/contractor?productPlanId=${assistance.productplan_id}`}
                   passHref
                   target="_blank"
                 >
@@ -138,7 +140,7 @@ const OriginFamily: FC<DynamicFamilyProps> = ({
                       : "No disponible"}
                   </h3>
                   <Link
-                    href={`https://productos.serviclick.cl/contractor?productPlanId=${assistance.yearly_product_plan_id}`}
+                    href={`${config.products}/contractor?productPlanId=${assistance.yearly_product_plan_id}`}
                     passHref
                     target="_blank"
                   >
@@ -163,7 +165,7 @@ const OriginFamily: FC<DynamicFamilyProps> = ({
                       : "No disponible"}
                   </h3>
                   <Link
-                    href={`https://productos.serviclick.cl/contractor?productPlanId=${assistance.family_productplan_id}`}
+                    href={`${config.products}/contractor?productPlanId=${assistance.family_productplan_id}`}
                     passHref
                     target="_blank"
                   >

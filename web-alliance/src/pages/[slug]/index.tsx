@@ -1,6 +1,8 @@
 import { useRouter } from "next/router";
 import { useEffect, Fragment } from "react";
 
+import { config } from "../../utils/config";
+
 import CardProduct from "../../components/functional/CardProduct";
 
 import Banner from "../../components/ui/Banner/Banner";
@@ -17,7 +19,7 @@ const AlliancePage = () => {
   const handleClickProduct = (productPlan_id: string) => {
     //router.push(`${router.asPath}/contractor/${productPlan_id}`);
     router.push(
-      `https://productos.serviclick.cl/contractor?productPlanId=${productPlan_id}`
+      `${config.products}/contractor?productPlanId=${productPlan_id}`
     );
   };
 
