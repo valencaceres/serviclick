@@ -26,6 +26,7 @@ import {
   addLeadFromExcel,
   getProductsAndRetail,
   removeAgent,
+  exportPayments
 } from "../controllers/retail";
 import isAuthenticated from "../middlewares/isAuthenticated";
 import isAdmin from "../middlewares/isAdmin";
@@ -90,6 +91,8 @@ RetailRouter.post(
   upload.single("file"),
   addLeadFromExcel
 );
+RetailRouter.get("/exportPayments/:id", auth, exportPayments);
+
 
 
 export default RetailRouter;

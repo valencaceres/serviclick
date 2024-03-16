@@ -506,6 +506,22 @@ const getDiscountBySubscriptionId: any = async (
   }
 };
 
+const updatePaymentDeactive: any = async (id: string) => {
+  try {
+    const result = await pool.query(
+      `
+        UPDATE  app.lead
+        SET     isactive = false
+        WHERE   id = $1 RETURNING *`,
+      [id]
+    );
+
+    return { success: true, data: result.rows[0], error: null };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+}
+
 
 export {
   upsert,
@@ -522,5 +538,6 @@ export {
   getChannelCollected,
   updateSubscriptionCron,
   getDiscountBySubscriptionId,
-  getPolicyBySubscriptionId
+  getPolicyBySubscriptionId,
+  updatePaymentDeactive
 };

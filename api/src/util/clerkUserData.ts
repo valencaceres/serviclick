@@ -1,5 +1,10 @@
 import axios from "axios";
 import { IClerkUser } from "../interfaces/person";
+import { clerkClient } from '@clerk/clerk-sdk-node';
+
+
+
+
 export const fetchtAllClerkUsers = async () => {
   try {
     const response = await axios.get(
@@ -171,6 +176,27 @@ export const fetchClerkUser = async (userId: string) => {
     };
   }
 };
+
+export const fetchClerkUserByEmail = async (email: string) => {
+  const  emailAddress =  [email]
+  try {
+    const response = await clerkClient.users.getUserList({emailAddress});
+   
+    return {
+      success: true,
+      data: response,
+      error: null,
+    };
+  } catch (error) {
+    console.error(`Error fetching user data for user: ${email}`);
+    return {
+      success: false,
+      data: null,
+      error: "Error fetching users",
+    };
+  }
+};
+
 
 export const updateClerkUser = async (data: any) => {
   try {

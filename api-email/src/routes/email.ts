@@ -5,6 +5,6 @@ import { sendController } from "../controllers/email";
 
 const UserRouter = Router();
 
-UserRouter.post("/send", auth, sendController);
+UserRouter.post("/send",auth, sendController);
 
 export default UserRouter;

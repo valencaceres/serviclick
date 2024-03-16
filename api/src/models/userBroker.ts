@@ -167,7 +167,6 @@ const getByEmail: any = async (broker_rut: string, email: string) => {
     return { success: false, data: null, error: (e as Error).message };
   }
 };
-
 const getByBrokerId: any = async (broker_id: string) => {
   try {
     const result = await pool.query(
@@ -220,4 +219,5 @@ export {
   assignPassword,
   getByEmail,
   getByBrokerId,
+  
 };

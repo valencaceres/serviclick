@@ -360,6 +360,7 @@ export const caseStore = create<caseState>((set) => ({
     try {
       set((state) => ({ ...state, isLoading: true }));
       const { data } = await apiInstance.get(`/case/getApplicantByRut/${rut}`);
+      console.log(data, "data")
       const {
         type,
         retails,
@@ -397,9 +398,9 @@ export const caseStore = create<caseState>((set) => ({
 
       const shouldUpdateType =
         caseValue &&
-        caseValue.insured.name === "" &&
         caseValue.beneficiary === null &&
         type !== "";
+        console.log(shouldUpdateType, "should?")
 
       set((state) => ({
         ...state,

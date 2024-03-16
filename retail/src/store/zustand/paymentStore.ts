@@ -3,6 +3,11 @@ import { create } from "zustand";
 import { apiInstance } from "../../utils/api";
 
 import { type Lead, Code } from "../../interfaces/payment";
+
+
+
+type OnSuccessCallback = (data: any) => void;
+
 interface paymentState {
   list: Lead[];
   listValue: Code;
@@ -14,6 +19,10 @@ interface paymentState {
   upsert: (data: Code) => void;
   reset: () => void;
   resetAll: () => void;
+  exportPayments: (
+    retail_id: string,
+    onSuccess?: OnSuccessCallback
+  ) => void;
 }
 
 const initialData: Lead = {
@@ -98,6 +107,35 @@ export const paymentStore = create<paymentState>((set, get) => ({
   setListValue: (data: Code) => {
     set((state) => ({ ...state, listValue: data }));
   },
+
+  exportPayments: async (
+    retail_id: string,
+  ) => {
+    try {
+      set((state) => ({ ...state, isLoading: true }));
+        const url = `/retail/exportPayments/${retail_id}`;
+        const response = await apiInstance.get(url, { responseType: 'arraybuffer' });
+if (response && response.data && response.data.byteLength > 0) {
+  const byteArray = new Uint8Array(response.data);
+  const blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'casos.xlsx';
+
+  link.click();
+}
+      set((state) => ({ ...state, isLoading: false }));
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
+  },
+
 
   reset: () =>
     set((state) => ({

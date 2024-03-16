@@ -31,19 +31,9 @@ const updateProfileCode = async (
   paternallastname: string,
   district: string,
   name: string,
-  isEdit: boolean
 ) => {
   try {
-    if(isEdit === false){
-      const result = await pool.query(
-        `INSERT INTO app.brokeruser 
-         (user_id, broker_id, profilecode, email, rut, maternallastname, paternallastname, district, name) 
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
-        [agentId, brokerId, profileCode, email, rut, maternallastname, paternallastname, district, name]
-      );
-
-      return { success: true, data: result.rows[0] };
-    }
+   
     const existingUser = await pool.query(
       `SELECT * FROM app.brokeruser 
        WHERE user_id = $1 AND broker_id = $2`,

@@ -69,40 +69,10 @@ export const columns: ColumnDef<Lead>[] = [
     },
   },
   {
+    id: "Codigo",
     header: "Codigo",
-    id: "actions",
     cell: ({ row }) => {
-      const lead = row.original;
-
-      return <Actions lead={lead} />;
+      return <div className="font-semibold ">{row.original.code}</div>;
     },
   },
 ];
-
-function Actions({ lead }: { lead: Lead }) {
-  const { codeValue, setListValue } = usePayment();
-  const handleChangeCode = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    const leadId = lead.lead_id;
-    setListValue({
-      retail_id: codeValue.retail_id,
-      codes: codeValue.codes.map((item) =>
-        item.lead_id === leadId ? { ...item, code: value } : item
-      ),
-    });
-  };
-
-  return (
-    <div className=" w-2/6">
-      <input
-        className="w-full font-bold"
-        value={
-          codeValue.codes.find((item) => item.lead_id === lead.lead_id)?.code ??
-          ""
-        }
-        onChange={handleChangeCode}
-        type="number"
-      />
-    </div>
-  );
-}

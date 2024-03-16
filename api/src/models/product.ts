@@ -513,7 +513,7 @@ const listByFamilies = async (agent: string) => {
                           INNER JOIN app.agent age ON ppl.agent_id = age.id
                           INNER JOIN app.family fam ON pro.family_id = fam.id
                           LEFT JOIN app.www_family wef ON fam.id = wef.family_id
-                          left join app.brokerproduct brp on pro.id = brp.product_id
+                          left join app.agentproduct brp on pro.id = brp.product_id
                           left join app.productplan ppy on ppy.plan_id = brp.yearly_plan_id
                           WHERE
                           (age.id::TEXT = $1 OR age.fantasyname = $1)

@@ -23,6 +23,8 @@ import { useBroker } from "../../../../hooks";
 import { useDistrict } from "~/store/hooks";
 import styles from "./Broker.module.scss";
 import EditUser from "./BrokerUsersItem";
+import ComboboxDemo from "~/components/ui/ComboboxUi";
+import { districtStore } from "~/store/zustand";
 
 interface IFormFieldString {
   value: string;
@@ -304,26 +306,6 @@ const BrokerDetail = () => {
         pdfbase64: "",
       });
     }
-  };
-
-  const handleClickSaveUser = () => {
-    setBroker({
-      ...broker,
-      users: [
-        ...broker.users.filter(
-          (user: any) => user.rut !== brokerUserForm.rut.value
-        ),
-        {
-          rut: brokerUserForm.rut.value,
-          name: brokerUserForm.name.value,
-          paternalLastName: brokerUserForm.paternalLastName.value,
-          maternalLastName: brokerUserForm.maternalLastName.value,
-          email: brokerUserForm.email.value,
-          profileCode: brokerUserForm.profileCode.value,
-          profileName: brokerUserForm.profileName.value,
-        },
-      ],
-    });
   };
 
   const handleClickSendCredentials = () => {};

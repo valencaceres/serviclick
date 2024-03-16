@@ -6,7 +6,6 @@ import RetailForm from "./RetailForm";
 import RetailProducts from "./RetailProducts";
 import RetailUsers from "./RetailUsers";
 import RetailProductsItem from "./RetailProductsItem";
-import RetailUsersItem from "./RetailUsersItem";
 
 import {
   ContentCell,

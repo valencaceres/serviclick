@@ -24,7 +24,12 @@ import { AgentDetail } from ".";
 import useAgent from "../../../../hooks/useAgent";
 import ModalWarning from "../../../ui/ModalWarning";
 
-const AgentList = ({ channel_id, setShowModal, showModal }: any) => {
+const AgentList = ({
+  channel_id,
+  setShowModal,
+  showModal,
+  handleClickEdit,
+}: any) => {
   const { list, create, update, deleteById, set, reset, agent } = useAgent();
 
   const [search, setSearch] = useState("");
@@ -91,7 +96,10 @@ const AgentList = ({ channel_id, setShowModal, showModal }: any) => {
                 <TableCell width="350px">
                   {agent.name}
                   <TableIcons>
-                    <Icon iconName="edit" onClick={() => editAgent(agent)} />
+                    <Icon
+                      iconName="edit"
+                      onClick={() => handleClickEdit(agent.id)}
+                    />
                     <Icon
                       iconName="delete"
                       onClick={() => handleClickDelete(agent)}
@@ -108,20 +116,20 @@ const AgentList = ({ channel_id, setShowModal, showModal }: any) => {
       </ContentCell>
       <Modal showModal={showModal}>
         <Window title="Nuevo Canal" setClosed={setClosed}>
-          <AgentDetail saveAgent={saveAgent} />
+          <AgentDetail />
         </Window>
       </Modal>
       <ModalWarning
         showModal={showWarningDelete}
         title="Eliminación de producto"
-        message={`Está seguro de eliminar el canal ${agent.name}`}
+        message={`Está seguro de eliminar el canal ${agent.agent.name}`}
         setClosed={setClosedWarningDelete}
         iconName="warning"
         buttons={[
           { text: "No", function: setClosedWarningDelete },
           {
             text: "Si",
-            function: () => handleClickDeleteOK(agent.id),
+            function: () => handleClickDeleteOK(agent.agent.id),
           },
         ]}
       />

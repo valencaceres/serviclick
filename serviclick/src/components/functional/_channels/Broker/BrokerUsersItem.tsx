@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/Dialog";
+import ComboboxDemo from "~/components/ui/ComboboxUi";
 import { ScrollArea } from "~/components/ui/ScrollArea";
 import { Input } from "~/components/ui/Input";
 import {
@@ -92,6 +93,7 @@ const EditUser = ({ user, isEdit, setOpenDialog, openDialog }: any) => {
   const { districts: districtList } = districtStore();
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const togglePasswordConfirmVisibility = () => {
     setShowPasswordConfirm((prev) => !prev);
   };
@@ -136,6 +138,7 @@ const EditUser = ({ user, isEdit, setOpenDialog, openDialog }: any) => {
   const { mutate } = useBrokerQuery().useUpdateAgent();
 
   const update = async (values: z.infer<typeof formSchema>) => {
+    setIsLoading(true);
     mutate(
       {
         agentId: user?.user?.data?.id,
@@ -164,6 +167,7 @@ const EditUser = ({ user, isEdit, setOpenDialog, openDialog }: any) => {
           queryClient.invalidateQueries(["brokerAgents", router.query.id]);
           setOpenDialog(false);
           form.reset();
+          setIsLoading(false);
         },
       }
     );
@@ -179,6 +183,27 @@ const EditUser = ({ user, isEdit, setOpenDialog, openDialog }: any) => {
           </DialogHeader>
           <Form {...form}>
             <form className="w-full" onSubmit={form.handleSubmit(update)}>
+              <FormField
+                control={form.control}
+                name="email_address"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        id="email"
+                        defaultValue={
+                          user?.user?.data?.email_addresses[0]?.email_address
+                        }
+                        placeholder="Correo electrónico"
+                        disabled={isEdit}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="rut"
@@ -256,6 +281,7 @@ const EditUser = ({ user, isEdit, setOpenDialog, openDialog }: any) => {
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
                 name="district"
@@ -263,27 +289,12 @@ const EditUser = ({ user, isEdit, setOpenDialog, openDialog }: any) => {
                   <FormItem className="px-1">
                     <FormLabel>Región</FormLabel>
                     <FormControl>
-                      <Select
+                      <ComboboxDemo
+                        array={districtList}
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                         value={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecciona tu districto" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="bg-slate-100">
-                          {districtList.map((region) => (
-                            <SelectItem
-                              key={region.district_name}
-                              value={region.district_name}
-                            >
-                              {region.district_name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      />
                     </FormControl>
                   </FormItem>
                 )}
@@ -341,27 +352,6 @@ const EditUser = ({ user, isEdit, setOpenDialog, openDialog }: any) => {
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="email_address"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        id="email"
-                        defaultValue={
-                          user?.user?.data?.email_addresses[0]?.email_address
-                        }
-                        placeholder="Correo electrónico"
-                        disabled={isEdit}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               {isEdit === false && (
                 <>
                   <FormField
@@ -418,7 +408,7 @@ const EditUser = ({ user, isEdit, setOpenDialog, openDialog }: any) => {
                 <Button
                   className="mt-4 w-full"
                   type="submit"
-                  disabled={form.formState.isSubmitting}
+                  disabled={form.formState.isSubmitting || isLoading}
                 >
                   Guardar
                 </Button>
@@ -427,7 +417,8 @@ const EditUser = ({ user, isEdit, setOpenDialog, openDialog }: any) => {
                   className="mt-4 w-full"
                   type="submit"
                   disabled={
-                    watchAllFields.password !== watchAllFields.passwordConfirm
+                    watchAllFields.password !==
+                      watchAllFields.passwordConfirm || isLoading
                   }
                 >
                   Guardar

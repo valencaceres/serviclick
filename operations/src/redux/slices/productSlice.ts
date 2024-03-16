@@ -171,7 +171,7 @@ export const createProduct =
   };
 
 export const assignProductPrices =
-  (id: string, agent_id: string, customerprice: number, companyprice: number) =>
+  (id: string, agent_id: string, customerprice: number, companyprice: number, yearlyprice:number) =>
   async (dispatch: any) => {
     try {
       dispatch(setLoading(true));
@@ -180,6 +180,7 @@ export const assignProductPrices =
         agent_id,
         customerprice,
         companyprice,
+        yearlyprice,
       });
       dispatch(setProduct(data));
     } catch (e) {

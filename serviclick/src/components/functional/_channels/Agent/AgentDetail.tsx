@@ -1,9 +1,9 @@
 import { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
 
-import BrokerForm from "../Broker/BrokerForm";
-import BrokerProducts from "../Broker/BrokerProducts";
-import BrokerProductsItem from "../Broker/BrokerProductsItem";
+import AgentForm from "./AgentForm";
+import AgentProducts from "./AgentProducts";
+import AgentProductsItem from "./AgentProductsItem.tsx";
 
 import {
   ContentCell,
@@ -17,6 +17,7 @@ import Icon from "../../../ui/Icon";
 import ModalWarning from "../../../ui/ModalWarning";
 import { useBroker } from "../../../../hooks";
 import { useDistrict } from "~/store/hooks";
+import useAgent from "~/store/hooks/useAgent";
 import styles from "./Agent.module.scss";
 
 interface IFormFieldString {
@@ -44,6 +45,10 @@ interface IAgentProductForm {
     company: IFormFieldNumber;
     yearly: IFormFieldNumber;
   };
+  plans: {
+    customer_plan_id: number;
+    yearly_plan_id: number;
+  };
   commisionTypeCode: IFormFieldString;
   value: IFormFieldNumber;
   currency: IFormFieldString;
@@ -59,14 +64,15 @@ interface IAgentProductForm {
 const AgentDetail = () => {
   const router = useRouter();
 
+  const { broker, setBroker, createBroker, removeProduct } = useBroker();
   const {
-    broker,
-    setBroker,
-    loading,
-    createBroker,
+    agent,
+    isLoading: loading,
+    setAgent,
+    getAgentById,
+    resetAgent,
     addProduct,
-    removeProduct,
-  } = useBroker();
+  } = useAgent();
 
   const initialDataAgentForm: IAgentForm = {
     name: { value: "", isValid: true },
@@ -81,6 +87,10 @@ const AgentDetail = () => {
       customer: { value: 0, isValid: false },
       company: { value: 0, isValid: false },
       yearly: { value: 0, isValid: false },
+    },
+    plans: {
+      customer_plan_id: 0,
+      yearly_plan_id: 0,
     },
     commisionTypeCode: {
       value: "",
@@ -101,17 +111,12 @@ const AgentDetail = () => {
   const [agentProductForm, setAgentProductForm] = useState<IAgentProductForm>(
     initialdataAgentProductForm
   );
-
   const [showModalProducts, setShowModalProducts] = useState(false);
-  const [showModalUsers, setShowModalUsers] = useState(false);
-  const [userToRemove, setUserToRemove] = useState<any>();
-  const [showAlertUsers, setShowAlertUsers] = useState(false);
   const [isDisabledAgentForm, setIsDisabledAgentForm] = useState(true);
   const [productToDelete, setProductToDelete] = useState({ id: "", name: "" });
   const [productBeneficiaries, setProductBeneficiaries] = useState<number>(0);
   const [showWarningDeleteProduct, setShowWarningDeleteProduct] =
     useState(false);
-  const { getDistricts } = useDistrict();
   const setClosedWarningDeleteProduct = () => {
     setShowWarningDeleteProduct(false);
   };
@@ -140,6 +145,10 @@ const AgentDetail = () => {
         company: { value: item.price.company, isValid: true },
         yearly: { value: item.price.yearly, isValid: true },
       },
+      plans: {
+        customer_plan_id: item.productPlan_id.customer,
+        yearly_plan_id: item.productPlan_id.yearly,
+      },
       commisionTypeCode: {
         value: item.commisionTypeCode,
         isValid: true,
@@ -151,6 +160,7 @@ const AgentDetail = () => {
         percent: { value: item.discount.percent, isValid: true },
         cicles: { value: item.discount.cicles, isValid: true },
       },
+
       pdfbase64: item.pdfbase64,
       beneficiary_price: { value: item.beneficiary_price, isValid: true },
     });
@@ -177,18 +187,19 @@ const AgentDetail = () => {
 
         reader.onloadend = () => {
           base64Pdf = reader.result?.toString().split(",")[1] ?? "";
-          addProduct(broker.id, {
+          addProduct(agent.agent.id, {
             product_id: agentProductForm.product_id.value,
             name: agentProductForm.name.value,
+            productPlan_id: {
+              customer_plan_id: agentProductForm.plans.customer_plan_id,
+              yearly_plan_id: agentProductForm.plans.yearly_plan_id,
+            },
             price: {
               base: agentProductForm.price.base.value,
               customer: agentProductForm.price.customer.value,
+              yearlyprice: agentProductForm.price.yearly.value,
               company: agentProductForm.price.company.value,
-              yearly: agentProductForm.price.yearly.value,
             },
-            commisionTypeCode: agentProductForm.commisionTypeCode.value,
-            value: agentProductForm.value.value,
-            currency: "P",
             discount: {
               type:
                 agentProductForm.discount.type.value == ""
@@ -199,25 +210,27 @@ const AgentDetail = () => {
             },
             pdfbase64: base64Pdf || "",
             beneficiary_price: agentProductForm.beneficiary_price.value,
+            promotional: "n",
+            beneficiaries: 0,
           });
         };
 
         reader.readAsDataURL(file);
       }
     } else {
-      addProduct(broker.id, {
+      addProduct(agent.agent.id, {
         product_id: agentProductForm.product_id.value,
         name: agentProductForm.name.value,
+        productPlan_id: {
+          customer_plan_id: agentProductForm.plans.customer_plan_id,
+          yearly_plan_id: agentProductForm.plans.yearly_plan_id,
+        },
         price: {
           base: agentProductForm.price.base.value,
           customer: agentProductForm.price.customer.value,
+          yearlyprice: agentProductForm.price.yearly.value,
           company: agentProductForm.price.company.value,
-          yearly: agentProductForm.price.yearly.value,
         },
-        commisionTypeCode: agentProductForm.commisionTypeCode.value,
-        value: agentProductForm.value.value,
-        currency: "P",
-        beneficiary_price: agentProductForm.beneficiary_price.value,
         discount: {
           type:
             agentProductForm.discount.type.value == ""
@@ -226,7 +239,10 @@ const AgentDetail = () => {
           percent: agentProductForm.discount.percent.value,
           cicles: agentProductForm.discount.cicles.value,
         },
-        pdfbase64: "",
+        pdfbase64: base64Pdf || "",
+        beneficiary_price: agentProductForm.beneficiary_price.value,
+        promotional: "n",
+        beneficiaries: productBeneficiaries,
       });
     }
   };
@@ -234,45 +250,37 @@ const AgentDetail = () => {
   const handleClickSendCredentials = () => {};
 
   useEffect(() => {
-    if (broker.rut === "") {
+    if (agent.agent.name === "") {
       setAgentForm(initialDataAgentForm);
     }
   }, [router]);
 
-  useEffect(() => {
-    getDistricts();
-  }, []);
-
   return (
     <Fragment>
-      <ContentRow gap="20px">
-        <ContentCell gap="5px">
-          <BrokerForm
-            isDisabledBrokerForm={isDisabledAgentForm}
-            brokerForm={agentForm}
-            setBrokerForm={setAgentForm}
-            editForm={handleClickEditForm}
-            setIsDisabledBrokerForm={setIsDisabledAgentForm}
-          />
-        </ContentCell>
-        <ContentCell gap="20px">
-          <BrokerProducts
-            addNewProduct={handleClickAddNewProduct}
-            editProduct={handleClickEditProduct}
-            deleteProduct={handleClickDeleteProduct}
-            setBrokerProductForm={setAgentProductForm}
-          />
-        </ContentCell>
-      </ContentRow>
+      <ContentCell gap="20px">
+        <AgentForm
+          isDisabledAgentForm={isDisabledAgentForm}
+          agentForm={agentForm}
+          setAgentForm={setAgentForm}
+          editForm={handleClickEditForm}
+          setIsDisabledAgentForm={setIsDisabledAgentForm}
+        />
+        <AgentProducts
+          addNewProduct={handleClickAddNewProduct}
+          editProduct={handleClickEditProduct}
+          deleteProduct={handleClickDeleteProduct}
+          setAgentProductForm={setAgentProductForm}
+        />
+      </ContentCell>
       <ModalWindow
         showModal={showModalProducts}
         title="Producto"
         setClosed={() => setShowModalProducts(false)}
       >
-        <BrokerProductsItem
+        <AgentProductsItem
           saveProduct={handleClickSaveProduct}
-          brokerProductForm={agentProductForm}
-          setBrokerProductForm={setAgentProductForm}
+          agentProductForm={agentProductForm}
+          setAgentProductForm={setAgentProductForm}
           setShowModal={setShowModalProducts}
           beneficiaries={productBeneficiaries}
         />
@@ -284,9 +292,9 @@ const AgentDetail = () => {
           Por favor espere
         </div>
       </Modal>
-      <ModalWarning
+      {/*   <ModalWarning
         showModal={showWarningDeleteProduct}
-        title="Eliminación de Producto asociado a Broker"
+        title="Eliminación de Producto asociado a web"
         message={`Está seguro de eliminar el producto ${productToDelete.name}`}
         setClosed={setClosedWarningDeleteProduct}
         iconName="warning"
@@ -297,7 +305,7 @@ const AgentDetail = () => {
             function: () => handleClickDeleteProductOK(),
           },
         ]}
-      />
+      /> */}
     </Fragment>
   );
 };

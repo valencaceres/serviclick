@@ -3,6 +3,40 @@ import axios from "axios";
 import { post, get, erase } from "../../utils/api";
 import { config } from "../../utils/config";
 
+
+interface Product {
+  product_id: string;
+  name: string;
+  beneficiaries: number;
+  promotional: string;
+  beneficiary_price: number | null;
+  productPlan_id:{
+    customer_plan_id: string;
+    yearly_plan_id: string;
+  };  
+  price: {
+      base: number | null;
+      customer: number;
+      yearlyprice: number | null;
+  };
+  discount: {
+      type: string;
+      percent: number;
+      cicles: number;
+  };
+  pdfbase64: string | null;
+}
+
+interface AgentProductResponse {
+  agent: {
+      id: string;
+      channel_id: string;
+      name: string;
+      fantasyname: string;
+  };
+  products: Product[];
+}
+
 export type AgentT = {
   id: string;
   channel_id: string;
@@ -12,12 +46,12 @@ export type AgentT = {
 
 type StateT = {
   list: AgentT[];
-  agent: AgentT;
+  agent: AgentProductResponse;
 };
 
 const initialState: StateT = {
   list: [],
-  agent: { id: "", channel_id: "", name: "", isActive: false },
+  agent: { agent:{id: "", channel_id: "", name: "", fantasyname: "",}, products: [] },
 };
 
 export const agentSlice = createSlice({
@@ -68,7 +102,7 @@ export const updateAgent =
   (id: string, channel_id: string, name: string) => (dispatch: any) => {
     axios
       .put(
-        `${config.server}/api/agent/update/${id}`,
+        `${config.server}/api/agent/update01//${id}`,
         { channel_id, name },
         {
           headers: {
@@ -112,7 +146,7 @@ export const listAgents = (channel_id: string) => (dispatch: any) => {
 };
 
 export const getById = (id: string) => async (dispatch: any) => {
-  const { success, data, error } = await get(`agent/getById/${id}`);
+  const { success, data, error } = await get(`agent/getDataById/${id}`);
   if (!success) {
     return false;
   }

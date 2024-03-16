@@ -658,6 +658,90 @@ const getPayments: any = async (id: string) => {
   }
 };
 
+const upsertCode: any = async (lead_id: string, agent_id: string) => {
+  try {
+    const result = await pool.query(
+      `select lpy.code, lpy.lead_id from 	app.lead lea
+        inner join app.leadpayment lpy on lea.id = lpy.lead_id
+  where 	lea.agent_id = $1 and lea.policy_id is null `,
+      [agent_id]
+    );
+    if (result.rows.length > 0 && lead_id !== "" && lead_id) {
+      function getNextCode(currentCode: any) {
+        const alphaPart = currentCode.match(/[A-Z]+/)[0];
+        const numericPart = parseInt(currentCode.match(/[0-9]+/)[0]);
+
+        if (alphaPart === "ZZ" && numericPart === 999) {
+          return "AAA001";
+        } else if (numericPart < 999) {
+          const nextNumericPart = numericPart + 1;
+          return alphaPart + nextNumericPart.toString().padStart(3, "0");
+        } else {
+          let nextAlphaPart = "";
+          let carry = true;
+          for (let i = alphaPart.length - 1; i >= 0; i--) {
+            if (carry) {
+              const nextCharCode = alphaPart.charCodeAt(i) + 1;
+              if (nextCharCode <= "Z".charCodeAt(0)) {
+                nextAlphaPart =
+                  String.fromCharCode(nextCharCode) + nextAlphaPart;
+                carry = false;
+              } else {
+                nextAlphaPart = "A" + nextAlphaPart;
+              }
+            } else {
+              nextAlphaPart = alphaPart[i] + nextAlphaPart;
+            }
+          }
+          return nextAlphaPart + "001";
+        }
+      }
+      let currentCode = "AA000";
+      for (const row of result.rows) {
+        const code = row.code;
+        if (code > currentCode) {
+          currentCode = code;
+        }
+      }
+
+      const nextCode = getNextCode(currentCode);
+      const resultLeadPayment = await pool.query(
+        `SELECT code FROM app.leadpayment WHERE lead_id = $1`,
+        [lead_id]
+      );
+      if (resultLeadPayment.rows.length > 0) {
+        const existingCode = resultLeadPayment.rows[0].code;
+        if (existingCode !== "" && existingCode !== null) {
+        } else {
+            await pool.query(
+                `UPDATE app.leadpayment SET code = $1 WHERE lead_id = $2`,
+                [nextCode, lead_id]
+            );
+        }
+    } else {
+        await pool.query(
+            `INSERT INTO app.leadpayment (lead_id, code, createddate) VALUES ($1, $2, NOW()) RETURNING code`,
+            [lead_id, nextCode]
+        );
+    }
+    
+
+      return {
+        success: true,
+        data: nextCode,
+        error: null,
+      };
+    }
+    return {
+      success: true,
+      data: "",
+      error: null,
+    };
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
 export {
   create,
   getById,
@@ -678,4 +762,5 @@ export {
   getProductsById,
   getCollectionById,
   getPayments,
+  upsertCode,
 };

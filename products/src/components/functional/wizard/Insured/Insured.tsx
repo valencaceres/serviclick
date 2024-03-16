@@ -11,6 +11,7 @@ import Tooltip from "@/components/ui/Tooltip";
 import { unFormatRut, formatRut } from "@/utils/format";
 import { numberRegEx, rutRegEx, emailRegEx } from "@/utils/regEx";
 import { rutValidate } from "@/utils/validations";
+import ComboboxDemo from "@/components/ui/Combobox-ui/index";
 
 import {
   useUI,
@@ -412,7 +413,8 @@ const Insured = () => {
               onChange={handleChangeAddress}
               isValid={formData?.address.isValid}
             />
-            <SelectBox
+
+            <ComboboxDemo
               width="340px"
               label="Comuna"
               placeHolder=":: Seleccione comuna ::"
@@ -422,6 +424,7 @@ const Insured = () => {
               dataValue="district_name"
               dataText="district_name"
             />
+
             <InputText
               type="email"
               maxLength={250}

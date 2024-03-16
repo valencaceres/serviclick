@@ -4,7 +4,7 @@ import createLogger from "../util/logger";
 
 import * as UserBroker from "../models/userBroker";
 import * as Broker from "./broker";
-
+import { fetchClerkUserByEmail } from "../util/clerkUserData";
 const create = async (req: any, res: any) => {
   const {
     broker_id,
@@ -218,6 +218,8 @@ const updatePassword = async (req: any, res: any) => {
 
   res.status(200).json("OK");
 };
+
+
 
 export {
   create,
