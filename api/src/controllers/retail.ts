@@ -3,8 +3,13 @@ import xlsx from "xlsx";
 import createLogger from "../util/logger";
 import { generateGenericPassword } from "../util/user";
 import { fillEmptyEmail, sendMail } from "../util/email";
-import { createClerkUser, fetchClerkUserByEmail, updateClerkUser } from "../util/clerkUserData";
+import {
+  createClerkUser,
+  fetchClerkUserByEmail,
+  updateClerkUser,
+} from "../util/clerkUserData";
 import { formatRut } from "../util/rut";
+import config from "../util/config";
 
 import * as Retail from "../models/retail";
 import * as RetailProduct from "../models/retailProduct";
@@ -434,7 +439,17 @@ const getCollectById = async (req: any, res: any) => {
 };
 
 const addProduct = async (req: any, res: any) => {
-  const { retail_id, product_id, price, currency, discount, number, beneficiary_price, yearly_price, pdfbase64 } = req.body;
+  const {
+    retail_id,
+    product_id,
+    price,
+    currency,
+    discount,
+    number,
+    beneficiary_price,
+    yearly_price,
+    pdfbase64,
+  } = req.body;
 
   const responsePlans = await Product.createProductPlans(
     product_id,
@@ -444,7 +459,7 @@ const addProduct = async (req: any, res: any) => {
     price.company,
     yearly_price,
     discount,
-    beneficiary_price,
+    beneficiary_price
   );
 
   if (!responsePlans.success) {
@@ -470,7 +485,7 @@ const addProduct = async (req: any, res: any) => {
     currency,
     number,
     yearly_price,
-    responsePlans?.data?.yearly?.id || null,
+    responsePlans?.data?.yearly?.id || null
   );
 
   if (!retailProductResponse.success) {
@@ -483,14 +498,26 @@ const addProduct = async (req: any, res: any) => {
   }
   if (pdfbase64 && pdfbase64 != "") {
     let response;
-    if (responsePlans.data?.company?.product_plan_id && responsePlans.data?.yearly?.product_plan_id) {
-      response = await Product.insertPdf(responsePlans.data.company.product_plan_id, pdfbase64);
+    if (
+      responsePlans.data?.company?.product_plan_id &&
+      responsePlans.data?.yearly?.product_plan_id
+    ) {
+      response = await Product.insertPdf(
+        responsePlans.data.company.product_plan_id,
+        pdfbase64
+      );
     } else if (responsePlans.data?.company?.product_plan_id) {
-      response = await Product.insertPdf(responsePlans.data.company.product_plan_id, pdfbase64);
+      response = await Product.insertPdf(
+        responsePlans.data.company.product_plan_id,
+        pdfbase64
+      );
     } else if (responsePlans.data?.yearly?.product_plan_id) {
-      response = await Product.insertPdf( responsePlans.data.yearly.product_plan_id, pdfbase64);
-    } 
-  
+      response = await Product.insertPdf(
+        responsePlans.data.yearly.product_plan_id,
+        pdfbase64
+      );
+    }
+
     if (!response || !response.success) {
       createLogger.error({
         model: "brokerProduct/InsertPdf",
@@ -567,52 +594,70 @@ const getAgents = async (req: any, res: any) => {
   res.status(200).json(response.data);
 };
 
-
 const updateAgent = async (req: any, res: any) => {
   const { retailId } = req.params;
-  const { agentId, rut, name, paternallastname,  maternallastname,password, profileCode, email, district, isEdit, rol_web_retail, type_role_broker, type_role_web_admin, type_role_operations, type_role_serviclick, type_role_admin  } = req.body;
+  const {
+    agentId,
+    rut,
+    name,
+    paternallastname,
+    maternallastname,
+    password,
+    profileCode,
+    email,
+    district,
+    isEdit,
+    rol_web_retail,
+    type_role_broker,
+    type_role_web_admin,
+    type_role_operations,
+    type_role_serviclick,
+    type_role_admin,
+  } = req.body;
   const resultUserByEmail = await fetchClerkUserByEmail(email);
-  let userId 
-  if( resultUserByEmail.data && resultUserByEmail.data?.length > 0  ){
-    userId = resultUserByEmail.data[0].id
-  const response = await updateClerkUser({
-    user_id: resultUserByEmail.data[0].id,
-    first_name: name,
-    last_name: paternallastname,
-    public_metadata: {
-      roles: {
-        broker:  (resultUserByEmail.data[0] as any).publicMetadata.roles.broker,
-        serviclick : (resultUserByEmail.data[0] as any).publicMetadata.roles.serviclick,
-        operations: (resultUserByEmail.data[0] as any).publicMetadata.roles.operations,
-        retail: rol_web_retail,
-        admin: (resultUserByEmail.data[0] as any).publicMetadata.roles.admin,
-        web_admin: (resultUserByEmail.data[0] as any).publicMetadata.roles.web_admin
+  let userId;
+  if (resultUserByEmail.data && resultUserByEmail.data?.length > 0) {
+    userId = resultUserByEmail.data[0].id;
+    const response = await updateClerkUser({
+      user_id: resultUserByEmail.data[0].id,
+      first_name: name,
+      last_name: paternallastname,
+      public_metadata: {
+        roles: {
+          broker: (resultUserByEmail.data[0] as any).publicMetadata.roles
+            .broker,
+          serviclick: (resultUserByEmail.data[0] as any).publicMetadata.roles
+            .serviclick,
+          operations: (resultUserByEmail.data[0] as any).publicMetadata.roles
+            .operations,
+          retail: rol_web_retail,
+          admin: (resultUserByEmail.data[0] as any).publicMetadata.roles.admin,
+          web_admin: (resultUserByEmail.data[0] as any).publicMetadata.roles
+            .web_admin,
+        },
       },
-    },
-  });
-  }
-  else{
+    });
+  } else {
     const response = await createClerkUser({
-
       first_name: name,
       last_name: paternallastname,
       email_address: [email],
       public_metadata: {
         roles: {
           broker: "user",
-          serviclick : "user",
+          serviclick: "user",
           operations: "user",
           retail: rol_web_retail,
           admin: "user",
-          web_admin: "user"
+          web_admin: "user",
         },
       },
-      password:password,
+      password: password,
     });
-    userId = response.data.id
+    userId = response.data.id;
   }
-const responseUpdateProfileCode = await UserRetail.updateProfileCode(
-  isEdit ? agentId : userId,
+  const responseUpdateProfileCode = await UserRetail.updateProfileCode(
+    isEdit ? agentId : userId,
     retailId,
     profileCode,
     email,
@@ -658,10 +703,7 @@ const removeAgent = async (req: any, res: any) => {
   });
 
   res.status(200).json(response.data);
-}
-
-
-
+};
 
 const getByUserId = async (req: any, res: any) => {
   try {
@@ -893,72 +935,83 @@ const addLeadFromExcel = async (req: any, res: any) => {
   }
 };
 
-
-const exportPayments = async (req:any, res:any) => {
+const exportPayments = async (req: any, res: any) => {
   try {
-
-    const { id,  } = req.params;
-    const retailResponse = await Retail.getPayments(
-      id,
-    );
-    if (retailResponse && retailResponse.data && retailResponse.data.length > 0) {
+    const { id } = req.params;
+    const retailResponse = await Retail.getPayments(id);
+    if (
+      retailResponse &&
+      retailResponse.data &&
+      retailResponse.data.length > 0
+    ) {
       const groupedData = groupCasesByRetailName(retailResponse.data);
-  
+
       const workbook = xlsx.utils.book_new();
-  
+
       for (const retailName in groupedData) {
-          if (groupedData.hasOwnProperty(retailName)) {
-            const safeSheetName = retailName.replace(/[\\\/\?\*\[\]]/g, '_').substring(0, 30);
-              const dataForExcel = (groupedData[retailName] as any[]).map((retailItem) => {
-                const formattedAmount = retailItem.product.price ? formatCurrency(retailItem.product.price) : '-';
-                let [names, surnames] = retailItem.customer.name.split(' ');
-              const [paternalLastName, maternalLastName] = surnames.split(' ');
-                const status = retailItem.status ===  false ? 'Falso' : 'Activo';
-                return {
-                      'RUT': retailItem.customer.rut,
-                      'NOMBRE': names,
-                      'APELLIDO MATERNO':paternalLastName,
-                      'APELLIDO PATERNO':maternalLastName,
-                      'FECHA': retailItem.date,
-                      'MONTO PAGADO': formattedAmount,
-                      'CODIGO': retailItem.code,
-                      'ESTADO':status,
-                  };
-              });
-  
-              const worksheet = xlsx.utils.json_to_sheet(dataForExcel);
-              centerTextInWorksheet(worksheet);
-              xlsx.utils.book_append_sheet(workbook, worksheet, safeSheetName);
-  
-              const colWidths = [
-                  { wpx: 200 }, 
-                  { wpx: 150 },
-                  { wpx: 150 },
-                  { wpx: 150 },
-                  { wpx: 200 },
-                  { wpx: 200 },
-                  { wpx: 100 },
-                  { wpx: 100 },
-              
-              ];
-  
-              worksheet['!cols'] = colWidths;
-          }
+        if (groupedData.hasOwnProperty(retailName)) {
+          const safeSheetName = retailName
+            .replace(/[\\\/\?\*\[\]]/g, "_")
+            .substring(0, 30);
+          const dataForExcel = (groupedData[retailName] as any[]).map(
+            (retailItem) => {
+              const formattedAmount = retailItem.product.price
+                ? formatCurrency(retailItem.product.price)
+                : "-";
+              let [names, surnames] = retailItem.customer.name.split(" ");
+              const [paternalLastName, maternalLastName] = surnames.split(" ");
+              const status = retailItem.status === false ? "Falso" : "Activo";
+              return {
+                RUT: retailItem.customer.rut,
+                NOMBRE: names,
+                "APELLIDO MATERNO": paternalLastName,
+                "APELLIDO PATERNO": maternalLastName,
+                FECHA: retailItem.date,
+                "MONTO PAGADO": formattedAmount,
+                CODIGO: retailItem.code,
+                ESTADO: status,
+              };
+            }
+          );
+
+          const worksheet = xlsx.utils.json_to_sheet(dataForExcel);
+          centerTextInWorksheet(worksheet);
+          xlsx.utils.book_append_sheet(workbook, worksheet, safeSheetName);
+
+          const colWidths = [
+            { wpx: 200 },
+            { wpx: 150 },
+            { wpx: 150 },
+            { wpx: 150 },
+            { wpx: 200 },
+            { wpx: 200 },
+            { wpx: 100 },
+            { wpx: 100 },
+          ];
+
+          worksheet["!cols"] = colWidths;
+        }
       }
-  
-      const excelBuffer = xlsx.write(workbook, { bookType: 'xlsx', type: 'buffer' });
-  
-      res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
-      res.setHeader('Content-Disposition', 'attachment; filename=casos.xlsx');
-      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8');
+
+      const excelBuffer = xlsx.write(workbook, {
+        bookType: "xlsx",
+        type: "buffer",
+      });
+
+      res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+      res.setHeader("Content-Disposition", "attachment; filename=casos.xlsx");
+      res.setHeader(
+        "Content-Type",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8"
+      );
       res.send(excelBuffer);
-  } else {
+    } else {
       return res.status(404).json({ error: "there is no cases to export." });
     }
   } catch (error) {
-    console.error(error)
+    console.error(error);
     createLogger.error({
-      model: 'case/exportCases',
+      model: "case/exportCases",
       error: error,
     });
     return res.status(500).json({ error: "Error retrieving case." });
@@ -967,46 +1020,62 @@ const exportPayments = async (req:any, res:any) => {
 function groupCasesByRetailName(cases: any) {
   const groupedData: { [key: string]: any[] } = {};
 
-  cases.forEach((caseItem:any) => {
-      const retailName = caseItem.retail_name || 'No Retail'; 
-      if (!groupedData[retailName]) {
-          groupedData[retailName] = [];
-      }
-      groupedData[retailName].push(caseItem);
+  cases.forEach((caseItem: any) => {
+    const retailName = caseItem.retail_name || "No Retail";
+    if (!groupedData[retailName]) {
+      groupedData[retailName] = [];
+    }
+    groupedData[retailName].push(caseItem);
   });
 
   return groupedData;
 }
 const formatDate = (dateString: string) => {
   try {
-      const date = new Date(dateString);
-      return format(date, 'dd-MM-yyyy');
+    const date = new Date(dateString);
+    return format(date, "dd-MM-yyyy");
   } catch (error) {
-      return  `Error formateando fecha ${dateString} `;
+    return `Error formateando fecha ${dateString} `;
   }
 };
 function centerTextInWorksheet(worksheet: any) {
-  const range = xlsx.utils.decode_range(worksheet['!ref']);
-  
+  const range = xlsx.utils.decode_range(worksheet["!ref"]);
+
   for (let R = range.s.r; R <= range.e.r; ++R) {
-      for (let C = range.s.c; C <= range.e.c; ++C) {
-          const cell_address = { c: C, r: R };
-          const cell_ref = xlsx.utils.encode_cell(cell_address);
-          const cell = worksheet[cell_ref];
-          if (cell && cell.t === 's') {
-              if (!cell.s) cell.s = {};
-              cell.s.alignment = { horizontal: 'center', vertical: 'center', wrapText: true };
-          } else {
-              worksheet[cell_ref] = { ...cell, s: { alignment: { horizontal: 'center', vertical: 'center', wrapText: true } } };
-          }
+    for (let C = range.s.c; C <= range.e.c; ++C) {
+      const cell_address = { c: C, r: R };
+      const cell_ref = xlsx.utils.encode_cell(cell_address);
+      const cell = worksheet[cell_ref];
+      if (cell && cell.t === "s") {
+        if (!cell.s) cell.s = {};
+        cell.s.alignment = {
+          horizontal: "center",
+          vertical: "center",
+          wrapText: true,
+        };
+      } else {
+        worksheet[cell_ref] = {
+          ...cell,
+          s: {
+            alignment: {
+              horizontal: "center",
+              vertical: "center",
+              wrapText: true,
+            },
+          },
+        };
       }
+    }
   }
 }
 function formatCurrency(amount: number | string) {
-  const numericAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
-  return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(numericAmount);
+  const numericAmount =
+    typeof amount === "string" ? parseFloat(amount) : amount;
+  return new Intl.NumberFormat("es-CL", {
+    style: "currency",
+    currency: "CLP",
+  }).format(numericAmount);
 }
-
 
 export {
   create,
@@ -1508,7 +1577,7 @@ export const sendCredentials = async (
         { name: "Bienvenido a ServiClick" },
         email,
         `Tus credenciales de acceso a nuestra plataforma`,
-        `<b>Hola&nbsp;${name}</b><br/><br/>Bienvenido a ServiClick, a continuación te detallamos los datos de acceso a nuestra plataforma para que puedas realizar tus labores:<br/><br/><b>https://retail.serviclick.cl</b><br/><br/><b>Rut:</b>&nbsp;${retail_rut}<br/><b>Login:</b>&nbsp;${email}<br/><b>Password</b>:&nbsp;${generatedPassword}<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
+        `<b>Hola&nbsp;${name}</b><br/><br/>Bienvenido a ServiClick, a continuación te detallamos los datos de acceso a nuestra plataforma para que puedas realizar tus labores:<br/><br/><b>${config.retailURL}</b><br/><br/><b>Rut:</b>&nbsp;${retail_rut}<br/><b>Login:</b>&nbsp;${email}<br/><b>Password</b>:&nbsp;${generatedPassword}<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
         []
       );
       return {

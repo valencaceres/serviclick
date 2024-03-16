@@ -1,8 +1,8 @@
 import cnf from "dotenv";
 cnf.config();
 
-
 const config = {
+  retailURL: process.env.RETAIL_URL,
   apiPort: process.env.API_PORT || 3001,
   apiKey: process.env.API_KEY || "1234",
   dbHost: process.env.DB_HOST || "localhost",
@@ -15,21 +15,29 @@ const config = {
   queueLimit: 0,
   reveniu: {
     URL: {
-      base:  process.env.REVENIU_BASE_URL || "https://integration.reveniu.com/api/v1",
-      plan: process.env.REVENIU_PLAN_URL || "https://integration.reveniu.com/api/v1/plans/",
-      subscription: process.env.REVENIU_SUBSCRIPTION_URL || "https://integration.reveniu.com/api/v1/subscriptions/",
+      base:
+        process.env.REVENIU_BASE_URL ||
+        "https://integration.reveniu.com/api/v1",
+      plan:
+        process.env.REVENIU_PLAN_URL ||
+        "https://integration.reveniu.com/api/v1/plans/",
+      subscription:
+        process.env.REVENIU_SUBSCRIPTION_URL ||
+        "https://integration.reveniu.com/api/v1/subscriptions/",
     },
     apiKey: {
       "Reveniu-Secret-Key":
-      process.env.REVENIU_SECRET_KEY || "EuG-6eULAwlqRRaLLi9HUcLSbO4I-ipd60zY",
+        process.env.REVENIU_SECRET_KEY ||
+        "EuG-6eULAwlqRRaLLi9HUcLSbO4I-ipd60zY",
     },
     feedbackURL: {
       success:
-       process.env.REVENIU_FEEDBACK_SUCCESS_URL || "http://localhost:3000/resume/success",
+        process.env.REVENIU_FEEDBACK_SUCCESS_URL ||
+        "http://localhost:3000/resume/success",
       error:
-       process.env.REVENIU_FEEDBACK_ERROR_URL || "http://localhost:3000/resume/error",
+        process.env.REVENIU_FEEDBACK_ERROR_URL ||
+        "http://localhost:3000/resume/error",
     },
-
   },
   email: {
     URL: {
@@ -46,7 +54,9 @@ const config = {
   },
   webHook: {
     URL: {
-      reveniu: process.env.REVENIU_WEEBHOOK_URL || "https://webhook.serviclick.cl/reveniu",
+      reveniu:
+        process.env.REVENIU_WEEBHOOK_URL ||
+        "https://webhook.serviclick.cl/reveniu",
     },
   },
   clerkPemKey: process.env.CLERK_PEM_PUBLIC_KEY,
