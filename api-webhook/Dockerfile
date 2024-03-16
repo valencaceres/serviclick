@@ -8,7 +8,6 @@ WORKDIR /app
 # Copiar los archivos de la aplicación
 COPY package.json yarn.lock ./
 COPY .env /app/dist/
-COPY ./src/util/certificate.crt /app/dist/util/certificate.crt
 
 # Instalar las dependencias y construir la aplicación
 RUN yarn install
