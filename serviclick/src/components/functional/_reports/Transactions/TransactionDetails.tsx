@@ -198,11 +198,6 @@ function Payment({ transaction }: TransactionDetailsProps) {
             <p className="text-xl">OneClick Mall </p>
           </div>
           <div className="flex flex-col gap-2">
-            <Button className="bg-secondary-500" disabled>
-              {" "}
-              <RefreshCcwIcon className="mr-2 h-8 w-8 text-white" /> Reintentar
-              cobro
-            </Button>
             <ChangeCard transaction={transaction} />
           </div>
         </CardContent>
