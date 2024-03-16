@@ -1,0 +1,103 @@
+.env api serviclick # DEV
+API_PORT=3001
+API_KEY=06eed133-9874-4b3b-af60-198ee3e92cdc
+      DB_HOST="45.79.17.130"
+      DB_USER="postgres"
+      DB_PWD="53rv1cl1ck_"
+    DB_NAME="postgres"
+   DB_PORT="5432"    
+ #prod
+    D#B_HOST  ="181.212.75.206"
+#DB_USER="broker"
+   #   DB_PWD="53rv1Cl1ck" 
+  # DB_NAME="postgres"
+#DB_PORT="5432"
+#cert
+ #DB_HOST="66.228.48.207"
+ #DB_USER="postgres"
+ #DB_PWD="53rv1Cl1ck$"
+ #DB_NAME="postgres"
+ #DB_PORT="5432"
+
+
+     ENV="dev"
+  REVENIU_DOMAIN=production.reveniu.com
+REVENIU_SECRET_KEY=4bab3BWYeXOZzKjUI4pgY_VIyWW0EoSuJTMf
+SUCCESS=https://web.serviclick.cl/resume/success
+ERROR=https://web.serviclick.cl/resume/error
+#socket api
+SOCKET_API_URL=http://localhost:3017
+
+# AWS
+AWS_BUCKET_OPERATIONS=serviclick-operations
+AWS_BUCKET_CONTRACTS=serviclick-contracts
+AWS_BUCKET_REGION=us-east-1
+AWS_PUBLIC_KEY=AKIA5ZHHZQSO5UGJ5X3P
+AWS_SECRET_KEY=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
+sk_test_IfdpL6apGT7wFNAb4YccWhsEG1EoeqxnmBGGpCDvhn
+CLERK_PEM_PUBLIC_KEY="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAz00eVeVVwq5l+ULf8fEbV/ReWQAIibXUEYeLZDI9SwPrnWq73tPBJVNVd4mlmzrMF0vKMLxpEaPx+N2c8aFmIHYvA0DvQY1rS25Fkgrpv22wVXDnQuatXewamqbXCXJdV0XefjqqcfEzlsEpjbvyrlzEJCp28BG/6zKFA3MlxNFmvnydFu/0Xqb/WBGSzwFKEEBhONjkImAfZx2GIRwxpW/pwRyqsZdOxIAuylzCOa0YaYLQylzp58teGlZ2FKy2G0ZzK4RXr3JcEBBTn2V4xcAGrmACybhJNhp9N+uix1ZJgWyEvyUIpwIHRfQ3syRcPoSd8uVm73AdCmX6btGSnQIDAQAB"
+#CLERK_SECRET_KEY=sk_live_0sl94uQDXjlk6AoNpuWe5JpeCUcQaEjff8BSUdTv1R 
+# NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_Y2xlcmsuc2VydmljbGljay5jbCQ
+CLERK_SECRET_KEY=sk_test_IfdpL6apGT7wFNAb4YccWhsEG1EoeqxnmBGGpCDvhn
+#   CLERK_TRUST_HOST=true
+
+#UPLOADTHING
+# UPLOADTHING_SECRET=sk_live_a9beb877b15aa7fcdbf2dbc53e93342b07b9701f8458e3874df84f403d563e16
+  # UPLOADTHING_APP_ID=usy4m64noi  
+
+UPLOADTHING_SECRET=sk_live_5ede3fc9fef34352c9c511ca5a8fffc1d7e72e80ecdda1d251874c961b17b0a7
+UPLOADTHING_APP_ID=3cdtwbg9je
+API_URL=http://localhost:3001
+
+#pdf
+API_PDF_KEY=97689458-b21c-4abf-9bb3-a05ac52b4791
+API_PDF_URL=http://localhost:3007
+
+#EMAIL
+API_EMAIL_URL=http://localhost:2500
+API_EMAIL_KEY=a4r7GEjQ1y4olpd
+#REVENIU
+REVENIU_BASE_URL=https://integration.reveniu.com/api/v1
+REVENIU_PLAN_URL=https://integration.reveniu.com/api/v1/plans/
+REVENIU_SUBSCRIPTION_URL=https://integration.reveniu.com/api/v1/subscriptions/
+REVENIU_SECRET_KEY=gZsrf1a7-sqeCPYdStjy3M9JU35oXHH1LSp9
+REVENIU_FEEDBACK_SUCCESS_URL=https://web.serviclick.cl/resume/success
+REVENIU_FEEDBACK_ERROR_URL=https://web.serviclick.cl/resume/error
+REVENIU_WEEBHOOK_URL=https://webhook.serviclick.cl/reveniu
+
+
+#ENV_Cert -----------------------------------------------------------------------------------------
+
+##REVENIU
+#REVENIU_BASE_URL=https://integration.reveniu.com/api/v1
+
+#REVENIU_PLAN_URL=https://integration.reveniu.com/api/v1/plans/
+#REVENIU_SUBSCRIPTION_URL=https://integration.reveniu.com/api/v1/subscriptions/
+#REVENIU_SECRET_KEY=gZsrf1a7-sqeCPYdStjy3M9JU35oXHH1LSp9
+#REVENIU_FEEDBACK_SUCCESS_URL=https://web.serviclick.cl/resume/success
+#R#EVENIU_FEEDBACK_ERROR_URL=https://web.serviclick.cl/resume/error
+#REVENIU_WEEBHOOK_URL=https://webhook.serviclick.cl/reveniu
+#email_cert
+#API_EMAIL_URL=http://api-email:2500
+#A#PI_EMAIL_KEY=a4r7GEjQ1y4olpd
+#pdf_cert
+#API_PDF_KEY=97689458-b21c-4abf-9bb3-a05ac52b4791
+#API_PDF_URL=http://localhost:3007
+#api_url_cert
+#API_URL=http://api-cert.serviclick.cl
+
+#aws cert
+#AWS_BUCKET_OPERATIONS=serviclick-operations
+#AWS_BUCKET_CONTRACTS=serviclick-contracts
+#AWS_BUCKET_REGION=us-east-1
+#AWS_PUBLIC_KEY=AKIA5ZHHZQSO5UGJ5X3P
+#AWS_SECRET_KEY=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
+#CLERK_PEM_PUBLIC_KEY="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAz00eVeVVwq5l+ULf8fEbV/ReWQAIibXUEYeLZDI9SwPrnWq73tPBJVNVd4mlmzrMF0vKMLxpEaPx+N2c8aFmIHYvA0DvQY1rS25Fkgrpv22wVXDnQuatXewamqbXCXJdV0XefjqqcfEzlsEpjbvyrlzEJCp28BG/6zKFA3MlxNFmvnydFu/0Xqb/WBGSzwFKEEBhONjkImAfZx2GIRwxpW/pwRyqsZdOxIAuylzCOa0YaYLQylzp58teGlZ2FKy2G0ZzK4RXr3JcEBBTn2V4xcAGrmACybhJNhp9N+uix1ZJgWyEvyUIpwIHRfQ3syRcPoSd8uVm73AdCmX6btGSnQIDAQAB"
+#CLERK_SECRET_KEY=sk_live_0sl94uQDXjlk6AoNpuWe5JpeCUcQaEjff8BSUdTv1R 
+# NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_Y2xlcmsuc2VydmljbGljay5jbCQ
+#CLERK_SECRET_KEY=sk_test_IfdpL6apGT7wFNAb4YccWhsEG1EoeqxnmBGGpCDvhn
+#     ENV="dev"
+#SUCCESS=https://web.serviclick.cl/resume/success
+#ERROR=https://web.serviclick.cl/resume/error
+##socket api
+#SOCKET_API_URL=http://api-socket:3017

@@ -22,6 +22,7 @@ import { rutValidate } from "@/utils/validations";
 import { useDistrict } from "@/store/hooks";
 
 import { IFieldFormCustomerType, IFieldFormString } from "@/interfaces/form";
+import ComboboxDemo from "@/components/ui/Combobox-ui/index";
 
 interface ICustomerForm {
   customerType: IFieldFormCustomerType;
@@ -278,7 +279,7 @@ const Person = ({ data, setData, setCompletedForm, getByRut }: any) => {
         onChange={handleChangeAddress}
         isValid={formData?.address.isValid}
       />
-      <SelectBox
+      <ComboboxDemo
         width="340px"
         label="Comuna"
         placeHolder=":: Seleccione comuna ::"
@@ -288,6 +289,7 @@ const Person = ({ data, setData, setCompletedForm, getByRut }: any) => {
         dataValue="district_name"
         dataText="district_name"
       />
+
       <InputText
         type="email"
         maxLength={250}

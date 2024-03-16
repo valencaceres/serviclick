@@ -26,6 +26,7 @@ import { formatRut } from "../util/rut";
 import { fillEmptyEmail } from "../util/email";
 
 import excelToJson from "../util/excelToJson";
+import { Retail } from "../models";
 
 export type CustomerT = {
   id: string;
@@ -223,7 +224,12 @@ const createLead = async (
     undefined,
     undefined,
     user_id
-  );
+  );  
+
+    const RetailResponse = await Retail.getById(agent_id);
+    if(RetailResponse.success && RetailResponse?.data?.id && RetailResponse?.data?.id === agent_id){
+      const RetailCodeUpsert = await Retail.upsertCode(leadResponse?.data?.id, agent_id, );
+    }
   return errorHandler(leadResponse, "lead/createLeadModel");
 };
 

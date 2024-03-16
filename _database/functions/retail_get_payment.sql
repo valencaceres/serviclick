@@ -1,3 +1,5 @@
+-- DROP FUNCTION app.retail_get_payment(uuid);
+
 CREATE OR REPLACE FUNCTION app.retail_get_payment(p_retail_id uuid)
  RETURNS json
  LANGUAGE plpgsql
@@ -22,7 +24,8 @@ begin
 					'frequency', lea.frequency,
 					'currency', lea.currency_code,
 					'price', lea.price),
-				'code', lea.lead_code))
+				'code', lea.lead_code,
+				'status', lea.approved))
 	into 	json_report
 	from (	select 	lea.id,
 					lea.createdate::date as date,
@@ -35,7 +38,8 @@ begin
 					ppl.frequency,
 					lpr.currency_code,
 					lpr.price,
-					case when lpy.code is null then '' else lpy.code end as lead_code
+					case when lpy.code is null then '' else lpy.code end as lead_code,
+					lpy.approved
 			from 	app.lead lea
 						inner join app.leadproduct lpr on lea.id = lpr.lead_id
 						inner join app.productplan ppl on lpr.product_id = ppl.product_id and lpr.productplan_id = ppl.plan_id

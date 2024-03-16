@@ -9,9 +9,15 @@ import { useEffect } from "react";
 export function Payment() {
   const router = useRouter();
   const { retail } = useUI();
-  const { paymentList, getByRetailId, codeValue, upsert, isLoading } =
-    usePayment();
-
+  const {
+    paymentList,
+    getByRetailId,
+    codeValue,
+    upsert,
+    isLoading,
+    exportPayments,
+  } = usePayment();
+  console.log(paymentList, "payment");
   useEffect(() => {
     if (retail?.id) {
       getByRetailId(retail.id);
@@ -27,8 +33,11 @@ export function Payment() {
   const handleClickHome = () => {
     router.push("/");
   };
-  const handleClickSave = () => {
-    upsert(codeValue);
+
+  const handleExport = async () => {
+    if (retail) {
+      exportPayments(retail?.id);
+    }
   };
 
   if (retail?.id === "") {
@@ -53,11 +62,15 @@ export function Payment() {
       <DataTable columns={columns} data={paymentList} />
       <FloatMenu>
         <ButtonIcon onClick={handleClickHome} iconName="home" />
-        <ButtonIcon onClick={handleRefresh} iconName="refresh" />
         <ButtonIcon
-          onClick={handleClickSave}
-          iconName="save"
-          disabled={isLoading}
+          iconName="cloud_upload"
+          loading={isLoading}
+          onClick={handleExport}
+        />
+        <ButtonIcon
+          disabled={retail?.id === ""}
+          onClick={handleRefresh}
+          iconName="refresh"
         />
       </FloatMenu>
     </div>

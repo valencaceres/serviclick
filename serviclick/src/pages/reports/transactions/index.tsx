@@ -1,15 +1,15 @@
 import { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
 
-import FloatMenu from "../../components/ui/FloatMenu";
-import ButtonIcon from "../../components/ui/ButtonIcon";
+import FloatMenu from "../../../components/ui/FloatMenu";
+import ButtonIcon from "../../../components/ui/ButtonIcon";
 
 import {
   TransactionsClient,
   TransactionsList,
-} from "../../components/functional/_reports/Transactions";
+} from "../../../components/functional/_reports/Transactions";
 
-import { useUI, useStatus, useTransaction } from "../../hooks";
+import { useUI, useStatus, useTransaction } from "../../../hooks";
 
 type SearchFormT = {
   channelId: string;

@@ -3,7 +3,6 @@ import { userStore } from "../zustand/userStore";
 const useUserStore = () => {
   const {
     usersList,
-
     usersListChat,
 
     isLoading,
@@ -12,7 +11,6 @@ const useUserStore = () => {
   } = userStore((state) => ({
     usersList: state.usersList,
     usersListChat: state.usersListChat,
-
     isLoading: state.isLoading,
     isError: state.isError,
     error: state.error,
@@ -29,7 +27,6 @@ const useUserStore = () => {
     error,
 
     getUsersChat,
-
     resetUserLists,
     resetUserListsChat,
     getUsers,

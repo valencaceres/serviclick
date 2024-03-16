@@ -6,6 +6,18 @@ import { apiInstance } from "../../utils/api";
 interface UserResponse {
   data: { id: string; first_name: string; last_name: string }[];
 }
+interface User {
+  id: string;
+  rut: string;
+  name: string;
+  email_address: string;
+  profileCode: string | undefined;
+  maternallastname: string;
+  paternallastname: string;
+  isactive: boolean | undefined;
+  district: string | undefined;
+}
+
 
 interface userState {
   usersList: UserResponse;
@@ -17,12 +29,13 @@ interface userState {
   getUsersChat: (ids: string[]) => void;
   resetUserLists: () => void;
   resetUserListsChat: () => void;
+
 }
 
 
 
 export const userStore = create<userState>((set) => ({
-
+  user: { id: "", rut: "", name: "", email_address: "", profileCode: "", maternallastname: "", paternallastname: "", isactive: false, district: "" },
   usersList: {
     data: [],
   },
@@ -92,4 +105,5 @@ export const userStore = create<userState>((set) => ({
       },
     }));
   },
+ 
 }));

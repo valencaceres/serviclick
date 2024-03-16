@@ -12,6 +12,8 @@ export type TransactionT = {
   num_insured: number;
   status: string;
   amount: number;
+  subscription_id:string,
+  subscription_table_id:string
 };
 
 type StateT = {
@@ -29,6 +31,8 @@ const initialState: StateT = {
     num_insured: 0,
     status: "",
     amount: 0,
+    subscription_id: "",
+    subscription_table_id: "",
   },
 };
 

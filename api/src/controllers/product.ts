@@ -636,9 +636,7 @@ const createProductPlans = async (
   discount: DiscountT,
   beneficiary_price: number | null
 ) => {
-  console.log("createProductPlans", id, agent_id, baseprice, customerprice, companyprice, yearlyprice, discount, beneficiary_price)
   const productResponse = await Product.getProduct(id, agent_id);
-
   if (!productResponse.success) {
     createLogger.error({
       model: "product/getProduct",
@@ -855,7 +853,6 @@ let customer_plan_id_new = customer_plan_id
 
       new_company_plan_id = responsePlan.data.id;
     }
-    console.log(id , agent_id , new_company_plan_id , "company", baseprice, companyprice ?? 0, frequency, discount, company_plan_id_extr, beneficiary_price)
     const productPlanCompanyResponse = await ProductPlan.createModel(
       id,
       agent_id,

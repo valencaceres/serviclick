@@ -7,7 +7,7 @@ import * as BrokerProduct from "../models/brokerProduct";
 import * as UserBroker from "../models/userBroker";
 import * as BrokerUser from "../models/brokerUser";
 import * as Product from "./product";
-import { updateClerkUser, createClerkUser } from "../util/clerkUserData";
+import { updateClerkUser, createClerkUser, fetchClerkUserByEmail } from "../util/clerkUserData";
 
 const createFull = async (req: any, res: any) => {
   try {
@@ -657,27 +657,29 @@ const getAgents = async (req: any, res: any) => {
 
 const updateAgent = async (req: any, res: any) => {
   const { brokerId } = req.params;
-  const { agentId, rut, name, paternallastname,  maternallastname,password, profileCode, email, district, isEdit, rol_web_broker, type_role_web_admin, type_role_operations, type_role_serviclick, type_role_retail, type_role_admin  } = req.body;
- let userId 
-  if(isEdit){
+  const {  rut, name, paternallastname,  maternallastname,password, profileCode, email, district, rol_web_broker,  } = req.body;
+  const resultUserByEmail = await fetchClerkUserByEmail(email);
+
+  let userId 
+  if( resultUserByEmail.data && resultUserByEmail.data?.length > 0  ){
+    userId = resultUserByEmail.data[0].id
   const response = await updateClerkUser({
-    user_id: agentId,
+    user_id: resultUserByEmail.data[0].id,
     first_name: name,
     last_name: paternallastname,
     public_metadata: {
       roles: {
         broker: rol_web_broker,
-        serviclick : type_role_serviclick,
-        operations: type_role_operations,
-        retail: type_role_retail,
-        admin: type_role_admin,
-        web_admin: type_role_web_admin
-
+        serviclick : (resultUserByEmail.data[0] as any).publicMetadata.roles.serviclick,
+        operations: (resultUserByEmail.data[0] as any).publicMetadata.roles.operations,
+        retail: (resultUserByEmail.data[0] as any).publicMetadata.roles.retail,
+        admin: (resultUserByEmail.data[0] as any).publicMetadata.roles.admin,
+        web_admin: (resultUserByEmail.data[0] as any).publicMetadata.roles.web_admin
       },
     },
   });
   }
-  if(isEdit === false){
+  else{
     const response = await createClerkUser({
 
       first_name: name,
@@ -698,7 +700,7 @@ const updateAgent = async (req: any, res: any) => {
     userId = response.data.id
   }
 const responseUpdateProfileCode = await BrokerUser.updateProfileCode(
-  isEdit ? agentId : userId,
+  userId,
     brokerId,
     profileCode,
     email,
@@ -706,8 +708,22 @@ const responseUpdateProfileCode = await BrokerUser.updateProfileCode(
     maternallastname,
     paternallastname,
     district,
-    name, isEdit
+    name
   );
+
+  if (!responseUpdateProfileCode.success) {
+    createLogger.error({
+      model: "broker/updateAgent",
+      error: responseUpdateProfileCode.error,
+    });
+    res.status(500).json({ error: "Error updating broker user" });
+    return;
+  }
+
+  createLogger.info({
+    controller: "broker/updateAgent",
+    message: "OK",
+  });
   return res.status(200).json(responseUpdateProfileCode);
 };
 

@@ -7,7 +7,10 @@ import {
   deleteAgent,
   listAgents,
   getProcessById,
-  getById
+  getById,
+  getDataById,
+  postAgentProductPlan,
+  addProduct
 } from "../controllers/agent";
 import isAuthenticated from "../middlewares/isAuthenticated";
 import isAdmin from "../middlewares/isAdmin";
@@ -20,5 +23,8 @@ AgentRouter.put("/update/:id", auth, isAuthenticated, isAdmin, updateAgent);
 AgentRouter.delete("/delete/:id", auth, isAuthenticated, isAdmin, deleteAgent);
 AgentRouter.get("/list/:channel_id", auth, listAgents);
 AgentRouter.get("/getProcessById/:id", auth, getProcessById);
+AgentRouter.get("/getDataById/:id", getDataById);
+AgentRouter.post("/PostAgentProductPlan/:id", postAgentProductPlan)
+AgentRouter.post("/addProduct", addProduct);
 
 export default AgentRouter;

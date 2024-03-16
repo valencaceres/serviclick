@@ -30,11 +30,22 @@ import { isValidRut } from "../../../../utils/validations";
 import { monthNames } from "../../../../data/masters";
 
 import { useTransaction } from "../../../../hooks";
+import { Button } from "~/components/ui/ButtonC";
+import { MoreHorizontal, Router } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown";
+import { useRouter } from "next/router";
 
 const TransactionsList = ({ setSearchForm, searchForm, search }: any) => {
   const { getByFilters, resetTransactionList, transactionList } =
     useTransaction();
-
+  const router = useRouter();
   type ResumeT = {
     records: number;
     insured: number;
@@ -101,7 +112,6 @@ const TransactionsList = ({ setSearchForm, searchForm, search }: any) => {
           : 0,
     });
   }, [transactionList.length]);
-
   return (
     <ContentCell gap="5px">
       <ContentRow gap="5px" align="center">
@@ -154,6 +164,8 @@ const TransactionsList = ({ setSearchForm, searchForm, search }: any) => {
           <TableCell width="321px">Cliente</TableCell>
           <TableCell width="299px">Producto</TableCell>
           <TableCell width="129px">Monto</TableCell>
+          <TableCell width="60px"></TableCell>
+
           <TableCellEnd />
         </TableHeader>
         <TableDetail>
@@ -172,6 +184,31 @@ const TransactionsList = ({ setSearchForm, searchForm, search }: any) => {
               <TableCell width="299px">{transaction.product_name}</TableCell>
               <TableCell width="129px" align="flex-end">
                 {currencyFormat(transaction.amount)}
+              </TableCell>
+              <TableCell width="60px" align="flex-end">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="h-7 w-8 p-0 hover:bg-cyan-100 hover:text-black"
+                    >
+                      <span className="sr-only">Abrir menú</span>
+                      <MoreHorizontal className="h-4 w-4 " />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="bg-slate-200" align="end">
+                    <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                    <DropdownMenuItem
+                      onClick={() =>
+                        void router.push(
+                          `/reports/transactions/${transaction?.subscription_table_id}`
+                        )
+                      }
+                    >
+                      Ver detalles
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </TableCell>
             </TableRow>
           ))}

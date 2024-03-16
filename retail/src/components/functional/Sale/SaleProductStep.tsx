@@ -118,7 +118,7 @@ function ProductCard({
       <CardHeader className="flex h-20 items-center justify-center  rounded-t-md bg-primary-500">
         <CardTitle className="text-teal-blue">{name}</CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col items-center justify-between rounded-b-md bg-teal-blue p-2">
+      <CardContent className="flex max-h-[120px] min-h-[120px] flex-col items-center justify-between rounded-b-md bg-teal-blue p-2">
         <div className="flex w-full flex-row gap-2 p-2">
           <Button
             className="flex w-full flex-col items-center justify-center p-6"

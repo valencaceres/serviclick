@@ -3,7 +3,7 @@ import xlsx from "xlsx";
 import createLogger from "../util/logger";
 import { generateGenericPassword } from "../util/user";
 import { fillEmptyEmail, sendMail } from "../util/email";
-import { createClerkUser, updateClerkUser } from "../util/clerkUserData";
+import { createClerkUser, fetchClerkUserByEmail, updateClerkUser } from "../util/clerkUserData";
 import { formatRut } from "../util/rut";
 
 import * as Retail from "../models/retail";
@@ -17,6 +17,7 @@ import * as Lead from "../controllers/lead";
 
 import * as Product from "./product";
 import ioClient from "socket.io-client";
+import { format } from "date-fns";
 
 const create = async (req: any, res: any) => {
   try {
@@ -570,26 +571,27 @@ const getAgents = async (req: any, res: any) => {
 const updateAgent = async (req: any, res: any) => {
   const { retailId } = req.params;
   const { agentId, rut, name, paternallastname,  maternallastname,password, profileCode, email, district, isEdit, rol_web_retail, type_role_broker, type_role_web_admin, type_role_operations, type_role_serviclick, type_role_admin  } = req.body;
- let userId 
-  if(isEdit){
+  const resultUserByEmail = await fetchClerkUserByEmail(email);
+  let userId 
+  if( resultUserByEmail.data && resultUserByEmail.data?.length > 0  ){
+    userId = resultUserByEmail.data[0].id
   const response = await updateClerkUser({
-    user_id: agentId,
+    user_id: resultUserByEmail.data[0].id,
     first_name: name,
     last_name: paternallastname,
     public_metadata: {
       roles: {
-        broker: type_role_broker,
-        serviclick : type_role_serviclick,
-        operations: type_role_operations,
+        broker:  (resultUserByEmail.data[0] as any).publicMetadata.roles.broker,
+        serviclick : (resultUserByEmail.data[0] as any).publicMetadata.roles.serviclick,
+        operations: (resultUserByEmail.data[0] as any).publicMetadata.roles.operations,
         retail: rol_web_retail,
-        admin: type_role_admin,
-        web_admin: type_role_web_admin
-
+        admin: (resultUserByEmail.data[0] as any).publicMetadata.roles.admin,
+        web_admin: (resultUserByEmail.data[0] as any).publicMetadata.roles.web_admin
       },
     },
   });
   }
-  if(isEdit === false){
+  else{
     const response = await createClerkUser({
 
       first_name: name,
@@ -607,7 +609,6 @@ const updateAgent = async (req: any, res: any) => {
       },
       password:password,
     });
-    console.log(response)
     userId = response.data.id
   }
 const responseUpdateProfileCode = await UserRetail.updateProfileCode(
@@ -619,8 +620,22 @@ const responseUpdateProfileCode = await UserRetail.updateProfileCode(
     maternallastname,
     paternallastname,
     district,
-    name, isEdit
+    name
   );
+
+  if (!responseUpdateProfileCode.success) {
+    createLogger.error({
+      model: "retail/updateAgent",
+      error: responseUpdateProfileCode.error,
+    });
+    res.status(500).json({ error: "Error updating retail user" });
+    return;
+  }
+
+  createLogger.info({
+    controller: "retail/updateAgent",
+    message: "OK",
+  });
   return res.status(200).json(responseUpdateProfileCode);
 };
 
@@ -878,6 +893,121 @@ const addLeadFromExcel = async (req: any, res: any) => {
   }
 };
 
+
+const exportPayments = async (req:any, res:any) => {
+  try {
+
+    const { id,  } = req.params;
+    const retailResponse = await Retail.getPayments(
+      id,
+    );
+    if (retailResponse && retailResponse.data && retailResponse.data.length > 0) {
+      const groupedData = groupCasesByRetailName(retailResponse.data);
+  
+      const workbook = xlsx.utils.book_new();
+  
+      for (const retailName in groupedData) {
+          if (groupedData.hasOwnProperty(retailName)) {
+            const safeSheetName = retailName.replace(/[\\\/\?\*\[\]]/g, '_').substring(0, 30);
+              const dataForExcel = (groupedData[retailName] as any[]).map((retailItem) => {
+                const formattedAmount = retailItem.product.price ? formatCurrency(retailItem.product.price) : '-';
+                let [names, surnames] = retailItem.customer.name.split(' ');
+              const [paternalLastName, maternalLastName] = surnames.split(' ');
+                const status = retailItem.status ===  false ? 'Falso' : 'Activo';
+                return {
+                      'RUT': retailItem.customer.rut,
+                      'NOMBRE': names,
+                      'APELLIDO MATERNO':paternalLastName,
+                      'APELLIDO PATERNO':maternalLastName,
+                      'FECHA': retailItem.date,
+                      'MONTO PAGADO': formattedAmount,
+                      'CODIGO': retailItem.code,
+                      'ESTADO':status,
+                  };
+              });
+  
+              const worksheet = xlsx.utils.json_to_sheet(dataForExcel);
+              centerTextInWorksheet(worksheet);
+              xlsx.utils.book_append_sheet(workbook, worksheet, safeSheetName);
+  
+              const colWidths = [
+                  { wpx: 200 }, 
+                  { wpx: 150 },
+                  { wpx: 150 },
+                  { wpx: 150 },
+                  { wpx: 200 },
+                  { wpx: 200 },
+                  { wpx: 100 },
+                  { wpx: 100 },
+              
+              ];
+  
+              worksheet['!cols'] = colWidths;
+          }
+      }
+  
+      const excelBuffer = xlsx.write(workbook, { bookType: 'xlsx', type: 'buffer' });
+  
+      res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
+      res.setHeader('Content-Disposition', 'attachment; filename=casos.xlsx');
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8');
+      res.send(excelBuffer);
+  } else {
+      return res.status(404).json({ error: "there is no cases to export." });
+    }
+  } catch (error) {
+    console.error(error)
+    createLogger.error({
+      model: 'case/exportCases',
+      error: error,
+    });
+    return res.status(500).json({ error: "Error retrieving case." });
+  }
+};
+function groupCasesByRetailName(cases: any) {
+  const groupedData: { [key: string]: any[] } = {};
+
+  cases.forEach((caseItem:any) => {
+      const retailName = caseItem.retail_name || 'No Retail'; 
+      if (!groupedData[retailName]) {
+          groupedData[retailName] = [];
+      }
+      groupedData[retailName].push(caseItem);
+  });
+
+  return groupedData;
+}
+const formatDate = (dateString: string) => {
+  try {
+      const date = new Date(dateString);
+      return format(date, 'dd-MM-yyyy');
+  } catch (error) {
+      return  `Error formateando fecha ${dateString} `;
+  }
+};
+function centerTextInWorksheet(worksheet: any) {
+  const range = xlsx.utils.decode_range(worksheet['!ref']);
+  
+  for (let R = range.s.r; R <= range.e.r; ++R) {
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+          const cell_address = { c: C, r: R };
+          const cell_ref = xlsx.utils.encode_cell(cell_address);
+          const cell = worksheet[cell_ref];
+          if (cell && cell.t === 's') {
+              if (!cell.s) cell.s = {};
+              cell.s.alignment = { horizontal: 'center', vertical: 'center', wrapText: true };
+          } else {
+              worksheet[cell_ref] = { ...cell, s: { alignment: { horizontal: 'center', vertical: 'center', wrapText: true } } };
+          }
+      }
+  }
+}
+function formatCurrency(amount: number | string) {
+  const numericAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
+  return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(numericAmount);
+}
+
+
 export {
   create,
   addProduct,
@@ -891,6 +1021,7 @@ export {
   getCustomersByRetailIdAndProductId,
   updateLogo,
   updatePaymentCodes,
+  exportPayments,
   deleteById,
   getFamiliesByRetailId,
   getProductsByRetailIdAndFamilyId,

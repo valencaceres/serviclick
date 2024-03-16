@@ -15,7 +15,8 @@ const useRetail = () => {
     error: state.error,
   }));
 
-  const { getByRetailId, setListValue, upsert } = paymentStore();
+  const { getByRetailId, setListValue, upsert, exportPayments } =
+    paymentStore();
 
   return {
     paymentList,
@@ -26,6 +27,7 @@ const useRetail = () => {
     setListValue,
     getByRetailId,
     upsert,
+    exportPayments,
   };
 };
 
