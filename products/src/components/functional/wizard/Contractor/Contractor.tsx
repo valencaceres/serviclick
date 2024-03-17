@@ -44,7 +44,6 @@ const Contractor = () => {
 
   const [completedForm, setCompletedForm] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-
   const setLeadContractor = (data: any) => {
     setLead({
       ...lead,
@@ -131,7 +130,14 @@ const Contractor = () => {
         <br />
         Estás contratando el Servicio&nbsp;<b>{product.name}</b>, el cual tiene
         un valor exclusivo de&nbsp;
-        <b>{currencyFormat(product.plan.price)} mensual</b>
+        <b>
+          {currencyFormat(product.plan.price)}{" "}
+          {product.frequency === "M"
+            ? "mensual"
+            : product.frequency === "A"
+            ? "anual"
+            : ""}
+        </b>
         &nbsp;y te brinda los siguientes beneficios:
         <br />
         <br />
