@@ -1,17 +1,10 @@
 import { Col, Row } from "@/components/layout/Generic";
 import { useMediaQuery } from "react-responsive";
+import { formatDate } from "@/utils/format";
 import InputText from "@/components/ui/Input-ui-box";
 
 const PaymentInsured = ({ data }: any) => {
   const isDesktop = useMediaQuery({ minWidth: 1200 });
-
-  const infoDate = (date: string | undefined) => {
-    if (date) {
-      const oDate = date.split("T")[0].split("-");
-      return `${oDate[2]}-${oDate[1]}-${oDate[0]}`;
-    }
-    return "";
-  };
 
   return (
     <Col width={isDesktop ? "340px" : "300px"}>
@@ -28,7 +21,7 @@ const PaymentInsured = ({ data }: any) => {
           isCompleted={true}
           label="Fecha nacimiento"
           width="150px"
-          value={infoDate(data?.birthDate)}
+          value={formatDate(data?.birthDate)}
         />
       </Row>
       <InputText

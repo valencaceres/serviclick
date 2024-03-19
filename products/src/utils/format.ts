@@ -26,12 +26,12 @@ const formatAmount = (amount: string, currency: string) => {
   }
 };
 
-function formatDate(dateString: string) {
-  const dateObject = new Date(dateString);
+function formatDate(dateString: string): string {
+  const dateObject = new Date(dateString + "T00:00:00Z");
 
-  const day = dateObject.getDate();
-  const month = dateObject.getMonth() + 1;
-  const year = dateObject.getFullYear();
+  const day = dateObject.getUTCDate();
+  const month = dateObject.getUTCMonth() + 1;
+  const year = dateObject.getUTCFullYear();
 
   const formattedDay = String(day).padStart(2, '0');
   const formattedMonth = String(month).padStart(2, '0');
@@ -40,6 +40,5 @@ function formatDate(dateString: string) {
 
   return formattedDate;
 }
-
 
 export { unFormatRut, formatRut, currencyFormat, formatAmount, formatDate };
