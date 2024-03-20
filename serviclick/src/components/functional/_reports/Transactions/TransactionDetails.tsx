@@ -42,7 +42,7 @@ const TransactionDetails = () => {
   const { id } = router.query;
   const { getTransactionById, transaction, resetTransaction, isLoading } =
     useTransaction();
-
+  console.log(transaction, "transaction");
   useEffect(() => {
     resetTransaction();
     if (id) {
@@ -58,7 +58,7 @@ const TransactionDetails = () => {
         </h1>
         {isLoading ? (
           <>
-            <Skeleton className="h-[800px] w-[800px] bg-slate-200" />
+            <Skeleton className="h-[1200px] w-[1200px] bg-slate-200" />
           </>
         ) : (
           <>
@@ -96,12 +96,46 @@ function HeaderCard({ transaction }: TransactionDetailsProps) {
         return "";
     }
   }
+  function getStatusName(value: string) {
+    switch (value) {
+      case "1":
+        return "Activa";
+      case "2":
+        return "Intento fallido 1";
+      case "3":
+        return "Intento fallido 2";
+      case "4":
+        return "Intento fallido 3";
+      case "5":
+        return "Fallida";
+      case "6":
+        return "No iniciada";
+      case "7":
+        return "Revertida";
+      case "8":
+        return "Expirada";
+      case "9":
+        return "Desactivada";
+      case "10":
+        return "Abandonada";
+      case "11":
+        return "Prueba";
+      case "12":
+        return "Recuperando";
+      default:
+        return "Desconocido";
+    }
+  }
+
   return (
     <Card className="w-full bg-primary-500 ">
       <CardHeader className="flex flex-row justify-between">
-        <Button disabled>{transaction.status_name}</Button>
+        <Button disabled>
+          {" "}
+          {getStatusName(transaction.statusSubscription)}
+        </Button>
         <Link
-          href={`https://integration.reveniu.com/subscriptions/${transaction.id}`}
+          href={`https://app.reveniu.com/plan-admin/plan/${transaction.plan_id}`}
           target="_blank"
         >
           <Button className=" bg-secondary-500 ">
@@ -113,9 +147,7 @@ function HeaderCard({ transaction }: TransactionDetailsProps) {
       <CardContent className="flex flex-col gap-12 md:flex-row">
         <div className="flex flex-col">
           <h2 className="max-w-sm text-3xl font-bold text-white ">
-            {transaction.customer.name} {""}{" "}
-            {transaction.customer.maternallastname} {""}{" "}
-            {transaction.customer.paternallastname} {transaction.product_name}
+            {transaction.customer.name} {""} {transaction.product_name}
           </h2>
           <p className="text-2xl  font-semibold text-white">
             Frecuencia: {getFrequencyLabel(transaction.frequency)}
@@ -126,7 +158,7 @@ function HeaderCard({ transaction }: TransactionDetailsProps) {
           </p>
         </div>
 
-        <div className="flex flex-row gap-2">
+        <div className="flex  flex-col gap-2 md:flex-row">
           <ChangeMount transaction={transaction} />
           <ChangeDate transaction={transaction} />
           <DeleteSubscription transaction={transaction} />
@@ -139,15 +171,13 @@ function HeaderCard({ transaction }: TransactionDetailsProps) {
 function CustomerAndPayment({ transaction }: TransactionDetailsProps) {
   return (
     <>
-      <Card className="flex-co flex bg-gray-200 py-4">
-        <CardContent className="flex flex-row gap-12 text-black">
+      <Card className=" flex bg-gray-200 py-4">
+        <CardContent className="flex flex-col gap-12  text-black md:flex-row">
           <div className="flex flex-col  text-[#2b3c4e] ">
             <h2 className="text-2xl font-bold">Cliente</h2>
             <p className="text-xl">
               {" "}
               {transaction.customer.name} {""}{" "}
-              {transaction.customer.maternallastname} {""}{" "}
-              {transaction.customer.paternallastname}{" "}
             </p>
             <p className="text-xl">{transaction.customer.email}</p>
             <p className="text-xl">{transaction.customer.phone}</p>
@@ -161,22 +191,31 @@ function CustomerAndPayment({ transaction }: TransactionDetailsProps) {
               {moment(transaction.next_due_date).format("DD/MM/YYYY/HH:mm")}
             </p>
           </div>
-          <Card className="flex items-center  bg-gray-300">
-            <CardContent className="flex  flex-col items-center justify-center text-[#2b3c4e]">
-              <p className="text-xl font-bold">
-                {transaction.paymentsArray.length}
-              </p>
-              <p className="max-w-24 text-center text-xl">
-                {transaction.paymentsArray.length > 1
-                  ? "Pagos realizados"
-                  : "Pago realizado"}
-              </p>{" "}
-            </CardContent>
-          </Card>
+          <div className="flex flex-col justify-between ">
+            <Card className="flex  h-3/4 w-2/4  flex-col items-center  justify-center  bg-gray-300 text-[#2b3c4e] md:w-full">
+              <CardContent className="">
+                <p className="text-center text-xl font-bold">
+                  {transaction.paymentsArray.length}
+                </p>
+                <p className="max-w-24 text-center text-xl">
+                  {transaction.paymentsArray.length > 1
+                    ? "Pagos realizados"
+                    : "Pago realizado"}
+                </p>{" "}
+              </CardContent>
+            </Card>
+            <Link
+              href={`https://operaciones.serviclick.cl/entities/contractor/${transaction.customer_id}`}
+              target="_blank"
+            >
+              <Button className=" bg-secondary-500 ">
+                {" "}
+                Ir a detalles del cliente{" "}
+              </Button>
+            </Link>
+          </div>
         </CardContent>
       </Card>
-
-      <Card></Card>
     </>
   );
 }
@@ -185,7 +224,7 @@ function Payment({ transaction }: TransactionDetailsProps) {
   return (
     <>
       <Card className="flex flex-col bg-gray-200 py-4">
-        <CardContent className="flex flex-row gap-12 text-black">
+        <CardContent className="flex flex-col gap-12 text-black md:flex-row">
           <div className="flex flex-col  text-[#2b3c4e] ">
             <h2 className="text-2xl font-bold">Método de pago</h2>
             <p className="text-xl">
@@ -230,7 +269,11 @@ function PaymentSection({ transaction }: TransactionDetailsProps) {
                 </TableCell>
                 <TableCell>{payment.buy_order}</TableCell>
                 <TableCell>{payment.amount}</TableCell>
-                <TableCell>{payment.gateway_response}</TableCell>
+                <TableCell>
+                  {payment.gateway_response === "Approved"
+                    ? "Aprobado"
+                    : payment.gateway_response}
+                </TableCell>{" "}
               </TableRow>
             ))}
           </TableBody>

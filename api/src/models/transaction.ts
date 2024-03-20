@@ -39,6 +39,7 @@ interface SubscriptionData {
   customer: Customer;
   payment: PaymentEvent[];
   plan_id: string;
+  customer_id: string;
 }
 
 interface QueryResult {
@@ -197,6 +198,7 @@ const getBySubscriptionId = async (
                 pay.date as date_payment,
                 pay.payment_id as payment_id, 
                 pay.id as payment_table_id,
+                cus.id as customer_id,
                 pay.buy_order,
                 sta.name as status_name,
                 pay.credit_card_type,
@@ -239,6 +241,7 @@ const getBySubscriptionId = async (
         credit_card_type,
         gateway_response,
         status_name,
+     customer_id,
         plan_id
       } = row;
 
@@ -249,6 +252,7 @@ const getBySubscriptionId = async (
           product_id,
           id: subscription_id,
           status_id,
+          customer_id,
           last_payment: "",
           status_name,
           plan_id,
@@ -346,6 +350,7 @@ const changeStatusModel = async (
       UPDATE app.subscription
       SET status_id = 9
       WHERE subscription_id = '${subscription_id}'`);
+      
 
     return { success: true, data: result.rows[0], error: null };
   } catch (e) {
@@ -380,13 +385,96 @@ const updateSubscriptionModelDifferences = async (
   }
 }
 
+const fillReveniuTables = async (subscription: any, payment: any) => {
+  try {
+    await insertCustomer(subscription.customer);
+    await insertSubscription(subscription);
+    if (payment && subscription.id && payment.length > 0) {
+      for (const singlePayment of payment) {
+        await insertPayment(singlePayment, subscription.id);
+      }
+    }
+    await insertSubscriptionDetail(subscription);
+  } catch (error) {
+    console.error('error in fillReveniuTablesModel:', error);
+    throw new Error("Error inserting data into reveniu tables");
+  }
+};
+const insertCustomer = async (customer: any) => {
+  try {
+    const customerQuery = `
+      INSERT INTO reveniu.customer (id, name, email, address, rut, phone)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      ON CONFLICT (id) DO UPDATE 
+      SET name = EXCLUDED.name, email = EXCLUDED.email, address = EXCLUDED.address, rut = EXCLUDED.rut, phone = EXCLUDED.phone;
+    `;
+    await pool.query(customerQuery, [customer.id, customer.name, customer.email, customer.address, customer.rut, customer.phone]);
+  } catch (error) {
+    console.error('Error en insertCustomer:', error);
+    throw new Error("Error al insertar cliente en la tabla de reveniu");
+  }
+};
+
+const insertSubscription = async (subscription: any) => {
+  try {
+    const subscriptionQuery = `
+      INSERT INTO reveniu.subscription (id, customer_id)
+      VALUES ($1, $2)
+      ON CONFLICT (id) DO NOTHING;
+    `;
+    await pool.query(subscriptionQuery, [subscription.id, subscription.customer.id]);
+  } catch (error) {
+    console.error('Error en insertSubscription:', error);
+    throw new Error("Error al insertar suscripción en la tabla de reveniu");
+  }
+};
+
+const insertPayment = async (payment: any, subscriptionId: string) => {
+  try {
+    const issuedOn = payment.issued_on !== "" ? payment.issued_on : null;
+    const paymentQuery = `
+      INSERT INTO reveniu.payment (id,buy_order, issued_on, amount, credit_card_type, is_recurrent, subscription_id, gateway_response)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      ON CONFLICT (buy_order) DO NOTHING;
+    `;
+    await pool.query(paymentQuery, [payment.id,payment.buy_order, issuedOn, payment.amount, payment.credit_card_type, payment.is_recurrent, subscriptionId, payment.gateway_response]);
+  } catch (error) {
+    console.error('Error en insertPayment:', error);
+    throw new Error("Error al insertar pago en la tabla de reveniu");
+  }
+};
+
+const insertSubscriptionDetail = async (subscription: any) => {
+  try {
+    const createdOn = subscription.created_on && subscription.created_on ? new Date(subscription.created_on).toISOString() : null;
+    const subscriptionNextDue = subscription.next_due ? subscription.next_due : null;
+    const subscriptionLastPayment = subscription.last_payment.date ? subscription.last_payment.date : null;
+                                                                                  
+    const subscriptionDetailQuery = `
+      INSERT INTO reveniu.subscription_detail (subscription_id, interval, created_on, status, cicles, remaining_cicles, auto_renew_count, link_title, link_description, plan_amount, is_uf, next_due, plan_id, is_auto_renew, discount_rate, discount_is_fixed, discount_cicles, last_payment, external_id)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
+      ON CONFLICT (subscription_id) DO UPDATE
+      SET interval = EXCLUDED.interval, created_on = EXCLUDED.created_on, status = EXCLUDED.status, cicles = EXCLUDED.cicles, remaining_cicles = EXCLUDED.remaining_cicles, auto_renew_count = EXCLUDED.auto_renew_count, link_title = EXCLUDED.link_title, link_description = EXCLUDED.link_description, plan_amount = EXCLUDED.plan_amount, is_uf = EXCLUDED.is_uf, next_due = EXCLUDED.next_due, plan_id = EXCLUDED.plan_id, is_auto_renew = EXCLUDED.is_auto_renew, discount_rate = EXCLUDED.discount_rate, discount_is_fixed = EXCLUDED.discount_is_fixed, discount_cicles = EXCLUDED.discount_cicles, last_payment = EXCLUDED.last_payment, external_id = EXCLUDED.external_id;
+    `;
+    await pool.query(subscriptionDetailQuery, [
+      subscription.id, subscription.interval, createdOn, subscription.status, subscription.cicles, subscription.remaining_cicles, subscription.auto_renew_count,
+      subscription.link_title, subscription.link_description, subscription.plan_amount, subscription.is_uf, subscriptionNextDue, subscription.plan_id, subscription.is_auto_renew,
+      subscription.discount_rate, subscription.discount_is_fixed, subscription.discount_cicles, subscriptionLastPayment, null
+    ]);
+  } catch (error) {
+    console.error('Error en insertSubscriptionDetail:', error);
+    throw new Error("Error al insertar detalles de suscripción en la tabla de reveniu");
+  }
+};
 export {
   getActivesByRutAndProductIdModel,
   getByFiltersModel,
   getBySubscriptionId,
   changeAmountModel,
   changeStatusModel,
-  updateSubscriptionModelDifferences
+  updateSubscriptionModelDifferences,
+  fillReveniuTables
+  
 };
 
 
