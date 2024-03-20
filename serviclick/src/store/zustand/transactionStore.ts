@@ -52,6 +52,8 @@ export const transactionStore = create<transactionStore>((set) => ({
     total_successful_payments: 0,
     plan_amount: 0,
     is_uf: false,
+    statusSubscription: "",
+    customer_id:"",
   },
   isLoading: false,
   isError: false,
@@ -166,7 +168,8 @@ export const transactionStore = create<transactionStore>((set) => ({
         status_id: 0,
         status_name: "",
         total_successful_payments: 0,
-    
+        statusSubscription: "",
+        customer_id: "",
       },
     }));
   },

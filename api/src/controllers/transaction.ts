@@ -6,6 +6,7 @@ import {
   getBySubscriptionId,
   changeAmountModel,
   changeStatusModel,
+  fillReveniuTables as fillReveniuTablesModel,
   updateSubscriptionModelDifferences
 } from "../models/transaction";
 import { apiReveniu } from "../util/reveniu";
@@ -85,76 +86,7 @@ if(transactionResponse.success && transactionResponse.data){
   }
   await getData();
 
-  const { id, ...customerWithoutId } = subscriptionData.data.customer;
-  const lastPaymentDate = new Date(subscriptionData.data.last_payment.date);
-
-    lastPaymentDate.setMilliseconds(0);
-
-    const formattedLastPaymentDate = lastPaymentDate.toISOString(); 
   if (subscriptionData && subscriptionData.data && subscriptionDataPayments && subscriptionDataPayments.data) {
-    const mergedData = {
-      payment: subscriptionDataPayments.data.payments,
-      last_payment: formattedLastPaymentDate,
-      customer: customerWithoutId,
-      id: subscriptionData.data.id,
-      plan_id: subscriptionData.data.plan_id,
-    };
-    
-    function compareObjects(obj1: any, obj2: any): any {
-      const diff: { [key: string]: any } = {};
-  
-      for (const key in obj1) {
-          if (obj1.hasOwnProperty(key)) {
-            if (key === 'payment') {
-              const paymentDiff: any = {};
-              const mergedPayment = obj1[key];
-              const transactionPayment = obj2[key];
-              
-              const fieldsToCompare = ['id', 'amount', 'buy_order', 'credit_card_type', 'gateway_response'];
-
-              fieldsToCompare.forEach(field => {
-                  if (
-                      mergedPayment.hasOwnProperty(field) &&
-                      transactionPayment.hasOwnProperty(field) &&
-                      JSON.stringify(mergedPayment[field]) !== JSON.stringify(transactionPayment[field])
-                  ) {
-                      paymentDiff[field] = {
-                          mergedData: mergedPayment[field],
-                          transactionData: transactionPayment[field]
-                      };
-                  }
-              });
-
-              if (Object.keys(paymentDiff).length > 0) {
-                  diff[key] = paymentDiff;
-              }
-          } else if (key === 'product_name') {
-                  if (obj1[key] !== obj2[key]) {
-                      diff[key] = {
-                          mergedData: obj1[key],
-                          transactionData: obj2[key]
-                      };
-                  }
-              } else if (key === 'customer') {
-                  const customerDiff = compareObjects(obj1[key], obj2[key]);
-                  if (Object.keys(customerDiff).length > 0) {
-                      diff[key] = customerDiff;
-                  }
-              } else if (obj1[key] !== obj2[key]) {
-                  diff[key] = {
-                      mergedData: obj1[key],
-                      transactionData: obj2[key]
-                  };
-              }
-          }
-      }
-  
-      return diff;
-  }
-
-
-    const differences = compareObjects(mergedData, transactionResponse.data[0]);
-  if (Object.keys(differences).length === 0) {
   const subscriptionDataWithReveniu = {
     ...transactionResponse.data[0],
     payment_method: subscriptionData.data.payment_method,
@@ -165,6 +97,8 @@ if(transactionResponse.success && transactionResponse.data){
     frequency: subscriptionData.data.interval,
     plan_amount: subscriptionData.data.plan_amount,
     is_uf: subscriptionData.data.is_uf,
+    statusSubscription: subscriptionData.data.status,
+
   }
   createLogger.info({
     controller: "transaction/getById",
@@ -172,11 +106,8 @@ if(transactionResponse.success && transactionResponse.data){
   });
   res.status(200).json(subscriptionDataWithReveniu);
   return;
-  } else if  (Object.keys(differences).length > 0) {
-    const updateSubscription = await updateSubscriptionModelDifferences(id, differences, mergedData);
-    
-    }
-  }
+  } 
+
 }
   if (!transactionResponse.success) {
     createLogger.error({
@@ -241,7 +172,6 @@ const changeDate = async (req: any, res: any) => {
 
     try {
       const dateReveniu = await apiReveniu.post(`/subscriptions/${id}/dueday/`, { new_day:dayOfMonth });
-      console.log(dateReveniu.data, "dateReveniu")
     } catch (error) {
       console.error('error updating date:', error);
       res.status(500).json({ error: "Error in apiReveniu POST request" });
@@ -329,4 +259,52 @@ const changeMethod = async (req: any, res: any) => {
   res.status(200).json({message: "email sent to the customer" });
 }
 
-export { getActivesByRutAndProductIdController, getByFiltersController , getBySubscription, changeAmount, changeDate,changeStatus, changeMethod};
+
+const fillReveniuTables = async (req: any, res: any) => {
+  try {
+    let numberOfSubscriptions = Infinity; 
+    const { quantity } = req.body;
+    if (quantity) {
+      numberOfSubscriptions = parseInt(quantity);
+      if (isNaN(numberOfSubscriptions) || numberOfSubscriptions <= 0) {
+        throw new Error("Invalid quantity parameter.");
+      }
+    }
+
+    const response = await apiReveniu.get(`/subscriptions/`);
+    const subscriptionsData = response.data.data;
+    const mergedData = [];
+    const queries = [];
+    let count = 0; 
+
+    for (const subscription of subscriptionsData) {
+      if (count >= numberOfSubscriptions) {
+        break; 
+      }
+      const customer = subscription.customer;
+      const subscriptionId = subscription.id;
+      const responseId = await apiReveniu.get(`/subscriptions/${subscriptionId}`);
+      await new Promise(resolve => setTimeout(resolve, 5000 + Math.random() * 1000));
+      const responsePayments = await apiReveniu.get(`/subscriptions/${subscriptionId}/payments`);
+      await new Promise(resolve => setTimeout(resolve, 5000 + Math.random() * 1000));
+      const payment = responsePayments.data;
+ 
+      const subscriptionData = responseId.data;
+      queries.push(fillReveniuTablesModel(subscriptionData, payment.payments));
+      count++; 
+    }
+
+    await Promise.all(queries);
+
+    res.status(200).json({ message: 'Reveniu tables filled successfully' });
+  } catch (error) {
+    console.error('error filling reveniu tables:', error);
+    res.status(500).json({ error: "Error in apiReveniu POST request" });
+    return;
+  }
+}
+
+
+
+
+export { getActivesByRutAndProductIdController, getByFiltersController , getBySubscription, changeAmount, changeDate,changeStatus, changeMethod, fillReveniuTables};

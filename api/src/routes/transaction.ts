@@ -8,7 +8,8 @@ import {
   changeAmount,
   changeDate,
   changeStatus,
-  changeMethod
+  changeMethod,
+  fillReveniuTables
 } from "../controllers/transaction";
 import isAuthenticated from "../middlewares/isAuthenticated";
 import isAdmin from "../middlewares/isAdmin";
@@ -34,5 +35,5 @@ TransactionRouter.post("/changeAmount", changeAmount)
 TransactionRouter.post("/changeDate", changeDate)
 TransactionRouter.post("/changeStatus", changeStatus)
 TransactionRouter.post("/changeMethod", changeMethod)
-
+TransactionRouter.post("/fillReveniuTables", fillReveniuTables);
 export default TransactionRouter;
