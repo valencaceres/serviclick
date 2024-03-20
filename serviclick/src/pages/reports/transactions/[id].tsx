@@ -38,7 +38,6 @@ const Transactions = () => {
       <FloatMenu>
         <ButtonIcon onClick={handleClickHome} iconName="home" />
         <ButtonIcon onClick={handleClickBack} iconName="arrow_back" />
-        <ButtonIcon iconName="save" />
       </FloatMenu>
     </Fragment>
   );

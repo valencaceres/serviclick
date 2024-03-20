@@ -53,4 +53,6 @@ export type TransactionT  ={
         payment_type: string;
     }[];
     frequency: string;
+    statusSubscription: string;
+    customer_id:string;
   }
