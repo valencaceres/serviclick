@@ -1,7 +1,10 @@
-import createLogger from "../util/logger";
-import * as cronModel from "../models/cron";
 import axios from "axios";
+
+import * as cronModel from "../models/cron";
+
+import createLogger from "../util/logger";
 import { apiServiClick } from "../util/api";
+
 const reveniuController = async (req: any, res: any) => {
   try {
     const { data } = req.body;
@@ -17,6 +20,7 @@ const reveniuController = async (req: any, res: any) => {
       res.status(500).json({ error: cronResponse.error });
       return;
     }
+
     if (cronResponse.success) {
       const executeWebHook = await apiServiClick.post(
         "/api/webhook/reveniuWebHook",
@@ -33,19 +37,17 @@ const reveniuController = async (req: any, res: any) => {
           url: `${apiServiClick}/api/webhook/reveniuWebHook`,
           error: executeWebHook.statusText,
         });
-        res.status(500).json({ error: executeWebHook.statusText });
-        return;
+        return res.status(500).json({ error: executeWebHook.statusText });
       }
     }
-    res.status(200).json(cronResponse.data);
-    return;
+
+    return res.status(200).json(cronResponse.data);
   } catch (error) {
     createLogger.error({
       controller: "reveniu",
       error: (error as Error).message,
     });
-    res.status(500).json({ error });
-    return;
+    return res.status(500).json({ error });
   }
 };
 

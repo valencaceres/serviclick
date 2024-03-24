@@ -6,16 +6,15 @@ import * as LeadModel from "../models/lead";
 import * as CompanyModel from "../models/company";
 import * as ProductDescriptionModel from "../models/productDescription";
 import * as InsuredModel from "../models/insured";
-import * as Policy from "../models/policy"
-import * as Payment from "../models/payment"
-import * as Cron from "../models/cron"
-import * as Subscription from "../models/subscription"
+import * as Policy from "../models/policy";
+import * as Payment from "../models/payment";
+import * as Cron from "../models/cron";
+import * as Subscription from "../models/subscription";
 import createLogger from "../util/logger";
 import { generateGenericPassword } from "../util/user";
 import config from "../util/config";
 import moment from "moment";
 import { apiReveniu } from "../util/reveniu";
-
 
 interface IPayment {
   payment_id: number;
@@ -450,8 +449,9 @@ const generateDocuments = async (
   policy_startdate: string
 ) => {
   try {
-    const correlative = `${new Date().getFullYear()}-${lead_id.split("-")[lead_id.split("-").length - 1]
-      }`;
+    const correlative = `${new Date().getFullYear()}-${
+      lead_id.split("-")[lead_id.split("-").length - 1]
+    }`;
 
     createLogger.info({
       url: config.pdf.URL.contract,
@@ -536,430 +536,445 @@ const generateDocuments = async (
   }
 };
 
-
-
 const reveniuWebHook = async (req: any, res: any) => {
   try {
     const { id: cron_id, createddate, subscription_id, event } = req.body;
+
     if (event === "subscription_activated") {
-        const leadResponse = await LeadModel.getDiscountBySubscriptionId(
-          createddate,
-          subscription_id
-        );
-  
-        if (!leadResponse.success) {
-          createLogger.error({
-            model: `lead/getDiscountBySubscriptionId`,
-            error: leadResponse.error,
-          });
-          return;
-        }
-        console.log(leadResponse, "testttleadreponsePolicy verificate")
-        const {
-          id: lead_id,
-          policy_id,
+      const leadResponse = await LeadModel.getDiscountBySubscriptionId(
+        createddate,
+        subscription_id
+      );
+
+      if (!leadResponse.success) {
+        createLogger.error({
+          model: `lead/getDiscountBySubscriptionId`,
+          error: leadResponse.error,
+        });
+        return res.status(500).json({ error: "Error obtaining lead discount" });
+      }
+
+      const {
+        id: lead_id,
+        policy_id,
+        policy_createdate,
+        policy_startdate,
+        lack,
+        discount_type,
+        discount_cicles,
+      } = leadResponse.data;
+
+      if (!policy_id && discount_type === "t" && discount_cicles > 0) {
+        const policyResponse = await Policy.createCron(
+          lead_id,
           policy_createdate,
           policy_startdate,
-          lack,
-          discount_type,
-          discount_cicles,
-        } = leadResponse.data;
-  
-        if (!policy_id && discount_type === "t" && discount_cicles > 0) {
-          console.log("verificate policy")
-          const policyResponse = await Policy.createCron(
-            lead_id,
-            policy_createdate,
-            policy_startdate,
-            lack
-          );
-  
-          if (!policyResponse.success) {
-            createLogger.error({
-              model: `policy/create (1)`,
-              error: policyResponse.error,
-            });
-            return;
-          }
-  
-        }
-        
-        const paymentReveniuResponse =   await subscriptionActivatedFunction(subscription_id);
-
-
-        if (!paymentReveniuResponse) {
-          createLogger.error({
-            model: "subscriptionActivatedFunction(1)",
-            error: paymentReveniuResponse,
-          });
-          return;
-        }
-        
-  
-          const cronResponse = await Cron.process(cron_id);
-  
-          if (!cronResponse.success) {
-            createLogger.error({
-              model: "cron/process",
-              error: cronResponse.error,
-            });
-            return;
-          }
-  
-          createLogger.info({
-            model: "cron/process",
-            message: {
-              subscription_id,
-              date: cronResponse.data.processingdate,
-              success: true,
-            },
-          });
-    
-    } else if (event === "subscription_payment_succeeded") {
-      if (event === "subscription_payment_succeeded") {
-        const subscriptionReveniuResponse = await apiReveniu.get(
-          `/subscriptions/${subscription_id}`
+          lack
         );
 
-        if (subscriptionReveniuResponse.status !== 200) {
+        if (!policyResponse.success) {
           createLogger.error({
-            model: `reveniu/get/subscription_payment_succeded`,
-            error: subscriptionReveniuResponse.statusText,
+            model: `policy/create`,
+            error: policyResponse.error,
           });
-          return;
+          return res.status(500).json({ error: "Error creating policy" });
         }
+      }
 
-        const {
-          status: status_id,
-          interval: interval_id,
-          plan_id,
-          plan_amount,
-          last_payment,
-        } = subscriptionReveniuResponse.data;
-        const { date: last_payment_date, status } = last_payment;
+      const paymentReveniuResponse = await subscriptionActivatedFunction(
+        subscription_id
+      );
 
-        const paymentReveniuResponse = await apiReveniu.get(
-          `/subscriptions/${subscription_id}/payments`
-        );
+      if (!paymentReveniuResponse) {
+        createLogger.error({
+          controller: "webhook/subscriptionActivatedFunction",
+          error: paymentReveniuResponse,
+        });
+        return res.status(500).json({ error: "Error activating subscription" });
+      }
 
-        if (!paymentReveniuResponse) {
-          createLogger.error({
-            url: `${config.reveniu.URL.base}/subscriptions/${subscription_id}/payments`,
-            error: paymentReveniuResponse,
-          });
-          return;
-        }
+      const cronResponse = await Cron.process(cron_id);
 
-        const { payments } = paymentReveniuResponse.data;
-        console.log("payumnts", payments)
-        const subscriptionData = {
+      if (!cronResponse.success) {
+        createLogger.error({
+          model: "cron/process",
+          error: cronResponse.error,
+        });
+        return res.status(500).json({ error: "Error updating cron" });
+      }
+
+      createLogger.info({
+        model: "cron/process",
+        message: {
           subscription_id,
-          status_id,
-          interval_id,
-          plan: {
-            id: plan_id,
-            amount: plan_amount,
-          },
-          last_payment: {
-            date: moment(last_payment_date).isValid()
-              ? moment(last_payment_date).local().format()
-              : null,
-            success: status === "0",
-          },
-          payments: payments
-            .filter((payment: any) => payment.gateway_response === "Approved")
-            .map((payment: any) => {
-              return {
-                payment_id: payment.id,
-                date: moment(payment.issued_on).isValid()
-                  ? moment(payment.issued_on).local().format()
-                  : null,
-                amount: payment.amount,
-                buy_order: payment.buy_order,
-                credit_card_type: payment.credit_card_type,
-                is_recurrent: payment.is_recurrent,
-                gateway_response: payment.gateway_response,
-              };
-            }),
-        };
+          date: cronResponse.data.processingdate,
+          success: true,
+        },
+      });
+      res.status(200).json("OK");
+    }
 
-        for (const payment of subscriptionData.payments) {
-          if (payment.date) {
-            const paymentResponse = await Payment.createPaymentModel(
-              payment.payment_id,
-              payment.date,
-              subscription_id,
-              payment.amount,
-              payment.buy_order,
-              payment.credit_card_type,
-              payment.is_recurrent,
-              payment.gateway_response
-            );
+    if (event === "subscription_payment_succeeded") {
+      const subscriptionReveniuResponse = await apiReveniu.get(
+        `/subscriptions/${subscription_id}`
+      );
 
-            if (!paymentResponse.success) {
+      if (subscriptionReveniuResponse.status !== 200) {
+        createLogger.error({
+          model: `reveniu/get/subscription_payment_succeded`,
+          error: subscriptionReveniuResponse.statusText,
+        });
+        return res
+          .status(500)
+          .json({ error: "Error obtaining subscription data from Reveniu" });
+      }
+
+      const {
+        status: status_id,
+        interval: interval_id,
+        plan_id,
+        plan_amount,
+        last_payment,
+      } = subscriptionReveniuResponse.data;
+      const { date: last_payment_date, status } = last_payment;
+
+      const paymentReveniuResponse = await apiReveniu.get(
+        `/subscriptions/${subscription_id}/payments`
+      );
+
+      if (!paymentReveniuResponse) {
+        createLogger.error({
+          url: `${config.reveniu.URL.base}/subscriptions/${subscription_id}/payments`,
+          error: paymentReveniuResponse,
+        });
+        return res.status(500).json({
+          error: "Error obtaining subscription payments from Reveniu",
+        });
+      }
+
+      const { payments } = paymentReveniuResponse.data;
+      console.log("payumnts", payments);
+      const subscriptionData = {
+        subscription_id,
+        status_id,
+        interval_id,
+        plan: {
+          id: plan_id,
+          amount: plan_amount,
+        },
+        last_payment: {
+          date: moment(last_payment_date).isValid()
+            ? moment(last_payment_date).local().format()
+            : null,
+          success: status === "0",
+        },
+        payments: payments
+          .filter((payment: any) => payment.gateway_response === "Approved")
+          .map((payment: any) => {
+            return {
+              payment_id: payment.id,
+              date: moment(payment.issued_on).isValid()
+                ? moment(payment.issued_on).local().format()
+                : null,
+              amount: payment.amount,
+              buy_order: payment.buy_order,
+              credit_card_type: payment.credit_card_type,
+              is_recurrent: payment.is_recurrent,
+              gateway_response: payment.gateway_response,
+            };
+          }),
+      };
+
+      for (const payment of subscriptionData.payments) {
+        if (payment.date) {
+          const paymentResponse = await Payment.createPaymentModel(
+            payment.payment_id,
+            payment.date,
+            subscription_id,
+            payment.amount,
+            payment.buy_order,
+            payment.credit_card_type,
+            payment.is_recurrent,
+            payment.gateway_response
+          );
+
+          if (!paymentResponse.success) {
+            createLogger.error({
+              model: "reveniu/createPaymentModel",
+              error: paymentResponse.error,
+            });
+            return res.status(500).json({ error: "Error saving payment" });
+          }
+
+          if (paymentResponse.data) {
+            const subscriptionResponse =
+              await Subscription.updateLastPaymentCron(subscription_id);
+
+            if (!subscriptionResponse.success) {
               createLogger.error({
-                model: "reveniu/createPaymentModel",
-                error: paymentResponse.error,
+                model: "subscription/updateLastPayment",
+                error: subscriptionResponse.error,
               });
-              return;
+              return res
+                .status(500)
+                .json({ error: "Error updating last payment" });
             }
 
-            if (paymentResponse.data) {
-              const subscriptionResponse = await Subscription.updateLastPaymentCron(
-                subscription_id
-              );
+            const cronResponse = await Cron.process(cron_id);
 
-              if (!subscriptionResponse.success) {
-                createLogger.error({
-                  model: "subscription/updateLastPayment",
-                  error: subscriptionResponse.error,
-                });
-                return;
-              }
-
-              const cronResponse = await Cron.process(cron_id);
-
-              if (!cronResponse.success) {
-                createLogger.error({
-                  model: "cron/process",
-                  error: cronResponse.error,
-                });
-                return;
-              }
-
-              createLogger.info({
+            if (!cronResponse.success) {
+              createLogger.error({
                 model: "cron/process",
-                message: {
-                  subscription_id,
-                  date: payment.date,
-                  success: true,
-                },
+                error: cronResponse.error,
               });
+              return res.status(500).json({ error: "Error updating cron" });
             }
+
+            createLogger.info({
+              model: "cron/process",
+              message: {
+                subscription_id,
+                date: payment.date,
+                success: true,
+              },
+            });
           }
         }
+      }
 
-        const leadResponse = await LeadModel.getPolicyBySubscriptionId(
-          subscription_id
-        );
+      const leadResponse = await LeadModel.getPolicyBySubscriptionId(
+        subscription_id
+      );
 
-        if (!leadResponse.success) {
-          createLogger.error({
-            model: `lead/getPolicyBySubscriptionId`,
-            error: leadResponse.error,
-          });
-          return;
-        }
+      if (!leadResponse.success) {
+        createLogger.error({
+          model: `lead/getPolicyBySubscriptionId`,
+          error: leadResponse.error,
+        });
+        return res.status(500).json({ error: "Error obtaining policy" });
+      }
 
-        const {
-          id: lead_id,
-          policy_id,
+      const {
+        id: lead_id,
+        policy_id,
+        policy_createdate,
+        policy_startdate,
+        lack,
+      } = leadResponse.data;
+
+      if (!policy_id) {
+        const policyResponse = await Policy.createCron(
+          lead_id,
           policy_createdate,
           policy_startdate,
-          lack,
-        } = leadResponse.data;
-        console.log(leadResponse, "2LEAD")
-        if (!policy_id) {
-          console.log("polres")
-          const policyResponse = await Policy.createCron(
-            lead_id,
-            policy_createdate,
-            policy_startdate,
-            lack
-          );
-          console.log("porldasd", policyResponse)
-          if (!policyResponse.success) {
-            createLogger.error({
-              model: `policy/create (2)`,
-              error: policyResponse.error,
-            });
-            return;
-          }
-          const paymentReveniuResponse = await subscriptionActivatedFunction(subscription_id);
+          lack
+        );
 
-          if (!paymentReveniuResponse) {
-            createLogger.error({
-              model: "SubscriptionActivatedFunction(2)",
-              error: paymentReveniuResponse,
-            });
-            return;
-          }
+        if (!policyResponse.success) {
+          createLogger.error({
+            model: `policy/create (2)`,
+            error: policyResponse.error,
+          });
+          return res.status(500).json({ error: "Error creating policy" });
         }
 
-      }    }
-
-      else if (event === "subscription_deactivated"){
-        const leadResponse = await LeadModel.getPolicyBySubscriptionId(
+        const paymentReveniuResponse = await subscriptionActivatedFunction(
           subscription_id
         );
 
-        if (!leadResponse.success) {
+        if (!paymentReveniuResponse) {
           createLogger.error({
-            model: `lead/getPolicyBySubscriptionId`,
-            error: leadResponse.error,
+            model: "SubscriptionActivatedFunction(2)",
+            error: paymentReveniuResponse,
           });
-          return;
+          return res
+            .status(500)
+            .json({ error: "Error activating subscription" });
         }
-
-        const {
-          id: lead_id,
-           } = leadResponse.data;
-          const leadUpdatePaymentDeactive = await LeadModel.updatePaymentDeactive(lead_id);
-          if (!leadUpdatePaymentDeactive.success) {
-            createLogger.error({
-              model: "lead/updatePaymentDeactive",
-              error: leadUpdatePaymentDeactive.error,
-            });
-            return;
-          }
-          const leadInsuredResponse = await LeadModel.getInsuredById(
-            lead_id
-          );
-         
-          
-          const insuredResponse = await InsuredModel.getById(
-            leadInsuredResponse.data[0].id
-          );
-          if (!insuredResponse.success) {
-            createLogger.error({
-              model: "insured/getByIdModel",
-              error: insuredResponse.error,
-            });
-            return { success: false, error: "Error retrieving insured" };
-          }
-          if (!leadInsuredResponse.success) {
-            createLogger.error({
-              model: "lead/getInsuredById",
-              error: leadInsuredResponse.error,
-            });
-            return { success: false, error: "Error retrieving insured" };
-          }
-      
-    
-
-    createLogger.info({
-      url: config.email.URL.send,
-      method: "POST",
-      body: {
-        from: { name: "Bienvenido a ServiClick" },
-        to: insuredResponse.data.email,
-        subject: "Tus credenciales de acceso a nuestra plataforma",
-        message: `<b>Hola&nbsp;${insuredResponse.data.name}</b><br/><br/>Bienvenido a ServiClick,  te detallamos que tu subscripcion a sido desactivada debido al cancelamiento de tu renovación<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
-        attachments: "",
-      },
-      params: "",
-      query: "",
-    });
-
-    const emailResponse: any = await axios.post(
-      config.email.URL.send,
-      {
-        from: { name: "Bienvenido a ServiClick" },
-        to: insuredResponse.data.email,
-        subject: "Tus credenciales de acceso a nuestra plataforma",
-        message: `<b>Hola&nbsp;${insuredResponse.data.name}</b><br/><br/>Bienvenido a ServiClick,  te detallamos que tu subscripcion a sido desactivada debido al cancelamiento de tu renovación<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
-        attachments: "",
-      },
-      {
-        headers: config.email.apiKey,
       }
-    );
-    return
+
+      return res.status(200).json("OK");
+    }
+
+    if (event === "subscription_deactivated") {
+      const leadResponse = await LeadModel.getPolicyBySubscriptionId(
+        subscription_id
+      );
+
+      if (!leadResponse.success) {
+        createLogger.error({
+          model: `lead/getPolicyBySubscriptionId`,
+          error: leadResponse.error,
+        });
+        return res.status(500).json({ error: "Error obtaining policy" });
       }
-        else if (event === "subscription_renewal_cancelled"){
-          const leadResponse = await LeadModel.getPolicyBySubscriptionId(
-            subscription_id
-          );
-  
-          if (!leadResponse.success) {
-            createLogger.error({
-              model: `lead/getPolicyBySubscriptionId`,
-              error: leadResponse.error,
-            });
-            return;
-          }
-  
-          const {
-            id: lead_id,
-             } = leadResponse.data;
-            const leadUpdatePaymentDeactive = await LeadModel.updatePaymentDeactive(lead_id);
-            if (!leadUpdatePaymentDeactive.success) {
-              createLogger.error({
-                model: "lead/updatePaymentDeactive",
-                error: leadUpdatePaymentDeactive.error,
-              });
-              return;
-            }
-            const leadInsuredResponse = await LeadModel.getInsuredById(
-              lead_id
-            );
-           
-            
-            const insuredResponse = await InsuredModel.getById(
-              leadInsuredResponse.data[0].id
-            );
-            if (!insuredResponse.success) {
-              createLogger.error({
-                model: "insured/getByIdModel",
-                error: insuredResponse.error,
-              });
-              return { success: false, error: "Error retrieving insured" };
-            }
-            if (!leadInsuredResponse.success) {
-              createLogger.error({
-                model: "lead/getInsuredById",
-                error: leadInsuredResponse.error,
-              });
-              return { success: false, error: "Error retrieving insured" };
-            }
-        
-      
+
+      const { id: lead_id } = leadResponse.data;
+      const leadUpdatePaymentDeactive = await LeadModel.updatePaymentDeactive(
+        lead_id
+      );
+
+      if (!leadUpdatePaymentDeactive.success) {
+        createLogger.error({
+          model: "lead/updatePaymentDeactive",
+          error: leadUpdatePaymentDeactive.error,
+        });
+        return res.status(500).json({ error: "Error updating payment" });
+      }
+
+      const leadInsuredResponse = await LeadModel.getInsuredById(lead_id);
+
+      if (!leadInsuredResponse.success) {
+        createLogger.error({
+          model: "lead/getInsuredById",
+          error: leadInsuredResponse.error,
+        });
+        return res.status(500).json({ error: "Error retrieving insured" });
+      }
+
+      const insuredResponse = await InsuredModel.getById(
+        leadInsuredResponse.data[0].id
+      );
+
+      if (!insuredResponse.success) {
+        createLogger.error({
+          model: "insured/getByIdModel",
+          error: insuredResponse.error,
+        });
+        return res.status(500).json({ error: "Error retrieving insured" });
+      }
+
+      const emailData = {
+        from: { name: "Informaciones ServiClick" },
+        to: insuredResponse.data.email,
+        subject: "Tu subscripcion ha sido desactivada",
+        message: `<b>Hola&nbsp;${insuredResponse.data.name}</b><br/><br/>Te informamos que tu subscripcion ha sido desactivada.<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
+        attachments: "",
+      };
 
       createLogger.info({
         url: config.email.URL.send,
         method: "POST",
-        body: {
-          from: { name: "Bienvenido a ServiClick" },
-          to: insuredResponse.data.email,
-          subject: "Tus credenciales de acceso a nuestra plataforma",
-          message: `<b>Hola&nbsp;${insuredResponse.data.name}</b><br/><br/>Bienvenido a ServiClick,  te detallamos que tu subscripcion a sido desactivada debido al cancelamiento de tu renovación<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
-          attachments: "",
-        },
+        body: emailData,
         params: "",
         query: "",
       });
 
       const emailResponse: any = await axios.post(
         config.email.URL.send,
-        {
-          from: { name: "Bienvenido a ServiClick" },
-          to: insuredResponse.data.email,
-          subject: "Tus credenciales de acceso a nuestra plataforma",
-          message: `<b>Hola&nbsp;${insuredResponse.data.name}</b><br/><br/>Bienvenido a ServiClick,  te detallamos que tu subscripcion a sido desactivada debido al cancelamiento de tu renovación<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
-          attachments: "",
-        },
+        emailData,
         {
           headers: config.email.apiKey,
         }
       );
-      return
 
+      if (emailResponse.status !== 200) {
+        createLogger.error({
+          url: `config.email.URL.send`,
+          error: emailResponse.statusText,
+        });
+        return res.status(500).json({ error: "Error sending email" });
+      }
+
+      return res.status(200).json("OK");
+    }
+
+    if (event === "subscription_renewal_cancelled") {
+      const leadResponse = await LeadModel.getPolicyBySubscriptionId(
+        subscription_id
+      );
+
+      if (!leadResponse.success) {
+        createLogger.error({
+          model: `lead/getPolicyBySubscriptionId`,
+          error: leadResponse.error,
+        });
+        return res.status(500).json({ error: "Error obtaining policy" });
+      }
+
+      const { id: lead_id } = leadResponse.data;
+      const leadUpdatePaymentDeactive = await LeadModel.updatePaymentDeactive(
+        lead_id
+      );
+
+      if (!leadUpdatePaymentDeactive.success) {
+        createLogger.error({
+          model: "lead/updatePaymentDeactive",
+          error: leadUpdatePaymentDeactive.error,
+        });
+        return res.status(500).json({ error: "Error updating payment" });
+      }
+
+      const leadInsuredResponse = await LeadModel.getInsuredById(lead_id);
+
+      if (!leadInsuredResponse.success) {
+        createLogger.error({
+          model: "lead/getInsuredById",
+          error: leadInsuredResponse.error,
+        });
+        return res.status(500).json({ error: "Error retrieving insured" });
+      }
+
+      const insuredResponse = await InsuredModel.getById(
+        leadInsuredResponse.data[0].id
+      );
+
+      if (!insuredResponse.success) {
+        createLogger.error({
+          model: "insured/getByIdModel",
+          error: insuredResponse.error,
+        });
+        return res.status(500).json({ error: "Error retrieving insured" });
+      }
+
+      const emailData = {
+        from: { name: "Informaciones ServiClick" },
+        to: insuredResponse.data.email,
+        subject: "Tu subscripcion ha sido desactivada",
+        message: `<b>Hola&nbsp;${insuredResponse.data.name}</b><br/><br/>Te informamos que tu subscripcion ha sido desactivada.<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
+        attachments: "",
+      };
+
+      createLogger.info({
+        url: config.email.URL.send,
+        method: "POST",
+        body: emailData,
+        params: "",
+        query: "",
+      });
+
+      const emailResponse: any = await axios.post(
+        config.email.URL.send,
+        emailData,
+        {
+          headers: config.email.apiKey,
         }
-     
+      );
+
+      if (emailResponse.status !== 200) {
+        createLogger.error({
+          url: `config.email.URL.send`,
+          error: emailResponse.statusText,
+        });
+        return res.status(500).json({ error: "Error sending email" });
+      }
+
+      return res.status(200).json("OK");
+    }
 
     createLogger.info({
-      controller: "reveniu",
-      message: "OK",
+      controller: "webhook/reveniu",
+      event,
     });
+    return res.status(200).json("OK");
   } catch (error) {
     createLogger.error({
-      controller: "reveniu",
+      controller: "webhook/reveniu",
       error: (error as Error).message,
     });
+    return res.status(500).json({ error: "Error in WebHook" });
   }
 };
-
-
 
 const process = async () => {
   try {
@@ -1018,8 +1033,9 @@ const process = async () => {
             return;
           }
 
-          const paymentReveniuResponse =   await subscriptionActivatedFunction(subscription_id);
-
+          const paymentReveniuResponse = await subscriptionActivatedFunction(
+            subscription_id
+          );
 
           if (!paymentReveniuResponse) {
             createLogger.error({
@@ -1139,9 +1155,8 @@ const process = async () => {
             }
 
             if (paymentResponse.data) {
-              const subscriptionResponse = await Subscription.updateLastPaymentCron(
-                subscription_id
-              );
+              const subscriptionResponse =
+                await Subscription.updateLastPaymentCron(subscription_id);
 
               if (!subscriptionResponse.success) {
                 createLogger.error({
@@ -1209,10 +1224,11 @@ const process = async () => {
             return;
           }
 
-          const paymentReveniuResponse =   await subscriptionActivatedFunction(subscription_id);
+          const paymentReveniuResponse = await subscriptionActivatedFunction(
+            subscription_id
+          );
 
-
-          if (!paymentReveniuResponse ) {
+          if (!paymentReveniuResponse) {
             createLogger.error({
               url: `https://api.serviclick.cl/api/webHook/subscriptionActivated`,
               error: "error 2 subscription activated",
@@ -1239,13 +1255,9 @@ const process = async () => {
   }
 };
 
+export { generatePDF, /* subscriptionActivated */ reveniuWebHook, process };
 
-
-export { generatePDF, /* subscriptionActivated */ reveniuWebHook, process};
-
-
-
-const subscriptionActivatedFunction = async (subscription_id: string,) => {
+const subscriptionActivatedFunction = async (subscription_id: string) => {
   try {
     const leadResponse = await LeadModel.getBySubscriptionId(subscription_id);
     if (!leadResponse.success) {
@@ -1253,7 +1265,7 @@ const subscriptionActivatedFunction = async (subscription_id: string,) => {
         model: "lead/getBySubscriptionId",
         error: leadResponse.error,
       });
-      return  { success: false, error: "Error retrieving lead" }; 
+      return { success: false, error: "Error retrieving lead" };
     }
 
     const {
@@ -1359,7 +1371,10 @@ const subscriptionActivatedFunction = async (subscription_id: string,) => {
           model: "userCompany/assignPassword",
           error: userCopmpanyResponse.error,
         });
-        return { success: false, error: "Error assigning password to user company" };
+        return {
+          success: false,
+          error: "Error assigning password to user company",
+        };
       }
 
       const attachmentCompany = [
@@ -1520,7 +1535,6 @@ const subscriptionActivatedFunction = async (subscription_id: string,) => {
 
     if (responses.length > 0) {
       return responses;
-      
     }
 
     createLogger.info({
@@ -1535,5 +1549,4 @@ const subscriptionActivatedFunction = async (subscription_id: string,) => {
     });
     return { success: false, error: "Error updating subscription" };
   }
-
-}
+};
