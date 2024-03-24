@@ -17,22 +17,28 @@ const reveniuController = async (req: any, res: any) => {
       res.status(500).json({ error: cronResponse.error });
       return;
     }
-if (cronResponse.success){
-  const executeWebHook = await apiServiClick.post(
-    "/api/webhook/reveniuWebHook",
-    { id: cronResponse.data?.id, event: cronResponse.data?.event, createddate: cronResponse.data?.createddate, subscription_id: cronResponse.data?.subscription_id}
-  );
+    if (cronResponse.success) {
+      const executeWebHook = await apiServiClick.post(
+        "/api/webhook/reveniuWebHook",
+        {
+          id: cronResponse.data?.id,
+          event: cronResponse.data?.event,
+          createddate: cronResponse.data?.createddate,
+          subscription_id: cronResponse.data?.subscription_id,
+        }
+      );
 
-  if (executeWebHook.status !== 200) {
-    createLogger.error({
-      url: `${apiServiClick}/api/webhook/reveniuWebHook`,
-      error: executeWebHook.statusText,
-    });
-    res.status(500).json({ error: executeWebHook.statusText });
-    return;
-  } 
-}
+      if (executeWebHook.status !== 200) {
+        createLogger.error({
+          url: `${apiServiClick}/api/webhook/reveniuWebHook`,
+          error: executeWebHook.statusText,
+        });
+        res.status(500).json({ error: executeWebHook.statusText });
+        return;
+      }
+    }
     res.status(200).json(cronResponse.data);
+    return;
   } catch (error) {
     createLogger.error({
       controller: "reveniu",
