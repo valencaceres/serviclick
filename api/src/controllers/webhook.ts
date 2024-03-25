@@ -796,171 +796,171 @@ const reveniuWebHook = async (req: any, res: any) => {
       return res.status(200).json("OK");
     }
 
-    if (event === "subscription_deactivated") {
-      const leadResponse = await LeadModel.getPolicyBySubscriptionId(
-        subscription_id
-      );
+    // if (event === "subscription_deactivated") {
+    //   const leadResponse = await LeadModel.getPolicyBySubscriptionId(
+    //     subscription_id
+    //   );
 
-      if (!leadResponse.success) {
-        createLogger.error({
-          model: `lead/getPolicyBySubscriptionId`,
-          error: leadResponse.error,
-        });
-        return res.status(500).json({ error: "Error obtaining policy" });
-      }
+    //   if (!leadResponse.success) {
+    //     createLogger.error({
+    //       model: `lead/getPolicyBySubscriptionId`,
+    //       error: leadResponse.error,
+    //     });
+    //     return res.status(500).json({ error: "Error obtaining policy" });
+    //   }
 
-      const { id: lead_id } = leadResponse.data;
-      const leadUpdatePaymentDeactive = await LeadModel.updatePaymentDeactive(
-        lead_id
-      );
+    //   const { id: lead_id } = leadResponse.data;
+    //   const leadUpdatePaymentDeactive = await LeadModel.updatePaymentDeactive(
+    //     lead_id
+    //   );
 
-      if (!leadUpdatePaymentDeactive.success) {
-        createLogger.error({
-          model: "lead/updatePaymentDeactive",
-          error: leadUpdatePaymentDeactive.error,
-        });
-        return res.status(500).json({ error: "Error updating payment" });
-      }
+    //   if (!leadUpdatePaymentDeactive.success) {
+    //     createLogger.error({
+    //       model: "lead/updatePaymentDeactive",
+    //       error: leadUpdatePaymentDeactive.error,
+    //     });
+    //     return res.status(500).json({ error: "Error updating payment" });
+    //   }
 
-      const leadInsuredResponse = await LeadModel.getInsuredById(lead_id);
+    //   const leadInsuredResponse = await LeadModel.getInsuredById(lead_id);
 
-      if (!leadInsuredResponse.success) {
-        createLogger.error({
-          model: "lead/getInsuredById",
-          error: leadInsuredResponse.error,
-        });
-        return res.status(500).json({ error: "Error retrieving insured" });
-      }
+    //   if (!leadInsuredResponse.success) {
+    //     createLogger.error({
+    //       model: "lead/getInsuredById",
+    //       error: leadInsuredResponse.error,
+    //     });
+    //     return res.status(500).json({ error: "Error retrieving insured" });
+    //   }
 
-      const insuredResponse = await InsuredModel.getById(
-        leadInsuredResponse.data[0].id
-      );
+    //   const insuredResponse = await InsuredModel.getById(
+    //     leadInsuredResponse.data[0].id
+    //   );
 
-      if (!insuredResponse.success) {
-        createLogger.error({
-          model: "insured/getByIdModel",
-          error: insuredResponse.error,
-        });
-        return res.status(500).json({ error: "Error retrieving insured" });
-      }
+    //   if (!insuredResponse.success) {
+    //     createLogger.error({
+    //       model: "insured/getByIdModel",
+    //       error: insuredResponse.error,
+    //     });
+    //     return res.status(500).json({ error: "Error retrieving insured" });
+    //   }
 
-      const emailData = {
-        from: { name: "Informaciones ServiClick" },
-        to: insuredResponse.data.email,
-        subject: "Tu subscripcion ha sido desactivada",
-        message: `<b>Hola&nbsp;${insuredResponse.data.name}</b><br/><br/>Te informamos que tu subscripcion ha sido desactivada.<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
-        attachments: "",
-      };
+    //   const emailData = {
+    //     from: { name: "Informaciones ServiClick" },
+    //     to: insuredResponse.data.email,
+    //     subject: "Tu subscripcion ha sido desactivada",
+    //     message: `<b>Hola&nbsp;${insuredResponse.data.name}</b><br/><br/>Te informamos que tu subscripcion ha sido desactivada.<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
+    //     attachments: "",
+    //   };
 
-      createLogger.info({
-        url: config.email.URL.send,
-        method: "POST",
-        body: emailData,
-        params: "",
-        query: "",
-      });
+    //   createLogger.info({
+    //     url: config.email.URL.send,
+    //     method: "POST",
+    //     body: emailData,
+    //     params: "",
+    //     query: "",
+    //   });
 
-      const emailResponse: any = await axios.post(
-        config.email.URL.send,
-        emailData,
-        {
-          headers: config.email.apiKey,
-        }
-      );
+    //   const emailResponse: any = await axios.post(
+    //     config.email.URL.send,
+    //     emailData,
+    //     {
+    //       headers: config.email.apiKey,
+    //     }
+    //   );
 
-      if (emailResponse.status !== 200) {
-        createLogger.error({
-          url: `config.email.URL.send`,
-          error: emailResponse.statusText,
-        });
-        return res.status(500).json({ error: "Error sending email" });
-      }
+    //   if (emailResponse.status !== 200) {
+    //     createLogger.error({
+    //       url: `config.email.URL.send`,
+    //       error: emailResponse.statusText,
+    //     });
+    //     return res.status(500).json({ error: "Error sending email" });
+    //   }
 
-      return res.status(200).json("OK");
-    }
+    //   return res.status(200).json("OK");
+    // }
 
-    if (event === "subscription_renewal_cancelled") {
-      const leadResponse = await LeadModel.getPolicyBySubscriptionId(
-        subscription_id
-      );
+    // if (event === "subscription_renewal_cancelled") {
+    //   const leadResponse = await LeadModel.getPolicyBySubscriptionId(
+    //     subscription_id
+    //   );
 
-      if (!leadResponse.success) {
-        createLogger.error({
-          model: `lead/getPolicyBySubscriptionId`,
-          error: leadResponse.error,
-        });
-        return res.status(500).json({ error: "Error obtaining policy" });
-      }
+    //   if (!leadResponse.success) {
+    //     createLogger.error({
+    //       model: `lead/getPolicyBySubscriptionId`,
+    //       error: leadResponse.error,
+    //     });
+    //     return res.status(500).json({ error: "Error obtaining policy" });
+    //   }
 
-      const { id: lead_id } = leadResponse.data;
-      const leadUpdatePaymentDeactive = await LeadModel.updatePaymentDeactive(
-        lead_id
-      );
+    //   const { id: lead_id } = leadResponse.data;
+    //   const leadUpdatePaymentDeactive = await LeadModel.updatePaymentDeactive(
+    //     lead_id
+    //   );
 
-      if (!leadUpdatePaymentDeactive.success) {
-        createLogger.error({
-          model: "lead/updatePaymentDeactive",
-          error: leadUpdatePaymentDeactive.error,
-        });
-        return res.status(500).json({ error: "Error updating payment" });
-      }
+    //   if (!leadUpdatePaymentDeactive.success) {
+    //     createLogger.error({
+    //       model: "lead/updatePaymentDeactive",
+    //       error: leadUpdatePaymentDeactive.error,
+    //     });
+    //     return res.status(500).json({ error: "Error updating payment" });
+    //   }
 
-      const leadInsuredResponse = await LeadModel.getInsuredById(lead_id);
+    //   const leadInsuredResponse = await LeadModel.getInsuredById(lead_id);
 
-      if (!leadInsuredResponse.success) {
-        createLogger.error({
-          model: "lead/getInsuredById",
-          error: leadInsuredResponse.error,
-        });
-        return res.status(500).json({ error: "Error retrieving insured" });
-      }
+    //   if (!leadInsuredResponse.success) {
+    //     createLogger.error({
+    //       model: "lead/getInsuredById",
+    //       error: leadInsuredResponse.error,
+    //     });
+    //     return res.status(500).json({ error: "Error retrieving insured" });
+    //   }
 
-      const insuredResponse = await InsuredModel.getById(
-        leadInsuredResponse.data[0].id
-      );
+    //   const insuredResponse = await InsuredModel.getById(
+    //     leadInsuredResponse.data[0].id
+    //   );
 
-      if (!insuredResponse.success) {
-        createLogger.error({
-          model: "insured/getByIdModel",
-          error: insuredResponse.error,
-        });
-        return res.status(500).json({ error: "Error retrieving insured" });
-      }
+    //   if (!insuredResponse.success) {
+    //     createLogger.error({
+    //       model: "insured/getByIdModel",
+    //       error: insuredResponse.error,
+    //     });
+    //     return res.status(500).json({ error: "Error retrieving insured" });
+    //   }
 
-      const emailData = {
-        from: { name: "Informaciones ServiClick" },
-        to: insuredResponse.data.email,
-        subject: "Tu subscripcion ha sido desactivada",
-        message: `<b>Hola&nbsp;${insuredResponse.data.name}</b><br/><br/>Te informamos que tu subscripcion ha sido desactivada.<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
-        attachments: "",
-      };
+    //   const emailData = {
+    //     from: { name: "Informaciones ServiClick" },
+    //     to: insuredResponse.data.email,
+    //     subject: "Tu subscripcion ha sido desactivada",
+    //     message: `<b>Hola&nbsp;${insuredResponse.data.name}</b><br/><br/>Te informamos que tu subscripcion ha sido desactivada.<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
+    //     attachments: "",
+    //   };
 
-      createLogger.info({
-        url: config.email.URL.send,
-        method: "POST",
-        body: emailData,
-        params: "",
-        query: "",
-      });
+    //   createLogger.info({
+    //     url: config.email.URL.send,
+    //     method: "POST",
+    //     body: emailData,
+    //     params: "",
+    //     query: "",
+    //   });
 
-      const emailResponse: any = await axios.post(
-        config.email.URL.send,
-        emailData,
-        {
-          headers: config.email.apiKey,
-        }
-      );
+    //   const emailResponse: any = await axios.post(
+    //     config.email.URL.send,
+    //     emailData,
+    //     {
+    //       headers: config.email.apiKey,
+    //     }
+    //   );
 
-      if (emailResponse.status !== 200) {
-        createLogger.error({
-          url: `config.email.URL.send`,
-          error: emailResponse.statusText,
-        });
-        return res.status(500).json({ error: "Error sending email" });
-      }
+    //   if (emailResponse.status !== 200) {
+    //     createLogger.error({
+    //       url: `config.email.URL.send`,
+    //       error: emailResponse.statusText,
+    //     });
+    //     return res.status(500).json({ error: "Error sending email" });
+    //   }
 
-      return res.status(200).json("OK");
-    }
+    //   return res.status(200).json("OK");
+    // }
 
     createLogger.info({
       controller: "webhook/reveniu",
