@@ -611,7 +611,7 @@ const reveniuWebHook = async (req: any, res: any) => {
           success: true,
         },
       });
-      res.status(200).json("OK");
+      return res.status(200).json("OK");
     }
 
     if (event === "subscription_payment_succeeded") {
