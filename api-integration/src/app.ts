@@ -1,17 +1,19 @@
 import express, { Express, Request, Response, NextFunction } from "express";
+import helmet from "helmet";
 import cors from "cors";
+import path from "path";
+
 /* import { allowedOrigins } from "./util/allowedOrigins";*/
+
 import * as routes from "./routes";
 import { reqLogger } from "./middlewares/logger";
 import createLogger from "./util/logger";
 import { setSecurityHeaders } from "./middlewares/setSecurityHeaders";
-import path from "path";
-import helmet from "helmet";
 
 const corsOptions = {
   preflightContinue: false,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-/*   origin: (
+  /*   origin: (
     origin: string | undefined,
     callback: (err: Error | null, allow?: boolean) => void
   ) => {
@@ -34,9 +36,11 @@ const corsOptions = {
 
 function initializeMiddlewares(server: Express) {
   server.use(setSecurityHeaders);
-  server.use(express.json());
+  // server.use(express.json());
+  // server.use(express.urlencoded({ extended: false }));
+  server.use(express.json({ limit: "50mb" }));
+  server.use(express.urlencoded({ extended: true, limit: "50mb" }));
   server.use(cors(corsOptions));
-  server.use(express.urlencoded({ extended: false }));
   server.use(
     helmet({
       contentSecurityPolicy: {
@@ -78,7 +82,6 @@ function initializeRoutes(server: Express) {
 
     return res.status(500).json({ error: "Internal server error" });
   });
-
 }
 
 const server = express();
