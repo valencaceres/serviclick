@@ -7,6 +7,7 @@ const datetoString = () => {
 };
 
 export default createLogger({
+  // Comentario TEST
   format: format.combine(
     format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
     format.json()
