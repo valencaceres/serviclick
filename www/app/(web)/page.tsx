@@ -77,22 +77,12 @@ export default async function IndexPage() {
 
   return (
     <>
-      {/* <HeroSection hero={hero} />
+      <HeroSection hero={hero} />
       <AssistanceSection assistances={categories} />
       <AboutUsSection />
       <NewsSection news={news} />
       <CustomerSection />
-      <AllianceSection /> */}
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-        }}
-      >
-        <img src="/banner.png" alt="Serviclick" />
-        <img src="/footer.png" alt="Serviclick" />
-      </div>
+      <AllianceSection />
     </>
   )
 }
