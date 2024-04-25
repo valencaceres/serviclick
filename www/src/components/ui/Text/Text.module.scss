@@ -1,0 +1,73 @@
+@import "../../../styles/mixins.scss";
+
+.text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+
+  @include media-sm() {
+    gap: 10px;
+  }
+  @include media-md() {
+    gap: 15px;
+  }
+
+  .textParagraph {
+    font-size: 20px;
+    font-weight: 200;
+    width: auto;
+    text-align: center;
+    color: #03495c;
+
+    @include media-lg() {
+      font-size: 18px;
+      width: 100%;
+      padding: 10px;
+    }
+
+    @include media-sm() {
+      font-size: 16px;
+      width: 100%;
+      padding: 10px;
+    }
+  }
+}
+
+.textStart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+
+  @include media-sm() {
+    gap: 10px;
+  }
+  @include media-md() {
+    gap: 15px;
+  }
+
+  .textParagraph {
+    font-size: 18px;
+    font-weight: 400;
+    width: 100%;
+    text-align: justify;
+    color: #03495c;
+
+    @include media-lg() {
+      font-size: 14px;
+      width: 100%;
+      padding: 10px;
+    }
+
+    @include media-md() {
+      font-size: 12px;
+      width: 100%;
+      padding: 10px;
+    }
+  }
+}

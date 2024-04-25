@@ -1,0 +1,54 @@
+@import "../../../styles/mixins.scss";
+
+.title {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.large {
+  font-size: 32px;
+  font-weight: 600;
+
+  @include media-lg() {
+    font-size: 28px;
+  }
+  @include media-md() {
+    font-size: 24px;
+  }
+  @include media-sm() {
+    font-size: 20px;
+  }
+}
+
+.medium {
+  font-size: 24px;
+  font-weight: 600;
+
+  @include media-lg() {
+    font-size: 22px;
+  }
+  @include media-md() {
+    font-size: 20px;
+  }
+  @include media-sm() {
+    font-size: 18px;
+  }
+}
+
+.small {
+  font-size: 14px;
+  font-weight: 600;
+
+  @include media-lg() {
+    font-size: 12px;
+  }
+  @include media-md() {
+    font-size: 10px;
+  }
+  @include media-sm() {
+    font-size: 10px;
+  }
+}

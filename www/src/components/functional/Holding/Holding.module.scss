@@ -1,0 +1,54 @@
+@import "../../../styles/mixins.scss";
+
+.holding {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 150px 60px;
+  width: auto;
+  position: relative;
+
+  @include media-md() {
+    margin: 80px 20px;
+  }
+  
+
+  .line {
+    padding: 20px;
+    border: solid 4px #03495c;
+    border-radius: 20px;
+    position: relative;
+    width: 100%;
+  }
+
+  .rowOne {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+
+    @include media-md() {
+    }
+  }
+
+  .rowTwo {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+  }
+
+  .rowThree {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    img {
+      padding: 10px;
+    }
+  }
+}

@@ -1,0 +1,62 @@
+@import "../../../styles/mixins.scss";
+
+.container {
+  max-width: 100%;
+  height: auto;
+
+  .logo {
+    display: block;
+    max-width: 100%;
+    height: auto;
+
+    @include media-lg() {
+      display: none;
+    }
+
+    @include media-md() {
+      display: none;
+    }
+
+    @include media-sm() {
+      display: none;
+    }
+  }
+
+  .secondImg {
+    display: none;
+
+    @include media-lg() {
+      display: block;
+    }
+
+    @include media-md() {
+      display: block;
+    }
+
+    @include media-sm() {
+      display: block;
+    }
+  }
+
+  .thirdImg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+
+    @include media-xxl() {
+      display: none;
+    }
+    @include media-xl() {
+      display: none;
+    }
+    @include media-lg() {
+      display: block;
+    }
+    @include media-md() {
+      display: block;
+    }
+    @include media-sm() {
+      display: block;
+    }
+  }
+}
