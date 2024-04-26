@@ -53,6 +53,7 @@ const initialData: ILead = {
     currency_code: "",
     frequency_code: "",
     productPlan_id: 0,
+    beneficiary_price: 0,
   },
   insured: [],
   link: "",
