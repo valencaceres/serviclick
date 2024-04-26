@@ -67,6 +67,7 @@ const Contractor = () => {
         currency_code: "P",
         frequency_code: product.plan.frequencyCode,
         productPlan_id: product.plan.planId,
+        beneficiary_price: product.plan.beneficiary_price,
       },
       subscription: false,
       send: false,
@@ -116,8 +117,7 @@ const Contractor = () => {
               completedForm ? "bg-[#03495C]" : "bg-gray-400"
             } ${!completedForm && "cursor-not-allowed"}  active:bg-opacity-80`}
             onClick={handleClickRegister}
-            disabled={!completedForm}
-          >
+            disabled={!completedForm}>
             Registrar
           </Button>
         </CardFooter>
