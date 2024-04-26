@@ -38,6 +38,7 @@ interface IProduct {
   currency_code: string;
   frequency_code: string;
   productPlan_id: number;
+  beneficiary_price: number;
 }
 
 interface IBeneficiary {
