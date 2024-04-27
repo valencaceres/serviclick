@@ -192,7 +192,7 @@ const createPlans = async (req: any, res: any) => {
     price.company,
     price.yearly,
     discount,
-    beneficiary_price,
+    beneficiary_price
   );
 
   if (!responsePlans.success) {
@@ -213,8 +213,16 @@ const createPlans = async (req: any, res: any) => {
 };
 
 const assignPrices = async (req: any, res: any) => {
-  const { id, agent_id, baseprice, customerprice, companyprice, yearlyprice, discount , beneficiary_price} =
-    req.body;
+  const {
+    id,
+    agent_id,
+    baseprice,
+    customerprice,
+    companyprice,
+    yearlyprice,
+    discount,
+    beneficiary_price,
+  } = req.body;
   const responsePlans = await createProductPlans(
     id,
     agent_id,
@@ -391,7 +399,7 @@ const listProducts = async (req: any, res: any) => {
       plan: {
         customer: { id: row.customer_plan_id, price: row.customer_plan_price },
         company: { id: row.company_plan_id, price: row.company_plan_price },
-        yearly: {id: row.yearly_plan_id, price: row.yearly_plan_price},
+        yearly: { id: row.yearly_plan_id, price: row.yearly_plan_price },
       },
       isSubject: row.issubject,
       frequency: row.frequency,
@@ -440,7 +448,7 @@ const getProductByFamilyId = async (req: any, res: any) => {
       plan: {
         customer: { id: row.customer_plan_id, price: row.customer_plan_price },
         company: { id: row.company_plan_id, price: row.company_plan_price },
-        yearly: {id: row.yearly_plan_id, price: row.yearly_plan_price},
+        yearly: { id: row.yearly_plan_id, price: row.yearly_plan_price },
       },
       isSubject: row.issubject,
       frequency: row.frequency,
@@ -613,8 +621,11 @@ const getByIdWithPrices = async (req: any, res: any) => {
   // });
 };
 
-const insertPdf = async (product_plan_id: string, pdfBase64:string) => {
-  const productPdfResponse = await ProductPlan.insertPdf(product_plan_id, pdfBase64);
+const insertPdf = async (product_plan_id: string, pdfBase64: string) => {
+  const productPdfResponse = await ProductPlan.insertPdf(
+    product_plan_id,
+    pdfBase64
+  );
   if (!productPdfResponse.success) {
     createLogger.error({
       model: "productPlan/insertPdf",
@@ -623,8 +634,7 @@ const insertPdf = async (product_plan_id: string, pdfBase64:string) => {
     return { success: false, error: productPdfResponse.error };
   }
   return { success: true, data: productPdfResponse.data };
-
-}
+};
 
 const createProductPlans = async (
   id: string,
@@ -643,7 +653,7 @@ const createProductPlans = async (
       error: productResponse.error,
     });
     return { success: false, error: productResponse.error };
-  } 
+  }
   const {
     name,
     alias,
@@ -651,11 +661,11 @@ const createProductPlans = async (
     dueday,
     customer_plan_id,
     company_plan_id,
-    yearly_plan_id
+    yearly_plan_id,
   }: ProductT = productResponse.data;
- let yearly_plan_id_new = yearly_plan_id
-let company_plan_id_new = company_plan_id
-let customer_plan_id_new = customer_plan_id
+  let yearly_plan_id_new = yearly_plan_id;
+  let company_plan_id_new = company_plan_id;
+  let customer_plan_id_new = customer_plan_id;
   // const productPlansDeleted = await Product.deletePlans(id, agent_id);
 
   // if (!productPlansDeleted.success) {
@@ -672,7 +682,7 @@ let customer_plan_id_new = customer_plan_id
     M: 3,
     A: 4,
   };
- const frecuencyData = FrequencyCode[frequency]
+  const frecuencyData = FrequencyCode[frequency];
   let productData = {
     frequency: FrequencyCode[frequency],
     cicles: 1,
@@ -708,19 +718,22 @@ let customer_plan_id_new = customer_plan_id
 
   let companyData: any = null;
   let customerData: any = null;
-  let yearlyData: any = null
+  let yearlyData: any = null;
   let is_custom_amount = false;
 
-  if (productResponse.data.beneficiaries > 0 && beneficiary_price && beneficiary_price > 0) {
-      is_custom_amount = true;
-  }else{
-    is_custom_amount= false
+  if (
+    productResponse.data.beneficiaries > 0 &&
+    beneficiary_price &&
+    beneficiary_price > 0
+  ) {
+    is_custom_amount = true;
+  } else {
+    is_custom_amount = false;
   }
 
-
   if (yearlyprice && yearlyprice > 0) {
-    productPlanData.frequency = 4
-   
+    productPlanData.frequency = 4;
+
     try {
       const planReveniuResponse = await axios.get(
         `${config.reveniu.URL.plan}${yearly_plan_id_new}`,
@@ -729,11 +742,12 @@ let customer_plan_id_new = customer_plan_id
         }
       );
     } catch (err) {
-      console.log("error 404 not found yearly_plan will be replaced by 0", );
+      createLogger.error({
+        controller: "product/createProductPlans",
+        error: "Error 404 - Not found yearly_plan will be replaced by 0",
+      });
       yearly_plan_id_new = 0;
     }
-
-        
 
     const planResponseYearly = await axios[
       yearly_plan_id_new > 0 ? "patch" : "post"
@@ -759,7 +773,7 @@ let customer_plan_id_new = customer_plan_id
       data: {
         ...productPlanData,
         is_custom_amount: is_custom_amount,
-        price: yearlyprice ?? 0 ,
+        price: yearlyprice ?? 0,
       },
       response: planResponseYearly.data,
     });
@@ -770,7 +784,7 @@ let customer_plan_id_new = customer_plan_id
       planResponseYearly.data.id,
       "yearly",
       baseprice || 0,
-      yearlyprice ?? 0 ,
+      yearlyprice ?? 0,
       "A",
       discount,
       yearly_plan_id,
@@ -787,14 +801,15 @@ let customer_plan_id_new = customer_plan_id
     yearlyData = {
       id: planResponseYearly.data.id,
       price: planResponseYearly.data.price,
-      product_plan_id:productPlanYearlyResponse.data.id
+      product_plan_id: productPlanYearlyResponse.data.id,
     };
   }
 
   if (companyprice && companyprice > 0) {
-    productPlanData.frequency = frecuencyData
+    productPlanData.frequency = frecuencyData;
     let new_company_plan_id = company_plan_id_new > 0 ? company_plan_id_new : 0;
-    let company_plan_id_extr = company_plan_id_new > 0 ? company_plan_id_new : 0;
+    let company_plan_id_extr =
+      company_plan_id_new > 0 ? company_plan_id_new : 0;
     try {
       const planReveniuResponse = await axios.get(
         `${config.reveniu.URL.plan}${new_company_plan_id}`,
@@ -803,7 +818,10 @@ let customer_plan_id_new = customer_plan_id
         }
       );
     } catch (err) {
-      console.log("error 404 not found company plan will be replaced by 0", );
+      createLogger.error({
+        controller: "product/createProductPlans",
+        error: "Error 404 - Not found yearly_plan will be replaced by 0",
+      });
       new_company_plan_id = 0;
     }
 
@@ -876,14 +894,12 @@ let customer_plan_id_new = customer_plan_id
 
     companyData = {
       id: new_company_plan_id,
-      price: companyprice ?? 0 ,
+      price: companyprice ?? 0,
     };
-  } 
-
-
+  }
 
   if (customerprice && customerprice > 0) {
-    productPlanData.frequency = frecuencyData
+    productPlanData.frequency = frecuencyData;
     try {
       const planReveniuResponse = await axios.get(
         `${config.reveniu.URL.plan}${customer_plan_id_new}`,
@@ -892,11 +908,12 @@ let customer_plan_id_new = customer_plan_id
         }
       );
     } catch (err) {
-      console.log("error 404 not found customer plan will be replaced by 0", );
+      createLogger.error({
+        controller: "product/createProductPlans",
+        error: "Error 404 - Not found yearly_plan will be replaced by 0",
+      });
       customer_plan_id_new = 0;
     }
-  
- 
 
     const planResponseCustomer = await axios[
       customer_plan_id_new > 0 ? "patch" : "post"
@@ -907,7 +924,7 @@ let customer_plan_id_new = customer_plan_id
       {
         ...productPlanData,
         is_custom_amount: is_custom_amount,
-        price: customerprice ?? 0 ,
+        price: customerprice ?? 0,
       },
       {
         headers: config.reveniu.apiKey,
@@ -949,11 +966,9 @@ let customer_plan_id_new = customer_plan_id
     customerData = {
       id: planResponseCustomer.data.id,
       price: planResponseCustomer.data.price,
-      product_plan_id:productPlanCustomerResponse.data.id
-
+      product_plan_id: productPlanCustomerResponse.data.id,
     };
   }
-
 
   return {
     success: true,
@@ -961,12 +976,9 @@ let customer_plan_id_new = customer_plan_id
       customer: customerData,
       company: companyData,
       yearly: yearlyData,
-
     },
   };
 };
-
-
 
 const createProductCoverages = async (id: string, coverages: any) => {
   const errors: any = [];
@@ -1164,7 +1176,10 @@ const listByFamilies = async (req: any, res: any) => {
   const { agent } = req.params;
 
   const result = await Product.listByFamilies(agent);
-  const filteredData = result?.data?.filter(item => item.hasOwnProperty('family_name') && item.family_name === 'Veterinaria');
+  const filteredData = result?.data?.filter(
+    (item: any) =>
+      item.hasOwnProperty("family_name") && item.family_name === "Veterinaria"
+  );
   if (!result.success) {
     createLogger.error({
       model: "product/listByFamilies",
@@ -1181,7 +1196,6 @@ const listByFamilies = async (req: any, res: any) => {
 
   return res.status(200).json(result.data);
 };
-
 
 const getSuscriptionsByAgentId = async (req: any, res: any) => {
   const { agent } = req.params;
@@ -1250,5 +1264,5 @@ export {
   listByFamilies,
   getPdfContractById,
   getSuscriptionsByAgentId,
-  insertPdf
+  insertPdf,
 };

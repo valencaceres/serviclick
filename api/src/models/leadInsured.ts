@@ -20,7 +20,7 @@ const createModel: any = async (lead_id: string, insured_id: string) => {
       [lead_id, insured_id]
     );
 
-    if (resultExists.rowCount > 0) {
+    if (resultExists && resultExists.rowCount && resultExists.rowCount > 0) {
       return { success: true, data: resultExists.rows[0], error: null };
     }
 

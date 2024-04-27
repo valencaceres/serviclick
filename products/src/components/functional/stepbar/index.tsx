@@ -24,9 +24,10 @@ const StepBar = ({
       ? `/${stepCode}?productPlanId=${productPlanId}`
       : `/${stepCode}`;
   };
-  console.log(lead);
+
   const showBeneficiariesStep = beneficiaries && beneficiaries > 0;
   const paymentStepNumber = showBeneficiariesStep ? 5 : 4;
+
   const isDisabled = (stepCode: string) => {
     if (router?.query?.stage?.includes(stepCode)) {
       return false;
@@ -68,8 +69,7 @@ const StepBar = ({
               : "bg-[#B4CD25]"
           }`}
           disabled={isDisabled(step.code)}
-          onClick={() => handleClick(step.code)}
-        >
+          onClick={() => handleClick(step.code)}>
           {step.code === "payment" && (!beneficiaries || beneficiaries <= 0)
             ? paymentStepNumber
             : step.number}

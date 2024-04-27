@@ -1,9 +1,6 @@
 import axios from "axios";
 import { IClerkUser } from "../interfaces/person";
-import { clerkClient } from '@clerk/clerk-sdk-node';
-
-
-
+import { clerkClient } from "@clerk/clerk-sdk-node";
 
 export const fetchtAllClerkUsers = async () => {
   try {
@@ -15,7 +12,6 @@ export const fetchtAllClerkUsers = async () => {
         },
       }
     );
-    console.log(response.data);
     return {
       success: true,
       data: response.data,
@@ -178,10 +174,10 @@ export const fetchClerkUser = async (userId: string) => {
 };
 
 export const fetchClerkUserByEmail = async (email: string) => {
-  const  emailAddress =  [email]
+  const emailAddress = [email];
   try {
-    const response = await clerkClient.users.getUserList({emailAddress});
-   
+    const response = await clerkClient.users.getUserList({ emailAddress });
+
     return {
       success: true,
       data: response,
@@ -196,7 +192,6 @@ export const fetchClerkUserByEmail = async (email: string) => {
     };
   }
 };
-
 
 export const updateClerkUser = async (data: any) => {
   try {
@@ -219,15 +214,11 @@ export const updateClerkUser = async (data: any) => {
 
 export const createClerkUser = async (data: any) => {
   try {
-    const response = await axios.post(
-      `https://api.clerk.com/v1/users`,
-      data,
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`,
-        },
-      }
-    );
+    const response = await axios.post(`https://api.clerk.com/v1/users`, data, {
+      headers: {
+        Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`,
+      },
+    });
     return {
       success: true,
       data: response.data,
@@ -240,4 +231,4 @@ export const createClerkUser = async (data: any) => {
       error: "Error creating users",
     };
   }
-}
+};

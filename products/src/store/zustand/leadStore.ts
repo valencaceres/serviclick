@@ -139,6 +139,7 @@ export const leadStore = create<leadState>((set, get) => ({
         isError: false,
         error: "",
       }));
+
       const { data } = await apiInstance.post(`/lead/create`, lead);
       set((state) => ({
         ...state,

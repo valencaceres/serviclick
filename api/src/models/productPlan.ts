@@ -13,7 +13,6 @@ const createModel: any = async (
   beneficiary_price: number
 ) => {
   try {
-    console.log("benprice", beneficiary_price)
     const resultProductPlan = await pool.query(
       "SELECT 1 FROM app.productPlan WHERE agent_id = $1 AND type = $2 AND product_id = $3 AND plan_id = $4",
       [agent_id, type, id, plan_id_extr]
@@ -64,7 +63,7 @@ const createModel: any = async (
       discount.type,
       discount.percent,
       discount.cicles,
-      beneficiary_price
+      beneficiary_price,
     ]);
 
     return { success: true, data: result.rows[0], error: null };
@@ -179,7 +178,7 @@ const insertPdf: any = async (product_plan_id: string, pdfBase64: string) => {
         "UPDATE app.productplanpdf SET base64 = $1 WHERE productplan_id = $2 RETURNING *",
         [pdfBase64, product_plan_id]
       );
-      
+
       return { success: true, data: updateResult.rows[0], error: null };
     } else {
       const insertResult = await pool.query(
@@ -192,8 +191,6 @@ const insertPdf: any = async (product_plan_id: string, pdfBase64: string) => {
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
   }
-}
-
-
+};
 
 export { createModel, getByProductIdModel, getProductById, getById, insertPdf };

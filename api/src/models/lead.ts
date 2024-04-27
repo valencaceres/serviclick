@@ -40,20 +40,6 @@ const upsert = async (
         endDate,
       ]
     );
-    console.log([
-      productPlanId,
-      rut,
-      name,
-      paternalLastName,
-      maternalLastName,
-      address,
-      district,
-      email,
-      phone,
-      birthDate,
-      initialDate,
-      endDate,
-    ]);
     return { success: true, data: result.rows[0], error: null };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
@@ -520,8 +506,7 @@ const updatePaymentDeactive: any = async (id: string) => {
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
   }
-}
-
+};
 
 export {
   upsert,
@@ -539,5 +524,5 @@ export {
   updateSubscriptionCron,
   getDiscountBySubscriptionId,
   getPolicyBySubscriptionId,
-  updatePaymentDeactive
+  updatePaymentDeactive,
 };

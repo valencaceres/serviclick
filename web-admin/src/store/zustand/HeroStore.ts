@@ -186,7 +186,6 @@ export const heroStore = create<userState>((set, get) => ({
     options?: { onSuccess?: () => void }
   ) => {
     try {
-      console.log(category_id);
       set((state) => ({ ...state, isLoading: true }));
       const { data } = await apiInstance.put(`web/updateHero?type=${type}`, {
         alt,

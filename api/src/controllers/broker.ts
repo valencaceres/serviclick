@@ -7,7 +7,11 @@ import * as BrokerProduct from "../models/brokerProduct";
 import * as UserBroker from "../models/userBroker";
 import * as BrokerUser from "../models/brokerUser";
 import * as Product from "./product";
-import { updateClerkUser, createClerkUser, fetchClerkUserByEmail } from "../util/clerkUserData";
+import {
+  updateClerkUser,
+  createClerkUser,
+  fetchClerkUserByEmail,
+} from "../util/clerkUserData";
 
 const createFull = async (req: any, res: any) => {
   try {
@@ -71,7 +75,8 @@ const createFull = async (req: any, res: any) => {
           commisionTypeCode,
           value,
           currency,
-          discount,beneficiary_price
+          discount,
+          beneficiary_price,
         } = product;
 
         const responsePlans = await Product.createProductPlans(
@@ -82,7 +87,7 @@ const createFull = async (req: any, res: any) => {
           price.company,
           price.yearly,
           discount,
-          beneficiary_price,
+          beneficiary_price
         );
 
         if (!responsePlans.success) {
@@ -523,18 +528,20 @@ const addProduct = async (req: any, res: any) => {
     currency,
     discount,
     beneficiary_price,
-    pdfbase64
+    pdfbase64,
   } = req.body;
-  console.log(req.body)
-const responsePlans = await Product.createProductPlans(product_id,
-  broker_id,
-  price.base || null,
-  price.customer,
-  price.company,
-  price.yearly,
-  discount,
-  beneficiary_price)
-  
+
+  const responsePlans = await Product.createProductPlans(
+    product_id,
+    broker_id,
+    price.base || null,
+    price.customer,
+    price.company,
+    price.yearly,
+    discount,
+    beneficiary_price
+  );
+
   if (!responsePlans.success) {
     createLogger.error({
       controller: "product/createProductPlans",
@@ -543,12 +550,12 @@ const responsePlans = await Product.createProductPlans(product_id,
     res.status(500).json({ error: "Error creating product plans" });
     return;
   }
-  
+
   createLogger.info({
     controller: "product/createProductPlans",
     data: responsePlans.data,
   });
-  
+
   const brokerProductResponse = await BrokerProduct.create(
     broker_id,
     product_id,
@@ -559,36 +566,48 @@ const responsePlans = await Product.createProductPlans(product_id,
     commisionTypeCode,
     value,
     currency
-    );
-    
-    if (!brokerProductResponse.success) {
+  );
+
+  if (!brokerProductResponse.success) {
+    createLogger.error({
+      model: "brokerProduct/create",
+      error: brokerProductResponse.error,
+    });
+    res.status(500).json({ error: "Error creating broker product" });
+    return;
+  }
+  if (pdfbase64 && pdfbase64 != "") {
+    let response;
+    if (
+      responsePlans.data?.customer?.product_plan_id &&
+      responsePlans.data?.yearly?.product_plan_id
+    ) {
+      response = await Product.insertPdf(
+        responsePlans.data.customer.product_plan_id,
+        pdfbase64
+      );
+    } else if (responsePlans.data?.customer?.product_plan_id) {
+      response = await Product.insertPdf(
+        responsePlans.data.customer.product_plan_id,
+        pdfbase64
+      );
+    } else if (responsePlans.data?.yearly?.product_plan_id) {
+      response = await Product.insertPdf(
+        responsePlans.data.yearly.product_plan_id,
+        pdfbase64
+      );
+    }
+
+    if (!response || !response.success) {
       createLogger.error({
-        model: "brokerProduct/create",
-        error: brokerProductResponse.error,
+        model: "brokerProduct/InsertPdf",
+        error: response ? response.error : "No response received",
       });
-      res.status(500).json({ error: "Error creating broker product" });
+      res.status(500).json({ error: "Error inserting pdf" });
       return;
     }
-        if (pdfbase64 && pdfbase64 != "") {
-          let response;
-          if (responsePlans.data?.customer?.product_plan_id && responsePlans.data?.yearly?.product_plan_id) {
-            response = await Product.insertPdf(responsePlans.data.customer.product_plan_id, pdfbase64);
-          } else if (responsePlans.data?.customer?.product_plan_id) {
-            response = await Product.insertPdf(responsePlans.data.customer.product_plan_id, pdfbase64);
-          } else if (responsePlans.data?.yearly?.product_plan_id) {
-            response = await Product.insertPdf( responsePlans.data.yearly.product_plan_id, pdfbase64);
-          } 
-        
-          if (!response || !response.success) {
-            createLogger.error({
-              model: "brokerProduct/InsertPdf",
-              error: response ? response.error : "No response received",
-            });
-            res.status(500).json({ error: "Error inserting pdf" });
-            return;
-          }
-        }
-    const brokerProducts = await BrokerProduct.getByBrokerId(broker_id);
+  }
+  const brokerProducts = await BrokerProduct.getByBrokerId(broker_id);
   if (!brokerProducts.success) {
     createLogger.error({
       model: "brokerProduct/getByBrokerId",
@@ -597,7 +616,6 @@ const responsePlans = await Product.createProductPlans(product_id,
     res.status(500).json({ error: "Error retrieving broker product" });
     return;
   }
-  
 
   res.status(200).json(brokerProducts.data);
 };
@@ -657,50 +675,62 @@ const getAgents = async (req: any, res: any) => {
 
 const updateAgent = async (req: any, res: any) => {
   const { brokerId } = req.params;
-  const {  rut, name, paternallastname,  maternallastname,password, profileCode, email, district, rol_web_broker,  } = req.body;
+  const {
+    rut,
+    name,
+    paternallastname,
+    maternallastname,
+    password,
+    profileCode,
+    email,
+    district,
+    rol_web_broker,
+  } = req.body;
   const resultUserByEmail = await fetchClerkUserByEmail(email);
 
-  let userId 
-  if( resultUserByEmail.data && resultUserByEmail.data?.length > 0  ){
-    userId = resultUserByEmail.data[0].id
-  const response = await updateClerkUser({
-    user_id: resultUserByEmail.data[0].id,
-    first_name: name,
-    last_name: paternallastname,
-    public_metadata: {
-      roles: {
-        broker: rol_web_broker,
-        serviclick : (resultUserByEmail.data[0] as any).publicMetadata.roles.serviclick,
-        operations: (resultUserByEmail.data[0] as any).publicMetadata.roles.operations,
-        retail: (resultUserByEmail.data[0] as any).publicMetadata.roles.retail,
-        admin: (resultUserByEmail.data[0] as any).publicMetadata.roles.admin,
-        web_admin: (resultUserByEmail.data[0] as any).publicMetadata.roles.web_admin
+  let userId;
+  if (resultUserByEmail.data && resultUserByEmail.data?.length > 0) {
+    userId = resultUserByEmail.data[0].id;
+    const response = await updateClerkUser({
+      user_id: resultUserByEmail.data[0].id,
+      first_name: name,
+      last_name: paternallastname,
+      public_metadata: {
+        roles: {
+          broker: rol_web_broker,
+          serviclick: (resultUserByEmail.data[0] as any).publicMetadata.roles
+            .serviclick,
+          operations: (resultUserByEmail.data[0] as any).publicMetadata.roles
+            .operations,
+          retail: (resultUserByEmail.data[0] as any).publicMetadata.roles
+            .retail,
+          admin: (resultUserByEmail.data[0] as any).publicMetadata.roles.admin,
+          web_admin: (resultUserByEmail.data[0] as any).publicMetadata.roles
+            .web_admin,
+        },
       },
-    },
-  });
-  }
-  else{
+    });
+  } else {
     const response = await createClerkUser({
-
       first_name: name,
       last_name: paternallastname,
       email_address: [email],
       public_metadata: {
         roles: {
           broker: rol_web_broker,
-          serviclick : "user",
+          serviclick: "user",
           operations: "user",
-          retail:"user",
+          retail: "user",
           admin: "user",
-          web_admin: "user"
+          web_admin: "user",
         },
       },
-      password:password,
+      password: password,
     });
-    userId = response.data.id
+    userId = response.data.id;
   }
-const responseUpdateProfileCode = await BrokerUser.updateProfileCode(
-  userId,
+  const responseUpdateProfileCode = await BrokerUser.updateProfileCode(
+    userId,
     brokerId,
     profileCode,
     email,
@@ -746,8 +776,7 @@ const removeAgent = async (req: any, res: any) => {
   });
 
   res.status(200).json(response.data);
-}
-
+};
 
 const getByUserId = async (req: any, res: any) => {
   try {
@@ -843,7 +872,7 @@ export {
   getByUserId,
   getProductsById,
   getCollectionById,
-  removeAgent
+  removeAgent,
 };
 
 export const getBrokerDataById = async (id: string) => {

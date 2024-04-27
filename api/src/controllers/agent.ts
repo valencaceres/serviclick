@@ -122,7 +122,6 @@ const getById = async (req: any, res: any) => {
   res.status(200).json(agentResponse.data);
 };
 
-
 const getDataById = async (req: any, res: any) => {
   try {
     const { id } = req.params;
@@ -149,12 +148,10 @@ const getDataById = async (req: any, res: any) => {
   }
 };
 
-
 const postAgentProductPlan = async (req: any, res: any) => {
-  const { id} = req.params;
+  const { id } = req.params;
   const agentResponse = await Agent.postAgentProductPlan(id);
-  console.log("id:", id)
- console.log(agentResponse, "data")
+
   if (!agentResponse.success) {
     createLogger.error({
       model: "agent/postAgentProductPlan",
@@ -169,28 +166,23 @@ const postAgentProductPlan = async (req: any, res: any) => {
     message: "OK",
   });
   res.status(200).json(agentResponse.data);
-}
-
+};
 
 const addProduct = async (req: any, res: any) => {
   const {
     id: agent_id,
-   product:{
-    product_id,
-    price,
-    discount,
-    beneficiary_price,
-    pdfbase64
-   } 
+    product: { product_id, price, discount, beneficiary_price, pdfbase64 },
   } = req.body;
-const responsePlans = await Product.createProductPlans(product_id,
-  agent_id,
-  price.base,
-  price.customer,
-  price.company,
-  price.yearlyprice,
-  discount,
-  beneficiary_price)
+  const responsePlans = await Product.createProductPlans(
+    product_id,
+    agent_id,
+    price.base,
+    price.customer,
+    price.company,
+    price.yearlyprice,
+    discount,
+    beneficiary_price
+  );
   if (!responsePlans.success) {
     createLogger.error({
       controller: "product/createProductPlans",
@@ -199,12 +191,12 @@ const responsePlans = await Product.createProductPlans(product_id,
     res.status(500).json({ error: "Error creating product plans" });
     return;
   }
-  
+
   createLogger.info({
     controller: "product/createProductPlans",
     data: responsePlans.data,
   });
-  
+
   const agentProductResponse = await Agent.addProduct(
     agent_id,
     product_id,
@@ -212,54 +204,71 @@ const responsePlans = await Product.createProductPlans(product_id,
     responsePlans?.data?.company?.id || null,
     responsePlans?.data?.yearly?.id || null,
     price
-  )
-    
-    if (!agentProductResponse.success) {
+  );
+
+  if (!agentProductResponse.success) {
+    createLogger.error({
+      model: "agentProduct/create",
+      error: agentProductResponse.error,
+    });
+    res.status(500).json({ error: "Error creating agent product" });
+    return;
+  }
+  if (pdfbase64 && pdfbase64 != "") {
+    let response;
+    if (
+      responsePlans.data?.customer?.product_plan_id &&
+      responsePlans.data?.yearly?.product_plan_id
+    ) {
+      response = await Product.insertPdf(
+        responsePlans.data.customer.product_plan_id,
+        pdfbase64
+      );
+    } else if (responsePlans.data?.customer?.product_plan_id) {
+      response = await Product.insertPdf(
+        responsePlans.data.customer.product_plan_id,
+        pdfbase64
+      );
+    } else if (responsePlans.data?.yearly?.product_plan_id) {
+      response = await Product.insertPdf(
+        responsePlans.data.yearly.product_plan_id,
+        pdfbase64
+      );
+    }
+
+    if (!response || !response.success) {
       createLogger.error({
-        model: "agentProduct/create",
-        error: agentProductResponse.error,
+        model: "agentProduct/InsertPdf",
+        error: response ? response.error : "No response received",
       });
-      res.status(500).json({ error: "Error creating agent product" });
+      res.status(500).json({ error: "Error inserting pdf" });
       return;
     }
-        if (pdfbase64 && pdfbase64 != "") {
-          let response;
-          if (responsePlans.data?.customer?.product_plan_id && responsePlans.data?.yearly?.product_plan_id) {
-            response = await Product.insertPdf(responsePlans.data.customer.product_plan_id, pdfbase64);
-          } else if (responsePlans.data?.customer?.product_plan_id) {
-            response = await Product.insertPdf(responsePlans.data.customer.product_plan_id, pdfbase64);
-          } else if (responsePlans.data?.yearly?.product_plan_id) {
-            response = await Product.insertPdf( responsePlans.data.yearly.product_plan_id, pdfbase64);
-          } 
-        
-          if (!response || !response.success) {
-            createLogger.error({
-              model: "agentProduct/InsertPdf",
-              error: response ? response.error : "No response received",
-            });
-            res.status(500).json({ error: "Error inserting pdf" });
-            return;
-          }
-        }
-    const agentProducts = await Agent.getProductsByAgentId(agent_id);
+  }
+  const agentProducts = await Agent.getProductsByAgentId(agent_id);
   if (!agentProducts.success) {
     createLogger.error({
       model: "agentProduct/getByAgentId",
       error: agentProducts.error,
-    }); 
+    });
     res.status(500).json({ error: "Error retrieving agent product" });
     return;
   }
-  
 
   res.status(200).json(agentProducts.data);
-}; 
+};
 
-
-export { createAgent, updateAgent, deleteAgent, listAgents, getProcessById, getById , getDataById, postAgentProductPlan, addProduct};
-
-
-
+export {
+  createAgent,
+  updateAgent,
+  deleteAgent,
+  listAgents,
+  getProcessById,
+  getById,
+  getDataById,
+  postAgentProductPlan,
+  addProduct,
+};
 
 export const getAgentDataById = async (id: string) => {
   try {
@@ -295,23 +304,15 @@ export const getAgentDataById = async (id: string) => {
       };
     }
 
-
-
-    const {
-
-      name,
-      fantasyname,
-      channel_id,
-    } = agentResponse.data;
+    const { name, fantasyname, channel_id } = agentResponse.data;
 
     const data = {
-      agent:{
+      agent: {
         id,
         channel_id,
         name,
         fantasyname,
-      }
-     ,
+      },
       products: agentProductResponse.data,
     };
 
