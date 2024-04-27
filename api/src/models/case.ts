@@ -11,7 +11,7 @@ import {
   _getOrigins,
   _getStatus,
   _getReimbursment,
-  _getAllExports
+  _getAllExports,
 } from "../queries/case";
 import { IData } from "../interfaces/case";
 
@@ -209,8 +209,6 @@ const getAll: any = async (
   }
 };
 
-
-
 const getAllExports: any = async (
   retail_id: string,
   case_date: string,
@@ -218,7 +216,6 @@ const getAllExports: any = async (
   records: number,
   page: number,
   isExport: boolean
-
 ) => {
   try {
     const result = await pool.query(_getAllExports, [
@@ -227,7 +224,7 @@ const getAllExports: any = async (
       event_date,
       records,
       page,
-      isExport
+      isExport,
     ]);
     return {
       success: true,
@@ -388,11 +385,12 @@ const getAssistanceData: any = async (
 };
 const getCaseDates = async () => {
   try {
-    const caseDatesResult = await pool.query('SELECT * FROM app.case_get_dates()');
+    const caseDatesResult = await pool.query(
+      "SELECT * FROM app.case_get_dates()"
+    );
 
-    const { createdDates, eventDates } = caseDatesResult.rows[0].case_get_dates; 
+    const { createdDates, eventDates } = caseDatesResult.rows[0].case_get_dates;
     return { success: true, data: { createdDates, eventDates }, error: null };
-
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
   }
@@ -484,7 +482,7 @@ const getMonthlyCases: any = async () => {
       `
     );
 
-    let data = result.rows.map((item) => {
+    let data = result.rows.map((item: any) => {
       const monthYear = `${monthNames[item.month - 1]}, ${item.year}`;
       return {
         monthYear: monthYear,
@@ -535,7 +533,7 @@ const getCasesReimbursment: any = async () => {
         `
     );
 
-    let data = result.rows.map((item) => {
+    let data = result.rows.map((item: any) => {
       const monthYear = `${monthNames[item.month - 1]}, ${item.year}`;
       return {
         monthYear: monthYear,
@@ -562,7 +560,7 @@ const getTotalCases: any = async () => {
         `
     );
 
-    let data = result.rows.map((item) => {
+    let data = result.rows.map((item: any) => {
       return {
         totalCases: parseInt(item.total_cases),
         totalInactiveCases: parseInt(item.inactive_cases),
@@ -588,7 +586,11 @@ const createCaseSummary: any = async (
       [case_id]
     );
     let amountReimbursment;
-    if (caseReimbursement.rowCount > 0) {
+    if (
+      caseReimbursement &&
+      caseReimbursement.rowCount &&
+      caseReimbursement.rowCount > 0
+    ) {
       const reimbursementAmount = caseReimbursement.rows[0].amount;
 
       amountReimbursment = String(Number(amount) - reimbursementAmount);
@@ -609,7 +611,7 @@ const createCaseSummary: any = async (
 
     let updatedCaseSummary;
 
-    if (caseSummary.rowCount > 0) {
+    if (caseSummary && caseSummary.rowCount && caseSummary.rowCount > 0) {
       const result = await pool.query(
         `UPDATE app.casesummary
         SET amount = $1,
@@ -638,7 +640,12 @@ const createCaseSummary: any = async (
       [case_id]
     );
 
-    if (caseStageResult.rowCount > 0 && amountReimbursment !== undefined) {
+    if (
+      caseStageResult &&
+      caseStageResult.rowCount &&
+      caseStageResult.rowCount > 0 &&
+      amountReimbursment !== undefined
+    ) {
       const { amount: casestageresult_amount, available } =
         caseStageResult.rows[0];
 
@@ -802,12 +809,15 @@ const getOrigins: any = async () => {
   try {
     const result = await pool.query(_getOrigins);
 
-    return { success: true, data: result.rows[0].case_get_origins, error: null };
+    return {
+      success: true,
+      data: result.rows[0].case_get_origins,
+      error: null,
+    };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
   }
-}
-
+};
 
 const getStatus = async () => {
   try {
@@ -907,5 +917,5 @@ export {
   getOrigins,
   updateReimbursment,
   getReimbursment,
-  getCaseDates
+  getCaseDates,
 };

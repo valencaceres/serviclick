@@ -379,14 +379,13 @@ const createSubscription = async (
       email: contractor.email,
       name,
       amount:
-        product.price *
-        insured.length *
+        product.price * insured.length +
         (insured.length > 0 &&
         insured[0].beneficiaries &&
         insured[0].beneficiaries.length > 0 &&
         product.beneficiary_price > 0
           ? insured[0].beneficiaries.length * product.beneficiary_price
-          : 1),
+          : 0),
       address,
       rut: contractor.rut,
       phone: contractor.phone,
@@ -799,6 +798,10 @@ const createController = async (req: any, res: any) => {
   });
 
   if (!success || !data) {
+    createLogger.error({
+      function: "lead/create",
+      error,
+    });
     res.status(500).json({ error: "error creating lead" });
     return;
   }
@@ -806,12 +809,20 @@ const createController = async (req: any, res: any) => {
   if (send) {
     const emailResponse = await sendPaymentLink(data, link);
     if (!emailResponse.success) {
+      createLogger.error({
+        function: "lead/sendPaymentLink",
+        error: emailResponse.error,
+      });
       res.status(500).json({ error: "error sending payment link" });
       return;
     }
 
     const responseLeadUpdate = await updateLeadPaymentType(data.id, "L");
     if (!responseLeadUpdate.success) {
+      createLogger.error({
+        function: "lead/updateLeadPaymentType",
+        error: responseLeadUpdate.error,
+      });
       res.status(500).json({ error: "error updating lead payment type " });
       return;
     }
@@ -827,7 +838,11 @@ const createController = async (req: any, res: any) => {
     );
 
     if (!subscriptionResponse.success) {
-      res.status(500).json({ error: "error creating subscription " });
+      createLogger.error({
+        function: "lead/createSubscription",
+        error: subscriptionResponse.error,
+      });
+      res.status(500).json({ error: "error creating subscription (1)" });
       return;
     }
 
@@ -1140,7 +1155,6 @@ const getProductByInsuredIdController = async (req: any, res: any) => {
 
 const addBeneficiariesController = async (req: any, res: any) => {
   const { lead_id, insured_id, beneficiaries } = req.body;
-  console.log("req.bodu", req.body);
   const responseBeneficiaries = await addBeneficiariesData(
     beneficiaries,
     lead_id,
@@ -1313,7 +1327,7 @@ const addProduct = async (req: any, res: any) => {
         model: "subscription/create",
         error: subscriptionError,
       });
-      return res.status(500).json({ error: "error creating subscription" });
+      return res.status(500).json({ error: "error creating subscription (2)" });
     }
 
     const {
@@ -1545,7 +1559,6 @@ const removeBeneficiary = async (req: any, res: any) => {
 const addFromCase = async (req: any, res: any) => {
   const { subscription_id, beneficiary_id, insured_id } = req.body;
 
-  console.log("sus:", subscription_id);
   const leadResponse = await Lead.getBySubscriptionId(subscription_id);
   if (!leadResponse.success) {
     createLogger.error({

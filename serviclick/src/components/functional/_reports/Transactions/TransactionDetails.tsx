@@ -40,9 +40,7 @@ interface TransactionDetailsProps {
 const TransactionDetails = () => {
   const router = useRouter();
   const { id } = router.query;
-  const { getTransactionById, transaction, resetTransaction, isLoading } =
-    useTransaction();
-  console.log(transaction, "transaction");
+  const { getTransactionById, transaction, resetTransaction, isLoading } = useTransaction();
   useEffect(() => {
     resetTransaction();
     if (id) {

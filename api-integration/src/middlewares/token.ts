@@ -29,7 +29,6 @@ const extractAgentIdMiddleware = async (
     }
 
     req.body.retail_id = queryResult.rows[0].retail_id;
-    console.log(req.body.retail_id);
 
     next();
   } catch (error) {

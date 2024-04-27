@@ -124,7 +124,6 @@ export const Hero: React.FC<itemsProps> = ({ type }) => {
       console.log("uploaded successfully!");
     },
     onUploadError: (error: Error) => {
-      console.log(`ERROR! ${error.message}`);
       toast({
         description: "Ocurrio un error subiendo la imagen intenta nuevamente.",
         title: "Error al subir imagen",

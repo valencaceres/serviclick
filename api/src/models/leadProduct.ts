@@ -81,14 +81,16 @@ const getByLeadId: any = async (lead_id: string) => {
   try {
     const result = await pool.query(
       `
-        SELECT  lead_id,
-                product_id,
-                price,
-                currency_code,
-                frequency_code,
-                productplan_id
-        FROM    app.leadproduct
-        WHERE   lead_id = $1`,
+        SELECT  lpr.lead_id,
+                lpr.product_id,
+                lpr.price,
+                lpr.currency_code,
+                lpr.frequency_code,
+                lpr.productplan_id,
+                ppl.beneficiary_price
+        FROM    app.leadproduct lpr
+                  inner join app.productplan ppl on lpr.product_id = ppl.product_id and lpr.productplan_id = ppl.plan_id
+        WHERE   lpr.lead_id = $1`,
       [lead_id]
     );
     return { success: true, data: result.rows[0], error: null };

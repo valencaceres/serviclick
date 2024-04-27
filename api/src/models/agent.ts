@@ -73,8 +73,7 @@ const getById: any = async (id: string) => {
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
   }
-}
-
+};
 
 const getProductsByAgentId: any = async (agent_id: string) => {
   try {
@@ -116,8 +115,8 @@ ORDER BY
       brp.number,
       pro.name`,
       [agent_id]
-  );
-    const data = result.rows.map((row) => {
+    );
+    const data = result.rows.map((row: any) => {
       const {
         product_id,
         name,
@@ -145,12 +144,12 @@ ORDER BY
         beneficiary_price,
         productPlan_id: {
           customer: customer_plan_id,
-          yearly:  yearly_plan_id,
+          yearly: yearly_plan_id,
         },
         price: {
           base: baseprice,
           customer: customerprice,
-          yearly: yearlyprice
+          yearly: yearlyprice,
         },
         commisionTypeCode: commisiontype_code,
         value,
@@ -171,8 +170,8 @@ ORDER BY
 
 const postAgentProductPlan = async (agent_id: string) => {
   try {
-      const getProductsPlansByAgent = await pool.query(
-          `SELECT  
+    const getProductsPlansByAgent = await pool.query(
+      `SELECT  
               pro.id AS product_id,
               pro.name,
               pro.beneficiaries,
@@ -195,34 +194,35 @@ const postAgentProductPlan = async (agent_id: string) => {
               AND (plp.type = 'customer' OR plp.type = 'yearly')
           ORDER BY
               pro.name`,
-          [agent_id]
-      );
-      const productsPlans = getProductsPlansByAgent.rows;
-      console.log(productsPlans, "prodd")
-      for (const productPlan of productsPlans) {
-          const {
-              product_id,
-              customerprice,
-              baseprice,
-              customer_plan_id,
-              product_type,
-          } = productPlan;
+      [agent_id]
+    );
 
-          let companyprice;
-          let company_plan_id;
-          let yearlyprice;
-          let yearly_plan_id;
-          if (product_type === 'company') {
-              companyprice = customerprice;
-              company_plan_id = customer_plan_id;
-          }
-          if (product_type === 'yearly') {
-              yearlyprice = customerprice;
-              yearly_plan_id = customer_plan_id;
-          }
+    const productsPlans = getProductsPlansByAgent.rows;
 
-       const result =    await pool.query(
-              `INSERT INTO app.agentproduct (
+    for (const productPlan of productsPlans) {
+      const {
+        product_id,
+        customerprice,
+        baseprice,
+        customer_plan_id,
+        product_type,
+      } = productPlan;
+
+      let companyprice;
+      let company_plan_id;
+      let yearlyprice;
+      let yearly_plan_id;
+      if (product_type === "company") {
+        companyprice = customerprice;
+        company_plan_id = customer_plan_id;
+      }
+      if (product_type === "yearly") {
+        yearlyprice = customerprice;
+        yearly_plan_id = customer_plan_id;
+      }
+
+      const result = await pool.query(
+        `INSERT INTO app.agentproduct (
                   agent_id,
                   product_id,
                   customerprice,
@@ -238,28 +238,27 @@ const postAgentProductPlan = async (agent_id: string) => {
                   yearlyprice,
                   yearly_plan_id
               ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`,
-              [
-                  agent_id,
-                  product_id,
-                  customerprice,
-                  companyprice,
-                  null, 
-                  null,
-                  'P', 
-                  true, 
-                  customer_plan_id,
-                  company_plan_id,
-                  baseprice,
-                  0, 
-                  yearlyprice,
-                  yearly_plan_id
-              ]
-          );
-          console.log(result.rows[0], "resyukt")
-      }
-      return { success: true, data: null, error: null };
+        [
+          agent_id,
+          product_id,
+          customerprice,
+          companyprice,
+          null,
+          null,
+          "P",
+          true,
+          customer_plan_id,
+          company_plan_id,
+          baseprice,
+          0,
+          yearlyprice,
+          yearly_plan_id,
+        ]
+      );
+    }
+    return { success: true, data: null, error: null };
   } catch (error) {
-      return { success: false, data: null, error: (error as Error).message };
+    return { success: false, data: null, error: (error as Error).message };
   }
 };
 
@@ -271,7 +270,6 @@ const addProduct = async (
   yearly_plan_id: string | null,
   price: any
 ) => {
-
   const arrayValues = [
     agent_id,
     product_id,
@@ -280,9 +278,8 @@ const addProduct = async (
     yearly_plan_id,
     price.base || 0,
     price.customer || 0,
-    price.company || 0 ,
+    price.company || 0,
     price.yearlyprice || 0,
-   
   ];
 
   try {
@@ -294,10 +291,9 @@ const addProduct = async (
       yearly_plan_id,
       price.base || 0,
       price.customer || 0,
-      price.company || 0 ,
+      price.company || 0,
       price.yearlyprice || 0,
     ];
-
 
     const resultAgentProduct = await pool.query(
       "SELECT 1 FROM app.agentproduct WHERE agent_id = $1 AND product_id = $2",
@@ -349,12 +345,11 @@ const addProduct = async (
           price: result.rows[0].companyprice,
           plan_id: result.rows[0].company_plan_id,
         },
-        yearly:{
+        yearly: {
           price: result.rows[0].yearlyprice,
-          plan_id: result.rows[0].yearly_plan_id
-        }
+          plan_id: result.rows[0].yearly_plan_id,
+        },
       },
-     
     };
 
     return { success: true, data, error: null };
@@ -363,5 +358,14 @@ const addProduct = async (
   }
 };
 
-
-export { createAgent, updateAgent, deleteAgent, listAgents, getProcessById,getById , getProductsByAgentId, postAgentProductPlan, addProduct};
+export {
+  createAgent,
+  updateAgent,
+  deleteAgent,
+  listAgents,
+  getProcessById,
+  getById,
+  getProductsByAgentId,
+  postAgentProductPlan,
+  addProduct,
+};

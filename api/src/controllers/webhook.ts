@@ -653,7 +653,6 @@ const reveniuWebHook = async (req: any, res: any) => {
       }
 
       const { payments } = paymentReveniuResponse.data;
-      console.log("payumnts", payments);
       const subscriptionData = {
         subscription_id,
         status_id,

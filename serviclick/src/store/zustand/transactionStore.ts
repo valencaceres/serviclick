@@ -91,7 +91,6 @@ export const transactionStore = create<transactionStore>((set) => ({
     try {
       set((state) => ({ ...state, isLoading: true }));
       const { data } =  await apiInstance.post(`/transaction/changeDate`, { id, date });
-      console.log(data, "data")
       set((state) => ({ ...state, isLoading: false }));
     } catch (e) {
       set((state) => ({

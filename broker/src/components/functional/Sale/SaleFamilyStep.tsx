@@ -6,7 +6,7 @@ import { useBroker } from "~/store/hooks";
 export function SaleFamilyStep({ onDone }: { onDone: () => void }) {
   const { broker, setFamily } = useUI();
   const { familiesList: data, getFamiliesByBrokerId, isLoading } = useBroker();
- console.log(broker?.id == "")
+
   useEffect(() => {
     if (broker) {
       getFamiliesByBrokerId(broker.id);
@@ -20,7 +20,6 @@ export function SaleFamilyStep({ onDone }: { onDone: () => void }) {
       name: family.name,
       products: family.products,
     });
-    console.log(family.products);
     onDone();
   };
 

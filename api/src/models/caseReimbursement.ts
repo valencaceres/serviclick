@@ -16,7 +16,11 @@ const create: any = async (
       [case_id, casestageresult_id]
     );
 
-    if (caseStageReimbursment.rowCount > 0) {
+    if (
+      caseStageReimbursment &&
+      caseStageReimbursment.rowCount &&
+      caseStageReimbursment.rowCount > 0
+    ) {
       const result = await pool.query(
         `UPDATE app.casereimbursment
         SET user_id = $1,
