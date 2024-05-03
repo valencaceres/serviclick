@@ -59,7 +59,8 @@ const assignAction = async (
 ) => {
   try {
     const { id } = req.params;
-    const response = await RolAction.assignAction(id);
+    const { actionId } = req.body;
+    const response = await RolAction.assignAction(id, actionId);
     sendResponse(req, res, response);
   } catch (e: any) {
     return next(boom.badImplementation(e));
