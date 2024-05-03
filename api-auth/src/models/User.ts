@@ -29,7 +29,7 @@ const getById: any = async (id: string) => {
       model: "user/getById",
       input: { id },
     });
-    const result = await db.query(_getById);
+    const result = await db.query(_getById, [id]);
 
     return result.rows[0];
   } catch (e) {
@@ -43,7 +43,7 @@ const getByRut: any = async (rut: string) => {
       model: "user/getByRut",
       input: { rut },
     });
-    const result = await db.query(_getByRut);
+    const result = await db.query(_getByRut, [rut]);
 
     return result.rows[0];
   } catch (e) {
@@ -70,7 +70,7 @@ const deleteById: any = async (id: string) => {
       model: "user/deleteById",
       input: { id },
     });
-    const result = await db.query(_deleteById);
+    const result = await db.query(_deleteById, [id]);
 
     return result.rows;
   } catch (e) {

@@ -1,15 +1,80 @@
-export const _getAll = ``;
+export const _getAll = `
+                        SELECT 
+                            usr.id, 
+                            person_id,
+                            per.rut as rut, 
+                            per."name" as name ,
+                            per.paternallastname as paternalLastName,
+                            per.maternallastname as maternalLastName,
+                            per.address as address,
+                            COALESCE(dtc.district_name, per.district) as district_name,
+                            email,
+                            per.phone as phone
+                        FROM 
+                            app."user"  usr
+                        INNER JOIN 
+                            app.person per ON per.id = usr.person_id
+                        LEFT JOIN 
+                            app.district dtc ON per.district_id = dtc.id
+                        WHERE 
+                            usr.deletedat IS NULL;`;
 
-export const _getById = ``;
+export const _getById = `
+                        SELECT 
+                            usr.id, 
+                            person_id,
+                            per.rut as rut, 
+                            per."name" as name ,
+                            per.paternallastname as paternalLastName,
+                            per.maternallastname as maternalLastName,
+                            per.address as address,
+                            COALESCE(dtc.district_name, per.district) as district_name,
+                            email,
+                            per.phone as phone
+                        FROM 
+                            app."user"  usr
+                        INNER JOIN 
+                            app.person per ON per.id = usr.person_id
+                        LEFT JOIN 
+                            app.district dtc ON per.district_id = dtc.id
+                        WHERE 
+                            usr.deletedat IS null and usr.id = ($1)`;
 
-export const _getByRut = ``;
+export const _getByRut = `  SELECT 
+                                usr.id, 
+                                person_id,
+                                per.rut as rut, 
+                                per."name" as name ,
+                                per.paternallastname as paternalLastName,
+                                per.maternallastname as maternalLastName,
+                                per.address as address,
+                                COALESCE(dtc.district_name, per.district) as district_name,
+                                email,
+                                per.phone as phone
+                            FROM 
+                                app."user"  usr
+                            INNER JOIN 
+                                app.person per ON per.id = usr.person_id
+                            LEFT JOIN 
+                                app.district dtc ON per.district_id = dtc.id
+                            WHERE 
+                                usr.deletedat IS null and per.rut = ($1)`;
 
 export const _upsert = ``;
 
-export const _deleteById = ``;
+export const _deleteById = `UPDATE app.user 
+                            SET deletedAt = NOW()
+                            WHERE id = ($1)`;
 
-export const _updatePassword = ``;
+export const _updatePassword = `
+                                UPDATE app."user"
+                                SET hash = ($1)
+                                    updatedat = CASE 
+                                                    WHEN hash IS DISTINCT FROM ($1) THEN NOW() 
+                                                    ELSE updatedat 
+                                                END
+                                WHERE 
+                                    id = ($2)
+`;
 
 export const _validate = ``;
-
-
