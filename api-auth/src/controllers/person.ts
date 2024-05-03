@@ -47,9 +47,29 @@ const upsert = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { body } = req;
+    const {
+      rut,
+      name,
+      paternalLastName,
+      maternalLastName,
+      address,
+      phone,
+      district_id,
+      birthdate,
+      email,
+    } = req.body.data;
 
-    const response = await Person.upsert();
+    const response = await Person.upsert(
+      rut,
+      name,
+      paternalLastName,
+      maternalLastName,
+      address,
+      phone,
+      district_id,
+      birthdate,
+      email
+    );
     sendResponse(req, res, response);
   } catch (e: any) {
     return next(boom.badImplementation(e));

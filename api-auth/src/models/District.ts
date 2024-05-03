@@ -11,7 +11,7 @@ const getAll: any = async () => {
     let result = await db.query(_getAll);
     return result.rows;
   } catch (e) {
-    return (e as Error).message
+    return (e as Error).message;
   }
 };
 
@@ -21,11 +21,11 @@ const getById: any = async (id: string) => {
       model: "district/getById",
       input: { id },
     });
-    const result = await db.query(_getById);
+    const result = await db.query(_getById, [id]);
 
     return result.rows[0];
   } catch (e) {
-    return (e as Error).message
+    return (e as Error).message;
   }
 };
 

@@ -27,9 +27,9 @@ const getById: any = async (id: string) => {
       model: "person/getById",
       input: { id },
     });
-    const result = await db.query(_getById);
+    const result = await db.query(_getById, [id]);
 
-    return result.rows[0]
+    return result.rows[0];
   } catch (e) {
     return (e as Error).message;
   }
@@ -41,20 +41,40 @@ const getByRut: any = async (rut: string) => {
       model: "person/getByRut",
       input: { rut },
     });
-    const result = await db.query(_getByRut);
+    const result = await db.query(_getByRut, [rut]);
 
-    return result.rows[0]
+    return result.rows[0];
   } catch (e) {
     return (e as Error).message;
   }
 };
 
-const upsert: any = async () => {
+const upsert: any = async (
+  rut: string,
+  name: string,
+  paternalLastName: string,
+  maternalLastName: string,
+  address: string,
+  phone: string,
+  district_id: string,
+  birthdate: string,
+  email: string
+) => {
   try {
     createLogger.info({
       model: "person/upsert",
     });
-    const result = await db.query(_upsert);
+    const result = await db.query(_upsert, [
+      rut,
+      name,
+      paternalLastName,
+      maternalLastName,
+      email,
+      phone,
+      address,
+      district_id,
+      birthdate,
+    ]);
 
     return result.rows;
   } catch (e) {
@@ -68,7 +88,7 @@ const deleteById: any = async (id: string) => {
       model: "person/deleteById",
       input: { id },
     });
-    const result = await db.query(_deleteById);
+    const result = await db.query(_deleteById, [id]);
 
     return result.rows;
   } catch (e) {
