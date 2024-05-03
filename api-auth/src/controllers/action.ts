@@ -61,8 +61,8 @@ const upsert = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { code, description } = req.body;
-    const response = await Action.upsert(code, description);
+    const { code, description, application_id } = req.body;
+    const response = await Action.upsert(code, description, application_id);
     sendResponse(req, res, response);
   } catch (e: any) {
     return next(boom.badImplementation(e));

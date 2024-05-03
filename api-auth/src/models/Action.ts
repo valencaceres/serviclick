@@ -64,13 +64,17 @@ const getByApplicationId: any = async (application_id: string) => {
   }
 };
 
-const upsert: any = async (code: string, description: string) => {
+const upsert: any = async (
+  code: string,
+  description: string,
+  application_id: string
+) => {
   try {
     createLogger.info({
       model: "action/upsert",
-      input: { code, description },
+      input: { code, description, application_id },
     });
-    const result = await db.query(_upsert, [code, description]);
+    const result = await db.query(_upsert, [code, description, application_id]);
 
     return result.rows;
   } catch (e) {
