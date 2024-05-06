@@ -131,8 +131,9 @@ const assignRol = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { id } = req.params;
-    const response = await UserRol.assignRol(id);
+   const { id } = req.params;
+   const { rolId } = req.body;
+    const response = await UserRol.assignRol(id, rolId);
     sendResponse(req, res, response);
   } catch (e: any) {
     return next(boom.badImplementation(e));

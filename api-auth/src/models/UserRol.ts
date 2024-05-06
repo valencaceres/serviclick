@@ -3,13 +3,13 @@ import createLogger from "../utils/logger";
 
 import { _assignRol, _removeRol } from "../queries/userRol";
 
-const assignRol: any = async (id: string) => {
+const assignRol: any = async (id: string, rolId: string) => {
   try {
     createLogger.info({
       model: "userRol/assignRol",
-      input: { id },
+      input: { id, rolId },
     });
-    const result = await db.query(_assignRol);
+    const result = await db.query(_assignRol, [id, rolId]);
 
     return result.rows[0];
   } catch (e) {
