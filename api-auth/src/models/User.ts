@@ -1,5 +1,7 @@
 import db from "../utils/database";
 import createLogger from "../utils/logger";
+import bcrypt from "bcrypt";
+
 
 import {
   _getAll,
