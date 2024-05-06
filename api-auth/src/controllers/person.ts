@@ -57,7 +57,7 @@ const upsert = async (
       district_id,
       birthdate,
       email,
-    } = req.body.data;
+    } = req.body;
 
     const response = await Person.upsert(
       rut,
