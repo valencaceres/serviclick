@@ -29,7 +29,7 @@ export const _upsert = `INSERT INTO app.application (code, "name")
                         code,
                         name,
                         createdat,
-                        updatedata
+                        updatedat
 `;
 
 export const _deleteById = `UPDATE app.application 

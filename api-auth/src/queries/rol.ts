@@ -28,7 +28,7 @@ export const _getById = `  select id,
 
 export const _upsert = `INSERT INTO app.rol (code, name)
                         VALUES (($1), ($2))
-                        ON CONFLICT (code) DO update
+                        ON CONFLICT (code)
                         DO UPDATE SET name = ($2),updatedat = now(), deletedat = null
                         RETURNING 
                         id,
