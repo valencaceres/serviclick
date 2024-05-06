@@ -1,116 +1,54 @@
-import React from "react";
-import { useSession, useSignIn } from "@clerk/nextjs";
-import { useForm } from "react-hook-form";
-import { useRouter } from "next/router";
+import { useState } from "react";
+import { useRouter } from "next/router"
 
 import { Button } from "~/components/ui/ButtonC";
 import { Input } from "~/components/ui/Input";
 import { Label } from "~/components/ui/Label";
 
-import { type APIResponseError, parseError } from "~/utils/errors";
+import { useUser } from "~/store/hooks";
 
-const SIMPLE_REGEX_PATTERN = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+const SignIn = () => {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const {validate, isLoading} = useUser()
+  const router = useRouter()
 
-export const SignIn: React.FC = () => {
-  const router = useRouter();
-  const { isLoaded, signIn, setActive } = useSignIn();
-  const { isSignedIn } = useSession();
-
-  if (isSignedIn) {
-    router.push("/");
-  }
-
-  const {
-    register,
-    getValues,
-    watch,
-    setError,
-    clearErrors,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<{ email: string; password: string }>({ mode: "all" });
-
-  const email = watch("email");
-  const password = watch("password");
-
-  if (!isLoaded) {
-    return null;
-  }
-
-  const submit = async () => {
-    try {
-      clearErrors();
-      const signInResponse = await signIn.create({
-        identifier: getValues("email"),
-        password: getValues("password"),
-      });
-      if (signInResponse.status === "complete") {
-        await setActive({ session: signInResponse.createdSessionId });
-        await router.push("/");
-      } else {
-        console.log(signInResponse);
+  const sendCredentials = (e: any) => {
+    e.preventDefault()
+    if(email && password){
+      validate(email, password)
+      if(!isLoading){
+        router.push('/')
       }
-    } catch (err) {
-      setError("email", {
-        type: "manual",
-        message: parseError(err as APIResponseError),
-      });
     }
-  };
+  }
 
   return (
-    <form
-      onSubmit={handleSubmit(submit)}
-      className="flex w-96 flex-col items-center gap-2 p-2"
-    >
+    <form action="" className="flex w-96 flex-col items-center gap-2 p-2 h-[80vh] justify-center">
       <div className="w-full">
-        <Label
-          htmlFor="email"
-          className="text-xs text-dusty-gray hover:text-dusty-gray-600"
-        >
+        <Label className="text-xs text-dusty-gray hover:text-dusty-gray-600">
           Correo electrónico
         </Label>
-        <Input
-          errorText={errors.email?.message}
-          {...register("email", {
-            required: true,
-            pattern: SIMPLE_REGEX_PATTERN,
-          })}
-          type="email"
-          id="email"
-          placeholder="Correo electrónico"
+        <Input 
+        onChange={(event) => setEmail(event.target.value)}
+        value={email}
+        placeholder="Correo electrónico"
         />
       </div>
       <div className="w-full">
-        <Label
-          htmlFor="password"
-          className="text-xs text-dusty-gray hover:text-dusty-gray-600"
-        >
+      <Label className="text-xs text-dusty-gray hover:text-dusty-gray-600">
           Contraseña
         </Label>
-        <Input
-          errorText={errors.password?.message}
-          {...register("password", {
-            required: true,
-            validate: (value) => value.length >= 4,
-          })}
-          type="password"
-          id="password"
-          placeholder="Contraseña"
+        <Input 
+        onChange={(event) => setPassword(event.target.value)}
+        value={password}
+        type="password"
+        placeholder="Contraseña"
         />
       </div>
-      <Button
-        disabled={
-          isSubmitting ||
-          !email ||
-          !password ||
-          Boolean(errors.email) ||
-          Boolean(errors.password)
-        }
-        className="w-full"
-      >
-        {isSubmitting ? "Iniciando sesión..." : "Iniciar sesión"}
-      </Button>
+      <Button className="w-full" onClick={sendCredentials}>Iniciar sesión</Button>
     </form>
-  );
-};
+  )
+}
+
+export default SignIn

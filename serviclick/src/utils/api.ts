@@ -1,9 +1,17 @@
+
 import axios from "axios";
 import Cookies from "js-cookie";
 import { config } from "../utils/config";
 
 const apiInstance = axios.create({
   baseURL: `${config.server}/api`,
+  headers: {
+    id: config.apiKey,
+  },
+});
+
+const apiInstanceUser = axios.create({
+  baseURL: `${config.apiAuth}/api-auth`,
   headers: {
     id: config.apiKey,
   },
@@ -77,4 +85,4 @@ const responseFromAPI = (data: any, error: string | null) => {
   };
 };
 
-export { apiInstance, get, post, erase };
+export { apiInstance, get, post, erase, apiInstanceUser };
