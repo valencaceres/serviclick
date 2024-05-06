@@ -1,7 +1,5 @@
 import db from "../utils/database";
 import createLogger from "../utils/logger";
-import bcrypt from "bcrypt";
-
 
 import {
   _getAll,
@@ -53,12 +51,43 @@ const getByRut: any = async (rut: string) => {
   }
 };
 
-const upsert: any = async () => {
+const upsert: any = async (
+  rut: string,
+  name: string,
+  paternalLastName: string,
+  maternalLastName: string,
+  email: string,
+  phone: string,
+  address: string,
+  birthdate: string,
+  district_id: string
+) => {
   try {
     createLogger.info({
       model: "user/upsert",
+      input: {
+        rut,
+        name,
+        paternalLastName,
+        maternalLastName,
+        email,
+        phone,
+        address,
+        birthdate,
+        district_id,
+      },
     });
-    const result = await db.query(_upsert);
+    const result = await db.query(_upsert, [
+      rut,
+      name,
+      paternalLastName,
+      maternalLastName,
+      email,
+      phone,
+      address,
+      birthdate,
+      district_id,
+    ]);
 
     return result.rows;
   } catch (e) {
@@ -86,8 +115,7 @@ const updatePassword: any = async (id: string, password: string) => {
       model: "user/updatePassword",
       input: { id, password },
     });
-    const result = await db.query(_updatePassword);
-
+    const result = await db.query(_updatePassword, [password, id]);
     return result.rows;
   } catch (e) {
     return (e as Error).message;
@@ -100,8 +128,7 @@ const validate: any = async (email: string, password: string) => {
       model: "user/validate",
       input: { email, password },
     });
-    const result = await db.query(_validate);
-
+    const result = await db.query(_validate, [email]);
     return result.rows;
   } catch (e) {
     return (e as Error).message;
