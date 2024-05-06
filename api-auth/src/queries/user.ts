@@ -182,7 +182,7 @@ export const _validate = `SELECT
                                                 ) as roles,
                                                 usr.createdat,
                                                 usr.updatedat,
-                            usr.hash
+                            usr.hash as password
                         FROM 
                             app.user usr
                         INNER JOIN 

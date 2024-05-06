@@ -129,7 +129,7 @@ const validate: any = async (email: string, password: string) => {
       input: { email, password },
     });
     const result = await db.query(_validate, [email]);
-    return result.rows;
+    return result.rows[0]
   } catch (e) {
     return (e as Error).message;
   }
