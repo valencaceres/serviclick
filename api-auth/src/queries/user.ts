@@ -152,7 +152,7 @@ export const _deleteById = `UPDATE app.user
 
 export const _updatePassword = `
                                 UPDATE app.user
-                                SET password = $1
+                                SET hash = $1
                                 WHERE id = $2
                                 RETURNING id, updatedat 
 `;

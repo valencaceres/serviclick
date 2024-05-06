@@ -59,7 +59,7 @@ const upsert = async (
       address,
       birthdate,
       district_id,
-    } = req.body.data;
+    } = req.body;
 
     const response = await User.upsert(
       rut,
