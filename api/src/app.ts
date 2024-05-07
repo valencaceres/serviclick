@@ -34,9 +34,11 @@ const corsOptions = {
 
 function initializeMiddlewares(server: Express) {
   server.use(setSecurityHeaders);
-  server.use(express.json({
-    limit: "100mb"
-  }));
+  server.use(
+    express.json({
+      limit: "100mb",
+    })
+  );
   server.use(cors(corsOptions));
   server.use(express.urlencoded({ extended: false }));
   server.use(

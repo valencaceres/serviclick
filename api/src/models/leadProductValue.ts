@@ -30,7 +30,7 @@ const create: any = async (
       [lead_id, product_id, insured_id, value_id]
     );
 
-    if (resultExists.rowCount > 0) {
+    if (resultExists && resultExists.rowCount && resultExists.rowCount > 0) {
       const result = await pool.query(
         `UPDATE app.leadproductvalue SET value = $1 WHERE lead_id = $2 and product_id = $3 and insured_id = $4 and value_id = $5`,
         [value, lead_id, product_id, insured_id, value_id]

@@ -3,8 +3,8 @@ import * as Payment from "../models/payment";
 
 const Upsert = async (req: any, res: any) => {
   const { lead_id, status } = req.body;
-  console.log(req.body);
   const paymentResponse = await Payment.upsert(lead_id, status);
+
   if (!paymentResponse.success) {
     createLogger.error({
       model: "payment/Upsert",

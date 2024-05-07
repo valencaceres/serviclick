@@ -1,0 +1,41 @@
+@import "../../../styles/mixins.scss";
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  height: auto;
+  width: 100%;
+  padding: 20px 50px;
+
+  @include media-xl() {
+    padding: 15px 45px;
+  }
+
+  @include media-lg() {
+    padding: 15px 40px;
+  }
+
+  @include media-sm() {
+    padding: 10px 20px;
+  }
+}
+
+.msg {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+}

@@ -1,0 +1,30 @@
+@import "variables.scss";
+@mixin media-sm() {
+  @media screen and (max-width: map-get($breakpoints, sm)) {
+    @content;
+  }
+}
+
+@mixin media-md() {
+  @media screen and (max-width: map-get($breakpoints, md)) {
+    @content;
+  }
+}
+
+@mixin media-lg() {
+  @media screen and (max-width: map-get($breakpoints, lg)) {
+    @content;
+  }
+}
+
+@mixin media-xl() {
+  @media screen and (max-width: map-get($breakpoints, xl)) {
+    @content;
+  }
+}
+
+@mixin media-xxl() {
+  @media screen and (max-width: map-get($breakpoints, xxl)) {
+    @content;
+  }
+}

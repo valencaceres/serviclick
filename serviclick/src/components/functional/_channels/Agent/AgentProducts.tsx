@@ -20,7 +20,7 @@ import Icon from "../../../ui/Icon";
 import useAgent from "~/store/hooks/useAgent";
 const AgentProducts = ({ addNewProduct, editProduct, deleteProduct }: any) => {
   const { agent } = useAgent();
-  console.log("agent", agent);
+
   return (
     <ContentCell gap="5px">
       <Table width="739px" height="226px">

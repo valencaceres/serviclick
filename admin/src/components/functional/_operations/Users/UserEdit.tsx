@@ -615,7 +615,6 @@ export const UserEdit: React.FC = () => {
                       deleteUser(router.query.id as string, {
                         onSuccess: () => router.push("/operations/users"),
                       });
-                      console.log("click");
                     }}
                     className="bg-red-500 font-bold text-white hover:bg-red-600 focus:bg-red-500 active:bg-red-600"
                   >

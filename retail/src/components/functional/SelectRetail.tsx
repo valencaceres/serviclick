@@ -36,7 +36,7 @@ export function SelectRetail({
   const storedState = localStorage.getItem("uiState");
   const parsedState = storedState ? JSON.parse(storedState) : {};
   const retailStorage = parsedState?.retail;
-  console.log("retailll", retailStorage);
+
   useEffect(() => {
     if (retailStorage && !retail) {
       setRetail(retailStorage);

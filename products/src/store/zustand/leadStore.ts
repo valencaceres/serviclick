@@ -53,6 +53,7 @@ const initialData: ILead = {
     currency_code: "",
     frequency_code: "",
     productPlan_id: 0,
+    beneficiary_price: 0,
   },
   insured: [],
   link: "",
@@ -138,6 +139,7 @@ export const leadStore = create<leadState>((set, get) => ({
         isError: false,
         error: "",
       }));
+
       const { data } = await apiInstance.post(`/lead/create`, lead);
       set((state) => ({
         ...state,

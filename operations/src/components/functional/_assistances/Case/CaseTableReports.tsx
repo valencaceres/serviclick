@@ -79,7 +79,6 @@ const CaseTableReports = ({
       setCaseDateWithAll(modifiedCaseDate);
     }
   }, [caseDate]);
-  console.log(caseDate);
   useEffect(() => {
     if (caseEventDate) {
       const modifiedCaseEventDate = [

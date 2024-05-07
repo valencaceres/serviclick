@@ -97,6 +97,7 @@ type ProductT = {
   currency_code: string;
   frequency_code: string;
   productPlan_id: number;
+  beneficiary_price: number;
 };
 
 type LeadT = {
@@ -139,6 +140,7 @@ const initialLeadData: LeadT = {
     currency_code: "",
     frequency_code: "",
     productPlan_id: 0,
+    beneficiary_price: 0,
   },
   insured: [],
   subscription: {},
@@ -224,12 +226,19 @@ const createLead = async (
     undefined,
     undefined,
     user_id
-  );  
+  );
 
-    const RetailResponse = await Retail.getById(agent_id);
-    if(RetailResponse.success && RetailResponse?.data?.id && RetailResponse?.data?.id === agent_id){
-      const RetailCodeUpsert = await Retail.upsertCode(leadResponse?.data?.id, agent_id, );
-    }
+  const RetailResponse = await Retail.getById(agent_id);
+  if (
+    RetailResponse.success &&
+    RetailResponse?.data?.id &&
+    RetailResponse?.data?.id === agent_id
+  ) {
+    const RetailCodeUpsert = await Retail.upsertCode(
+      leadResponse?.data?.id,
+      agent_id
+    );
+  }
   return errorHandler(leadResponse, "lead/createLeadModel");
 };
 
@@ -366,19 +375,28 @@ const createSubscription = async (
         : company.companyName;
     const address = contractor.address + ", " + contractor.district;
 
+    const subscriptionData = {
+      email: contractor.email,
+      name,
+      amount:
+        product.price * insured.length +
+        (insured.length > 0 &&
+        insured[0].beneficiaries &&
+        insured[0].beneficiaries.length > 0 &&
+        product.beneficiary_price > 0
+          ? insured[0].beneficiaries.length * product.beneficiary_price
+          : 0),
+      address,
+      rut: contractor.rut,
+      phone: contractor.phone,
+    };
+
     createLogger.info({
       url: config.reveniu.URL.subscription,
       method: "POST",
       body: {
         plan_id: product.productPlan_id,
-        field_values: {
-          email: contractor.email,
-          name,
-          amount: product.price * insured.length,
-          address,
-          rut: contractor.rut,
-          phone: contractor.phone,
-        },
+        field_values: subscriptionData,
       },
       params: "",
       query: "",
@@ -388,14 +406,7 @@ const createSubscription = async (
       config.reveniu.URL.subscription,
       {
         plan_id: product.productPlan_id,
-        field_values: {
-          email: contractor.email,
-          name,
-          amount: product.price * insured.length,
-          address,
-          rut: contractor.rut,
-          phone: contractor.phone,
-        },
+        field_values: subscriptionData,
       },
       {
         headers: config.reveniu.apiKey,
@@ -447,7 +458,7 @@ const createSubscription = async (
         headers: config.reveniu.apiKey,
       }
     );
-    
+
     const {
       status: status_id,
       interval: interval_id,
@@ -771,8 +782,8 @@ const createController = async (req: any, res: any) => {
     subscription,
     user_id,
   } = req.body;
-  
-   if (insured.length > 0 && !customer.birthDate) {
+
+  if (insured.length > 0 && !customer.birthDate) {
     customer.birthDate = insured[0].birthDate;
   }
   let { success, data, error } = await create({
@@ -787,6 +798,10 @@ const createController = async (req: any, res: any) => {
   });
 
   if (!success || !data) {
+    createLogger.error({
+      function: "lead/create",
+      error,
+    });
     res.status(500).json({ error: "error creating lead" });
     return;
   }
@@ -794,12 +809,20 @@ const createController = async (req: any, res: any) => {
   if (send) {
     const emailResponse = await sendPaymentLink(data, link);
     if (!emailResponse.success) {
+      createLogger.error({
+        function: "lead/sendPaymentLink",
+        error: emailResponse.error,
+      });
       res.status(500).json({ error: "error sending payment link" });
       return;
     }
 
     const responseLeadUpdate = await updateLeadPaymentType(data.id, "L");
     if (!responseLeadUpdate.success) {
+      createLogger.error({
+        function: "lead/updateLeadPaymentType",
+        error: responseLeadUpdate.error,
+      });
       res.status(500).json({ error: "error updating lead payment type " });
       return;
     }
@@ -815,7 +838,11 @@ const createController = async (req: any, res: any) => {
     );
 
     if (!subscriptionResponse.success) {
-      res.status(500).json({ error: "error creating subscription " });
+      createLogger.error({
+        function: "lead/createSubscription",
+        error: subscriptionResponse.error,
+      });
+      res.status(500).json({ error: "error creating subscription (1)" });
       return;
     }
 
@@ -1069,6 +1096,7 @@ const getData = async (leadResponse: any, res: any) => {
         currency_code: leadProductResponse.data.currency_code,
         frequency_code: leadProductResponse.data.frequency_code,
         productPlan_id: leadProductResponse.data.productplan_id,
+        beneficiary_price: leadProductResponse.data.beneficiary_price,
       },
       insured: insuredData,
       subscription: {
@@ -1127,7 +1155,6 @@ const getProductByInsuredIdController = async (req: any, res: any) => {
 
 const addBeneficiariesController = async (req: any, res: any) => {
   const { lead_id, insured_id, beneficiaries } = req.body;
-  console.log("req.bodu", req.body)
   const responseBeneficiaries = await addBeneficiariesData(
     beneficiaries,
     lead_id,
@@ -1300,7 +1327,7 @@ const addProduct = async (req: any, res: any) => {
         model: "subscription/create",
         error: subscriptionError,
       });
-      return res.status(500).json({ error: "error creating subscription" });
+      return res.status(500).json({ error: "error creating subscription (2)" });
     }
 
     const {
@@ -1532,7 +1559,6 @@ const removeBeneficiary = async (req: any, res: any) => {
 const addFromCase = async (req: any, res: any) => {
   const { subscription_id, beneficiary_id, insured_id } = req.body;
 
-  console.log("sus:",subscription_id)
   const leadResponse = await Lead.getBySubscriptionId(subscription_id);
   if (!leadResponse.success) {
     createLogger.error({

@@ -17,7 +17,7 @@ export function Payment() {
     isLoading,
     exportPayments,
   } = usePayment();
-  console.log(paymentList, "payment");
+
   useEffect(() => {
     if (retail?.id) {
       getByRetailId(retail.id);
