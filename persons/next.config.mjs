@@ -1,7 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  
+  env: {
+    WEB_PRODUCTS: process.env.WEB_PRODUCTS || '',
+    API_KEY: process.env.API_KEY || '',
+    API_URL: process.env.API_URL
+  },
   images: {
     remotePatterns: [
       {
