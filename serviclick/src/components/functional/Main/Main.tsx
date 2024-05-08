@@ -18,7 +18,7 @@ const Main = ({ children }: any) => {
 
   return (
     <Content>
-        {user.email && user.roles && user.roles.filter(role => role.name === "user").length > 0 ? <Menu isOpen={isOpen} setIsOpen={setIsOpen} /> : null}
+        {user.email && user.roles && user.roles.filter(role => role.name === "admin").length > 0 ? <Menu isOpen={isOpen} setIsOpen={setIsOpen} /> : null}
       {children}
     </Content>
   );

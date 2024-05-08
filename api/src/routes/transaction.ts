@@ -27,8 +27,6 @@ TransactionRouter.post(
 TransactionRouter.post(
   "/getByFilters",
   auth,
-  isAuthenticated,
-  isAdmin,
   getByFiltersController
 );
 TransactionRouter.post("/changeAmount", changeAmount)

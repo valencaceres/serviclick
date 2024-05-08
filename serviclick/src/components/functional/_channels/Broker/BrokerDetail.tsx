@@ -340,13 +340,6 @@ const BrokerDetail = () => {
             deleteProduct={handleClickDeleteProduct}
             setBrokerProductForm={setBrokerProductForm}
           />
-          <BrokerUsers
-            addNewUser={handleClickAddNewUser}
-            editUser={handleClickEditUser}
-            deleteUser={handleClickDeleteUser}
-            setBrokerUserForm={setBrokerUserForm}
-            handleClickRemoveAgent={handleClickRemoveAgent}
-          />
         </ContentCell>
       </ContentRow>
       <ModalWindow
