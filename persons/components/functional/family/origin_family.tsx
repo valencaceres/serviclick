@@ -4,7 +4,7 @@ import React, { FC } from "react"
 import Image from "next/image"
 import Link from "next/link"
 
-import { config } from "../../../utils/config";
+import config from "../../../utils/config";
 
 import { Button } from "@/components/ui/button"
 import {
@@ -115,7 +115,7 @@ const OriginFamily: FC<DynamicFamilyProps> = ({
                     : "No disponible"}
                 </h3>
                 <Link
-                  href={`${config.products}/contractor?productPlanId=${assistance.productplan_id}`}
+                  href={`${config?.products}/contractor?productPlanId=${assistance.productplan_id}`}
                   passHref
                   target="_blank"
                 >

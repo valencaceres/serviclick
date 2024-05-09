@@ -1,6 +1,9 @@
-export const config = {
-    apiKey: process.env.API_KEY,
-    server: process.env.API_URL,
-    products: process.env.WEB_PRODUCTS,
+import nextconfig from '../next.config.mjs'
+
+const config = {
+  products: nextconfig.env?.WEB_PRODUCTS || '',
+  server: nextconfig.env?.API_URL,
+  apiKey: nextconfig.env?.API_KEY
   };
   
+export default config
