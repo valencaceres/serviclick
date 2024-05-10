@@ -1,0 +1,18 @@
+export const allowedOrigins = [
+  "https://operaciones.serviclick.cl",
+  "https://app.serviclick.cl",
+  "https://serviclick.cl",
+  "https://www.serviclick.cl",
+  "https://broker.serviclick.cl",
+  "https://retail.serviclick.cl",
+  "https://productos.serviclick.cl",
+  "https://admin.serviclick.cl",
+  "https://webhook.serviclick.cl",
+  "https://accounts.serviclick.cl",
+  "https://clerk.serviclick.cl",
+  "https://alianza.serviclick.cl",
+  "https://asegurado.serviclick.cl",
+  "https://web-admin.serviclick.cl",
+  "http://localhost:3010",
+  "http://localhost:3014",
+];
