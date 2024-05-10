@@ -1,19 +1,16 @@
 import { useEffect, useState } from "react";
-import { useSession, useUser } from "@clerk/nextjs";
 
 import { Content } from "../../layout/Content";
 
 import { Menu } from "../Menu/Menu";
 
 import { useDistrict } from "../../../hooks";
+import {useUser} from "../../../store/hooks";
 
 const Main = ({ children }: any) => {
   const { listAllDistrict } = useDistrict();
+  const {user} = useUser()
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  const { isSignedIn } = useSession();
-
-  const { user } = useUser();
 
   useEffect(() => {
     listAllDistrict();
@@ -21,9 +18,7 @@ const Main = ({ children }: any) => {
 
   return (
     <Content>
-      {isSignedIn && user?.publicMetadata.roles?.serviclick && (
-        <Menu isOpen={isOpen} setIsOpen={setIsOpen} />
-      )}
+        {user.email && user.roles && user.roles.filter(role => role.name === "admin").length > 0 ? <Menu isOpen={isOpen} setIsOpen={setIsOpen} /> : null}
       {children}
     </Content>
   );

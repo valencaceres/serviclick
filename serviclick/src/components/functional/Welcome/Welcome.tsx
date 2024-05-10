@@ -1,5 +1,5 @@
 import { useEffect, Fragment } from "react";
-import { useUser } from "@clerk/nextjs";
+/* import { useUser } from "@clerk/nextjs"; */
 
 import { Content, ContentCell } from "../../layout/Content";
 
@@ -7,7 +7,7 @@ import { useUI } from "../../../hooks";
 import Image from "next/image";
 
 const Welcome = () => {
-    const { user } = useUser();
+/*     const { user } = useUser(); */
     const { setTitleUI } = useUI();
 
     useEffect(() => {
@@ -21,14 +21,14 @@ const Welcome = () => {
                     <div className="h-48 w-48">
                         <Image
                             alt="User profile picture"
-                            src={user?.profileImageUrl!}
+                            src=""
                             width={200}
                             height={200}
                             className={"h-48 w-48 rounded-full object-cover"}
                         />
                     </div>
                     <div className="text-2xl font-bold text-teal-blue">
-                        Bienvenido/a {user?.firstName ? user?.firstName : ""}
+                        Bienvenido/a usuario
                     </div>
                 </ContentCell>
             </Content>

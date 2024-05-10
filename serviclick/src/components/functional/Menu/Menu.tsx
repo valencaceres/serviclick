@@ -1,6 +1,5 @@
 import React from "react";
 import { useRouter } from "next/router";
-import { UserButton, useUser } from "@clerk/nextjs";
 import { MenuIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 
@@ -60,7 +59,7 @@ interface MenuProps {
 }
 
 export function Menu({ isOpen, setIsOpen }: MenuProps) {
-  const user = useUser();
+
   return (
     <>
       <nav
@@ -89,14 +88,13 @@ export function Menu({ isOpen, setIsOpen }: MenuProps) {
         </div>
         <div>
           <div className={`flex items-center justify-start gap-2 p-2`}>
-            <UserButton />
-            <p
+{/*             <p
               className={`${
                 !isOpen ? "hidden" : ""
               } whitespace-nowrap text-sm text-black`}
             >
               {user.user?.fullName}
-            </p>
+            </p> */}
           </div>
         </div>
       </nav>
@@ -138,16 +136,6 @@ interface MenuItemProps {
 
 const MenuItem: React.FC<MenuItemProps> = ({ route, isOpen, setIsOpen }) => {
   const { pathname } = useRouter();
-  const { user } = useUser();
-  const userRoles = user?.publicMetadata.roles?.serviclick || {};
-
-  const userHasRole = (role: string) => {
-    return userRoles === role;
-  };
-
-  if (route.roles && !route.roles.some(userHasRole)) {
-    return null;
-  }
 
   if (!route.route && !route.subRoutes) {
     return (

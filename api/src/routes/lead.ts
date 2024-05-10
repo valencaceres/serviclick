@@ -62,7 +62,7 @@ LeadRouter.post(
   addBeneficiary
 );
 LeadRouter.delete("/removeBeneficiary", auth, isAuthenticated, isAdmin, removeBeneficiary);
-LeadRouter.get("/getStatistics", auth, isAuthenticated, isAdmin, getStatistics);
+LeadRouter.get("/getStatistics", auth, getStatistics);
 LeadRouter.get(
   "/getContract/:lead_id",
   auth,

@@ -24,7 +24,7 @@ const BrokerProducts = ({ addNewProduct, editProduct, deleteProduct }: any) => {
 
   return (
     <ContentCell gap="5px">
-      <Table width="739px" height="226px">
+      <Table width="739px" height="565px">
         <TableHeader>
           <TableCell width="305px">Producto</TableCell>
           <TableCell width="145px">Descuento</TableCell>

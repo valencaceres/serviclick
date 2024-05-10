@@ -15,7 +15,7 @@ const nextConfig = {
       },
     ],
   },
-async headers() {
+/* async headers() {
     return [
       {
         source: "/(.*)",
@@ -50,7 +50,7 @@ async headers() {
         ],
       },
     ];
-  }, 
+  },  */
 };
 
 module.exports = nextConfig;
