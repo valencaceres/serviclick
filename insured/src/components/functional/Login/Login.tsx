@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 
 import { Component, Row, Cell, CellSeparator } from "../../layout/Component";
 
 import InputText from "../../ui/InputText";
 import Button from "../../ui/Button";
 
-import { useUserInsured, useInsured } from "../../../zustand/hooks";
+import { useUserInsured, useUser } from "../../../zustand/hooks";
 
 const Login = () => {
-  const { validate, userInsured } = useUserInsured();
-  const { getProfile, insuredProfile } = useInsured();
+  const { validate, isLoading } = useUser();
+  const router = useRouter()
 
   const [loginForm, setLoginForm] = useState({
     email: "",
@@ -19,12 +20,6 @@ const Login = () => {
   const handleClickEnter = () => {
     validate(loginForm.email, loginForm.password);
   };
-
-  useEffect(() => {
-    if (userInsured.rut !== "") {
-      getProfile(userInsured.rut);
-    }
-  }, [userInsured]);
 
   return (
     <div

@@ -180,6 +180,7 @@ export const _validate = `SELECT
                                                     where 
                                                     user_id = usr.id
                                                 ) as roles,
+                                                per.birthdate,
                                                 usr.createdat,
                                                 usr.updatedat,
                             usr.hash as password

@@ -140,7 +140,8 @@ const validate = async (req: Request, res: Response, next: NextFunction) => {
         address: resultUser.address, 
         district: resultUser.district || '', 
         phone: resultUser.phone, 
-        roles: roles
+        roles: roles,
+        birthdate: resultUser.birthdate
       },
       process.env.JWT_SECRET || '', 
       { expiresIn: '1h' }

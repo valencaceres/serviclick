@@ -4,6 +4,8 @@ import useInsured from "./useInsured";
 import useRelationship from "./useRelationship";
 import useDistrict from "./useDistrict";
 import useBeneficiary from "./useBeneficiary";
+import useUser from "./useUser";
+
 export {
   useUI,
   useUserInsured,
@@ -11,4 +13,5 @@ export {
   useRelationship,
   useDistrict,
   useBeneficiary,
+  useUser
 };
