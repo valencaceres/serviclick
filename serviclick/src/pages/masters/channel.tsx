@@ -8,9 +8,17 @@ import { ChannelList } from "../../components/functional/_masters/Channel";
 
 import useUI from "../../hooks/useUI";
 import useChannel from "../../hooks/useChannel";
+import { useUser } from "~/store/hooks";
 
 const Channel = () => {
   const router = useRouter();
+    const {user} = useUser()
+
+  if (typeof window !== 'undefined') {
+    if (!user.email) {
+      router.push('/')
+    }
+  }
 
   const { setTitleUI } = useUI();
   const { listAll, reset } = useChannel();

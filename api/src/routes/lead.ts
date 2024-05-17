@@ -19,13 +19,14 @@ import {
   removeBeneficiary,
 } from "../controllers/lead";
 import isAuthenticated from "../middlewares/isAuthenticated";
+import authMiddleware from "../middlewares/isAdminWithoutClerk";
 import isAdmin from "../middlewares/isAdmin";
 
 const upload = multer({ storage: multer.memoryStorage() });
 
 const LeadRouter = Router();
 
-LeadRouter.post("/create", auth, createController);
+LeadRouter.post("/create", auth, authMiddleware, createController);
 LeadRouter.post(
   "/addBeneficiaries",
   auth,
@@ -37,6 +38,7 @@ LeadRouter.get("/getById/:id", auth, getByIdController);
 LeadRouter.get(
   "/getBySubscriptionId/:subscription_id",
   auth,
+  authMiddleware,
   getBySubscriptionIdController
 );
 LeadRouter.get(
@@ -58,11 +60,11 @@ LeadRouter.post("/addInsured", auth, isAuthenticated, isAdmin, addInsured);
 LeadRouter.post(
   "/addBeneficiary",
   auth,
-
+  authMiddleware,
   addBeneficiary
 );
 LeadRouter.delete("/removeBeneficiary", auth, isAuthenticated, isAdmin, removeBeneficiary);
-LeadRouter.get("/getStatistics", auth, getStatistics);
+LeadRouter.get("/getStatistics", auth, authMiddleware, getStatistics);
 LeadRouter.get(
   "/getContract/:lead_id",
   auth,

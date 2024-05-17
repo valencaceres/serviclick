@@ -10,11 +10,19 @@ import {
 } from "../../components/functional/_channels/Broker";
 
 import { useUI, useBroker, useProduct, useDistrict } from "../../hooks";
+import { useUser } from "~/store/hooks";
 
 import { channels } from "../../data/masters";
 
 const BrokerPage = () => {
   const router = useRouter();
+  const {user} = useUser()
+
+  if (typeof window !== 'undefined') {
+    if (!user.email) {
+      router.push('/')
+    }
+  }
 
   const { setTitleUI } = useUI();
   const {

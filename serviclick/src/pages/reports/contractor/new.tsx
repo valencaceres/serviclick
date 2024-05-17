@@ -5,10 +5,18 @@ import FloatMenu from "../../../components/ui/FloatMenu";
 import ButtonIcon from "../../../components/ui/ButtonIcon";
 
 import { useUI, useContractor } from "../../../hooks";
+import { useUser } from "~/store/hooks";
 import ContractorForm from "~/components/functional/_entities/Contractor/ContractorForm";
 
 const ContractorNewPage = () => {
   const router = useRouter();
+  const {user} = useUser()
+
+  if (typeof window !== 'undefined') {
+    if (!user.email) {
+      router.push('/')
+    }
+  }
 
   const { setTitleUI } = useUI();
 

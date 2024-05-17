@@ -1,4 +1,3 @@
-import { useUser } from "@clerk/nextjs";
 import { useEffect } from "react";
 
 import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
@@ -13,6 +12,7 @@ import {
 } from "../ui/Command";
 import { Retail } from "~/interfaces/retail";
 import { useRetail } from "~/store/hooks";
+import {useUser} from '../../store/hooks'
 
 import { cn } from "~/utils/cn";
 export function SelectRetail({

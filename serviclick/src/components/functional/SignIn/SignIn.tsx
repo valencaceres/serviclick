@@ -10,7 +10,7 @@ import { useUser } from "~/store/hooks";
 const SignIn = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const {validate, isLoading} = useUser()
+  const {validate, isLoading, user} = useUser()
   const router = useRouter()
 
   const sendCredentials = (e: any) => {
@@ -19,6 +19,7 @@ const SignIn = () => {
       validate(email, password)
       if(!isLoading){
         router.push('/')
+        console.log(user)
       }
     }
   }

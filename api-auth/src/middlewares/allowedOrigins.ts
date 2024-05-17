@@ -15,5 +15,7 @@ export const allowedOrigins = [
   "https://web-admin.serviclick.cl",
   "http://localhost:3010",
   "http://localhost:3014",
-  "http://localhost:3002"
+  "http://localhost:3002",
+  "http://localhost:3008",
+  "http://localhost:3009"
 ];

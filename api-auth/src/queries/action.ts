@@ -46,7 +46,7 @@ export const _getByApplicationId = `select  act.id,
 
 export const _upsert = `WITH inserted_action AS (
                           INSERT INTO app.action (code, description, application_id)
-                          VALUES (($1), ($3), ($3)) 
+                          VALUES (($1), ($2), ($3)) 
                           ON CONFLICT (code)
                           DO UPDATE SET description = EXCLUDED.description, 
                                         application_id = EXCLUDED.application_id, 

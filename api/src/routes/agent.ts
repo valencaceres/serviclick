@@ -14,13 +14,14 @@ import {
 } from "../controllers/agent";
 import isAuthenticated from "../middlewares/isAuthenticated";
 import isAdmin from "../middlewares/isAdmin";
+import authMiddleware from "../middlewares/isAdminWithoutClerk";
 
 const AgentRouter = Router();
 
 AgentRouter.get("/getById/:id", auth, getById);
 AgentRouter.post("/create", auth, isAuthenticated, isAdmin, createAgent);
 AgentRouter.put("/update/:id", auth, isAuthenticated, isAdmin, updateAgent);
-AgentRouter.delete("/delete/:id", auth, isAuthenticated, isAdmin, deleteAgent);
+AgentRouter.delete("/delete/:id", auth, authMiddleware, deleteAgent);
 AgentRouter.get("/list/:channel_id", auth, listAgents);
 AgentRouter.get("/getProcessById/:id", auth, getProcessById);
 AgentRouter.get("/getDataById/:id", getDataById);

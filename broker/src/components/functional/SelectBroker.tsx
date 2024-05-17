@@ -1,4 +1,3 @@
-import { useUser } from "@clerk/nextjs";
 import { useEffect } from "react";
 
 import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
@@ -12,7 +11,7 @@ import {
   CommandItem,
 } from "../ui/Command";
 import { Broker } from "~/interfaces/broker";
-import { useBroker } from "~/store/hooks";
+import { useBroker, useUser } from "~/store/hooks";
 
 import { cn } from "~/utils/cn";
 export function SelectBroker({

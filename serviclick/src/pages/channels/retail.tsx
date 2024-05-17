@@ -10,11 +10,20 @@ import {
 } from "../../components/functional/_channels/Retail";
 
 import { useUI, useRetail, useProduct, useDistrict } from "../../hooks";
+import { useUser } from "~/store/hooks";
+
 
 import { channels } from "../../data/masters";
 
 const RetailPage = () => {
   const router = useRouter();
+  const {user} = useUser()
+
+  if (typeof window !== 'undefined') {
+    if (!user.email) {
+      router.push('/')
+    }
+  }
 
   const { setTitleUI } = useUI();
   const {

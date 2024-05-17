@@ -1,8 +1,9 @@
 import React from "react";
 import { useRouter } from "next/router";
-import { UserButton, useUser } from "@clerk/nextjs";
 import { MenuIcon, XIcon } from "lucide-react";
 import Link from "next/link";
+
+import { useUser } from "~/store/hooks";
 
 import {
   Accordion,
@@ -68,13 +69,11 @@ export function Menu({ isOpen, setIsOpen }: MenuProps) {
         </div>
         <div>
           <div className={`flex items-center justify-start gap-2 px-2 py-4`}>
-            <UserButton />
             <p
               className={`${
                 !isOpen ? "hidden" : ""
               } whitespace-nowrap text-sm text-black`}
             >
-              {user.user?.fullName}
             </p>
           </div>
         </div>
@@ -117,22 +116,17 @@ interface MenuItemProps {
 
 const MenuItem: React.FC<MenuItemProps> = ({ route, isOpen, setIsOpen }) => {
   const { pathname } = useRouter();
-
   const { user } = useUser();
-  const userRoles = user?.publicMetadata.roles?.broker;
+  const isAdmin = user.roles.filter(role => role.name === "admin").length > 0;
 
-  const userHasRole = (role: string) => {
-    return userRoles === role;
-  };
-
-  if (route.roles && !route.roles.some(userHasRole)) {
+  if (route.roles && route.roles.includes("admin") && !isAdmin) {
     return null;
   }
 
   if (!route.route && !route.subRoutes) {
     return (
       <li
-        className={`flex w-full list-none p-2  text-dusty-gray-200 line-through ${
+        className={`flex w-full list-none p-2 text-dusty-gray-200 ${
           pathname === route.route ? "font-extrabold" : "font-medium"
         }`}
       >
@@ -141,7 +135,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ route, isOpen, setIsOpen }) => {
     );
   }
 
-  if (!route.route)
+  if (!route.route) {
     return (
       <Accordion type="multiple">
         <AccordionItem
@@ -162,19 +156,19 @@ const MenuItem: React.FC<MenuItemProps> = ({ route, isOpen, setIsOpen }) => {
         </AccordionItem>
       </Accordion>
     );
+  }
 
   return (
     <li
       className={`flex w-full list-none rounded-md text-teal-blue-100 ${
-        pathname === route.route
-          ? "bg-teal-blue-50 bg-opacity-20 font-extrabold"
-          : "font-medium hover:bg-teal-blue-50 hover:bg-opacity-10"
+        pathname === route.route ? "bg-teal-blue-50 bg-opacity-20 font-extrabold" : "font-medium hover:bg-teal-blue-50 hover:bg-opacity-10"
       }`}
       onClick={() => setIsOpen && setIsOpen(false)}
     >
-      <Link className="h-full w-full p-4" href={route.route}>
+      <Link href={route.route} className="h-full w-full p-4">
         {route.text}
       </Link>
     </li>
   );
 };
+

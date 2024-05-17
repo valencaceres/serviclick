@@ -11,6 +11,13 @@ import useUser from "../../hooks/useUser";
 
 const User = () => {
   const router = useRouter();
+  const {user} = useUser()
+
+  if (typeof window !== 'undefined') {
+    if (!user.email) {
+      router.push('/')
+    }
+  }
 
   const { setTitleUI } = useUI();
   const { getAllUsers, resetUser } = useUser();

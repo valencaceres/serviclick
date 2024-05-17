@@ -10,6 +10,7 @@ import {
 } from "../../../components/functional/_reports/Transactions";
 
 import { useUI, useStatus, useTransaction } from "../../../hooks";
+import { useUser } from "~/store/hooks";
 
 type SearchFormT = {
   channelId: string;
@@ -22,6 +23,13 @@ type SearchFormT = {
 
 const Transactions = () => {
   const router = useRouter();
+  const {user} = useUser()
+
+  if (typeof window !== 'undefined') {
+    if (!user.email) {
+      router.push('/')
+    }
+  }
 
   const initialDataSearchForm = {
     channelId: "",

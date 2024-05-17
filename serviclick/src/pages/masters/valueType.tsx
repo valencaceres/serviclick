@@ -7,9 +7,17 @@ import FloatMenu from "../../components/ui/FloatMenu";
 import ButtonIcon from "../../components/ui/ButtonIcon";
 
 import { useUI, useValueType } from "../../hooks";
+import { useUser } from "~/store/hooks";
 
 const ValueType = () => {
   const router = useRouter();
+  const {user} = useUser()
+
+  if (typeof window !== 'undefined') {
+    if (!user.email) {
+      router.push('/')
+    }
+  }
 
   const { setTitleUI } = useUI();
   const { getAllValueTypes, resetValueTypeAll } = useValueType();
