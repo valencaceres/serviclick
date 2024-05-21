@@ -22,7 +22,8 @@ interface User {
   roles: Roles[]
   district: string | undefined;
   address: string,
-  phone: string
+  phone: string,
+  birthdate: string
 }
 
 export interface MyJwtPayload {
@@ -37,6 +38,7 @@ export interface MyJwtPayload {
   district?: string;
   phone: string;
   roles: { id: string; code: string; name: string }[];
+  birthdate:string
 }
 
 interface userState {
@@ -57,7 +59,7 @@ interface userState {
 
 
 export const userStore = create<userState>((set) => ({
-  user: { id: "", rut: "", name: "", email: "", maternallastname: "", paternallastname: "", roles: [], district: "", address: '', phone: '' },
+  user: { id: "", rut: "", name: "", email: "", maternallastname: "", paternallastname: "", roles: [], district: "", address: '', phone: '', birthdate: '' },
   usersList: {
     data: [],
   },
@@ -118,9 +120,11 @@ validate: async (email: string, password: string) => {
       if (data.success) {
           localStorage.setItem('jwtToken', data.data);
           const decodedToken = jwt.decode(data.data) as MyJwtPayload | null;
+          console.log(decodedToken)
           if (decodedToken) {
-              const { userId, rut, name, paternalLastName, maternalLastName, roles, email, address, phone, district } = decodedToken;
-              const user: User = { id: userId, rut, name, paternallastname: paternalLastName, maternallastname: maternalLastName, roles, email, address, phone, district };
+              const { userId, rut, name, paternalLastName, maternalLastName, roles, email, address, phone, district, birthdate } = decodedToken;
+              const user: User = { id: userId, rut, name, paternallastname: paternalLastName, maternallastname: maternalLastName, roles, email, address, phone, district, birthdate: birthdate.slice(0, 10)};
+              console.log(user)
               set((state) => ({ ...state, user, isLoading: false }));
           } else {
               console.log('No funciono 1')

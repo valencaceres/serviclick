@@ -9,8 +9,16 @@ import { ContractorDetail } from "../../../components/functional/_entities/Contr
 import { useUI } from "../../../hooks";
 import { useQueryContractor } from "~/hooks/query";
 import { useCustomer } from "~/store/hooks";
+import { useUser } from "~/store/hooks";
 const ContractorDetailPage = () => {
   const router = useRouter();
+  const {user} = useUser()
+
+  if (typeof window !== 'undefined') {
+    if (!user.email) {
+      router.push('/')
+    }
+  }
 
   const { setTitleUI } = useUI();
   const { contractor: contractor, getContractorById, resetContractor } = useCustomer();

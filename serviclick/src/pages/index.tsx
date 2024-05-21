@@ -8,7 +8,6 @@ import { Dashboard } from "~/components/functional/Dashboard/Dashboard";
 const Home: NextPage = () => {
 
   const {user} = useUser()
-  console.log(user.email)
 
   return user.email && user.roles && user.roles.filter(role => role.name === "admin").length > 0 ? <Dashboard /> : <SignIn/>
 };

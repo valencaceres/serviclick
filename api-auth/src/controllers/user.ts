@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import sendResponse from "../utils/sendResponse";
 import boom from "@hapi/boom";
 import bcrypt from "bcrypt";
+import jwt from 'jsonwebtoken'
 
 import * as User from "../models/User";
 import * as UserRol from "../models/UserRol";
@@ -115,11 +116,38 @@ const validate = async (req: Request, res: Response, next: NextFunction) => {
     const hashPassword = resultUser.password;
     const isValid = await bcrypt.compare(password, hashPassword);
 
-    const response = isValid
-      ? { ...resultUser, password: undefined }
-      : { error: "User not valid" };
+    if (!isValid) {
+      return next(boom.unauthorized("Invalid credentials"));
+    }
 
-    sendResponse(req, res, response);
+    // Aca creamos el token con la información del usuario
+
+      const roles = resultUser.roles.map((role: any) => ({
+        id: role.id,
+        code: role.code,
+        name: role.name
+    }));
+
+    const token = jwt.sign(
+      { 
+        userId: resultUser.id, 
+        personId: resultUser.personId, 
+        rut: resultUser.rut, 
+        name: resultUser.name, 
+        paternalLastName: resultUser.paternallastname, 
+        maternalLastName: resultUser.maternallastname,
+        email: resultUser.email,
+        address: resultUser.address, 
+        district: resultUser.district || '', 
+        phone: resultUser.phone, 
+        roles: roles,
+        birthdate: resultUser.birthdate
+      },
+      process.env.JWT_SECRET || '', 
+      { expiresIn: '1h' }
+    ) as string;
+
+    sendResponse(req, res, token);
   } catch (e: any) {
     return next(boom.badImplementation(e));
   }

@@ -10,11 +10,20 @@ import {
 } from "../../components/functional/_channels/Agent";
 import agentZustand from "~/store/hooks/useAgent";
 import { useUI, useAgent, useProduct } from "../../hooks";
+import { useUser } from "~/store/hooks";
 
 import { channels } from "../../data/masters";
 
 const WebPage = () => {
   const router = useRouter();
+  const {user} = useUser()
+
+  if (typeof window !== 'undefined') {
+    if (!user.email) {
+      router.push('/')
+    }
+  }
+
   const { agent, getAgentById, resetAgent } = agentZustand();
   const { setTitleUI } = useUI();
   const { listAll } = useAgent();

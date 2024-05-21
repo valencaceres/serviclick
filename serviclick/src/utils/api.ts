@@ -10,20 +10,23 @@ const apiInstance = axios.create({
   },
 });
 
+
 const apiInstanceUser = axios.create({
   baseURL: `${config.apiAuth}/api-auth`,
   headers: {
+
     id: config.apiKey,
   },
 });
 
+
 apiInstance.interceptors.request.use(
-  (request) => {
-    const sessionCookie = Cookies.get("__session");
-    if (sessionCookie) {
-      request.headers.Authorization = `Bearer ${sessionCookie}`;
+  (config) => {
+    const jwtToken = localStorage.getItem('jwtToken');
+    if (jwtToken) {
+      config.headers.Authorization = `Bearer ${jwtToken}`;
     }
-    return request;
+    return config;
   },
   (error) => {
     return Promise.reject(error);

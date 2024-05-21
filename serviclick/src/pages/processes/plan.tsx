@@ -10,9 +10,17 @@ import {
 } from "../../components/functional/_processes/Plan";
 
 import { useUI, useFamily, useProduct } from "../../hooks";
+import { useUser } from "~/store/hooks";
 
 const Plan = () => {
   const router = useRouter();
+  const {user} = useUser()
+
+  if (typeof window !== 'undefined') {
+    if (!user.email) {
+      router.push('/')
+    }
+  }
 
   const { setTitleUI } = useUI();
   const { listAll: getAllFamilies } = useFamily();

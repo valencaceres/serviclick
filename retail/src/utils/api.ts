@@ -23,4 +23,26 @@ apiInstance.interceptors.request.use(
   }
 );
 
-export { apiInstance };
+const apiInstanceUser = axios.create({
+  baseURL: `${config.apiAuth}/api-auth`,
+  headers: {
+
+    id: config.apiKey,
+  },
+});
+
+
+apiInstance.interceptors.request.use(
+  (config) => {
+    const jwtToken = localStorage.getItem('jwtToken');
+    if (jwtToken) {
+      config.headers.Authorization = `Bearer ${jwtToken}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+export { apiInstance, apiInstanceUser };

@@ -1,6 +1,6 @@
 import React from "react";
 import { useRouter } from "next/router";
-import { UserButton, useUser } from "@clerk/nextjs";
+import { useUser } from "~/store/hooks";
 import { MenuIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 
@@ -43,7 +43,7 @@ interface MenuProps {
 }
 
 export function Menu({ isOpen, setIsOpen }: MenuProps) {
-  const user = useUser();
+  const {user} = useUser();
   return (
     <>
       <nav
@@ -72,13 +72,12 @@ export function Menu({ isOpen, setIsOpen }: MenuProps) {
         </div>
         <div>
           <div className={`flex items-center justify-start gap-2 px-2 py-4`}>
-            <UserButton />
             <p
               className={`${
                 !isOpen ? "hidden" : ""
               } whitespace-nowrap text-sm text-black`}
             >
-              {user.user?.fullName}
+              {user.name} {user.paternallastname}
             </p>
           </div>
         </div>
@@ -123,13 +122,9 @@ const MenuItem: React.FC<MenuItemProps> = ({ route, isOpen, setIsOpen }) => {
   const { pathname } = useRouter();
 
   const { user } = useUser();
-  const userRoles = user?.publicMetadata.roles?.retail;
+  const isAdmin = user.roles.filter(role => role.name === "admin").length > 0;
 
-  const userHasRole = (role: string) => {
-    return userRoles === role;
-  };
-
-  if (route.roles && !route.roles.some(userHasRole)) {
+  if (route.roles && route.roles.includes("admin") && !isAdmin) {
     return null;
   }
 

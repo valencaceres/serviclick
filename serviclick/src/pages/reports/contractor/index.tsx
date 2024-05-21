@@ -8,6 +8,7 @@ import { ContractorList } from "../../../components/functional/_entities/Contrac
 
 import { useUI, useDistrict } from "../../../hooks";
 import { useCustomer } from "~/store/hooks";
+import { useUser } from "~/store/hooks";
 
 const initialFilters = {
   rut: null,
@@ -18,6 +19,13 @@ const initialFilters = {
 
 const ContractorPage = () => {
   const router = useRouter();
+  const {user} = useUser()
+
+  if (typeof window !== 'undefined') {
+    if (!user.email) {
+      router.push('/')
+    }
+  }
 
   const { setTitleUI } = useUI();
   const { listAllDistrict } = useDistrict();

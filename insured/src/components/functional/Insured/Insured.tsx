@@ -6,41 +6,40 @@ import Button from "../../ui/Button";
 import Tooltip from "../../ui/Tooltip";
 import InputText from "../../ui/InputText";
 
-import { useInsured } from "../../../zustand/hooks";
+import { useUser } from "../../../zustand/hooks";
 
 import { numberRegEx } from "../../../utils/regEx";
 
 const Insured = () => {
-  const { insuredProfile } = useInsured();
-  const { insured } = insuredProfile;
+  const { user } = useUser()
 
   const initialDataInsuredForm = {
-    rut: { value: insured.rut, isValid: insured.rut !== "" },
-    name: { value: insured.name, isValid: insured.name !== "" },
+    rut: { value: user.rut || '', isValid: user.rut !== "" },
+    name: { value: user.name || '', isValid: user.name !== "" },
     paternalLastName: {
-      value: insured.paternallastname,
-      isValid: insured.paternallastname !== "",
+      value: user.paternallastname || '',
+      isValid: user.paternallastname !== "",
     },
     maternalLastName: {
-      value: insured.maternallastname,
-      isValid: insured.maternallastname !== "",
+      value: user.maternallastname || '',
+      isValid: user.maternallastname !== "",
     },
     birthDate: {
-      value: insured.birthdate,
-      isValid: insured.birthdate !== "",
+      value: user.birthdate || '',
+      isValid: user.birthdate !== "",
     },
     address: {
-      value: insured.address,
-      isValid: insured.address !== "",
+      value: user.address || '',
+      isValid: user.address !== "",
     },
     district: {
-      value: insured.district,
-      isValid: insured.district !== "",
+      value: user.district || '',
+      isValid: user.district !== "",
     },
-    email: { value: insured.email, isValid: insured.email !== "" },
-    phone: { value: insured.phone, isValid: insured.phone !== "" },
+    email: { value: user.email || '', isValid: user.email !== "" },
+    phone: { value: user.phone || '', isValid: user.phone !== "" },
   };
-
+  
   const [insuredForm, setInsuredForm] = useState(initialDataInsuredForm);
   const [isLoading, setIsLoading] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);

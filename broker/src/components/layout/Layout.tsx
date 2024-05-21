@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { UserButton, useSession, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Head from "next/head";
 import Image from "next/image";
+
+import {useUser} from "~/store/hooks";
 
 import { Menu } from "../functional/Menu";
 import { SelectBroker } from "../functional/SelectBroker";
@@ -28,8 +29,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 const Header = () => {
-  const { isSignedIn } = useSession();
-  const { user } = useUser();
+  const {user} = useUser()
   const router = useRouter();
 
   const { title } = useUI();
@@ -47,13 +47,13 @@ const Header = () => {
       }
     >
       <div className="relative flex w-full items-center border-b bg-white md:bg-primary-500 ">
-        {isSignedIn && user?.publicMetadata.roles.broker && (
+        {user && user.roles.filter(role => role.name === "admin").length > 0 &&  (
           <Menu isOpen={isOpen} setIsOpen={setIsOpen} />
         )}
         <div className={"flex w-full items-center bg-white p-2 md:w-1/2"}>
-          <div
+        <div
             className={`select-none ${
-              isSignedIn && user?.publicMetadata.roles.broker ? "pl-16" : ""
+              user && user.roles.filter(role => role.name === "admin").length > 0 ? "pl-16" : ""
             }`}
           >
             <Link href="/">
@@ -82,40 +82,44 @@ const Header = () => {
           }
         >
           {title}
-          {isSignedIn && !user?.publicMetadata.roles.broker && <UserButton />}
         </div>
       </div>
-      {isSignedIn && user?.publicMetadata.roles.broker && (
-        <div
-          className={`relative flex w-full justify-between border-b p-2 ${
-            isSignedIn ? "pl-16" : ""
-          }`}
+      {user && user.roles.filter(role => role.name === "admin").length > 0 && (
+  <div className="relative flex w-full justify-between border-b p-2 pl-16">
+    <>
+      <SelectBroker
+        broker={broker}
+        setBroker={setBroker}
+        open={open}
+        setOpen={setOpen}
+      />
+      {router.pathname !== "/sale" && (
+        <Button
+          className="hidden gap-1 md:flex"
+          type="button"
+          onClick={() => void router.push("/sale")}
         >
-          <>
-            <SelectBroker
-              broker={broker}
-              setBroker={setBroker}
-              open={open}
-              setOpen={setOpen}
-            />
-            {router.pathname !== "/sale" && (
-              <Button
-                className="hidden gap-1 md:flex"
-                type="button"
-                onClick={() => void router.push("/sale")}
-              >
-                <PlusIcon size={20} />
-                Nueva Venta
-              </Button>
-            )}
-          </>
-        </div>
+          <PlusIcon size={20} />
+          Nueva Venta
+        </Button>
       )}
+    </>
+  </div>
+)}
     </header>
   );
 };
 
 const Main = ({ children }: { children: React.ReactNode }) => {
+  const router = useRouter()
+  const {user} = useUser()
+
+  if (typeof window !== 'undefined') {
+    if (!user.email) {
+      router.push('/')
+    }
+  }
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center pt-32">
       {children}

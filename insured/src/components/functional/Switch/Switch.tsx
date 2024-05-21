@@ -9,14 +9,14 @@ import Navigate, { Back } from "../../ui/Navigate";
 import Main from "../Main";
 import Login from "../Login";
 
-import { useUI, useInsured } from "../../../zustand/hooks";
+import { useUI, useUser } from "../../../zustand/hooks";
 
 import styles from "../../layout/Generic/Generic.module.scss";
 
 const Switch = ({ children }: any) => {
   const router = useRouter();
 
-  const { insuredProfile } = useInsured();
+  const { user } = useUser();
   const { ui } = useUI();
 
   const handleClickBack = () => {
@@ -38,7 +38,7 @@ const Switch = ({ children }: any) => {
           </div>
           <div className={styles.right}>{ui.title}</div>
         </Header>
-        {insuredProfile.insured.rut !== "" ? (
+        {user.email !== "" ? (
           <Main>{children}</Main>
         ) : (
           <Login />

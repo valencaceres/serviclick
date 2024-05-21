@@ -7,6 +7,32 @@ const apiInstance = axios.create({
   headers: { id: config.apiKey },
 });
 
+const apiInstanceUser = axios.create({
+  baseURL: `${config.apiAuth}/api-auth`,
+  headers: {
+
+    id: config.apiKey,
+  },
+});
+
+
+apiInstance.interceptors.request.use(
+  (config) => {
+    const jwtToken = localStorage.getItem('jwtToken');
+    if (jwtToken) {
+      if (config && config.headers) {
+        config.headers.Authorization = `Bearer ${jwtToken}`;
+    } else {
+        console.error("config or config.headers is undefined");
+    }
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 const get = async (path: string) => {
   const { apiKey, server } = config;
   try {
@@ -60,4 +86,4 @@ const responseFromAPI = (data: any, error: string | null) => {
   };
 };
 
-export { apiInstance, get, post, erase };
+export { apiInstance, get, post, erase, apiInstanceUser };

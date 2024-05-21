@@ -8,9 +8,17 @@ import { FamilyList } from "../../components/functional/_masters/Family";
 
 import useUI from "../../hooks/useUI";
 import useFamily from "../../hooks/useFamily";
+import { useUser } from "~/store/hooks";
 
 const Family = () => {
   const router = useRouter();
+  const {user} = useUser()
+
+  if (typeof window !== 'undefined') {
+    if (!user.email) {
+      router.push('/')
+    }
+  }
 
   const { setTitleUI } = useUI();
   const { listAll, reset } = useFamily();

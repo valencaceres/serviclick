@@ -5,6 +5,8 @@ import FloatMenu from "../../../components/ui/FloatMenu";
 import ButtonIcon from "../../../components/ui/ButtonIcon";
 
 import { useUI } from "../../../hooks";
+import { useUser } from "~/store/hooks";
+
 import TransactionDetails from "~/components/functional/_reports/Transactions/TransactionDetails";
 
 type SearchFormT = {
@@ -18,6 +20,13 @@ type SearchFormT = {
 
 const Transactions = () => {
   const router = useRouter();
+  const {user} = useUser()
+
+  if (typeof window !== 'undefined') {
+    if (!user.email) {
+      router.push('/')
+    }
+  }
 
   const { setTitleUI } = useUI();
   const handleClickHome = () => {
