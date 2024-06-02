@@ -40,7 +40,6 @@ interface MenuProps {
 }
 
 export function Menu({ isOpen, setIsOpen }: MenuProps) {
-  const user = useUser();
   return (
     <>
       <nav
@@ -73,8 +72,7 @@ export function Menu({ isOpen, setIsOpen }: MenuProps) {
               className={`${
                 !isOpen ? "hidden" : ""
               } whitespace-nowrap text-sm text-black`}
-            >
-            </p>
+            ></p>
           </div>
         </div>
       </nav>
@@ -116,8 +114,9 @@ interface MenuItemProps {
 
 const MenuItem: React.FC<MenuItemProps> = ({ route, isOpen, setIsOpen }) => {
   const { pathname } = useRouter();
-  const { user } = useUser();
-  const isAdmin = user.roles.filter(role => role.name === "admin").length > 0;
+  const { userItem } = useUser();
+  const isAdmin =
+    userItem.roles.filter((role) => role.name === "admin").length > 0;
 
   if (route.roles && route.roles.includes("admin") && !isAdmin) {
     return null;
@@ -161,7 +160,9 @@ const MenuItem: React.FC<MenuItemProps> = ({ route, isOpen, setIsOpen }) => {
   return (
     <li
       className={`flex w-full list-none rounded-md text-teal-blue-100 ${
-        pathname === route.route ? "bg-teal-blue-50 bg-opacity-20 font-extrabold" : "font-medium hover:bg-teal-blue-50 hover:bg-opacity-10"
+        pathname === route.route
+          ? "bg-teal-blue-50 bg-opacity-20 font-extrabold"
+          : "font-medium hover:bg-teal-blue-50 hover:bg-opacity-10"
       }`}
       onClick={() => setIsOpen && setIsOpen(false)}
     >
@@ -171,4 +172,3 @@ const MenuItem: React.FC<MenuItemProps> = ({ route, isOpen, setIsOpen }) => {
     </li>
   );
 };
-

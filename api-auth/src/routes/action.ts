@@ -13,15 +13,11 @@ import {
 
 const actionRouter = Router();
 
-actionRouter.get("/getAll", auth, getAll);
-actionRouter.get("/getById/:id", auth, getById);
-actionRouter.get("/getByCode/:code", auth, getByCode);
-actionRouter.get(
-  "/getByApplicationId/:application_id",
-  auth,
-  getByApplicationId
-);
-actionRouter.post("/upsert", auth, upsert);
-actionRouter.delete("/deleteById:id", auth, deleteById);
+actionRouter.get("/getAll", getAll);
+actionRouter.get("/getById/:id", getById);
+actionRouter.get("/getByCode/:code", getByCode);
+actionRouter.get("/getByApplicationId/:application_id", getByApplicationId);
+actionRouter.post("/upsert", upsert);
+actionRouter.delete("/deleteById:id", deleteById);
 
 export default actionRouter;

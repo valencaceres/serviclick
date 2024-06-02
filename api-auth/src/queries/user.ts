@@ -3,11 +3,11 @@ export const _getAll = `
                             usr.id, 
                             person_id,
                             per.rut as rut, 
-                            per."name" as name ,
-                            per.paternallastname as paternalLastName,
-                            per.maternallastname as maternalLastName,
+                            per."name" as name,
+                            per.paternallastname as "paternalLastName",
+                            per.maternallastname as "maternalLastName",
                             per.address as address,
-                            COALESCE(dtc.district_name, per.district) as district_name,
+                            COALESCE(dtc.district_name, per.district) as "districtName",
                             email,
                             per.phone as phone
                         FROM 
@@ -20,73 +20,109 @@ export const _getAll = `
                             usr.deletedat IS NULL;`;
 
 export const _getById = `
-                        SELECT 
-                            usr.id, 
-                            person_id,
-                            per.rut as rut, 
-                            per."name" as name ,
-                            per.paternallastname as paternalLastName,
-                            per.maternallastname as maternalLastName,
-                            per.address as address,
-                            COALESCE(dtc.district_name, per.district) as district_name,
-                            email,
-                            per.phone as phone,
-                            array(
-                            select 
+    SELECT  usr.id, 
+    per.id AS "personId",
+                        per.rut as rut, 
+                        per."name" as name ,
+                        per.paternallastname as "paternalLastName",
+                        per.maternallastname as "maternalLastName",
+                        per.address as address,
+                        COALESCE(dis.district_name, per.district) as "districtName",
+                        email,
+                        per.phone as phone,
+                        array(select 
                                 jsonb_build_object(
                                     'id', rol.id,
                                     'code', rol.code,
                                     'name', rol.name
                                 )
-                            from app.user_rol url
-                            	inner join app.rol rol on url.rol_id = rol.id
-                                where 
-                                user_id = usr.id
-                            ) as roles,
-                             usr.createdat,
-                             usr.updatedat
-                        FROM 
-                            app."user"  usr
-                        INNER JOIN 
-                            app.person per ON per.id = usr.person_id
-                        LEFT JOIN 
-                            app.district dtc ON per.district_id = dtc.id
+                        from app.user_rol url
+                            inner join app.rol rol on url.rol_id = rol.id
+                            where 
+                            user_id = usr.id
+                        ) as roles,
+                        per.birthdate,
+                        usr.createdAt as "createdAt",
+                        usr.updatedAt as "updatedAt",
+                        usr.deletedAt as "deletedAt"
+    FROM 
+    app.user usr
+    INNER JOIN 
+    app.person per ON usr.person_id = per.id
+    INNER JOIN
+    app.district dis ON per.district_id = dis.id
                         WHERE 
                             usr.deletedat IS null and usr.id = ($1)`;
 
-export const _getByRut = `SELECT 
-                            usr.id, 
-                            person_id,
-                            per.rut as rut, 
-                            per."name" as name ,
-                            per.paternallastname as paternalLastName,
-                            per.maternallastname as maternalLastName,
-                            per.address as address,
-                            COALESCE(dtc.district_name, per.district) as district_name,
-                            email,
-                            per.phone as phone,
-                            array(
-                            select 
+export const _getByRut = `
+    SELECT  usr.id, 
+    per.id AS "personId",
+                        per.rut as rut, 
+                        per."name" as name ,
+                        per.paternallastname as "paternalLastName",
+                        per.maternallastname as "maternalLastName",
+                        per.address as address,
+                        COALESCE(dis.district_name, per.district) as "districtName",
+                        email,
+                        per.phone as phone,
+                        array(select 
                                 jsonb_build_object(
                                     'id', rol.id,
                                     'code', rol.code,
                                     'name', rol.name
                                 )
-                            from app.user_rol url
-                            	inner join app.rol rol on url.rol_id = rol.id
-                                where 
-                                user_id = usr.id
-                            ) as roles,
-                             usr.createdat,
-                             usr.updatedat
-                        FROM 
-                            app."user"  usr
-                        INNER JOIN 
-                            app.person per ON per.id = usr.person_id
-                        LEFT JOIN 
-                            app.district dtc ON per.district_id = dtc.id
+                        from app.user_rol url
+                            inner join app.rol rol on url.rol_id = rol.id
+                            where 
+                            user_id = usr.id
+                        ) as roles,
+                        per.birthdate,
+                        usr.createdAt as "createdAt",
+                        usr.updatedAt as "updatedAt",
+                        usr.deletedAt as "deletedAt"
+    FROM 
+    app.user usr
+    INNER JOIN 
+    app.person per ON usr.person_id = per.id
+    INNER JOIN
+    app.district dis ON per.district_id = dis.id
                         WHERE 
-                            usr.deletedat IS null and per.rut = ($1)`;
+                            per.rut = ($1)`;
+
+export const _getByEmail = `
+    SELECT  usr.id, 
+            per.id AS "personId",
+                                per.rut as rut, 
+                                per."name" as name ,
+                                per.paternallastname as "paternalLastName",
+                                per.maternallastname as "maternalLastName",
+                                per.address as address,
+                                COALESCE(dis.district_name, per.district) as "districtName",
+                                email,
+                                per.phone as phone,
+                                array(select 
+                                        jsonb_build_object(
+                                            'id', rol.id,
+                                            'code', rol.code,
+                                            'name', rol.name
+                                        )
+                                from app.user_rol url
+                                    inner join app.rol rol on url.rol_id = rol.id
+                                    where 
+                                    user_id = usr.id
+                                ) as roles,
+                                per.birthdate,
+                                usr.hash,
+                                usr.createdAt as "createdAt",
+                                usr.updatedAt as "updatedAt",
+                                usr.deletedAt as "deletedAt"
+        FROM 
+            app.user usr
+        INNER JOIN 
+            app.person per ON usr.person_id = per.id
+        INNER JOIN
+            app.district dis ON per.district_id = dis.id
+        WHERE per.email = $1`;
 
 export const _upsert = `WITH person_data AS (
                         INSERT INTO app.person (rut, "name", paternallastname, maternallastname, email, phone, address, birthdate, district_id) 
@@ -136,58 +172,83 @@ export const _upsert = `WITH person_data AS (
                             INNER JOIN app.rol rol ON url.rol_id = rol.id
                             WHERE user_id = usr.id
                         ) AS roles,
-                        usr.createdat,
-                        usr.updatedat
+                        usr.createdAt as "createdAt",
+                        usr.updatedAt as "updatedAt",
+                        usr.deletedAt as "deletedAt"
                     FROM 
                         user_data usr
                     CROSS JOIN person_data AS per
                     INNER JOIN app.district dis ON dis.id = per.district_id;
 `;
 
-export const _deleteById = `UPDATE app.user 
-                            SET deletedAt = NOW()
-                            WHERE id = ($1)
-                            RETURNING id, deletedat
-                            `;
+export const _deleteById = `WITH user_data AS (
+                                UPDATE app.user 
+                                SET deletedAt = NOW()
+                                WHERE id = ($1)
+                                RETURNING *)
+                                SELECT 
+                                    usr.id,
+                                    usr.person_id AS "personId",
+                                    per.rut,
+                                    per.name,
+                                    per.paternallastname AS "paternalLastName",
+                                    per.maternallastname AS "maternalLastName",
+                                    per.address,
+                                    per.birthdate,
+                                    dis.district_name AS "districtName",
+                                    per.email,
+                                    per.phone,
+                                    array(
+                                        SELECT 
+                                            jsonb_build_object(
+                                                'id', rol.id,
+                                                'code', rol.code,
+                                                'name', rol.name
+                                            )
+                                        FROM app.user_rol url
+                                        INNER JOIN app.rol rol ON url.rol_id = rol.id
+                                        WHERE user_id = usr.id
+                                    ) AS roles,
+                                    usr.createdAt as "createdAt",
+                                    usr.updatedAt as "updatedAt",
+                                    usr.deletedAt as "deletedAt"
+                                FROM 
+                                    user_data usr
+                                INNER JOIN person AS per
+                                INNER JOIN app.district dis ON dis.id = per.district_id`;
 
-export const _updatePassword = `
+export const _updatePassword = `WITH user_data AS (
                                 UPDATE app.user
                                 SET hash = $1
                                 WHERE id = $2
-                                RETURNING id, updatedat 
-`;
-
-export const _validate = `SELECT 
-                            usr.id, 
-                            per.id AS "personId",
-                                                per.rut as rut, 
-                                                per."name" as name ,
-                                                per.paternallastname as paternalLastName,
-                                                per.maternallastname as maternalLastName,
-                                                per.address as address,
-                                                COALESCE(dis.district_name, per.district) as district_name,
-                                                email,
-                                                per.phone as phone,
-                            array(
-                                                select 
-                                                    jsonb_build_object(
-                                                        'id', rol.id,
-                                                        'code', rol.code,
-                                                        'name', rol.name
-                                                    )
-                                                from app.user_rol url
-                                                    inner join app.rol rol on url.rol_id = rol.id
-                                                    where 
-                                                    user_id = usr.id
-                                                ) as roles,
-                                                per.birthdate,
-                                                usr.createdat,
-                                                usr.updatedat,
-                            usr.hash as password
-                        FROM 
-                            app.user usr
-                        INNER JOIN 
-                            app.person per ON usr.person_id = per.id
-                        INNER JOIN
-                            app.district dis ON per.district_id = dis.id
-                        WHERE per.email = $1 AND usr.deletedat  IS NULL`;
+                                RETURNING *)
+                                SELECT 
+                                    usr.id,
+                                    usr.person_id AS "personId",
+                                    per.rut,
+                                    per.name,
+                                    per.paternallastname AS "paternalLastName",
+                                    per.maternallastname AS "maternalLastName",
+                                    per.address,
+                                    per.birthdate,
+                                    dis.district_name AS "districtName",
+                                    per.email,
+                                    per.phone,
+                                    array(
+                                        SELECT 
+                                            jsonb_build_object(
+                                                'id', rol.id,
+                                                'code', rol.code,
+                                                'name', rol.name
+                                            )
+                                        FROM app.user_rol url
+                                        INNER JOIN app.rol rol ON url.rol_id = rol.id
+                                        WHERE user_id = usr.id
+                                    ) AS roles,
+                                    usr.createdAt as "createdAt",
+                                    usr.updatedAt as "updatedAt",
+                                    usr.deletedAt as "deletedAt"
+                                FROM 
+                                    user_data usr
+                                INNER JOIN person AS per
+                                INNER JOIN app.district dis ON dis.id = per.district_id`;

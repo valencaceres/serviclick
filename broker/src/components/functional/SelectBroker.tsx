@@ -25,13 +25,13 @@ export function SelectBroker({
   broker: Broker | null;
   setBroker: (broker: Broker | null) => void;
 }) {
-  const { user } = useUser();
+  const { userItem } = useUser();
   const { brokerList: brokers, getByUserId } = useBroker();
   useEffect(() => {
-    if (user) {
-      getByUserId(user.id);
+    if (userItem) {
+      getByUserId(userItem.id);
     }
-  }, [user, getByUserId]);
+  }, [userItem, getByUserId]);
 
   useEffect(() => {
     if (brokers && brokers.length === 1) {

@@ -12,10 +12,10 @@ import {
 
 const applicationRouter = Router();
 
-applicationRouter.get("/getAll", auth, getAll);
-applicationRouter.get("/getById/:id", auth, getById);
-applicationRouter.get("/getByCode/:code", auth, getByCode);
-applicationRouter.post("/upsert", auth, upsert);
-applicationRouter.delete("/deleteById:id", auth, deleteById);
+applicationRouter.get("/getAll", getAll);
+applicationRouter.get("/getById/:id", getById);
+applicationRouter.get("/getByCode/:code", getByCode);
+applicationRouter.post("/upsert", upsert);
+applicationRouter.delete("/deleteById:id", deleteById);
 
 export default applicationRouter;

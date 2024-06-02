@@ -1,8 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import sendResponse from "../utils/sendResponse";
 import boom from "@hapi/boom";
-import bcrypt from "bcrypt";
-import jwt from 'jsonwebtoken'
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+
+import config from "../utils/config";
 
 import * as User from "../models/User";
 import * as UserRol from "../models/UserRol";
@@ -38,6 +40,20 @@ const getByRut = async (
   try {
     const { rut } = req.params;
     const response = await User.getByRut(rut);
+    sendResponse(req, res, response);
+  } catch (e: any) {
+    return next(boom.badImplementation(e));
+  }
+};
+
+const getByEmail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { email } = req.params;
+    const response = await User.getByEmail(email);
     sendResponse(req, res, response);
   } catch (e: any) {
     return next(boom.badImplementation(e));
@@ -108,44 +124,29 @@ const validate = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password } = req.body;
 
-    const resultUser = await User.validate(email);
+    const { jwtSecret } = config;
+
+    const resultUser = await User.getByEmail(email);
+
     if (!resultUser) {
       return next(boom.badImplementation("User not found"));
     }
 
-    const hashPassword = resultUser.password;
-    const isValid = await bcrypt.compare(password, hashPassword);
+    const isValid = await bcrypt.compare(password, resultUser.hash);
 
     if (!isValid) {
       return next(boom.unauthorized("Invalid credentials"));
     }
 
-    // Aca creamos el token con la información del usuario
-
-      const roles = resultUser.roles.map((role: any) => ({
-        id: role.id,
-        code: role.code,
-        name: role.name
+    const roles = resultUser.roles.map((role: any) => ({
+      id: role.id,
+      code: role.code,
+      name: role.name,
     }));
 
-    const token = jwt.sign(
-      { 
-        userId: resultUser.id, 
-        personId: resultUser.personId, 
-        rut: resultUser.rut, 
-        name: resultUser.name, 
-        paternalLastName: resultUser.paternallastname, 
-        maternalLastName: resultUser.maternallastname,
-        email: resultUser.email,
-        address: resultUser.address, 
-        district: resultUser.district || '', 
-        phone: resultUser.phone, 
-        roles: roles,
-        birthdate: resultUser.birthdate
-      },
-      process.env.JWT_SECRET || '', 
-      { expiresIn: '1h' }
-    ) as string;
+    const token = jwt.sign(resultUser, jwtSecret, {
+      expiresIn: "1h",
+    }) as string;
 
     sendResponse(req, res, token);
   } catch (e: any) {
@@ -159,8 +160,8 @@ const assignRol = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-   const { id } = req.params;
-   const { rolId } = req.body;
+    const { id } = req.params;
+    const { rolId } = req.body;
     const response = await UserRol.assignRol(id, rolId);
     sendResponse(req, res, response);
   } catch (e: any) {
@@ -187,6 +188,7 @@ export {
   getAll,
   getById,
   getByRut,
+  getByEmail,
   upsert,
   deleteById,
   updatePassword,

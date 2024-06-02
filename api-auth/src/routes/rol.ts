@@ -12,11 +12,11 @@ import {
 
 const rolRouter = Router();
 
-rolRouter.get("/getAll", auth, getAll);
-rolRouter.get("/getById/:id", auth, getById);
-rolRouter.post("/upsert", auth, upsert);
-rolRouter.delete("/deleteById/:id", auth, deleteById);
-rolRouter.put("/assignAction/:id", auth, assignAction);
-rolRouter.delete("/removeAction/:id", auth, removeAction);
+rolRouter.get("/getAll", getAll);
+rolRouter.get("/getById/:id", getById);
+rolRouter.post("/upsert", upsert);
+rolRouter.delete("/deleteById/:id", deleteById);
+rolRouter.put("/assignAction/:id", assignAction);
+rolRouter.delete("/removeAction/:id", removeAction);
 
 export default rolRouter;
