@@ -5,10 +5,10 @@ import {
   _getAll,
   _getById,
   _getByRut,
+  _getByEmail,
   _upsert,
   _deleteById,
   _updatePassword,
-  _validate,
 } from "../queries/user";
 
 const getAll: any = async () => {
@@ -45,6 +45,19 @@ const getByRut: any = async (rut: string) => {
     });
     const result = await db.query(_getByRut, [rut]);
 
+    return result.rows[0];
+  } catch (e) {
+    return (e as Error).message;
+  }
+};
+
+const getByEmail: any = async (email: string, password: string) => {
+  try {
+    createLogger.info({
+      model: "user/getByEmail",
+      input: { email, password },
+    });
+    const result = await db.query(_getByEmail, [email]);
     return result.rows[0];
   } catch (e) {
     return (e as Error).message;
@@ -122,25 +135,12 @@ const updatePassword: any = async (id: string, password: string) => {
   }
 };
 
-const validate: any = async (email: string, password: string) => {
-  try {
-    createLogger.info({
-      model: "user/validate",
-      input: { email, password },
-    });
-    const result = await db.query(_validate, [email]);
-    return result.rows[0]
-  } catch (e) {
-    return (e as Error).message;
-  }
-};
-
 export {
   getAll,
   getById,
   getByRut,
+  getByEmail,
   upsert,
   deleteById,
   updatePassword,
-  validate,
 };

@@ -6,13 +6,19 @@ import { useUI, useUser } from "~/store/hooks/index";
 
 const DashboardPage: NextPage = () => {
   const { setTitle } = useUI();
-  const {user} = useUser()
+  const { userItem } = useUser();
 
   useEffect(() => {
     setTitle("Dashboard");
   }, [setTitle]);
 
-  return user.email && user.roles && user.roles.filter(role => role.name === "admin").length > 0 ? <Dashboard /> : <SignIn/>
+  return userItem.email &&
+    userItem.roles &&
+    userItem.roles.filter((role) => role.name === "admin").length > 0 ? (
+    <Dashboard />
+  ) : (
+    <SignIn />
+  );
 };
 
 export default DashboardPage;

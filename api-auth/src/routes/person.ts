@@ -12,10 +12,10 @@ import {
 
 const personRouter = Router();
 
-personRouter.get("/getAll", auth, getAll);
-personRouter.get("/getById/:id", auth, getById);
-personRouter.get("/getByRut/:code", auth, getByRut);
-personRouter.post("/upsert", auth, upsert);
-personRouter.delete("/deleteById:id", auth, deleteById);
+personRouter.get("/getAll", getAll);
+personRouter.get("/getById/:id", getById);
+personRouter.get("/getByRut/:code", getByRut);
+personRouter.post("/upsert", upsert);
+personRouter.delete("/deleteById:id", deleteById);
 
 export default personRouter;

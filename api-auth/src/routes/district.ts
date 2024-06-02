@@ -6,7 +6,7 @@ import { getAll, getById } from "../controllers/district";
 
 const districtRouter = Router();
 
-districtRouter.get("/getAll", auth, getAll);
-districtRouter.get("/getById/:id", auth, getById);
+districtRouter.get("/getAll", getAll);
+districtRouter.get("/getById/:id", getById);
 
 export default districtRouter;

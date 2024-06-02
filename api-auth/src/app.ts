@@ -6,6 +6,7 @@ import helmet from "helmet";
 import { setSecurityHeaders } from "./middlewares/setSecurityHeaders";
 import handlerResponse from "./middlewares/handlerResponse";
 import handlerRequest from "./middlewares/handlerRequest";
+import auth from "./middlewares/auth";
 import handlerError from "./middlewares/handlerError";
 
 import { allowedOrigins } from "./middlewares/allowedOrigins";
@@ -48,7 +49,7 @@ const routeMappings = [
 
 function initializeRoutes(server: Express) {
   routeMappings.forEach((route) => {
-    server.use(route.path, route.router);
+    server.use(route.path, auth, route.router, handlerError);
   });
 
   server.use((err: any, req: Request, res: Response, next: NextFunction) => {

@@ -55,7 +55,6 @@ export const brokerStore = create<brokerState>((set, get) => ({
   getByUserId: async (id: string) => {
     try {
       set((state) => ({ ...state, isLoading: true }));
-      console.log(id);
       const { data } = await apiInstance.get(`broker/getByUserId/${id}`);
       set((state) => ({
         ...state,
