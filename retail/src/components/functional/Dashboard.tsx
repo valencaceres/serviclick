@@ -10,6 +10,8 @@ import {
   CardTitle,
 } from "../ui/Card";
 
+import {Button} from "../ui/Button";
+
 import { useRetail } from "~/store/hooks/index";
 import { Retail } from "~/interfaces/retail";
 import { useUI } from "~/store/hooks/index";
@@ -26,19 +28,54 @@ export const Dashboard: React.FC = () => {
 };
 
 function RetailSummary({ retail }: { retail: Retail | null }) {
+
   const {
     getDetailsByRetailId,
     summary: data,
     isLoading: loading,
+    getSalesMultiHogar,
+    retail64
   } = useRetail();
+  
+  const base64ToArrayBuffer = (base64: string) => {
+    const binaryString = window.atob(base64);
+    const len = binaryString.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes.buffer;
+};
+
+const downloadSales = () => {
+  
+    const fileName = `Ventas-${retail?.name}.xlsx`
+    const base64String: string = String(retail64);
+    try {
+        const arrayBuffer = base64ToArrayBuffer(base64String);
+        const blob = new Blob([arrayBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const blobUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+        console.error('Error al descargar el archivo:', error);
+    }
+};
 
   useEffect(() => {
     if (retail) {
       getDetailsByRetailId(retail.id);
+      getSalesMultiHogar(retail?.id || '')
     }
   }, [retail, getDetailsByRetailId]);
   const isLoading = loading || data?.summary?.charged === null;
   return (
+    <div className="flex w-full flex-col flex-wrap items-center gap-4 py-4 lg:flex-row lg:justify-center">
     <div className="flex w-full flex-col flex-wrap items-center gap-4 py-4 lg:flex-row lg:justify-center">
       <Card className="w-full max-w-xs hover:bg-slate-50">
         <CardHeader>
@@ -129,6 +166,8 @@ function RetailSummary({ retail }: { retail: Retail | null }) {
           <Skeleton className="h-4 w-full bg-primary-500" />
         </CardFooter>
       </Card>
+    </div>
+              {retail?.name === 'Multi-Hogar' ? <Button onClick={downloadSales}>Reporte</Button> : null}
     </div>
   );
 }

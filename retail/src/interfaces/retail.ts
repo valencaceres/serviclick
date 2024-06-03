@@ -4,6 +4,10 @@ export interface Retail {
   name: string;
 }
 
+export interface Retail64 {
+  data: string
+}
+
 interface CollectionFee {
   quantity: number;
   free: number;

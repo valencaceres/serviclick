@@ -368,7 +368,7 @@ const AgentProductsItem = ({
         text="Registrar"
         width="200px"
         onClick={handleSaveProduct}
-        enabled={enabledButton}
+        
       />
     </ContentCell>
   );

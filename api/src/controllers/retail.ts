@@ -1,4 +1,6 @@
 import xlsx from "xlsx";
+import { Request, Response } from "express";
+import excelUpload from "../util/xlsx";
 
 import createLogger from "../util/logger";
 import { generateGenericPassword } from "../util/user";
@@ -21,7 +23,7 @@ import * as Policy from "../models/policy";
 import * as Lead from "../controllers/lead";
 
 import * as Product from "./product";
-import ioClient from "socket.io-client";
+
 import { format } from "date-fns";
 
 const create = async (req: any, res: any) => {
@@ -117,6 +119,39 @@ const getAll = async (req: any, res: any) => {
     return;
   }
 };
+
+const getSales = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const RetailResponse = await Retail.getById(id);
+    const response = await Retail.getSales(id);
+    const salesData = response.data;
+
+    if (!salesData) {
+      throw new Error('Los datos de ventas son nulos.');
+    }
+
+    const salesSummary = salesData.map((sale: any) => ({
+      'Nombre completo': sale.fullname,
+      leads: sale.leads,
+      Ventas: sale.sales,
+    }));
+
+    const salesDetail = salesData.map((sale: any) => ({
+      Producto: sale.product,
+      'Precio Producto': sale.productprice,
+      'Nombre de Comprador': sale.fullnamebuyer,
+      Venta: sale.comprado ? 'Vendido' : 'No vendido',
+    }));
+
+    excelUpload(salesSummary, salesDetail, RetailResponse.data.name, res);
+  } catch (error) {
+    console.error('Error al generar el archivo Excel:', error);
+    res.status(500).json({ success: false, error: (error as Error).message });
+  }
+};
+
+
 
 const getProductsAndRetail = async (req: any, res: any) => {
   try {
@@ -809,7 +844,7 @@ const getPayments = async (req: any, res: any) => {
   }
 };
 
-const addLeadFromExcel = async (req: any, res: any) => {
+/* const addLeadFromExcel = async (req: any, res: any) => {
   try {
     const socket = ioClient(`${process.env.SOCKET_API_URL}`);
 
@@ -933,7 +968,7 @@ const addLeadFromExcel = async (req: any, res: any) => {
     const errorResponse = { success: false, error: (e as Error).message };
     res.json(errorResponse);
   }
-};
+}; */
 
 const exportPayments = async (req: any, res: any) => {
   try {
@@ -1097,11 +1132,12 @@ export {
   getCollectById,
   getAgents,
   updateAgent,
-  addLeadFromExcel,
+/*   addLeadFromExcel, */
   getByUserId,
   getProductsById,
   getCollectionById,
   getPayments,
+  getSales
 };
 
 function isRecord(obj: unknown): obj is Record<string, any> {

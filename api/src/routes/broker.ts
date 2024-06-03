@@ -22,10 +22,11 @@ import {
 } from "../controllers/broker";
 import isAuthenticated from "../middlewares/isAuthenticated";
 import isAdmin from "../middlewares/isAdmin";
+import authMiddleware from "../middlewares/isAdminWithoutClerk";
  const BrokerRouter = Router();
 
 BrokerRouter.post("/create", auth, isAuthenticated, isAdmin, create);
-BrokerRouter.post("/addProduct", auth, addProduct);
+BrokerRouter.post("/addProduct", auth, authMiddleware, addProduct);
 BrokerRouter.post("/removeProduct", auth, isAuthenticated, removeProduct);
 BrokerRouter.get("/getAll", auth, getAll);
 BrokerRouter.get("/getById/:id", auth, getById);
