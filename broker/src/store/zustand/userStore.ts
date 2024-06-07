@@ -12,6 +12,7 @@ interface userState {
   isError: boolean;
   error: string;
   validate: (email: string, password: string) => void;
+  getRolById: (id: string) => void;
 }
 
 export const userStore = create<userState>((set) => ({
@@ -55,7 +56,7 @@ export const userStore = create<userState>((set) => ({
       }
 
       const decodedToken = jwt.decode(data.data) as IUser | null;
-
+      console.log(decodedToken)
       if (!decodedToken) {
         set((state) => ({
           ...state,
@@ -83,4 +84,22 @@ export const userStore = create<userState>((set) => ({
       }));
     }
   },
+  getRolById: async (id: string) => {
+    try {
+      set((state) => ({ ...state, isLoading: true }));
+      const { data } = await apiInstanceUser.get(`/rol/getById/${id}`);
+      set((state) => ({
+        ...state,
+        usersList: data,
+        isLoading: false,
+      }));
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
+  }
 }));

@@ -71,7 +71,7 @@ const useGetById = (id: string) => {
 };
 
 const listProducts = async (agent_id: string | undefined) => {
-  const { data } = await apiInstance.get(`/product/list/${agent_id}`);
+  const { data } = await apiInstance.get(`/product/list/7ea804e5-6de1-4e60-affc-f5b31af90ba3`);
   return data;
 };
 

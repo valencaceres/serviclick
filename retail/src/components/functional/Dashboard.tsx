@@ -36,7 +36,6 @@ function RetailSummary({ retail }: { retail: Retail | null }) {
     getSalesMultiHogar,
     retail64
   } = useRetail();
-  
   const base64ToArrayBuffer = (base64: string) => {
     const binaryString = window.atob(base64);
     const len = binaryString.length;
@@ -69,7 +68,7 @@ const downloadSales = () => {
 
   useEffect(() => {
     if (retail) {
-      getDetailsByRetailId(retail.id);
+      getDetailsByRetailId(retail?.id || '');
       getSalesMultiHogar(retail?.id || '')
     }
   }, [retail, getDetailsByRetailId]);

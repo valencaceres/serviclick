@@ -11,7 +11,7 @@ const useUser = () => {
     })
   );
 
-  const { validate } = userStore();
+  const { validate, getRolById } = userStore();
 
   return {
     usersList,
@@ -20,6 +20,7 @@ const useUser = () => {
     isError,
     error,
     validate,
+    getRolById
   };
 };
 

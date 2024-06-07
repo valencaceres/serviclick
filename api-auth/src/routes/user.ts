@@ -11,6 +11,7 @@ import {
   updatePassword,
   assignRol,
   removeRol,
+  getUserRolAgent
 } from "../controllers/user";
 
 const userRouter = Router();
@@ -24,6 +25,6 @@ userRouter.post("/validate", validate);
 userRouter.delete("/deleteById:id", deleteById);
 userRouter.delete("/removeRol/:id", removeRol);
 userRouter.put("/updatePassword", updatePassword);
-userRouter.put("/assignRol:id", assignRol);
-
+userRouter.put("/assignRol/:id", assignRol);
+userRouter.get("/getUserRolAgent/:id", getUserRolAgent);
 export default userRouter;
