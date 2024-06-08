@@ -26,7 +26,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 const LeadRouter = Router();
 
-LeadRouter.post("/create", auth, authMiddleware, createController);
+LeadRouter.post("/create", auth, createController);
 LeadRouter.post(
   "/addBeneficiaries",
   auth,

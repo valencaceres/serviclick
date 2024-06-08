@@ -2,6 +2,7 @@ import { brokerStore } from "../zustand";
 
 const useBroker = () => {
   const {
+    broker: broker,
     list: brokerList,
     summary,
     familiesList,
@@ -9,6 +10,7 @@ const useBroker = () => {
     isError,
     error,
   } = brokerStore((state) => ({
+    broker: state.broker,
     list: state.list,
     summary: state.summary,
     familiesList: state.familiesList,
@@ -17,7 +19,7 @@ const useBroker = () => {
     error: state.error,
   }));
 
-  const { getByUserId, getDetailsByBrokerId, getFamiliesByBrokerId } =
+  const { getByUserId, getDetailsByBrokerId, getFamiliesByBrokerId, getBrokerById } =
     brokerStore();
 
   return {
@@ -30,6 +32,7 @@ const useBroker = () => {
     getByUserId,
     getDetailsByBrokerId,
     getFamiliesByBrokerId,
+    getBrokerById
   };
 };
 

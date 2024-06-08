@@ -33,6 +33,26 @@ export const _getBySearchValues = (rut: string, name: string) => `
         order 	by
                 max(sum.name)`;
 
+export const _getSales = `
+select 	usr.rut,
+		MAX(concat(usr."name", ' ', usr.paternallastname, ' ', usr.maternallastname)) as fullname,
+		count(1) as leads,
+		sum(case when lea.policy_id is null then 0 else 1 end) as sales,
+		pro."name" as product,
+		lp.price as productprice,
+		MAX(concat(cus."name", ' ', cus.paternallastname, ' ', cus.maternallastname)) as fullnamebuyer
+from app.lead lea
+	left join app.userretail usr on lea.user_id = usr.user_id 
+	left join app.customer cus on lea.customer_id = cus.id 
+	left join app.leadproduct lp on lea.id = lp.lead_id 
+	inner join app.product pro on lp.product_id = pro.id 
+where agent_id = $1
+group by	
+	usr.rut,
+	pro."name",
+	lp.price
+`;
+
 export const _getCustomersByRetailIdAndProductId = `
         select 	cus.id as customer_id,
                 cus.rut as customer_rut,

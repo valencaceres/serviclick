@@ -9,6 +9,7 @@ import {
   _upsert,
   _deleteById,
   _updatePassword,
+  _getUserRolAgent
 } from "../queries/user";
 
 const getAll: any = async () => {
@@ -30,7 +31,7 @@ const getById: any = async (id: string) => {
       input: { id },
     });
     const result = await db.query(_getById, [id]);
-
+    console.log(result.rows)
     return result.rows[0];
   } catch (e) {
     return (e as Error).message;
@@ -135,6 +136,19 @@ const updatePassword: any = async (id: string, password: string) => {
   }
 };
 
+const getUserRolAgent: any = async (id: string) => {
+  try {
+    createLogger.info({
+      model: "user/updatePassword",
+      input: { id },
+    });
+    const result = await db.query(_getUserRolAgent, [id]);
+    return result.rows;
+  } catch (e: any) {
+    return (e as Error).message;
+  }
+}
+  
 export {
   getAll,
   getById,
@@ -143,4 +157,5 @@ export {
   upsert,
   deleteById,
   updatePassword,
+  getUserRolAgent
 };

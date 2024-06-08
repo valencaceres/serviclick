@@ -23,12 +23,14 @@ import {
   getAgents,
   getPayments,
   updateAgent,
-  addLeadFromExcel,
+/*   addLeadFromExcel, */
   getProductsAndRetail,
   removeAgent,
-  exportPayments
+  exportPayments,
+  getSales
 } from "../controllers/retail";
 import isAuthenticated from "../middlewares/isAuthenticated";
+import authMiddleware from "../middlewares/isAdminWithoutClerk";
 import isAdmin from "../middlewares/isAdmin";
 
 const upload = multer({
@@ -42,7 +44,7 @@ const upload = multer({
 const RetailRouter = Router();
 
 RetailRouter.post("/create", auth, isAuthenticated, isAdmin, create);
-RetailRouter.post("/addProduct", auth, isAuthenticated, isAdmin, addProduct);
+RetailRouter.post("/addProduct", auth, authMiddleware, addProduct);
 RetailRouter.post("/removeProduct", auth, isAuthenticated, removeProduct);
 RetailRouter.get("/getAll", auth, getAll);
 RetailRouter.post("/getBySearchValues", auth, getBySearchValues);
@@ -83,15 +85,16 @@ RetailRouter.put(
   updateAgent
 );
 RetailRouter.delete("/removeAgent", auth, isAuthenticated, isAdmin, removeAgent);
-RetailRouter.post(
+/* RetailRouter.post(
   "/addLeadFromExcel",
   auth,
   isAuthenticated,
   isAdmin,
   upload.single("file"),
   addLeadFromExcel
-);
+); */
 RetailRouter.get("/exportPayments/:id", auth, exportPayments);
+RetailRouter.get("/getSales/:id", auth, getSales)
 
 
 

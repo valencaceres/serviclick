@@ -2,6 +2,7 @@ import { retailStore } from "../zustand";
 
 const useRetail = () => {
   const {
+    retail64: retail64,
     list: retailList,
     summary,
     familiesList,
@@ -9,6 +10,7 @@ const useRetail = () => {
     isError,
     error,
   } = retailStore((state) => ({
+    retail64: state.retail64,
     list: state.list,
     summary: state.summary,
     familiesList: state.familiesList,
@@ -17,10 +19,11 @@ const useRetail = () => {
     error: state.error,
   }));
 
-  const { getByUserId, getDetailsByRetailId, getFamiliesByRetailId } =
+  const { getByUserId, getDetailsByRetailId, getFamiliesByRetailId, getSalesMultiHogar } =
     retailStore();
 
   return {
+    retail64,
     retailList,
     summary,
     familiesList,
@@ -30,6 +33,7 @@ const useRetail = () => {
     getByUserId,
     getDetailsByRetailId,
     getFamiliesByRetailId,
+    getSalesMultiHogar
   };
 };
 

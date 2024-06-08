@@ -397,8 +397,8 @@ const getByUserId: any = async (user_id: string) => {
               bro.rut,
               bro.name
       from 	app.broker bro
-                inner join app.brokeruser bru on bro.id = bru.broker_id
-      where 	bru.user_id = $1
+                inner join app.user_rol_agent ura on bro.id = ura.agent_id
+      where 	ura.user_id = $1
       order 	by
               bro.name`,
       [user_id]

@@ -2,9 +2,11 @@ import { create } from "zustand";
 
 import { apiInstance } from "../../utils/api";
 
-import { Retail, DataStructure } from "../../interfaces/retail";
+import { Retail, DataStructure, Retail64 } from "../../interfaces/retail";
 import { IFamily } from "../../interfaces/family";
+
 interface retailState {
+  retail64: Retail64,
   list: Retail[];
   familiesList: IFamily[];
   summary: DataStructure;
@@ -14,10 +16,14 @@ interface retailState {
   getByUserId: (id: string) => void;
   getDetailsByRetailId: (id: string) => void;
   getFamiliesByRetailId: (id: string) => void;
-
-  reset: () => void;
+  getSalesMultiHogar: (id: string) => void;
+  reset: () => void;  
   resetAll: () => void;
 }
+
+const initialData64: Retail64 = {
+  data: ''
+};
 
 const initialData: Retail = {
   id: "",
@@ -41,6 +47,7 @@ const initialDataFamilies: IFamily = {
 };
 
 export const retailStore = create<retailState>((set, get) => ({
+  retail64: initialData64,
   list: [initialData],
   summary: initialDataSummary,
   familiesList: [initialDataFamilies],
@@ -52,6 +59,21 @@ export const retailStore = create<retailState>((set, get) => ({
     set((state) => ({ ...state, retail }));
   },
 
+  getSalesMultiHogar: async (id: string) => {
+    try {
+      set((state) => ({ ...state, isLoading: true }));
+      const { data } = await apiInstance.get(`/retail/getSales/${id}`);
+      console.log(data.data)
+      set((state) => ({ ...state, retail64: data.data, isLoading: false }));
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
+  },
   getByUserId: async (id: string) => {
     try {
       set((state) => ({ ...state, isLoading: true }));
@@ -74,6 +96,7 @@ export const retailStore = create<retailState>((set, get) => ({
   getDetailsByRetailId: async (id: string) => {
     try {
       set((state) => ({ ...state, isLoading: true }));
+      console.log(id)
       const { data } = await apiInstance.get(`retail/getCollectionById/${id}`);
       set((state) => ({
         ...state,

@@ -5,6 +5,7 @@ import { apiInstance } from "../../utils/api";
 import { Broker, DataStructure } from "../../interfaces/broker";
 import { IFamily } from "../../interfaces/family";
 interface brokerState {
+  broker: Broker
   list: Broker[];
   familiesList: IFamily[];
   summary: DataStructure;
@@ -14,7 +15,7 @@ interface brokerState {
   getByUserId: (id: string) => void;
   getDetailsByBrokerId: (id: string) => void;
   getFamiliesByBrokerId: (id: string) => void;
-
+  getBrokerById: (id: string) => void;
   reset: () => void;
   resetAll: () => void;
 }
@@ -41,6 +42,7 @@ const initialDataFamilies: IFamily = {
 };
 
 export const brokerStore = create<brokerState>((set, get) => ({
+  broker: initialData,
   list: [initialData],
   summary: initialDataSummary,
   familiesList: [initialDataFamilies],
@@ -51,7 +53,25 @@ export const brokerStore = create<brokerState>((set, get) => ({
   set: (broker: Broker) => {
     set((state) => ({ ...state, broker }));
   },
-
+  getBrokerById: async (id: string) => {
+    try {
+      set((state) => ({ ...state, isLoading: true }));
+      const { data } = await apiInstance.get(`broker/getById/${id}`);
+      set((state) => ({
+        ...state,
+        broker: data,
+        isLoading: false,
+        isError: false,
+      }));
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
+  },
   getByUserId: async (id: string) => {
     try {
       set((state) => ({ ...state, isLoading: true }));

@@ -3,6 +3,7 @@ import pool from "../util/database";
 import {
   _getBySearchValues,
   _getCustomersByRetailIdAndProductId,
+  _getSales
 } from "../queries/retail";
 
 const create: any = async (
@@ -742,6 +743,28 @@ const upsertCode: any = async (lead_id: string, agent_id: string) => {
   }
 };
 
+const getSales = async (id: string) => {
+  try {
+    const response = await pool.query(_getSales, [id])
+    if(!response){
+      return {
+        success: false,
+        data: null,
+        error: "Error"
+      }
+    }
+    else{
+      return {
+        success: true,
+        data: response.rows,
+        error: null
+      }
+    }
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+}
+
 export {
   create,
   getById,
@@ -763,4 +786,5 @@ export {
   getCollectionById,
   getPayments,
   upsertCode,
+  getSales
 };

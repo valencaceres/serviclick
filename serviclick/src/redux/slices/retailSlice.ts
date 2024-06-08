@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { post, get, erase } from "../../utils/api";
+import { post, get, erase, apiInstance } from "../../utils/api";
 
 export type PriceT = {
   base: number;
@@ -194,18 +194,33 @@ export const deleteById = (id: string) => async (dispatch: any) => {
 
 export const addProduct =
   (id: string, product: ProductT, number: number) => async (dispatch: any) => {
-    const { success, data, error } = await post(`retail/addProduct`, {
-      retail_id: id,
-      ...product,
-    });
+    const jwtToken = localStorage.getItem('jwtToken');
 
-    if (!success) {
+    if (!jwtToken) {
+      console.error('Token JWT no encontrado en el localStorage');
       return false;
     }
 
-    dispatch(setProducts(data));
-    dispatch(setLoading(false));
-    return true;
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${jwtToken}`,
+    };
+
+    try {
+      const response = await apiInstance.post(`retail/addProduct`, {
+        retail_id: id,
+        ...product,
+      }, { headers });
+
+      const { data } = response;
+      dispatch(setProducts(data));
+      dispatch(setLoading(false));
+      
+      return true;
+    } catch (error) {
+      console.error('Error al agregar el producto:', error);
+      return false;
+    }
   };
 
 export const removeProduct =

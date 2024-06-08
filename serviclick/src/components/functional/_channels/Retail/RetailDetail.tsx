@@ -242,7 +242,6 @@ const RetailDetail = () => {
     if (typeof file !== "string" && file) {
       if (file instanceof Blob) {
         const reader = new FileReader();
-
         reader.onloadend = () => {
           base64Pdf = reader.result?.toString().split(",")[1] ?? "";
           addProduct(
@@ -355,13 +354,13 @@ const RetailDetail = () => {
             deleteProduct={handleClickDeleteProduct}
             setRetailProductForm={setRetailProductForm}
           />
-          <RetailUsers
+{/*           <RetailUsers
             addNewUser={handleClickAddNewUser}
             editUser={handleClickEditUser}
             deleteUser={handleClickDeleteUser}
             setRetailUserForm={setRetailUserForm}
             handleClickRemoveAgent={handleClickRemoveAgent}
-          />
+          /> */}
         </ContentCell>
       </ContentRow>
       <ModalWindow
