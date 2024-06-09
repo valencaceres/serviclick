@@ -77,7 +77,9 @@ export const retailStore = create<retailState>((set, get) => ({
   getByUserId: async (id: string) => {
     try {
       set((state) => ({ ...state, isLoading: true }));
+      console.log(id)
       const { data } = await apiInstance.get(`retail/getByUserId/${id}`);
+      console.log(data)
       set((state) => ({
         ...state,
         list: data,
@@ -100,7 +102,7 @@ export const retailStore = create<retailState>((set, get) => ({
       const { data } = await apiInstance.get(`retail/getCollectionById/${id}`);
       set((state) => ({
         ...state,
-        summary: data,
+        summary: data.data,
         isLoading: false,
         isError: false,
       }));
