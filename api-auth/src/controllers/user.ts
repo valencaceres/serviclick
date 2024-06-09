@@ -8,6 +8,7 @@ import config from "../utils/config";
 
 import * as User from "../models/User";
 import * as UserRol from "../models/UserRol";
+import { _getUserRolAgent } from "../queries/user";
 
 const getAll = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -54,6 +55,20 @@ const getByEmail = async (
   try {
     const { email } = req.params;
     const response = await User.getByEmail(email);
+    sendResponse(req, res, response);
+  } catch (e: any) {
+    return next(boom.badImplementation(e));
+  }
+};
+
+const getUserRolAgent: any = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const response = await User.getUserRolAgent(id);
     sendResponse(req, res, response);
   } catch (e: any) {
     return next(boom.badImplementation(e));
@@ -189,6 +204,7 @@ export {
   getById,
   getByRut,
   getByEmail,
+  getUserRolAgent,
   upsert,
   deleteById,
   updatePassword,

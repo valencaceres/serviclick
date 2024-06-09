@@ -11,7 +11,7 @@ import {
   updatePassword,
   assignRol,
   removeRol,
-  getUserRolAgent
+  getUserRolAgent,
 } from "../controllers/user";
 
 const userRouter = Router();
