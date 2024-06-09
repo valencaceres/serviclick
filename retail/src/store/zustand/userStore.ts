@@ -26,7 +26,7 @@ interface User {
 }
 
 export interface MyJwtPayload {
-  userId: string;
+  id: string;
   personId: string;
   rut: string;
   name: string;
@@ -118,9 +118,10 @@ validate: async (email: string, password: string) => {
       if (data.success) {
           localStorage.setItem('jwtToken', data.data);
           const decodedToken = jwt.decode(data.data) as MyJwtPayload | null;
+          console.log(decodedToken)
           if (decodedToken) {
-              const { userId, rut, name, paternalLastName, maternalLastName, roles, email, address, phone, district } = decodedToken;
-              const user: User = { id: userId, rut, name, paternallastname: paternalLastName, maternallastname: maternalLastName, roles, email, address, phone, district };
+              const { id, rut, name, paternalLastName, maternalLastName, roles, email, address, phone, district } = decodedToken;
+              const user: User = { id: id, rut, name, paternallastname: paternalLastName, maternallastname: maternalLastName, roles, email, address, phone, district };
               set((state) => ({ ...state, user, isLoading: false }));
           } else {
               console.log('No funciono 1')
