@@ -27,7 +27,7 @@ const CardHistory: React.FC<ICardHistory> = ({
   return (
     <div
       className={styles.cardHistory}
-      style={{ backgroundImage: `url(${backgroundImage})`, width:"100$", height:`calc(100% * ${height} / ${width})`, }}
+      style={{ backgroundImage: `url(${backgroundImage})`, width: "100$", height: `calc(100% * ${height} / ${width})`, }}
       onMouseEnter={handleHover}
       onMouseLeave={handleHover}
     >

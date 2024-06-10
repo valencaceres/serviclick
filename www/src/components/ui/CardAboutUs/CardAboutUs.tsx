@@ -23,7 +23,7 @@ const CardAboutUs = ({
         src={`${img}`}
         style={{
           width: "100%",
-          height: `calc(100wv * ${height} / ${width})`,
+          height: `calc(100vw * ${height} / ${width})`,
         }}
       />
       <h2 className={styles.title}>{title}</h2>

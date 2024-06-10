@@ -98,6 +98,10 @@
   justify-content: space-between;
   align-items: center;
   margin: 20px;
+
+  @include media-md {
+    justify-content: center;
+  }
 }
 
 .subtitle {
@@ -113,6 +117,7 @@
   justify-content: center;
   align-items: center;
 }
+
 .line {
   display: flex;
   align-items: center;

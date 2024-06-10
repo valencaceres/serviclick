@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
-import { motion, useAnimation } from "framer-motion";
+
 import styles from "./Score.module.scss";
+
+import { motion, useAnimation } from "framer-motion";
 import CardScore from "@/components/ui/CardScore";
 
 interface IScoreProps {

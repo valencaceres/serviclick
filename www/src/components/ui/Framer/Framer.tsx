@@ -4,6 +4,7 @@ import { useInView } from "react-intersection-observer";
 
 const withScrollAnimation = (WrappedComponent: any) => {
   const WithScrollAnimation = ({ className, children, ...props }: any) => {
+
     const { ref, inView } = useInView({
       triggerOnce: true,
     });
@@ -32,9 +33,8 @@ const withScrollAnimation = (WrappedComponent: any) => {
     );
   };
 
-  WithScrollAnimation.displayName = `withScrollAnimation(${
-    WrappedComponent.displayName || WrappedComponent.name || "Component"
-  })`;
+  WithScrollAnimation.displayName = `withScrollAnimation(${WrappedComponent.displayName || WrappedComponent.name || "Component"
+    })`;
 
   return WithScrollAnimation;
 };

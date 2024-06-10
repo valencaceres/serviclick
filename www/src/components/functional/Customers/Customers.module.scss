@@ -3,7 +3,6 @@
 .customers {
   display: flex;
   justify-content: center;
-  flex-direction: column;
   align-items: center;
   flex-wrap: wrap;
   padding: 40px;
@@ -11,27 +10,17 @@
   background-color: #eeeeee;
   gap: 40px;
 
-  .rowOne {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    align-items: center;
-    width: 100%;
+  @include media-md() {
+    display: none;
   }
 
-  .rowTwo {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    align-items: center;
-    width: 100%;
-  }
+  h2 {
+    font-size: 32px;
+    font-weight: 600;
+    color: #03495C;
 
-  .rowThree {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    align-items: center;
-    width: 100%;
+    @include media-md() {
+      font-size: 22px;
+    }
   }
 }

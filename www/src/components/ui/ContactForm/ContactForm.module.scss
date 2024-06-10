@@ -29,8 +29,8 @@
   margin-right: 20px;
   border-radius: 50px;
 
-  @include media-md(){
-  margin-top: 40px;
+  @include media-md() {
+    margin-top: 40px;
   }
 
 
@@ -55,6 +55,7 @@
     background-color: #b4cd25;
   }
 }
+
 .head {
   display: flex;
   justify-content: center;
@@ -92,6 +93,7 @@
 }
 
 .inputFields {
+
   input[type="text"],
   input[type="email"],
   textarea {
