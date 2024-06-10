@@ -15,9 +15,11 @@
   @include media-lg() {
     font-size: 28px;
   }
+
   @include media-md() {
     font-size: 24px;
   }
+
   @include media-sm() {
     font-size: 20px;
   }
@@ -30,9 +32,11 @@
   @include media-lg() {
     font-size: 22px;
   }
+
   @include media-md() {
     font-size: 20px;
   }
+
   @include media-sm() {
     font-size: 18px;
   }
@@ -45,9 +49,11 @@
   @include media-lg() {
     font-size: 12px;
   }
+
   @include media-md() {
     font-size: 10px;
   }
+
   @include media-sm() {
     font-size: 10px;
   }

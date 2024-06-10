@@ -53,12 +53,12 @@ const initialCards: Card[] = [
     title: "MOVILIDAD",
     description: "Puedes encontrar beneficios para tus clientes en:",
     list: [
-      "Atención Ambulatoria",
-      "Atención de Urgencias ",
-      "Atención de Especialista",
-      "Telemedicina",
-      "Descuento en farmacias",
-      "Exámenes y mucho más",
+      "Protección para neumáticos / amortiguadores",
+      "Cerrajería vehícular",
+      "Protección Insignia o Emblema",
+      "Urgencia médica por accidente en bicicleta",
+      "Asistencia Legal Telefónica",
+      "Descuentos en farmacias y mucho más",
     ],
     img: "/img/services/movilidad.png",
   },
@@ -79,9 +79,8 @@ const CardServices: React.FC = () => {
         {initialCards.map((card, index) => (
           <div
             key={index}
-            className={`${styles.card} ${
-              selectedCardIndex === index ? styles.selectedCard : ""
-            }`}
+            className={`${styles.card} ${selectedCardIndex === index ? styles.selectedCard : ""
+              }`}
             onMouseEnter={() => handleHover(index)}
             onMouseLeave={() => setSelectedCardIndex(0)}
           >

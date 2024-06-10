@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+
 import styles from "./CardScore.module.scss";
+
+import { motion } from "framer-motion";
 
 interface ICardScoreProps {
   title: number;
@@ -39,7 +41,7 @@ const CardScore: React.FC<ICardScoreProps> = ({
   return (
     <div className={styles.cardScore}>
       <motion.h2 className={styles.cardTitle}>
-        {unitTextLeft} {} {count} {unitTextRight} {}
+        {unitTextLeft} { } {count} {unitTextRight} { }
       </motion.h2>
       <p className={styles.cardText}>{text}</p>
     </div>

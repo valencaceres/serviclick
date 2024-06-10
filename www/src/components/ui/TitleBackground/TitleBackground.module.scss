@@ -13,9 +13,11 @@
   @include media-lg() {
     font-size: 22px;
   }
+
   @include media-md() {
     font-size: 20px;
   }
+
   @include media-sm() {
     font-size: 18px;
   }
@@ -46,11 +48,13 @@
     width: 60%;
     transform: translate(-50%, 250%);
   }
+
   @include media-lg() {
     font-size: 22px;
     padding: 8px 20px;
     transform: translate(-50%, 290%);
   }
+
   @include media-md() {
     display: none;
   }

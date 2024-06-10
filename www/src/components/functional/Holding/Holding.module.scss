@@ -12,7 +12,7 @@
   @include media-md() {
     margin: 80px 20px;
   }
-  
+
 
   .line {
     padding: 20px;
@@ -29,8 +29,7 @@
     align-items: center;
     width: 100%;
 
-    @include media-md() {
-    }
+    @include media-md() {}
   }
 
   .rowTwo {
@@ -47,6 +46,7 @@
     justify-content: space-around;
     align-items: center;
     width: 100%;
+
     img {
       padding: 10px;
     }

@@ -9,10 +9,10 @@
   width: 100%;
   padding: 40px;
 
-  @include media-lg(){
-  height: auto;
-  justify-content: center;
-  padding: 20px;
+  @include media-lg() {
+    height: auto;
+    justify-content: center;
+    padding: 20px;
 
   }
 }
@@ -30,12 +30,28 @@
   @include media-lg() {
     justify-content: center;
     gap: 10px;
-    padding: 10px;
 
-  }   
+
+  }
 }
-.img{
-display: flex;
-justify-content: space-between;
-align-items: center;
+
+.desktop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+
+  @include media-md() {
+    display: none;
+
+  }
+}
+
+.img {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+
 }

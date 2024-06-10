@@ -11,6 +11,7 @@
   @include media-sm() {
     gap: 10px;
   }
+
   @include media-md() {
     gap: 15px;
   }
@@ -41,22 +42,25 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex-wrap: wrap;
+  // flex-wrap: wrap;
   gap: 20px;
 
   @include media-sm() {
     gap: 10px;
   }
+
   @include media-md() {
     gap: 15px;
   }
 
   .textParagraph {
+    display: flex;
     font-size: 18px;
     font-weight: 400;
     width: 100%;
     text-align: justify;
     color: #03495c;
+
 
     @include media-lg() {
       font-size: 14px;
@@ -65,7 +69,8 @@
     }
 
     @include media-md() {
-      font-size: 12px;
+      display: flex;
+      font-size: 14px;
       width: 100%;
       padding: 10px;
     }

@@ -8,12 +8,13 @@
   flex-direction: column;
   align-items: flex-end;
   gap: 20px;
+  z-index: 1;
 
-  @include media-md(){
+  @include media-md() {
     right: 40px;
-    }
-    
-  
+  }
+
+
 }
 
 .button {
@@ -21,13 +22,14 @@
   background-color: #25d366;
   border-radius: 100%;
 
-  @include media-lg(){
+  @include media-lg() {
     padding: 16px;
-    }
-  @include media-md(){
-  padding: 11px;
   }
-  
+
+  @include media-md() {
+    padding: 11px;
+  }
+
 }
 
 .button2 {
@@ -35,41 +37,44 @@
   background-color: #3282fa;
   border-radius: 100%;
 
-  @include media-lg(){
+  @include media-lg() {
     padding: 16px;
-    }
-  @include media-md(){
+  }
+
+  @include media-md() {
     padding: 11px;
-    }
-   
+  }
+
 }
 
 .button img {
   width: 46px;
   height: 46px;
 
-  @include media-md(){
+  @include media-md() {
     width: 26px;
     height: 26px;
-    }
-    @include media-lg(){
-      width: 36px;
-      height: 36px;
-      }
+  }
+
+  @include media-lg() {
+    width: 36px;
+    height: 36px;
+  }
 }
 
 .button2 img {
   width: 46px;
   height: 46px;
 
-  @include media-md(){
+  @include media-md() {
     width: 26px;
     height: 26px;
-    }
-    @include media-lg(){
-      width: 36px;
-      height: 36px;
-      }
+  }
+
+  @include media-lg() {
+    width: 36px;
+    height: 36px;
+  }
 }
 
 .button-link,
@@ -85,12 +90,13 @@
   width: 46px;
   height: 46px;
 
-  @include media-md(){
+  @include media-md() {
     padding: 11px;
     width: 26px;
     height: 26px;
   }
-  @include media-lg(){
+
+  @include media-lg() {
     padding: 16px;
     width: 36px;
     height: 36px;

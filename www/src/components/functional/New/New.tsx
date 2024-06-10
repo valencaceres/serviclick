@@ -3,17 +3,11 @@ import React from "react";
 import styles from "./New.module.scss";
 
 import Title from "@/components/ui/Title";
-
 import withScrollAnimation from "@/components/ui/Framer";
+import Slider from "@/components/ui/Slider/Slider";
 
-interface INew {
-  img: string;
-  img2: string;
-  img3: string;
-  height: string;
-  width: string;
-}
-const New = ({ img, img2, img3, height, width }: INew) => {
+
+const New = () => {
   const AnimateDiv = withScrollAnimation("div");
   return (
     <div className={styles.new} id="novedades">
@@ -22,34 +16,19 @@ const New = ({ img, img2, img3, height, width }: INew) => {
       </AnimateDiv>
 
       <div className={styles.imgContainer}>
-        <div className={styles.img}>
-        <img
-          src={`${img}`}
-          style={{
-            width: "100%",
-            height: `calc(100% * ${height} / ${width})`,
-          }}
-        />
+        <div className={styles.desktop}>
+          <img src="/img/new/img1.png" alt="" />
+          <img src="/img/new/img2.png" alt="" />
+          <img src="/img/new/img3.png" alt="" />
         </div>
-        <div className={styles.img}>
-        <img
-          src={`${img2}`}
-          style={{
-            width: "100%",
-            height: `calc(100% * ${height} / ${width})`,
-          }}
-        />
-        </div>
-        <div className={styles.img}>
-        <img
-          src={`${img3}`}
-          style={{
-            width: "100%",
-            height: `calc(100% * ${height} / ${width})`,
-          }}
-        />
-        </div>
-       
+
+        <Slider>
+          <img src="/img/new/img1.png" alt="" />
+          <img src="/img/new/img2.png" alt="" />
+          <img src="/img/new/img3.png" alt="" />
+        </Slider>
+
+
       </div>
     </div>
   );

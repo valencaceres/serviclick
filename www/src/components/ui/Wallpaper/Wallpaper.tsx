@@ -40,4 +40,4 @@ const WallpaperLg = ({ img, width, height, children }: IWallpaper) => {
   );
 };
 
-export {Wallpaper, WallpaperLg};
+export { Wallpaper, WallpaperLg };
