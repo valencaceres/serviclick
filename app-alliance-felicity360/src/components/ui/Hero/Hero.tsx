@@ -1,8 +1,14 @@
-import React from 'react'
+import styles from "./Hero.module.scss"
 
-const Hero = () => {
+interface HeroProps {
+   title: string;
+  }
+const Hero = ({title}:HeroProps) => {
   return (
-    <h1>soy el hero</h1>
+    <div className={styles.hero}>
+        <h1>{title}</h1>
+    </div>
+    
   )
 }
 
