@@ -1,4 +1,4 @@
-// src/components/ui/Hero/Hero.module.scss
+
 .hero {
     background-image: url(/img/hero/banner.png);
     background-repeat: no-repeat;
@@ -7,7 +7,7 @@
     width: 100vw;
     height: calc(100vw * 583 / 1288);
     position: relative;
-    color: #fff; // Asegúrate de que el texto sea legible sobre la imagen
+    color: #fff;
   }
   
   .header {
@@ -22,18 +22,18 @@
   
     img {
       width: 369px;
-      height: auto; // Mantiene la proporción de la imagen
+      height: auto; 
     }
   }
   
   .content {
     display: flex;
     align-items: center;
-    justify-content: flex-start; // Alinea los hijos a la izquierda
+    justify-content: flex-start; 
     height: 100%;
     width: 100%;
-    padding-left: 42px; // Ajusta el valor según tu diseño
-    box-sizing: border-box; // Asegura que el padding no afecte al ancho
+    padding-left: 42px; 
+    box-sizing: border-box; 
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
