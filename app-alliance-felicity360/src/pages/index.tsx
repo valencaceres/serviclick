@@ -13,7 +13,7 @@ export default function Home() {
       </Head>
 
       <main>
-        <Hero title="TITULO"/>
+        <Hero title="ASISTENCIAS QUE TE PROTEGEN <br> EN TODO MOMENTO" firstLogo="/img/hero/serviclick.png" secondLogo="/img/hero/logo-felicity-white.png"/>
       </main>
     </>
   )

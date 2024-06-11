@@ -1,8 +1,54 @@
-
-.hero{
+// src/components/ui/Hero/Hero.module.scss
+.hero {
     background-image: url(/img/hero/banner.png);
     background-repeat: no-repeat;
     background-size: cover;
+    background-position: center;
     width: 100vw;
-    height: 100vw * 583 / 1288;
-}
+    height: calc(100vw * 583 / 1288);
+    position: relative;
+    color: #fff; // Asegúrate de que el texto sea legible sobre la imagen
+  }
+  
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 25px 42px;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+  
+    img {
+      width: 369px;
+      height: auto; // Mantiene la proporción de la imagen
+    }
+  }
+  
+  .content {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; // Alinea los hijos a la izquierda
+    height: 100%;
+    width: 100%;
+    padding-left: 42px; // Ajusta el valor según tu diseño
+    box-sizing: border-box; // Asegura que el padding no afecte al ancho
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  .title {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    h1{
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 48px;
+        font-weight: 200;
+    }
+
+  }
+  
