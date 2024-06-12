@@ -43,7 +43,7 @@ select
     MAX(concat(cus."name", ' ', cus.paternallastname, ' ', cus.maternallastname)) AS fullnamebuyer
 	from app.lead lea
 		left join app.user usr on lea.user_id = usr.clerk_id 
-		inner join app.person per on usr.person_id = per.id 
+		left outer join app.person per on usr.person_id = per.id 
 		left join app.customer cus on lea.customer_id = cus.id 
 		left join app.leadproduct lp on lea.id = lp.lead_id 
 		left join app.product pro on lp.product_id = pro.id 
