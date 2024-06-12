@@ -3,6 +3,8 @@ import Head from "next/head";
 import Hero from "@/components/ui/Hero/Hero";
 import Paragraph from "@/components/ui/Paragraph/Paragraph";
 
+
+
 export default function Home() {
   const content = "Junto a Felicity 360, te brindamos las mejores Asistencias diseñadas especialmente para ti y tu seres queridos. ";
 
