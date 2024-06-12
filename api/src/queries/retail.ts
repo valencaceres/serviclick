@@ -34,23 +34,23 @@ export const _getBySearchValues = (rut: string, name: string) => `
                 max(sum.name)`;
 
 export const _getSales = `
-select 	usr.rut,
-		MAX(concat(usr."name", ' ', usr.paternallastname, ' ', usr.maternallastname)) as fullname,
-		count(1) as leads,
-		sum(case when lea.policy_id is null then 0 else 1 end) as sales,
-		pro."name" as product,
-		lp.price as productprice,
-		MAX(concat(cus."name", ' ', cus.paternallastname, ' ', cus.maternallastname)) as fullnamebuyer
-from app.lead lea
-	left join app.userretail usr on lea.user_id = usr.user_id 
-	left join app.customer cus on lea.customer_id = cus.id 
-	left join app.leadproduct lp on lea.id = lp.lead_id 
-	inner join app.product pro on lp.product_id = pro.id 
-where agent_id = $1
-group by	
-	usr.rut,
-	pro."name",
-	lp.price
+select  
+	MAX(concat(per.name, ' ', per.paternallastname, ' ', per.maternallastname)) as fullname,
+	count(lea.id) as leads,
+	SUM(CASE WHEN lea.policy_id IS NOT NULL THEN 1 ELSE 0 END) AS sales,
+	pro."name" AS product,
+    lp.price AS productprice,
+    MAX(concat(cus."name", ' ', cus.paternallastname, ' ', cus.maternallastname)) AS fullnamebuyer
+	from app.lead lea
+		left join app.user usr on lea.user_id = usr.clerk_id 
+		inner join app.person per on usr.person_id = per.id 
+		left join app.customer cus on lea.customer_id = cus.id 
+		left join app.leadproduct lp on lea.id = lp.lead_id 
+		left join app.product pro on lp.product_id = pro.id 
+	where lea.agent_id = $1
+	group by 
+		pro."name",
+		lp.price
 `;
 
 export const _getCustomersByRetailIdAndProductId = `
