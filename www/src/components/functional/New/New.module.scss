@@ -42,6 +42,11 @@
   flex-wrap: wrap;
   gap: 20px;
 
+  img {
+    width: 260px;
+    height: 200px;
+  }
+
   @include media-md() {
     display: none;
 

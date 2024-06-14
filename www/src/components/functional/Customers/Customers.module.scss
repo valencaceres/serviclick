@@ -2,9 +2,9 @@
 
 .customers {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
   padding: 40px;
   height: auto;
   background-color: #eeeeee;
@@ -22,5 +22,26 @@
     @include media-md() {
       font-size: 22px;
     }
+  }
+}
+
+.images {
+  display: flex;
+  justify-content: space-around;
+  padding: 20px;
+  width: 1200px;
+  gap: 20px;
+  flex-wrap: wrap;
+
+  @include media-xl() {
+    width: 100%;
+  }
+
+  img {
+    display: flex;
+    align-items: center;
+    width: 250px;
+    height: calc(100% * 100 / 250);
+    flex-wrap: wrap;
   }
 }

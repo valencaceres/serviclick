@@ -2,7 +2,7 @@
 
 .contact {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   flex-wrap: wrap;
   padding: 25px 100px;
@@ -10,6 +10,7 @@
   width: auto;
   background-color: #f3f4f6;
   border-bottom: solid 8px #b4cd25;
+
 
   @include media-lg() {
     display: flex;
@@ -21,9 +22,9 @@
     display: flex;
     flex-direction: column;
     align-items: start;
-    width: 50%;
+    width: 100%;
     justify-content: space-around;
-    gap: 5px;
+    gap: 13px;
   }
 }
 
@@ -38,4 +39,16 @@
     justify-content: center;
     gap: 18px;
   }
+}
+
+.info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 1200px;
+
+  @include media-xl() {
+    width: 100%;
+  }
+
 }

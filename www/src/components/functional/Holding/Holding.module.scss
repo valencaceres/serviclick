@@ -6,7 +6,7 @@
   justify-content: center;
   align-items: center;
   margin: 150px 60px;
-  width: auto;
+
   position: relative;
 
   @include media-md() {
@@ -19,7 +19,11 @@
     border: solid 4px #03495c;
     border-radius: 20px;
     position: relative;
-    width: 100%;
+    width: 1200px;
+
+    @include media-xl() {
+      width: 100%;
+    }
   }
 
   .rowOne {
