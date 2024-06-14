@@ -9,8 +9,15 @@
   height: 300px;
   background-color: rgba(175, 175, 175, 0.288);
   z-index: -1;
-
   gap: 20px;
+
+  .text {
+    width: 1200px;
+
+    @include media-xl() {
+      width: 100%;
+    }
+  }
 
   @include media-xl() {
     height: 100%;
@@ -20,6 +27,7 @@
   @include media-lg() {
     height: 100%;
     padding: 100px 0 40px 0;
+
   }
 
   @include media-md() {

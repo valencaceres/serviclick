@@ -5,7 +5,11 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 100%;
+    width: 1200px;
+
+    @include media-xl() {
+       width: 100%;
+    }
 }
 
 .cardContainer {
