@@ -4,6 +4,7 @@ import styles from "./Card.module.scss";
 import Price from '../Price/Price';
 import Discount from '../Discount/Discount';
 import Beneficiary from '../Beneficiary/Beneficiary';
+import Button from '../Button/Button';
 
 interface CardProps {
   title: string;
@@ -11,19 +12,29 @@ interface CardProps {
   traced: string;
   priceText: string;
   discountText: string;
-  beneficiaryText: string;
+  beneficiaryText?: string;
+  buttonText: string;
+  buttonLink: string;
+  img: string;
 }
 
-const Card: React.FC<CardProps> = ({ title, paragraph, traced, priceText, discountText, beneficiaryText }) => {
+const Card: React.FC<CardProps> = ({ title, paragraph, traced, priceText, discountText, beneficiaryText, buttonText, buttonLink, img }) => {
   return (
-    <div className={styles.card}>
-      <h2>{title}</h2>
-      <p>{paragraph}</p>
-      <div className={styles.discounts}>
-        <h3>{traced}</h3>
-        <Price text={priceText} />
-        <Discount text={discountText} />
-        <Beneficiary text={beneficiaryText} />
+    
+      <div className={styles.card}>
+      <img src={`${img}`} className={styles.img} />
+      <div className={styles.content}>
+        <h2>{title}</h2>
+        <div className={styles.discounts}>
+          <h4>{traced}</h4>
+          <Price text={priceText} />
+          <Discount text={discountText} />
+          <Beneficiary text={beneficiaryText} />
+        </div>
+        <p>{paragraph}</p>
+        <div className={styles.button}>
+          <Button text={buttonText} link={buttonLink} />
+        </div>
       </div>
     </div>
   );

@@ -1,24 +1,11 @@
 import Head from "next/head";
 
 import Hero from "@/components/ui/Hero/Hero";
-import Paragraph from "@/components/ui/Paragraph/Paragraph";
-import Card from "@/components/ui/Card/Card";
+import Landing from "@/components/functional/Landing/Landing";
+
 
 export default function Home() {
-  const content = "Junto a Felicity 360, te brindamos las mejores Asistencias diseñadas especialmente para ti y tu seres queridos. ";
-
-
-  const wordsWithStyles = [
-    {
-
-
-      word: "360,", color: "#29ABE2", fontWeight: "bolder"
-    },
-    {
-      word: "Felicity", color: "#DE0079", fontWeight: "bolder"
-    },
-
-  ];
+ 
 
   return (
     <>
@@ -31,8 +18,7 @@ export default function Home() {
 
       <main>
         <Hero title="ASISTENCIAS QUE TE PROTEGEN <br> EN TODO MOMENTO" firstLogo="/img/hero/serviclick.png" secondLogo="/img/hero/logo-felicity-white.png" />
-        <Card title="Hola" paragraph="soy" traced=" una" priceText="card" discountText="20%" beneficiaryText="hola"></Card>
-        <Paragraph content={content} wordsWithStyles={wordsWithStyles} />
+        <Landing />
       </main>
     </>
   )

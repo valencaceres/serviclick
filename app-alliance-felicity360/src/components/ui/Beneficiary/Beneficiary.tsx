@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './Beneficiary.module.scss';
 
 interface BeneficiaryProps {
-    text: string;
+    text?: string;
 }
 
 const Beneficiary: React.FC<BeneficiaryProps> = ({ text }) => {

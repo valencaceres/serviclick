@@ -7,7 +7,7 @@ import styles from "./Discount.module.scss"
 const Discount = ({ text }: DiscountProps) => {
     return (
         <div className={styles.dropShape}>
-            <p>{text}</p>
+            <h3>{text}</h3>
         </div>
     )
 }
