@@ -1,13 +1,18 @@
 .dropShape {
-    display: inline-block;
-    padding: 10px 8px 10px 10px;
-    background-color: #29ABE2;
-    color: white;
-    text-align: center;
-    border-radius: 20px 15px 20px 0;
-    font-family: "Inter", sans-serif;
-    font-weight: 600;
-    font-size: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url(/img/card/discount.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    width: 41px;
+    height: 31px;
 
+    h3 {
+        font-family: "Inter", sans-serif;
+        font-weight: 600;
+        font-size: 12px;
+        color: white;
+    }
 }

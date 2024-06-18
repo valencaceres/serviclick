@@ -20,8 +20,8 @@ interface CardProps {
 
 const Card: React.FC<CardProps> = ({ title, paragraph, traced, priceText, discountText, beneficiaryText, buttonText, buttonLink, img }) => {
   return (
-    
-      <div className={styles.card}>
+
+    <div className={styles.card}>
       <img src={`${img}`} className={styles.img} />
       <div className={styles.content}>
         <h2>{title}</h2>
@@ -29,7 +29,7 @@ const Card: React.FC<CardProps> = ({ title, paragraph, traced, priceText, discou
           <h4>{traced}</h4>
           <Price text={priceText} />
           <Discount text={discountText} />
-          <Beneficiary text={beneficiaryText} />
+          {beneficiaryText && <Beneficiary text={beneficiaryText} />}
         </div>
         <p>{paragraph}</p>
         <div className={styles.button}>

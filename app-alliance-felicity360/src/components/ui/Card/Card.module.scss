@@ -24,7 +24,7 @@
 
     p {
         font-family: "Inter", sans-serif;
-        font-weight: 300;
+        font-weight: 400;
         font-size: 24px;
         color: #03495C;
         text-align: start;
@@ -46,10 +46,11 @@
         text-decoration: line-through;
     }
 }
-.button{
+
+.button {
     display: flex;
     align-items: center;
     justify-content: end;
     width: 100%;
-   
+
 }
