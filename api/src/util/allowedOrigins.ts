@@ -30,4 +30,7 @@ export const allowedOrigins = [
   "https://coaniquem-cert.serviclick.cl",
   "http://localhost:3012",
   "http://localhost:3008",
+  "http://localhost:3009",
+  "http://localhost:3002",
+  "http://localhost:3010"
 ];
