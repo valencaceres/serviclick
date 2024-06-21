@@ -9,7 +9,7 @@ interface ButtonProps {
 
 const Button: React.FC<ButtonProps> = ({ text, link }) => {
     return (
-        <Link href={link} passHref>
+        <Link target="_blank" href={link} passHref>
             <button className={styles.button}>{text}</button>
         </Link>
     );

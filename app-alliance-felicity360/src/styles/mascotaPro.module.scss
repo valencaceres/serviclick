@@ -1,0 +1,116 @@
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    padding: 70px 0;
+}
+
+.table {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+
+    .tableHeader {
+        width: 1200px;
+        display: flex;
+        gap: 6px;
+    }
+
+    .tableCell {
+        width: 1200px;
+        display: flex;
+
+    }
+
+    .tableTitle {
+        width: 1200px;
+        display: flex;
+    }
+
+    .text {
+        width: 1200px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        font-family: "Inter", sans-serif;
+        font-size: 24px;
+        font-weight: 400;
+        color: #03495C;
+    }
+}
+
+.button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.line {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #B4CD25;
+    border-radius: 20px;
+    width: 840px;
+    height: 385px;
+    gap: 20px;
+    padding: 48px;
+
+    h2 {
+        font-family: "Inter", sans-serif;
+        font-size: 24px;
+        font-weight: 700;
+        color: #03495C;
+    }
+
+    p {
+        width: 100%;
+        font-family: "Inter", sans-serif;
+        font-size: 20px;
+        font-weight: 400;
+        color: #03495C;
+        text-align: justify;
+    }
+
+}
+
+.images {
+    width: 1200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+
+    h2 {
+        font-size: 32px;
+        color: #5C5C5C;
+        font-family: "Inter", sans-serif;
+        font-weight: 700;
+        color: #03495C;
+    }
+
+    p {
+        font-size: 20px;
+        text-decoration: line-through;
+        color: #5C5C5C;
+        font-family: "Inter", sans-serif;
+        font-weight: 800;
+    }
+}
+
+.border {
+    border-left: #B4CD25 solid 5px;
+    height: 39px;
+}

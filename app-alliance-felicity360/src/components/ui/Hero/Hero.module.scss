@@ -1,12 +1,12 @@
 .hero {
-  background-image: url(/img/hero/banner.png);
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  width: 100vw;
-  height: calc(100vw * 583 / 1288);
-  position: relative;
-  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  color: white;
 }
 
 .header {
@@ -15,7 +15,7 @@
   justify-content: space-between;
   padding: 25px 42px;
   width: 100%;
-  position: absolute;
+  position: relative;
   top: 0;
   left: 0;
 
