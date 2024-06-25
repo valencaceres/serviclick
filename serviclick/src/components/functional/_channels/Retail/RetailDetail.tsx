@@ -239,66 +239,47 @@ const RetailDetail = () => {
   const handleClickSaveProduct = () => {
     const file = retailProductForm.pdfbase64;
     let base64Pdf = "";
+  
+    const getDiscount = () => {
+      const discount = {
+        type: retailProductForm.discount.type.value || "n",
+        percent: retailProductForm.discount.percent.value,
+        cicles: retailProductForm.discount.cicles.value,
+      };
+      // Check if any discount properties are defined
+      if (!discount.type && !discount.percent && !discount.cicles) {
+        return undefined;
+      }
+      return discount;
+    };
+  
+    const createProductPayload = (pdfBase64Value: any) => ({
+      product_id: retailProductForm.product_id.value,
+      name: retailProductForm.name.value,
+      price: {
+        base: retailProductForm.baseprice.value,
+        customer: 0,
+        company: retailProductForm.price.value,
+      },
+      yearly_price: retailProductForm.yearly_price.value,
+      beneficiary_price: retailProductForm.beneficiary_price.value,
+      currency: retailProductForm.currency.value,
+      ...(pdfBase64Value && { pdfbase64: pdfBase64Value }),
+      ...(getDiscount() && { discount: getDiscount() }),
+    });
+  
     if (typeof file !== "string" && file) {
       if (file instanceof Blob) {
         const reader = new FileReader();
         reader.onloadend = () => {
           base64Pdf = reader.result?.toString().split(",")[1] ?? "";
-          addProduct(
-            retail.id,
-            {
-              product_id: retailProductForm.product_id.value,
-              name: retailProductForm.name.value,
-              price: {
-                base: retailProductForm.baseprice.value,
-                customer: 0,
-                company: retailProductForm.price.value,
-              },
-              yearly_price: retailProductForm.yearly_price.value,
-              beneficiary_price: retailProductForm.beneficiary_price.value,
-              pdfbase64: base64Pdf || "",
-              currency: retailProductForm.currency.value,
-              discount: {
-                type:
-                  retailProductForm.discount.type.value == ""
-                    ? "n"
-                    : retailProductForm.discount.type.value,
-                percent: retailProductForm.discount.percent.value,
-                cicles: retailProductForm.discount.cicles.value,
-              },
-            },
-            1
-          );
+          addProduct(retail.id, createProductPayload(base64Pdf), 1);
         };
-
+  
         reader.readAsDataURL(file);
       }
     } else {
-      addProduct(
-        retail.id,
-        {
-          product_id: retailProductForm.product_id.value,
-          name: retailProductForm.name.value,
-          price: {
-            base: retailProductForm.baseprice.value,
-            customer: 0,
-            company: retailProductForm.price.value,
-          },
-          yearly_price: retailProductForm.yearly_price.value,
-          beneficiary_price: retailProductForm.beneficiary_price.value,
-          pdfbase64: "",
-          currency: retailProductForm.currency.value,
-          discount: {
-            type:
-              retailProductForm.discount.type.value == ""
-                ? "n"
-                : retailProductForm.discount.type.value,
-            percent: retailProductForm.discount.percent.value,
-            cicles: retailProductForm.discount.cicles.value,
-          },
-        },
-        1
-      );
+      addProduct(retail.id, createProductPayload(""), 1);
     }
   };
 
