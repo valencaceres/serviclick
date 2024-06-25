@@ -9,9 +9,9 @@ interface HeroProps {
 }
 
 const Hero = ({ title, firstLogo, secondLogo }: HeroProps) => {
-  const videoPath = "/img/hero/banner-video.mp4";
+  const videoPath = "/video/banner.mp4";
   return (
-    <WallpaperVideo backgroundVideo={videoPath} width={1620} height={600}>
+   
     <div className={styles.hero}>
       <div className={styles.header}>
         <img src={firstLogo} className={styles.logo} />
@@ -23,7 +23,7 @@ const Hero = ({ title, firstLogo, secondLogo }: HeroProps) => {
         </div>
       </div>
     </div>
-    </WallpaperVideo>
+   
   )
 }
 

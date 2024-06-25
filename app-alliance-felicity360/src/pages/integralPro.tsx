@@ -12,6 +12,20 @@ import Beneficiary from '@/components/ui/Beneficiary/Beneficiary'
 
 
 const integralPro = () => {
+    const tableHeader =[
+        {
+            text:'SERVICIO',
+        },
+        {
+            text:'LÍMITE',
+        },
+        {
+            text:'MAX. EVENTOS AL AÑO',
+        },
+        {
+            text:'CARENCIA',
+        }
+    ];
     return (
         <>
             <Head>
@@ -40,10 +54,9 @@ const integralPro = () => {
 
                 <div className={styles.table}>
                     <div className={styles.tableHeader}>
-                        <TableHeader text='SERVICIO' />
-                        <TableHeader text='LÍMITE' />
-                        <TableHeader text='MAX. EVENTOS AL AÑO' />
-                        <TableHeader text='CARENCIA' />
+                       {tableHeader.map ((title, index) => (
+                        <TableHeader key= {index} {...title} />
+                       ))}
                     </div>
                     <div className={styles.tableTitle}>
                         <TableTitle text='Urgencia dental' />
