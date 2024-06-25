@@ -1,6 +1,6 @@
 import Head from "next/head";
 
-import styles from "../styles/integralPro.module.scss";
+import styles from "../styles/DetailPage.module.scss";
 
 import {
   TableHeader,
@@ -9,13 +9,13 @@ import {
 } from "@/components/ui/Table/Table";
 import Text from "@/components/ui/Text/Text";
 import Button from "@/components/ui/Button/Button";
-import Benefit from "@/components/ui/Benefit/Benefit";
+import Assistance from "@/components/ui/Assistance/Assistance";
 import Discount from "@/components/ui/Discount/Discount";
 import Price from "@/components/ui/Price/Price";
 import Beneficiary from "@/components/ui/Beneficiary/Beneficiary";
 import { ContentCol, ContentRow } from "@/components/layout/Content";
 
-const integralPro = () => {
+const DetailPage = () => {
   const tableHeader = [
     {
       text: "SERVICIO",
@@ -30,6 +30,7 @@ const integralPro = () => {
       text: "CARENCIA",
     },
   ];
+
   return (
     <>
       <Head>
@@ -39,93 +40,92 @@ const integralPro = () => {
         <link rel="icon" href="/img/hero/icono.png" />
       </Head>
       <div
-        style={{ height: "100px", backgroundColor: "black", width: "100%" }}
+        style={{ height: "100px", backgroundColor: "#29abe2", width: "100%" }}
       ></div>
-      <ContentCol paddingTop="20px">
-        <div className={styles.title}>
+      <ContentCol paddingTop="20px" gap="30px">
+        <ContentRow gap="20px">
           <div className={styles.border}></div>
           <h2> Asistencia Integral Pro</h2>
           <p>$14.990</p>
           <Price text="$12.950" />
           <Discount text="20%" />
           <Beneficiary text="$3.590  (cada carga)" />
-        </div>
-        <div className={styles.images}>
-          <Benefit
-            textTwo="URGENCIA DENTAL"
-            img="/img/integralPro/dental.png"
+        </ContentRow>
+        <ContentRow width="1200px">
+          <Assistance text="URGENCIA DENTAL" img="/img/Assistance/dental.png" />
+          <Assistance
+            text="ATENCIÓN DE URGENCIA "
+            img="/img/Assistance/urgencia.png"
           />
-          <Benefit
-            textTwo="ATENCIÓN DE URGENCIA "
-            img="/img/integralPro/urgencia.png"
+          <Assistance
+            text="CONSULTA CON ESPECIALISTA"
+            img="/img/Assistance/consulta.png"
           />
-          <Benefit
-            textTwo="CONSULTA CON ESPECIALISTA"
-            img="/img/integralPro/consulta.png"
+          <Assistance
+            text="PREVENTIVO ONCOLÓGICO"
+            img="/img/Assistance/preven.png"
           />
-          <Benefit
-            textTwo="PREVENTIVO ONCOLÓGICO"
-            img="/img/integralPro/preven.png"
+          <Assistance
+            text="PARTO NORMAL O CESÁREA"
+            img="/img/Assistance/parto.png"
           />
-          <Benefit
-            textTwo="PARTO NORMAL O CESÁREA"
-            img="/img/integralPro/parto.png"
+          <Assistance
+            text="ATENCIÓN PSICOLÓGICA"
+            img="/img/Assistance/psico.png"
           />
-          <Benefit
-            textTwo="ATENCIÓN PSICOLÓGICA"
-            img="/img/integralPro/psico.png"
-          />
-        </div>
+        </ContentRow>
 
-        <div className={styles.table}>
-          <div className={styles.tableHeader}>
+        <ContentCol width="1200px">
+          <ContentRow width="100%">
             {tableHeader.map((title, index) => (
               <TableHeader key={index} {...title} />
             ))}
-          </div>
-          <div className={styles.tableTitle}>
+          </ContentRow>
+
+          <ContentRow width="100%">
             <TableTitle text="Urgencia dental" />
-          </div>
-          <div className={styles.tableCell}>
+          </ContentRow>
+
+          <ContentRow width="100%">
             <TableCell text="Urgencia Dental" alignLeft={true} />
             <TableCell textSpan="60%" text="Arancel hasta 5 UF " />
             <TableCell textSpan="3" text="Eventos" />
             <TableCell textSpan="45" text="Días" />
-          </div>
-          <div className={styles.tableCell}>
+          </ContentRow>
+          <ContentRow width="100%">
             <TableCell text="Exodoncia Simple" alignLeft={true} />
             <TableCell textSpan="60%" text="Arancel hasta 2 UF " />
             <TableCell textSpan="2" text="Eventos" />
             <TableCell textSpan="45" text="Días" />
-          </div>
-          <div className={styles.tableCell}>
+          </ContentRow>
+          <ContentRow width="100%">
             <TableCell text="Exodoncia Colgajo" alignLeft={true} />
             <TableCell textSpan="60%" text="Arancel hasta 2 UF " />
             <TableCell textSpan="3" text="Eventos" />
             <TableCell textSpan="45" text="Días" />
-          </div>
-          <div className={styles.tableCell}>
+          </ContentRow>
+          <ContentRow width="100%">
             <TableCell text="Radiografía Panorámica" alignLeft={true} />
             <TableCell textSpan="100%" text="Arancel hasta 2 UF " />
             <TableCell textSpan="3" text="Eventos" />
             <TableCell textSpan="45" text="Días" />
-          </div>
-          <div className={styles.tableCell}>
+          </ContentRow>
+          <ContentRow width="100%">
             <TableCell text="Limpieza Dental" alignLeft={true} />
             <TableCell textSpan="100%" text="Arancel hasta 2 UF " />
             <TableCell textSpan="3" text="Eventos" />
             <TableCell textSpan="45" text="Días" />
-          </div>
-          <div className={styles.tableTitle}>
+          </ContentRow>
+          <ContentRow width="100%">
             <TableTitle text="Urgencia" />
-          </div>
-          <div className={styles.tableCell}>
+          </ContentRow>
+          <ContentRow width="100%">
             <TableCell text="Urgencia Médica por Enfermedad" alignLeft={true} />
             <TableCell textSpan="100%" text="Arancel hasta 9 UF" />
             <TableCell textSpan="5" text="Eventos" />
             <TableCell textSpan="10" text="Días" />
-          </div>
-          <div className={styles.tableCell}>
+          </ContentRow>
+          <ContentRow width="100%">
             <TableCell
               text="Urgencia  Médica por  Accidente"
               alignLeft={true}
@@ -133,26 +133,26 @@ const integralPro = () => {
             <TableCell textSpan="100%" text="Arancel hasta 9 UF " />
             <TableCell textSpan="24" text="Eventos" />
             <TableCell textSpan="10" text="Días" />
-          </div>
-          <div className={styles.tableCell}>
+          </ContentRow>
+          <ContentRow width="100%">
             <TableCell text="Parto Normal" alignLeft={true} />
             <TableCell textSpan="40%" text="Arancel hasta 8 UF " />
             <TableCell textSpan="1" text="Eventos" />
             <TableCell textSpan="45" text="Días" />
-          </div>
-          <div className={styles.tableCell}>
+          </ContentRow>
+          <ContentRow width="100%">
             <TableCell text="Parto Cesárea" alignLeft={true} />
             <TableCell textSpan="40%" text="Arancel hasta 8 UF " />
             <TableCell textSpan="1" text="Eventos" />
             <TableCell textSpan="45" text="Días" />
-          </div>
-          <div className={styles.tableCell}>
+          </ContentRow>
+          <ContentRow width="100%">
             <TableCell text="Orientación Médica Telefónica" alignLeft={true} />
             <TableCell textSpan="100%" />
             <TableCell textSpan="100" text="Eventos" />
             <TableCell textSpan="0" text="Días" />
-          </div>
-          <div className={styles.tableCell}>
+          </ContentRow>
+          <ContentRow width="100%">
             <TableCell
               text="Orientación Maternal Telefónica"
               alignLeft={true}
@@ -160,63 +160,63 @@ const integralPro = () => {
             <TableCell textSpan="100%" />
             <TableCell textSpan="100" text="Eventos" />
             <TableCell textSpan="0" text="Días" />
-          </div>
-          <div className={styles.tableTitle}>
+          </ContentRow>
+          <ContentRow width="100%">
             <TableTitle text="Ambulatoria" />
-          </div>
-          <div className={styles.tableCell}>
+          </ContentRow>
+          <ContentRow width="100%">
             <TableCell text="Consulta Médica General" alignLeft={true} />
             <TableCell textSpan="100%" />
             <TableCell textSpan="5" text="Eventos" />
             <TableCell textSpan="15" text="Días" />
-          </div>
-          <div className={styles.tableCell}>
+          </ContentRow>
+          <ContentRow width="100%">
             <TableCell text="Consulta Médica Especialista" alignLeft={true} />
             <TableCell textSpan="100%" />
             <TableCell textSpan="3" text="Eventos" />
             <TableCell textSpan="15" text="Días" />
-          </div>
-          <div className={styles.tableCell}>
+          </ContentRow>
+          <ContentRow width="100%">
             <TableCell text="Consulta Médica Psicológica" alignLeft={true} />
             <TableCell textSpan="100%" />
             <TableCell textSpan="3" text="Eventos" />
             <TableCell textSpan="15" text="Días" />
-          </div>
-          <div className={styles.tableCell}>
+          </ContentRow>
+          <ContentRow width="100%">
             <TableCell text="Examen Médico" alignLeft={true} />
             <TableCell textSpan="100%" text="Arancel hasta 2 UF " />
             <TableCell textSpan="3" text="Eventos" />
             <TableCell textSpan="15" text="Días" />
-          </div>
-          <div className={styles.tableCell}>
+          </ContentRow>
+          <ContentRow width="100%">
             <TableCell text="Examen Preventivo Oncológico" alignLeft={true} />
             <TableCell textSpan="100%" text="Arancel hasta 2 UF " />
             <TableCell textSpan="1" text="Eventos" />
             <TableCell textSpan="15" text="Días" />
-          </div>
-          <div className={styles.tableCell}>
+          </ContentRow>
+          <ContentRow width="100%">
             <TableCell text="Telemedicina " alignLeft={true} />
             <TableCell textSpan="100%" />
             <TableCell textSpan="5" text="Eventos" />
             <TableCell textSpan="15" text="Días" />
-          </div>
-          <div className={styles.tableCell}>
+          </ContentRow>
+          <ContentRow width="100%">
             <TableCell text="Telemedicina Especialista " alignLeft={true} />
             <TableCell textSpan="100%" />
             <TableCell textSpan="5" text="Eventos" />
             <TableCell textSpan="15" text="Días" />
-          </div>
-          <div className={styles.tableCell}>
+          </ContentRow>
+          <ContentRow width="100%">
             <TableCell text="Descuento en Farmacias" alignLeft={true} />
             <TableCell textSpan="50%" text="de la boleta hasta $10.000" />
             <TableCell textSpan="12" text="Eventos" />
             <TableCell textSpan="15" text="Días" />
-          </div>
+          </ContentRow>
 
-          <div className={styles.text}>
+          <ContentRow width="100%" justifyContent="flex-start">
             <p>• Carencia de 15 días</p>
-          </div>
-        </div>
+          </ContentRow>
+        </ContentCol>
         <Button text="¡LO QUIERO!" link="" />
         <Text />
       </ContentCol>
@@ -224,4 +224,4 @@ const integralPro = () => {
   );
 };
 
-export default integralPro;
+export default DetailPage;

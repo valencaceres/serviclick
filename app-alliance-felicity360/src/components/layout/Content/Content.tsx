@@ -8,6 +8,7 @@ interface ContentColProps {
   width?: string;
   alignItems?: "flex-start" | "center" | "flex-end";
   paddingTop?: string;
+  className?: string;
 }
 
 interface ContentRowProps {
@@ -16,6 +17,7 @@ interface ContentRowProps {
   flexWrap?: "nowrap" | "wrap" | "wrap-reverse";
   width?: string;
   justifyContent?: "flex-start" | "center" | "flex-end";
+  className?: string;
 }
 
 const ContentCol = ({

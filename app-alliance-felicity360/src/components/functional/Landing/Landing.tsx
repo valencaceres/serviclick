@@ -10,6 +10,7 @@ import Exclusive from "@/components/ui/Exclusive/Exclusive";
 import WallpaperVideo from "@/components/ui/WallpaperVideo/WallpaperVideo";
 import { ContentCol, ContentRow } from "@/components/layout/Content";
 
+
 const Landing = () => {
   const productData = [
     {
@@ -65,10 +66,11 @@ const Landing = () => {
 
   return (
     <>
+   
       <WallpaperVideo
         backgroundVideo="/video/banner.mp4"
         width={1240}
-        height={600}
+        height={500}
       >
         ASISTENCIAS QUE TE PROTEGEN <br /> EN TODO MOMENTO
       </WallpaperVideo>
@@ -109,7 +111,9 @@ const Landing = () => {
 
         <Holding />
         <Exclusive />
+
       </ContentCol>
+      
     </>
   );
 };

@@ -15,9 +15,9 @@ export default function Home() {
         <link rel="icon" href="/img/hero/icono.png" />
       </Head>
 
-      <main>
+    
         <Landing />
-      </main>
+    
     </>
   );
 }
