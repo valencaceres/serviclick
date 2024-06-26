@@ -1,59 +1,53 @@
 .tableHeader {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    background-color: #03495C;
-    color: white;
-    font-family: "Inter", sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-
-
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  background-color: #03495c;
+  color: white;
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .tableCell {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 23px 22px;
-    background-color: #F3F4F6;
-    color: #03495C;
-    font-family: "Inter", sans-serif;
-    font-size: 16px;
-    font-weight: 800;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 23px 15px;
+  background-color: #f3f4f6;
+  color: #03495c;
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  font-weight: 800;
 
-    span {
-        margin-right: 5px;
-        color: red;
-    }
-
-
+  span {
+    margin-right: 5px;
+    color: red;
+  }
 }
 
 .tableTitle {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-top: 7px;
-    padding-bottom: 7px;
-    background-color: #D9D9D9;
-    color: #03495C;
-    font-family: "Inter", sans-serif;
-    font-size: 16px;
-    font-weight: 800;
-
-
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  background-color: #d9d9d9;
+  color: #03495c;
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  font-weight: 800;
 }
 
 .alignCenter {
-    justify-content: center;
+  justify-content: center;
 }
 
 .alignLeft {
-    justify-content: flex-start;
+  justify-content: flex-start;
 }

@@ -4,20 +4,11 @@ import styles from "./Table.module.scss";
 
 interface TableProps {
   text?: string;
-  textTwo?: string;
-  textThree?: string;
-  textFour?: string;
   textSpan?: string;
   alignLeft?: boolean;
 }
 
-const TableHeader = ({
-  text,
-  textFour,
-  textThree,
-  textTwo,
-  alignLeft = false,
-}: TableProps) => {
+const TableHeader = ({ text, alignLeft = false }: TableProps) => {
   const alignmentClass = alignLeft ? styles.alignLeft : styles.alignCenter;
   return (
     <div className={`${styles.tableHeader} ${alignmentClass}`}>{text}</div>

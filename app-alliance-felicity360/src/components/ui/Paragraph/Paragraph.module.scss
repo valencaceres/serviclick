@@ -1,17 +1,16 @@
-
 .paragraph {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    padding: 33px 0;
-    
-    .content {
-        font-size: 32px;
-        line-height: 1.5;
-        font-family: "Inter", sans-serif;
-        color: #03495C;
-        width: 1000px;
-        text-align: center;
-    }
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 33px 0;
+
+  .content {
+    font-size: 32px;
+    line-height: 1.5;
+    font-family: "Inter", sans-serif;
+    color: #03495c;
+    width: 1000px;
+    text-align: center;
+  }
 }

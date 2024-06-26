@@ -1,23 +1,23 @@
 .content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    width: 356px;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 150px;
+  gap: 15px;
+
   .textContainer {
-    height: 5em;
+    height: 60px;
     display: flex;
-    align-items: center;
-  
+    align-items: flex-start;
+
     p {
       font-family: "Inter", sans-serif;
       font-weight: 400;
       font-size: 14px;
       text-align: center;
       margin: 0;
-      color: #03495C;
+      color: #03495c;
     }
-  
   }
+}

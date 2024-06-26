@@ -1,5 +1,5 @@
-import React from 'react';
-import styles from './Benefit.module.scss';
+import React from "react";
+import styles from "./Benefit.module.scss";
 
 interface benefitProps {
   img: string;
@@ -17,6 +17,6 @@ const Benefit = ({ img, text, textTwo }: benefitProps) => {
       </div>
     </div>
   );
-}
+};
 
 export default Benefit;

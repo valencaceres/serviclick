@@ -6,14 +6,13 @@
   display: flex;
   flex-direction: column;
   padding: 20px;
-  border: solid 2px #5C5C5C;
+  border: solid 2px #5c5c5c;
   border-radius: 20px;
   width: 1200px;
   position: relative;
   margin: -20px auto 0;
   padding: 40px 60px;
   gap: 30px;
-
 
   h2 {
     position: absolute;
@@ -24,7 +23,7 @@
     padding: 0 40px;
     z-index: 10;
     font-size: 32px;
-    color: #5C5C5C;
+    color: #5c5c5c;
     font-family: "Inter", sans-serif;
     font-weight: 700;
   }

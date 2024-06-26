@@ -1,13 +1,12 @@
-import React from 'react';
-import styles from './Assistance.module.scss';
+import React from "react";
+import styles from "./Assistance.module.scss";
 
 interface AssistanceProps {
   img: string;
   text?: string;
-
 }
 
-const Assistance = ({ img, text}: AssistanceProps) => {
+const Assistance = ({ img, text }: AssistanceProps) => {
   return (
     <div className={styles.content}>
       <img src={`${img}`} className={styles.img} />
@@ -16,6 +15,6 @@ const Assistance = ({ img, text}: AssistanceProps) => {
       </div>
     </div>
   );
-}
+};
 
 export default Assistance;

@@ -8,6 +8,7 @@ interface ContentColProps {
   width?: string;
   alignItems?: "flex-start" | "center" | "flex-end";
   paddingTop?: string;
+  paddingBottom?: string;
   className?: string;
 }
 
@@ -18,6 +19,8 @@ interface ContentRowProps {
   width?: string;
   justifyContent?: "flex-start" | "center" | "flex-end";
   className?: string;
+  alignItems?: "flex-start" | "center" | "flex-end";
+  paddingTop?: string;
 }
 
 const ContentCol = ({
@@ -26,11 +29,12 @@ const ContentCol = ({
   alignItems = "center",
   width = "auto",
   paddingTop = "0",
+  paddingBottom = "0",
 }: ContentColProps) => {
   return (
     <div
       className={styles.contentCol}
-      style={{ gap, alignItems, width, paddingTop }}
+      style={{ gap, alignItems, width, paddingTop, paddingBottom }}
     >
       {children}
     </div>
@@ -43,11 +47,13 @@ const ContentRow = ({
   flexWrap = "nowrap",
   width = "auto",
   justifyContent = "flex-start",
+  alignItems = "center",
+  paddingTop = "0",
 }: ContentRowProps) => {
   return (
     <div
       className={styles.contentRow}
-      style={{ gap, flexWrap, width, justifyContent }}
+      style={{ gap, flexWrap, width, justifyContent, alignItems, paddingTop }}
     >
       {children}
     </div>
