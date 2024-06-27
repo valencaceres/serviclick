@@ -1,6 +1,5 @@
 import Head from "next/head";
 
-import styles from "../styles/DetailPage.module.scss";
 import Detail from "@/components/functional/Detail";
 
 const DetailPage = () => {
