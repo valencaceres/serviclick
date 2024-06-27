@@ -1,0 +1,29 @@
+.wallpaperVideo {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content:center;
+    background-size: cover;
+    width: 100vw;
+    padding: 0 45px;
+  }
+  
+  .video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+  }
+  
+  .content {
+    position: absolute;
+    font-size: 48px;
+    font-weight: 400;
+    font-family: "Bebas neue";
+    color: white;
+    line-height: 57px;
+    z-index: 2;
+  }

@@ -1,0 +1,56 @@
+.card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    background-color: #F3F4F6;
+    width: 1092px;
+    gap: 35px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 15px;
+
+    h2 {
+        font-family: "Inter", sans-serif;
+        font-weight: 700;
+        font-size: 32px;
+        color: #03495C;
+    }
+
+    p {
+        font-family: "Inter", sans-serif;
+        font-weight: 400;
+        font-size: 24px;
+        color: #03495C;
+        text-align: start;
+        flex-wrap: wrap;
+    }
+}
+
+.discounts {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    h4 {
+        font-family: "Inter", sans-serif;
+        font-weight: 800;
+        font-size: 20px;
+        color: #5C5C5C;
+        text-decoration: line-through;
+    }
+}
+
+.button {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    width: 100%;
+
+}
