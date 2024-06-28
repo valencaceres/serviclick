@@ -28,7 +28,18 @@ const Landing = () => {
 
         <ContentCol gap="25px">
           {productData.map((product, index) => (
-            <Card key={index} {...product} />
+            <Card
+              key={index}
+              title={product.name}
+              paragraph={product.description}
+              traced={product.basePrice}
+              priceText={product.price}
+              discountText={"20%"}
+              beneficiaryText={product.beneficiaryPrice}
+              buttonText={"Ver más"}
+              buttonLink= {"/detail?prod=integralPro"}
+              img={product.img}
+            />
           ))}
         </ContentCol>
         <Paragraph content="BENEFICIOS" />

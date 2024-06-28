@@ -3,7 +3,7 @@ import React from "react";
 import styles from "./Table.module.scss";
 
 interface TableProps {
-  text?: string;
+  text?: any;
   textSpan?: string;
   alignLeft?: boolean;
 }

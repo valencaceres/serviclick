@@ -9,10 +9,10 @@ import Button from '../Button/Button';
 interface CardProps {
   title: string;
   paragraph: string;
-  traced: string;
-  priceText: string;
+  traced: number;
+  priceText: any;
   discountText: string;
-  beneficiaryText?: string;
+  beneficiaryText?: any;
   buttonText: string;
   buttonLink: string;
   img: string;
@@ -24,8 +24,9 @@ const Card: React.FC<CardProps> = ({ title, paragraph, traced, priceText, discou
     <div className={styles.card}>
       <img src={`${img}`} className={styles.img} />
       <div className={styles.content}>
-        <h2>{title}</h2>
+        
         <div className={styles.discounts}>
+        <h2>{title}</h2>
           <h4>{traced}</h4>
           <Price text={priceText} />
           <Discount text={discountText} />

@@ -15,6 +15,9 @@ import Beneficiary from "@/components/ui/Beneficiary/Beneficiary";
 import { ContentCol, ContentRow } from "@/components/layout/Content";
 import { assistanceData } from "@/data/assistance";
 import Text from "@/components/ui/Text";
+import { productData } from "@/data/product";
+
+const product = productData.find((product) => product.id === "integralPro");
 
 const tableHeader = [
   {
@@ -76,137 +79,51 @@ const Detail = () => {
             ))}
           </ContentRow>
 
-          <ContentRow width="100%">
-            <TableTitle text="Urgencia dental" />
-          </ContentRow>
+          <ContentCol width="100%">
+            {product && product.assistances.length > 0 && (
+              <TableTitle text={product.assistances[0].section} />
+            )}
+          </ContentCol>
 
-          <ContentRow width="100%">
-            <TableCell text="Urgencia Dental" alignLeft={true} />
-            <TableCell textSpan="60%" text="Arancel hasta 5 UF " />
-            <TableCell textSpan="3" text="Eventos" />
-            <TableCell textSpan="45" text="Días" />
+          <ContentRow width="1200px">
+            <ContentCol width="100%">
+              {product &&
+                product.assistances.map((assistance, assistanceIndex) => (
+                  <TableCell
+                    alignLeft={true}
+                    key={assistanceIndex}
+                    text={assistance.name}
+                  />
+                ))}
+            </ContentCol>
+            <ContentCol width="100%">
+              {product &&
+                product.assistances.map((assistance, assistanceIndex) => (
+                  <TableCell
+                    key={assistanceIndex}
+                    text={`${assistance.maximum} hasta ${assistance.amount} UF`}
+                  />
+                ))}
+            </ContentCol>
+            <ContentCol width="100%">
+              {product &&
+                product.assistances.map((assistance, assistanceIndex) => (
+                  <TableCell
+                    key={assistanceIndex}
+                    text={`${assistance.events} Eventos`}
+                  />
+                ))}
+            </ContentCol>
+            <ContentCol width="100%">
+              {product &&
+                product.assistances.map((assistance, assistanceIndex) => (
+                  <TableCell
+                    key={assistanceIndex}
+                    text={`${assistance.lack} Días`}
+                  />
+                ))}
+            </ContentCol>
           </ContentRow>
-          <ContentRow width="100%">
-            <TableCell text="Exodoncia Simple" alignLeft={true} />
-            <TableCell textSpan="60%" text="Arancel hasta 2 UF " />
-            <TableCell textSpan="2" text="Eventos" />
-            <TableCell textSpan="45" text="Días" />
-          </ContentRow>
-          <ContentRow width="100%">
-            <TableCell text="Exodoncia Colgajo" alignLeft={true} />
-            <TableCell textSpan="60%" text="Arancel hasta 2 UF " />
-            <TableCell textSpan="3" text="Eventos" />
-            <TableCell textSpan="45" text="Días" />
-          </ContentRow>
-          <ContentRow width="100%">
-            <TableCell text="Radiografía Panorámica" alignLeft={true} />
-            <TableCell textSpan="100%" text="Arancel hasta 2 UF " />
-            <TableCell textSpan="3" text="Eventos" />
-            <TableCell textSpan="45" text="Días" />
-          </ContentRow>
-          <ContentRow width="100%">
-            <TableCell text="Limpieza Dental" alignLeft={true} />
-            <TableCell textSpan="100%" text="Arancel hasta 2 UF " />
-            <TableCell textSpan="3" text="Eventos" />
-            <TableCell textSpan="45" text="Días" />
-          </ContentRow>
-          <ContentRow width="100%">
-            <TableTitle text="Urgencia" />
-          </ContentRow>
-          <ContentRow width="100%">
-            <TableCell text="Urgencia Médica por Enfermedad" alignLeft={true} />
-            <TableCell textSpan="100%" text="Arancel hasta 9 UF" />
-            <TableCell textSpan="5" text="Eventos" />
-            <TableCell textSpan="10" text="Días" />
-          </ContentRow>
-          <ContentRow width="100%">
-            <TableCell
-              text="Urgencia  Médica por  Accidente"
-              alignLeft={true}
-            />
-            <TableCell textSpan="100%" text="Arancel hasta 9 UF " />
-            <TableCell textSpan="24" text="Eventos" />
-            <TableCell textSpan="10" text="Días" />
-          </ContentRow>
-          <ContentRow width="100%">
-            <TableCell text="Parto Normal" alignLeft={true} />
-            <TableCell textSpan="40%" text="Arancel hasta 8 UF " />
-            <TableCell textSpan="1" text="Eventos" />
-            <TableCell textSpan="45" text="Días" />
-          </ContentRow>
-          <ContentRow width="100%">
-            <TableCell text="Parto Cesárea" alignLeft={true} />
-            <TableCell textSpan="40%" text="Arancel hasta 8 UF " />
-            <TableCell textSpan="1" text="Eventos" />
-            <TableCell textSpan="45" text="Días" />
-          </ContentRow>
-          <ContentRow width="100%">
-            <TableCell text="Orientación Médica Telefónica" alignLeft={true} />
-            <TableCell textSpan="100%" />
-            <TableCell textSpan="100" text="Eventos" />
-            <TableCell textSpan="0" text="Días" />
-          </ContentRow>
-          <ContentRow width="100%">
-            <TableCell
-              text="Orientación Maternal Telefónica"
-              alignLeft={true}
-            />
-            <TableCell textSpan="100%" />
-            <TableCell textSpan="100" text="Eventos" />
-            <TableCell textSpan="0" text="Días" />
-          </ContentRow>
-          <ContentRow width="100%">
-            <TableTitle text="Ambulatoria" />
-          </ContentRow>
-          <ContentRow width="100%">
-            <TableCell text="Consulta Médica General" alignLeft={true} />
-            <TableCell textSpan="100%" />
-            <TableCell textSpan="5" text="Eventos" />
-            <TableCell textSpan="15" text="Días" />
-          </ContentRow>
-          <ContentRow width="100%">
-            <TableCell text="Consulta Médica Especialista" alignLeft={true} />
-            <TableCell textSpan="100%" />
-            <TableCell textSpan="3" text="Eventos" />
-            <TableCell textSpan="15" text="Días" />
-          </ContentRow>
-          <ContentRow width="100%">
-            <TableCell text="Consulta Médica Psicológica" alignLeft={true} />
-            <TableCell textSpan="100%" />
-            <TableCell textSpan="3" text="Eventos" />
-            <TableCell textSpan="15" text="Días" />
-          </ContentRow>
-          <ContentRow width="100%">
-            <TableCell text="Examen Médico" alignLeft={true} />
-            <TableCell textSpan="100%" text="Arancel hasta 2 UF " />
-            <TableCell textSpan="3" text="Eventos" />
-            <TableCell textSpan="15" text="Días" />
-          </ContentRow>
-          <ContentRow width="100%">
-            <TableCell text="Examen Preventivo Oncológico" alignLeft={true} />
-            <TableCell textSpan="100%" text="Arancel hasta 2 UF " />
-            <TableCell textSpan="1" text="Eventos" />
-            <TableCell textSpan="15" text="Días" />
-          </ContentRow>
-          <ContentRow width="100%">
-            <TableCell text="Telemedicina " alignLeft={true} />
-            <TableCell textSpan="100%" />
-            <TableCell textSpan="5" text="Eventos" />
-            <TableCell textSpan="15" text="Días" />
-          </ContentRow>
-          <ContentRow width="100%">
-            <TableCell text="Telemedicina Especialista " alignLeft={true} />
-            <TableCell textSpan="100%" />
-            <TableCell textSpan="5" text="Eventos" />
-            <TableCell textSpan="15" text="Días" />
-          </ContentRow>
-          <ContentRow width="100%">
-            <TableCell text="Descuento en Farmacias" alignLeft={true} />
-            <TableCell textSpan="50%" text="de la boleta hasta $10.000" />
-            <TableCell textSpan="12" text="Eventos" />
-            <TableCell textSpan="15" text="Días" />
-          </ContentRow>
-
           <ContentRow
             width="100%"
             justifyContent="flex-start"
