@@ -86,6 +86,7 @@ interface caseState {
     caseValue: ICase | null,
     applicantToUpdate: string
   ) => void;
+  getContract: (case_id: string) => void,
   resetNoRut: (
     applicantCode: "insured" | "beneficiary",
     rut: string,
@@ -449,8 +450,21 @@ export const caseStore = create<caseState>((set) => ({
       }));
     }
   },
-
-  getServicesAndValues: async (data: ICaseServices) => {
+  getContract: async (product_id: string) => {
+try {
+  set((state) => ({ ...state, isLoading: true }));
+  const {data} = await apiInstance.get(`/product/getContractOperations/${product_id}`)
+  set((state) => ({ ...state, pdfBase64: data.data, isLoading: false }));
+} catch (e) {
+  set((state) => ({
+    ...state,
+    isLoading: false,
+    isError: true,
+    error: (e as Error).message,
+  }));
+}
+  },
+   getServicesAndValues: async (data: ICaseServices) => {
     try {
       set((state) => ({ ...state, isLoading: true }));
 

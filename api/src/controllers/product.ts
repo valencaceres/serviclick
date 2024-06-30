@@ -1246,6 +1246,22 @@ const getPdfContractById = async (req: any, res: any) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+const getContract = async (req: any, res: any) => {
+  try {
+    const { id } = req.params;
+    const response = await ProductPlan.contract(id);
+    
+    if (!response.success) {
+      return res.status(404).json({ error: "No pdf" });
+    }
+    const pdfBase64 = response.data.base64;
+    return res.status(200).json({ success: true, data: pdfBase64, error: null });
+  } catch (e) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+
 export {
   createProduct,
   createPlans,
@@ -1265,4 +1281,5 @@ export {
   getPdfContractById,
   getSuscriptionsByAgentId,
   insertPdf,
+  getContract
 };

@@ -25,20 +25,26 @@ import { Modal, Window } from "~/components/ui/Modal";
 const CaseHistory = ({ showModal, setShowModal }: any) => {
   const router = useRouter();
   const [pdfModal, setPdfModal] = useState(false);
-  const { caseValue, pdfBase64, getPdfContract, resetPdf } = useCase();
+  const { caseValue, pdfBase64, getContract, getById, usersList } = useCase();
   const userIds = caseValue?.history?.map((m: any) => m.user);
-
-  const { usersList } = useCase();
+  const {id} = router.query
+  const stringId = id?.toString()
 
   const handleCloseModalPdf = () => {
     setPdfModal(false);
   };
+
   useEffect(() => {
-    resetPdf();
-    if (caseValue?.product?.productPlan_id !== "") {
-      getPdfContract(caseValue?.product?.productPlan_id);
+    if(stringId){
+      getById(stringId)
     }
-  }, [caseValue?.product?.productPlan_id]);
+  }, []);
+
+  useEffect(() => {
+    if (caseValue && caseValue.case_id) {
+      getContract(caseValue.case_id);
+    }
+  }, [caseValue]);
 
   return (
     <Fragment>
@@ -102,7 +108,7 @@ const CaseHistory = ({ showModal, setShowModal }: any) => {
               ? "1 acción"
               : `${caseValue?.history?.length} acciones`}
           </ContentCellSummary>
-          {pdfBase64 !== "" && (
+          {pdfBase64 ? (
             <>
               <Button
                 text="Contrato"
@@ -115,7 +121,7 @@ const CaseHistory = ({ showModal, setShowModal }: any) => {
                 </Window>
               </Modal>
             </>
-          )}
+          ): null}
           {caseValue?.case_id !== null && caseValue?.case_id !== "" && (
             <Button
               text="Chat"

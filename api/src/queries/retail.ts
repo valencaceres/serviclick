@@ -34,23 +34,29 @@ export const _getBySearchValues = (rut: string, name: string) => `
                 max(sum.name)`;
 
 export const _getSales = `
-select  
-	MAX(concat(per.name, ' ', per.paternallastname, ' ', per.maternallastname)) as fullname,
-	count(lea.id) as leads,
-	SUM(CASE WHEN lea.policy_id IS NOT NULL THEN 1 ELSE 0 END) AS sales,
-	pro."name" AS product,
+SELECT  
+    MAX(CONCAT(per.name, ' ', per.paternallastname, ' ', per.maternallastname)) AS fullname,
+    COUNT(lea.id) AS leads,
+    SUM(CASE WHEN lea.policy_id IS NOT NULL THEN 1 ELSE 0 END) AS sales,
+    pro."name" AS product,
     lp.price AS productprice,
-    MAX(concat(cus."name", ' ', cus.paternallastname, ' ', cus.maternallastname)) AS fullnamebuyer
-	from app.lead lea
-		left join app.user usr on lea.user_id = usr.clerk_id 
-		left outer join app.person per on usr.person_id = per.id 
-		left join app.customer cus on lea.customer_id = cus.id 
-		left join app.leadproduct lp on lea.id = lp.lead_id 
-		left join app.product pro on lp.product_id = pro.id 
-	where lea.agent_id = $1
-	group by 
-		pro."name",
-		lp.price
+    MAX(CONCAT(cus."name", ' ', cus.paternallastname, ' ', cus.maternallastname)) AS fullnamebuyer
+FROM app.lead lea
+LEFT JOIN app.user usr ON (
+    CASE 
+        WHEN lea.user_id ~* '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$' 
+        THEN lea.user_id::uuid 
+        ELSE NULL 
+    END = usr.id OR lea.user_id = usr.clerk_id
+)
+LEFT JOIN app.person per ON usr.person_id = per.id 
+LEFT JOIN app.customer cus ON lea.customer_id = cus.id 
+LEFT JOIN app.leadproduct lp ON lea.id = lp.lead_id 
+LEFT JOIN app.product pro ON lp.product_id = pro.id 
+WHERE lea.agent_id = $1
+GROUP BY 
+    pro."name",
+    lp.price;
 `;
 
 export const _getCustomersByRetailIdAndProductId = `
