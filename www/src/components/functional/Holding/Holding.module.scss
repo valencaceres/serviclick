@@ -6,20 +6,24 @@
   justify-content: center;
   align-items: center;
   margin: 150px 60px;
-  width: auto;
+
   position: relative;
 
   @include media-md() {
     margin: 80px 20px;
   }
-  
+
 
   .line {
     padding: 20px;
     border: solid 4px #03495c;
     border-radius: 20px;
     position: relative;
-    width: 100%;
+    width: 1200px;
+
+    @include media-xl() {
+      width: 100%;
+    }
   }
 
   .rowOne {
@@ -29,8 +33,7 @@
     align-items: center;
     width: 100%;
 
-    @include media-md() {
-    }
+    @include media-md() {}
   }
 
   .rowTwo {
@@ -47,6 +50,7 @@
     justify-content: space-around;
     align-items: center;
     width: 100%;
+
     img {
       padding: 10px;
     }

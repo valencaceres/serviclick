@@ -26,15 +26,13 @@ apiInstance.interceptors.request.use(
 const apiInstanceUser = axios.create({
   baseURL: `${config.apiAuth}/api-auth`,
   headers: {
-
     id: config.apiKey,
   },
 });
 
-
 apiInstance.interceptors.request.use(
   (config) => {
-    const jwtToken = localStorage.getItem('jwtToken');
+    const jwtToken = localStorage.getItem("jwtToken");
     if (jwtToken) {
       config.headers.Authorization = `Bearer ${jwtToken}`;
     }

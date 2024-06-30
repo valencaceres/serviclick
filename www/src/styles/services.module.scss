@@ -1,0 +1,168 @@
+@import "../styles/mixins.scss";
+
+.layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 1200px;
+
+    @include media-xl() {
+       width: 100%;
+    }
+}
+
+.cardContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px;
+    width: 100%;
+    gap: 20px;
+
+    @include media-md() {
+        display: none;
+    }
+}
+
+
+.card {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 20px;
+    width: 100%;
+
+    @include media-md() {
+        flex-wrap: wrap;
+    }
+
+    img {
+        width: 320px;
+        height: auto;
+    }
+}
+
+
+.text {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+
+    @include media-md() {
+        align-items: center;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    button {
+        width: 260px;
+        height: 30px;
+        font-size: 24px;
+        color: white;
+        background-color: #03495C;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        @include media-md() {
+            font-size: 18px;
+        }
+    }
+
+    h2 {
+        color: #5C5C5C;
+        font-size: 28px;
+        font-weight: 600;
+
+        @include media-md() {
+            font-size: 20px;
+        }
+    }
+
+    p {
+        color: #5C5C5C;
+        font-size: 20px;
+        font-weight: 300;
+        width: 100%;
+
+
+        @include media-md() {
+            font-size: 16px;
+        }
+    }
+}
+
+
+.title {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 13px;
+    padding-top: 85px;
+    width: 100%;
+}
+
+.line {
+    width: 40%;
+    color: #03495C;
+    border: 5px solid;
+    border-radius: 0 15px 15px 0;
+}
+
+.cards {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    gap: 50px;
+    padding: 80px;
+}
+
+
+.mobile {
+    display: none;
+
+    @include media-md() {
+        display: block;
+        width: 100%;
+    }
+
+    .card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+
+        img {
+            width: 100%;
+            height: auto;
+        }
+
+        .text {
+            width: 100%;
+            padding: 10px;
+            text-align: left;
+
+            button {
+                font-size: 18px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            p {
+                font-size: 16px;
+                width: 100%;
+            }
+        }
+    }
+}

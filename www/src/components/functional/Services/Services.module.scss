@@ -6,7 +6,24 @@
   flex-direction: column;
   align-items: center;
   gap: 50px;
+  width: 100%;
   padding: 60px;
+
+  .desktop {
+    @include media-md() {
+      display: none;
+    }
+  }
+
+  .desktitle {
+    @include media-md() {
+      display: none;
+    }
+  }
+
+  a {
+    text-decoration: none;
+  }
 
   @include media-xl() {
     gap: 40px;
@@ -17,6 +34,7 @@
     gap: 30px;
     padding: 40px;
   }
+
   @include media-md() {
     gap: 20px;
     padding: 30px;
@@ -25,5 +43,30 @@
   @include media-sm() {
     gap: 10px;
     padding: 20px;
+  }
+}
+
+.imgContainer {
+  @include media-sm() {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    width: 100%;
+    height: auto;
+    gap: 20px;
+    padding: 20px;
+  }
+
+  img {
+    width: 100%;
+  }
+}
+
+.title {
+  display: block;
+
+  @include media-sm() {
+    display: none;
   }
 }

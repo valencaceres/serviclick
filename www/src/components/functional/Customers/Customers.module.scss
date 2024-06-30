@@ -2,36 +2,46 @@
 
 .customers {
   display: flex;
-  justify-content: center;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
   padding: 40px;
   height: auto;
   background-color: #eeeeee;
   gap: 40px;
 
-  .rowOne {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    align-items: center;
+  @include media-md() {
+    display: none;
+  }
+
+  h2 {
+    font-size: 32px;
+    font-weight: 600;
+    color: #03495C;
+
+    @include media-md() {
+      font-size: 22px;
+    }
+  }
+}
+
+.images {
+  display: flex;
+  justify-content: space-around;
+  padding: 20px;
+  width: 1200px;
+  gap: 20px;
+  flex-wrap: wrap;
+
+  @include media-xl() {
     width: 100%;
   }
 
-  .rowTwo {
+  img {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
     align-items: center;
-    width: 100%;
-  }
-
-  .rowThree {
-    display: flex;
+    width: 250px;
+    height: calc(100% * 100 / 250);
     flex-wrap: wrap;
-    justify-content: space-around;
-    align-items: center;
-    width: 100%;
   }
 }

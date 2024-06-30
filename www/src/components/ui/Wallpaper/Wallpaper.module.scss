@@ -11,7 +11,7 @@
 .wallpaperlg {
   display: none;
 
-  @include media-lg(){
+  @include media-lg() {
     display: block;
     position: relative;
     display: flex;
@@ -19,8 +19,9 @@
     flex-direction: column;
     background-size: cover;
   }
-  
+
 }
+
 .img {
   position: absolute;
   top: 0;

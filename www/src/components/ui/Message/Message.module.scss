@@ -4,43 +4,53 @@
   display: flex;
   align-items: center;
   flex-direction: column;
+  text-align: center;
+  font-size: 48px;
+  font-weight: 300;
+  color: white;
 
-  p {
-    text-align: center;
-    font-size: 48px;
-    font-weight: 300;
-    color: white;
-
-    @include media-xl() {
-      font-size: 38px;
-    }
-    @include media-lg() {
-      font-size: 28px;
-    }
-    @include media-md() {
-      font-size: 18px;
-    }
-
-    @include media-sm() {
-      display: none;
-    }
+  @include media-xl() {
+    font-size: 38px;
   }
 
-  div {
-    border-bottom: solid 5px #b4cd25;
-    width: 348px;
+  @include media-lg() {
+    font-size: 28px;
+  }
 
-    @include media-xl() {
-      width: 280px;
-    }
-    @include media-lg() {
-      width: 210px;
-    }
-    @include media-md() {
-      width: 140px;
-    }
-    @include media-sm() {
-      display: none;
-    }
+  @include media-md() {
+    font-size: 18px;
+  }
+
+  @include media-sm() {
+    display: none;
+  }
+}
+
+.message .line {
+  border-bottom: solid 5px #b4cd25;
+  width: 348px;
+
+  @include media-xl() {
+    width: 280px;
+  }
+
+  @include media-lg() {
+    width: 210px;
+  }
+
+  @include media-md() {
+    width: 140px;
+  }
+
+  @include media-sm() {
+    display: none;
+  }
+}
+
+.mobile {
+  display: none;
+
+  @include media-sm() {
+    display: block;
   }
 }

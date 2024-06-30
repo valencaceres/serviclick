@@ -46,15 +46,19 @@
     @include media-xxl() {
       display: none;
     }
+
     @include media-xl() {
       display: none;
     }
+
     @include media-lg() {
       display: block;
     }
+
     @include media-md() {
       display: block;
     }
+
     @include media-sm() {
       display: block;
     }

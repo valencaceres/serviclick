@@ -1,20 +1,17 @@
-import React from "react";
-
+import React from 'react';
 import styles from "./Message.module.scss";
 
-import withScrollAnimation from "@/components/ui/Framer";
+interface MessageProps {
+  htmlContent: string;
+  showLine?: boolean;
+}
 
-const Message = () => {
-  const AnimateDiv = withScrollAnimation("div");
+const Message: React.FC<MessageProps> = ({ htmlContent, showLine = true }) => {
   return (
-    <AnimateDiv>
     <div className={styles.message}>
-      
-      <p>
-        TE ACOMPAÑAMOS <br /> EN TU DESAFÍO{" "}
-      </p>
-      <div></div>
-    </div></AnimateDiv>
+      <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
+      {showLine && <div className={styles.line}></div>}
+    </div>
   );
 };
 
