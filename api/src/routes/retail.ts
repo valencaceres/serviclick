@@ -44,7 +44,7 @@ const upload = multer({
 const RetailRouter = Router();
 
 RetailRouter.post("/create", auth, isAuthenticated, isAdmin, create);
-RetailRouter.post("/addProduct", auth, authMiddleware, addProduct);
+RetailRouter.post("/addProduct", auth, addProduct);
 RetailRouter.post("/removeProduct", auth, isAuthenticated, removeProduct);
 RetailRouter.get("/getAll", auth, getAll);
 RetailRouter.post("/getBySearchValues", auth, getBySearchValues);

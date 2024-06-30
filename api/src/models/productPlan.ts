@@ -1,4 +1,5 @@
 import pool from "../util/database";
+import {_getContrat} from "../queries/case"
 
 const createModel: any = async (
   id: string,
@@ -193,4 +194,15 @@ const insertPdf: any = async (product_plan_id: string, pdfBase64: string) => {
   }
 };
 
-export { createModel, getByProductIdModel, getProductById, getById, insertPdf };
+const contract: any = async (case_id:string) => {
+  try {
+    const response = await pool.query(_getContrat, [case_id])
+      if(response){
+        return {success: true, data: response.rows[0], error: null}
+      }
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+}
+
+export { createModel, getByProductIdModel, getProductById, getById, insertPdf, contract };
