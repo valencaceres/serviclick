@@ -1,6 +1,5 @@
 import React from "react";
 
-import styles from "./Landing.module.scss";
 
 import Paragraph from "@/components/ui/Paragraph/Paragraph";
 import Card from "@/components/ui/Card/Card";
@@ -8,10 +7,14 @@ import Benefit from "@/components/ui/Benefit/Benefit";
 import Holding from "@/components/ui/Holding/Holding";
 import Exclusive from "@/components/ui/Exclusive/Exclusive";
 import WallpaperVideo from "@/components/ui/WallpaperVideo/WallpaperVideo";
+
 import { ContentCol, ContentRow } from "@/components/layout/Content";
+
 import { productData } from "@/data/product";
 import { content, wordsWithStyles } from "@/data/landing";
 import { benefitData } from "@/data/benefit";
+
+import { formatCurrency } from "@/utils/number";
 
 const Landing = () => {
   return (
@@ -32,13 +35,13 @@ const Landing = () => {
               key={index}
               title={product.name}
               paragraph={product.description}
-              traced={product.basePrice}
-              priceText={product.price}
+              basePrice={product.basePrice}
+              price={product.price}
               discountText={"20%"}
-              beneficiaryText={product.beneficiaryPrice}
+              beneficiaryPrice={product.beneficiaryPrice}
               buttonText={"Ver más"}
-              buttonLink= {"/detail?prod=integralPro"}
-              img={product.img}
+              buttonLink= {`/detail?prod=${product.id}`}
+              img={`/img/product/${product.id}.png`}
             />
           ))}
         </ContentCol>

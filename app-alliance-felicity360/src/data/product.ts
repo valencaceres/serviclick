@@ -41,10 +41,9 @@ export const productData = [
     name: "Asistencia Integral Pro",
     basePrice: 14990,
     price: 12950,
-    beneficiaryPrice: "$3.590  (cada carga)",
+    beneficiaryPrice: 3590,
     description:
       "Podrás obtener beneficios en: Urgencia Médica por Accidente, Urgencia Médica  por Enfermedad, Atención Médica Ambulatoria,  Descuento en Farmacias, Telemedicina, Orientación Médica Telefónica,  Médico a Domicilio.",
-      img: "/img/card/asistencia1.png",
     assistances: [
       {
         id: "urgenciaDental",
@@ -110,7 +109,7 @@ export const productData = [
         currency: "U",
         events: 5,
         lack: 10,
-        selected: false,
+        selected: true,
       },
       {
         id: "urgenciaMédicaporAccidente",
@@ -143,7 +142,7 @@ export const productData = [
         currency: "U",
         events: 1,
         lack: 45,
-        selected: true,
+        selected: false,
       },
       {
         id: "orientaciónMédicaTelefónica",
@@ -266,7 +265,7 @@ export const productData = [
     beneficiaryPrice: "",
     description:
       "Podrás obtener beneficios en: Urgencia Veterinaria, Consulta Médica, Descuento en Farmacias, Telemedicina, Asistencia Legal Telefónica, Vacuna Antirrábica.",
-      img: "/img/card/asistencia2.png",
+
     assistances: [
       {
         id: "urgenciaMedicaVeterinaria",
@@ -345,7 +344,7 @@ export const productData = [
     beneficiaryPrice: "",
     description:
       "Podrás obtener beneficios en: Plomería, Cerrajería, Servicios de Electricidad, Instalación de Lámparas e Iluminaria, Servicios de Pintura Baño y Cocina, Perforaciones en Muro. ",
-      img: "/img/card/asistencia3.png",
+
     assistances: [
       {
         id: "asistenciaPlomería",
@@ -359,7 +358,7 @@ export const productData = [
         selected: true,
       },
       {
-        id: "asistenciaElectricidad ",
+        id: "asistenciaElectricidad",
         section: "",
         name: "Asistencia Electricidad ",
         maximum: "100%",
@@ -370,7 +369,7 @@ export const productData = [
         selected: true,
       },
       {
-        id: "asistenciaCerrajería ",
+        id: "asistenciaCerrajería",
         section: "",
         name: "Asistencia Cerrajería ",
         maximum: "100%",
@@ -411,18 +410,7 @@ export const productData = [
         currency: "P",
         events: 12,
         lack: "",
-        selected: true,
-      },
-      {
-        id: "perforacionesEnMuro",
-        section: "",
-        name: "Perforaciones en Muro",
-        maximum: "100%",
-        amount: 200000,
-        currency: "P",
-        events: 12,
-        lack: "",
-        selected: true,
+        selected:false,
       },
     ],
   },
