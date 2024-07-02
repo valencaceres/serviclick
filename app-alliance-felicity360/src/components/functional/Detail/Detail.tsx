@@ -15,9 +15,8 @@ import { productData } from "@/data/product";
 
 const Detail = () => {
   const router = useRouter();
-  const product = productData.find(
-    (product) => product.id === router.query.prod
-  );
+  const { prod } = router.query;
+  const product = productData.find((product) => product.id === prod);
   return (
     <>
       <DetailHeader />
@@ -27,7 +26,7 @@ const Detail = () => {
           <DetailAssistance product={product} />
           <DetailCoverage product={product} />
           <Button text="¡LO QUIERO!" link="" />
-          <Conditions />
+          {prod === "integralPro" && <Conditions />}
         </ContentCol>
       )}
     </>
