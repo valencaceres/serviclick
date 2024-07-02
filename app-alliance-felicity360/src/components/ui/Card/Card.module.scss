@@ -1,58 +1,78 @@
 .card {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     padding: 40px;
-    background-color: #F3F4F6;
+    background-color: #f3f4f6;
     width: 1200px;
-    height:auto;
+    height: auto;
     gap: 35px;
     border-radius: 5px;
-}
-
-.content {
+    box-sizing: border-box;
+    margin: 0 auto;
+  }
+  
+  .img {
+    width:166px;
+    height: auto;
+    flex-shrink: 0;
+  }
+  
+  .content {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
+    justify-content: space-between;
+    width: calc(100% - 235px);
     gap: 15px;
+    min-height:200px;
+  }
+  
+  .header {
+    display: flex;
+   align-items: flex-start;
+   flex-direction: column;
+   justify-content: flex-start;
+    gap: 20px;
+  }
 
-    h2 {
-        font-family: "Inter", sans-serif;
-        font-weight: 700;
-        font-size: 32px;
-        color: #03495C;
-    }
-
-    p {
-        font-family: "Inter", sans-serif;
-        font-weight: 400;
-        font-size: 24px;
-        color: #03495C;
-        text-align: start;
-        flex-wrap: wrap;
-    }
-}
-
-.discounts {
+  .prices{
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 10px;
-
-    h4 {
-        font-family: "Inter", sans-serif;
-        font-weight: 800;
-        font-size: 20px;
-        color: #5C5C5C;
-        text-decoration: line-through;
-    }
-}
-
-.button {
-    display: flex;
-    align-items: center;
-    justify-content: end;
-    width: 100%;
-
-}
+    
+  }
+  
+  .content h2 {
+    font-family: "Inter", sans-serif;
+    font-weight: 700;
+    font-size: 32px;
+    color: #03495c;
+  }
+  
+  .content h4 {
+    font-family: "Inter", sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    color: #5c5c5c;
+    text-decoration: line-through;
+  }
+  
+  .content p {
+    font-family: "Inter", sans-serif;
+    font-weight: 400;
+    font-size: 24px;
+    color: #03495c;
+    text-align: start;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4; 
+    text-overflow: ellipsis;
+    flex-grow: 1; 
+  }
+  
+  .button {
+    align-self: flex-end; 
+    margin-top: auto;
+  }
+  

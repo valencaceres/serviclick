@@ -33,23 +33,26 @@ const Card: React.FC<CardProps> = ({
 }) => {
   return (
     <div className={styles.card}>
-      <img src={`${img}`} className={styles.img} />
-      <div className={styles.content}>
-        <div className={styles.discounts}>
-          <h2>{title}</h2>
-          <h4>{`$${formatCurrency(basePrice)}`}</h4>
-          <Price text={`$${formatCurrency(price)}`} />
-          <Discount text={discountText} />
-          {beneficiaryPrice && beneficiaryPrice > 0 && (
-            <Beneficiary text={`${formatCurrency(beneficiaryPrice)} (cada carga)`} />
-          )}
-        </div>
-        <p>{paragraph}</p>
-        <div className={styles.button}>
-          <Button text={buttonText} link={buttonLink} />
-        </div>
+    <img src={`${img}`} className={styles.img} />
+    <div className={styles.content}>
+      <div className={styles.header}>
+        <h2>{title}</h2>
+       <div className={styles.prices}>
+       <h4>{`$${formatCurrency(basePrice)}`}</h4>
+        <Price text={`$${formatCurrency(price)}`} />
+        <Discount text={discountText} />
+        {beneficiaryPrice && beneficiaryPrice > 0 && (
+          <Beneficiary text={`${formatCurrency(beneficiaryPrice)} (cada carga)`} />
+        )}
+       </div>
+      </div>
+      <p>{paragraph}</p>
+      <div className={styles.button}>
+        <Button text={buttonText} link={buttonLink} />
       </div>
     </div>
+  </div>
+  
   );
 };
 
