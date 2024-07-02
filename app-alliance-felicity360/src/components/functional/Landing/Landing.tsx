@@ -1,6 +1,5 @@
 import React from "react";
 
-
 import Paragraph from "@/components/ui/Paragraph/Paragraph";
 import Card from "@/components/ui/Card/Card";
 import Benefit from "@/components/ui/Benefit/Benefit";
@@ -14,8 +13,6 @@ import { productData } from "@/data/product";
 import { content, wordsWithStyles } from "@/data/landing";
 import { benefitData } from "@/data/benefit";
 
-import { formatCurrency } from "@/utils/number";
-
 const Landing = () => {
   return (
     <>
@@ -26,7 +23,7 @@ const Landing = () => {
       >
         ASISTENCIAS QUE TE PROTEGEN <br /> EN TODO MOMENTO
       </WallpaperVideo>
-      <ContentCol width="1200px" gap="20px">
+      <ContentCol width="1200px" gap="50px" paddingBottom="50px">
         <Paragraph content={content} wordsWithStyles={wordsWithStyles} />
 
         <ContentCol gap="25px">
@@ -40,8 +37,9 @@ const Landing = () => {
               discountText={"20%"}
               beneficiaryPrice={product.beneficiaryPrice}
               buttonText={"Ver más"}
-              buttonLink= {`/detail?prod=${product.id}`}
+              buttonLink={`/detail?prod=${product.id}`}
               img={`/img/product/${product.id}.png`}
+              isFirstCard={index === 0}
             />
           ))}
         </ContentCol>

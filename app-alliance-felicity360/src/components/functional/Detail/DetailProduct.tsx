@@ -8,8 +8,6 @@ import Beneficiary from "@/components/ui/Beneficiary/Beneficiary";
 import { ContentCol, ContentRow } from "@/components/layout/Content";
 import { Text, NumberText } from "@/components/ui/Text/Text";
 
-import { productData } from "@/data/product";
-
 const DetailProduct = ({ product }: any) => {
   return (
     <ContentRow gap="20px" alignItems="center">
@@ -31,7 +29,9 @@ const DetailProduct = ({ product }: any) => {
       />
       <Price text="$12.950" />
       <Discount text="20%" />
-      <Beneficiary text="$3.590  (cada carga)" />
+      {product.id === "integralPro" && (
+        <Beneficiary text="$3.590  (cada carga)" />
+      )}
     </ContentRow>
   );
 };

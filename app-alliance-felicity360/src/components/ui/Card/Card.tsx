@@ -18,6 +18,8 @@ interface CardProps {
   buttonText: string;
   buttonLink: string;
   img: string;
+  isFirstCard: boolean;
+
 }
 
 const Card: React.FC<CardProps> = ({
@@ -30,6 +32,7 @@ const Card: React.FC<CardProps> = ({
   buttonText,
   buttonLink,
   img,
+  isFirstCard,
 }) => {
   return (
     <div className={styles.card}>
@@ -41,9 +44,9 @@ const Card: React.FC<CardProps> = ({
        <h4>{`$${formatCurrency(basePrice)}`}</h4>
         <Price text={`$${formatCurrency(price)}`} />
         <Discount text={discountText} />
-        {beneficiaryPrice && beneficiaryPrice > 0 && (
-          <Beneficiary text={`${formatCurrency(beneficiaryPrice)} (cada carga)`} />
-        )}
+        {isFirstCard && beneficiaryPrice && beneficiaryPrice > 0 && (
+              <Beneficiary text={`${formatCurrency(beneficiaryPrice)} (cada carga)`} />
+            )}
        </div>
       </div>
       <p>{paragraph}</p>

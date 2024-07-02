@@ -10,7 +10,7 @@ export const productData = [
     assistances: [
       {
         id: "urgenciaDental",
-        section: "seccion1Pro",
+        section: "Urgencia Dental",
         name: "Urgencia Dental",
         maximum: "60% Arancel",
         amount: 5,
@@ -21,7 +21,7 @@ export const productData = [
       },
       {
         id: "exodonciaSimple",
-        section: "seccion1Pro",
+        section: "Urgencia Dental",
         name: "Exodoncia Simple",
         maximum: "60% Arancel",
         amount: 2,
@@ -32,7 +32,7 @@ export const productData = [
       },
       {
         id: "exodonciaColgajo",
-        section: "seccion1Pro",
+        section: "Urgencia Dental",
         name: "Exodoncia Colgajo",
         maximum: "60% Arancel",
         amount: 2,
@@ -43,7 +43,7 @@ export const productData = [
       },
       {
         id: "radiografíaPanorámica ",
-        section: "seccion1Pro",
+        section: "Urgencia Dental",
         name: "Radiografía Panorámica ",
         maximum: "100% Arancel",
         amount: 2,
@@ -54,7 +54,7 @@ export const productData = [
       },
       {
         id: "limpiezaDental",
-        section: "seccion1Pro",
+        section: "Urgencia Dental",
         name: "Limpieza Dental",
         maximum: "100% Arancel",
         amount: 2,
@@ -65,7 +65,7 @@ export const productData = [
       },
       {
         id: "urgenciaMédicaPorEnfermedad",
-        section: "seccion2Pro",
+        section: "Urgencia ",
         name: "Urgencia Médica por Enfermedad",
         maximum: "100% Arancel",
         amount: 9,
@@ -76,7 +76,7 @@ export const productData = [
       },
       {
         id: "urgenciaMédicaporAccidente",
-        section: "seccion2Pro",
+        section: "Urgencia ",
         name: "Urgencia  Médica por  Accidente",
         maximum: "100% Arancel",
         amount: 9,
@@ -87,7 +87,7 @@ export const productData = [
       },
       {
         id: "partoNormal",
-        section: "seccion2Pro",
+        section: "Urgencia ",
         name: "Parto Normal",
         maximum: "40% Arancel",
         amount: 8,
@@ -98,7 +98,7 @@ export const productData = [
       },
       {
         id: "partoCesárea",
-        section: "seccion2Pro",
+        section: "Urgencia ",
         name: "Parto Cesárea",
         maximum: "40% Arancel",
         amount: 8,
@@ -109,7 +109,7 @@ export const productData = [
       },
       {
         id: "orientaciónMédicaTelefónica",
-        section: "seccion2Pro",
+        section: "Urgencia ",
         name: "Orientación Médica Telefónica",
         maximum: "100%",
         amount: 0,
@@ -120,7 +120,7 @@ export const productData = [
       },
       {
         id: "orientaciónMaternalTelefónica",
-        section: "seccion2Pro",
+        section: "Urgencia ",
         name: "Orientación Maternal Telefónica",
         maximum: "100%",
         amount: 0,
@@ -131,7 +131,7 @@ export const productData = [
       },
       {
         id: "consultaMédicaGeneral",
-        section: "seccion3Pro",
+        section: "Ambulatoria",
         name: "Consulta Médica General",
         maximum: "100%",
         amount: 0,
@@ -142,7 +142,7 @@ export const productData = [
       },
       {
         id: "consultaMédicaEspecialista",
-        section: "seccion3Pro",
+        section: "Ambulatoria",
         name: "Consulta Médica Especialista",
         maximum: "100%",
         amount: 0,
@@ -153,7 +153,7 @@ export const productData = [
       },
       {
         id: "consultaMédicaPsicológica",
-        section: "seccion3Pro",
+        section: "Ambulatoria",
         name: "Consulta Médica Psicológica",
         maximum: "100%",
         amount: 0,
@@ -164,7 +164,7 @@ export const productData = [
       },
       {
         id: "examenMédico",
-        section: "seccion3Pro",
+        section: "Ambulatoria",
         name: "Examen Médico",
         maximum: "100% Arancel",
         amount: 2,
@@ -175,7 +175,7 @@ export const productData = [
       },
       {
         id: "examenPreventivoOncológico",
-        section: "seccion3Pro",
+        section: "Ambulatoria",
         name: "Examen Preventivo Oncológico",
         maximum: "100% Arancel",
         amount: 2,
@@ -186,7 +186,7 @@ export const productData = [
       },
       {
         id: "telemedicina",
-        section: "seccion3Pro",
+        section: "Ambulatoria",
         name: "Telemedicina",
         maximum: "100%",
         amount: 0,
@@ -197,23 +197,12 @@ export const productData = [
       },
       {
         id: "telemecicnaEspecialista ",
-        section: "seccion3Pro",
+        section: "Ambulatoria",
         name: "Telemecicna Especialista ",
         maximum: "100%",
         amount: 0,
         currency: "0",
         events: 5,
-        lack: 15,
-        selected: false,
-      },
-      {
-        id: "descuentoEnFarmacias",
-        section: "seccion4Pro",
-        name: "Descuento en Farmacias",
-        maximum: "50% de la boleta",
-        amount: 10000,
-        currency: "P",
-        events: 12,
         lack: 15,
         selected: false,
       },

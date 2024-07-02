@@ -92,15 +92,15 @@ const DetailCoverage = ({ product }: DetailCoverageProps) => {
 
           item.events === 1 ? (
             <p className={styles.titleContainer}>
-              <span className={styles.titleRed}>{item.events}</span> evento
+              <span className={styles.titleRed}>{item.events}</span> Evento
             </p>
           ) : (
             <p className={styles.titleContainer}>
-              <span className={styles.titleRed}>{item.events}</span> eventos
+              <span className={styles.titleRed}>{item.events}</span> Eventos
             </p>
           ),
           <p className={styles.titleContainer}>
-            <span className={styles.titleRed}>{item.lack}</span> dias
+            <span className={styles.titleRed}>{item.lack}</span> Días
           </p>,
         ],
       })),
@@ -131,11 +131,11 @@ const DetailCoverage = ({ product }: DetailCoverageProps) => {
           </p>,
           item.events === 1 ? (
             <p className={styles.titleContainer}>
-              <span className={styles.titleRed}>{item.events}</span> evento
+              <span className={styles.titleRed}>{item.events}</span> Evento
             </p>
           ) : (
             <p className={styles.titleContainer}>
-              <span className={styles.titleRed}>{item.events}</span> eventos
+              <span className={styles.titleRed}>{item.events}</span> Eventos
             </p>
           ),
         ],
@@ -160,11 +160,11 @@ const DetailCoverage = ({ product }: DetailCoverageProps) => {
           </p>,
           item.events === 1 ? (
             <p className={styles.titleContainer}>
-              <span className={styles.titleRed}>{item.events}</span> evento
+              <span className={styles.titleRed}>{item.events}</span> Evento
             </p>
           ) : (
             <p className={styles.titleContainer}>
-              <span className={styles.titleRed}>{item.events}</span> eventos
+              <span className={styles.titleRed}>{item.events}</span> Eventos
             </p>
           ),
         ],
@@ -183,7 +183,7 @@ const DetailCoverage = ({ product }: DetailCoverageProps) => {
       <Table2
         header={dataTableInfo[prod as string].headers}
         detail={[]}
-        heightHead="50px"
+        heightHead="34px"
       />
 
       {dataTableInfo[prod as string].data.map((item, key) => (
