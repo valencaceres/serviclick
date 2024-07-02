@@ -219,13 +219,12 @@ export const productData = [
       },
     ],
   },
-
   {
     id: "mascotaPro",
     name: "Asistencia Mascota Pro",
     basePrice: 8590,
     price: 6870,
-    beneficiaryPrice: "",
+    beneficiaryPrice: 0,
     description:
       "Podrás obtener beneficios en: Urgencia Veterinaria, Consulta Médica, Descuento en Farmacias, Telemedicina, Asistencia Legal Telefónica, Vacuna Antirrábica.",
 
@@ -298,13 +297,12 @@ export const productData = [
       },
     ],
   },
-
   {
     id: "hogarPro",
     name: "Asistencia Hogar Pro",
     basePrice: 9490,
     price: 7590,
-    beneficiaryPrice: "",
+    beneficiaryPrice: 0,
     description:
       "Podrás obtener beneficios en: Plomería, Cerrajería, Servicios de Electricidad, Instalación de Lámparas e Iluminaria, Servicios de Pintura Baño y Cocina, Perforaciones en Muro. ",
 

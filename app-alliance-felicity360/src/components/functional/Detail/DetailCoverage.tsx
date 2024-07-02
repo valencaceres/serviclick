@@ -34,10 +34,10 @@ interface DetailCoverageProps {
       lack: number;
       selected: boolean;
     }[];
-  }[];
+  };
 }
 
-const DetailCoverage= ({ product }: DetailCoverageProps) => {
+const DetailCoverage = ({ product }: DetailCoverageProps) => {
   return (
     <ContentCol width="1200px" gap="5px">
       <ContentRow width="100%">
@@ -46,51 +46,44 @@ const DetailCoverage= ({ product }: DetailCoverageProps) => {
         ))}
       </ContentRow>
 
-      {product.map((prod, prodIndex) => (
-        <React.Fragment key={prod.id}>
-          <ContentCol width="100%">
-            {prod.assistances.length > 0 && (
-              <TableTitle text={prod.assistances[0].section} />
-            )}
-          </ContentCol>
+      <ContentCol width="100%">
+        {product.assistances.length > 0 && (
+          <TableTitle text={product.assistances[0].section} />
+        )}
+      </ContentCol>
 
-          <ContentRow width="1200px">
-            <ContentCol width="100%">
-              {prod.assistances.map((assistance, assistanceIndex) => (
-                <TableCell
-                  alignLeft={true}
-                  key={assistanceIndex}
-                  text={assistance.name}
-                />
-              ))}
-            </ContentCol>
-            <ContentCol width="100%">
-              {prod.assistances.map((assistance, assistanceIndex) => (
-                <TableCell
-                  key={assistanceIndex}
-                  text={`${assistance.maximum} hasta ${assistance.amount} ${assistance.currency}`}
-                />
-              ))}
-            </ContentCol>
-            <ContentCol width="100%">
-              {prod.assistances.map((assistance, assistanceIndex) => (
-                <TableCell
-                  key={assistanceIndex}
-                  text={`${assistance.events} Eventos`}
-                />
-              ))}
-            </ContentCol>
-            <ContentCol width="100%">
-              {prod.assistances.map((assistance, assistanceIndex) => (
-                <TableCell
-                  key={assistanceIndex}
-                  text={`${assistance.lack} Días`}
-                />
-              ))}
-            </ContentCol>
-          </ContentRow>
-        </React.Fragment>
-      ))}
+      <ContentRow width="1200px">
+        <ContentCol width="100%">
+          {product.assistances.map((assistance, assistanceIndex) => (
+            <TableCell
+              alignLeft={true}
+              key={assistanceIndex}
+              text={assistance.name}
+            />
+          ))}
+        </ContentCol>
+        <ContentCol width="100%">
+          {product.assistances.map((assistance, assistanceIndex) => (
+            <TableCell
+              key={assistanceIndex}
+              text={`${assistance.maximum} hasta ${assistance.amount} ${assistance.currency}`}
+            />
+          ))}
+        </ContentCol>
+        <ContentCol width="100%">
+          {product.assistances.map((assistance, assistanceIndex) => (
+            <TableCell
+              key={assistanceIndex}
+              text={`${assistance.events} Eventos`}
+            />
+          ))}
+        </ContentCol>
+        <ContentCol width="100%">
+          {product.assistances.map((assistance, assistanceIndex) => (
+            <TableCell key={assistanceIndex} text={`${assistance.lack} Días`} />
+          ))}
+        </ContentCol>
+      </ContentRow>
 
       <ContentRow width="100%" justifyContent="flex-start" paddingTop="20px">
         <Text
