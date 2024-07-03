@@ -12,6 +12,7 @@ const DetailProduct = ({ product }: any) => {
   return (
     <ContentRow gap="20px" alignItems="center">
       <div className={styles.border}></div>
+      
       <Text
         text={product.name}
         fontFamily="Inter"
@@ -27,7 +28,7 @@ const DetailProduct = ({ product }: any) => {
         color="#5C5C5C"
         textDecoration="line-through"
       />
-      <Price text="$12.950" />
+      <Price text={product.price} />
       <Discount text="20%" />
       {product.id === "integralPro" && (
         <Beneficiary text="$3.590  (cada carga)" />
