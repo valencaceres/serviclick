@@ -42,7 +42,7 @@ const Card: React.FC<CardProps> = ({
         <h2>{title}</h2>
        <div className={styles.prices}>
        <h4>{`$${formatCurrency(basePrice)}`}</h4>
-        <Price text={`$${formatCurrency(price)}`} />
+        <Price text={(price)} />
         <Discount text={discountText} />
         {isFirstCard && beneficiaryPrice && beneficiaryPrice > 0 && (
               <Beneficiary text={`${formatCurrency(beneficiaryPrice)} (cada carga)`} />
