@@ -1,3 +1,3 @@
-import Text from "./Text";
+import {Text, NumberText} from "./Text";
 
-export default Text;
+export default {Text, NumberText};

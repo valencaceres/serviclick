@@ -1,14 +1,14 @@
 import React from "react";
 
-import styles from "./Landing.module.scss";
-
 import Paragraph from "@/components/ui/Paragraph/Paragraph";
 import Card from "@/components/ui/Card/Card";
 import Benefit from "@/components/ui/Benefit/Benefit";
 import Holding from "@/components/ui/Holding/Holding";
 import Exclusive from "@/components/ui/Exclusive/Exclusive";
 import WallpaperVideo from "@/components/ui/WallpaperVideo/WallpaperVideo";
+
 import { ContentCol, ContentRow } from "@/components/layout/Content";
+
 import { productData } from "@/data/product";
 import { content, wordsWithStyles } from "@/data/landing";
 import { benefitData } from "@/data/benefit";
@@ -23,12 +23,24 @@ const Landing = () => {
       >
         ASISTENCIAS QUE TE PROTEGEN <br /> EN TODO MOMENTO
       </WallpaperVideo>
-      <ContentCol width="1200px" gap="20px">
+      <ContentCol width="1200px" gap="50px" paddingBottom="50px">
         <Paragraph content={content} wordsWithStyles={wordsWithStyles} />
 
         <ContentCol gap="25px">
           {productData.map((product, index) => (
-            <Card key={index} {...product} />
+            <Card
+              key={index}
+              title={product.name}
+              paragraph={product.description}
+              basePrice={product.basePrice}
+              price={product.price}
+              discountText={"20%"}
+              beneficiaryPrice={product.beneficiaryPrice}
+              buttonText={"Ver más"}
+              buttonLink={`/detail?prod=${product.id}`}
+              img={`/img/product/${product.id}.png`}
+              isFirstCard={index === 0}
+            />
           ))}
         </ContentCol>
         <Paragraph content="BENEFICIOS" />
