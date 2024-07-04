@@ -47,7 +47,7 @@ const Payment = () => {
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
 
   const { ui } = useUI();
-  const { lead, getLeadById, createLead, leadIsLoading, leadIsError } =
+  const { lead, getLeadById, createLead, leadIsLoading, leadIsError, service, getServiceByLeadId } =
     useLead();
   const { product } = useProduct();
   const { process } = useAgent();
@@ -81,10 +81,13 @@ const Payment = () => {
   const handleClickCloseTerms = () => {
     setShowTerms(false);
   };
-
+  console.log(config.serviceUrl)
   const handleClickPay = () => {
-    if (process.process.code === "R") {
-      router.push(process.process.url);
+    if (typeof service === 'string' && service === 'retail') {
+      console.log(config?.serviceUrl)
+      if(config?.serviceUrl){
+        router.push(config.serviceUrl)
+      }
     } else {
       setPaymentType("");
       setShowPaymentType(true);
@@ -111,6 +114,14 @@ const Payment = () => {
     });
     setShowPaymentType(false);
   };
+
+  useEffect(() => {
+    if(lead && lead.id){
+      getServiceByLeadId(lead.id)
+    }
+  },[lead.id])  
+
+  console.log(service)
 
   useEffect(() => {
     setIsButtonEnabled(checkStatus);
@@ -170,7 +181,6 @@ const Payment = () => {
       router.push(`/resume/subscription`);
     }
   }, [lead.subscriptionData, leadIsLoading, isProcessing]);
-
   return (
     <Body>
       <Content>
@@ -301,7 +311,7 @@ const Payment = () => {
                 </Col>
               </CardContent>
               <CardFooter className="w-full">
-                {process.process.code === "S" ? (
+                {typeof service === 'string' && (service !== 'retail') ? (
                   <Button
                     className={`text-white w-full ${
                       isButtonEnabled ? "bg-[#03495C]" : "bg-gray-400"
@@ -355,13 +365,13 @@ const Payment = () => {
       >
         <div className={styles.termsContainer}>{termsAndCondicions.data}</div>
       </ModalWindow>
-      <ModalWindow
-        showModal={showPaymentType}
-        setClosed={handleClickClosePaymentType}
-        title="Seleccione una opción"
-      >
-        <PaymentType data={paymentTypeData} />
-      </ModalWindow>
+  <ModalWindow
+    showModal={showPaymentType}
+    setClosed={handleClickClosePaymentType}
+    title="Seleccione una opción"
+  >
+    <PaymentType data={paymentTypeData} />
+  </ModalWindow>
     </Body>
   );
 };
