@@ -31,7 +31,10 @@ export const allowedOrigins = [
   "http://localhost:3012",
   "http://localhost:3008",
   "http://localhost:3024",
-  "http://localhost:30025",  
+  "http://localhost:3025",  
   "https://felicity-cert.serviclick.cl",
-  "https://bonda-cert.serviclick.cl"
+  "https://bonda-cert.serviclick.cl" ,
+  "http://localhost:3009",
+  "http://localhost:3002",
+  "http://localhost:3010"
 ];

@@ -31,7 +31,7 @@ const Detail = () => {
   return (
     <>
       <DetailHeader />
-      {product && (
+      {product ? (
         <ContentCol paddingTop="20px" gap="30px" paddingBottom="90px">
           <DetailProduct product={product} />
           <DetailAssistance product={product} />
@@ -39,7 +39,7 @@ const Detail = () => {
           <Button text="¡LO QUIERO!" link={`${config.products}${product.productPlan_id}`} />
           {id === product.id && <Conditions />}
         </ContentCol>
-      )}
+      ): null}
     </>
   );
 };
