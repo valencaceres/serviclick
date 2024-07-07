@@ -3,9 +3,11 @@ import { create } from "zustand";
 import { apiInstance } from "@/utils/api";
 
 import { ILead } from "@/interfaces/lead";
+import { IService } from "@/interfaces/service";
 
 interface leadState {
   lead: ILead;
+  service: IService,
   isLoading: boolean;
   isError: boolean;
   error: string;
@@ -15,6 +17,7 @@ interface leadState {
   set: (lead: ILead) => void;
   getById: (id: string) => void;
   getBySubscriptionId: (subscription_id: number) => void;
+  getService: (lead_id: string) => void
   create: (lead: ILead) => void;
   reset: () => void;
   resetAll: () => void;
@@ -67,8 +70,13 @@ const initialData: ILead = {
   send: false,
 };
 
+const initialDataService: IService = {
+  service:''
+}
+
 export const leadStore = create<leadState>((set, get) => ({
   lead: initialData,
+  service: initialDataService,
   isLoading: false,
   isError: false,
   error: "",
@@ -146,6 +154,28 @@ export const leadStore = create<leadState>((set, get) => ({
         lead: { ...data, subscriptionData: data.subscription },
         isLoading: false,
       }));
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
+  },
+  getService: async (lead_id: string) => {
+    try {
+      set((state) => ({
+        ...state,
+        isLoading: true,
+        isError: false,
+        error: "",
+      }));
+      const { data } = await apiInstance.get(
+        `/lead/getService/${lead_id}`
+      );
+      console.log(data)
+      set((state) => ({ ...state, service: data.data, isLoading: false }));
     } catch (e) {
       set((state) => ({
         ...state,

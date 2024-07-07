@@ -1,5 +1,6 @@
 import createLogger from "../util/logger";
 import pool from "../util/database";
+import {_getService} from "../queries/payment"
 
 const createPaymentModel: any = async (
   payment_id: number,
@@ -69,4 +70,16 @@ const createPaymentModel: any = async (
   }
 };
 
-export { createPaymentModel };
+const getService: any = async (lead_id: string) => {
+  try {
+    let result = await pool.query(_getService, [lead_id])
+    if(!result){
+      return {error: 'No service'}
+    }
+    return {success: true, data: result.rows[0], error: null}
+  } catch (e) {
+  return { success: false, data: null, error: (e as Error).message };
+  }
+} 
+
+export { createPaymentModel, getService };

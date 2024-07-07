@@ -81,3 +81,11 @@ export const _getStatus = `
 		        inner join app.case cas on sta.id = cas.stage_id
         order 	by
 		sta.name`;
+export const _getContrat = `
+select distinct plf.base64
+	from app.case cas
+		left join app.product pro on cas.product_id = pro.id
+		left join app.productplan pl on pro.id = pl.product_id
+		left join app.productplanpdf plf on pl.id = plf.productplan_id
+	where cas.id = $1
+`

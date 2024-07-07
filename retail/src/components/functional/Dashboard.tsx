@@ -166,7 +166,7 @@ const downloadSales = () => {
         </CardFooter>
       </Card>
     </div>
-              {retail?.name === 'Multi-Hogar' ? <Button onClick={downloadSales}>Reporte</Button> : null}
+      {retail && retail.id ? <Button onClick={downloadSales}>Reporte</Button> : null}
     </div>
   );
 }

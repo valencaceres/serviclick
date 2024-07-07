@@ -24,6 +24,7 @@ import * as LeadProductValues from "../models/leadProductValue";
 import { getContractLink } from "../util/s3";
 import { formatRut } from "../util/rut";
 import { fillEmptyEmail } from "../util/email";
+import * as Payment from '../models/payment'
 
 import excelToJson from "../util/excelToJson";
 import { Retail } from "../models";
@@ -1823,6 +1824,19 @@ const getContract = async (req: any, res: any) => {
   }
 };
 
+const getService = async (req: any, res: any) => {
+  try {
+      const {id} = req.params
+      const response = await Payment.getService(id)
+      if (!response.success) {
+        return {error: 'Error getting response'}
+      }
+      return res.status(200).json({success: true, data: response.data.channel_code, error: null})
+  } catch (e) {
+    return res.status(500).json({error: 'Error getting service'})
+  }
+}
+
 export {
   createController,
   addBeneficiariesController,
@@ -1838,4 +1852,5 @@ export {
   addInsuredFromExcel,
   addFromCase,
   removeBeneficiary,
+  getService
 };
