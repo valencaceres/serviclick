@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 
 import Paragraph from "@/components/ui/Paragraph/Paragraph";
 import Card from "@/components/ui/Card/Card";
@@ -9,11 +9,24 @@ import WallpaperVideo from "@/components/ui/WallpaperVideo/WallpaperVideo";
 
 import { ContentCol, ContentRow } from "@/components/layout/Content";
 
+import { useProduct } from "@/store/hooks";
+import { IProductsDetails } from "@/interfaces/product";
+
 import { productData } from "@/data/product";
 import { content, wordsWithStyles } from "@/data/landing";
 import { benefitData } from "@/data/benefit";
 
-const Landing = () => {
+const Landing = () => { 
+  const [products, setProducts] = useState<IProductsDetails[]>([])
+  const {productList, getProductsById} = useProduct()
+
+
+  useEffect(() => {
+    // Extraer todos los productos de cada item en productList
+    const extractedProducts = productList.flatMap(product => product.products);
+    setProducts(extractedProducts);
+  }, [productList]);
+
   return (
     <>
       <WallpaperVideo
@@ -27,7 +40,7 @@ const Landing = () => {
         <Paragraph content={content} wordsWithStyles={wordsWithStyles} />
 
         <ContentCol gap="25px">
-          {productData.map((product, index) => (
+          {products.map((product, index) => (
             <Card
               key={index}
               title={product.name}
@@ -35,11 +48,10 @@ const Landing = () => {
               basePrice={product.basePrice}
               price={product.price}
               discountText={"20%"}
-              beneficiaryPrice={product.beneficiaryPrice}
+              beneficiaryPrice={product.beneficiary_price}
               buttonText={"Ver más"}
-              buttonLink={`/detail?prod=${product.id}`}
-              img={`/img/product/${product.id}.png`}
-              isFirstCard={index === 0}
+              buttonLink={`/detail/${product.id}`}
+              img={product.id}
             />
           ))}
         </ContentCol>

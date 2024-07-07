@@ -1,6 +1,6 @@
 export const productData = [
   {
-    id: "integralPro",
+    id: "52257aa7-4a97-4d02-a08a-7d2324f49630",
     name: "Asistencia Integral Pro",
     basePrice: 14990,
     price: 12950,
@@ -209,7 +209,7 @@ export const productData = [
     ],
   },
   {
-    id: "mascotaPro",
+    id: "f103caf7-e196-4b40-8274-51878c670357",
     name: "Asistencia Mascota Pro",
     basePrice: 8590,
     price: 6870,
@@ -287,7 +287,7 @@ export const productData = [
     ],
   },
   {
-    id: "hogarPro",
+    id: "de2af317-4920-469c-a706-482581596f5d",
     name: "Asistencia Hogar Pro",
     basePrice: 9490,
     price: 7590,

@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./Card.module.scss";
 
+import Image from "next/image";
 import Price from "../Price/Price";
 import Discount from "../Discount/Discount";
 import Beneficiary from "../Beneficiary/Beneficiary";
@@ -10,7 +11,7 @@ import { formatCurrency } from "@/utils/number";
 
 interface CardProps {
   title: string;
-  paragraph: string;
+  paragraph?: string;
   basePrice: number;
   price: any;
   discountText: string;
@@ -18,7 +19,7 @@ interface CardProps {
   buttonText: string;
   buttonLink: string;
   img: string;
-  isFirstCard: boolean;
+  isFirstCard?: boolean;
 
 }
 
@@ -36,7 +37,7 @@ const Card: React.FC<CardProps> = ({
 }) => {
   return (
     <div className={styles.card}>
-    <img src={`${img}`} className={styles.img} />
+    <img src={`/img/product/${img}.png`} className={styles.img}alt=""/>
     <div className={styles.content}>
       <div className={styles.header}>
         <h2>{title}</h2>
@@ -44,9 +45,9 @@ const Card: React.FC<CardProps> = ({
        <h4>{`$${formatCurrency(basePrice)}`}</h4>
         <Price text={(price)} />
         <Discount text={discountText} />
-        {isFirstCard && beneficiaryPrice && beneficiaryPrice > 0 && (
+        {beneficiaryPrice > 0 ? (
               <Beneficiary text={`${formatCurrency(beneficiaryPrice)} (cada carga)`} />
-            )}
+            ): null}
        </div>
       </div>
       <p>{paragraph}</p>

@@ -9,6 +9,7 @@ import { ContentCol, ContentRow } from "@/components/layout/Content";
 import { Text, NumberText } from "@/components/ui/Text/Text";
 
 const DetailProduct = ({ product }: any) => {
+  console.log(product)
   return (
     <ContentRow gap="20px" alignItems="center">
       <div className={styles.border}></div>
@@ -29,7 +30,7 @@ const DetailProduct = ({ product }: any) => {
       />
       <Price text={product.price} />
       <Discount text="20%" />
-      {product.id === "integralPro" && (
+      {product.id === "08ce5e35-2214-418a-b59c-f012524f09ad" && (
         <Beneficiary text="$3.590  (cada carga)" />
       )}
     </ContentRow>

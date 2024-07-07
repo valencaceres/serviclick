@@ -1,8 +1,17 @@
 import Head from "next/head";
+import { useEffect } from "react";
+
+import { useProduct } from "@/store/hooks";
 
 import Landing from "@/components/functional/Landing/Landing";
 
 export default function Home() {
+  const {getProductList} = useProduct()
+
+  useEffect(() => {
+    getProductList()
+  },[])
+
   return (
     <>
       <Head>

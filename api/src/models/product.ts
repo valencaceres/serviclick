@@ -361,17 +361,43 @@ const getProductByFamilyId: any = async (
 const getById = async (id: string) => {
   try {
     const sqlQuery = `
-      SELECT  pro.id, pro.family_id, pro.name, pro.cost, pro.dynamiccharge, pro.issubject,
-              pro.frequency, pro.term, pro.beneficiaries, pro.currency,
-              pro.dueday, pro.mininsuredcompanyprice, des.title, des.sub_title,
-              des.alias, des.promotional, des.description, des.territorial_scope,
-              des.hiring_conditions, pas.number, asi.id as assistance_id,
-              asi.name as assistance_name, pas.amount, pas.maximum,
-              pas.events, pas.lack, pas.currency
+       SELECT  	pro.id, 
+       			pro.family_id, 
+       			pro.name, 
+       			pro.cost, 
+       			pro.dynamiccharge, 
+       			pro.issubject,
+              	pro.frequency, 
+              	pro.term, 
+              	pro.beneficiaries, 
+              	pro.currency,
+             	pro.dueday, 
+             	pro.mininsuredcompanyprice, 
+              pl.id as productPlan_id,
+             	pl.baseprice, 
+             	pl.price as productplan_price,
+             	des.title, 
+             	des.sub_title,
+              	des.alias, 
+              	des.promotional, 
+              	des.description, 
+              	des.territorial_scope,
+              	des.hiring_conditions, 
+              	pas.number, 
+              	asi.id as assistance_id,
+              	asi.name as assistance_name, 
+              	fam."name" as section ,
+              	pas.amount, 
+              	pas.maximum,
+              	pas.events, 
+              	pas.lack, 
+              	pas.currency
       FROM 	app.product pro
       INNER JOIN app.productdescription des ON pro.id = des.product_id
+      inner join app.productplan pl on pro.id = pl.product_id 
       LEFT OUTER JOIN app.productassistance pas ON pro.id = pas.product_id
       LEFT OUTER JOIN app.assistance asi ON pas.assistance_id = asi.id
+      left outer join app.family fam on asi.family_id = fam.id 
       WHERE 	pro.id = $1
       ORDER 	BY pas.number
     `;
@@ -386,9 +412,12 @@ const getById = async (id: string) => {
     const firstRow = rows[0];
     const data = {
       id: firstRow.id,
+      productPlan_id: firstRow.productplan_id,
       family_id: firstRow.family_id,
       name: firstRow.name,
       cost: firstRow.cost,
+      price: firstRow.productplan_price,
+      basePrice: firstRow.baseprice,
       dynamiccharge: firstRow.dynamiccharge,
       isSubject: firstRow.issubject,
       frequency: firstRow.frequency,
@@ -414,6 +443,7 @@ const getById = async (id: string) => {
           events: row.events,
           lack: row.lack,
           currency: row.currency,
+          section: row.section
         })),
     };
 

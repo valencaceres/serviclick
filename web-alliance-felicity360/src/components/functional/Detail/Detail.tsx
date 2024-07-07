@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { useRouter } from "next/router";
 
 import DetailProduct from "./DetailProduct";
@@ -11,12 +11,23 @@ import { ContentCol } from "@/components/layout/Content";
 import Conditions from "@/components/ui/Conditions/Conditions";
 import Button from "@/components/ui/Button/Button";
 
+import { useProduct } from "@/store/hooks";
+
 import { productData } from "@/data/product";
 
+import config from "@/utils/config";
+
 const Detail = () => {
+  const { getProductsById, product } = useProduct();
   const router = useRouter();
-  const { prod } = router.query;
-  const product = productData.find((product) => product.id === prod);
+  const { id } = router.query;
+  useEffect(() => {
+    if (id) {
+      const productId = id.toString()
+      getProductsById(productId);
+    }
+  }, [id]);
+
   return (
     <>
       <DetailHeader />
@@ -25,8 +36,8 @@ const Detail = () => {
           <DetailProduct product={product} />
           <DetailAssistance product={product} />
           <DetailCoverage product={product} />
-          <Button text="¡LO QUIERO!" link="" />
-          {prod === "integralPro" && <Conditions />}
+          <Button text="¡LO QUIERO!" link={`${config.products}${product.productPlan_id}`} />
+          {id === product.id && <Conditions />}
         </ContentCol>
       )}
     </>
