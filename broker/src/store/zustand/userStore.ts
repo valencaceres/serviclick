@@ -56,7 +56,7 @@ export const userStore = create<userState>((set) => ({
       }
 
       const decodedToken = jwt.decode(data.data) as IUser | null;
-      console.log(decodedToken)
+
       if (!decodedToken) {
         set((state) => ({
           ...state,
