@@ -392,24 +392,18 @@ const getCollectById: any = async (id: string) => {
 const getByUserId: any = async (user_id: string) => {
   try {
     const result = await pool.query(
-      `      SELECT DISTINCT
-    bro.id,
-    bro.rut,
-    bro.name
-FROM 
-    app.broker bro
-INNER JOIN 
-    app.user_rol_agent ura ON bro.id = ura.agent_id 
-INNER JOIN 
-    app.user_rol ur ON ura.user_rol_id = ur.id 
-INNER JOIN 
-    app.user usr ON ur.user_id = usr.id 
-WHERE 
-    usr.id = $1
-ORDER BY 
-    bro.name;`,
+      `
+select 	ura.channel_code, 
+		age.id,
+		age."name" 
+	from app.user usr
+		inner join app.user_rol ur on usr.id = ur.user_id 
+		inner join app.user_rol_agent ura on ur.id = ura.user_rol_id 
+		inner join app.agent age on ura.agent_id = age.id 
+	where usr.id = $1 and ura.channel_code = 'broker'`,
       [user_id]
     );
+
     return { success: true, data: result.rows, error: null };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
