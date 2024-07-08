@@ -12,7 +12,7 @@ RUN yarn install
 RUN yarn build
 
 # Etapa de producción
-FROM node:16-alpine
+FROM node:18-alpine
 
 # Directorio de trabajo en el contenedor
 WORKDIR /app
