@@ -1,0 +1,28 @@
+{
+  "name": "app-alliance-felicity360",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3024",
+    "build": "next build",
+    "start": "next start -p 3024",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@tanstack/react-table": "^8.17.3",
+    "axios": "^1.7.2",
+    "next": "^14.2.3",
+    "react": "^18",
+    "react-dom": "^18",
+    "sass": "^1.77.6",
+    "zustand": "^4.5.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.3",
+    "typescript": "^5"
+  }
+}

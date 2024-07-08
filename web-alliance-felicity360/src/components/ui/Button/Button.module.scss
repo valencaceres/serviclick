@@ -1,0 +1,20 @@
+.button {
+    display: inline-block;
+    padding: 10px 22px;
+    background-color: #B4CD25;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+    font-family: "Inter", sans-serif;
+    font-weight: 600;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+
+
+    &:hover {
+        background-color: #005bb5;
+        cursor: pointer;
+    }
+}

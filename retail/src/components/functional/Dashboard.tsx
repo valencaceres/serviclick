@@ -67,7 +67,7 @@ const downloadSales = () => {
 };
 
   useEffect(() => {
-    if (retail && retail.id) {
+    if (retail) {
       getDetailsByRetailId(retail?.id || '');
       getSalesMultiHogar(retail?.id || '')
     }

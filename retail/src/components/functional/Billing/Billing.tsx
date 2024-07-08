@@ -4,6 +4,7 @@ import { DataTable } from "./DataTable";
 import { columns } from "./columns";
 import { useRetail } from "~/store/hooks";
 import { useEffect } from "react";
+
 export function Billing() {
   const { retail } = useUI();
   const { summary: data, getDetailsByRetailId } = useRetail();

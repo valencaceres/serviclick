@@ -1,3 +1,4 @@
+import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
@@ -8,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/Card";
 
 import { useUI } from "~/store/hooks";
 import { IProduct } from "~/interfaces/product";
-import { useRetail, useUser } from "~/store/hooks";
+import { useRetail } from "~/store/hooks";
 export function SaleProductStep({
   previousStep,
 }: {

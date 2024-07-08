@@ -1,0 +1,95 @@
+.table {
+  border-spacing: 0px 5px;
+  margin-top: -5px;
+  width: 100%;
+
+  thead {
+    top: 0;
+    z-index: 1;
+    position: sticky;
+    tr {
+      background-color: #ffffff;
+
+      th {
+        background-color: #03495c;
+        color: #fff;
+        font-weight: 500;
+        font-size: 16px;
+      }
+
+      th:not(:first-of-type) {
+        border-left: #ffffff 5px solid;
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      min-height: 67px;
+      height: 67px;
+
+      td {
+        min-height: 50px;
+        height: 50px;
+        background: #f3f4f6;
+        .contenAccion {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 50px;
+          height: 50px;
+          gap: 3px;
+        }
+      }
+    }
+  }
+}
+
+.tableMain {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 5px;
+  background-color: rgb(255, 255, 255);
+  border: 1px solid #d3d3d3;
+  width: 100%;
+}
+
+.headerTable {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 5px;
+  border-bottom: 1px solid #d3d3d3;
+  padding: 10px;
+}
+
+.containerTable {
+  background-color: rgb(255, 255, 255);
+  overflow: auto;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.footerTable {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 5px;
+  padding: 10px;
+  border-top: 1px solid #d3d3d3;
+
+  .lengthDetail {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 130px;
+    height: 40px;
+    border-radius: 5px;
+    color: #333;
+    font-weight: 800;
+  }
+}

@@ -11,7 +11,8 @@ RUN apk add --no-cache make gcc g++ python3
 WORKDIR /app
 
 # Copiar los archivos de definición de paquetes y el archivo de entorno
-COPY package.json .env ./
+COPY package.json yarn.lock ./
+COPY .env /app/dist/
 
 # Instalar las dependencias
 RUN yarn install --frozen-lockfile

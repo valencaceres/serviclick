@@ -1,3 +1,4 @@
+import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
@@ -8,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/Card";
 
 import { useUI } from "~/store/hooks";
 import { IProduct } from "~/interfaces/product";
-import { useBroker, useUser } from "~/store/hooks";
+import { useBroker } from "~/store/hooks";
 
 export function SaleProductStep({
   previousStep,
@@ -69,7 +70,7 @@ function ProductCard({
   yearly_plan_id,
 }: IProduct) {
   const router = useRouter();
-  const { userItem } = useUser();
+  const { user } = useUser();
 
   const downloadFile = ({
     Base64Content,
@@ -126,7 +127,7 @@ function ProductCard({
             className="flex w-full flex-col items-center justify-center p-6"
             onClick={() =>
               void router.push(
-                `${config.products}/contractor?productPlanId=${productPlan_id}&userId=${userItem?.id}`
+                `${config.products}/contractor?productPlanId=${productPlan_id}&userId=${user?.id}`
               )
             }
           >
@@ -138,7 +139,7 @@ function ProductCard({
               className="flex w-full flex-col items-center justify-center p-6"
               onClick={() =>
                 void router.push(
-                  `${config.products}/contractor?productPlanId=${yearly_plan_id}&userId=${userItem?.id}`
+                  `${config.products}/contractor?productPlanId=${yearly_plan_id}&userId=${user?.id}`
                 )
               }
             >

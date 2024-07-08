@@ -63,6 +63,7 @@ export const retailStore = create<retailState>((set, get) => ({
     try {
       set((state) => ({ ...state, isLoading: true }));
       const { data } = await apiInstance.get(`/retail/getSales/${id}`);
+      console.log(data.data)
       set((state) => ({ ...state, retail64: data.data, isLoading: false }));
     } catch (e) {
       set((state) => ({

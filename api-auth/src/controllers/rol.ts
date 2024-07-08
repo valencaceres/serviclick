@@ -22,7 +22,6 @@ const getById = async (
   try {
     const { id } = req.params;
     const response = await Rol.getById(id);
-    console.log(response)
     sendResponse(req, res, response);
   } catch (e: any) {
     return next(boom.badImplementation(e));

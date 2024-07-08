@@ -594,14 +594,14 @@ const getByUserId: any = async (user_id: string) => {
   try {
     const result = await pool.query(
       `
-select 	ret."name" ,
-		ret.id ,
-		usr.login 
-	from app.retail ret
-		inner join app.user_rol_agent ura on ret.id = ura.agent_id 
-		inner join app.user_rol ur on ura.user_rol_id = ur.id 
-		inner join app.user usr on ur.user_id = usr.id
-	where usr.id = $1`,
+select 	ura.channel_code, 
+		age.id,
+		age."name" 
+	from app.user usr
+		inner join app.user_rol ur on usr.id = ur.user_id 
+		inner join app.user_rol_agent ura on ur.id = ura.user_rol_id 
+		inner join app.agent age on ura.agent_id = age.id 
+	where usr.id = $1 and ura.channel_code = 'retail'`,
       [user_id]
     );
 

@@ -17,6 +17,13 @@ import { Skeleton } from "../ui/Skeleton";
 
 export const Dashboard: React.FC = () => {
   const { broker } = useUI();
+  const { getRolById } = useRol()
+  const { userItem } = useUser();
+  useEffect(() => {
+
+      getRolById(userItem.id);
+
+  },[])
 
   return (
     <div className="flex w-full flex-col items-center gap-2 pl-12">
@@ -32,10 +39,11 @@ function BrokerSummary({ broker }: { broker: Broker | null }) {
     isLoading: loading,
     getBrokerById
   } = useBroker();
-
+  const {rolList} = useRol()
+  const isBroker = Array.isArray(rolList) ? rolList.filter(rol => rol.agent_type === 'broker') : [];
   useEffect(() => {
-    if (broker && broker.id) {
-      getDetailsByBrokerId(broker.id);
+    if (isBroker.length > 0 && isBroker[0].agent_id) {
+      getDetailsByBrokerId(isBroker[0].agent_id);
     }
   }, [broker]);
   const isLoading = loading || data?.summary?.charged === null;
