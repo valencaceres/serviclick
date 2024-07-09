@@ -128,7 +128,7 @@ const tableDetailIntegral: ISection[] = Object.entries(groupedByCorrectSection).
             {`${
               item.amount.toString() === '0'
                 ? ""
-                : ` hasta ${item.amount} ${dataCurrency[item.currency]}`
+                : ` hasta ${formatPrice(item.amount.toString())} ${dataCurrency[item.currency]}`
             }`}
           </p>,
           <p className={styles.titleContainer} key={key + '-events'}>
