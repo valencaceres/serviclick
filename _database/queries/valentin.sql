@@ -1,3 +1,10 @@
+ALTER TABLE app.user
+ADD COLUMN clerk_id TEXT;
+
+
+/* Crea el campo cler_id de tipo text en app.user */
+
+
 CREATE TABLE app.user_rol_agent (
 	id uuid NOT NULL DEFAULT gen_random_uuid(),
 	user_rol_id uuid NOT NULL,
