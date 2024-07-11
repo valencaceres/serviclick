@@ -28,7 +28,7 @@ const Layout = ({ children }: LayoutProps) => {
   }, []);
   return (
     <div className={styles.layout}>
-      <Header backgroundColor={isScrolled ? "#29abe2" : "transparent"} />
+      <Header backgroundColor={"#03495C"} />
       {children}
       <Contact />
       <Footer />

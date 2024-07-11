@@ -9,7 +9,7 @@ const Header = ({ backgroundColor = "transparent" }: HeaderProps) => {
   return (
     <div className={styles.header} style={{ backgroundColor }}>
       <img src="/img/logo/serviclick.png" alt="" />
-      <img src="/img/logo/logo-bonda.png" alt="" />
+      <img src="/img/logo/bonda.png" alt="" />
     </div>
   );
 };
