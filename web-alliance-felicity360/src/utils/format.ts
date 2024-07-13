@@ -3,10 +3,7 @@ const formatPrice = (value: string) => {
   if (isNaN(numericValue)) {
     return "";
   }
-  return numericValue.toLocaleString("es-CL", {
-    style: "currency",
-    currency: "CLP",
-  });
+  return numericValue.toLocaleString("es-CL");
 };
 
 export { formatPrice };

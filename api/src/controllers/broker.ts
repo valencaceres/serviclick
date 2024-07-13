@@ -1136,10 +1136,14 @@ export const sendCredentials = async (
   }
 };
 
-export const getAssistancesByBrokerIdAndProductId = async (req: any, res: any) => {
+export const getAssistancesByBrokerIdAndProductId = async (
+  req: any,
+  res: any
+) => {
   try {
-    const { broker_id, agent_id } = req.query;
-    const { success, data, error } = await Broker.getAssistancesByBrokerIdAndProductId(broker_id, agent_id);
+    const { broker_id, product_id } = req.query;
+    const { success, data, error } =
+      await Broker.getAssistancesByBrokerIdAndProductId(broker_id, product_id);
 
     if (!success) {
       createLogger.error({
