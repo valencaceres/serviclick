@@ -5,10 +5,20 @@ import { ContentCol, ContentRow } from "@/components/layout/Content";
 
 const DetailAssistance = ({ product }: any) => {
 
-  console.log(product)
+  const assistanceArray = Array.isArray(product) ? product : Object.values(product || {});
+  const doesImageExist = (url: string): boolean => {
+    const http = new XMLHttpRequest();
+    http.open('HEAD', url, false);
+    http.send();
+    return http.status !== 404;
+  };
+  const assistancesWithImages = assistanceArray.filter((assistance: any) => {
+    const imageUrl = `/img/assistance/${assistance.id}.png`;
+    return doesImageExist(imageUrl);
+  });
   return (
     <ContentRow width="1200px" justifyContent="center" gap="50px">
-      {product.map((assistance: any, index: number) => (
+      {assistancesWithImages?.map((assistance: any, index: number) => (
           <Assistance
             key={index}
             text={assistance.assistance_name}
