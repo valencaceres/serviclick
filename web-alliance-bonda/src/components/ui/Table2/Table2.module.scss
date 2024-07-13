@@ -1,8 +1,8 @@
 .table {
   border-spacing: 0px 5px;
   margin-top: -5px;
-  width: 100%;
-
+  padding: 0;
+  width: 1200px;
   thead {
     top: 0;
     z-index: 1;
@@ -24,15 +24,16 @@
   }
 
   tbody {
+    width: 1200px;
     tr {
-      min-height: 67px;
-      height: 67px;
-
+      width: 100%;
       td {
         min-height: 50px;
         height: 50px;
+        width: 100%;
         background: #f3f4f6;
         .contenAccion {
+          width: fit-content;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -71,6 +72,7 @@
   overflow: auto;
   border-radius: 5px;
   width: 100%;
+  overflow-x: hidden;
 }
 
 .footerTable {

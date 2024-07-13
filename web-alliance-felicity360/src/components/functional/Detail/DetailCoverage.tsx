@@ -113,33 +113,25 @@ const tableDetailIntegral: ISection[] = Object.keys(groupedBySection).map(
     title: section,
     data: groupedBySection[section].map((item: any, key: number) => ({
       rowData: [
-<React.Fragment key={item.id}>
-    <p className={styles.text}>{item?.assistance_name}</p>
-    <p className={styles.titleContainer}>
-      <span className={styles.titleRed}>
-        {item.maximum.trim().split(/\s+/)[0]}
-      </span>
-      {item.maximum.trim().split(/\s+/)[1]}
-      {`${
-        item.amount === 0
-          ? ""
-          : `hasta ${formatPrice(item.amount.toString())} 
-             ${dataCurrency[item.currency]}`
-      }`}
-    </p>
-    {item.events === 1 ? (
-      <p className={styles.titleContainer}>
-        <span className={styles.titleRed}>{item.events}</span> Evento
-      </p>
-    ) : (
-      <p className={styles.titleContainer}>
-        <span className={styles.titleRed}>{item.events}</span> Eventos
-      </p>
-    )}
-    <p className={styles.titleContainer}>
-      <span className={styles.titleRed}>{item.lack}</span> Días
-    </p>
-  </React.Fragment>,
+<div className={styles.container} key={item.id}>
+  <p className={styles.text}>{item?.assistance_name}</p>
+  <div className={styles.titleContainer}>
+    <span className={styles.titleRed}>
+      {item.maximum.trim().split(/\s+/)[0]}
+    </span>
+    {item.maximum.trim().split(/\s+/)[1]}
+    {item.amount === 0
+      ? ""
+      : ` hasta ${formatPrice(item.amount.toString())} ${dataCurrency[item.currency]}`}
+  </div>
+  <div className={styles.titleContainer}>
+    <span className={styles.titleRed}>{item.events}</span>
+    {item.events === 1 ? " Evento" : " Eventos"}
+  </div>
+  <div className={styles.titleContainer}>
+    <span className={styles.titleRed}>{item.lack}</span> Días
+  </div>
+</div>,
       ],
     })),
   })

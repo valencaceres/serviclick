@@ -29,7 +29,7 @@ const DetailProduct = ({ product }: any) => {
       />
       <Price text={product[0]?.productplan_price} />
       <Discount text="20%" />
-      {product.id === "integralPro" && (
+      {product.id === "b68288ec-b894-4c33-a2fd-20216973308a" && (
         <Beneficiary text="$3.590  (cada carga)" />
       )}
     </ContentRow>
