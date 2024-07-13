@@ -8,29 +8,35 @@ import Beneficiary from "@/components/ui/Beneficiary/Beneficiary";
 import { ContentCol, ContentRow } from "@/components/layout/Content";
 import { Text, NumberText } from "@/components/ui/Text/Text";
 
+import { formatCurrency } from "@/utils/number";
+
 const DetailProduct = ({ product }: any) => {
   return (
     <ContentRow gap="20px" alignItems="center">
       <div className={styles.border}></div>
       <Text
-        text={product[0]?.name}
+        text={product.product_name}
         fontFamily="Inter"
         fontSize="32px"
         fontWeight={700}
         color="#03495c"
       />
       <NumberText
-        text={product[0]?.baseprice}
+        text={product.price.base_price}
         fontFamily="Inter"
         fontSize="20px"
         fontWeight={800}
         color="#5C5C5C"
         textDecoration="line-through"
       />
-      <Price text={product[0]?.productplan_price} />
+      <Price text={product.price.price} />
       <Discount text="20%" />
-      {product[0]?.id === "b68288ec-b894-4c33-a2fd-20216973308a" && (
-        <Beneficiary text="$3.590  (cada carga)" />
+      {product.price.beneficiary_price > 0 && (
+        <Beneficiary
+          text={`$${formatCurrency(
+            product.price.beneficiary_price
+          )} (cada carga)`}
+        />
       )}
     </ContentRow>
   );

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 
 import Paragraph from "@/components/ui/Paragraph/Paragraph";
 import Card from "@/components/ui/Card/Card";
@@ -16,15 +16,17 @@ import { productData } from "@/data/product";
 import { content, wordsWithStyles } from "@/data/landing";
 import { benefitData } from "@/data/benefit";
 
-const Landing = () => { 
-  const [products, setProducts] = useState<IProductsDetails[]>([])
-  const {productList, getProductsById} = useProduct()
-
+const Landing = () => {
+  const [products, setProducts] = useState<IProductsDetails[]>([]);
+  const { productList } = useProduct();
 
   useEffect(() => {
-    // Extraer todos los productos de cada item en productList
-    const extractedProducts = productList.flatMap(product => product.products);
-    setProducts(extractedProducts);
+    if (productList.length > 0) {
+      const extractedProducts = productList.flatMap(
+        (product) => product.products
+      );
+      setProducts(extractedProducts);
+    }
   }, [productList]);
 
   return (
@@ -32,13 +34,11 @@ const Landing = () => {
       <WallpaperVideo
         backgroundVideo="/video/banner.mp4"
         width={1240}
-        height={500}
-      >
+        height={500}>
         ASISTENCIAS QUE TE PROTEGEN <br /> EN TODO MOMENTO
       </WallpaperVideo>
       <ContentCol width="1200px" gap="50px" paddingBottom="50px">
         <Paragraph content={content} wordsWithStyles={wordsWithStyles} />
-
         <ContentCol gap="25px">
           {products.map((product, index) => (
             <Card
@@ -60,13 +60,11 @@ const Landing = () => {
           width="1200px"
           flexWrap="wrap"
           justifyContent="center"
-          gap="30px"
-        >
+          gap="30px">
           {benefitData.map((benefit, index) => (
             <Benefit key={index} text={benefit.text} img={benefit.image} />
           ))}
         </ContentRow>
-
         <Holding />
         <Exclusive />
       </ContentCol>

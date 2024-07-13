@@ -11,9 +11,10 @@ const useProduct = () => {
     list: state.productList,
     isLoading: state.isLoading,
     isError: state.isError,
-  }))
+  }));
 
-  const {getProductList, getProductsById} = productProduct()
+  const { getProductList, getAssistancesByBrokerIdAndProductId } =
+    productProduct();
 
   return {
     product,
@@ -21,8 +22,8 @@ const useProduct = () => {
     isLoading,
     isError,
     getProductList,
-    getProductsById
-  }
-}
+    getAssistancesByBrokerIdAndProductId,
+  };
+};
 
-export default useProduct
+export default useProduct;
