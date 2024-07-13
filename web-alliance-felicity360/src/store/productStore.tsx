@@ -75,6 +75,7 @@ export const productProduct = create<ProductState>((set) => ({
     try {
       set((state) => ({ ...state, isLoading: true }));
       const { data } = await apiInstance.get(`/broker/getAssistancesByBrokerIdAndProductId?broker_id=${product_id}&agent_id=${config.service}`);
+      console.log(data)
       set((state) => ({
         ...state,
         product: data,
