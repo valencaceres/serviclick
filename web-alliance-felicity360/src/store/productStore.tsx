@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
-import { apiInstance } from "@/utils/api";
-import config from "@/utils/config";
+import { apiInstance } from "../utils/api";
+import config from "../utils/config";
 
 import { IProduct, IProductDetail } from "@/interfaces/product";
 
@@ -74,7 +74,7 @@ export const productProduct = create<ProductState>((set) => ({
   getProductsById: async (product_id: string) => {
     try {
       set((state) => ({ ...state, isLoading: true }));
-      const { data } = await apiInstance.get(`product/getById/${product_id}`);
+      const { data } = await apiInstance.get(`/broker/getAssistancesByBrokerIdAndProductId?broker_id=${product_id}&agent_id=${config.service}`);
       set((state) => ({
         ...state,
         product: data,

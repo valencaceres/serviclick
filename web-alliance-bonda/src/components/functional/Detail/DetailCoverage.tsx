@@ -69,13 +69,13 @@ const DetailCoverage = ({ product }: DetailCoverageProps) => {
     O: "",
   };
 
-  const groupedBySection = product.assistances.reduce((acc, assistance) => {
+/*   const groupedBySection = product.reduce((acc, assistance) => {
     if (!acc[assistance.section]) {
       acc[assistance.section] = [];
     }
     acc[assistance.section].push(assistance);
     return acc;
-  }, {} as Record<string, IAssistance[]>);
+  }, {} as Record<string, IAssistance[]>); */
 
 const urgentNames = [
   "Urgencia Médica por enfermedad",
@@ -96,51 +96,54 @@ const ambulatoryNames = [
   "Telemedicina Especialista"
 ];
 
-const groupedByCorrectSection: Record<string, AssistanceItem[]> = Object.entries(groupedBySection).reduce((acc: Record<string, AssistanceItem[]>, [sectionKey, assistances]) => {
-  (assistances as AssistanceItem[]).forEach((item) => {
-    let sectionTitle = sectionKey; // Mantener la sección original por defecto
-    if (urgentNames.includes(item.name)) {
-      sectionTitle = 'Urgencia';
-    } else if (ambulatoryNames.includes(item.name)) {
-      sectionTitle = 'Ambulatoria';
-    }
+const assistanceArray: IAssistance[] = Object.values(product).flat().filter(
+  (item): item is IAssistance => typeof item === 'object' && item !== null
+);
 
-    if (!acc[sectionTitle]) {
-      acc[sectionTitle] = [];
-    }
-    acc[sectionTitle].push(item);
-  });
-  return acc;
-}, {} as Record<string, AssistanceItem[]>);
-
-const tableDetailIntegral: ISection[] = Object.entries(groupedByCorrectSection).map(
-  ([section, assistances]) => {
-    return {
-      title: section,
-      data: assistances.map((item, key) => ({
-        rowData: [
-          <p className={styles.text} key={key + '-name'}>{item?.name}</p>,
-          <p className={styles.titleContainer} key={key + '-maximum'}>
-            <span className={styles.titleRed}>
-              {item.maximum.trim().split(/\s+/)[0]}
-            </span>
-            {item.maximum.trim().split(/\s+/)[1]}
-            {`${
-              item.amount.toString() === '0'
-                ? ""
-                : ` hasta ${formatPrice(item.amount.toString())} ${dataCurrency[item.currency]}`
-            }`}
-          </p>,
-          <p className={styles.titleContainer} key={key + '-events'}>
-            <span className={styles.titleRed}>{item.events}</span> {item.events === 1 ? 'Evento' : 'Eventos'}
-          </p>,
-          <p className={styles.titleContainer} key={key + '-lack'}>
-            <span className={styles.titleRed}>{item.lack}</span> Días
-          </p>
-        ],
-      }))
-    };
+const groupedBySection = assistanceArray.reduce((acc, assistance) => {
+  if (!acc[assistance.section]) {
+    acc[assistance.section] = [];
   }
+  acc[assistance.section].push(assistance);
+  return acc;
+}, {} as Record<string, IAssistance[]>);
+
+const tableDetailIntegral: ISection[] = Object.keys(groupedBySection).map(
+  (section) => ({
+    title: section,
+    data: groupedBySection[section].map((item: any, key: number) => ({
+      rowData: [
+        <p className={styles.text}>{item?.assistance_name}</p>,
+        <p className={styles.titleContainer}>
+          <span className={styles.titleRed}>
+            {item.maximum.trim().split(/\s+/)[0]}
+          </span>
+          {item.maximum.trim().split(/\s+/)[1]}
+          {`${
+            item.amount === 0
+              ? ""
+              : `
+        hasta ${formatPrice(item.amount.toString())} 
+        ${dataCurrency[item.currency]}
+        `
+          }`}
+        </p>,
+
+        item.events === 1 ? (
+          <p className={styles.titleContainer}>
+            <span className={styles.titleRed}>{item.events}</span> Evento
+          </p>
+        ) : (
+          <p className={styles.titleContainer}>
+            <span className={styles.titleRed}>{item.events}</span> Eventos
+          </p>
+        ),
+        <p className={styles.titleContainer}>
+          <span className={styles.titleRed}>{item.lack}</span> Días
+        </p>,
+      ],
+    })),
+  })
 );
 
   const dataTableInfo: IDataTableInfo = {

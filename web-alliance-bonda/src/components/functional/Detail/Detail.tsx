@@ -32,6 +32,8 @@ const Detail = () => {
   const router = useRouter();
   const { id } = router.query;
 
+  console.log(product)
+
   useEffect(() => {
     if (id) {
       const productId = id.toString();
