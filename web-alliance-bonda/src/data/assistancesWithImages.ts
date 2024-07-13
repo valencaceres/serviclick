@@ -1,0 +1,18 @@
+export const assistancesWithImages: any = [
+  "8c0cba26-8e97-4de3-99d6-065c1865914c",
+  "f5a34a06-f8b2-4490-9439-245f6a8d02ba",
+  "17cad6ae-561e-4e14-8161-e896c0878cf1",
+  "722337ea-404b-4263-a0a9-e3099eebd04e",
+  "d5edafeb-d078-405d-b10f-e2179943ba93",
+  "df06bb75-47a7-41eb-a864-afda95243201",
+  "80bf7afe-e9db-41f7-a8da-b8869f0811ac",
+  "e7f62b8f-9c6c-4946-ae31-b57b511dd73e",
+  "26142f22-79c4-4ac6-b337-55b29d93ab8d",
+  "d9aa2ce8-8dea-4cf6-a676-6222e806cc23",
+  "0ff280d7-53a6-4a03-9f0b-49c6f44fd0a9",
+  "7c42221a-90de-4f81-8be7-773f3888ba6e",
+  "0b5e9043-2c98-4b4c-98f9-0fc1e383a798",
+  "b6a1a98a-a922-4d9d-8616-b59a61615160",
+  "88a38b45-1f71-4941-9351-5883e4713f05",
+  "b3b9cfe0-b572-4a81-9cb9-69ad4950155f",
+];

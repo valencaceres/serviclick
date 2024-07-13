@@ -1,8 +1,8 @@
 export interface IProduct {
-  id: string,
-  icon: string,
-  name: string,
-  products: IProductsDetails
+  id: string;
+  icon: string;
+  name: string;
+  products: IProductsDetails;
 }
 
 export interface IProductsDetails {
@@ -20,7 +20,6 @@ export interface IProductsDetails {
   pdfBase64: string;
 }
 
-
 export interface IAssistance {
   id: string;
   section: string;
@@ -34,13 +33,42 @@ export interface IAssistance {
 }
 
 export interface IProductDetail {
+  product_id: string;
+  product_name: string;
+  family_id: string;
+  family_name: string;
+  product_cost: number;
+  frequency_code: string;
+  term: string;
+  beneficiaries: number;
+  currency: string;
+  due_day: number;
+  productplan_id: string;
+  price: {
+    base_price: number;
+    price: number;
+    beneficiary_price: number;
+  };
+  description: {
+    title: string;
+    sub_title: string;
+    alias: string;
+    promotional: string;
+    description: string;
+    territorial_scope: string;
+    hiring_conditions: string;
+  };
+  assistances: Assistance[];
+}
 
-      id: string,
-      productPlan_id: string,
-      name: string,
-      basePrice: number,
-      price: number,
-      beneficiaryPrice: number,
-      description:string,
-      assistances: IAssistance[]
+interface Assistance {
+  assistance_id: string;
+  assistance_name: string;
+  family_id: string;
+  family_name: string;
+  amount: number;
+  maximum: string;
+  events: number;
+  lack: number;
+  currency: string;
 }
