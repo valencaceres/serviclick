@@ -69,13 +69,13 @@ const DetailCoverage = ({ product }: DetailCoverageProps) => {
     O: "",
   };
 
-  const groupedBySection = product.assistances.reduce((acc, assistance) => {
+/*   const groupedBySection = product.reduce((acc, assistance) => {
     if (!acc[assistance.section]) {
       acc[assistance.section] = [];
     }
     acc[assistance.section].push(assistance);
     return acc;
-  }, {} as Record<string, IAssistance[]>);
+  }, {} as Record<string, IAssistance[]>); */
 
 const urgentNames = [
   "Urgencia Médica por enfermedad",
@@ -96,57 +96,60 @@ const ambulatoryNames = [
   "Telemedicina Especialista"
 ];
 
-const groupedByCorrectSection: Record<string, AssistanceItem[]> = Object.entries(groupedBySection).reduce((acc: Record<string, AssistanceItem[]>, [sectionKey, assistances]) => {
-  (assistances as AssistanceItem[]).forEach((item) => {
-    let sectionTitle = sectionKey; // Mantener la sección original por defecto
-    if (urgentNames.includes(item.name)) {
-      sectionTitle = 'Urgencia';
-    } else if (ambulatoryNames.includes(item.name)) {
-      sectionTitle = 'Ambulatoria';
-    }
+const assistanceArray: IAssistance[] = Object.values(product).flat().filter(
+  (item): item is IAssistance => typeof item === 'object' && item !== null
+);
 
-    if (!acc[sectionTitle]) {
-      acc[sectionTitle] = [];
-    }
-    acc[sectionTitle].push(item);
-  });
-  return acc;
-}, {} as Record<string, AssistanceItem[]>);
-
-const tableDetailIntegral: ISection[] = Object.entries(groupedByCorrectSection).map(
-  ([section, assistances]) => {
-    return {
-      title: section,
-      data: assistances.map((item, key) => ({
-        rowData: [
-          <p className={styles.text} key={key + '-name'}>{item?.name}</p>,
-          <p className={styles.titleContainer} key={key + '-maximum'}>
-            <span className={styles.titleRed}>
-              {item.maximum.trim().split(/\s+/)[0]}
-            </span>
-            {item.maximum.trim().split(/\s+/)[1]}
-            {`${
-              item.amount.toString() === '0'
-                ? ""
-                : ` hasta ${formatPrice(item.amount.toString())} ${dataCurrency[item.currency]}`
-            }`}
-          </p>,
-          <p className={styles.titleContainer} key={key + '-events'}>
-            <span className={styles.titleRed}>{item.events}</span> {item.events === 1 ? 'Evento' : 'Eventos'}
-          </p>,
-          <p className={styles.titleContainer} key={key + '-lack'}>
-            <span className={styles.titleRed}>{item.lack}</span> Días
-          </p>
-        ],
-      }))
-    };
+const groupedBySection = assistanceArray.reduce((acc, assistance) => {
+  if (!acc[assistance.section]) {
+    acc[assistance.section] = [];
   }
+  acc[assistance.section].push(assistance);
+  return acc;
+}, {} as Record<string, IAssistance[]>);
+
+const tableDetailIntegral: ISection[] = Object.keys(groupedBySection).map(
+  (section) => ({
+    title: section,
+    data: groupedBySection[section].map((item: any, key: number) => ({
+      rowData: [
+        <p className={styles.text}>{item?.assistance_name}</p>,
+        <p className={styles.titleContainer}>
+          <span className={styles.titleRed}>
+            {item.maximum.trim().split(/\s+/)[0]}
+          </span>
+          {item.maximum.trim().split(/\s+/)[1]}
+          {`${
+            item.amount === 0
+              ? ""
+              : `
+        hasta ${formatPrice(item.amount.toString())} 
+        ${dataCurrency[item.currency]}
+        `
+          }`}
+        </p>,
+
+        item.events === 1 ? (
+          <p className={styles.titleContainer}>
+            <span className={styles.titleRed}>{item.events}</span> Evento
+          </p>
+        ) : (
+          <p className={styles.titleContainer}>
+            <span className={styles.titleRed}>{item.events}</span> Eventos
+          </p>
+        ),
+        <p className={styles.titleContainer}>
+          <span className={styles.titleRed}>{item.lack}</span> Días
+        </p>,
+      ],
+    })),
+  })
 );
 
   const dataTableInfo: IDataTableInfo = {
-    "08ce5e35-2214-418a-b59c-f012524f09ad": { headers: tableHeIntegral, data: tableDetailIntegral },
-    "baa2d44d-0685-449e-ae27-c380561c7c18": { headers: tableHeIntegral, data: tableDetailIntegral },
-    "de2af317-4920-469c-a706-482581596f5d": { headers: tableHeIntegral, data: tableDetailIntegral },
+    "b68288ec-b894-4c33-a2fd-20216973308a": { headers: tableHeIntegral, data: tableDetailIntegral },
+    "3f6c8348-f939-4b77-911a-e02eedab9f1f": { headers: tableHeIntegral, data: tableDetailIntegral },
+    "48dde8a3-674f-4c08-8f85-5f49d912b446": { headers: tableHeIntegral, data: tableDetailIntegral },
   };
   return (
     <ContentCol width="1200px" gap="0px">
@@ -165,7 +168,7 @@ const tableDetailIntegral: ISection[] = Object.entries(groupedByCorrectSection).
         <Table2 header={tableHeOut} detail={item.data} />
       </React.Fragment>
     ))}
-      {(product.id === "08ce5e35-2214-418a-b59c-f012524f09ad" || product.id === "baa2d44d-0685-449e-ae27-c380561c7c18") && (
+      {(product.id === "b68288ec-b894-4c33-a2fd-20216973308a" || product.id === "3f6c8348-f939-4b77-911a-e02eedab9f1f") && (
         <ContentRow width="100%" justifyContent="flex-start" paddingTop="20px">
           <Text
             text="Carencia de 15 días"

@@ -1135,3 +1135,28 @@ export const sendCredentials = async (
     };
   }
 };
+
+export const getAssistancesByBrokerIdAndProductId = async (req: any, res: any) => {
+  try {
+    const { broker_id, agent_id } = req.query;
+    const { success, data, error } = await Broker.getAssistancesByBrokerIdAndProductId(broker_id, agent_id);
+
+    if (!success) {
+      createLogger.error({
+        error,
+      });
+      res.status(status).json({ error: "error retrieving assistances" });
+      return;
+    }
+
+    res.status(200).json(data);
+    return;
+  } catch (error) {
+    createLogger.error({
+      controller: "broker/getAssistancesByBrokerIdAndProductId",
+      error: (error as Error).message,
+    });
+    res.status(500).json({ error: "error retrieving broker" });
+    return;
+  }
+};

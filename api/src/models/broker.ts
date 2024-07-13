@@ -444,6 +444,55 @@ const getCollectionById: any = async (id: string) => {
   }
 };
 
+const getAssistancesByBrokerIdAndProductId = async (broker_id: string, agent_id: string) => {
+  try {
+    const result = await pool.query(`
+              SELECT  	
+        		pro.id, 
+       			pro.family_id, 
+       			pro.name, 
+       			pro.cost, 
+       			pro.dynamiccharge, 
+       			pro.issubject,
+              	pro.frequency, 
+              	pro.term, 
+              	pro.beneficiaries, 
+              	pro.currency,
+             	pro.dueday, 
+             	pro.mininsuredcompanyprice, 
+              	pl.id as productPlan_id,
+             	pl.baseprice, 
+             	pl.price as productplan_price,
+             	des.title, 
+             	des.sub_title,
+              	des.alias, 
+              	des.promotional, 
+              	des.description, 
+              	des.territorial_scope,
+              	des.hiring_conditions, 
+              	pas.number, 
+              	asi.id as assistance_id,
+              	asi.name as assistance_name, 
+              	fam."name" as section ,
+              	pas.amount, 
+              	pas.maximum,
+              	pas.events, 
+              	pas.lack, 
+              	pas.currency
+      FROM 	app.product pro
+      INNER JOIN app.productdescription des ON pro.id = des.product_id
+      inner JOIN app.productplan pl on pro.id = pl.product_id 
+      LEFT OUTER JOIN app.productassistance pas ON pro.id = pas.product_id
+      LEFT OUTER JOIN app.assistance asi ON pas.assistance_id = asi.id
+      left outer join app.family fam on asi.family_id = fam.id 
+      WHERE 	pro.id = $1 and pl.agent_id = $2
+      ORDER 	BY pas.number`, [broker_id, agent_id])
+      return {success: true, data: result.rows, error: null}
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+}
+
 export {
   create,
   getById,
@@ -457,4 +506,5 @@ export {
   getByUserId,
   getProductsById,
   getCollectionById,
+  getAssistancesByBrokerIdAndProductId
 };

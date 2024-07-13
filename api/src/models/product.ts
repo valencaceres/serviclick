@@ -373,9 +373,6 @@ const getById = async (id: string) => {
               	pro.currency,
              	pro.dueday, 
              	pro.mininsuredcompanyprice, 
-              pl.id as productPlan_id,
-             	pl.baseprice, 
-             	pl.price as productplan_price,
              	des.title, 
              	des.sub_title,
               	des.alias, 
@@ -394,7 +391,6 @@ const getById = async (id: string) => {
               	pas.currency
       FROM 	app.product pro
       INNER JOIN app.productdescription des ON pro.id = des.product_id
-      inner join app.productplan pl on pro.id = pl.product_id 
       LEFT OUTER JOIN app.productassistance pas ON pro.id = pas.product_id
       LEFT OUTER JOIN app.assistance asi ON pas.assistance_id = asi.id
       left outer join app.family fam on asi.family_id = fam.id 
