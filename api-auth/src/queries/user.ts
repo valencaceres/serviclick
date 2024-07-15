@@ -92,7 +92,7 @@ export const _getByRut = `
                             per.rut = ($1)`;
 
 export const _getByEmail = `
-SELECT 
+   SELECT 
     usr.id, 
     per.id AS "personId",
     per.rut AS rut, 
@@ -112,7 +112,7 @@ SELECT
             )
         FROM app.user_rol url
         INNER JOIN app.rol rol ON url.rol_id = rol.id
-        WHERE user_id = usr.id
+        WHERE url.user_id = usr.id
     ) AS roles,
     per.birthdate,
     usr.hash,
@@ -121,12 +121,12 @@ SELECT
     usr.deletedAt AS "deletedAt"
 FROM 
     app.user usr
-INNER JOIN 
+LEFT JOIN 
     app.person per ON usr.person_id = per.id
 LEFT JOIN
     app.district dis ON per.district_id = dis.id
 WHERE 
-    per.email = $1;`;
+    per.email = $1 OR usr.login = $1;`;
 
 export const _upsert = `WITH person_data AS (
                         INSERT INTO app.person (rut, "name", paternallastname, maternallastname, email, phone, address, birthdate, district_id) 
