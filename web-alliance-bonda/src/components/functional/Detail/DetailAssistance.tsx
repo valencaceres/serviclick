@@ -7,7 +7,7 @@ import { assistancesWithImages } from "@/data/assistancesWithImages";
 
 const DetailAssistance = ({ product }: any) => {
   return (
-    <ContentRow width="1200px" justifyContent="center" gap="50px">
+    <ContentRow width="80%" justifyContent="center" gap="50px">
       {product.assistances.map(
         (assistance: any, index: number) =>
           assistancesWithImages.some(

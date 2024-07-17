@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 
 import { ContentCol, ContentRow } from "@/components/layout/Content";
 
@@ -111,9 +111,26 @@ const DetailCoverage = ({ product }: any) => {
     })
   );
 
+  const [header, setHeader] = useState<ITableHeader[]>([]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setHeader(tableHeIntegral);
+      } else {
+        setHeader([{ text: "Asistencias", align: "left", type: "string", width: "100%" }]);
+      }
+    };
+
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+    
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   return (
-    <ContentCol width="1200px" gap="0px">
-      <Table2 header={tableHeIntegral} detail={[]} heightHead="34px" />
+    <ContentCol width="100%" gap="0px">
+      <Table2 header={header} detail={[]} heightHead="34px" />
       {tableDetailIntegral.map((item, key) => (
         <React.Fragment key={key}>
           <Table2 header={tableHeOut} detail={item.data} />

@@ -73,7 +73,7 @@ export const productProduct = create<ProductState>((set) => ({
     try {
       set((state) => ({ ...state, isLoading: true }));
       const { data } = await apiInstance.get(
-        `broker/getProductsById/${config.service}`
+        `/broker/getProductsById/${config.service}`
       );
       set((state) => ({
         ...state,

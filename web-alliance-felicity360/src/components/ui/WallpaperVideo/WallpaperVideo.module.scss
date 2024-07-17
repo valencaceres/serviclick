@@ -27,3 +27,15 @@
     line-height: 57px;
     z-index: 2;
   }
+
+  @media (max-width: 768px) {
+    .wallpaperVideo {
+      display: none;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .wallpaperVideo{
+      width: 100vw;
+    }
+  }

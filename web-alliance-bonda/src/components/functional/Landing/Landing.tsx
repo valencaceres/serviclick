@@ -37,7 +37,7 @@ const Landing = () => {
         height={500}>
         ASISTENCIAS QUE TE PROTEGEN <br /> EN TODO MOMENTO
       </WallpaperVideo>
-      <ContentCol width="1200px" gap="50px" paddingBottom="50px">
+      <ContentCol width="100%" gap="2rem" paddingBottom="50px">
         <Paragraph content={content} wordsWithStyles={wordsWithStyles} />
         <ContentCol gap="25px">
           {products.map((product, index) => (
@@ -57,7 +57,7 @@ const Landing = () => {
         </ContentCol>
         <Paragraph content="BENEFICIOS" />
         <ContentRow
-          width="1200px"
+          width="100%"
           flexWrap="wrap"
           justifyContent="center"
           gap="30px">

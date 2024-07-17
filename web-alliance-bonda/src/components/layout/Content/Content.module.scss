@@ -6,3 +6,10 @@
 .contentRow {
   display: flex;
 }
+
+@media (max-width:768px){
+  .contentRow{
+    display: flex;
+    flex-direction: column;
+  }
+}

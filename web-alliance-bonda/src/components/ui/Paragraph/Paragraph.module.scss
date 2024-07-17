@@ -14,3 +14,23 @@
     text-align: center;
   }
 }
+
+@media (max-width: 768px) {
+  .paragraph {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 100px;
+  
+    .content {
+      font-size: 18px;
+      line-height: 1.5;
+      font-family: "Inter", sans-serif;
+      color: #03495c;
+      text-align: center;
+      width: 95%;
+    }
+  }
+}

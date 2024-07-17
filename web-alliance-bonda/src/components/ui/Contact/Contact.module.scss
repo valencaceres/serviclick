@@ -34,4 +34,16 @@
     justify-content: center;
     gap: 20px;
   }
+  .img{
+    display: block;
+  }
+}
+
+@media (max-width:768px){
+  .content{
+    
+    img{
+      display: none;
+    }
+  }
 }
