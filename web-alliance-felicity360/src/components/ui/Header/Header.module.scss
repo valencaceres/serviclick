@@ -9,3 +9,36 @@
   height: 100px;
   transition: background-color 1s;
 }
+
+@media (max-width: 768px) {
+  .header {
+    position: fixed;
+    z-index: 3;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px;
+    height: 100px;
+    transition: background-color 1s;
+
+    img{
+      height: 50px;
+    }
+  }
+}
+
+@media (min-width: 769px){
+  .header {
+    position: absolute;
+    z-index: 3;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100px;
+    transition: background-color 1s;
+    width: 100%;
+    img{
+      height: 80px;
+    }
+  }
+}

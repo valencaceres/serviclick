@@ -25,3 +25,17 @@
     gap: 8px;
   }
 }
+
+@media(max-width: 768px){
+  .footer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .text{
+      gap:0
+    }
+    p{
+      display: none;
+    }
+  }
+}

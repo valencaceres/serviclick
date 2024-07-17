@@ -1,50 +1,4 @@
-.table {
-  border-spacing: 0px 5px;
-  margin-top: -5px;
-  padding: 0;
-  width: 1200px;
-  thead {
-    top: 0;
-    z-index: 1;
-    position: sticky;
-    tr {
-      background-color: #ffffff;
 
-      th {
-        background-color: #03495c;
-        color: #fff;
-        font-weight: 500;
-        font-size: 16px;
-      }
-
-      th:not(:first-of-type) {
-        border-left: #ffffff 5px solid;
-      }
-    }
-  }
-
-  tbody {
-    width: 1200px;
-    tr {
-      width: 100%;
-      td {
-        min-height: 50px;
-        height: 50px;
-        width: 100%;
-        background: #f3f4f6;
-        .contenAccion {
-          width: fit-content;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          min-height: 50px;
-          height: 50px;
-          gap: 3px;
-        }
-      }
-    }
-  }
-}
 
 .tableMain {
   display: flex;
@@ -72,7 +26,53 @@
   overflow: auto;
   border-radius: 5px;
   width: 100%;
-  overflow-x: hidden;
+
+  .table {
+    border-spacing: 0px 5px;
+    margin-top: -5px;
+    padding: 0;
+    width: 100%;
+    thead {
+      top: 0;
+      z-index: 1;
+      position: sticky;
+      tr {
+        
+        th {
+          background-color: #03495c;
+          color: #fff;
+          font-weight: 500;
+          font-size: 16px;
+        }
+  
+        th:not(:first-of-type) {
+          box-shadow: -5px 0 0 #ffffff;
+        }
+      }
+    }
+  
+    tbody {
+      width: 100%;
+      tr {
+        width: 100%;
+        td {
+          min-height: 50px;
+          height: 50px;
+          width: 100%;
+          background: #f3f4f6;
+          .contenAccion {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 50px;
+            height: 50px;
+            gap: 3px;
+          }
+        }
+      }
+    }
+  }
 }
 
 .footerTable {
@@ -93,5 +93,110 @@
     border-radius: 5px;
     color: #333;
     font-weight: 800;
+  }
+}
+
+
+@media (max-width: 768px){
+  .containerTable{
+    width: 90%;
+    .table {
+      border-spacing: 0px 5px;
+      margin-top: -5px;
+      padding: 0;
+      width: 100%;
+      thead {
+        top: 0;
+        z-index: 1;
+        position: sticky;
+        tr {
+          
+          th {
+            background-color: #03495c;
+            color: #fff;
+            font-weight: 500;
+            font-size: 16px;
+          }
+    
+          th:not(:first-of-type) {
+            box-shadow: -5px 0 0 #ffffff;
+          }
+        }
+      }
+    
+      tbody {
+        width: 100%;
+        tr {
+          width: 100%;
+          td {
+            min-height: 50px;
+            height: 25vh;
+            width: 100%;
+            background: #f3f4f6;
+            .contenAccion {
+              width: 100%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              min-height: 50px;
+              height: 50px;
+              gap: 3px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (min-width:769px) and (max-width:1199px){
+  .containerTable{
+    width: 90%;
+    .table {
+      border-spacing: 0px 5px;
+      margin-top: -5px;
+      padding: 0;
+      width: 100%;
+      thead {
+        top: 0;
+        z-index: 1;
+        position: sticky;
+        tr {
+          
+          th {
+            background-color: #03495c;
+            color: #fff;
+            font-weight: 500;
+            font-size: 16px;
+          }
+    
+          th:not(:first-of-type) {
+            box-shadow: -5px 0 0 #ffffff;
+          }
+        }
+      }
+    
+      tbody {
+        width: 100%;
+        tr {
+          width: 100%;
+          td {
+            min-height: 50px;
+            height: 10vh;
+            width: 100%;
+            background: #f3f4f6;
+            .contenAccion {
+              width: 100%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              min-height: 50px;
+              height: 50px;
+              gap: 3px;
+            }
+          }
+        }
+      }
+    }
   }
 }

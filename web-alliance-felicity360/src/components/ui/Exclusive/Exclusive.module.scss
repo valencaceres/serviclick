@@ -12,3 +12,8 @@
     color: #03495c;
   }
 }
+@media (max-width:768px){
+  .content{
+    display: none;
+  }
+}

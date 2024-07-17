@@ -41,14 +41,18 @@ const Card: React.FC<CardProps> = ({
         <div className={styles.header}>
           <h2>{title}</h2>
           <div className={styles.prices}>
-            <h4>{`$${formatCurrency(basePrice)}`}</h4>
-            <Price text={price} />
-            <Discount text={discountText} />
-            {beneficiaryPrice > 0 && (
-              <Beneficiary
-                text={`$${formatCurrency(beneficiaryPrice)} (cada carga)`}
-              />
-            )}
+            <div className={styles.prices2}>
+              <h4>{`$${formatCurrency(basePrice)}`}</h4>
+              <Price text={price} />
+              <Discount text={discountText} />
+            </div>
+            <div className={styles.beneficiary}>
+              {beneficiaryPrice > 0 && (
+                <Beneficiary
+                  text={`$${formatCurrency(beneficiaryPrice)} (cada carga)`}
+                />
+              )}
+            </div>
           </div>
         </div>
         <p>{paragraph}</p>

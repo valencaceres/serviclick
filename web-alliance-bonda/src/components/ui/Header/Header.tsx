@@ -8,10 +8,16 @@ interface HeaderProps {
 const Header = ({ backgroundColor = "transparent" }: HeaderProps) => {
   return (
     <div className={styles.header} style={{ backgroundColor }}>
-      <img src="/img/logo/serviclick.png" alt="" />
-      <img src="/img/logo/bonda.png" alt="" />
+      <picture>
+        <source media="(max-width: 768px)" srcSet="/img/logo/serviclick_mobile.png" />
+        <img 
+          src="/img/logo/serviclick.png" 
+          alt="Serviclick" 
+          className={styles.logo} 
+        />
+      </picture>
+      <img src="/img/logo/bonda.png" alt="Bonda" />
     </div>
   );
 };
-
 export default Header;

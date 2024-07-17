@@ -26,3 +26,35 @@
     text-align: justify;
   }
 }
+
+@media (max-width: 768px){
+  .conditions{
+    width: 90vw;
+
+    h2 {
+      font-family: "Inter", sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #03495c;
+    }
+    p{
+      font-size: 12px;
+    }
+  }
+}
+
+@media (min-width:769px) and (max-width:1199px){
+  .conditions{
+    width: 70vw;
+
+    h2 {
+      font-family: "Inter", sans-serif;
+      font-size: 19px;
+      font-weight: 700;
+      color: #03495c;
+    }
+    p{
+      font-size: 17px;
+    }
+  }
+}
