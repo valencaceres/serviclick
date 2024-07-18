@@ -19,6 +19,7 @@ export const Dashboard: React.FC = () => {
   const { broker } = useUI();
   const { getRolById } = useRol()
   const { userItem } = useUser();
+  console.log(broker)
   useEffect(() => {
 
       getRolById(userItem.id);
@@ -39,12 +40,12 @@ function BrokerSummary({ broker }: { broker: Broker | null }) {
     isLoading: loading,
     getBrokerById
   } = useBroker();
-  const {rolList} = useRol()
-  const isBroker = Array.isArray(rolList) ? rolList.filter(rol => rol.agent_type === 'broker') : [];
+  console.log(data)
+
   useEffect(() => {
-    if (isBroker.length > 0 && isBroker[0].agent_id) {
-      getDetailsByBrokerId(isBroker[0].agent_id);
-    }
+      if(broker && broker.id){
+        getDetailsByBrokerId(broker?.id)
+      };
   }, [broker]);
   const isLoading = loading || data?.summary?.charged === null;
 
