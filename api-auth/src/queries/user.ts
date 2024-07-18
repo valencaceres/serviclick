@@ -101,7 +101,7 @@ export const _getByEmail = `
     per.maternallastname AS "maternalLastName",
     per.address AS address,
     COALESCE(dis.district_name, per.district) AS "districtName",
-    per.email,
+    usr.login AS "email",
     per.phone AS phone,
     ARRAY(
         SELECT 

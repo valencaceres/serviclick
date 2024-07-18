@@ -1,4 +1,3 @@
-import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
@@ -7,7 +6,7 @@ import { config } from "../../../utils/config";
 import { Button } from "~/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/Card";
 
-import { useUI } from "~/store/hooks";
+import { useUI, useUser } from "~/store/hooks";
 import { IProduct } from "~/interfaces/product";
 import { useRetail } from "~/store/hooks";
 export function SaleProductStep({
@@ -16,6 +15,7 @@ export function SaleProductStep({
   onDone: () => void;
   previousStep: () => void;
 }) {
+  const {user} = useUser()
   const { family } = useUI();
   const { isLoading } = useRetail();
   const products = family?.products;
