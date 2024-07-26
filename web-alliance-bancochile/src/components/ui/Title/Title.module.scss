@@ -1,0 +1,18 @@
+
+.title {
+  line-height: 1.5;
+  margin: 1em 0;
+  color: #03495C;
+  font-weight: 400;
+
+  span{
+    font-weight: 800;
+  }
+}
+
+
+
+.bold {
+  font-weight: bold;
+  color: inherit; // Permite que el color heredado se aplique a las palabras en negrita
+}

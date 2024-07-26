@@ -1,0 +1,59 @@
+.benefit{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 100px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 315px;
+  }
+  
+  .textContainer {
+    height: 5em;
+    display: flex;
+    align-items: center;
+  
+    p {
+      font-family: "Inter", sans-serif;
+      font-weight: 400;
+      font-size: 24px;
+      text-align: center;
+      margin: 0;
+      color: #03495C;
+    }
+  
+  }
+  
+  @media (max-width:768px){
+    .content{
+      height: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 90%;
+      .img{
+        width: 20vh;
+      }
+      p {
+        font-family: "Inter", sans-serif;
+        font-weight: 400;
+        font-size: 1rem;
+        text-align: center;
+        margin: 0;
+      }
+    
+      span {
+        font-family: "Inter", sans-serif;
+        font-weight: 500;
+        font-size: 14px;
+        text-align: center;
+        margin: 0;
+        color: #03495c;
+      }
+    }
+  }
