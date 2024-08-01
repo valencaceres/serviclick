@@ -1,0 +1,26 @@
+@import "../../../app/styles/mixins.scss";
+
+.detailProduct {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 1200px;
+
+  @include media-lg() {
+    width: 100%;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  @include media-md() {
+    display: none;
+  }
+}
+
+.sliderItem {
+  display: none;
+
+  @include media-lg() {
+    display: block;
+  }
+}

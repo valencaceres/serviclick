@@ -2,6 +2,7 @@ import React from "react";
 import Step, { StepProps } from "./Step";
 import styles from "./InfoSteps.module.scss";
 
+
 interface InfoStepsProps {
   steps: StepProps[];
 }
@@ -17,6 +18,7 @@ const InfoSteps: React.FC<InfoStepsProps> = ({ steps }) => {
           iconColor={step.iconColor}
           boldWords={step.boldWords}
           contactInfo={step.contactInfo}
+          showLineVer={step.showLineVer}
         />
       ))}
     </div>

@@ -1,108 +1,124 @@
-.holdingContainer {
-    padding: 20px;
+@import "../../../app/styles/mixins.scss";
+
+.container {
+  text-align: center;
+  padding: 20px;
+
+  h1 {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    color: #003366;
   }
-  
-  .line {
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    border: solid 2px #1161CB;
-    border-radius: 20px;
-    width: 1200px;
-    position: relative;
-    margin: -20px auto 0;
-    padding: 40px 60px;
-    gap: 30px;
-  
-    h2 {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: white;
-      padding: 0 40px;
-      z-index: 2;
-      font-size: 32px;
-      color: #00377F;
-      font-family: "Inter", sans-serif;
-      font-weight: 700;
+}
+
+.pyramidContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  overflow: hidden;
+  gap: 20px;
+
+  .mainLogo {
+    margin-bottom: 20px;
+    width: 400px;
+
+    img {
+      max-width: 300px;
+      height: auto;
     }
   }
-  
-  .rowOne,
-  .rowTwo,
-  .rowThree {
+
+  .rowOne {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 10px;
+    width: 100%;
+
+    img {
+      max-width: 300px;
+      height: auto;
+    }
+  }
+
+  .rowTwo {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    align-items: center;
+    gap: 15px;
     width: 100%;
-  }
-  
-  .rowThree {
-    width: 100%;
-    justify-content: space-between;
-  
+
     img {
-      width: 250px;
+      max-width: 200px;
+      height: auto;
     }
   }
-  
-  
-  @media (max-width:768px){
-    .holdingContainer{
-      display: none;
-    }
-  }
-  
-  @media (min-width:769px) and (max-width:1199px){
-    .holdingContainer {
-      padding: 20px;
-    }
-    
-    .line {
-      display: flex;
-      flex-direction: column;
-      padding: 20px;
-      border: solid 2px #5c5c5c;
-      border-radius: 20px;
-      width: 100%;
-      position: relative;
-      margin: -20px auto 0;
-      padding: 40px 60px;
-      gap: 30px;
-    
-      h2 {
-        position: absolute;
-        top: 0;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: white;
-        padding: 0 40px;
-        z-index: 2;
-        font-size: 26px;
-        color: #5c5c5c;
-        font-family: "Inter", sans-serif;
-        font-weight: 700;
-      }
-    }
-    
-    .rowOne,
-    .rowTwo,
-    .rowThree {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-    }
-    
-    .rowThree {
-      width: 100%;
-      justify-content: space-between;
-    
+}
+
+@include media-md() {
+  .pyramidContainer {
+    .mainLogo {
+      margin-bottom: 25px;
+
       img {
-        width: 100px;
+        max-width: 150px;
+      }
+    }
+
+    .rowOne {
+      gap: 20px;
+    }
+
+    .rowTwo {
+      img {
+        max-width: 240px;
       }
     }
   }
+}
+
+@include media-lg() {
+  .pyramidContainer {
+    .mainLogo {
+      margin-bottom: 30px;
+
+      img {
+        max-width: 250px;
+      }
+    }
+
+    .rowOne {
+      gap: 25px;
+    }
+
+    .rowTwo {
+      img {
+        max-width: 200px;
+      }
+    }
+  }
+}
+
+@include media-sm() {
+  .pyramidContainer {
+    .mainLogo {
+      img {
+        max-width: 100px;
+      }
+    }
+
+    .rowOne {
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      width: 200px;
+    }
+
+    .rowTwo {
+      img {
+        max-width: 200px;
+      }
+    }
+  }
+}

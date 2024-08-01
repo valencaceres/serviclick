@@ -1,18 +1,66 @@
+@import "../../../app/styles/mixins.scss";
 
 .title {
   line-height: 1.5;
-  margin: 1em 0;
-  color: #03495C;
+  color: #03495c;
   font-weight: 400;
+  width: 1200px;
 
-  span{
+  &.size-small {
+    font-size: 32px;
+    text-align: justify;
+  }
+
+  &.size-medium {
+    font-size: 48px;
+    font-weight: 400;
+  }
+
+  &.size-large {
+    font-size: 60px;
+  }
+
+  span {
     font-weight: 800;
   }
-}
 
+  .bold {
+    font-weight: bold;
+    color: inherit;
+  }
+  @include media-lg() {
+    &.size-small {
+      font-size: 22px;
+      width: 100%;
+      text-align: justify;
+    }
 
+    &.size-medium {
+      font-size: 38px;
+      font-weight: 400;
+      width: 100%;
+    }
 
-.bold {
-  font-weight: bold;
-  color: inherit; // Permite que el color heredado se aplique a las palabras en negrita
+    &.size-large {
+      font-size: 32px;
+      width: 100%;
+    }
+  }
+
+  @include media-md() {
+    &.size-small {
+      font-size: 16px;
+      text-align: justify !important;
+      padding: 0 10px;
+    }
+
+    &.size-medium {
+      font-size: 28px;
+      font-weight: 400;
+    }
+
+    &.size-large {
+      font-size: 28px;
+    }
+  }
 }

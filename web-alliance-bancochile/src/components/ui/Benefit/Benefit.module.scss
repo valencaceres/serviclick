@@ -1,59 +1,91 @@
-.benefit{
+@import "../../../app/styles/mixins.scss";
+
+.benefit {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 100px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 40px 20px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  @include media-lg() {
+    width: 100%;
+    justify-content: center;
+  }
+
+  @include media-md() {
+    display: none;
+  }
 }
 
 .content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    width: 315px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 280px;
+  padding: 20px;
+  box-sizing: border-box;
+
+  img {
+    width: 174px;
+    height: auto;
   }
-  
+
+  @include media-md() {
+    img {
+      width: 140px;
+    }
+  }
+
+  @include media-sm() {
+    img {
+      width: 120px;
+    }
+  }
+}
+
+.textContainer {
+  height: 5em;
+  display: flex;
+  align-items: center;
+  text-align: center;
+
+  p {
+    font-family: "Inter", sans-serif;
+    font-weight: 400;
+    font-size: 24px;
+    text-align: center;
+    margin: 0;
+    color: #03495c;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    @include media-md() {
+      font-size: 20px;
+    }
+
+    @include media-sm() {
+      font-size: 18px;
+    }
+  }
+}
+
+@include media-sm() {
+  .benefit {
+    justify-content: center;
+    padding-top: 20px;
+  }
+
+  .content {
+    width: 100%;
+    max-width: 200px;
+  }
+
   .textContainer {
-    height: 5em;
-    display: flex;
-    align-items: center;
-  
-    p {
-      font-family: "Inter", sans-serif;
-      font-weight: 400;
-      font-size: 24px;
-      text-align: center;
-      margin: 0;
-      color: #03495C;
-    }
-  
+    height: auto;
   }
-  
-  @media (max-width:768px){
-    .content{
-      height: auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 90%;
-      .img{
-        width: 20vh;
-      }
-      p {
-        font-family: "Inter", sans-serif;
-        font-weight: 400;
-        font-size: 1rem;
-        text-align: center;
-        margin: 0;
-      }
-    
-      span {
-        font-family: "Inter", sans-serif;
-        font-weight: 500;
-        font-size: 14px;
-        text-align: center;
-        margin: 0;
-        color: #03495c;
-      }
-    }
-  }
+}

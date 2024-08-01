@@ -1,0 +1,36 @@
+@import "../../../app/styles/mixins.scss";
+
+.layout {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+
+  .children,
+  .header,
+  .contact,
+  .footer {
+    width: 100%;
+    max-width: 1200px;  // Ancho máximo compartido para todos los componentes
+    padding: 0 20px;    // Padding para mantener espacio en los lados
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .children {
+    gap: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .children,
+  .header,
+  .contact,
+  .footer {
+    max-width: 100%;  // Ancho máximo del 100% para pantallas pequeñas
+    padding: 0 10px;
+  }
+}

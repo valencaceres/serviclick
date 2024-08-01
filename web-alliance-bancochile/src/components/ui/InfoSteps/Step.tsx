@@ -7,6 +7,7 @@ export interface StepProps {
   iconColor: string;
   boldWords?: { text: string; color: string }[];
   contactInfo?: string;
+  showLineVer?: boolean;
 }
 
 const Step: React.FC<StepProps> = ({
@@ -15,6 +16,7 @@ const Step: React.FC<StepProps> = ({
   iconColor,
   boldWords = [],
   contactInfo,
+  showLineVer = false,
 }) => {
   const processText = (text: string): string => {
     boldWords.forEach(({ text: word, color }) => {
@@ -38,21 +40,14 @@ const Step: React.FC<StepProps> = ({
         reverseOrder ? styles.reverseOrder : ""
       }`}
     >
+      {showLineVer && <div className={styles.lineVer}></div>}
+
       <div className={styles.icon} style={{ backgroundColor: iconColor }}>
         {number}
       </div>
       <div className={styles.line}></div>
       <div className={styles.step}>
-        <div className={styles.content}>
-          <p dangerouslySetInnerHTML={{ __html: processText(title) }} />
-
-          {contactInfo && (
-            <p
-              className={styles.contact}
-              dangerouslySetInnerHTML={{ __html: processText(contactInfo) }}
-            />
-          )}
-        </div>
+        <p dangerouslySetInnerHTML={{ __html: processText(title) }} />
       </div>
     </div>
   );

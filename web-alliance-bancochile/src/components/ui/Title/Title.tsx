@@ -5,7 +5,7 @@ interface TitleProps {
   title: string;
   boldWords?: string[];
   color?: string;
-  fontSize?: string;
+  size?: "small" | "medium" | "large";
   textAlign?: "left" | "center" | "right" | "justify";
   className?: string;
 }
@@ -14,7 +14,7 @@ const Title: React.FC<TitleProps> = ({
   title,
   boldWords = [],
   color = "black",
-  fontSize = "16px",
+  size = "medium",
   textAlign = "left",
   className = "",
 }) => {
@@ -39,8 +39,8 @@ const Title: React.FC<TitleProps> = ({
 
   return (
     <p
-      className={`${styles.title} ${className}`}
-      style={{ fontSize, textAlign }}
+      className={`${styles.title} ${styles[`size-${size}`]} ${className}`}
+      style={{ textAlign }}
       dangerouslySetInnerHTML={{ __html: htmlContent }}
     />
   );
