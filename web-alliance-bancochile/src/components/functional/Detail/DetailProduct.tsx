@@ -31,7 +31,7 @@ function formatDescription(assistance: Assistance) {
 const DetailProduct = () => {
   return (
     <>
-      <div className={styles.detailProduct}>
+      <div className={styles.detailProduct} id="asistencias">
         {productData.map((product) => (
           <Card
             key={product.id}
@@ -44,6 +44,7 @@ const DetailProduct = () => {
             buttonText="¡Lo quiero!"
             buttonColor={product.color}
             backgroundColor={product.color}
+            buttonURLCard={product.buttonURL}
             benefits={product.assistances.map((assistance) => ({
               title: assistance.name,
               smallText: assistance.small_description,
@@ -55,6 +56,7 @@ const DetailProduct = () => {
                 title: "Salud Integral",
                 paragraph: product.hiring_conditions,
                 buttonText: "Descargar PDF",
+                buttonURL: product.pdf_url,
               },
             ]}
           />
@@ -73,6 +75,7 @@ const DetailProduct = () => {
               individualPlanText="Consulta por plan individual"
               buttonText="¡Lo quiero!"
               buttonColor={product.color}
+              buttonURLCard={product.buttonURL}
               backgroundColor={product.color}
               benefits={product.assistances.map((assistance) => ({
                 title: assistance.name,
@@ -85,6 +88,7 @@ const DetailProduct = () => {
                   title: "Salud Integral",
                   paragraph: product.hiring_conditions,
                   buttonText: "Descargar PDF",
+                  buttonURL: product.pdf_url,
                 },
               ]}
             />

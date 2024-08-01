@@ -14,6 +14,7 @@ interface TextCard {
   title: string;
   paragraph: string;
   buttonText: string;
+  buttonURL: string;
 }
 
 interface CardProps {
@@ -24,6 +25,7 @@ interface CardProps {
   discount: string;
   individualPlanText: string;
   buttonText: string;
+  buttonURLCard: string;
   benefits: Benefit[];
   textCard: TextCard[];
   backgroundColor: string;
@@ -42,6 +44,7 @@ const Card: React.FC<CardProps> = ({
   textCard,
   backgroundColor,
   buttonColor,
+  buttonURLCard,
 }) => {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
@@ -68,17 +71,19 @@ const Card: React.FC<CardProps> = ({
       )}`}</span>
       <p className={styles.individualPlanText}>{individualPlanText}</p>
       <div className={styles.content}>
-        <button
-          className={styles.button}
-          style={{ backgroundColor: buttonColor }}
-        >
-          {buttonText}
-          <img
-            className={styles.buttonImage}
-            src="/img/cards/emoji.png"
-            alt="emoji"
-          />
-        </button>
+        <a href={buttonURLCard} target="_blank" rel="noopener noreferrer">
+          <button
+            className={styles.button}
+            style={{ backgroundColor: buttonColor }}
+          >
+            {buttonText}
+            <img
+              className={styles.buttonImage}
+              src="/img/cards/emoji.png"
+              alt="emoji"
+            />
+          </button>
+        </a>
         <div className={styles.benefits}>
           <h3>Beneficios</h3>
           <ul>
@@ -120,7 +125,14 @@ const Card: React.FC<CardProps> = ({
             >
               {expandedIndex === index ? "Ver menos." : "Ver más."}
             </button>
-            <button className={styles.buttonPdf}>Descargar PDF</button>
+            <a
+              href={item.buttonURL}
+              className={styles.buttonPdf}
+              target="_blank"
+              download
+            >
+              Descargar PDF
+            </a>
           </div>
         </div>
       ))}
