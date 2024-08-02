@@ -61,6 +61,9 @@
 
   .mainLogo {
     width: 300px;
+    @include media-sm(){
+      width: 200px;
+    }
 
     img {
       max-width: 300px;
@@ -78,6 +81,9 @@
     img {
       max-width: 300px;
       height: auto;
+      @include media-sm(){
+        width: 200px;
+      }
     }
   }
 
@@ -143,7 +149,7 @@
   .pyramidContainer {
     .mainLogo {
       img {
-        max-width: 100px;
+       width: 100px !important;
       }
     }
 

@@ -3,8 +3,8 @@ import styles from "./Contact.module.scss";
 
 const Contact = () => {
   return (
-    <div className={styles.contact}>
-      <div className={styles.text}>
+    <div className={styles.contact} id="ubicacion">
+      <div className={styles.text} id="contacto">
         <h2>¡CONTÁCTANOS!</h2>
         <div className={styles.contactItem}>
           <img
