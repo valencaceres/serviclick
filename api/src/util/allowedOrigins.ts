@@ -39,4 +39,7 @@ export const allowedOrigins = [
   "http://localhost:3012",
   "http://localhost:3024",
   "http://localhost:3025",
+  "http://localhost:3031",
+  "https://bancochile-cert.serviclick.cl",
+  "https://bancochile.serviclick.cl"
 ];

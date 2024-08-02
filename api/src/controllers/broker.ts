@@ -1164,3 +1164,23 @@ export const getAssistancesByBrokerIdAndProductId = async (
     return;
   }
 };
+
+export const getProductsAndAssistancesByBrokerId = async (req: any, res: any) => {
+  try {
+    const {id} = req.params
+    const response = await Broker.getProductAndAssistancesByBrokerId(id)
+    if(!response.success){
+      res.status(500).json('Error getting products and assistances')
+    }
+
+    return res.status(200).json(response.data)
+  } catch (e: any) {
+    createLogger.error({
+      controller: "broker/getProductAndAssistancesByBrokerId",
+      error: (e as Error).message,
+    });
+    res.status(500).json({ error: "error retrieving broker" });
+    return;
+  }
+}
+

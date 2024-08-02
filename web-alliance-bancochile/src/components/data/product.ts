@@ -23,7 +23,7 @@ export interface Product {
 }
 export const productData = [
   {
-    id: "001",
+    id: "08ce5e35-2214-418a-b59c-f012524f09ad",
     name: "Salud Integral familiar",
     description: "",
     basePrice: 20271,
@@ -93,7 +93,7 @@ export const productData = [
     ],
   },
   {
-    id: "002",
+    id: "baa2d44d-0685-449e-ae27-c380561c7c18",
     name: "Mascota Pro",
     description: "",
     basePrice: 9557,
@@ -189,7 +189,7 @@ export const productData = [
     ],
   },
   {
-    id: "003",
+    id: "de2af317-4920-469c-a706-482581596f5d",
     name: "Hogar Pro",
     description: "",
     basePrice: 5415,

@@ -21,13 +21,13 @@ interface CardProps {
   planName: string;
   currentPrice: number;
   originalPrice: number;
-  discount: string;
+  discount?: string;
   individualPlanText: string;
   buttonText: string;
   benefits: Benefit[];
   textCard: TextCard[];
-  backgroundColor: string;
-  buttonColor: string;
+  backgroundColor?: string;
+  buttonColor?: string;
 }
 
 const Card: React.FC<CardProps> = ({

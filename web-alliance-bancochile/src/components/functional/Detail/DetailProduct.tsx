@@ -4,7 +4,10 @@ import { productData, Assistance } from "@/components/data/product";
 import styles from "./DetailProduct.module.scss";
 import Slider from "@/components/ui/Slider/Slider";
 
+import { useProduct } from "@/store/hooks";
+
 function formatDescription(assistance: Assistance) {
+
   const { amount, currency, maximum, events } = assistance;
   let description = "";
 
@@ -22,37 +25,45 @@ function formatDescription(assistance: Assistance) {
       description += `${amount} UF`;
     }
   }
-
-  description += `, ${events} eventos en el año`;
-
+  if(amount === 0) {
+    description += ` ${events} eventos en el año`;
+  }else {
+    description += `, ${events} eventos en el año`;
+  }
   return description;
 }
 
 const DetailProduct = () => {
+  const getColorById = (id: any, productData: any) => {
+    const data = productData.find((item: any) => item.id === id);
+    return data ? data.color : null; 
+};
+
+  const {productList} = useProduct()
   return (
     <>
       <div className={styles.detailProduct}>
-        {productData.map((product) => (
+        {productList.map((product) => (
           <Card
             key={product.id}
             imageSrc={`/img/cards/${product.id}.png`}
             planName={product.name}
             currentPrice={product.price}
-            originalPrice={product.basePrice}
-            discount={`${product.discount}%`}
+            originalPrice={product.baseprice}
+            discount={`${product.discount_percent}%`}
             individualPlanText="Consulta por plan individual"
             buttonText="¡Lo quiero!"
-            buttonColor={product.color}
-            backgroundColor={product.color}
+            buttonColor={getColorById(product.id, productData)}
+            backgroundColor={getColorById(product.id, productData)}
             benefits={product.assistances.map((assistance) => ({
               title: assistance.name,
-              smallText: assistance.small_description,
+/*               smallText: `${assistance.description.slice(0, 80)}...`, */
               description: formatDescription(assistance),
               iconSrc: "/img/cards/check.png",
             }))}
             textCard={[
               {
-                title: "Salud Integral",
+                title: product.name,
                 paragraph: product.hiring_conditions,
                 buttonText: "Descargar PDF",
               },
