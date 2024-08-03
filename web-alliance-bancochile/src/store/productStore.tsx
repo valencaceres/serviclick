@@ -16,6 +16,7 @@ interface ProductState {
 
 const initialStateProduct: IProduct = {
   id: '',
+  productplan_id: '',
   name: '',
   description: '',
   price: 0,

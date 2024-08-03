@@ -1,5 +1,6 @@
 export interface IProduct {
   id: string,
+  productplan_id: string
   name: string,
   description: string,
   price: number,

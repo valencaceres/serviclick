@@ -469,13 +469,14 @@ const getProductAndAssistancesByBrokerId = async (broker_id: string) => {
   try {
     const response = await pool.query(`
   select	pro.id,
-		pro."name" ,
-		pd.description,
-		pl.price,
-		pl.baseprice,
-		pl.discount_percent ,
-		pl.beneficiary_price, 
-		pd.hiring_conditions,
+          pl.id as "productplan_id",
+          pro."name" ,
+          pd.description,
+          pl.price,
+          pl.baseprice,
+          pl.discount_percent ,
+          pl.beneficiary_price, 
+          pd.hiring_conditions,
 		    (
 	        SELECT json_agg(
 	            json_build_object(

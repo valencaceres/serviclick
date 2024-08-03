@@ -72,8 +72,8 @@ const Landing = () => {
       <FloatingButtons
         img="/img/floating/wsp.png"
         img2="/img/floating/phone.png"
-        href1=""
-        href2=""
+        href1="https://api.whatsapp.com/send/?phone=56939325099&text&type=phone_number&app_absent=0"
+        href2="tel:6000860580"
       ></FloatingButtons>
     </div>
   );

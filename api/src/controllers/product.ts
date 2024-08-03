@@ -1099,6 +1099,7 @@ const getByProductPlanId = async (req: any, res: any) => {
       createDate: productPlanResponse.data[0].createdate,
       planId: productPlanResponse.data[0].plan_id,
       customerType: productPlanResponse.data[0].customer_type,
+      baseprice: productPlanResponse.data[0].baseprice,
       price: productPlanResponse.data[0].price,
       frequencyCode: productPlanResponse.data[0].frequency,
       agentId: productPlanResponse.data[0].agent_id,

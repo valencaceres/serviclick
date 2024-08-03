@@ -81,10 +81,8 @@ const Payment = () => {
   const handleClickCloseTerms = () => {
     setShowTerms(false);
   };
-  console.log(config.serviceUrl)
   const handleClickPay = () => {
     if (typeof service === 'string' && service === 'retail') {
-      console.log(config?.serviceUrl)
       if(config?.serviceUrl){
         router.push(config.serviceUrl)
       }
@@ -120,8 +118,6 @@ const Payment = () => {
       getServiceByLeadId(lead.id)
     }
   },[lead.id])  
-
-  console.log(service)
 
   useEffect(() => {
     setIsButtonEnabled(checkStatus);

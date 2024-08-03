@@ -4,6 +4,8 @@ import { productData, Assistance } from "@/components/data/product";
 import styles from "./DetailProduct.module.scss";
 import Slider from "@/components/ui/Slider/Slider";
 
+import config from "@/utils/config";
+
 import { useProduct } from "@/store/hooks";
 
 function formatDescription(assistance: Assistance) {
@@ -40,9 +42,10 @@ const DetailProduct = () => {
 };
 
   const {productList} = useProduct()
+
   return (
     <>
-      <div className={styles.detailProduct}>
+      <div className={styles.detailProduct} id="asistencias">
         {productList.map((product) => (
           <Card
             key={product.id}
@@ -55,9 +58,9 @@ const DetailProduct = () => {
             buttonText="¡Lo quiero!"
             buttonColor={getColorById(product.id, productData)}
             backgroundColor={getColorById(product.id, productData)}
+            buttonURLCard={`${config.products}${product.productplan_id}`}
             benefits={product.assistances.map((assistance) => ({
               title: assistance.name,
-/*               smallText: `${assistance.description.slice(0, 80)}...`, */
               description: formatDescription(assistance),
               iconSrc: "/img/cards/check.png",
             }))}
@@ -66,6 +69,7 @@ const DetailProduct = () => {
                 title: product.name,
                 paragraph: product.hiring_conditions,
                 buttonText: "Descargar PDF",
+                /* buttonURL: product.pdf_url, */
               },
             ]}
           />
@@ -84,6 +88,7 @@ const DetailProduct = () => {
               individualPlanText="Consulta por plan individual"
               buttonText="¡Lo quiero!"
               buttonColor={product.color}
+              buttonURLCard={product.buttonURL}
               backgroundColor={product.color}
               benefits={product.assistances.map((assistance) => ({
                 title: assistance.name,
@@ -96,6 +101,7 @@ const DetailProduct = () => {
                   title: "Salud Integral",
                   paragraph: product.hiring_conditions,
                   buttonText: "Descargar PDF",
+                  buttonURL: product.pdf_url,
                 },
               ]}
             />

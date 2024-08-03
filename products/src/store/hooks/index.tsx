@@ -7,6 +7,7 @@ import useInsured from "./useInsured";
 import useRelationship from "./useRelationship";
 import useBeneficiary from "./useBeneficiary";
 import useAgent from "./useAgent";
+import useBin from "./useBin"
 
 export {
   useUI,
@@ -18,4 +19,5 @@ export {
   useRelationship,
   useBeneficiary,
   useAgent,
+  useBin
 };

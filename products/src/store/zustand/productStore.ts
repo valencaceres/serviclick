@@ -13,6 +13,7 @@ interface productState {
   setIsError: (isError: boolean) => void;
   setError: (error: string) => void;
   setProduct: (product: IProduct) => void;
+  setNewProduct: (update: Partial<IProduct>) => void;
   getByPlanId: (productPlan_id: string) => void;
   reset: () => void;
   resetAll: () => void;
@@ -38,6 +39,7 @@ const initialData: IProduct = {
     productId: "",
     planId: 0,
     customerType: "",
+    baseprice: 0,
     price: 0,
     frequencyCode: "",
     agentId: "",
@@ -77,7 +79,12 @@ export const productStore = create<productState>((set, get) => ({
   setProduct: (product: IProduct) => {
     set((state) => ({ ...state, product }));
   },
-
+  setNewProduct: (update: any) => set((state) => ({
+    product: {
+      ...state.product,
+      ...update,
+    },
+  })),
   getByPlanId: async (productPlan_id: string) => {
     try {
       set((state) => ({

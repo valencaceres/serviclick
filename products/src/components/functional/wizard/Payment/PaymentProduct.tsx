@@ -1,9 +1,12 @@
 import { useMediaQuery } from "react-responsive";
 
+import { useState, useEffect } from "react";
+
 import { Col, Row } from "@/components/layout/Generic";
 
 import InfoText from "@/components/ui/InfoText";
 import Info from "@/components/ui/Info/Info";
+import Button from "@/components/ui/Button";
 
 import { formatAmount } from "@/utils/format";
 
@@ -11,14 +14,43 @@ import { calculateValidity } from "@/utils/functions";
 import { IProduct } from "@/interfaces/product";
 import { ILead } from "@/interfaces/lead";
 import InputText from "@/components/ui/Input-ui-box";
+
+import { brokerData } from "@/data/brokerData";
+import {config} from '@/utils/config'
+import { useBin, useProduct } from "@/store/hooks";
+
 interface IPaymentProduct {
   product: IProduct;
   lead: ILead;
 }
 
 const PaymentProduct = ({ product, lead }: IPaymentProduct) => {
-  const isDesktop = useMediaQuery({ minWidth: 1200 });
+  const [binNumber, setBinNumber] = useState('')
+  const {getById, bin, binIsLoading, binIsError} = useBin()
+  const {setNewProduct} = useProduct()
+  console.log(product.plan.agentId)
+  const handleBinNumberChange = (e: any) => {
+    setBinNumber(e.target.value);
+  };
+  const binIsNumber = parseInt(binNumber)
 
+  const handleClick = (number: number) => {
+    getById(number)
+    if(!bin.success){
+      console.log('Bin not exist')
+    }else{
+
+      setNewProduct({
+        plan: {
+          ...product.plan,
+          price: product.plan.price,
+        },
+      });
+    }
+  }
+
+  const isDesktop = useMediaQuery({ minWidth: 1200 });
+  
   const frequency = {
     M: "Mensual",
     A: "Anual",
@@ -59,13 +91,22 @@ const PaymentProduct = ({ product, lead }: IPaymentProduct) => {
         />
       </Row>
       <Row>
+          {config.serviceId === product.plan.agentId ? 
+          <InputText
+          label="Valor unitario ($)"
+          width="170px"
+          disabled
+          isCompleted={true}
+          value={formatAmount(product.plan.baseprice.toString(), "P")}
+        />  
+        : 
         <InputText
           label="Valor unitario ($)"
           width="170px"
           disabled
           isCompleted={true}
           value={formatAmount(product.plan.price.toString(), "P")}
-        />
+        />}
         <InputText
           label="Cantidad de beneficiarios"
           width="170px"
@@ -73,6 +114,45 @@ const PaymentProduct = ({ product, lead }: IPaymentProduct) => {
           isCompleted={true}
           value={(lead?.insured[0]?.beneficiaries?.length || 0).toString()}
         />
+        {config.serviceId === product.plan.agentId ?
+          <InputText
+  label="Valor a pagar ($)"
+  width="170px"
+  disabled
+  isCompleted={true}
+  value={formatAmount(
+    !isNaN(
+      config.serviceId === product.plan.agentId
+        ? (bin.success
+            ? (product?.plan?.price || 0) +
+              (lead?.insured[0]?.beneficiaries?.length || 0) *
+                (product?.plan?.beneficiary_price || 0)
+            : (product?.plan?.baseprice || 0) +
+              (lead?.insured[0]?.beneficiaries?.length || 0) *
+                (product?.plan?.beneficiary_price || 0))
+        : (product?.plan?.price || 0) +
+          (lead?.insured[0]?.beneficiaries?.length || 0) *
+            (product?.plan?.beneficiary_price || 0)
+    )
+      ? (
+          config.serviceId === product.plan.agentId
+            ? (bin.success
+                ? (product?.plan?.price || 0) +
+                  (lead?.insured[0]?.beneficiaries?.length || 0) *
+                    (product?.plan?.beneficiary_price || 0)
+                : (product?.plan?.baseprice || 0) +
+                  (lead?.insured[0]?.beneficiaries?.length || 0) *
+                    (product?.plan?.beneficiary_price || 0))
+            : (product?.plan?.price || 0) +
+              (lead?.insured[0]?.beneficiaries?.length || 0) *
+                (product?.plan?.beneficiary_price || 0)
+        ).toString()
+      : (product?.plan?.price || 0).toString(),
+    "P"
+  )}
+/>
+
+        : 
         <InputText
           label="Valor a pagar ($)"
           width="170px"
@@ -93,7 +173,16 @@ const PaymentProduct = ({ product, lead }: IPaymentProduct) => {
             "P"
           )}
         />
+        }
       </Row>
+      {config.serviceId === product.plan.agentId ? 
+      <Row>
+        <InputText label="Ingrese los 6 ultimos digitos de su tarjeta de credito" onChange={handleBinNumberChange} value={binNumber} width="410px"/>
+        <Button onClick={() => {handleClick(binIsNumber)}} text="Verificar"/>
+        {binIsError ? 'La verificacion fallo': null}
+      </Row>
+      :
+      null}
       {(product.plan.discount.type === String("t") ||
         product.plan.discount.type === String("p")) && (
         <Info

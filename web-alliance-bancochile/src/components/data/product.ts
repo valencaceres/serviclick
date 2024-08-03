@@ -1,3 +1,5 @@
+import { Url } from "next/dist/shared/lib/router/router";
+
 export interface Assistance {
   id: string;
   name: string;
@@ -19,6 +21,8 @@ export interface Product {
   beneficiary_price: number;
   color: string;
   hiring_conditions: string;
+  pdf_url: string;
+  buttonURL: string;
   assistances: Assistance[];
 }
 export const productData = [
@@ -31,8 +35,11 @@ export const productData = [
     discount: 30,
     beneficiary_price: 0,
     color: "#1161CB",
+    buttonURL:"/contractor?productPlanId=08ce5e35-2214-418a-b59c-f012524f09ad",
     hiring_conditions:
       "Verificar carencia de asistencia al descargar brochure. Restricción edad contratante es de los 18 años hasta 69 años 182 días.",
+    pdf_url:
+      "https://library.e.abb.com/public/6fcebe5a40171604c125710d002fa400/2CDC110038B0203.pdf",
     assistances: [
       {
         id: "A001",
@@ -101,8 +108,12 @@ export const productData = [
     discount: 30,
     color: "#B4CD1B",
     beneficiary_price: 0,
+    buttonURL:"/contractor?productPlanId=baa2d44d-0685-449e-ae27-c380561c7c18",
     hiring_conditions:
       "Verificar carencia de asistencia al descargar brochure. Nuestra Asistencia es exclusiva para perros y gatos. Las edades de ingreso son 0 años hasta los 9 años con 365 días, si se supera la edad con el contrato activo, no podrá seguir haciendo uso de los beneficios posterior a los 11 años con 182 días de edad. Somos de libre elección",
+    pdf_url:
+      "https://library.e.abb.com/public/6fcebe5a40171604c125710d002fa400/2CDC110038B0203.pdf",
+
     assistances: [
       {
         id: "B001",
@@ -197,8 +208,12 @@ export const productData = [
     discount: 30,
     color: "#E84155",
     beneficiary_price: 0,
+    buttonURL:"/contractor?productPlanId=de2af317-4920-469c-a706-482581596f5d",
     hiring_conditions:
       "Verificar carencia de asistencia al descargar brochure. Nuestra Asistencia es exclusiva con los profesionales que designamos para realizar las prestaciones del servicio.",
+    pdf_url:
+      "https://library.e.abb.com/public/6fcebe5a40171604c125710d002fa400/2CDC110038B0203.pdf",
+
     assistances: [
       {
         id: "C001",

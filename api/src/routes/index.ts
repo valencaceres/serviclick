@@ -40,6 +40,8 @@ import FieldRouter from "./field";
 import ProcedureRouter from "./procedure";
 import QualificationRouter from "./qualification";
 import WebRouter from "./web";
+import BinRouter from "./bin";
+
 export {
   SlugRouter,
   StatusRouter,
@@ -83,4 +85,5 @@ export {
   ProcedureRouter,
   QualificationRouter,
   WebRouter,
+  BinRouter
 };

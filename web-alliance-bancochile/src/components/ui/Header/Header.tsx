@@ -11,6 +11,21 @@ const Header: React.FC = () => {
     setIsOpen((prev) => !prev);
   };
 
+  const scrollToSection = (sectionId: string) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+        section.scrollIntoView({ behavior: "smooth" });
+    }
+};
+const handleLinkClick = (
+  sectionId: string,
+  event: React.MouseEvent<HTMLAnchorElement>
+) => {
+  event.preventDefault();
+  scrollToSection(sectionId);
+};
+
+
   return (
     <header className={styles.header}>
       <nav className={`${styles.nav} ${isOpen ? styles.open : ""}`}>
@@ -29,13 +44,13 @@ const Header: React.FC = () => {
 
         <ul className={styles.navList}>
           <li className={styles.navItem}>
-            <a href="#asistencias">Asistencias</a>
+            <a href="#asistencias"  onClick={(e) => handleLinkClick("asistencias", e)}>Asistencias</a>
           </li>
           <li className={styles.navItem}>
-            <a href="#ubicacion">Ubicación</a>
+            <a href="#ubicacion"  onClick={(e) => handleLinkClick("ubicacion", e)}>Ubicación</a>
           </li>
           <li className={styles.navItem}>
-            <a href="#contacto">Contacto</a>
+            <a href="#contacto"  onClick={(e) => handleLinkClick("contacto", e)}>Contacto</a>
           </li>
 
           {isOpen && (
