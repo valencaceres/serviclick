@@ -25,7 +25,7 @@ interface CardProps {
   discount?: string;
   individualPlanText: string;
   buttonText: string;
-  buttonURLCard: string;
+  buttonURLCard?: string;
   benefits: Benefit[];
   textCard: TextCard[];
   backgroundColor?: string;
