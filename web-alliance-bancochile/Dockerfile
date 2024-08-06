@@ -22,7 +22,7 @@ COPY --from=build /app ./
 
 # Exponer el puerto en el que se ejecuta la aplicación
 
-EXPOSE 3031
+EXPOSE 3026
 
 # Comando para iniciar la aplicación
 CMD ["yarn", "start"]
