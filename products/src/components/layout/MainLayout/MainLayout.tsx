@@ -5,7 +5,13 @@ import styles from "./MainLayout.module.scss";
 
 import Back from "@/components/functional/navigation/Back";
 
-import { useUI, useProduct, useLead, useBeneficiary, useBin } from "@/store/hooks";
+import {
+  useUI,
+  useProduct,
+  useLead,
+  useBeneficiary,
+  useBin,
+} from "@/store/hooks";
 
 import { currencyFormat } from "@/utils/format";
 import Badge from "@/components/ui/Badge/Badge";
@@ -13,8 +19,7 @@ import Head from "next/head";
 import Script from "next/script";
 import { useEffect, useState } from "react";
 
-import {config} from '@/utils/config'
-import { brokerData } from "@/data/brokerData";
+import { config } from "@/utils/config";
 
 interface Props {
   children: JSX.Element | JSX.Element[];
@@ -71,8 +76,8 @@ const HeaderServiClick = () => {
   const { ui } = useUI();
   const { product } = useProduct();
   const { lead } = useLead();
-  const {bin} = useBin()
-const {beneficiaryList} = useBeneficiary()
+  const { bin } = useBin();
+  const { beneficiaryList } = useBeneficiary();
   return (
     <div className={styles.screenHeader}>
       <div className={styles.left}>
@@ -83,39 +88,45 @@ const {beneficiaryList} = useBeneficiary()
       <div className={styles.right}>
         <h1>{ui.stage.name}</h1>
         {ui.stage.code !== "description" && (
-         <Badge>
-         {currencyFormat(
-           config.serviceId === product.plan.agentId
-             ? (bin.success
-                 ? (isNaN(
-                     product?.plan?.price +
-                       (beneficiaryList?.length || 0) * (product?.plan?.beneficiary_price ?? 0)
-                   )
-                   ? product?.plan?.price
-                   : Number(
-                       product?.plan?.price +
-                         (beneficiaryList?.length || 0) * (product?.plan?.beneficiary_price ?? 0)
-                     ))
-                 : (isNaN(
-                     product?.plan?.baseprice +
-                       (beneficiaryList?.length || 0) * (product?.plan?.beneficiary_price ?? 0)
-                   )
-                   ? product?.plan?.baseprice
-                   : Number(
-                       product?.plan?.baseprice +
-                         (beneficiaryList?.length || 0) * (product?.plan?.beneficiary_price ?? 0)
-                     )))
-             : (isNaN(
-                 product?.plan?.price +
-                   (beneficiaryList?.length || 0) * (product?.plan?.beneficiary_price ?? 0)
-               )
-               ? product?.plan?.price
-               : Number(
-                   product?.plan?.price +
-                     (beneficiaryList?.length || 0) * (product?.plan?.beneficiary_price ?? 0)
-                 ))
-         )}
-       </Badge>
+          <Badge>
+            {currencyFormat(
+              config.serviceId === product.plan.agentId
+                ? bin.bin > 0
+                  ? isNaN(
+                      product?.plan?.price +
+                        (beneficiaryList?.length || 0) *
+                          (product?.plan?.beneficiary_price ?? 0)
+                    )
+                    ? product?.plan?.price
+                    : Number(
+                        product?.plan?.price +
+                          (beneficiaryList?.length || 0) *
+                            (product?.plan?.beneficiary_price ?? 0)
+                      )
+                  : isNaN(
+                      product?.plan?.baseprice +
+                        (beneficiaryList?.length || 0) *
+                          (product?.plan?.beneficiary_price ?? 0)
+                    )
+                  ? product?.plan?.baseprice
+                  : Number(
+                      product?.plan?.baseprice +
+                        (beneficiaryList?.length || 0) *
+                          (product?.plan?.beneficiary_price ?? 0)
+                    )
+                : isNaN(
+                    product?.plan?.price +
+                      (beneficiaryList?.length || 0) *
+                        (product?.plan?.beneficiary_price ?? 0)
+                  )
+                ? product?.plan?.price
+                : Number(
+                    product?.plan?.price +
+                      (beneficiaryList?.length || 0) *
+                        (product?.plan?.beneficiary_price ?? 0)
+                  )
+            )}
+          </Badge>
         )}
       </div>
     </div>

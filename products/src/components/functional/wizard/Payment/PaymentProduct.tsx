@@ -15,9 +15,9 @@ import { IProduct } from "@/interfaces/product";
 import { ILead } from "@/interfaces/lead";
 import InputText from "@/components/ui/Input-ui-box";
 
-import { brokerData } from "@/data/brokerData";
-import {config} from '@/utils/config'
+import { config } from "@/utils/config";
 import { useBin, useProduct } from "@/store/hooks";
+import { Badge } from "lucide-react";
 
 interface IPaymentProduct {
   product: IProduct;
@@ -25,36 +25,26 @@ interface IPaymentProduct {
 }
 
 const PaymentProduct = ({ product, lead }: IPaymentProduct) => {
-  const [binNumber, setBinNumber] = useState('')
-  const {getById, bin, binIsLoading, binIsError} = useBin()
-  const {setNewProduct} = useProduct()
-  console.log(product.plan.agentId)
-  const handleBinNumberChange = (e: any) => {
-    setBinNumber(e.target.value);
-  };
-  const binIsNumber = parseInt(binNumber)
+  const [binNumber, setBinNumber] = useState("");
+  const { getById, bin, binIsLoading, binIsError } = useBin();
+  const { setNewProduct } = useProduct();
 
-  const handleClick = (number: number) => {
-    getById(number)
-    if(!bin.success){
-      console.log('Bin not exist')
-    }else{
-
-      setNewProduct({
-        plan: {
-          ...product.plan,
-          price: product.plan.price,
-        },
-      });
-    }
-  }
+  const binIsNumber = parseInt(binNumber);
 
   const isDesktop = useMediaQuery({ minWidth: 1200 });
-  
+
   const frequency = {
     M: "Mensual",
     A: "Anual",
     S: "Semanal",
+  };
+
+  const handleBinNumberChange = (e: any) => {
+    setBinNumber(e.target.value);
+  };
+
+  const handleClick = (number: number) => {
+    getById(number);
   };
 
   const infoDate = (date: string | undefined) => {
@@ -64,6 +54,17 @@ const PaymentProduct = ({ product, lead }: IPaymentProduct) => {
     }
     return "";
   };
+
+  useEffect(() => {
+    if (bin.bin > 0) {
+      setNewProduct({
+        plan: {
+          ...product.plan,
+          price: product.plan.price,
+        },
+      });
+    }
+  }, [bin]);
 
   return lead && lead.insured && lead.insured.length > 0 && isDesktop ? (
     <Col width="712px" align="center">
@@ -91,22 +92,23 @@ const PaymentProduct = ({ product, lead }: IPaymentProduct) => {
         />
       </Row>
       <Row>
-          {config.serviceId === product.plan.agentId ? 
+        {config.serviceId === product.plan.agentId ? (
           <InputText
-          label="Valor unitario ($)"
-          width="170px"
-          disabled
-          isCompleted={true}
-          value={formatAmount(product.plan.baseprice.toString(), "P")}
-        />  
-        : 
-        <InputText
-          label="Valor unitario ($)"
-          width="170px"
-          disabled
-          isCompleted={true}
-          value={formatAmount(product.plan.price.toString(), "P")}
-        />}
+            label="Valor unitario ($)"
+            width="170px"
+            disabled
+            isCompleted={true}
+            value={formatAmount(product.plan.baseprice.toString(), "P")}
+          />
+        ) : (
+          <InputText
+            label="Valor unitario ($)"
+            width="170px"
+            disabled
+            isCompleted={true}
+            value={formatAmount(product.plan.price.toString(), "P")}
+          />
+        )}
         <InputText
           label="Cantidad de beneficiarios"
           width="170px"
@@ -114,75 +116,100 @@ const PaymentProduct = ({ product, lead }: IPaymentProduct) => {
           isCompleted={true}
           value={(lead?.insured[0]?.beneficiaries?.length || 0).toString()}
         />
-        {config.serviceId === product.plan.agentId ?
+        {config.serviceId === product.plan.agentId ? (
           <InputText
-  label="Valor a pagar ($)"
-  width="170px"
-  disabled
-  isCompleted={true}
-  value={formatAmount(
-    !isNaN(
-      config.serviceId === product.plan.agentId
-        ? (bin.success
-            ? (product?.plan?.price || 0) +
-              (lead?.insured[0]?.beneficiaries?.length || 0) *
-                (product?.plan?.beneficiary_price || 0)
-            : (product?.plan?.baseprice || 0) +
-              (lead?.insured[0]?.beneficiaries?.length || 0) *
-                (product?.plan?.beneficiary_price || 0))
-        : (product?.plan?.price || 0) +
-          (lead?.insured[0]?.beneficiaries?.length || 0) *
-            (product?.plan?.beneficiary_price || 0)
-    )
-      ? (
-          config.serviceId === product.plan.agentId
-            ? (bin.success
-                ? (product?.plan?.price || 0) +
+            label="Valor a pagar ($)"
+            width="170px"
+            disabled
+            isCompleted={true}
+            value={formatAmount(
+              !isNaN(
+                config.serviceId === product.plan.agentId
+                  ? bin.bin > 0
+                    ? (product?.plan?.price || 0) +
+                      (lead?.insured[0]?.beneficiaries?.length || 0) *
+                        (product?.plan?.beneficiary_price || 0)
+                    : (product?.plan?.baseprice || 0) +
+                      (lead?.insured[0]?.beneficiaries?.length || 0) *
+                        (product?.plan?.beneficiary_price || 0)
+                  : (product?.plan?.price || 0) +
+                      (lead?.insured[0]?.beneficiaries?.length || 0) *
+                        (product?.plan?.beneficiary_price || 0)
+              )
+                ? (config.serviceId === product.plan.agentId
+                    ? bin.bin > 0
+                      ? (product?.plan?.price || 0) +
+                        (lead?.insured[0]?.beneficiaries?.length || 0) *
+                          (product?.plan?.beneficiary_price || 0)
+                      : (product?.plan?.baseprice || 0) +
+                        (lead?.insured[0]?.beneficiaries?.length || 0) *
+                          (product?.plan?.beneficiary_price || 0)
+                    : (product?.plan?.price || 0) +
+                      (lead?.insured[0]?.beneficiaries?.length || 0) *
+                        (product?.plan?.beneficiary_price || 0)
+                  ).toString()
+                : (product?.plan?.price || 0).toString(),
+              "P"
+            )}
+          />
+        ) : (
+          <InputText
+            label="Valor a pagar ($)"
+            width="170px"
+            disabled
+            isCompleted={true}
+            value={formatAmount(
+              !isNaN(
+                (product?.plan?.price || 0) +
                   (lead?.insured[0]?.beneficiaries?.length || 0) *
                     (product?.plan?.beneficiary_price || 0)
-                : (product?.plan?.baseprice || 0) +
-                  (lead?.insured[0]?.beneficiaries?.length || 0) *
-                    (product?.plan?.beneficiary_price || 0))
-            : (product?.plan?.price || 0) +
-              (lead?.insured[0]?.beneficiaries?.length || 0) *
-                (product?.plan?.beneficiary_price || 0)
-        ).toString()
-      : (product?.plan?.price || 0).toString(),
-    "P"
-  )}
-/>
-
-        : 
-        <InputText
-          label="Valor a pagar ($)"
-          width="170px"
-          disabled
-          isCompleted={true}
-          value={formatAmount(
-            !isNaN(
-              (product?.plan?.price || 0) +
-                (lead?.insured[0]?.beneficiaries?.length || 0) *
-                  (product?.plan?.beneficiary_price || 0)
-            )
-              ? (
-                  (product?.plan?.price || 0) +
-                  (lead?.insured[0]?.beneficiaries?.length || 0) *
-                    (product?.plan?.beneficiary_price || 0)
-                ).toString()
-              : (product?.plan?.price || 0).toString(),
-            "P"
+              )
+                ? (
+                    (product?.plan?.price || 0) +
+                    (lead?.insured[0]?.beneficiaries?.length || 0) *
+                      (product?.plan?.beneficiary_price || 0)
+                  ).toString()
+                : (product?.plan?.price || 0).toString(),
+              "P"
+            )}
+          />
+        )}
+      </Row>
+      {config.serviceId === product.plan.agentId ? (
+        <Row>
+          <InputText
+            label="Ingrese los 6 ultimos digitos de su tarjeta"
+            onChange={handleBinNumberChange}
+            value={binNumber}
+            width="315px"
+            disabled={bin.bin > 0}
+          />
+          {bin.bin === 0 ? (
+            <Button
+              onClick={() => {
+                handleClick(binIsNumber);
+              }}
+              text="Verificar"
+              width="200px"
+            />
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "40px",
+                backgroundColor: "green",
+                color: "white",
+                width: "200px",
+                borderRadius: "20px",
+              }}>
+              Descuento aplicado
+            </div>
           )}
-        />
-        }
-      </Row>
-      {config.serviceId === product.plan.agentId ? 
-      <Row>
-        <InputText label="Ingrese los 6 ultimos digitos de su tarjeta de credito" onChange={handleBinNumberChange} value={binNumber} width="410px"/>
-        <Button onClick={() => {handleClick(binIsNumber)}} text="Verificar"/>
-        {binIsError ? 'La verificacion fallo': null}
-      </Row>
-      :
-      null}
+          {binIsError ? "La verificacion fallo" : null}
+        </Row>
+      ) : null}
       {(product.plan.discount.type === String("t") ||
         product.plan.discount.type === String("p")) && (
         <Info
