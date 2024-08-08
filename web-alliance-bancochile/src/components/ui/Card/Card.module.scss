@@ -255,3 +255,36 @@
     }
   }
 }
+
+.container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	gap: 20px;
+	padding: 30px;
+}
+
+.textwithicon {
+	display: inline-block;
+	padding-left: 10px;
+}
+
+.firstword {
+	display: inline-flex;
+	align-items: center;
+	position: relative;
+}
+
+.firstword::before {
+	position: absolute;
+	left: -30px;
+	top: -15px;
+	content: url("https://bancochile.serviclick.cl/img/cards/check.png");
+	display: inline-block;
+	margin-left: 10px; /* Espacio de 10px a la derecha de la primera palabra */
+  margin-right: 5px;
+	height: 10px; /* Asegura que la imagen tenga la altura adecuada */
+	width: 20px; /* Asegura que la imagen tenga el ancho adecuado */
+}

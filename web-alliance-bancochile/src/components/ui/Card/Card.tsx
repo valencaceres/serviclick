@@ -90,13 +90,11 @@ const Card: React.FC<CardProps> = ({
           <ul>
             {benefits.map((benefit, index) => (
               <li key={index} className={styles.benefitItem}>
-                <div className={styles.title}>
-                  <img
-                    className={styles.benefitIcon}
-                    src={benefit.iconSrc}
-                    alt="icon"
-                  />
-                  <h4>{benefit.title}</h4>
+                <div className={styles.container}>
+                  <div className={styles.textwithicon}>
+                    <span className={styles.firstword}></span>
+                    &nbsp;{benefit.title}
+                  </div>
                 </div>
                 <span>{benefit.smallText}</span>
                 <p>{benefit.description}</p>
