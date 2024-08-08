@@ -25,7 +25,7 @@ import isAdmin from "../middlewares/isAdmin";
 import authMiddleware from "../middlewares/isAdminWithoutClerk";
  const BrokerRouter = Router();
 
-BrokerRouter.post("/create", auth, isAuthenticated, isAdmin, create);
+BrokerRouter.post("/create", auth, create);
 BrokerRouter.post("/addProduct", auth, addProduct);
 BrokerRouter.post("/removeProduct", auth, isAuthenticated, removeProduct);
 BrokerRouter.get("/getAll", auth, getAll);

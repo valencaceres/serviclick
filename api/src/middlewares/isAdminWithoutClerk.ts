@@ -6,7 +6,6 @@ interface CustomRequest extends Request {
 }
 
 const authMiddleware = (req: CustomRequest, res: Response, next: NextFunction) => {
-  console.log(req.headers);
 
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) {
