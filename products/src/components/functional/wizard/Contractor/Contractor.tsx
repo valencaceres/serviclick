@@ -15,9 +15,17 @@ import Loading from "@/components/ui/Loading";
 import Tooltip from "@/components/ui/Tooltip";
 import { currencyFormat } from "@/utils/format";
 
-import { useUI, useContractor, useProduct, useLead } from "@/store/hooks";
+import {
+  useUI,
+  useContractor,
+  useProduct,
+  useLead,
+  useBin,
+} from "@/store/hooks";
 
 import { IFieldFormCustomerType, IFieldFormString } from "@/interfaces/form";
+
+import { config } from "@/utils/config";
 
 interface ICustomerForm {
   customerType: IFieldFormCustomerType;
@@ -38,6 +46,7 @@ const Contractor = () => {
   const router = useRouter();
 
   const { ui } = useUI();
+  const { bin } = useBin();
   const { getContractorByRut, contractor } = useContractor();
   const { product } = useProduct();
   const { createLead, setLead, lead, leadIsLoading } = useLead();
@@ -131,7 +140,9 @@ const Contractor = () => {
         Estás contratando el Servicio&nbsp;<b>{product.name}</b>, el cual tiene
         un valor exclusivo de&nbsp;
         <b>
-          {currencyFormat(product.plan.price)}{" "}
+          {config.serviceId === product.plan.agentId
+            ? currencyFormat(product.plan.baseprice)
+            : currencyFormat(product.plan.price)}{" "}
           {product.frequency === "M"
             ? "mensual"
             : product.frequency === "A"

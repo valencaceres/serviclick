@@ -1,4 +1,6 @@
-import React from "react";
+'use client'
+
+import React, {useEffect} from "react";
 import styles from "./Landing.module.scss";
 
 import Holding from "@/components/ui/Holding";
@@ -15,7 +17,16 @@ import DetailProduct from "../Detail/DetailProduct";
 import { stepData } from "@/components/data/step";
 import FloatingButtons from "@/components/ui/FloatingButtons";
 
+import { useProduct } from "@/store/hooks";
+
 const Landing = () => {
+
+  const {getProductList} = useProduct()
+
+  useEffect(() => {
+    getProductList()
+  },[])
+
   return (
     <div className={styles.landing}>
       <Layout>

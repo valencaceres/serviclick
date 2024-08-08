@@ -465,6 +465,51 @@ const getAssistancesByBrokerIdAndProductId = async (
   }
 };
 
+const getProductAndAssistancesByBrokerId = async (broker_id: string) => {
+  try {
+    const response = await pool.query(`
+  select	pro.id,
+          pl.id as "productplan_id",
+          pro."name" ,
+          pd.description,
+          pl.price,
+          pl.baseprice,
+          pl.discount_percent ,
+          pl.beneficiary_price, 
+          pd.hiring_conditions,
+		    (
+	        SELECT json_agg(
+	            json_build_object(
+	                'id', pa.id,
+	                'name', asi.name,
+	                'description', asi.description,
+	                'amount', pa.amount,
+	                'currency', pa.currency,
+	                'maximun', pa.maximum,
+	                'events', pa.events,
+	                'lack', pa.lack
+		            )
+		        )
+		        FROM app.productassistance pa
+		        	inner join app.assistance asi on pa.assistance_id = asi.id
+		        WHERE pa.product_id = pro.id
+		    ) AS assistances
+	from app.brokerproduct bp
+		inner join app.product pro on bp.product_id = pro.id 
+		inner join app.productdescription pd on pro.id = pd.product_id 
+		inner join app.productplan pl on pro.id = pl.product_id 
+	where bp.broker_id = $1`, [broker_id])
+
+      return {
+        success: true,
+        data: response.rows,
+        error: null
+      }
+  } catch (e:any) {
+   return {success: false, data: null, error: e.response.data || e.message}
+  }
+}
+
 export {
   create,
   getById,
@@ -479,4 +524,5 @@ export {
   getProductsById,
   getCollectionById,
   getAssistancesByBrokerIdAndProductId,
+  getProductAndAssistancesByBrokerId
 };

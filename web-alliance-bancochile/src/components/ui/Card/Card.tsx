@@ -14,7 +14,7 @@ interface TextCard {
   title: string;
   paragraph: string;
   buttonText: string;
-  buttonURL: string;
+  buttonURL?: string;
 }
 
 interface CardProps {
@@ -22,14 +22,14 @@ interface CardProps {
   planName: string;
   currentPrice: number;
   originalPrice: number;
-  discount: string;
+  discount?: string;
   individualPlanText: string;
   buttonText: string;
-  buttonURLCard: string;
+  buttonURLCard?: string;
   benefits: Benefit[];
   textCard: TextCard[];
-  backgroundColor: string;
-  buttonColor: string;
+  backgroundColor?: string;
+  buttonColor?: string;
 }
 
 const Card: React.FC<CardProps> = ({

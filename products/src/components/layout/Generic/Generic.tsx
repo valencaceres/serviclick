@@ -25,9 +25,12 @@ const Row = ({
   align = "flex-start",
   gap = "5px",
   width = "auto",
+  alignItems = "center",
 }: any) => {
   return (
-    <div className={styles.row} style={{ justifyContent: align, gap, width }}>
+    <div
+      className={styles.row}
+      style={{ justifyContent: align, gap, width, alignItems }}>
       {children}
     </div>
   );
