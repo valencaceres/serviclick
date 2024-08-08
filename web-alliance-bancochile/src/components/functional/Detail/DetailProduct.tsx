@@ -64,7 +64,7 @@ const DetailProduct = () => {
               planName={product.name}
               currentPrice={product.price}
               originalPrice={product.baseprice}
-              discount={`${product.discount_percent}%`}
+              discount={`30%`}
               individualPlanText="Consulta por plan individual"
               buttonText="¡Lo quiero!"
               buttonColor={buttonColor}
