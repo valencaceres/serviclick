@@ -24,6 +24,7 @@ const initialStateProduct: IProduct = {
   discount_percent: 0,
   beneficiary_price: 0,
   hiring_conditions: '',
+  base64: '',
   assistances: []
 };
 

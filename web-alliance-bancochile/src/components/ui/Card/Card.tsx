@@ -15,6 +15,7 @@ interface TextCard {
   paragraph: string;
   buttonText: string;
   buttonURL?: string;
+  generatePdf?: () => void;
 }
 
 interface CardProps {
@@ -125,14 +126,12 @@ const Card: React.FC<CardProps> = ({
             >
               {expandedIndex === index ? "Ver menos." : "Ver más."}
             </button>
-            <a
-              href={item.buttonURL}
+            <button
+              onClick={item.generatePdf}
               className={styles.buttonPdf}
-              target="_blank"
-              download
             >
               Descargar PDF
-            </a>
+            </button>
           </div>
         </div>
       ))}
