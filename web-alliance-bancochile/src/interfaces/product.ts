@@ -8,6 +8,7 @@ export interface IProduct {
   discount_percent: number,
   beneficiary_price: number,
   hiring_conditions: string,
+  base64: string,
   assistances: IAssistance[]
 }
 

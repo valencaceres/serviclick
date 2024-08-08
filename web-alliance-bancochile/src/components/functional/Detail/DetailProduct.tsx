@@ -33,6 +33,10 @@ function formatDescription(assistance: Assistance) {
   }else {
     description += `, ${events} eventos en el año`;
   }
+
+  if(events === 0){
+    description = 'Ilimitado'
+  }
   return description;
 }
 
@@ -50,12 +54,31 @@ const DetailProduct = () => {
     return colors[colorKey];
   };
 
+  const handleDownload = async (base64: string, name: string) => {
+    if(base64){
+      const byteCharacters = atob(base64);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: 'application/pdf' });
+    
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `${name}.pdf`; 
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }
+
   return (
     <>
       <div className={styles.detailProduct} id="asistencias">
         {productList.map((product, index) => {
           const buttonColor = getColorByIndex(index, data);
-          const backgroundColor = getColorByIndex(index, data); // Ajusta si es necesario
+          const backgroundColor = getColorByIndex(index, data); 
           
           return (
             <Card
@@ -64,8 +87,8 @@ const DetailProduct = () => {
               planName={product.name}
               currentPrice={product.price}
               originalPrice={product.baseprice}
-              discount={`${product.discount_percent}%`}
-              individualPlanText="Consulta por plan individual"
+              discount={`30%`}
+              individualPlanText={product.id === '3fcc493c-e3fd-4a06-b78b-982f3c1a632e' ? "Consulta por plan individual" : " "}
               buttonText="¡Lo quiero!"
               buttonColor={buttonColor}
               backgroundColor={backgroundColor}
@@ -80,6 +103,7 @@ const DetailProduct = () => {
                   title: product.name,
                   paragraph: product.hiring_conditions,
                   buttonText: "Descargar PDF",
+                  generatePdf: () => {handleDownload(product.base64, product.name)}
                 },
               ]}
             />
@@ -117,6 +141,7 @@ const DetailProduct = () => {
                     paragraph: product.hiring_conditions,
                     buttonText: "Descargar PDF",
 /*                     buttonURL: product.pdf_url, */
+                    generatePdf: () => {handleDownload(product.productplan_id, product.name)}
                   },
                 ]}
               />
