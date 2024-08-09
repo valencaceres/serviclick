@@ -36,6 +36,7 @@ export const allowedOrigins = [
   "http://localhost:3008",
   "http://localhost:3009",
   "http://localhost:3010",
+  "http://localhost:3011",
   "http://localhost:3012",
   "http://localhost:3024",
   "http://localhost:3025",
