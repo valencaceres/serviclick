@@ -57,8 +57,7 @@ const Card: React.FC<CardProps> = ({
     <div className={styles.card}>
       <div
         className={styles.borderTop}
-        style={{ backgroundColor: backgroundColor }}
-      ></div>
+        style={{ backgroundColor: backgroundColor }}></div>
       <img className={styles.image} src={imageSrc} alt={planName} />
       <h2 className={styles.planName}>{planName}</h2>
       <div className={styles.pricing}>
@@ -70,13 +69,12 @@ const Card: React.FC<CardProps> = ({
       <span className={styles.originalPrice}>{`$${formatCurrency(
         originalPrice
       )}`}</span>
-      <p className={styles.individualPlanText}>{individualPlanText}</p>
+      <p className={styles.individualPlanText}>{individualPlanText}&nbsp;</p>
       <div className={styles.content}>
         <a href={buttonURLCard} target="_blank" rel="noopener noreferrer">
           <button
             className={styles.button}
-            style={{ backgroundColor: buttonColor }}
-          >
+            style={{ backgroundColor: buttonColor }}>
             {buttonText}
             <img
               className={styles.buttonImage}
@@ -107,27 +105,21 @@ const Card: React.FC<CardProps> = ({
         <div key={index} className={styles.textCard}>
           <div
             className={styles.borderTop}
-            style={{ backgroundColor: backgroundColor }}
-          ></div>
+            style={{ backgroundColor: backgroundColor }}></div>
           <h2>{item.title}</h2>
           <div className={styles.textContent}>
             <p
               className={`${styles.text} ${
                 expandedIndex === index ? styles.expanded : ""
-              }`}
-            >
+              }`}>
               {item.paragraph}
             </p>
             <button
               className={styles.toggleButton}
-              onClick={() => toggleExpand(index)}
-            >
+              onClick={() => toggleExpand(index)}>
               {expandedIndex === index ? "Ver menos." : "Ver más."}
             </button>
-            <button
-              onClick={item.generatePdf}
-              className={styles.buttonPdf}
-            >
+            <button onClick={item.generatePdf} className={styles.buttonPdf}>
               Descargar PDF
             </button>
           </div>

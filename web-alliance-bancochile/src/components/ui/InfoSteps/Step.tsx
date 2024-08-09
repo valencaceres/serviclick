@@ -38,10 +38,8 @@ const Step: React.FC<StepProps> = ({
     <div
       className={`${styles.stepContainer} ${
         reverseOrder ? styles.reverseOrder : ""
-      }`}
-    >
+      }`}>
       {showLineVer && <div className={styles.lineVer}></div>}
-
       <div className={styles.icon} style={{ backgroundColor: iconColor }}>
         {number}
       </div>

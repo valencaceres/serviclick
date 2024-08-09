@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import styles from "./Landing.module.scss";
 
 import Holding from "@/components/ui/Holding";
@@ -20,12 +20,11 @@ import FloatingButtons from "@/components/ui/FloatingButtons";
 import { useProduct } from "@/store/hooks";
 
 const Landing = () => {
-
-  const {getProductList} = useProduct()
+  const { getProductList } = useProduct();
 
   useEffect(() => {
-    getProductList()
-  },[])
+    getProductList();
+  }, []);
 
   return (
     <div className={styles.landing}>
@@ -48,7 +47,6 @@ const Landing = () => {
           className={styles.customTitle}
         />
         <DetailProduct />
-
         <Title
           title="¿Cómo funciona mi Asistencia?"
           boldWords={["¿Cómo funciona mi Asistencia?"]}
@@ -73,8 +71,7 @@ const Landing = () => {
         img="/img/floating/wsp.png"
         img2="/img/floating/phone.png"
         href1="https://api.whatsapp.com/send/?phone=56939325099&text&type=phone_number&app_absent=0"
-        href2="tel:6000860580"
-      ></FloatingButtons>
+        href2="tel:6000860580"></FloatingButtons>
     </div>
   );
 };
