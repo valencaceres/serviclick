@@ -11,7 +11,7 @@ const Footer = () => {
             <div className={styles.data}>
               <Icon iconName="location_on"></Icon>
               <a href="https://goo.gl/maps/YLyrpsccKryUEqfs5">
-                ENRIQUE MAC IVER 440 OFICINA 702
+                Huérfanos 669, piso 7
               </a>
             </div>
             <div className={styles.data}>
@@ -110,7 +110,7 @@ const Footer = () => {
         </div>
       </div>
       <div className={styles.bottom}>
-        Serviclick 2023 - Todos los derechos reservados
+        Serviclick 2024 - Todos los derechos reservados
       </div>
     </div>
   );

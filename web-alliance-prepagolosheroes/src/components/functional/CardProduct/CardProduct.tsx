@@ -15,7 +15,7 @@ const CardProduct = ({ product, onClick }: any) => {
         <div className={style.left}>
           <Image
             src={`/images/products/thumbs/${product.product_id}.jpg`}
-            alt={product.id}
+            alt={`producto-${product.id}`}
             width={300}
             height={247}
           />
