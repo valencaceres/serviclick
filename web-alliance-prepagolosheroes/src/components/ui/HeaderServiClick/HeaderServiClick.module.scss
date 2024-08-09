@@ -1,0 +1,69 @@
+@import "../../../styles/variables.scss";
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 70px;
+  width: 100%;
+  border-bottom: 1px solid $ultra-light-gray-color;
+  z-index: 10;
+
+  .left {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    background-color: $white-color;
+    height: 100%;
+    width: 100%;
+    padding-left: 10px;
+    background-image: url(/images/logos/serviclick_mobile.jpg);
+    background-position: 10px;
+    background-repeat: no-repeat;
+    padding-right: 20px;
+
+    p {
+      display: block;
+
+      @media screen and (min-width: 1200px) {
+        display: none;
+      }
+    }
+  }
+
+  .right {
+    display: none;
+  }
+
+  @media screen and (min-width: 1200px) {
+    .left {
+      width: 50%;
+      background-image: url(/images/logos/serviclick.jpg);
+      background-position: 10px;
+      background-repeat: no-repeat;
+
+      button {
+        display: none;
+      }
+    }
+
+    .right {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: $green-color;
+      height: 100%;
+      width: 50%;
+      padding: 0 20px;
+
+      h1 {
+        color: white;
+        font-size: 22px;
+        font-weight: 600;
+      }
+    }
+  }
+}

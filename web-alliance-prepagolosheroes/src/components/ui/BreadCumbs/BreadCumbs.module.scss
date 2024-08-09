@@ -1,0 +1,80 @@
+.breadCumbs {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  //   width: 100%;
+  left: 30px;
+
+  .separator {
+    border-right: 3px solid #cccccc;
+    height: 12px;
+    width: 17px;
+  }
+
+  .item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border-radius: 15px;
+    width: 100%;
+    padding-right: 15px;
+
+    .number {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 15px;
+    }
+
+    .text {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    &.enabled {
+      cursor: pointer;
+
+      .number {
+        color: white;
+        background-color: #15495d;
+      }
+
+      .text {
+        color: #666666;
+        background-color: white;
+      }
+    }
+
+    &.current {
+      background-color: #15495d90;
+
+      .number {
+        color: white;
+        background-color: #15495d;
+      }
+
+      .text {
+        color: white;
+        background-color: transparent;
+      }
+    }
+
+    &.disabled {
+      background-color: white;
+
+      .number {
+        color: #959595;
+        background-color: #d9d9d9;
+      }
+
+      .text {
+        background-color: white;
+        color: #959595;
+      }
+    }
+  }
+}

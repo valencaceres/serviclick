@@ -1,0 +1,13 @@
+.cardSection {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding-bottom: 15px;
+  gap: 15px;
+
+  @media screen and (min-width: 1200px) {
+    gap: 50px;
+    max-width: 1200px;
+    padding-bottom: 50px;
+  }
+}
