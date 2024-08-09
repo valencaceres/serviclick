@@ -1,5 +1,5 @@
 export const data = {
-  color2: "#1161CB",
- color1:"#B4CD1B",
- color3: "#E84155"
-}
+  color1: "#1161CB",
+  color2: "#B4CD1B",
+  color3: "#E84155",
+};
