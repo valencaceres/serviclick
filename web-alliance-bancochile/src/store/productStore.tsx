@@ -11,21 +11,22 @@ interface ProductState {
   isLoading: boolean;
   isError: boolean;
   getProductList: () => void;
+  setProductList: (data: IProduct[]) => void;
   getAssistancesByBrokerIdAndProductId: (product_id: string) => void;
 }
 
 const initialStateProduct: IProduct = {
-  id: '',
-  productplan_id: '',
-  name: '',
-  description: '',
+  id: "",
+  productplan_id: "",
+  name: "",
+  description: "",
   price: 0,
   baseprice: 0,
   discount_percent: 0,
   beneficiary_price: 0,
-  hiring_conditions: '',
-  base64: '',
-  assistances: []
+  hiring_conditions: "",
+  base64: "",
+  assistances: [],
 };
 
 const initialDataProductDetail: IProductDetail = {
@@ -69,7 +70,6 @@ export const productProduct = create<ProductState>((set) => ({
       const { data } = await apiInstance.get(
         `/broker/getProductsAndAssistancesByBrokerId/${config.service}`
       );
-      console.log(data)
       set((state) => ({
         ...state,
         productList: data,
@@ -83,6 +83,15 @@ export const productProduct = create<ProductState>((set) => ({
         isError: true,
       }));
     }
+  },
+
+  setProductList: (data: IProduct[]) => {
+    set((state) => ({
+      ...state,
+      productList: data,
+      isLoading: false,
+      isError: false,
+    }));
   },
 
   getAssistancesByBrokerIdAndProductId: async (product_id: string) => {

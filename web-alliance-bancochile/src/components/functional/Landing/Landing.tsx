@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
+
 import styles from "./Landing.module.scss";
 
 import Holding from "@/components/ui/Holding";
@@ -19,11 +20,11 @@ import FloatingButtons from "@/components/ui/FloatingButtons";
 
 import { useProduct } from "@/store/hooks";
 
-const Landing = () => {
-  const { getProductList } = useProduct();
+const Landing = ({ initialData }: any) => {
+  const { setProductList } = useProduct();
 
   useEffect(() => {
-    getProductList();
+    setProductList(initialData);
   }, []);
 
   return (
@@ -37,7 +38,6 @@ const Landing = () => {
           textAlign="center"
           className={styles.customTitle}
         />
-
         <Title
           title="¡Elige tu beneficio!"
           boldWords={["¡Elige tu beneficio!"]}
