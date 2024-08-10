@@ -13,8 +13,11 @@ const useProduct = () => {
     isError: state.isError,
   }));
 
-  const { getProductList, getAssistancesByBrokerIdAndProductId } =
-    productProduct();
+  const {
+    getProductList,
+    setProductList,
+    getAssistancesByBrokerIdAndProductId,
+  } = productProduct();
 
   return {
     product,
@@ -22,6 +25,7 @@ const useProduct = () => {
     isLoading,
     isError,
     getProductList,
+    setProductList,
     getAssistancesByBrokerIdAndProductId,
   };
 };
