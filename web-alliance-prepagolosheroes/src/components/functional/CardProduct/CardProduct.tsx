@@ -9,32 +9,34 @@ import { currencyFormat } from "../../../utils/format";
 
 import freeMonth from "./images/free-month.png";
 
-import img0e0566e816f6489888cccf98c6b37bed from "./images/thumbs/0f1827b5-a1f6-4b75-8392-171f83870ebe.jpg";
+import img0e0566e816f6489888cccf98c6b37bed from "./images/thumbs/0e0566e8-16f6-4898-88cc-cf98c6b37bed.jpg";
+import img0f1827b5a1f64b758392171f83870ebe from "./images/thumbs/0f1827b5-a1f6-4b75-8392-171f83870ebe.jpg";
+import img8ec49ad42d6447cf949e18e05155221e from "./images/thumbs/8ec49ad4-2d64-47cf-949e-18e05155221e.jpg";
 import img3239e6c902174bd595ad7a0bc3fe07e6 from "./images/thumbs/3239e6c9-0217-4bd5-95ad-7a0bc3fe07e6.jpg";
 import img8370162d68fb417b8630180331832d26 from "./images/thumbs/8370162d-68fb-417b-8630-180331832d26.jpg";
-import img89f393326f154eeab6cd330aad768d7b from "./images/thumbs/89f39332-6f15-4eea-b6cd-330aad768d7b.jpg";
-import img8ec49ad42d6447cf949e18e05155221e from "./images/thumbs/8ec49ad4-2d64-47cf-949e-18e05155221e.jpg";
 import imgca51624eb2d84b30a2d48eade94d47c3 from "./images/thumbs/ca51624e-b2d8-4b30-a2d4-8eade94d47c3.jpg";
 
 const jsonImage: { [key: string]: any } = {
-  "0f1827b5-a1f6-4b75-8392-171f83870ebe": img0e0566e816f6489888cccf98c6b37bed,
+  "0e0566e8-16f6-4898-88cc-cf98c6b37bed": img0e0566e816f6489888cccf98c6b37bed,
+  "0f1827b5-a1f6-4b75-8392-171f83870ebe": img0f1827b5a1f64b758392171f83870ebe,
+  "8ec49ad4-2d64-47cf-949e-18e05155221e": img8ec49ad42d6447cf949e18e05155221e,
   "3239e6c9-0217-4bd5-95ad-7a0bc3fe07e6": img3239e6c902174bd595ad7a0bc3fe07e6,
   "8370162d-68fb-417b-8630-180331832d26": img8370162d68fb417b8630180331832d26,
-  "89f39332-6f15-4eea-b6cd-330aad768d7b": img89f393326f154eeab6cd330aad768d7b,
-  "8ec49ad4-2d64-47cf-949e-18e05155221e": img8ec49ad42d6447cf949e18e05155221e,
   "ca51624e-b2d8-4b30-a2d4-8eade94d47c3": imgca51624eb2d84b30a2d48eade94d47c3,
 };
 
 const CardProduct = ({ product, onClick }: any) => {
-  const img = jsonImage[product.id];
+  const img = jsonImage[product.product_id];
+
+  console.log(product);
 
   return (
     <Card>
       <div className={style.cardContain}>
         <div className={style.left}>
           <Image
-            src={img.src}
-            alt={`producto-${product.id}`}
+            src={img}
+            alt={`producto-${product.product_id}`}
             width={300}
             height={247}
           />
