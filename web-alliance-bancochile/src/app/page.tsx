@@ -2,11 +2,22 @@ import { use } from "react";
 
 import Landing from "@/components/functional/Landing";
 
-import { getProductList } from "@/store/services/product.service";
+import config from "../utils/config";
 
 async function getData() {
-  const data = await getProductList();
-  return data;
+  const res = await fetch(
+    `${config.server}/api/broker/getProductsAndAssistancesByBrokerId/${config.service}`,
+    {
+      headers: {
+        id: `${config.apiKey}`,
+      },
+      next: { revalidate: 60 },
+    }
+  );
+  if (!res.ok) {
+    throw new Error("Error al cargar los datos");
+  }
+  return res.json();
 }
 
 export default function Home() {
