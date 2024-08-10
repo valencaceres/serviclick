@@ -467,7 +467,8 @@ const getAssistancesByBrokerIdAndProductId = async (
 
 const getProductAndAssistancesByBrokerId = async (broker_id: string) => {
   try {
-    const response = await pool.query(`
+    const response = await pool.query(
+      `
   select	pro.id,
           pl.id as "productplan_id",
           pro."name" ,
@@ -477,7 +478,6 @@ const getProductAndAssistancesByBrokerId = async (broker_id: string) => {
           pl.discount_percent ,
           pl.beneficiary_price, 
           pd.hiring_conditions,
-          plf.base64,
 		    (
 	        SELECT json_agg(
 	            json_build_object(
@@ -500,17 +500,19 @@ const getProductAndAssistancesByBrokerId = async (broker_id: string) => {
 		inner join app.productdescription pd on pro.id = pd.product_id 
 		inner join app.productplan pl on pro.id = pl.product_id 
     inner join app.productplanpdf plf on pl.id = plf.productplan_id
-	where bp.broker_id = $1`, [broker_id])
-
-      return {
-        success: true,
-        data: response.rows,
-        error: null
-      }
-  } catch (e:any) {
-   return {success: false, data: null, error: e.response.data || e.message}
+	where bp.broker_id = $1`,
+      [broker_id]
+    );
+    // plf.base64,
+    return {
+      success: true,
+      data: response.rows,
+      error: null,
+    };
+  } catch (e: any) {
+    return { success: false, data: null, error: e.response.data || e.message };
   }
-}
+};
 
 export {
   create,
@@ -526,5 +528,5 @@ export {
   getProductsById,
   getCollectionById,
   getAssistancesByBrokerIdAndProductId,
-  getProductAndAssistancesByBrokerId
+  getProductAndAssistancesByBrokerId,
 };
