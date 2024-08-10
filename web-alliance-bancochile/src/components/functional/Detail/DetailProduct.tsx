@@ -128,47 +128,6 @@ const DetailProduct = () => {
             );
           })}
       </div>
-
-      <Slider>
-        {productList.map((product, index) => {
-          const buttonColor = getColorByIndex(index, data);
-          const backgroundColor = getColorByIndex(index + 1, data);
-
-          return (
-            <div key={product.id} className={styles.sliderItem}>
-              <Card
-                imageSrc={`/img/cards/${product.id}.png`}
-                planName={product.name}
-                currentPrice={product.price}
-                originalPrice={product.baseprice}
-                discount={`${product.discount_percent}%`}
-                individualPlanText="Consulta por plan individual"
-                buttonText="¡Lo quiero!"
-                buttonColor={buttonColor}
-                backgroundColor={backgroundColor}
-                /*                 buttonURLCard={product.buttonURL} */
-                benefits={product.assistances.map((assistance) => ({
-                  title: assistance.name,
-                  /*                   smallText: assistance.small_description, */
-                  description: formatDescription(assistance),
-                  iconSrc: "/img/cards/check.png",
-                }))}
-                textCard={[
-                  {
-                    title: "Salud Integral",
-                    paragraph: product.hiring_conditions,
-                    buttonText: "Descargar PDF",
-                    /*                     buttonURL: product.pdf_url, */
-                    generatePdf: () => {
-                      handleDownload(product.productplan_id, product.name);
-                    },
-                  },
-                ]}
-              />
-            </div>
-          );
-        })}
-      </Slider>
     </>
   );
 };

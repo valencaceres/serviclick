@@ -24,7 +24,7 @@
   }
 
   @include media-sm() {
-    display: none;
+    // display: none;
     flex-direction: column;
     align-items: center;
     gap: 15px;
@@ -96,7 +96,7 @@
 
 @include media-md() {
   .detailProduct {
-    display: none;
+    // display: none;
     justify-content: center;
     gap: 15px;
   }
@@ -122,12 +122,12 @@
 .sliderItem {
   display: none;
 
-  @include media-lg() {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    max-width: 100%;
-    margin: 0 auto;
-  }
+  // @include media-lg() {
+  //   display: flex;
+  //   justify-content: center;
+  //   align-items: center;
+  //   width: 100%;
+  //   max-width: 100%;
+  //   margin: 0 auto;
+  // }
 }
