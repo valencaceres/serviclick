@@ -16,19 +16,25 @@ const Layout = ({ children }: LayoutProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
 
   const handleScroll = () => {
-    const offset = window.scrollY;
-    if (offset > 1) {
-      setIsScrolled(true);
+    if (typeof window !== "undefined") {
+      const offset = window.scrollY;
+      if (offset > 1) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
     } else {
       setIsScrolled(false);
     }
   };
 
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    if (typeof window !== "undefined") {
+      window.addEventListener("scroll", handleScroll);
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+      };
+    }
   }, []);
 
   return (

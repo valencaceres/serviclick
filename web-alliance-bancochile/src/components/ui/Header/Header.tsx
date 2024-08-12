@@ -12,7 +12,7 @@ import serviclick from "./images/serviclick.png";
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
+  const [windowWidth, setWindowWidth] = useState<number | null>(null);
 
   const toggleMenu = () => {
     setIsOpen((prev) => !prev);
@@ -34,21 +34,31 @@ const Header: React.FC = () => {
   };
 
   const getBannerBackgroundImageSource = () => {
+    if (windowWidth === null) {
+      return ""; // Devuelve una imagen por defecto o deja en blanco
+    }
+
     if (windowWidth >= 770) {
-      return banner;
+      return banner.src;
     } else {
-      return bannerMobile;
+      return bannerMobile.src;
     }
   };
 
   useEffect(() => {
-    const handleResize = () => {
+    if (typeof window !== "undefined") {
       setWindowWidth(window.innerWidth);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+
+      const handleResize = () => {
+        setWindowWidth(window.innerWidth);
+      };
+
+      window.addEventListener("resize", handleResize);
+
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      };
+    }
   }, []);
 
   return (
@@ -101,7 +111,7 @@ const Header: React.FC = () => {
       <div
         className={styles.background}
         style={{
-          backgroundImage: `url(${getBannerBackgroundImageSource().src})`,
+          backgroundImage: `url(${getBannerBackgroundImageSource()})`,
         }}>
         <div className={styles.textContainer}>
           <div>
