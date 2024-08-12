@@ -205,4 +205,19 @@ const contract: any = async (case_id:string) => {
   }
 }
 
-export { createModel, getByProductIdModel, getProductById, getById, insertPdf, contract };
+const getBase64ById : any = async (productplan_id:string) => {
+  try {
+    const response = await pool.query(`
+      select base64
+        from app.productplanpdf pdf
+      where pdf.productplan_id = $1
+      `, [productplan_id])
+      if(response){
+        return {success: true, data: response.rows[0], error: null}
+      }
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+}
+
+export { createModel, getByProductIdModel, getProductById, getById, insertPdf, contract, getBase64ById  };
