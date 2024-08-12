@@ -1,6 +1,10 @@
 import React from "react";
+
 import styles from "./Exclusive.module.scss";
 import Title from "../Title";
+
+import cards from "./images/cards.png";
+
 const Exclusive = () => {
   return (
     <div className={styles.exclusive}>
@@ -12,7 +16,7 @@ const Exclusive = () => {
         textAlign="center"
         className={styles.customTitle}
       />
-      <img src="/img/icons/cards.png" alt="" />
+      <img src={cards.src} alt="" />
     </div>
   );
 };

@@ -2,6 +2,9 @@
 import React, { useState } from "react";
 import styles from "./Chat.module.scss";
 
+import send from "./images/send.png";
+import wsp from "./images/wsp.png";
+
 const Chat = () => {
   const [isOpen, setIsOpen] = useState(true);
 
@@ -13,7 +16,7 @@ const Chat = () => {
     <div className={styles.chatContainer}>
       <div className={styles.header}>
         <div className={styles.logo}>
-          <img src="/img/chat/wsp.png" alt="" />
+          <img src={wsp.src} alt="" />
           <span>WhatsApp</span>
         </div>
         <button className={styles.closeButton} onClick={toggleChat}>
@@ -26,7 +29,7 @@ const Chat = () => {
             ¡Hola! <br /> Me interesa una asistencia
           </p>
           <button className={styles.chatButton}>
-            <img src="/img/chat/send.png" alt="Icono" />
+            <img src={send.src} alt="Icono" />
             Abrir Chat
           </button>
         </div>
