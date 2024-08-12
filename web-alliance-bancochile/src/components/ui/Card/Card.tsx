@@ -33,6 +33,19 @@ interface CardProps {
   buttonColor?: string;
 }
 
+import check from "./images/check.png";
+import emoji from "./images/emoji.png";
+
+import image1 from "./images/3fcc493c-e3fd-4a06-b78b-982f3c1a632e.png";
+import image2 from "./images/a2061c16-27dd-4138-be4c-c09b3eacff32.png";
+import image3 from "./images/b2e7cfb3-f68d-44a3-b288-53fa408e4722.png";
+
+const jsonProducts: { [key: string]: any } = {
+  "3fcc493c-e3fd-4a06-b78b-982f3c1a632e": image1,
+  "a2061c16-27dd-4138-be4c-c09b3eacff32": image2,
+  "b2e7cfb3-f68d-44a3-b288-53fa408e4722": image3,
+};
+
 const Card: React.FC<CardProps> = ({
   imageSrc,
   planName,
@@ -58,7 +71,11 @@ const Card: React.FC<CardProps> = ({
       <div
         className={styles.borderTop}
         style={{ backgroundColor: backgroundColor }}></div>
-      <img className={styles.image} src={imageSrc} alt={planName} />
+      <img
+        className={styles.image}
+        src={jsonProducts[imageSrc].src}
+        alt={planName}
+      />
       <h2 className={styles.planName}>{planName}</h2>
       <div className={styles.pricing}>
         <span className={styles.currentPrice}>{`$${formatCurrency(
@@ -76,11 +93,7 @@ const Card: React.FC<CardProps> = ({
             className={styles.button}
             style={{ backgroundColor: buttonColor }}>
             {buttonText}
-            <img
-              className={styles.buttonImage}
-              src="/img/cards/emoji.png"
-              alt="emoji"
-            />
+            <img className={styles.buttonImage} src={emoji.src} alt="emoji" />
           </button>
         </a>
         <div className={styles.benefits}>

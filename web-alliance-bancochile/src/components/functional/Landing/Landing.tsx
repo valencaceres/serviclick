@@ -20,6 +20,9 @@ import FloatingButtons from "@/components/ui/FloatingButtons";
 
 import { useProduct } from "@/store/hooks";
 
+import wsp from "./images/wsp.png";
+import phone from "./images/phone.png";
+
 const Landing = ({ initialData }: any) => {
   const { setProductList } = useProduct();
 
@@ -57,19 +60,16 @@ const Landing = ({ initialData }: any) => {
         />
         <InfoSteps steps={stepData} />
         <Benefit
-          text="Somos de Libre elección"
-          img="/img/benefit/benefit1.png"
-          img2="/img/benefit/benefit2.png"
+          text1="Somos de Libre elección"
           text2="Sin deducible"
-          img3="/img/benefit/benefit3.png"
           text3="Presentes en todo Chile"
         />
         <Exclusive />
         <Holding />
       </Layout>
       <FloatingButtons
-        img="/img/floating/wsp.png"
-        img2="/img/floating/phone.png"
+        img={wsp.src}
+        img2={phone.src}
         href1="https://api.whatsapp.com/send/?phone=56939325099&text&type=phone_number&app_absent=0"
         href2="tel:6000860580"></FloatingButtons>
     </div>

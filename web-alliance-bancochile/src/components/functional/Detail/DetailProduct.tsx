@@ -95,7 +95,7 @@ const DetailProduct = () => {
             return (
               <Card
                 key={product.id}
-                imageSrc={`/img/cards/${product.id}.png`}
+                imageSrc={`${product.id}`}
                 planName={product.name}
                 currentPrice={product.price}
                 originalPrice={product.baseprice}
