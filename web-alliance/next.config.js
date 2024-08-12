@@ -5,7 +5,7 @@ const nextConfig = {
     return [
       {
         source: "/copec/:path*",
-        destination: "http://localhost:3027/:path*", // Redirige todo lo que vaya a /copec a la aplicación en el puerto 3027
+        destination: "http://45.79.17.130:3027/:path*", // Redirige todo lo que vaya a /copec a la aplicación en el puerto 3027
       },
     ];
   },
