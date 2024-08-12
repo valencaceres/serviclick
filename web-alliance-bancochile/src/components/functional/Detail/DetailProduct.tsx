@@ -6,6 +6,7 @@ import Slider from "@/components/ui/Slider/Slider";
 import { data } from "@/components/data/color";
 
 import config from "@/utils/config";
+import download from "@/utils/download";
 
 import { useProduct } from "@/store/hooks";
 
@@ -56,22 +57,18 @@ const DetailProduct = () => {
     return colors[colorKey];
   };
 
-  const handleDownload = async (base64: string, name: string) => {
-    if (base64) {
-      const byteCharacters = atob(base64);
-      const byteNumbers = new Array(byteCharacters.length);
-      for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i);
+  const handleDownload = async (productplan_id: string, name: string) => {
+    const res = await fetch(
+      `${config.server}/api/product/getBase64ByProductPlanId/${productplan_id}`,
+      {
+        headers: {
+          id: `${config.apiKey}`,
+        },
       }
-      const byteArray = new Uint8Array(byteNumbers);
-      const blob = new Blob([byteArray], { type: "application/pdf" });
-
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = `${name}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+    );
+    if (res.ok) {
+      const jsonData = await res.json();
+      download(jsonData.data, name);
     }
   };
 
@@ -120,7 +117,7 @@ const DetailProduct = () => {
                     paragraph: product.hiring_conditions,
                     buttonText: "Descargar PDF",
                     generatePdf: () => {
-                      handleDownload(product.base64, product.name);
+                      handleDownload(product.productplan_id, product.name);
                     },
                   },
                 ]}

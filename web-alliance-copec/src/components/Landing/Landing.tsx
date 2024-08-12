@@ -44,7 +44,7 @@ export const Landing = ({ initialData }: Props) => {
               title={data.name}
               price={data.price}
               assistances={data.assistances}
-              productId={data.id}
+              productId={data.productplan_id}
               hiringConditions={data.hiring_conditions}
             />
           ))}
