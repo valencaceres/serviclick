@@ -5,7 +5,7 @@ const nextConfig = {
     return [
       {
         source: "/prepago-los-heroes/:path*",
-        destination: "http://45.79.17.130:3011/:path*",
+        destination: "http://45.79.17.130:3013/:path*",
       },
       {
         source: "/bancochile/:path*",

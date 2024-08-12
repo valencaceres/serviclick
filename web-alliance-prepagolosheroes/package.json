@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "cross-env APP_ENV=dev next dev -p 3011",
+    "dev": "cross-env APP_ENV=dev next dev -p 3013",
     "build": "next build",
-    "start": "cross-env APP_ENV=prod next start -p ${PORT:=3011}",
+    "start": "cross-env APP_ENV=prod next start -p ${PORT:=3013}",
     "lint": "next lint"
   },
   "dependencies": {
