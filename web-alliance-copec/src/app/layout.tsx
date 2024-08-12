@@ -18,6 +18,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/icono.png" />
+      </head>
       <body className={inter.className + " text-font-color"}>
         <Header />
         {children}
