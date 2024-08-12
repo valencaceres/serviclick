@@ -7,8 +7,8 @@ import { Footer } from "@/components";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Copec Laikiclub",
-  description: "Laikiclub se une a Copec",
+  title: "ServiClick - Todas las soluciones en la palma de tu mano",
+  description: "ServiClick - Todas las soluciones en la palma de tu mano",
 };
 
 export default function RootLayout({
@@ -18,10 +18,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className + ' text-font-color'}>
-        <Header/>
+      <body className={inter.className + " text-font-color"}>
+        <Header />
         {children}
-        <Footer/>
+        <Footer />
       </body>
     </html>
   );
