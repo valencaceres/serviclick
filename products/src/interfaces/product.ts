@@ -41,6 +41,7 @@ export interface IProductPlan {
   planId: number;
   customerType: string;
   beneficiary_price: number;
+  baseprice: number,
   price: number;
   frequencyCode: string;
   agentId: string;

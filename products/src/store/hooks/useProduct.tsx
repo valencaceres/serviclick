@@ -17,7 +17,7 @@ const useProduct = () => {
     }),
     shallow
   );
-  const { setProduct, getByPlanId, reset: resetProduct } = productStore();
+  const { setProduct, getByPlanId, reset: resetProduct, setNewProduct } = productStore();
 
   return {
     product,
@@ -27,6 +27,7 @@ const useProduct = () => {
     setProduct,
     getByPlanId,
     resetProduct,
+    setNewProduct
   };
 };
 

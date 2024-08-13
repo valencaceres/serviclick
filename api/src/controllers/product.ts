@@ -1099,6 +1099,7 @@ const getByProductPlanId = async (req: any, res: any) => {
       createDate: productPlanResponse.data[0].createdate,
       planId: productPlanResponse.data[0].plan_id,
       customerType: productPlanResponse.data[0].customer_type,
+      baseprice: productPlanResponse.data[0].baseprice,
       price: productPlanResponse.data[0].price,
       frequencyCode: productPlanResponse.data[0].frequency,
       agentId: productPlanResponse.data[0].agent_id,
@@ -1251,16 +1252,35 @@ const getContract = async (req: any, res: any) => {
   try {
     const { id } = req.params;
     const response = await ProductPlan.contract(id);
-    
+
     if (!response.success) {
       return res.status(404).json({ error: "No pdf" });
     }
     const pdfBase64 = response.data.base64;
-    return res.status(200).json({ success: true, data: pdfBase64, error: null });
+    return res
+      .status(200)
+      .json({ success: true, data: pdfBase64, error: null });
   } catch (e) {
     res.status(500).json({ error: "Internal Server Error" });
   }
-}
+};
+
+const getBase64ByProductPlanId = async (req: any, res: any) => {
+  try {
+    const { id } = req.params;
+    const response = await ProductPlan.getBase64ById(id);
+
+    if (!response.success) {
+      return res.status(404).json({ error: "No pdf" });
+    }
+    const pdfBase64 = response.data.base64;
+    return res
+      .status(200)
+      .json({ success: true, data: pdfBase64, error: null });
+  } catch (e) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 export {
   createProduct,
@@ -1281,5 +1301,6 @@ export {
   getPdfContractById,
   getSuscriptionsByAgentId,
   insertPdf,
-  getContract
+  getContract,
+  getBase64ByProductPlanId,
 };

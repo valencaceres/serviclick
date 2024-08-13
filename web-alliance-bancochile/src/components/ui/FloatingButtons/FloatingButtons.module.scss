@@ -1,0 +1,119 @@
+@import "../../../app/styles/mixins.scss";
+
+@mixin media-lg() {
+  @media (min-width: 1024px) {
+    @content;
+  }
+}
+
+@mixin media-md() {
+  @media (min-width: 768px) and (max-width: 1023px) {
+    @content;
+  }
+}
+
+@mixin media-sm() {
+  @media (max-width: 767px) {
+    @content;
+  }
+}
+
+.floatingButtonsContainer {
+  position: fixed;
+  bottom: 60px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 20px;
+  z-index: 9999; // Asegura que esté sobre todo el contenido
+
+  @include media-md() {
+    right: 40px;
+  }
+
+  @include media-lg() {
+    right: 50px;
+  }
+}
+
+.button,
+.button2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  width: 35px;
+  height: 35px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); // Añade sombra
+  transition: transform 0.3s ease; // Añade transición suave
+
+  &:hover {
+    transform: scale(1.1); // Escalar al hacer hover
+  }
+
+  @include media-sm() {
+    width: 40px;
+    height: 40px;
+  }
+
+  @include media-md() {
+    width: 50px;
+    height: 50px;
+  }
+
+  @include media-lg() {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+.button {
+  background-color: #25d366; // Color verde
+}
+
+.button2 {
+  background-color: #3282fa; // Color azul
+}
+
+.button img,
+.button2 img {
+  width: 55%;
+  height: 55%;
+}
+
+.button-link,
+.button2-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.button-link .button,
+.button2-link .button2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  background-color: inherit;
+
+  @include media-sm() {
+    width: 40px;
+    height: 40px;
+  }
+
+  @include media-md() {
+    width: 50px;
+    height: 50px;
+  }
+
+  @include media-lg() {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+.button-link .button img,
+.button2-link .button2 img {
+  width: 50%;
+  height: 50%;
+}

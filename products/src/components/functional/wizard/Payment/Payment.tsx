@@ -91,10 +91,9 @@ const Payment = () => {
     setShowTerms(false);
   };
   const handleClickPay = () => {
-    if (typeof service === "string" && service === "retail") {
-      console.log(config?.serviceUrl);
-      if (config?.serviceUrl) {
-        router.push(config.serviceUrl);
+    if (typeof service === 'string' && service === 'retail') {
+      if(config?.serviceUrl){
+        router.push(config.serviceUrl)
       }
     } else {
       setPaymentType("");

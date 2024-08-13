@@ -1,0 +1,169 @@
+@import "../../../app/styles/mixins.scss";
+
+.container {
+  text-align: center;
+  padding: 40px;
+  border: 3px solid black;
+  margin-bottom: 20px;
+  border-radius: 20px;
+  position: relative;
+  width: 1200px;
+
+  @include media-md(){
+    border: none;
+    width: 100%;
+  }
+  @include media-lg(){
+    width: 100%;
+  }
+  @include media-sm(){
+    border: none;
+    width: 100%;
+  }
+  h1 {
+    margin: 0;
+    padding: 0 10px;
+    font-size: 1.5rem;
+    color: #003366;
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: white;
+    z-index: 1;
+    padding: 0 15px;
+    display: inline-block;
+
+    @include media-md(){
+      font-size: 1rem;
+      top: -10px;
+      width: 100%;
+    }
+  }
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 0;
+  }
+}
+
+.pyramidContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  overflow: hidden;
+  gap: 20px;
+
+  .mainLogo {
+    width: 300px;
+    @include media-sm(){
+      width: 200px;
+    }
+
+    img {
+      max-width: 300px;
+      height: auto;
+    }
+  }
+
+  .rowOne {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 10px;
+    width: 100%;
+
+    img {
+      max-width: 300px;
+      height: auto;
+      @include media-sm(){
+        width: 200px;
+      }
+    }
+  }
+
+  .rowTwo {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    width: 100%;
+
+    img {
+      max-width: 200px;
+      height: auto;
+    }
+  }
+}
+
+@include media-md() {
+  .pyramidContainer {
+    .mainLogo {
+
+      img {
+        width: 50%;
+      }
+    }
+
+    .rowOne {
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .rowTwo {
+      img {
+        max-width: 200px;
+      }
+    }
+  }
+}
+
+@include media-lg() {
+  .pyramidContainer {
+    .mainLogo {
+     
+
+      img {
+        width: 50%;
+      }
+    }
+
+    .rowOne {
+      gap: 25px;
+    }
+
+    .rowTwo {
+      img {
+        max-width: 200px;
+      }
+    }
+  }
+}
+
+@include media-sm() {
+  .pyramidContainer {
+    .mainLogo {
+      img {
+       width: 100px !important;
+      }
+    }
+
+    .rowOne {
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .rowTwo {
+      img {
+        max-width: 200px;
+      }
+    }
+  }
+}

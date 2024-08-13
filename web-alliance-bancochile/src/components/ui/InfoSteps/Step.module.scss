@@ -1,0 +1,151 @@
+@import "../../../app/styles/mixins.scss";
+
+.stepContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 828px;
+  max-width: 828px;
+  height: 114px;
+  margin: 0 auto;
+  position: relative;
+  padding: 0 20px;
+
+  @include media-lg() {
+    width: 700px;
+    height: 100px;
+  }
+
+  &.reverseOrder {
+    flex-direction: row-reverse;
+  }
+}
+
+.line {
+  width: 30px;
+  height: 2px;
+  background: #b4cd25;
+
+  @include media-lg() {
+    width: 25px;
+  }
+}
+
+.lineVer {
+  display: none;
+
+  @include media-md() {
+    display: block;
+    width: 30px;
+    height: 2px;
+    background: #b4cd25;
+  }
+}
+
+.icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 95px;
+  height: 95px;
+  border-radius: 50%;
+  font-size: 40px;
+  color: #ffffff;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 1;
+
+  @include media-lg() {
+    width: 80px;
+    height: 80px;
+    font-size: 36px;
+  }
+}
+
+.step {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 1em;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 705px;
+  max-width: 705px;
+  height: 114px;
+  background-color: #f3f4f6;
+  z-index: 1;
+
+  @include media-lg() {
+    width: 600px;
+    height: 100px;
+    padding: 0.8em;
+  }
+
+  p {
+    font-size: 24px;
+    color: #03495c;
+    line-height: 29.05px;
+    text-align: justify;
+
+    @include media-lg() {
+      font-size: 22px;
+      line-height: 26px;
+    }
+
+    strong {
+      font-weight: bold;
+    }
+  }
+}
+
+@include media-md() {
+  .stepContainer {
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    height: auto;
+    padding: 0 20px;
+
+    .icon {
+      width: 75px;
+      height: 75px;
+    }
+
+    .line {
+      width: 2px;
+      height: 17px;
+      background: #b4cd25;
+    }
+
+    .lineVer {
+      width: 2px;
+      height: 17px;
+      background: #b4cd25;
+    }
+
+    .step {
+      width: 100%;
+      max-width: none;
+      height: 100%;
+      padding: 1em;
+      text-align: center;
+      box-shadow: none;
+    }
+
+    &.reverseOrder {
+      flex-direction: column;
+    }
+  }
+
+  .content {
+    p {
+      font-size: 20px;
+      line-height: 1.4;
+
+      strong {
+        font-weight: bold;
+      }
+    }
+  }
+}

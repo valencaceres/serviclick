@@ -1,0 +1,116 @@
+@import "../../../app/styles/mixins.scss";
+
+.contact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 20px 50px;
+  background-color: #f3f4f6;
+  width: 100%;
+
+  @include media-md() {
+    flex-direction: column;
+    padding: 20px;
+    width: 100%;
+  }
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 15px;
+
+  @include media-md() {
+    align-items: flex-start;
+    text-align: center;
+  }
+
+  h2 {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 21px;
+    font-weight: 800;
+    color: #03495c;
+    margin-left: 20px;
+
+    @include media-md() {
+      font-size: 16px;
+    }
+  }
+
+  p,
+  a {
+    font-family: "Inter", sans-serif;
+    font-size: 21px;
+    font-weight: 500;
+    color: #03495c;
+
+    @include media-md() {
+      font-size: 16px;
+    }
+  }
+
+  .contactItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .icon {
+    width: 40px;
+    height: 40px;
+
+    @include media-md() {
+      width: 30px;
+      height: 30px;
+    }
+  }
+
+  .rrss {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+}
+
+.img {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+
+  .mapa {
+    width: 280px;
+    height: calc(100% * 240 / 280);
+
+    @include media-lg() {
+      width: 200px;
+      height: calc(100% * 150 / 200);
+    }
+    @include media-md() {
+      width: 95px;
+      height: calc(100% * 81 / 95);
+    }
+  }
+  .webpay {
+    width: 236px;
+    height: calc(100% * 99 / 236);
+    @include media-lg() {
+      width: 150px;
+      height: calc(100% * 70 / 150);
+    }
+    @include media-md() {
+      width: 108px;
+      height: calc(100% * 40 / 108);
+    }
+  }
+}
+@include media-md() {
+  .content {
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px;
+  }
+}

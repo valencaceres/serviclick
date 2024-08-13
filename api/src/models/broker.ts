@@ -465,6 +465,61 @@ const getAssistancesByBrokerIdAndProductId = async (
   }
 };
 
+const getProductAndAssistancesByBrokerId = async (broker_id: string) => {
+  try {
+    const response = await pool.query(
+      `
+      SELECT	pro.id,
+              pl.id as productplan_id,
+              pro.name ,
+              pd.description,
+              pl.frequency,
+              pl.price,
+              pl.baseprice,
+              pl.discount_percent ,
+              pl.beneficiary_price, 
+              pd.hiring_conditions, 
+              (	SELECT	json_agg(json_build_object(
+                      'id', id,
+                      'name', name,
+                      'description', description,
+                      'amount', amount,
+                      'currency', currency,
+                      'maximun', maximum,
+                      'events', events,
+                      'lack', lack))
+                FROM (	SELECT 	pa.id,
+                        asi.name,
+                        asi.description,
+                        pa.amount,
+                        pa.currency,
+                        pa.maximum,
+                        pa.events,
+                        pa.lack
+                    FROM	app.productassistance pa
+                          inner join app.assistance asi on pa.assistance_id = asi.id
+                    WHERE	pa.product_id = pro.id
+                    ORDER 	BY
+                        pa.number) AS asi) AS assistances
+      FROM  app.productplan pl
+              inner join app.product pro on pl.product_id= pro.id 
+              inner join app.productdescription pd on pro.id = pd.product_id  
+              inner join app.productplanpdf plf on pl.id = plf.productplan_id
+      WHERE	pl.agent_id = $1 AND
+            pl.type = 'customer'`,
+      [broker_id]
+    );
+    // plf.base64,
+    return {
+      success: true,
+      data: response.rows,
+      error: null,
+    };
+  } catch (e: any) {
+    return { success: false, data: null, error: e.response.data || e.message };
+  }
+};
+
 export {
   create,
   getById,
@@ -479,4 +534,5 @@ export {
   getProductsById,
   getCollectionById,
   getAssistancesByBrokerIdAndProductId,
+  getProductAndAssistancesByBrokerId,
 };

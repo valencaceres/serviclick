@@ -1,0 +1,9 @@
+.infoSteps {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+
+  @media (max-width: 770px) {
+    gap: 0;
+  }
+}
