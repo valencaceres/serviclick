@@ -59,6 +59,8 @@ const Payment = () => {
   const { product } = useProduct();
   const { process } = useAgent();
 
+  console.log(process)
+
   const [isSelectedContractor, setIsSelectedContractor] = useState(false);
   const [isSelectedinsured, setIsSelectedinsured] = useState(false);
   const [isSelectedProduct, setIsSelectedProduct] = useState(false);
@@ -239,45 +241,32 @@ const Payment = () => {
                   />
                 </CardContent>
                 <CardFooter className="w-full">
-                  {process.process.code === "S" ? (
-                    typeof service === "string" && service === "retail" ? (
-                      <Button
-                        className={`text-white w-full ${
-                          isButtonEnabled ? "bg-[#03495C]" : "bg-gray-400"
-                        } ${
-                          !isButtonEnabled && "cursor-not-allowed"
-                        } active:bg-opacity-80`}
-                        onClick={handleClickSuscribe}
-                        disabled={!isButtonEnabled}
-                      >
-                        Suscribir descuento por planilla 1
-                      </Button>
-                    ) : (
-                      <Button
-                        className={`text-white w-full ${
-                          isButtonEnabled ? "bg-[#03495C]" : "bg-gray-400"
-                        } ${
-                          !isButtonEnabled && "cursor-not-allowed"
-                        } active:bg-opacity-80`}
-                        onClick={handleClickPay}
-                        disabled={!isButtonEnabled}
-                      >
-                        Pagar
-                      </Button>
-                    )
-                  ) :                       
+                {typeof service === "string" && service === "retail" ? (
                   <Button
-                  className={`text-white w-full ${
-                    isButtonEnabled ? "bg-[#03495C]" : "bg-gray-400"
-                  } ${
-                    !isButtonEnabled && "cursor-not-allowed"
-                  } active:bg-opacity-80`}
-                  onClick={handleClickPay}
-                  disabled={!isButtonEnabled}
-                >
-                  Pagar
-                </Button>}
-                </CardFooter>
+                    className={`text-white w-full ${
+                      isButtonEnabled ? "bg-[#03495C]" : "bg-gray-400"
+                    } ${
+                      !isButtonEnabled && "cursor-not-allowed"
+                    }  active:bg-opacity-80`}
+                    onClick={handleClickSuscribe}
+                    disabled={!isButtonEnabled}
+                  >
+                    Suscribir descuento por planilla
+                  </Button>
+                ) : (
+                  <Button
+                    className={`text-white w-full ${
+                      isButtonEnabled ? "bg-[#03495C]" : "bg-gray-400"
+                    } ${
+                      !isButtonEnabled && "cursor-not-allowed"
+                    }  active:bg-opacity-80`}
+                    onClick={handleClickPay}
+                    disabled={!isButtonEnabled}
+                  >
+                    Pagar
+                  </Button>
+                )}
+              </CardFooter>
               </Card>
             </>
           ) : (
