@@ -47,8 +47,15 @@ const Payment = () => {
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
 
   const { ui } = useUI();
-  const { lead, getLeadById, createLead, leadIsLoading, leadIsError, service, getServiceByLeadId } =
-    useLead();
+  const {
+    lead,
+    getLeadById,
+    createLead,
+    leadIsLoading,
+    leadIsError,
+    service,
+    getServiceByLeadId,
+  } = useLead();
   const { product } = useProduct();
   const { process } = useAgent();
 
@@ -81,12 +88,11 @@ const Payment = () => {
   const handleClickCloseTerms = () => {
     setShowTerms(false);
   };
-  console.log(config.serviceUrl)
   const handleClickPay = () => {
-    if (typeof service === 'string' && service === 'retail') {
-      console.log(config?.serviceUrl)
-      if(config?.serviceUrl){
-        router.push(config.serviceUrl)
+    if (typeof service === "string" && service === "retail") {
+      console.log(config?.serviceUrl);
+      if (config?.serviceUrl) {
+        router.push(config.serviceUrl);
       }
     } else {
       setPaymentType("");
@@ -116,12 +122,10 @@ const Payment = () => {
   };
 
   useEffect(() => {
-    if(lead && lead.id){
-      getServiceByLeadId(lead.id)
+    if (lead && lead.id) {
+      getServiceByLeadId(lead.id);
     }
-  },[lead.id])  
-
-  console.log(service)
+  }, [lead.id]);
 
   useEffect(() => {
     setIsButtonEnabled(checkStatus);
@@ -160,7 +164,7 @@ const Payment = () => {
 
       setIsProcessing(false);
     }
-
+    console.log(service);
     if (
       lead &&
       paymentType === "L" &&
@@ -236,30 +240,43 @@ const Payment = () => {
                 </CardContent>
                 <CardFooter className="w-full">
                   {process.process.code === "S" ? (
-                    <Button
-                      className={`text-white w-full ${
-                        isButtonEnabled ? "bg-[#03495C]" : "bg-gray-400"
-                      } ${
-                        !isButtonEnabled && "cursor-not-allowed"
-                      }  active:bg-opacity-80`}
-                      onClick={handleClickSuscribe}
-                      disabled={!isButtonEnabled}
-                    >
-                      Suscribir descuento por planilla
-                    </Button>
-                  ) : (
-                    <Button
-                      className={`text-white w-full ${
-                        isButtonEnabled ? "bg-[#03495C]" : "bg-gray-400"
-                      } ${
-                        !isButtonEnabled && "cursor-not-allowed"
-                      }  active:bg-opacity-80`}
-                      onClick={handleClickPay}
-                      disabled={!isButtonEnabled}
-                    >
-                      Pagar
-                    </Button>
-                  )}
+                    typeof service === "string" && service === "retail" ? (
+                      <Button
+                        className={`text-white w-full ${
+                          isButtonEnabled ? "bg-[#03495C]" : "bg-gray-400"
+                        } ${
+                          !isButtonEnabled && "cursor-not-allowed"
+                        } active:bg-opacity-80`}
+                        onClick={handleClickSuscribe}
+                        disabled={!isButtonEnabled}
+                      >
+                        Suscribir descuento por planilla 1
+                      </Button>
+                    ) : (
+                      <Button
+                        className={`text-white w-full ${
+                          isButtonEnabled ? "bg-[#03495C]" : "bg-gray-400"
+                        } ${
+                          !isButtonEnabled && "cursor-not-allowed"
+                        } active:bg-opacity-80`}
+                        onClick={handleClickPay}
+                        disabled={!isButtonEnabled}
+                      >
+                        Pagar
+                      </Button>
+                    )
+                  ) :                       
+                  <Button
+                  className={`text-white w-full ${
+                    isButtonEnabled ? "bg-[#03495C]" : "bg-gray-400"
+                  } ${
+                    !isButtonEnabled && "cursor-not-allowed"
+                  } active:bg-opacity-80`}
+                  onClick={handleClickPay}
+                  disabled={!isButtonEnabled}
+                >
+                  Pagar
+                </Button>}
                 </CardFooter>
               </Card>
             </>
@@ -311,7 +328,7 @@ const Payment = () => {
                 </Col>
               </CardContent>
               <CardFooter className="w-full">
-                {typeof service === 'string' && (service !== 'retail') ? (
+                {typeof service === "string" && service === "retail" ? (
                   <Button
                     className={`text-white w-full ${
                       isButtonEnabled ? "bg-[#03495C]" : "bg-gray-400"
@@ -365,13 +382,13 @@ const Payment = () => {
       >
         <div className={styles.termsContainer}>{termsAndCondicions.data}</div>
       </ModalWindow>
-  <ModalWindow
-    showModal={showPaymentType}
-    setClosed={handleClickClosePaymentType}
-    title="Seleccione una opción"
-  >
-    <PaymentType data={paymentTypeData} />
-  </ModalWindow>
+      <ModalWindow
+        showModal={showPaymentType}
+        setClosed={handleClickClosePaymentType}
+        title="Seleccione una opción"
+      >
+        <PaymentType data={paymentTypeData} />
+      </ModalWindow>
     </Body>
   );
 };
