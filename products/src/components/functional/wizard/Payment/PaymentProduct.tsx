@@ -178,7 +178,7 @@ const PaymentProduct = ({ product, lead }: IPaymentProduct) => {
       {config.serviceId === product.plan.agentId ? (
         <Row>
           <InputText
-            label="Ingrese los 6 ultimos dígitos de su tarjeta"
+            label="Ingrese los 6 primeros dígitos de su tarjeta"
             onChange={handleBinNumberChange}
             value={binNumber}
             width="315px"
@@ -336,7 +336,7 @@ const PaymentProduct = ({ product, lead }: IPaymentProduct) => {
       {config.serviceId === product.plan.agentId ? (
         <Col>
           <InputText
-            label="Ingrese 6 ultimos dígitos"
+            label="Ingrese 6 primeros dígitos"
             onChange={handleBinNumberChange}
             value={binNumber}
             width="170px"
