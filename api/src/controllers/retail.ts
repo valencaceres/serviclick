@@ -128,30 +128,28 @@ const getSales = async (req: Request, res: Response) => {
     const salesData = response.data;
 
     if (!salesData) {
-      throw new Error('Los datos de ventas son nulos.');
+      throw new Error("Los datos de ventas son nulos.");
     }
 
     const salesSummary = salesData.map((sale: any) => ({
-      'Nombre completo': sale.fullname,
+      "Nombre completo": sale.fullname,
       leads: sale.leads,
       Ventas: sale.sales,
     }));
 
     const salesDetail = salesData.map((sale: any) => ({
       Producto: sale.product,
-      'Precio Producto': sale.productprice,
-      'Nombre de Comprador': sale.fullnamebuyer,
-      Venta: sale.comprado ? 'Vendido' : 'No vendido',
+      "Precio Producto": sale.productprice,
+      "Nombre de Comprador": sale.fullnamebuyer,
+      Venta: sale.comprado ? "Vendido" : "No vendido",
     }));
 
     excelUpload(salesSummary, salesDetail, RetailResponse.data.name, res);
   } catch (error) {
-    console.error('Error al generar el archivo Excel:', error);
+    console.error("Error al generar el archivo Excel:", error);
     res.status(500).json({ success: false, error: (error as Error).message });
   }
 };
-
-
 
 const getProductsAndRetail = async (req: any, res: any) => {
   try {
@@ -844,9 +842,9 @@ const getPayments = async (req: any, res: any) => {
   }
 };
 
-/* const addLeadFromExcel = async (req: any, res: any) => {
+const addLeadFromExcel = async (req: any, res: any) => {
   try {
-    const socket = ioClient(`${process.env.SOCKET_API_URL}`);
+    // const socket = ioClient(`${process.env.SOCKET_API_URL}`);
 
     const { productPlan_id, retail_id } = req.body;
     const file = req.file;
@@ -933,7 +931,7 @@ const getPayments = async (req: any, res: any) => {
     data.map(async (item, idx: number) => {
       const rowSummary = { total: xlsData.length, count: idx + 1 };
       promiseExcel.push(
-        addInsuredFromExcelItem(socket, productPlan_id, item, rowSummary)
+        addInsuredFromExcelItem(productPlan_id, item, rowSummary)
       );
     });
 
@@ -968,7 +966,7 @@ const getPayments = async (req: any, res: any) => {
     const errorResponse = { success: false, error: (e as Error).message };
     res.json(errorResponse);
   }
-}; */
+};
 
 const exportPayments = async (req: any, res: any) => {
   try {
@@ -1132,12 +1130,12 @@ export {
   getCollectById,
   getAgents,
   updateAgent,
-/*   addLeadFromExcel, */
+  addLeadFromExcel,
   getByUserId,
   getProductsById,
   getCollectionById,
   getPayments,
-  getSales
+  getSales,
 };
 
 function isRecord(obj: unknown): obj is Record<string, any> {
@@ -1145,7 +1143,6 @@ function isRecord(obj: unknown): obj is Record<string, any> {
 }
 
 const addInsuredFromExcelItem = async (
-  socket: any,
   productPlan_id: string,
   item: any,
   rowSummary: any
@@ -1178,33 +1175,10 @@ const addInsuredFromExcelItem = async (
       error: resultLead.error,
     });
 
-    socket.emit(
-      "row",
-      JSON.stringify({
-        productPlan_id,
-        total,
-        count,
-        success: false,
-        error: resultLead.error,
-      })
-    );
-
     return { success: false, data: null, error: resultLead.error };
   }
 
   const { lead_id, policy_id } = resultLead.data || {};
-
-  socket.emit(
-    "row",
-    JSON.stringify({
-      productPlan_id,
-      total,
-      count,
-      success: true,
-      lead_id,
-      policy_id,
-    })
-  );
 
   // createLogger.info({
   //   model: "lead/upsert",

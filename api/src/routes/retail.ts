@@ -23,11 +23,11 @@ import {
   getAgents,
   getPayments,
   updateAgent,
-/*   addLeadFromExcel, */
+  addLeadFromExcel,
   getProductsAndRetail,
   removeAgent,
   exportPayments,
-  getSales
+  getSales,
 } from "../controllers/retail";
 import isAuthenticated from "../middlewares/isAuthenticated";
 import authMiddleware from "../middlewares/isAdminWithoutClerk";
@@ -84,18 +84,22 @@ RetailRouter.put(
   isAdmin,
   updateAgent
 );
-RetailRouter.delete("/removeAgent", auth, isAuthenticated, isAdmin, removeAgent);
-/* RetailRouter.post(
+RetailRouter.delete(
+  "/removeAgent",
+  auth,
+  isAuthenticated,
+  isAdmin,
+  removeAgent
+);
+RetailRouter.post(
   "/addLeadFromExcel",
   auth,
   isAuthenticated,
   isAdmin,
   upload.single("file"),
   addLeadFromExcel
-); */
+);
 RetailRouter.get("/exportPayments/:id", auth, exportPayments);
-RetailRouter.get("/getSales/:id", auth, getSales)
-
-
+RetailRouter.get("/getSales/:id", auth, getSales);
 
 export default RetailRouter;
