@@ -54,9 +54,9 @@ export const Landing = ({ initialData }: Props) => {
             <b>¿Cómo funciona mi Asistencia?</b>
           </h2>
           <CardStep step={1} color="sky-800">
-            ¿Tuviste un <b className="text-laiki">imprevisto</b> en salud, hogar
-            o con tu mascota? Activa tu asistencia llamando al <b>6000860580</b>{" "}
-            opción 2 y nuestros ejecutivos te guiarán.
+            ¿Tuviste un <b className="text-laiki">imprevisto</b> en tu trayecto?
+            Activa tu asistencia llamando al 6000860580 opción 2
+            <b>6000860580</b> opción 2.
           </CardStep>
           <CardStep step={2} reverse={true} color="copec">
             Podrás obtener un <b className="text-laiki">descuento automático</b>{" "}
@@ -69,6 +69,13 @@ export const Landing = ({ initialData }: Props) => {
             <b className="text-laiki">reintegrados a tu cuenta personal.</b>
           </CardStep>
           <CardStep step={4} color="yellow-500" reverse={true}>
+            Nuestros ejecutivos solicitarán el{" "}
+            <b className="text-laiki">detalle de tu caso</b> para entregar la
+            mejor solución. Serviclick, coordinará el{" "}
+            <b className="text-laiki">horario y lugar</b> para hacer uso de tu
+            servicio.
+          </CardStep>
+          <CardStep step={5} color="some-green">
             Solo debes enviar toda la documentación correspondiente al mail{" "}
             <b className="text-laiki">hola@serviclick.cl</b>, antes de{" "}
             <b>72 horas hábiles.</b>

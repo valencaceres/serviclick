@@ -19,6 +19,7 @@ const config: Config = {
         laiki: "#B4CD1B",
         secondary: "#E84155",
         "yellow-500": "#eab308",
+        "some-green": "B4CD25",
       },
     },
   },
