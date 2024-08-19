@@ -24,6 +24,7 @@ export const Landing = ({ initialData }: Props) => {
     <>
       <Cover />
       <div className="bg-yellow-500"></div>
+      <div className="bg-some-green"></div>
       <Wrapper>
         <header className="py-8 lg:py-16 text-base sm:text-2xl lg:text-4xl">
           <p className="text-center">
