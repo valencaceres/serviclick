@@ -1,7 +1,6 @@
 import { create } from "zustand";
 
 import { apiInstance } from "../utils/api";
-import config from "../utils/config";
 
 import { IContractor, ICustomerEndpoint } from "@/interfaces/contractor";
 

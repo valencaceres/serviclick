@@ -22,6 +22,7 @@ const useContractor = () => {
     customer,
     contractor,
     contractorIsLoading,
+    contractorIsError,
     getByRutOrName,
     getContractorById,
   };
