@@ -1,7 +1,11 @@
 import React from 'react'
 import Navbar from '@/components/ui/Navbar'
 
-const Layout = ({children}: any) => {
+interface IProps {
+  children: React.ReactNode
+}
+
+const Layout = ({children}: IProps) => {
   return (
     <div>
         <Navbar/>

@@ -2,18 +2,40 @@ import styles from "./Table.module.scss";
 
 interface ITableRow {
   link?: boolean;
-  onClick?: any;
-  children: any;
+  children: React.ReactNode;
+}
+
+interface ITable {
+  height?: string,
+  width?: string,
+  children: React.ReactNode
 }
 
 interface ITableCell {
   width: string;
   align?: string;
-  children?: any;
+  children?: React.ReactNode;
   className?: string;
 }
 
-const Table = ({ height, width, children }: any) => {
+interface ITableChildren {
+  children: React.ReactNode
+}
+
+interface ITableCellWide {
+  width: string,
+  align: string,
+  children: React.ReactNode 
+}
+
+interface ITableCellText {
+  placeholder: string,
+  value: string,
+  onChange: () => void,
+  
+}
+
+const Table = ({ height, width, children }: ITable) => {
   return (
     <div
       className={styles.table}
@@ -24,19 +46,18 @@ const Table = ({ height, width, children }: any) => {
   );
 };
 
-const TableHeader = ({ children }: any) => {
+const TableHeader = ({ children }: ITableChildren) => {
   return <div className={styles.tableHeader}>{children}</div>;
 };
 
-const TableDetail = ({ children }: any) => {
+const TableDetail = ({ children }: ITableChildren) => {
   return <div className={styles.tableDetail}>{children}</div>;
 };
 
-const TableRow = ({ link, onClick, children }: ITableRow) => {
+const TableRow = ({ link, children }: ITableRow) => {
   return (
     <div
       className={`${styles.row} ${link ? styles.link : ``}`}
-      onClick={() => (onClick ? onClick() : {})}
     >
       {children}
     </div>
@@ -54,7 +75,7 @@ const TableCell = ({ width, align, children, className }: ITableCell) => {
   );
 };
 
-const TableCellWide = ({ width, align, alt, children }: any) => {
+const TableCellWide = ({ width, align, children }: ITableCellWide) => {
   return (
     <div
       className={styles.cell + " " + styles.cellWide}
@@ -65,7 +86,7 @@ const TableCellWide = ({ width, align, alt, children }: any) => {
   );
 };
 
-const TableIcons = ({ children }: any) => {
+const TableIcons = ({ children }: ITableChildren) => {
   return <div className={styles.icons}>{children}</div>;
 };
 
@@ -73,7 +94,7 @@ const TableCellEnd = () => {
   return <div className={styles.cellEnd}></div>;
 };
 
-const TableCellText = ({ placeholder, value, onChange }: any) => {
+const TableCellText = ({ placeholder, value, onChange }: ITableCellText) => {
   return (
     <input
       type="text"
