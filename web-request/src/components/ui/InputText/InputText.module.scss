@@ -1,0 +1,57 @@
+@import "../../../styles/variables.scss";
+@import "../../../styles/functions.scss";
+
+.inputText {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .input {
+    width: 500px;
+    height: 40px;
+    border: 1px solid $light-gray-color;
+    background-color: $white-color;
+    border-radius: 3px;
+    padding-left: 15px;
+    text-align: left;
+    font-size: pxToRem(16);
+    color: black;
+    outline: none;
+  }
+
+  label {
+    left: 15px;
+    position: absolute;
+    color: $gray-color;
+    transition: transform 0.3s;
+    background-color: transparent;
+    font-weight: 500;
+/*     transform: translateY(-13px) translateX(0px); */
+    font-size: 12px;
+  }
+
+  .icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid $light-gray-color;
+    height: 50px;
+    width: 40px;
+    background-color: $light-gray-color;
+    border-radius: 0 $border-radius-text $border-radius-text 0;
+    cursor: pointer;
+
+    &:hover {
+      svg {
+        font-size: 20px;
+        color: $black-color;
+      }
+    }
+
+    svg {
+      font-size: 20px;
+      color: $gray-color;
+    }
+  }
+}
