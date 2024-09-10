@@ -26,7 +26,7 @@ interface IOrigins {
     beneficiaries: IBeneficiaries[],
     price: IPrice
     dates:  IDates
-    balance: IBalance
+    balance: IBalance[];
 }
 
 interface IProduct {
