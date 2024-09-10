@@ -1,4 +1,4 @@
-import styles from "./Input.module.scss";
+import styles from "./InputText.module.scss";
 
 type InputT = {
   id?: string;
