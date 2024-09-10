@@ -45,4 +45,5 @@ export const allowedOrigins = [
   "https://bancochile-cert.serviclick.cl",
   "https://bancochile.serviclick.cl",
   "https://beneficios.serviclick.cl",
+  "https://consulta.serviclick.cl"
 ];
