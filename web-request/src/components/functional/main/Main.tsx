@@ -62,9 +62,7 @@ const Main = () => {
       const balances = contractor.origins.flatMap((origin) =>
         extractBalances(origin.balance)
       );
-      console.log('%cweb-request\src\components\functional\main\Main.tsx:66 ', 'color: #007acc;', 'entro');
       const hasActiveBalance = balances.some((balance) => typeof balance === 'number' && balance !== null);
-      console.log('%cweb-request\src\components\functional\main\Main.tsx:62 hasActiveBalance', 'color: #007acc;', hasActiveBalance);
       setIsActive(hasActiveBalance);
     }
   }, [contractor]);
