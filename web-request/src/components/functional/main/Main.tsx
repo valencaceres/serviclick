@@ -48,7 +48,7 @@ const Main = () => {
     
     if (Array.isArray(data)) {
         for (const item of data) {
-            result = result.concat(extractBalances(item)); // Recursión para manejar anidamientos
+            result = result.concat(extractBalances(item));
         }
     } else if (data && typeof data === 'object' && 'balance' in data) {
         result.push(data.balance);
@@ -62,9 +62,7 @@ const Main = () => {
       const balances = contractor.origins.flatMap((origin) =>
         extractBalances(origin.balance)
       );
-      console.log('%cweb-request\src\components\functional\main\Main.tsx:66 ', 'color: #007acc;', 'entro');
       const hasActiveBalance = balances.some((balance) => typeof balance === 'number' && balance !== null);
-      console.log('%cweb-request\src\components\functional\main\Main.tsx:62 hasActiveBalance', 'color: #007acc;', hasActiveBalance);
       setIsActive(hasActiveBalance);
     }
   }, [contractor]);
@@ -89,7 +87,7 @@ const Main = () => {
       </div>
   ) : contractorIsError ? (
     <div className="flex justify-center text-red-600">
-      No existe el rut
+      Rut no registrado
     </div>
   ) : (
     <div>
