@@ -26,10 +26,11 @@ const Main = () => {
     contractor,
     contractorIsLoading,
     reset,
-    contractorIsError
+    contractorIsError,
   } = useContractor();
 
   const rutFormated = format(rut);
+  type Data = { balance: number };
 
   const handleClick = () => {
     reset();
@@ -43,15 +44,15 @@ const Main = () => {
     }
   }, [customer]);
 
-  function extractBalances(data: any): number[] {
+  function extractBalances(data: Data[] | Data | null): number[] {
     let result: number[] = [];
-    
+
     if (Array.isArray(data)) {
-        for (const item of data) {
-            result = result.concat(extractBalances(item));
-        }
-    } else if (data && typeof data === 'object' && 'balance' in data) {
-        result.push(data.balance);
+      for (const item of data) {
+        result = result.concat(extractBalances(item));
+      }
+    } else if (data && typeof data === "object" && "balance" in data) {
+      result.push(data.balance);
     }
 
     return result;
@@ -62,7 +63,9 @@ const Main = () => {
       const balances = contractor.origins.flatMap((origin) =>
         extractBalances(origin.balance)
       );
-      const hasActiveBalance = balances.some((balance) => typeof balance === 'number' && balance !== null);
+      const hasActiveBalance = balances.some(
+        (balance) => typeof balance === "number" && balance !== null
+      );
       setIsActive(hasActiveBalance);
     }
   }, [contractor]);
@@ -81,56 +84,54 @@ const Main = () => {
       />
       <Button onClick={handleClick} />
       {openTable === 1 ? (
-    contractorIsLoading ? (
-      <div className="flex justify-center text-blue-600">
-        Cargando...
-      </div>
-  ) : contractorIsError ? (
-    <div className="flex justify-center text-red-600">
-      Rut no registrado
-    </div>
-  ) : (
-    <div>
-      {!isActive ? (
-        <Table height="80px">
-          <TableHeader>
-            <TableRow>
-              <TableCell width="400px">Nombre</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell width="90px">Estado</TableCell>
-            </TableRow>
-            <TableCellEnd></TableCellEnd>
-          </TableHeader>
-          <TableDetail>
-            <TableRow>
-              <TableCell width="400px">{customer.data[0].name}</TableCell>
-              <TableCell width="90px">Activo</TableCell>
-            </TableRow>
-          </TableDetail>
-        </Table>
-      ) : (
-        <Table height="80px">
-          <TableHeader>
-            <TableRow>
-              <TableCell width="400px">Nombre</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell width="90px">Estado</TableCell>
-            </TableRow>
-            <TableCellEnd></TableCellEnd>
-          </TableHeader>
-          <TableDetail>
-            <TableRow>
-              <TableCell width="400px">{customer.data[0].name}</TableCell>
-              <TableCell width="90px">No Activo</TableCell>
-            </TableRow>
-          </TableDetail>
-        </Table>
-      )}
-    </div>
-  )
-) : null}
+        contractorIsLoading ? (
+          <div className="flex justify-center text-blue-600">Cargando...</div>
+        ) : contractorIsError ? (
+          <div className="flex justify-center text-red-600">
+            Rut no registrado
+          </div>
+        ) : (
+          <div>
+            {!isActive ? (
+              <Table height="80px">
+                <TableHeader>
+                  <TableRow>
+                    <TableCell width="400px">Nombre</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell width="90px">Estado</TableCell>
+                  </TableRow>
+                  <TableCellEnd></TableCellEnd>
+                </TableHeader>
+                <TableDetail>
+                  <TableRow>
+                    <TableCell width="400px">{customer.data[0].name}</TableCell>
+                    <TableCell width="90px">Activo</TableCell>
+                  </TableRow>
+                </TableDetail>
+              </Table>
+            ) : (
+              <Table height="80px">
+                <TableHeader>
+                  <TableRow>
+                    <TableCell width="400px">Nombre</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell width="90px">Estado</TableCell>
+                  </TableRow>
+                  <TableCellEnd></TableCellEnd>
+                </TableHeader>
+                <TableDetail>
+                  <TableRow>
+                    <TableCell width="400px">{customer.data[0].name}</TableCell>
+                    <TableCell width="90px">No Activo</TableCell>
+                  </TableRow>
+                </TableDetail>
+              </Table>
+            )}
+          </div>
+        )
+      ) : null}
     </ContentCol>
   );
 };
