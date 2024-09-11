@@ -38,28 +38,40 @@ const Main = () => {
     getContractorById(customer.data[0].id);
   }, [customer]);
 
-console.log('%cweb-request\src\components\functional\main\Main.tsx:41 contractor', 'color: #007acc;', contractor);
+  console.log(
+    "%cweb-requestsrccomponents\functionalmainMain.tsx:41 contractor",
+    "color: #007acc;",
+    contractor
+  );
 
-function extractBalances(data: any): number[] {
-  let result: number[] = [];
-  
-  if (Array.isArray(data)) {
+  type Data = { balance: number };
+
+  function extractBalances(data: Data[] | Data | null): number[] {
+    let result: number[] = [];
+
+    if (Array.isArray(data)) {
       for (const item of data) {
-          result = result.concat(extractBalances(item)); // Recursión para manejar anidamientos
+        result = result.concat(extractBalances(item)); // Recursión para manejar anidamientos
       }
-  } else if (data && typeof data === 'object' && 'balance' in data) {
+    } else if (data && typeof data === "object" && "balance" in data) {
       result.push(data.balance);
-  }
+    }
 
-  return result;
-}
+    return result;
+  }
 
   useEffect(() => {
     const balances = contractor.origins.flatMap((origin) =>
       extractBalances(origin.balance)
-  );
-    const hasActiveBalance = balances.some((balance) => typeof balance === 'number' && balance !== null);
-    console.log('%cweb-request\src\components\functional\main\Main.tsx:62 hasActiveBalance', 'color: #007acc;', hasActiveBalance);
+    );
+    const hasActiveBalance = balances.some(
+      (balance) => typeof balance === "number" && balance !== null
+    );
+    console.log(
+      "%cweb-requestsrccomponents\functionalmainMain.tsx:62 hasActiveBalance",
+      "color: #007acc;",
+      hasActiveBalance
+    );
     setIsActive(hasActiveBalance);
   }, [contractor]);
 
@@ -116,11 +128,9 @@ function extractBalances(data: any): number[] {
             </Table>
           )}
         </div>
-      ) : 
-      <div className="flex justify-center text-red-600">
-        No existe el rut
-      </div>
-      }
+      ) : (
+        <div className="flex justify-center text-red-600">No existe el rut</div>
+      )}
     </ContentCol>
   );
 };
