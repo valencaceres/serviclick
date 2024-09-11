@@ -16,6 +16,7 @@ const useContractor = () => {
   const {
     getByRutOrName,
     getContractorById,
+    reset
   } = contractorContractor();
 
   return {
@@ -25,6 +26,7 @@ const useContractor = () => {
     contractorIsError,
     getByRutOrName,
     getContractorById,
+    reset
   };
 };
 

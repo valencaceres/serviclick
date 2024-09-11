@@ -12,6 +12,7 @@ interface ContractorState {
   isError: boolean;
   getByRutOrName: (rut: string) => void;
   getContractorById: (id: string) => void
+  reset: () => void
 }
 
 const initialDataContractor: IContractor = {
@@ -132,4 +133,13 @@ export const contractorContractor = create<ContractorState>((set) => ({
     }
   },
 
+  reset: () =>
+    set((state) => ({
+      ...state,
+      customer: initialDataCustomer,
+      contractor: initialDataContractor,
+      isLoading: false,
+      isError: false,
+      error: "",
+    })),
 }));

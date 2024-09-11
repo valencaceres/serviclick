@@ -25,54 +25,46 @@ const Main = () => {
     customer,
     contractor,
     contractorIsLoading,
+    reset,
+    contractorIsError
   } = useContractor();
 
   const rutFormated = format(rut);
 
   const handleClick = () => {
+    reset();
     getByRutOrName(rutFormated);
     setOpenTable(1);
   };
 
   useEffect(() => {
-    getContractorById(customer.data[0].id);
+    if (customer.data.length > 0) {
+      getContractorById(customer.data[0].id);
+    }
   }, [customer]);
 
-  console.log(
-    "%cweb-requestsrccomponents\functionalmainMain.tsx:41 contractor",
-    "color: #007acc;",
-    contractor
-  );
-
-  type Data = { balance: number };
-
-  function extractBalances(data: Data[] | Data | null): number[] {
+  function extractBalances(data: any): number[] {
     let result: number[] = [];
-
+    
     if (Array.isArray(data)) {
-      for (const item of data) {
-        result = result.concat(extractBalances(item)); // Recursión para manejar anidamientos
-      }
-    } else if (data && typeof data === "object" && "balance" in data) {
-      result.push(data.balance);
+        for (const item of data) {
+            result = result.concat(extractBalances(item));
+        }
+    } else if (data && typeof data === 'object' && 'balance' in data) {
+        result.push(data.balance);
     }
 
     return result;
   }
 
   useEffect(() => {
-    const balances = contractor.origins.flatMap((origin) =>
-      extractBalances(origin.balance)
-    );
-    const hasActiveBalance = balances.some(
-      (balance) => typeof balance === "number" && balance !== null
-    );
-    console.log(
-      "%cweb-requestsrccomponents\functionalmainMain.tsx:62 hasActiveBalance",
-      "color: #007acc;",
-      hasActiveBalance
-    );
-    setIsActive(hasActiveBalance);
+    if (contractor.origins.length > 0) {
+      const balances = contractor.origins.flatMap((origin) =>
+        extractBalances(origin.balance)
+      );
+      const hasActiveBalance = balances.some((balance) => typeof balance === 'number' && balance !== null);
+      setIsActive(hasActiveBalance);
+    }
   }, [contractor]);
 
   return (
@@ -83,54 +75,62 @@ const Main = () => {
         </h1>
       </ContentRow>
       <Input
-        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-          setRut(event.target.value)
-        }
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          setRut(event.target.value);
+        }}
       />
       <Button onClick={handleClick} />
-      {openTable === 1 && !contractorIsLoading ? (
-        <div>
-          {!isActive ? (
-            <Table height="80px">
-              <TableHeader>
-                <TableRow>
-                  <TableCell width="400px">Nombre</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell width="90px">Estado</TableCell>
-                </TableRow>
-                <TableCellEnd></TableCellEnd>
-              </TableHeader>
-              <TableDetail>
-                <TableRow>
-                  <TableCell width="400px">{customer.data[0].name}</TableCell>
-                  <TableCell width="90px">Activo</TableCell>
-                </TableRow>
-              </TableDetail>
-            </Table>
-          ) : (
-            <Table height="80px">
-              <TableHeader>
-                <TableRow>
-                  <TableCell width="400px">Nombre</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell width="90px">Estado</TableCell>
-                </TableRow>
-                <TableCellEnd></TableCellEnd>
-              </TableHeader>
-              <TableDetail>
-                <TableRow>
-                  <TableCell width="400px">{customer.data[0].name}</TableCell>
-                  <TableCell width="90px">No Activo</TableCell>
-                </TableRow>
-              </TableDetail>
-            </Table>
-          )}
-        </div>
+      {openTable === 1 ? (
+    contractorIsLoading ? (
+      <div className="flex justify-center text-blue-600">
+        Cargando...
+      </div>
+  ) : contractorIsError ? (
+    <div className="flex justify-center text-red-600">
+      Rut no registrado
+    </div>
+  ) : (
+    <div>
+      {!isActive ? (
+        <Table height="80px">
+          <TableHeader>
+            <TableRow>
+              <TableCell width="400px">Nombre</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell width="90px">Estado</TableCell>
+            </TableRow>
+            <TableCellEnd></TableCellEnd>
+          </TableHeader>
+          <TableDetail>
+            <TableRow>
+              <TableCell width="400px">{customer.data[0].name}</TableCell>
+              <TableCell width="90px">Activo</TableCell>
+            </TableRow>
+          </TableDetail>
+        </Table>
       ) : (
-        <div className="flex justify-center text-red-600">No existe el rut</div>
+        <Table height="80px">
+          <TableHeader>
+            <TableRow>
+              <TableCell width="400px">Nombre</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell width="90px">Estado</TableCell>
+            </TableRow>
+            <TableCellEnd></TableCellEnd>
+          </TableHeader>
+          <TableDetail>
+            <TableRow>
+              <TableCell width="400px">{customer.data[0].name}</TableCell>
+              <TableCell width="90px">No Activo</TableCell>
+            </TableRow>
+          </TableDetail>
+        </Table>
       )}
+    </div>
+  )
+) : null}
     </ContentCol>
   );
 };
