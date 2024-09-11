@@ -9,7 +9,7 @@ const Layout = ({children}: IProps) => {
   return (
     <div>
         <Navbar/>
-        <div className='flex justify-center h-[87vh] items-center'>
+        <div className='flex justify-center h-[87vh] items-center bg-white'>
             {children}
         </div>
     </div>

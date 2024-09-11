@@ -38,9 +38,28 @@ const Main = () => {
     getContractorById(customer.data[0].id);
   }, [customer]);
 
+console.log('%cweb-request\src\components\functional\main\Main.tsx:41 contractor', 'color: #007acc;', contractor);
+
+function extractBalances(data: any): number[] {
+  let result: number[] = [];
+  
+  if (Array.isArray(data)) {
+      for (const item of data) {
+          result = result.concat(extractBalances(item)); // Recursión para manejar anidamientos
+      }
+  } else if (data && typeof data === 'object' && 'balance' in data) {
+      result.push(data.balance);
+  }
+
+  return result;
+}
+
   useEffect(() => {
-    const balances = contractor.origins.map((origin) => origin.balance);
-    const hasActiveBalance = balances.some((balance) => balance !== null);
+    const balances = contractor.origins.flatMap((origin) =>
+      extractBalances(origin.balance)
+  );
+    const hasActiveBalance = balances.some((balance) => typeof balance === 'number' && balance !== null);
+    console.log('%cweb-request\src\components\functional\main\Main.tsx:62 hasActiveBalance', 'color: #007acc;', hasActiveBalance);
     setIsActive(hasActiveBalance);
   }, [contractor]);
 
@@ -97,7 +116,11 @@ const Main = () => {
             </Table>
           )}
         </div>
-      ) : null}
+      ) : 
+      <div className="flex justify-center text-red-600">
+        No existe el rut
+      </div>
+      }
     </ContentCol>
   );
 };

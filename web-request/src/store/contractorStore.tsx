@@ -58,14 +58,7 @@ const initialDataContractor: IContractor = {
             init: '',
             end: ''
         },
-        balance: {
-            fee_value: 0,
-            free_months: 0,
-            fees_charged: 0,
-            charged: 0,
-            paid: 0,
-            balance: 0
-        }
+        balance: []
     }]
   }
 
