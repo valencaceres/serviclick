@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 
 import Icon from "../../ui/Icon";
 
-import { useUI, useUser } from "../../../zustand/hooks";
+import { useUI, useUser, useUserInsured } from "../../../zustand/hooks";
 
 import styles from "./Menu.module.scss";
 
@@ -24,7 +24,7 @@ const menuOptions = [
 
 const Menu = () => {
   const router = useRouter();
-  const {user} = useUser()
+  const {userInsured} = useUserInsured()
   const { setTitle, setShowButtonBack } = useUI();
 
   const handleOptionClick = (route: string) => {
@@ -39,8 +39,8 @@ const Menu = () => {
   return (
     <div className={styles.menu}>
       <div className={styles.welcome}>
-        Bienvenido(a) {user.name} {user.paternallastname}{" "}
-        {user.maternallastname}
+        Bienvenido(a) {userInsured.name} {userInsured.paternalLastName}{" "}
+        {userInsured.maternalLastName}
       </div>
       <div className={styles.description}>Seleccione una opción de menú</div>
       <div className={styles.options}>

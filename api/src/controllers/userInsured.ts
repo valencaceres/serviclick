@@ -1,6 +1,9 @@
 import bcrypt from "bcrypt";
+import axios from "axios";
 
 import createLogger from "../util/logger";
+import { generateGenericPassword } from "../util/user";
+import config from "../util/config";
 
 import * as UserInsured from "../models/userInsured";
 
@@ -92,4 +95,59 @@ const getByEmail = async (req: any, res: any) => {
   }
 };
 
-export { assignPassword, validate, getByEmail };
+const restorePassword = async (req: any, res: any) => {
+  try {
+    const {email} = req.body
+    const emailResponse = await UserInsured.getByEmailWithId(email)
+
+    if (!emailResponse.success) {
+      createLogger.error({
+        model: "userInsured/restorePassword",
+        error: emailResponse.error,
+      });
+      res.status(500).json({ error: "Error getting user insured" });
+      return;
+    }
+    const generatedPassword = generateGenericPassword();
+    const userPasswordResponse = await UserInsured.assignPassword(
+      emailResponse.data.user_id,
+      generatedPassword  
+    )
+
+    if (!userPasswordResponse.success) {
+      createLogger.error({
+        model: "userInsured/assignPassword",
+        error: userPasswordResponse.error,
+      });
+    }
+    const sendEmailResponse: any = await axios.post(
+      config.email.URL.send,
+      {
+        from: { name: "Bienvenido a ServiClick" },
+        to: 'dev.vcaceres@gmail.com',
+        subject: "Tus credenciales de acceso a nuestra plataforma",
+        message: `<b>Hola&nbsp;${emailResponse.data.name}</b><br/><br/>Bienvenido a ServiClick, a continuación te detallamos los datos de acceso a nuestra plataforma para que puedas completar o modificar la información que requieras:<br/><br/><b>https://asegurado.serviclick.cl</b><br/><br/><b>Login:</b>&nbsp;${email}<br/><b>Password</b>:&nbsp;${generatedPassword}<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
+      },
+      {
+        headers: config.email.apiKey,
+      }
+    );
+    if (!sendEmailResponse.data.success) {
+      createLogger.error({
+        model: "email",
+        error: sendEmailResponse.error,
+      });
+      return { success: false, error: "Error creating email" };
+    }
+    return res.status(200).json({success: true, data: 'OK', error: null})
+  } catch (e: any) {
+    createLogger.error({
+      controller: "userInsured/restorePassword",
+      error: (e as Error).message,
+    });
+    res.status(500).json({ error: "Error restoring user insured" });
+    return;
+  }
+}
+
+export { assignPassword, validate, getByEmail, restorePassword };
