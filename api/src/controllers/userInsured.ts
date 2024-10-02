@@ -123,10 +123,10 @@ const restorePassword = async (req: any, res: any) => {
     const sendEmailResponse: any = await axios.post(
       config.email.URL.send,
       {
-        from: { name: "Bienvenido a ServiClick" },
+        from: { name: "Restauracion de contraseña" },
         to: 'dev.vcaceres@gmail.com',
         subject: "Tus credenciales de acceso a nuestra plataforma",
-        message: `<b>Hola&nbsp;${emailResponse.data.name}</b><br/><br/>Bienvenido a ServiClick, a continuación te detallamos los datos de acceso a nuestra plataforma para que puedas completar o modificar la información que requieras:<br/><br/><b>https://asegurado.serviclick.cl</b><br/><br/><b>Login:</b>&nbsp;${email}<br/><b>Password</b>:&nbsp;${generatedPassword}<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
+        message: `<b>Hola&nbsp;${emailResponse.data.name}</b><br/><br/>A continuación te detallamos los datos de acceso a nuestra plataforma para que puedas completar o modificar la información que requieras:<br/><br/><b>https://asegurado.serviclick.cl</b><br/><br/><b>Login:</b>&nbsp;${email}<br/><b>Password</b>:&nbsp;${generatedPassword}<br/><br/><b>Saludos cordiales,</b><br/><br/><b>Equipo ServiClick</b>`,
       },
       {
         headers: config.email.apiKey,
