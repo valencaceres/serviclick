@@ -33,6 +33,7 @@ export const allowedOrigins = [
   "https://felicity360.serviclick.cl",
   "https://bonda.serviclick.cl",
   "http://localhost:3002",
+  "http://localhost:3004",
   "http://localhost:3008",
   "http://localhost:3009",
   "http://localhost:3010",

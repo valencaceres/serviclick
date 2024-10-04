@@ -6,26 +6,30 @@ const useUserInsured = () => {
   const {
     userInsured,
     isLoading: userInsuredIsLoading,
+    isRestored,
     isError: userInsuredIsError,
     error: userInsuredError,
   } = userInsuredStore(
     (state) => ({
       userInsured: state.userInsured,
       isLoading: state.isLoading,
+      isRestored: state.isRestored,
       isError: state.isError,
       error: state.error,
     }),
     shallow
   );
-  const { validate, reset: resetUserInsured } = userInsuredStore();
+  const { validate, reset: resetUserInsured, restorePassword } = userInsuredStore();
 
   return {
     userInsured,
     userInsuredIsLoading,
+    isRestored,
     userInsuredIsError,
     userInsuredError,
     validate,
     resetUserInsured,
+    restorePassword
   };
 };
 
