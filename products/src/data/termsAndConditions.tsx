@@ -10,12 +10,12 @@ export const termsAndCondicions = {
       </div>
       <div>&nbsp;</div>
       <div>
-        1.- MHM SERVICIOS SPA Rol Único Tributario N° 76.721.251-8, ubicada en
-        la comuna y ciudad de Santiago, en calle Enrique Mac Iver 440 piso 7
-        oficina 702, en adelante SERVICLIK, ofrece diversas funciones y
-        alternativas de asistencias para personas, empresas, fundaciones,
-        sindicatos, banca, retail, , mediante los canales de atención, definidos
-        más adelante, que pone a disposición del público.
+        1.- MHM SERVICIOS SPA Rol Único Tributario N°76.721.251-8, ubicada en la
+        comuna y ciudad de Santiago, en calle Huérfanos 669, piso 7, comuna de
+        Santiago, Región Metropolitana, en adelante SERVICLICK, ofrece diversas
+        funciones y alternativas de asistencias para personas, empresas,
+        fundaciones, sindicatos, banca, retail, mediante los canales de
+        atención, definidos más adelante, que pone a disposición del público.
       </div>
       <div>&nbsp;</div>
       <div>
@@ -36,21 +36,21 @@ export const termsAndCondicions = {
       <div>&nbsp;</div>
       <div>
         1.- Actualmente los Canales de Atención están constituidos por: El sitio
-        web www.serviclcick.cl; El botón de pago de SERVICLCIK ubicado en sitios
-        web distintos de www.ssrviclcick.cl para iOS y Android, consistentes en
+        web www.serviclick.cl; El botón de pago de SERVICLICK ubicado en sitios
+        web distintos de www.serviclick.cl para iOS y Android, consistentes en
         dispositivos ubicados en lugares de fácil acceso al público y en los
         cuales las personas pueden obtener comprobantes de pagos y copia de sus
         membresías. La sola visita del Sitio no te impone obligación alguna, a
         menos que hayas expresado en forma inequívoca y mediante actos
-        positivos, tu voluntad de adquirir uno o más bienes o servicios, en la
-        forma indicada en este texto precedente.
+        positivos, tu voluntad de adquirir uno o más servicios, en la forma
+        indicada en este texto precedente.
       </div>
       <div>&nbsp;</div>
       <div>
-        2.- Para la utilización de algunos Canales de Atención el sistema
+        2- Para la utilización de algunos Canales de Atención el sistema
         entregará la opción de registro, para tener acceso a contratar uno o más
         servicios, quedando a decisión del futuro Usuario. Sin perjuicio de lo
-        anterior, SERVICLCIK podrá exigir el registro para algún canal
+        anterior, SERVICLICK podrá exigir el registro para algún canal
         específico o para acceder a algunas funcionalidades o programas de
         fidelización. En todos los casos, se deberán aceptar expresamente los
         Términos y Condiciones.
@@ -78,16 +78,16 @@ export const termsAndCondicions = {
         proteger y asegurar la confidencialidad y reserva de su contraseña. En
         caso de creer que su contraseña ha sido conocida por otra persona o en
         caso de haber sido, o pudiere ser, utilizada de manera no autorizada, el
-        Usuario debe informar dicha situación a SERVICLCIK de inmediato al
-        correo electrónico info@serviclick.cl , o contactarse el fono al fono
-        600 086 0580, así como reemplazarla por una nueva mediante el
-        procedimiento establecido para tales efectos.
+        Usuario debe informar dicha situación a SERVICLICK de inmediato al
+        correo electrónico info@serviclick.cl, o contactarse el fono al fono 600
+        086 0580, así como reemplazarla por una nueva mediante el procedimiento
+        establecido para tales efectos.
       </div>
       <div>&nbsp;</div>
       <div>
         3.- Cuando los Usuarios proporcionen información inexacta, incompleta
         y/o falsa, la SERVICLICK se reserva el derecho de negar el acceso a los
-        Canales de Atención y/o a los servicios relacionados.
+        Canales de Atención y/o a los servicios contratados.
       </div>
       <div>&nbsp;</div>
       <div>
@@ -119,17 +119,17 @@ export const termsAndCondicions = {
         sistemas o medios que se encuentren implementados o en el futuro se
         implementen para estos efectos. ii) Cargo directo a la cuenta del
         cliente en los Bancos o Instituciones Financieras afiliadas o no a
-        SERVICLCIK.
+        SERVICLICK.
       </div>
       <div>&nbsp;</div>
       <div>
         4.- Con respecto de la falta de pago recurrente por parte del cliente,
         se hace presente qué, este servicio es un producto anual, el cual se
         podrá cancelar de una y hasta doce cuotas mensuales y sucesivas. En
-        razón de esto el cliente declara conocer lo establecido en la ley
-        19.046, 19.659, código civil, código de comercio y sus leyes
+        razón de esto el cliente declara conocer lo establecido en la Leyes
+        19.046 y 19.659, Código Civil, Código de Comercio y sus leyes
         complementarias, en consecuencia, el cliente reconoce, entiende y acepta
-        que el no cumplimento de las obligaciones contrariadas en presente
+        que el no cumplimiento de las obligaciones contrariadas en presente
         instrumento privado podría originar cargos adicionales de interés y
         gestiones de cobranza.
       </div>
@@ -146,32 +146,32 @@ export const termsAndCondicions = {
         individualización, así como su información de contacto y otros datos de
         su persona que resulten esenciales para las finalidades, el buen
         funcionamiento y el constante mejoramiento de los Canales de Atención y
-        de la SERVICLCIK. Están comprendidos dentro de lo anteriormente
+        de la SERVICLICK. Están comprendidos dentro de lo anteriormente
         señalado, el tratamiento conducente a aumentar el conocimiento de los
         clientes, para efectos de mejorar su experiencia de servicio o servicios
-        , así como para otorgarles ofertas, promociones, beneficios exclusivos
-        que podrían consistir en ofertas en productos y servicios, por ejemplo,
-        en convenios, concursos, descuentos,, así como en el ofrecimiento de
-        productos o servicios farmacéuticos , seguros, asistencias, y, en
-        general, cualquier otra cortesía o privilegio que se otorgue en
-        consideración a la aceptación de los Términos y Condiciones, así como
-        cualquier acción para recompensar la preferencia de éstos por SERVICLCIK
-        (en adelante también e indistintamente, los “Beneficios”). Estos
-        Beneficios podrán ser tanto de carácter general, así como adaptados a
-        las características personales de los Usuarios. En el tratamiento de
-        estos datos, se incluyen todas las operaciones, según la definición
-        establecida en la Ley. Asimismo, se deja constancia que el tratamiento
-        de datos personales y únicamente supeditado para la realización de
-        estudios u otros similares, puede incluir, con excepción de las
-        sociedades relacionadas según se definen en el párrafo siguiente, la
-        comunicación, transmisión o transferencia a terceros distintos a
-        SERVICLICK de datos previamente anonimizados, lo que permite que estos
-        datos no puedan identificar a una persona o hacerla identificable.
-        Asimismo, se deja constancia que para el cumplimiento de los fines de
-        respaldo y/o procesamiento, los datos personales y la demás información
-        proporcionada por los Usuarios, podrá ser almacenada y/o procesada por
-        terceros distintos al sistema comercial de SERVICLICK ubicado ya sea en
-        Chile o en el extranjero.
+        que puedan ser contratados, así como para otorgarles ofertas,
+        promociones, beneficios exclusivos que podrían consistir en ofertas en
+        productos y servicios, por ejemplo, en convenios, concursos,
+        descuentos,, así como en el ofrecimiento de productos o servicios
+        farmacéuticos , seguros, asistencias, y, en general, cualquier otra
+        cortesía o privilegio que se otorgue en consideración a la aceptación de
+        los Términos y Condiciones, así como cualquier acción para recompensar
+        la preferencia de éstos por SERVICLICK (en adelante también e
+        indistintamente, los “Beneficios”). Estos Beneficios podrán ser tanto de
+        carácter general, así como adaptados a las características personales de
+        los Usuarios. En el tratamiento de estos datos, se incluyen todas las
+        operaciones, según la definición establecida en la Ley. Asimismo, se
+        deja constancia que el tratamiento de datos personales y únicamente
+        supeditado para la realización de estudios u otros similares, puede
+        incluir, con excepción de las sociedades relacionadas según se definen
+        en el párrafo siguiente, la comunicación, transmisión o transferencia a
+        terceros distintos a SERVICLICK de datos previamente anonimizados, lo
+        que permite que estos datos no puedan identificar a una persona o
+        hacerla identificable. Asimismo, se deja constancia que para el
+        cumplimiento de los fines de respaldo y/o procesamiento, los datos
+        personales y la demás información proporcionada por los Usuarios, podrá
+        ser almacenada y/o procesada por terceros distintos al sistema comercial
+        de SERVICLICK ubicado ya sea en Chile o en el extranjero.
       </div>
       <div>&nbsp;</div>
       <div>
@@ -276,7 +276,7 @@ export const termsAndCondicions = {
         para continuar con la utilización de sus datos personales, sin perjuicio
         que, debido a que éstos son esenciales para el Programa, podría
         traducirse en la exclusión del mismo. Para todos estos efectos se podrá
-        dirigir una comunicación a info@serviclcick.cl
+        dirigir una comunicación a info@serviclick.cl
       </div>
       <div>&nbsp;</div>
       <div>
