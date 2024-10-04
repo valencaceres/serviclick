@@ -6,38 +6,38 @@ import Button from "../../ui/Button";
 import Tooltip from "../../ui/Tooltip";
 import InputText from "../../ui/InputText";
 
-import { useUser } from "../../../zustand/hooks";
+import { useUserInsured } from "../../../zustand/hooks";
 
 import { numberRegEx } from "../../../utils/regEx";
 
 const Insured = () => {
-  const { user } = useUser()
+  const { userInsured } = useUserInsured()
 
   const initialDataInsuredForm = {
-    rut: { value: user.rut || '', isValid: user.rut !== "" },
-    name: { value: user.name || '', isValid: user.name !== "" },
+    rut: { value: userInsured.rut || '', isValid: userInsured.rut !== "" },
+    name: { value: userInsured.name || '', isValid: userInsured.name !== "" },
     paternalLastName: {
-      value: user.paternallastname || '',
-      isValid: user.paternallastname !== "",
+      value: userInsured.paternalLastName || '',
+      isValid: userInsured.paternalLastName !== "",
     },
     maternalLastName: {
-      value: user.maternallastname || '',
-      isValid: user.maternallastname !== "",
+      value: userInsured.maternalLastName || '',
+      isValid: userInsured.maternalLastName !== "",
     },
     birthDate: {
-      value: user.birthdate || '',
-      isValid: user.birthdate !== "",
+      value: userInsured.birthDate || '',
+      isValid: userInsured.birthDate !== "",
     },
     address: {
-      value: user.address || '',
-      isValid: user.address !== "",
+      value: userInsured.address || '',
+      isValid: userInsured.address !== "",
     },
     district: {
-      value: user.district || '',
-      isValid: user.district !== "",
+      value: userInsured.district || '',
+      isValid: userInsured.district !== "",
     },
-    email: { value: user.email || '', isValid: user.email !== "" },
-    phone: { value: user.phone || '', isValid: user.phone !== "" },
+    email: { value: userInsured.email || '', isValid: userInsured.email !== "" },
+    phone: { value: userInsured.phone || '', isValid: userInsured.phone !== "" },
   };
   
   const [insuredForm, setInsuredForm] = useState(initialDataInsuredForm);

@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 
 import Icon from "../../ui/Icon";
 
-import { useUI, useUser, useUserInsured } from "../../../zustand/hooks";
+import { useUI, useUser, useUserInsured, useInsured } from "../../../zustand/hooks";
 
 import styles from "./Menu.module.scss";
 
@@ -25,6 +25,7 @@ const menuOptions = [
 const Menu = () => {
   const router = useRouter();
   const {userInsured} = useUserInsured()
+  const {getProfile} = useInsured()
   const { setTitle, setShowButtonBack } = useUI();
 
   const handleOptionClick = (route: string) => {
@@ -32,6 +33,7 @@ const Menu = () => {
   };
 
   useEffect(() => {
+    getProfile(userInsured.rut)
     setTitle("Menú principal");
     setShowButtonBack(false);
   }, []);
