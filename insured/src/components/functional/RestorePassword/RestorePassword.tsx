@@ -28,12 +28,11 @@ const RestorePassword = () => {
       }}>
       <Component>
       {isRestored ? 
-      <Row>
         <Cell>
             <h1>¡Se ha enviado un correo a tu casilla de correo electrónico con tu nueva contraseña!</h1>
         </Cell>
-      </Row>
       :
+        <Row>
             <Cell align='center'>
                 <Row>
                     <Cell align='center'>
@@ -58,6 +57,7 @@ const RestorePassword = () => {
                     </Cell>
                 </Row>
             </Cell>
+        </Row>
         }
       </Component>
     </div>
