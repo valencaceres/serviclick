@@ -8,14 +8,20 @@ import Button from "../../ui/Button";
 
 import { useUserInsured, useUser } from "../../../zustand/hooks";
 
+import styles from './Login.module.scss'
+
 const Login = () => {
-  const { validate, isLoading } = useUser();
+  const { validate, restorePassword } = useUserInsured();
   const router = useRouter()
 
   const [loginForm, setLoginForm] = useState({
     email: "",
     password: "",
   });
+
+  const handleClickRestorePassword = () => {
+    router.push('/restorePassword')
+  }
 
   const handleClickEnter = () => {
     validate(loginForm.email, loginForm.password);
@@ -62,6 +68,11 @@ const Login = () => {
         <Row>
           <Cell align="center">
             <Button text="Ingresar" width="200px" onClick={handleClickEnter} />
+          </Cell>
+        </Row>
+        <Row>
+          <Cell align='center'>
+            <p className={styles.password} onClick={handleClickRestorePassword}>Olvidé mi contraseña</p>
           </Cell>
         </Row>
       </Component>
