@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
@@ -24,6 +24,12 @@ const Switch = ({ children }: any) => {
   const handleClickBack = () => {
     router.push(ui.pathButtonBack);
   };
+
+  useEffect(() => {
+    if (!userInsured?.email && currentRoute !== '/') {
+      router.push('/');
+    }
+  }, [userInsured, currentRoute, router]);
 
   return (
     <Fragment>

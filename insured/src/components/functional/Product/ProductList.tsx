@@ -53,11 +53,13 @@ const ProductList = () => {
             >
               {product.name}
             </button>
-            {product.collection[0].balance > 0 && (
-              <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-4 py-2 rounded-full text-xs font-semibold">
-                Adeudado: {product.collection[0].balance}
-              </span>
-            )}
+            {product.collection &&
+              product.collection.length > 0 &&
+              product.collection[0].balance > 0 && (
+                <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-4 py-2 rounded-full text-xs font-semibold">
+                  Adeudado: {product.collection[0].balance}
+                </span>
+              )}
           </div>
         ))}
       </div>
