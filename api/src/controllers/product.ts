@@ -908,7 +908,20 @@ const createProductPlans = async (
   if (customerprice && customerprice > 0) {
     productPlanData.frequency = frecuencyData;
     if(!retailResponse.data){
-
+      try {
+        const planReveniuResponse = await axios.get(
+          `${config.reveniu.URL.plan}${customer_plan_id_new}`,
+          {
+            headers: config.reveniu.apiKey,
+          }
+        );
+      } catch (err) {
+        createLogger.error({
+          controller: "product/createProductPlans",
+          error: "Error 404 - Not found yearly_plan will be replaced by 0",
+        });
+        customer_plan_id_new = 0;
+      }
     }
 
     const planResponseCustomer = await axios[
