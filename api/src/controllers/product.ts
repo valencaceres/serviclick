@@ -744,12 +744,12 @@ const createProductPlans = async (
             headers: config.reveniu.apiKey,
           }
         );
-      } catch (err) {
+      } catch (e) {
         createLogger.error({
-          controller: "product/createProductPlans",
-          error: "Error 404 - Not found yearly_plan will be replaced by 0",
+          controller: "product/createProductPlans - yearly",
+          error: (e as Error).message,
         });
-        yearly_plan_id_new = 0;
+        customer_plan_id_new = 0;
       }
     }
 
@@ -822,12 +822,12 @@ const createProductPlans = async (
             headers: config.reveniu.apiKey,
           }
         );
-      } catch (err) {
+      } catch (e) {
         createLogger.error({
-          controller: "product/createProductPlans",
-          error: "Error 404 - Not found yearly_plan will be replaced by 0",
+          controller: "product/createProductPlans - company",
+          error: (e as Error).message,
         });
-        new_company_plan_id = 0;
+        customer_plan_id_new = 0;
       }
     }
 
@@ -915,10 +915,10 @@ const createProductPlans = async (
             headers: config.reveniu.apiKey,
           }
         );
-      } catch (err) {
+      } catch (e) {
         createLogger.error({
-          controller: "product/createProductPlans",
-          error: "Error 404 - Not found yearly_plan will be replaced by 0",
+          controller: "product/createProductPlans - customer",
+          error: (e as Error).message,
         });
         customer_plan_id_new = 0;
       }
