@@ -532,8 +532,7 @@ const addProduct = async (req: any, res: any) => {
   if (pdfbase64 && pdfbase64 != "") {
     let response;
     if (
-      responsePlans.data?.company?.product_plan_id &&
-      responsePlans.data?.yearly?.product_plan_id
+      responsePlans.data?.company?.product_plan_id
     ) {
       response = await Product.insertPdf(
         responsePlans.data.company.product_plan_id,

@@ -11,6 +11,7 @@ import * as ProductFamilyValue from "../models/productFamilyValue";
 import * as ProductPlan from "../models/productPlan";
 import * as Value from "../models/value";
 import * as Plan from "../models/plan";
+import * as Retail from '../models/retail'
 import fs from "fs";
 import dirPath from "path";
 
@@ -646,6 +647,7 @@ const createProductPlans = async (
   discount: DiscountT,
   beneficiary_price: number | null
 ) => {
+  const retailResponse = await Retail.getById(agent_id)
   const productResponse = await Product.getProduct(id, agent_id);
   if (!productResponse.success) {
     createLogger.error({
@@ -734,19 +736,21 @@ const createProductPlans = async (
   if (yearlyprice && yearlyprice > 0) {
     productPlanData.frequency = 4;
 
-    try {
-      const planReveniuResponse = await axios.get(
-        `${config.reveniu.URL.plan}${yearly_plan_id_new}`,
-        {
-          headers: config.reveniu.apiKey,
-        }
-      );
-    } catch (err) {
-      createLogger.error({
-        controller: "product/createProductPlans",
-        error: "Error 404 - Not found yearly_plan will be replaced by 0",
-      });
-      yearly_plan_id_new = 0;
+    if(!retailResponse.data){
+      try {
+        const planReveniuResponse = await axios.get(
+          `${config.reveniu.URL.plan}${yearly_plan_id_new}`,
+          {
+            headers: config.reveniu.apiKey,
+          }
+        );
+      } catch (e) {
+        createLogger.error({
+          controller: "product/createProductPlans - yearly",
+          error: (e as Error).message,
+        });
+        customer_plan_id_new = 0;
+      }
     }
 
     const planResponseYearly = await axios[
@@ -810,19 +814,21 @@ const createProductPlans = async (
     let new_company_plan_id = company_plan_id_new > 0 ? company_plan_id_new : 0;
     let company_plan_id_extr =
       company_plan_id_new > 0 ? company_plan_id_new : 0;
-    try {
-      const planReveniuResponse = await axios.get(
-        `${config.reveniu.URL.plan}${new_company_plan_id}`,
-        {
-          headers: config.reveniu.apiKey,
-        }
-      );
-    } catch (err) {
-      createLogger.error({
-        controller: "product/createProductPlans",
-        error: "Error 404 - Not found yearly_plan will be replaced by 0",
-      });
-      new_company_plan_id = 0;
+    if(!retailResponse.data){
+      try {
+        const planReveniuResponse = await axios.get(
+          `${config.reveniu.URL.plan}${new_company_plan_id}`,
+          {
+            headers: config.reveniu.apiKey,
+          }
+        );
+      } catch (e) {
+        createLogger.error({
+          controller: "product/createProductPlans - company",
+          error: (e as Error).message,
+        });
+        customer_plan_id_new = 0;
+      }
     }
 
     if (customerprice && customerprice > 0) {
@@ -895,24 +901,27 @@ const createProductPlans = async (
     companyData = {
       id: new_company_plan_id,
       price: companyprice ?? 0,
+      product_plan_id: productPlanCompanyResponse.data.id,
     };
   }
 
   if (customerprice && customerprice > 0) {
     productPlanData.frequency = frecuencyData;
-    try {
-      const planReveniuResponse = await axios.get(
-        `${config.reveniu.URL.plan}${customer_plan_id_new}`,
-        {
-          headers: config.reveniu.apiKey,
-        }
-      );
-    } catch (err) {
-      createLogger.error({
-        controller: "product/createProductPlans",
-        error: "Error 404 - Not found yearly_plan will be replaced by 0",
-      });
-      customer_plan_id_new = 0;
+    if(!retailResponse.data){
+      try {
+        const planReveniuResponse = await axios.get(
+          `${config.reveniu.URL.plan}${customer_plan_id_new}`,
+          {
+            headers: config.reveniu.apiKey,
+          }
+        );
+      } catch (e) {
+        createLogger.error({
+          controller: "product/createProductPlans - customer",
+          error: (e as Error).message,
+        });
+        customer_plan_id_new = 0;
+      }
     }
 
     const planResponseCustomer = await axios[
