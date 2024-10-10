@@ -28,6 +28,7 @@ import {
   removeAgent,
   exportPayments,
   getSales,
+  getPdfByRetail
 } from "../controllers/retail";
 import isAuthenticated from "../middlewares/isAuthenticated";
 import authMiddleware from "../middlewares/isAdminWithoutClerk";
@@ -101,5 +102,6 @@ RetailRouter.post(
 );
 RetailRouter.get("/exportPayments/:id", auth, exportPayments);
 RetailRouter.get("/getSales/:id", auth, getSales);
+RetailRouter.get("/getPdfByRetail", auth, getPdfByRetail);
 
 export default RetailRouter;

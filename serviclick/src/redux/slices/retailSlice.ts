@@ -20,10 +20,10 @@ export type ProductT = {
   price: PriceT;
   currency: string;
   discount: DiscountT;
-  pdfbase64: any;
-  yearly_price: number,
-  beneficiary_price:number
-
+  pdfbase64: PdfT;
+  yearly_price: number;
+  beneficiary_price: number;
+  productplan_id: string;
 };
 
 export type UserT = {
@@ -54,7 +54,13 @@ export type RetailT = {
 export type StateT = {
   list: RetailT[];
   retail: RetailT;
+  pdf: PdfT
   loading: boolean;
+  loadingpdf: boolean
+};
+
+export type PdfT = {
+  pdf: string;
 };
 
 const initialState: StateT = {
@@ -74,7 +80,9 @@ const initialState: StateT = {
     products: [],
     users: [],
   },
+  pdf: {pdf: ""},
   loading: false,
+  loadingpdf: false
 };
 
 export const retailSlice = createSlice({
@@ -90,10 +98,16 @@ export const retailSlice = createSlice({
     setProducts: (state: StateT, action: PayloadAction<ProductT[]>) => {
       state.retail.products = action.payload;
     },
+    setPdf: (state: StateT, action: PayloadAction<PdfT>) => {
+      state.pdf = action.payload
+    },
     setLogo: (state: StateT, action: PayloadAction<string>) => {
       state.retail.logo = action.payload;
     },
     setLoading: (state: StateT, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
+    setLoadingPdf: (state: StateT, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },
     resetRetail: (state: StateT) => {
@@ -114,6 +128,8 @@ export const {
   setLoading,
   setProducts,
   setLogo,
+  setPdf,
+  setLoadingPdf,
   resetLogo,
   resetRetail,
   reset,
@@ -194,31 +210,35 @@ export const deleteById = (id: string) => async (dispatch: any) => {
 
 export const addProduct =
   (id: string, product: ProductT, number: number) => async (dispatch: any) => {
-    const jwtToken = localStorage.getItem('jwtToken');
+    const jwtToken = localStorage.getItem("jwtToken");
 
     if (!jwtToken) {
-      console.error('Token JWT no encontrado en el localStorage');
+      console.error("Token JWT no encontrado en el localStorage");
       return false;
     }
 
     const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${jwtToken}`,
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${jwtToken}`,
     };
 
     try {
-      const response = await apiInstance.post(`retail/addProduct`, {
-        retail_id: id,
-        ...product,
-      }, { headers });
+      const response = await apiInstance.post(
+        `retail/addProduct`,
+        {
+          retail_id: id,
+          ...product,
+        },
+        { headers }
+      );
 
       const { data } = response;
       dispatch(setProducts(data));
       dispatch(setLoading(false));
-      
+
       return true;
     } catch (error) {
-      console.error('Error al agregar el producto:', error);
+      console.error("Error al agregar el producto:", error);
       return false;
     }
   };
@@ -237,4 +257,19 @@ export const removeProduct =
     dispatch(setProducts(data));
     dispatch(setLoading(false));
     return true;
+  };
+
+export const getPdfByRetail =
+  (retail_id: string, productplan_id: string) => async (dispatch: any) => {
+    try {
+      console.log(retail_id, productplan_id);
+      const data = await apiInstance.get(`retail/getPdfByRetail?retail_id=${retail_id}&productplan_id${productplan_id}`);
+      console.log(data);
+  
+      dispatch(setPdf(data.data));
+      dispatch(setLoading(false));
+      return true;
+    } catch (error) {
+      return false;
+    }
   };

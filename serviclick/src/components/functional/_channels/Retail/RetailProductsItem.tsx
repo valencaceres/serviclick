@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 
 import { ContentCell, ContentRow } from "../../../layout/Content";
 
@@ -6,7 +7,7 @@ import ComboBox from "../../../ui/ComboBox";
 import InputText from "../../../ui/InputText";
 import Button from "../../../ui/Button";
 import { Button as ButtonUi } from "../../../ui/ButtonC";
-import { useProduct } from "../../../../hooks";
+import { useProduct, useRetail } from "../../../../hooks";
 import { Label } from "~/components/ui/Label";
 import { Input } from "~/components/ui/Input";
 import { Modal, Window } from "~/components/ui/Modal/index";
@@ -18,8 +19,14 @@ const RetailProductsItem = ({
   saveProduct,
   setShowModal,
   beneficiaries,
+  isClicked
 }: any) => {
   const { productList } = useProduct();
+  const {pdf, loadingpdf, getPdfByRetail} = useRetail()
+  const router = useRouter()
+  const {id} = router.query
+
+  console.log(pdf);
 
   const commisionTypeData = [
     { id: "P", name: "Porcentaje" },
@@ -57,26 +64,6 @@ const RetailProductsItem = ({
     });
   };
 
-  // const handleChangeCommisionType = (event: any) => {
-  //   setRetailProductForm({
-  //     ...retailProductForm,
-  //     commisionTypeCode: {
-  //       value: event.target.value,
-  //       isValid: event.target.value !== "",
-  //     },
-  //   });
-  // };
-
-  // const handleChangeValue = (event: any) => {
-  //   setRetailProductForm({
-  //     ...retailProductForm,
-  //     value: {
-  //       value: event.target.value,
-  //       isValid: event.target.value !== "" && parseInt(event.target.value) > 0,
-  //     },
-  //   });
-  // };
-
   const handleChangeBasePrice = (event: any) => {
     setRetailProductForm({
       ...retailProductForm,
@@ -86,20 +73,6 @@ const RetailProductsItem = ({
       },
     });
   };
-
-  // const handleChangeCustomerPrice = (event: any) => {
-  //   setRetailProductForm({
-  //     ...retailProductForm,
-  //     price: {
-  //       ...retailProductForm.price,
-  //       customer: {
-  //         value: event.target.value,
-  //         isValid:
-  //           event.target.value !== "" && parseInt(event.target.value) > 0,
-  //       },
-  //     },
-  //   });
-  // };
 
   const handleChangeCompanyPrice = (event: any) => {
     setRetailProductForm({
@@ -207,6 +180,19 @@ const RetailProductsItem = ({
     saveProduct();
   };
 
+  if(isClicked){
+
+  }
+
+  useEffect(() => {
+    if(id){
+      const productplan_id = retailProductForm.productplan_id.value
+      console.log(productplan_id);
+      const retail_id = Array.isArray(id) ? id[0] : id;
+      getPdfByRetail(retail_id, productplan_id)
+    }
+  },[isClicked])
+
   useEffect(() => {
     setEnabledButton(
       retailProductForm.product_id.isValid &&
@@ -233,28 +219,6 @@ const RetailProductsItem = ({
           dataValue="id"
           dataText="name"
         />
-        {/* <ContentRow gap="5px">
-          <ComboBox
-            id="cmbCommisionType"
-            label="Tipo de comisión"
-            width="100%"
-            value={retailProductForm.commisionTypeCode.value}
-            onChange={handleChangeCommisionType}
-            placeHolder=":: Seleccione Tipo ::"
-            data={commisionTypeData}
-            dataValue="id"
-            dataText="name"
-          />
-          <InputText
-            label="Valor"
-            width="100%"
-            type="number"
-            maxLength={6}
-            value={retailProductForm.value.value}
-            onChange={handleChangeValue}
-            isValid={retailProductForm.value.isValid}
-          />
-        </ContentRow> */}
         <ContentRow gap="5px">
           <InputText
             label="Precio normal"
@@ -265,15 +229,6 @@ const RetailProductsItem = ({
             onChange={handleChangeBasePrice}
             isValid={retailProductForm.baseprice.isValid}
           />
-          {/* <InputText
-            label="Precio público ($)"
-            width="132px"
-            type="number"
-            maxLength={6}
-            value={retailProductForm.price.customer.value}
-            onChange={handleChangeCustomerPrice}
-            isValid={retailProductForm.price.customer.isValid}
-          /> */}
           <InputText
             label="Precio empresa"
             width="122px"
@@ -348,7 +303,7 @@ const RetailProductsItem = ({
           />
         </ContentRow>
         <ContentRow gap="5px">
-          {initialPdfData != "" && initialPdfData != null ? (
+          {pdf && pdf != null ? (
             <>
               <div className="flex w-full max-w-xl flex-col items-center gap-1.5 ">
                 <div className="w-full">
@@ -360,7 +315,7 @@ const RetailProductsItem = ({
                   </ButtonUi>
                   <Modal showModal={pdfModal}>
                     <Window title="Documento" setClosed={handleCloseModalPdf}>
-                      <PDFViewer base64={initialPdfData} />
+                      {/* <PDFViewer base64={pdf} /> */}
                     </Window>
                   </Modal>
                 </div>

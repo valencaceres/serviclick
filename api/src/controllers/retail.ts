@@ -1545,6 +1545,31 @@ const getRetailDataByRut = async (rut: string) => {
   }
 };
 
+export const getPdfByRetail = async (req: Request, res: Response) => {
+  try {
+    const {retail_id, productplan_id} = req.query
+    const pdfResponse = await RetailProduct.getPdfByRetail(retail_id, productplan_id)
+    if(!pdfResponse.success){
+      return {
+        success: false,
+        model: 'retailproduct/getPdfById',
+        data: null,
+        error: pdfResponse.error,
+        status: 500
+      }
+    }
+    return res.status(200).json({data:pdfResponse.data})
+  } catch (e) {
+    return {
+      success: false,
+      model: "retail/getById",
+      data: null,
+      error: (e as Error).message,
+      status: 500,
+    };
+  }
+}
+
 export const sendCredentials = async (
   retail_rut: string,
   email: string,

@@ -64,6 +64,7 @@ interface IRetailProductForm {
   pdfbase64: any;
   yearly_price: IFormFieldNumber;
   beneficiary_price: IFormFieldNumber;
+  productplan_id: IFormFieldString
 }
 
 interface IRetailUserForm {
@@ -78,14 +79,16 @@ interface IRetailUserForm {
 
 const RetailDetail = () => {
   const router = useRouter();
-
+  const {id} = router.query
   const {
     retail,
     setRetail,
     loading: retailLoading,
+    loadingpdf,
     createRetail,
     addProduct,
     removeProduct,
+    getPdfByRetail
   } = useRetail();
   const { getDistricts } = useDistrict();
 
@@ -124,6 +127,7 @@ const RetailDetail = () => {
       cicles: { value: 0, isValid: true },
     },
     pdfbase64: "",
+    productplan_id: {value: '', isValid: true}
   };
 
   const initialDataRetailUserForm: IRetailUserForm = {
@@ -153,6 +157,7 @@ const RetailDetail = () => {
   const [showWarningDeleteProduct, setShowWarningDeleteProduct] =
     useState(false);
   const [productBeneficiaries, setProductBeneficiaries] = useState<number>(0);
+  const [isClicked, setIsClicked] = useState(false)
 
   const setClosedWarningDeleteProduct = () => {
     setShowWarningDeleteProduct(false);
@@ -195,8 +200,10 @@ const RetailDetail = () => {
         percent: { value: item.discount.percent, isValid: true },
         cicles: { value: item.discount.cicles, isValid: true },
       },
+      productplan_id: {value: item.productplan_id, isValid: true}
     });
     setProductBeneficiaries(item.beneficiaries);
+    setIsClicked(true)
     setShowModalProducts(true);
   };
 
@@ -214,7 +221,6 @@ const RetailDetail = () => {
     setRetailUserForm(initialDataRetailUserForm);
     setShowModalUsers(true);
   };
-
   const handleClickEditUser = (item: any) => {
     setRetailUserForm({
       rut: { value: item.rut, isValid: true },
@@ -302,9 +308,9 @@ const RetailDetail = () => {
       ],
     });
   };
-
+  console.log(isClicked);
   const handleClickSendCredentials = () => {};
-
+  console.log(retailLoading);
   useEffect(() => {
     if (retail.rut === "") {
       setRetailForm(initialDataRetailForm);
@@ -335,13 +341,6 @@ const RetailDetail = () => {
             deleteProduct={handleClickDeleteProduct}
             setRetailProductForm={setRetailProductForm}
           />
-{/*           <RetailUsers
-            addNewUser={handleClickAddNewUser}
-            editUser={handleClickEditUser}
-            deleteUser={handleClickDeleteUser}
-            setRetailUserForm={setRetailUserForm}
-            handleClickRemoveAgent={handleClickRemoveAgent}
-          /> */}
         </ContentCell>
       </ContentRow>
       <ModalWindow
@@ -355,6 +354,7 @@ const RetailDetail = () => {
           setRetailProductForm={setRetailProductForm}
           setShowModal={setShowModalProducts}
           beneficiaries={productBeneficiaries}
+          isClicked={isClicked}
         />
       </ModalWindow>
       <EditUser
@@ -367,7 +367,7 @@ const RetailDetail = () => {
         isOpen={showAlertUsers}
         setIsOpen={setShowAlertUsers}
       />
-      <Modal showModal={retailLoading}>
+      <Modal showModal={retailLoading || loadingpdf}>
         <div className={styles.message}>
           <Icon iconName="refresh" />
           Por favor espere

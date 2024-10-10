@@ -22,7 +22,7 @@ const create: any = async (
       currency,
       number,
       yearly_price || 0,
-      yearly_plan_id ,
+      yearly_plan_id,
     ];
 
     const resultRetailProduct = await pool.query(
@@ -69,7 +69,6 @@ const create: any = async (
       price: result.rows[0].companyprice,
       currency: result.rows[0].currency,
       number: result.rows[0].number,
-
     };
 
     return { success: true, data, error: null };
@@ -128,7 +127,6 @@ const getByRetailId: any = async (retail_id: string) => {
               max(ppl.discount_cicles) as discount_cicles,
               max(ppl.plan_id) as plan_id,
               ply.plan_id as yearly_plan_id,
-              plf.base64 as pdfBase64,
               sum(case when pol.id is null then 0 else 1 end) as subscriptions
        FROM   app.retailProduct brp
                 inner join app.product pro on brp.product_id = pro.id
@@ -174,7 +172,6 @@ const getByRetailId: any = async (retail_id: string) => {
         discount_cicles,
         plan_id,
         subscriptions,
-        pdfbase64
       } = row;
 
       return {
@@ -190,7 +187,6 @@ const getByRetailId: any = async (retail_id: string) => {
         yearlyprice,
         productplan_yearly_id,
         beneficiary_price,
-        pdfbase64,
         plan_id,
         discount: {
           type: discount_type,
@@ -207,4 +203,34 @@ const getByRetailId: any = async (retail_id: string) => {
   }
 };
 
-export { create, removeByProductId, getByRetailId };
+const getPdfByRetail: any = async (
+  retail_id: string,
+  productplan_id: string
+) => {
+  try {
+    const result = await pool.query(
+      `
+      select 	pdf."base64" 
+	from app.retailproduct rp
+		inner join app.productplan pl on rp.product_id = pl.product_id 
+		inner join app.productplanpdf pdf on pl.id = pdf.productplan_id 
+	where rp.retail_id = $1 and pl.id = $2
+      `,
+      [retail_id, productplan_id]
+    );
+
+    console.log("Query result:", result.rows);
+
+    if (result.rows.length === 0) {
+      console.log("Pdf Not Found");
+      return
+    }
+
+
+    return {success: true, data: result.rows[0], error: null}
+  } catch (e) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+export { create, removeByProductId, getByRetailId, getPdfByRetail };

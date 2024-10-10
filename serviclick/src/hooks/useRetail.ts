@@ -7,7 +7,9 @@ const useRetail = () => {
   const {
     retail,
     list: retailList,
+    pdf,
     loading,
+    loadingpdf
   } = useAppSelector((state) => state.retailSlice);
 
   const createRetail = (retail: Retail.RetailT) => {
@@ -75,6 +77,11 @@ const useRetail = () => {
     dispatch(Retail.removeProduct(id, product_id));
   };
 
+  const getPdfByRetail = (id: string, productplan_id: string) => {
+    dispatch(Retail.setLoading(true));
+    dispatch(Retail.getPdfByRetail(id, productplan_id))
+  }
+
   return {
     createRetail,
     getAllRetails,
@@ -90,9 +97,12 @@ const useRetail = () => {
     reset,
     retail,
     retailList,
+    pdf,
     loading,
+    loadingpdf,
     addProduct,
     removeProduct,
+    getPdfByRetail
   };
 };
 
