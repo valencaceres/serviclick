@@ -219,11 +219,8 @@ const getPdfByRetail: any = async (
       [retail_id, productplan_id]
     );
 
-    console.log("Query result:", result.rows);
-
     if (result.rows.length === 0) {
-      console.log("Pdf Not Found");
-      return
+      return {success: false, data: null, error: "Pdf Not Found"}
     }
 
 

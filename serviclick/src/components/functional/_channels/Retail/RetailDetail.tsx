@@ -88,10 +88,11 @@ const RetailDetail = () => {
     createRetail,
     addProduct,
     removeProduct,
-    getPdfByRetail
+    resetPdf, 
+    error
   } = useRetail();
   const { getDistricts } = useDistrict();
-
+  console.log(error);
   const initialDataRetailForm: IRetailForm = {
     rut: { value: "", isValid: true },
     name: { value: "", isValid: true },
@@ -180,6 +181,11 @@ const RetailDetail = () => {
     setShowModalProducts(true);
   };
 
+  const closeModal = () => {
+    resetPdf()
+    setShowModalProducts(false)
+  }
+
   const handleClickEditProduct = (item: any) => {
     setRetailProductForm({
       product_id: { value: item.product_id, isValid: true },
@@ -203,10 +209,10 @@ const RetailDetail = () => {
       productplan_id: {value: item.productplan_id, isValid: true}
     });
     setProductBeneficiaries(item.beneficiaries);
-    setIsClicked(true)
+    setIsClicked((prevState) => !prevState);
     setShowModalProducts(true);
   };
-
+  console.log(isClicked);
   const handleClickDeleteProduct = (item: any) => {
     setProductToDelete({ id: item.product_id, name: item.name });
     setShowWarningDeleteProduct(true);
@@ -346,7 +352,7 @@ const RetailDetail = () => {
       <ModalWindow
         showModal={showModalProducts}
         title="Producto"
-        setClosed={() => setShowModalProducts(false)}
+        setClosed={() => closeModal()}
       >
         <RetailProductsItem
           saveProduct={handleClickSaveProduct}
@@ -367,7 +373,7 @@ const RetailDetail = () => {
         isOpen={showAlertUsers}
         setIsOpen={setShowAlertUsers}
       />
-      <Modal showModal={retailLoading || loadingpdf}>
+      <Modal showModal={retailLoading && !error}>
         <div className={styles.message}>
           <Icon iconName="refresh" />
           Por favor espere

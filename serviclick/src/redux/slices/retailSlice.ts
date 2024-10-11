@@ -54,9 +54,10 @@ export type RetailT = {
 export type StateT = {
   list: RetailT[];
   retail: RetailT;
-  pdf: PdfT
+  base64: string
   loading: boolean;
   loadingpdf: boolean
+  error: boolean
 };
 
 export type PdfT = {
@@ -80,9 +81,10 @@ const initialState: StateT = {
     products: [],
     users: [],
   },
-  pdf: {pdf: ""},
+  base64: "",
   loading: false,
-  loadingpdf: false
+  loadingpdf: false,
+  error: false
 };
 
 export const retailSlice = createSlice({
@@ -98,8 +100,8 @@ export const retailSlice = createSlice({
     setProducts: (state: StateT, action: PayloadAction<ProductT[]>) => {
       state.retail.products = action.payload;
     },
-    setPdf: (state: StateT, action: PayloadAction<PdfT>) => {
-      state.pdf = action.payload
+    setPdf: (state: StateT, action: PayloadAction<string>) => {
+      state.base64 = action.payload
     },
     setLogo: (state: StateT, action: PayloadAction<string>) => {
       state.retail.logo = action.payload;
@@ -113,12 +115,19 @@ export const retailSlice = createSlice({
     resetRetail: (state: StateT) => {
       state.retail = initialState.retail;
     },
+    resetPdf: (state: StateT) => {
+      state.base64 = "",
+      state.error = false
+    },
     resetLogo: (state: StateT) => {
       state.retail.logo = initialState.retail.logo;
     },
     reset: (state: StateT) => {
       state = initialState;
     },
+    error: (state: StateT, action: PayloadAction<boolean>) => {
+      state.error = action.payload
+    }
   },
 });
 
@@ -131,8 +140,10 @@ export const {
   setPdf,
   setLoadingPdf,
   resetLogo,
+  resetPdf,
   resetRetail,
   reset,
+  error
 } = retailSlice.actions;
 
 export default retailSlice.reducer;
@@ -263,13 +274,14 @@ export const getPdfByRetail =
   (retail_id: string, productplan_id: string) => async (dispatch: any) => {
     try {
       console.log(retail_id, productplan_id);
-      const data = await apiInstance.get(`retail/getPdfByRetail?retail_id=${retail_id}&productplan_id${productplan_id}`);
+      const data = await apiInstance.get(`retail/getPdfByRetail?retail_id=${retail_id}&productplan_id=${productplan_id}`);
       console.log(data);
   
-      dispatch(setPdf(data.data));
+      dispatch(setPdf(data.data.data.base64));
       dispatch(setLoading(false));
       return true;
-    } catch (error) {
+    } catch (e) {
+      dispatch(error(true))
       return false;
     }
   };

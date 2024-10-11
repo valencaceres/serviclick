@@ -22,11 +22,11 @@ const RetailProductsItem = ({
   isClicked
 }: any) => {
   const { productList } = useProduct();
-  const {pdf, loadingpdf, getPdfByRetail} = useRetail()
+  const {base64, loadingpdf, getPdfByRetail, loading} = useRetail()
   const router = useRouter()
   const {id} = router.query
 
-  console.log(pdf);
+  console.log(base64);
 
   const commisionTypeData = [
     { id: "P", name: "Porcentaje" },
@@ -303,7 +303,7 @@ const RetailProductsItem = ({
           />
         </ContentRow>
         <ContentRow gap="5px">
-          {pdf && pdf != null ? (
+          {base64 && base64 != null  ? (
             <>
               <div className="flex w-full max-w-xl flex-col items-center gap-1.5 ">
                 <div className="w-full">
@@ -315,7 +315,7 @@ const RetailProductsItem = ({
                   </ButtonUi>
                   <Modal showModal={pdfModal}>
                     <Window title="Documento" setClosed={handleCloseModalPdf}>
-                      {/* <PDFViewer base64={pdf} /> */}
+                      <PDFViewer base64={base64} />
                     </Window>
                   </Modal>
                 </div>

@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 import { config } from "../utils/config";
 
 const apiInstance = axios.create({
-  baseURL: `${config.server}/api`,
+  baseURL: `${config.server}/api/`,
   headers: {
     id: config.apiKey,
   },
