@@ -109,6 +109,7 @@ uploads
 
 .yarnrc.yml
 .yarn
+yarn.lock
 
 uploads
 xlsx

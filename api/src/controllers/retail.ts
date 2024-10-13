@@ -1049,6 +1049,7 @@ const exportPayments = async (req: any, res: any) => {
     return res.status(500).json({ error: "Error retrieving case." });
   }
 };
+
 function groupCasesByRetailName(cases: any) {
   const groupedData: { [key: string]: any[] } = {};
 
@@ -1062,6 +1063,7 @@ function groupCasesByRetailName(cases: any) {
 
   return groupedData;
 }
+
 const formatDate = (dateString: string) => {
   try {
     const date = new Date(dateString);
@@ -1070,6 +1072,7 @@ const formatDate = (dateString: string) => {
     return `Error formateando fecha ${dateString} `;
   }
 };
+
 function centerTextInWorksheet(worksheet: any) {
   const range = xlsx.utils.decode_range(worksheet["!ref"]);
 
@@ -1100,6 +1103,7 @@ function centerTextInWorksheet(worksheet: any) {
     }
   }
 }
+
 function formatCurrency(amount: number | string) {
   const numericAmount =
     typeof amount === "string" ? parseFloat(amount) : amount;
@@ -1533,6 +1537,28 @@ const getRetailDataByRut = async (rut: string) => {
       error: null,
       status: 200,
     };
+  } catch (e) {
+    return {
+      success: false,
+      model: "retail/getById",
+      data: null,
+      error: (e as Error).message,
+      status: 500,
+    };
+  }
+};
+
+export const getPdfByRetail = async (req: Request, res: Response) => {
+  try {
+    const { retail_id, productplan_id } = req.query;
+    const pdfResponse = await RetailProduct.getPdfByRetail(
+      retail_id,
+      productplan_id
+    );
+    if (!pdfResponse.success) {
+      return res.status(500).json({ data: null });
+    }
+    return res.status(200).json({ data: pdfResponse.data });
   } catch (e) {
     return {
       success: false,

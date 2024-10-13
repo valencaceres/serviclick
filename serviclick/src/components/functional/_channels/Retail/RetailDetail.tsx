@@ -64,6 +64,7 @@ interface IRetailProductForm {
   pdfbase64: any;
   yearly_price: IFormFieldNumber;
   beneficiary_price: IFormFieldNumber;
+  productplan_id: IFormFieldString
 }
 
 interface IRetailUserForm {
@@ -78,17 +79,20 @@ interface IRetailUserForm {
 
 const RetailDetail = () => {
   const router = useRouter();
-
+  const {id} = router.query
   const {
     retail,
     setRetail,
     loading: retailLoading,
+    loadingpdf,
     createRetail,
     addProduct,
     removeProduct,
+    resetPdf, 
+    error
   } = useRetail();
   const { getDistricts } = useDistrict();
-
+  console.log(error);
   const initialDataRetailForm: IRetailForm = {
     rut: { value: "", isValid: true },
     name: { value: "", isValid: true },
@@ -124,6 +128,7 @@ const RetailDetail = () => {
       cicles: { value: 0, isValid: true },
     },
     pdfbase64: "",
+    productplan_id: {value: '', isValid: true}
   };
 
   const initialDataRetailUserForm: IRetailUserForm = {
@@ -153,6 +158,7 @@ const RetailDetail = () => {
   const [showWarningDeleteProduct, setShowWarningDeleteProduct] =
     useState(false);
   const [productBeneficiaries, setProductBeneficiaries] = useState<number>(0);
+  const [isClicked, setIsClicked] = useState(false)
 
   const setClosedWarningDeleteProduct = () => {
     setShowWarningDeleteProduct(false);
@@ -175,6 +181,11 @@ const RetailDetail = () => {
     setShowModalProducts(true);
   };
 
+  const closeModal = () => {
+    resetPdf()
+    setShowModalProducts(false)
+  }
+
   const handleClickEditProduct = (item: any) => {
     setRetailProductForm({
       product_id: { value: item.product_id, isValid: true },
@@ -195,11 +206,13 @@ const RetailDetail = () => {
         percent: { value: item.discount.percent, isValid: true },
         cicles: { value: item.discount.cicles, isValid: true },
       },
+      productplan_id: {value: item.productplan_id, isValid: true}
     });
     setProductBeneficiaries(item.beneficiaries);
+    setIsClicked((prevState) => !prevState);
     setShowModalProducts(true);
   };
-
+  console.log(isClicked);
   const handleClickDeleteProduct = (item: any) => {
     setProductToDelete({ id: item.product_id, name: item.name });
     setShowWarningDeleteProduct(true);
@@ -214,7 +227,6 @@ const RetailDetail = () => {
     setRetailUserForm(initialDataRetailUserForm);
     setShowModalUsers(true);
   };
-
   const handleClickEditUser = (item: any) => {
     setRetailUserForm({
       rut: { value: item.rut, isValid: true },
@@ -302,9 +314,9 @@ const RetailDetail = () => {
       ],
     });
   };
-
+  console.log(isClicked);
   const handleClickSendCredentials = () => {};
-
+  console.log(retailLoading);
   useEffect(() => {
     if (retail.rut === "") {
       setRetailForm(initialDataRetailForm);
@@ -335,19 +347,12 @@ const RetailDetail = () => {
             deleteProduct={handleClickDeleteProduct}
             setRetailProductForm={setRetailProductForm}
           />
-{/*           <RetailUsers
-            addNewUser={handleClickAddNewUser}
-            editUser={handleClickEditUser}
-            deleteUser={handleClickDeleteUser}
-            setRetailUserForm={setRetailUserForm}
-            handleClickRemoveAgent={handleClickRemoveAgent}
-          /> */}
         </ContentCell>
       </ContentRow>
       <ModalWindow
         showModal={showModalProducts}
         title="Producto"
-        setClosed={() => setShowModalProducts(false)}
+        setClosed={() => closeModal()}
       >
         <RetailProductsItem
           saveProduct={handleClickSaveProduct}
@@ -355,6 +360,7 @@ const RetailDetail = () => {
           setRetailProductForm={setRetailProductForm}
           setShowModal={setShowModalProducts}
           beneficiaries={productBeneficiaries}
+          isClicked={isClicked}
         />
       </ModalWindow>
       <EditUser
@@ -367,7 +373,7 @@ const RetailDetail = () => {
         isOpen={showAlertUsers}
         setIsOpen={setShowAlertUsers}
       />
-      <Modal showModal={retailLoading}>
+      <Modal showModal={retailLoading && !error}>
         <div className={styles.message}>
           <Icon iconName="refresh" />
           Por favor espere

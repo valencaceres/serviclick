@@ -7,7 +7,10 @@ const useRetail = () => {
   const {
     retail,
     list: retailList,
+    base64,
     loading,
+    loadingpdf,
+    error,
   } = useAppSelector((state) => state.retailSlice);
 
   const createRetail = (retail: Retail.RetailT) => {
@@ -57,6 +60,10 @@ const useRetail = () => {
     dispatch(Retail.resetRetail());
   };
 
+  const resetPdf = () => {
+    dispatch(Retail.resetPdf());
+  };
+
   const resetLogo = () => {
     dispatch(Retail.resetLogo());
   };
@@ -75,6 +82,11 @@ const useRetail = () => {
     dispatch(Retail.removeProduct(id, product_id));
   };
 
+  const getPdfByRetail = (id: string, productplan_id: string) => {
+    dispatch(Retail.setLoading(true));
+    dispatch(Retail.getPdfByRetail(id, productplan_id))
+  }
+
   return {
     createRetail,
     getAllRetails,
@@ -90,9 +102,14 @@ const useRetail = () => {
     reset,
     retail,
     retailList,
+    base64,
     loading,
+    loadingpdf,
+    error,
+    resetPdf,
     addProduct,
     removeProduct,
+    getPdfByRetail
   };
 };
 
