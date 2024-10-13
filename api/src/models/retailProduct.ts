@@ -115,38 +115,31 @@ const getByRetailId: any = async (retail_id: string) => {
               max(pro.beneficiaries) as beneficiaries,
               max(des.promotional) as promotional,
               max(ppl.baseprice) as baseprice,
-              ppl.beneficiary_price as beneficiary_price,
+              max(ppl.beneficiary_price) as beneficiary_price,
               max(ppl.price) as price,
-              ply.price as yearlyprice,
+              max(ply.price) as yearlyprice,
               max(ppl.frequency) as frequency,
               max(brp.currency) as currency,
               max(ppl.id :: text) as productplan_id,
-              ply.id as productplan_yearly_id,
+              max(ply.id :: text) as productplan_yearly_id,
               max(ppl.discount_type) as discount_type,
               max(ppl.discount_percent) as discount_percent,
               max(ppl.discount_cicles) as discount_cicles,
               max(ppl.plan_id) as plan_id,
-              ply.plan_id as yearly_plan_id,
+              max(ply.plan_id) as yearly_plan_id,
               sum(case when pol.id is null then 0 else 1 end) as subscriptions
        FROM   app.retailProduct brp
                 inner join app.product pro on brp.product_id = pro.id
                 left outer join app.productdescription des on pro.id = des.product_id
                 left outer join app.productplan ppl on pro.id = ppl.product_id and brp.plan_id = ppl.plan_id
                 left outer join app.productplan ply on ply.product_id = pro.id and ply.plan_id = brp.yearly_plan_id
-                left outer join  app.productplanpdf plf ON (ply.id = plf.productplan_id OR ppl.id = plf.productplan_id)
                 left outer join app.leadproduct lpr on ppl.plan_id = lpr.productplan_id
                 left outer join app.lead lea on lpr.lead_id = lea.id
                 left outer join app.policy pol on lea.policy_id = pol.id and (pol.enddate is null or pol.enddate::date >= now()::date)
        WHERE  brp.retail_id = $1 and
               brp.isactive is true
        GROUP  BY
-              brp.product_id,
-              ppl.beneficiary_price,
-              ply.plan_id,
-              plf.base64,
-              ppl.beneficiary_price,
-              ply.price,
-              ply.id
+              brp.product_id
        ORDER  BY
               max(brp.number),
               max(pro.name)`,
@@ -220,11 +213,10 @@ const getPdfByRetail: any = async (
     );
 
     if (result.rows.length === 0) {
-      return {success: false, data: null, error: "Pdf Not Found"}
+      return { success: false, data: null, error: "Pdf Not Found" };
     }
 
-
-    return {success: true, data: result.rows[0], error: null}
+    return { success: true, data: result.rows[0], error: null };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };
   }

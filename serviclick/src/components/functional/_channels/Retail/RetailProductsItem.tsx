@@ -19,12 +19,12 @@ const RetailProductsItem = ({
   saveProduct,
   setShowModal,
   beneficiaries,
-  isClicked
+  isClicked,
 }: any) => {
   const { productList } = useProduct();
-  const {base64, loadingpdf, getPdfByRetail, loading} = useRetail()
-  const router = useRouter()
-  const {id} = router.query
+  const { base64, loadingpdf, getPdfByRetail, loading } = useRetail();
+  const router = useRouter();
+  const { id } = router.query;
 
   console.log(base64);
 
@@ -180,18 +180,17 @@ const RetailProductsItem = ({
     saveProduct();
   };
 
-  if(isClicked){
-
+  if (isClicked) {
   }
 
   useEffect(() => {
-    if(id){
-      const productplan_id = retailProductForm.productplan_id.value
+    if (id) {
+      const productplan_id = retailProductForm.productplan_id.value;
       console.log(productplan_id);
       const retail_id = Array.isArray(id) ? id[0] : id;
-      getPdfByRetail(retail_id, productplan_id)
+      getPdfByRetail(retail_id, productplan_id);
     }
-  },[isClicked])
+  }, [isClicked]);
 
   useEffect(() => {
     setEnabledButton(
@@ -303,7 +302,7 @@ const RetailProductsItem = ({
           />
         </ContentRow>
         <ContentRow gap="5px">
-          {base64 && base64 != null  ? (
+          {base64 && base64 != null ? (
             <>
               <div className="flex w-full max-w-xl flex-col items-center gap-1.5 ">
                 <div className="w-full">
