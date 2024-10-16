@@ -25,6 +25,7 @@ import { Modal, Window } from "~/components/ui/Modal";
 const CaseHistory = ({ showModal, setShowModal }: any) => {
   const router = useRouter();
   const [pdfModal, setPdfModal] = useState(false);
+  const [hasFetched, setHasFetched] = useState(false);
   const { caseValue, pdfBase64, getContract, getById, usersList } = useCase();
   const userIds = caseValue?.history?.map((m: any) => m.user);
   const {id} = router.query
@@ -34,17 +35,17 @@ const CaseHistory = ({ showModal, setShowModal }: any) => {
     setPdfModal(false);
   };
 
+  if (!hasFetched && caseValue && caseValue.case_id) {
+    getContract(caseValue.case_id);
+    setHasFetched(true);
+  }
+
   useEffect(() => {
     if(stringId){
       getById(stringId)
     }
   }, []);
-
-  useEffect(() => {
-    if (caseValue && caseValue.case_id) {
-      getContract(caseValue.case_id);
-    }
-  }, [caseValue]);
+  console.log(caseValue);
 
   return (
     <Fragment>
