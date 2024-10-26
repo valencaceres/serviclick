@@ -15,6 +15,8 @@ const useCase = () => {
     products,
     caseId,
     assistances,
+    chatMessage,
+    chatMessages,
     isLoading,
     isError,
     error,
@@ -32,6 +34,8 @@ const useCase = () => {
     statusList: state.statusList,
     products: state.products,
     assistances: state.assistances,
+    chatMessage: state.chatMessage,
+    chatMessages: state.chatMessages,
     isLoading: state.isLoading,
     isError: state.isError,
     error: state.error,
@@ -59,6 +63,8 @@ const useCase = () => {
     resetUserLists,
     resetUserListsChat,
     resetPdf,
+    createChatMessage,
+    getChatByCase,
   } = caseStore();
 
   return {
@@ -75,6 +81,8 @@ const useCase = () => {
     products,
     assistances,
     usersList,
+    chatMessage,
+    chatMessages,
     isLoading,
     isError,
     error,
@@ -99,6 +107,8 @@ const useCase = () => {
     getUsers,
     resetApplicant,
     resetCaseId,
+    createChatMessage,
+    getChatByCase,
   };
 };
 

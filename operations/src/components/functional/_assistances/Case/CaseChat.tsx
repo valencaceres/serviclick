@@ -8,16 +8,13 @@ import Button from "../../../ui/Button";
 import ComboBox from "../../../ui/ComboBox";
 import TextArea from "../../../ui/TextArea/TextArea";
 import ChatMessage from "../../../ui/ChatMessage/ChatMessage";
-import { useQueryCase } from "../../../../hooks/query";
-import { useStage } from "~/store/hooks";
-import { useQueryClient } from "@tanstack/react-query";
+import { useStage, useCase } from "~/store/hooks";
 import { useUser } from "@clerk/nextjs";
 import { ButtonIcon } from "~/components/ui";
 
 const CaseNotes = ({ thisCase }: any) => {
   const router = useRouter();
   const { id, stage } = router.query;
-  const queryClient = useQueryClient();
 
   const [type, setType] = useState("");
   const [message, setMessage] = useState("");
@@ -26,30 +23,19 @@ const CaseNotes = ({ thisCase }: any) => {
 
   const { getAll, stageList } = useStage();
   const stageObj = stageList.find((stageItem) => stageItem.code === stage);
-  const { data: messages } = useQueryCase().useGetChatByCase(id as string);
-  const { mutate: createMessage, isLoading } =
-    useQueryCase().useCreateChatMessage();
+  const { createChatMessage, isLoading, chatMessages } = useCase();
 
   useEffect(() => {
     getAll();
   }, [getAll]);
   const handleCreate = () => {
-    createMessage(
+    createChatMessage(
       {
         case_id: id as string,
         stage_id: stageObj ? stageObj.id : null,
         user_id: user?.id,
         message,
         type,
-      },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries(["caseMessages", id as string]);
-          setMessage("");
-        },
-        onError: (e) => {
-          console.log("error:", e);
-        },
       }
     );
   };
@@ -88,7 +74,7 @@ const CaseNotes = ({ thisCase }: any) => {
           />
         </ContentRow>
       </ContentCell>
-      <ChatMessage messages={messages} />
+      <ChatMessage messages={chatMessages} />
       <LoadingMessage />
     </ContentCell>
   );

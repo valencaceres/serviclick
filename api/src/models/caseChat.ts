@@ -7,13 +7,14 @@ const create: any = async (
   message: string,
   type: string
 ) => {
+  console.log(case_id, stage_id, user_id, message, type)
   try {
     const result = await pool.query(
       `INSERT INTO app.casechat(case_id, stage_id, user_id, message, type)
         VALUES ($1, $2, $3, $4, $5) RETURNING *`,
       [case_id, stage_id, user_id, message, type]
     );
-
+    console.log(result.rows[0])
     return { success: true, data: result.rows[0], error: null };
   } catch (e) {
     return { success: false, data: null, error: (e as Error).message };

@@ -8,9 +8,7 @@ import Button from "../../../ui/Button";
 import ComboBox from "../../../ui/ComboBox";
 import TextArea from "../../../ui/TextArea/TextArea";
 import ChatMessage from "../../../ui/ChatMessage/ChatMessage";
-import { useQueryCase } from "../../../../hooks/query";
 import { useCase, useStage } from "~/store/hooks";
-import { useQueryClient } from "@tanstack/react-query";
 import { useUser } from "@clerk/nextjs";
 import { ButtonIcon, Label } from "~/components/ui";
 
@@ -18,7 +16,6 @@ const CaseStatus = ({ setIsOpen, thisCase }: any) => {
   const router = useRouter();
   const { user } = useUser();
   const { id, stage } = router.query;
-  const queryClient = useQueryClient();
   const [status, setStatus] = useState<boolean>(false);
   const { upsert, setCase, caseValue } = useCase();
 

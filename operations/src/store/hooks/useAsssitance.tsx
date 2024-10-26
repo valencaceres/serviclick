@@ -10,7 +10,7 @@ const useAssistance = () => {
     })
   );
 
-  const { getById } = assistanceStore();
+  const { getById, uploadDocument } = assistanceStore();
 
   return {
     assistance,
@@ -18,6 +18,7 @@ const useAssistance = () => {
     isError,
     error,
     getById,
+    uploadDocument,
   };
 };
 

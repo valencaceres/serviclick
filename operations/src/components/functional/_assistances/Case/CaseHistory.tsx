@@ -45,7 +45,6 @@ const CaseHistory = ({ showModal, setShowModal }: any) => {
       getById(stringId)
     }
   }, []);
-  console.log(caseValue);
 
   return (
     <Fragment>

@@ -53,7 +53,7 @@ interface IValue {
 interface IEvent {
   date: string;
   location: string;
-  description: string;
+  description?: string;
 }
 
 interface IFile {
@@ -156,6 +156,8 @@ export interface ICase {
   history: IHistory[];
   status: IStatus;
   productplan_id: string | null;
+  chatMessages: IChatMessage[];
+  chatMessage: IChatMessage;
 }
 
 export interface ICaseItem {
@@ -216,4 +218,16 @@ export interface IAssistanceItem {
         description: string | null;
       }[]
     | null;
+}
+
+export interface IChatMessage {
+  applicant_lastname: string;
+  applicant_name: string;
+  case_id: string;
+  created_at: string;
+  id: string;
+  message: string;
+  stage_id: string;
+  type: string;
+  user_id: string;
 }

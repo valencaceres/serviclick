@@ -10,31 +10,32 @@ import { useUser } from "@clerk/nextjs";
 interface ICaseEventProps {
   setIsEnabledSave: (isEnabled: boolean) => void;
   itWasFound: boolean;
+  handleChange: (e: any) => void;
 }
 
-const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
+const CaseEvent = ({ setIsEnabledSave, itWasFound, handleChange }: ICaseEventProps) => {
   const minDate = new Date();
+ 
 
+  
   const { caseValue, setCase, getById: getCaseByid, caseId } = useCase();
   const { list: districtList } = useDistrict();
   const [applicant, setApplicant] = useState<IApplicant>();
   const { procedureList, getAll } = useProcedure();
   const { user } = useUser();
   const router = useRouter();
-  const handleChange = (e: any) => {
+  const [description, setDescription] = useState<string>(caseValue?.event?.description || "");
+  const [date, setDate] = useState<string>(caseValue?.event?.date || "");
+  const [location, setLocation] = useState<string>(caseValue?.event?.location || "");
+
+  console.log(description)
+  console.log(caseValue.event?.description)
+
+  const onChange = (e: any) => {
     const value = e.target.value;
     const id = e.target.id;
-    setCase({
-      ...caseValue,
-      user_id: user?.id || "",
-      event: {
-        date: caseValue.event?.date || "",
-        location: caseValue.event?.location || "",
-        description: caseValue.event?.description || "",
-        [id]: value,
-      },
-      [id]: value,
-    });
+    setDescription(value);
+    handleChange(value);  
   };
 
   const checkCompleteFields = () => {
@@ -49,6 +50,23 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
     }
     return false;
   };
+  
+  const changeData = (e: any) => {
+    const value = e.target.value;
+    const id = e.target.id;
+    console.log(id)
+    setCase({
+      ...caseValue,
+      user_id: user?.id || "",
+      event: {
+        ...caseValue.event, // Mantén los valores existentes de event
+        date: caseValue.event?.date || "",
+        location: caseValue.event?.location || "",
+        ...(id !== 'procedure_id' ? { [id]: value } : {}), // Solo añade al event si no es procedure_id
+      },
+      ...(id === 'procedure_id' ? { procedure_id: value } : { [id]: value }), // Maneja procedure_id al nivel correcto
+    });
+  }
 
   useEffect(() => {
     setIsEnabledSave(checkCompleteFields());
@@ -82,6 +100,12 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
       getCaseByid(router.query.id as string);
     }
   }, [router.query.id]);
+
+  useEffect(() => {
+    if (caseValue?.event?.description) {
+      setDescription(caseValue.event.description);
+    }
+  }, [caseValue?.event?.description]);
 
   return (
     <ContentCell gap="20px">
@@ -182,7 +206,7 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
               id="date"
               type="date"
               width="234px"
-              onChange={handleChange}
+              onChange={changeData}
               maxTime={minDate?.toISOString().split("T")[0]}
               disabled={
                 caseId?.event?.date !== null &&
@@ -195,7 +219,7 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
               label="Comuna"
               value={caseValue ? caseValue?.event?.location || "" : ""}
               placeHolder=":: Seleccione una comuna ::"
-              onChange={handleChange}
+              onChange={changeData}
               data={districtList}
               dataValue={"id"}
               dataText={"district_name"}
@@ -209,8 +233,8 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
           </ContentRow>
           <TextArea
             id="description"
-            value={caseValue?.event?.description || ""}
-            onChange={handleChange}
+            value={description}
+            onChange={onChange}
             label="Descripción del evento"
             width="530px"
             height="110px"
@@ -225,7 +249,7 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
             placeHolder="Seleccione el procedimiento"
             width="530px"
             value={caseValue.procedure_id ?? ""}
-            onChange={handleChange}
+            onChange={changeData}
             data={procedureList}
             dataText="name"
             dataValue="id"

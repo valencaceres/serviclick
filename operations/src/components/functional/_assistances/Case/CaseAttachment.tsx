@@ -2,11 +2,9 @@ import React, { Fragment, useEffect, useState } from "react";
 import { ContentCell } from "~/components/layout/Content";
 import { InputText } from "~/components/ui";
 import { IApplicant } from "~/interfaces/applicant";
-import { useCase, useAttachment } from "~/store/hooks";
+import { useCase, useAttachment, useAssistance } from "~/store/hooks";
 import CaseDocumentsTable from "../../Case/CaseDocumentsTable";
 import { useToast } from "~/components/ui/use-toast";
-import { useQueryAssistances } from "~/hooks/query";
-import { useQueryClient } from "@tanstack/react-query";
 import useStage from "~/store/hooks/useStage";
 import { useRouter } from "next/router";
 interface ICaseEventProps {
@@ -16,44 +14,38 @@ interface ICaseEventProps {
 
 const CaseAttachment = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
   const router = useRouter();
-  const queryClient = useQueryClient();
   const { getDocumentsById, getAttachByiD } = useAttachment();
   const { stage } = router.query;
   const { toast } = useToast();
 
   const { caseValue, setCase } = useCase();
   const { getAll: getStages, stageList } = useStage();
-  const { mutate: uploadDocuments, isLoading } =
-    useQueryAssistances().useUploadDocument();
-
+  const { uploadDocument } = useAssistance();
   const [applicant, setApplicant] = useState<IApplicant>();
   const [thisStage, setThisStage] = useState<string>("");
 
-  const handleSubmit = (file: any, documentId: any) => {
+  const handleSubmit = async (file: any, documentId: any) => {
     const formData = new FormData();
     formData.append("case_id", caseValue?.case_id as string);
     formData.append("document_id", documentId?.toString());
     formData.append("files", file);
-
-    uploadDocuments(formData, {
-      onSuccess: () => {
-        toast({
-          title: "Documento subido correctamente",
-          description: "Se ha subido correctamente el documento.",
-        });
-        queryClient.invalidateQueries(["case"]);
-        getDocumentsById(caseValue?.assistance?.id);
-        getAttachByiD(caseValue?.case_id as string, thisStage);
-      },
-      onError: () => {
-        toast({
-          title: "Error al subir documentos",
-          description:
-            "Ha ocurrido un error al subir los documentos, por favor intenta nuevamente.",
-          variant: "destructive",
-        });
-      },
-    });
+  
+    try {
+      uploadDocument(formData);
+      toast({
+        title: "Documento subido correctamente",
+        description: "Se ha subido correctamente el documento.",
+      });
+      getDocumentsById(caseValue?.assistance?.id);
+      getAttachByiD(caseValue?.case_id as string, thisStage);
+    } catch (error) {
+      toast({
+        title: "Error al subir documentos",
+        description:
+          "Ha ocurrido un error al subir los documentos, por favor intenta nuevamente.",
+        variant: "destructive",
+      });
+    }
   };
 
   useEffect(() => {

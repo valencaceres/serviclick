@@ -18,6 +18,8 @@ type Stage = keyof typeof stagePages;
 const AssistanceCasePage = () => {
   const router = useRouter();
 
+  const [description, setDescription] = useState<string>("");
+
   interface IStateMachine {
     [key: string]: {
       save: () => void;
@@ -25,6 +27,25 @@ const AssistanceCasePage = () => {
       back: () => void;
     };
   }
+
+  const handleChange = (value: string) => {
+    setDescription(value);
+  };
+
+
+
+  const saveEvent = () => {
+    setIsProcessing(true);
+    if (caseValue && caseValue.event) {
+      caseUpsert({
+        ...caseValue,
+        event: {
+          ...caseValue.event,
+          description: description,
+        },
+      });
+    }
+  };
 
   const stateMachine = {
     applicant: {
@@ -85,7 +106,7 @@ const AssistanceCasePage = () => {
             caseValue?.case_id ? " N°" + caseNumber.toString() : ""
           } - Datos del evento`
         ),
-      save: () => saveStage(),
+      save: () => saveEvent(),
       next: () =>
         router.push(`/assistance/case/attachment/${caseValue?.case_id}`),
       back: () => router.push(`/assistance/case/product/${caseValue?.case_id}`),
@@ -203,6 +224,8 @@ const AssistanceCasePage = () => {
     resetUserLists,
     getUsers,
     caseId,
+    chatMessages,
+    chatMessage
   } = useCase();
   const { getAll, procedureList } = useProcedure();
 
@@ -219,6 +242,9 @@ const AssistanceCasePage = () => {
   const matchingProcedure = procedureList.find(
     (procedure) => procedure.id === caseValue?.procedure_id
   );
+
+  console.log(chatMessages)
+
   const saveApplicant = () => {
     if (caseValue.type) {
       const isTypeC = caseValue.type === "C";
@@ -277,7 +303,7 @@ const AssistanceCasePage = () => {
     //stateMachine[stageKey].next();
   };
   const setOpenModalStatus = () => setIsOpenModalStatus(true);
-  const setClosedModalStatus = () => setIsOpenModalStatus(false);
+  const setClosedModalStatus = () => setIsOpenModalStatus(false); 
   const setClosed = () => setShowModal(false);
   useEffect(() => {
     listAllDistrict();
@@ -351,6 +377,8 @@ const AssistanceCasePage = () => {
     }
   }, [router, getCaseById]);
 
+  /* Arreglar todos los save, para que se encarguen de guardar el caso y no tener que actualizar el estado constantemente */
+
   useEffect(() => {
     resetUserLists();
     const userIds = caseValue?.history?.map((m: any) => m.user);
@@ -365,6 +393,7 @@ const AssistanceCasePage = () => {
         setIsEnabledSave,
         itWasFound,
         setApplicantToUpdate,
+        handleChange: handleChange,
       })}
       <CaseHistory setShowModal={setShowModal} showModal={showModal} />
       <FloatMenu>

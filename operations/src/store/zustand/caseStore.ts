@@ -10,6 +10,7 @@ import {
   IProduct,
   IAssistance,
   IRetail,
+  IChatMessage,
 } from "../../interfaces/case";
 import { IApplicant } from "~/interfaces/applicant";
 import axios from "axios";
@@ -54,6 +55,8 @@ interface caseState {
   ufValue: UFPrice;
   retailList: IRetailItem[];
   statusList: IStatusItem[];
+  chatMessage: IChatMessage;
+  chatMessages: IChatMessage[];
   isLoading: boolean;
   isError: boolean;
   error: string;
@@ -98,6 +101,8 @@ interface caseState {
   resetPdf: () => void;
   resetUserLists: () => void;
   resetUserListsChat: () => void;
+  createChatMessage: (messageData: any) => void;
+  getChatByCase: (case_id: string | null) => void;
 }
 
 const initialCase: ICase = {
@@ -168,7 +173,10 @@ const initialCase: ICase = {
     description: "",
   },
   productplan_id: null,
+  chatMessages: [],
+  chatMessage: {} as IChatMessage,
 };
+
 
 const initialApplicant: IApplicant = {
   type: "",
@@ -184,6 +192,18 @@ const initialApplicant: IApplicant = {
   birthDate: "",
 };
 
+const initialChatMessage: IChatMessage = {
+  applicant_lastname: "",
+  applicant_name: "",
+  case_id: "",
+  created_at: "",
+  id: "",
+  message: "",
+  stage_id: "",
+  type: "",
+  user_id: "",
+}
+
 export const caseStore = create<caseState>((set) => ({
   products: [],
   assistances: [],
@@ -198,6 +218,8 @@ export const caseStore = create<caseState>((set) => ({
   usersListChat: {
     data: [],
   },
+  chatMessage: initialChatMessage,
+  chatMessages: [],
   pdfBase64: "",
   caseId: initialCase,
   case: initialCase,
@@ -451,18 +473,26 @@ export const caseStore = create<caseState>((set) => ({
     }
   },
   getContract: async (product_id: string) => {
-try {
-  set((state) => ({ ...state, isLoading: true }));
-  const {data} = await apiInstance.get(`/product/getContractOperations/${product_id}`)
-  set((state) => ({ ...state, pdfBase64: data.data, isLoading: false }));
-} catch (e) {
-  set((state) => ({
-    ...state,
-    isLoading: false,
-    isError: true,
-    error: (e as Error).message,
-  }));
-}
+    try {
+      set((state) => ({ ...state, isLoading: true }));
+      const { data } = await apiInstance.get(`/product/getContractOperations/${product_id}`);
+      
+      set((state) => {
+        // Solo actualiza pdfBase64 si es diferente al valor actual
+        if (state.pdfBase64 !== data.data) {
+          return { ...state, pdfBase64: data.data, isLoading: false };
+        }
+        // Si no ha cambiado, solo actualiza isLoading
+        return { ...state, isLoading: false };
+      });
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
   },
    getServicesAndValues: async (data: ICaseServices) => {
     try {
@@ -653,5 +683,38 @@ try {
         data: [],
       },
     }));
+  },
+  getChatByCase: async (case_id: string | null) => {
+    try {
+      set((state) => ({ ...state, isLoading: true }));
+      if(case_id === null || case_id === ""){
+        const { data } = await apiInstance.post(`/case/upsert`, case_id);
+        set((state) => ({ ...state, chatMessages: data, isLoading: false }));
+      }
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
+  },
+  createChatMessage: async (messageData: any) => {
+    try {
+      set((state) => ({ ...state, isLoading: true }));
+      const { data } = await apiInstance.post(
+        `/case/createChatMessage`,
+        messageData
+      );
+        set((state) => ({ ...state, chatMessage: data, isLoading: false }));
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
   },
 }));
