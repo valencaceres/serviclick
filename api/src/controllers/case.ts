@@ -629,7 +629,8 @@ const updateReimbursementStatus = async (req: any, res: any) => {
 const createChatMessage = async (req: any, res: any) => {
   try {
     const { case_id, stage_id, message, user_id, type } = req.body;
-    console.log(req.body)
+    console.log('Request received in createChatMessage');
+    console.log('Request body:', req.body);
     if (case_id === null) {
       return res.status(200).json(null);
     }

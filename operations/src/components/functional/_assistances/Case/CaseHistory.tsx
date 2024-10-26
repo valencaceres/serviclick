@@ -26,7 +26,7 @@ const CaseHistory = ({ showModal, setShowModal }: any) => {
   const router = useRouter();
   const [pdfModal, setPdfModal] = useState(false);
   const [hasFetched, setHasFetched] = useState(false);
-  const { caseValue, pdfBase64, getContract, getById, usersList } = useCase();
+  const { caseValue, pdfBase64, getContract, getById, usersList, getChatByCase } = useCase();
   const userIds = caseValue?.history?.map((m: any) => m.user);
   const {id} = router.query
   const stringId = id?.toString()
@@ -38,6 +38,13 @@ const CaseHistory = ({ showModal, setShowModal }: any) => {
   if (!hasFetched && caseValue && caseValue.case_id) {
     getContract(caseValue.case_id);
     setHasFetched(true);
+  }
+
+  const openModal = () => {
+    setShowModal(true)
+    if(caseValue?.case_id){
+      getChatByCase(caseValue?.case_id)
+    }
   }
 
   useEffect(() => {
@@ -126,7 +133,7 @@ const CaseHistory = ({ showModal, setShowModal }: any) => {
             <Button
               text="Chat"
               iconName="chat"
-              onClick={() => setShowModal(true)}
+              onClick={() => openModal()}
             />
           )}
         </ContentRow>

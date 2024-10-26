@@ -18,16 +18,17 @@ const CaseNotes = ({ thisCase }: any) => {
 
   const [type, setType] = useState("");
   const [message, setMessage] = useState("");
-
+  const [updateTrigger, setUpdateTrigger] = useState(0);
   const { user } = useUser();
 
   const { getAll, stageList } = useStage();
   const stageObj = stageList.find((stageItem) => stageItem.code === stage);
-  const { createChatMessage, isLoading, chatMessages } = useCase();
+  const { createChatMessage, isLoading, chatMessages, getChatByCase } = useCase();
 
   useEffect(() => {
     getAll();
-  }, [getAll]);
+    getChatByCase(id as string)
+  }, [getAll, id, updateTrigger]);
   const handleCreate = () => {
     createChatMessage(
       {
@@ -38,6 +39,7 @@ const CaseNotes = ({ thisCase }: any) => {
         type,
       }
     );
+    setUpdateTrigger(prev => prev + 1);
   };
 
   return (

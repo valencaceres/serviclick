@@ -1,10 +1,11 @@
 import { useUser } from "../../../hooks";
-import { useQueryCase } from "~/hooks/query";
 import { useCase } from "~/store/hooks";
 import format from "date-fns/format";
 import { useEffect } from "react";
 const ChatMessage = ({ messages }: any) => {
   const userIds = messages?.map((m: any) => m.user_id);
+
+  console.log(messages)
   const { getUsersChat, usersListChat, resetUserListsChat } = useCase();
   useEffect(() => {
     if (messages?.length > 0) {

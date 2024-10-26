@@ -102,7 +102,7 @@ interface caseState {
   resetUserLists: () => void;
   resetUserListsChat: () => void;
   createChatMessage: (messageData: any) => void;
-  getChatByCase: (case_id: string | null) => void;
+  getChatByCase: (case_id: string) => void;
 }
 
 const initialCase: ICase = {
@@ -684,13 +684,17 @@ export const caseStore = create<caseState>((set) => ({
       },
     }));
   },
-  getChatByCase: async (case_id: string | null) => {
+  getChatByCase: async (case_id: string) => {
     try {
       set((state) => ({ ...state, isLoading: true }));
-      if(case_id === null || case_id === ""){
-        const { data } = await apiInstance.post(`/case/upsert`, case_id);
+      console.log('entro en el estado')
+        console.log(case_id)
+        const { data } = await apiInstance.get(`/case/getChatByCase/${case_id}`);
+        const sortedData = data.sort((a: any, b: any) => 
+          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+        );
+        console.log(sortedData)
         set((state) => ({ ...state, chatMessages: data, isLoading: false }));
-      }
     } catch (e) {
       set((state) => ({
         ...state,
@@ -703,12 +707,19 @@ export const caseStore = create<caseState>((set) => ({
   createChatMessage: async (messageData: any) => {
     try {
       set((state) => ({ ...state, isLoading: true }));
-      const { data } = await apiInstance.post(
+      const { case_id, stage_id, user_id, message, type } = messageData
+      const response = await apiInstance.post(
         `/case/createChatMessage`,
-        messageData
+        { case_id, stage_id, user_id, message, type }
       );
-        set((state) => ({ ...state, chatMessage: data, isLoading: false }));
+      console.log('Response:', response);
+      set((state) => ({
+        ...state,
+        chatMessages: [...state.chatMessages, response.data].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()),
+        isLoading: false
+      }));
     } catch (e) {
+      console.error('Error in createChatMessage:', e);
       set((state) => ({
         ...state,
         isLoading: false,
