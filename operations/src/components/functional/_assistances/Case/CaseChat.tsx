@@ -28,7 +28,7 @@ const CaseNotes = ({ thisCase }: any) => {
   useEffect(() => {
     getAll();
     getChatByCase(id as string)
-  }, [getAll, id, updateTrigger]);
+  }, [getAll, updateTrigger]);
   const handleCreate = () => {
     createChatMessage(
       {

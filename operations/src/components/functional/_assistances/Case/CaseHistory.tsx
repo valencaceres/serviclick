@@ -35,11 +35,6 @@ const CaseHistory = ({ showModal, setShowModal }: any) => {
     setPdfModal(false);
   };
 
-  if (!hasFetched && caseValue && caseValue.case_id) {
-    getContract(caseValue.case_id);
-    setHasFetched(true);
-  }
-
   const openModal = () => {
     setShowModal(true)
     if(caseValue?.case_id){
@@ -52,6 +47,12 @@ const CaseHistory = ({ showModal, setShowModal }: any) => {
       getById(stringId)
     }
   }, []);
+
+  useEffect(() => {
+  if (caseValue && caseValue.case_id) {
+    getContract(caseValue.case_id);
+  }
+}, [caseValue]);
 
   return (
     <Fragment>

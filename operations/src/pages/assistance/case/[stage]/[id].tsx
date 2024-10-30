@@ -243,8 +243,6 @@ const AssistanceCasePage = () => {
     (procedure) => procedure.id === caseValue?.procedure_id
   );
 
-  console.log(chatMessages)
-
   const saveApplicant = () => {
     if (caseValue.type) {
       const isTypeC = caseValue.type === "C";

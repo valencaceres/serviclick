@@ -28,9 +28,6 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound, handleChange }: ICaseEventPro
   const [date, setDate] = useState<string>(caseValue?.event?.date || "");
   const [location, setLocation] = useState<string>(caseValue?.event?.location || "");
 
-  console.log(description)
-  console.log(caseValue.event?.description)
-
   const onChange = (e: any) => {
     const value = e.target.value;
     const id = e.target.id;

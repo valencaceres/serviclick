@@ -5,7 +5,6 @@ import { useEffect } from "react";
 const ChatMessage = ({ messages }: any) => {
   const userIds = messages?.map((m: any) => m.user_id);
 
-  console.log(messages)
   const { getUsersChat, usersListChat, resetUserListsChat } = useCase();
   useEffect(() => {
     if (messages?.length > 0) {

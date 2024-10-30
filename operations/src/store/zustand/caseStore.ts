@@ -476,7 +476,7 @@ export const caseStore = create<caseState>((set) => ({
     try {
       set((state) => ({ ...state, isLoading: true }));
       const { data } = await apiInstance.get(`/product/getContractOperations/${product_id}`);
-      
+      console.log('Se dispara getContract en el store')
       set((state) => {
         // Solo actualiza pdfBase64 si es diferente al valor actual
         if (state.pdfBase64 !== data.data) {
@@ -687,7 +687,7 @@ export const caseStore = create<caseState>((set) => ({
   getChatByCase: async (case_id: string) => {
     try {
       set((state) => ({ ...state, isLoading: true }));
-      console.log('entro en el estado')
+      console.log('Se dispara getChat en el store')
         console.log(case_id)
         const { data } = await apiInstance.get(`/case/getChatByCase/${case_id}`);
         const sortedData = data.sort((a: any, b: any) => 
@@ -706,7 +706,7 @@ export const caseStore = create<caseState>((set) => ({
   },
   createChatMessage: async (messageData: any) => {
     try {
-      set((state) => ({ ...state, isLoading: true }));
+      set((state) => ({ ...state, isLoading: true })); 
       const { case_id, stage_id, user_id, message, type } = messageData
       const response = await apiInstance.post(
         `/case/createChatMessage`,
