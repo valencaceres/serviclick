@@ -27,9 +27,11 @@ const CaseHistory = ({ showModal, setShowModal }: any) => {
   const [pdfModal, setPdfModal] = useState(false);
   const [hasFetched, setHasFetched] = useState(false);
   const { caseValue, pdfBase64, getContract, getById, usersList, getChatByCase } = useCase();
-  const userIds = caseValue?.history?.map((m: any) => m.user);
   const {id} = router.query
   const stringId = id?.toString()
+
+  console.log(id)
+  console.log(caseValue.case_id)
 
   const handleCloseModalPdf = () => {
     setPdfModal(false);
@@ -49,10 +51,10 @@ const CaseHistory = ({ showModal, setShowModal }: any) => {
   }, []);
 
   useEffect(() => {
-  if (caseValue && caseValue.case_id) {
-    getContract(caseValue.case_id);
+  if (stringId) {
+    getContract(stringId);
   }
-}, [caseValue]);
+}, []);
 
   return (
     <Fragment>
@@ -62,28 +64,19 @@ const CaseHistory = ({ showModal, setShowModal }: any) => {
             <TableCell width="95px" align="center">
               Fecha
             </TableCell>
-            <TableCell width="57px">Hora</TableCell>
-            <TableCell width="177px">Operador</TableCell>
+            <TableCell width="100px">Hora</TableCell>
             <TableCell width="208px">Etapa/Acción</TableCell>
             <TableCell width="41px">&nbsp;</TableCell>
             <TableCellEnd />
           </TableHeader>
           <TableDetail>
             {caseValue?.history?.map((stage, idx: number) => {
-              const user = usersList?.data.find(
-                (user: any) => user.id === stage.user
-              );
               return (
                 <TableRow key={idx}>
                   <TableCell width="95px" align="center">
                     {stage.date}
                   </TableCell>
-                  <TableCell width="57px">{stage.time}</TableCell>
-                  <TableCell width="177px" align="center">
-                    {user
-                      ? `${user.first_name} ${user.last_name}`
-                      : "Usuario no encontrado"}
-                  </TableCell>
+                  <TableCell width="100px">{stage.time}</TableCell>
                   <TableCell width="208px" align="left">
                     {stage.name}
                   </TableCell>
