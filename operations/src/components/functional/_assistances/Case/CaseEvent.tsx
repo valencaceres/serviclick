@@ -33,6 +33,18 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound, handleChange }: ICaseEventPro
     const id = e.target.id;
     setDescription(value);
     handleChange(value);  
+    setCase({
+      ...caseValue,
+      user_id: user?.id || "",
+      event: {
+        ...caseValue.event,
+        date: caseValue.event?.date || "",
+        location: caseValue.event?.location || "",
+        description: description,
+        ...(id !== 'procedure_id' ? { [id]: value } : {}),
+      },
+      ...(id === 'procedure_id' ? { procedure_id: value } : { [id]: value }),
+    });
   };
 
   const checkCompleteFields = () => {
@@ -48,23 +60,6 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound, handleChange }: ICaseEventPro
     return false;
   };
   
-  const changeData = (e: any) => {
-    const value = e.target.value;
-    const id = e.target.id;
-    console.log(id)
-    setCase({
-      ...caseValue,
-      user_id: user?.id || "",
-      event: {
-        ...caseValue.event, // Mantén los valores existentes de event
-        date: caseValue.event?.date || "",
-        location: caseValue.event?.location || "",
-        ...(id !== 'procedure_id' ? { [id]: value } : {}), // Solo añade al event si no es procedure_id
-      },
-      ...(id === 'procedure_id' ? { procedure_id: value } : { [id]: value }), // Maneja procedure_id al nivel correcto
-    });
-  }
-
   useEffect(() => {
     setIsEnabledSave(checkCompleteFields());
   }, [caseValue, setIsEnabledSave]);
@@ -203,7 +198,7 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound, handleChange }: ICaseEventPro
               id="date"
               type="date"
               width="234px"
-              onChange={changeData}
+              onChange={onChange}
               maxTime={minDate?.toISOString().split("T")[0]}
               disabled={
                 caseId?.event?.date !== null &&
@@ -216,7 +211,7 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound, handleChange }: ICaseEventPro
               label="Comuna"
               value={caseValue ? caseValue?.event?.location || "" : ""}
               placeHolder=":: Seleccione una comuna ::"
-              onChange={changeData}
+              onChange={onChange}
               data={districtList}
               dataValue={"id"}
               dataText={"district_name"}
@@ -246,7 +241,7 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound, handleChange }: ICaseEventPro
             placeHolder="Seleccione el procedimiento"
             width="530px"
             value={caseValue.procedure_id ?? ""}
-            onChange={changeData}
+            onChange={onChange}
             data={procedureList}
             dataText="name"
             dataValue="id"
