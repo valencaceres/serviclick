@@ -32,21 +32,6 @@ const AssistanceCasePage = () => {
     setDescription(value);
   };
 
-
-
-  const saveEvent = () => {
-    setIsProcessing(true);
-    if (caseValue && caseValue.event) {
-      caseUpsert({
-        ...caseValue,
-        event: {
-          ...caseValue.event,
-          description: description,
-        },
-      });
-    }
-  };
-
   const stateMachine = {
     applicant: {
       onLoad: () =>
@@ -106,7 +91,7 @@ const AssistanceCasePage = () => {
             caseValue?.case_id ? " N°" + caseNumber.toString() : ""
           } - Datos del evento`
         ),
-      save: () => saveEvent(),
+      save: () => saveStage(),
       next: () =>
         router.push(`/assistance/case/attachment/${caseValue?.case_id}`),
       back: () => router.push(`/assistance/case/product/${caseValue?.case_id}`),
