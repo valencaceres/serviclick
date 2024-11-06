@@ -13,7 +13,7 @@ interface ICaseEventProps {
   handleChange: (e: any) => void;
 }
 
-const CaseEvent = ({ setIsEnabledSave, itWasFound, handleChange }: ICaseEventProps) => {
+const CaseEvent = ({ setIsEnabledSave, itWasFound}: ICaseEventProps) => {
   const minDate = new Date();
  
 
@@ -28,22 +28,19 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound, handleChange }: ICaseEventPro
   const [date, setDate] = useState<string>(caseValue?.event?.date || "");
   const [location, setLocation] = useState<string>(caseValue?.event?.location || "");
 
-  const onChange = (e: any) => {
+  const handleChange = (e: any) => {
     const value = e.target.value;
     const id = e.target.id;
-    setDescription(value);
-    handleChange(value);  
     setCase({
       ...caseValue,
       user_id: user?.id || "",
       event: {
-        ...caseValue.event,
         date: caseValue.event?.date || "",
         location: caseValue.event?.location || "",
-        description: description,
-        ...(id !== 'procedure_id' ? { [id]: value } : {}),
+        description: caseValue.event?.description || "",
+        [id]: value,
       },
-      ...(id === 'procedure_id' ? { procedure_id: value } : { [id]: value }),
+      [id]: value,
     });
   };
 
@@ -198,7 +195,7 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound, handleChange }: ICaseEventPro
               id="date"
               type="date"
               width="234px"
-              onChange={onChange}
+              onChange={handleChange}
               maxTime={minDate?.toISOString().split("T")[0]}
               disabled={
                 caseId?.event?.date !== null &&
@@ -211,7 +208,7 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound, handleChange }: ICaseEventPro
               label="Comuna"
               value={caseValue ? caseValue?.event?.location || "" : ""}
               placeHolder=":: Seleccione una comuna ::"
-              onChange={onChange}
+              onChange={handleChange}
               data={districtList}
               dataValue={"id"}
               dataText={"district_name"}
@@ -226,7 +223,7 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound, handleChange }: ICaseEventPro
           <TextArea
             id="description"
             value={description}
-            onChange={onChange}
+            onChange={handleChange}
             label="Descripción del evento"
             width="530px"
             height="110px"
@@ -241,7 +238,7 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound, handleChange }: ICaseEventPro
             placeHolder="Seleccione el procedimiento"
             width="530px"
             value={caseValue.procedure_id ?? ""}
-            onChange={onChange}
+            onChange={handleChange}
             data={procedureList}
             dataText="name"
             dataValue="id"
