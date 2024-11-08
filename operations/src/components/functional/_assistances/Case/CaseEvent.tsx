@@ -25,8 +25,6 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound}: ICaseEventProps) => {
   const { user } = useUser();
   const router = useRouter();
   const [description, setDescription] = useState<string>(caseValue?.event?.description || "");
-  const [date, setDate] = useState<string>(caseValue?.event?.date || "");
-  const [location, setLocation] = useState<string>(caseValue?.event?.location || "");
 
   const handleChange = (e: any) => {
     const value = e.target.value;
@@ -222,7 +220,7 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound}: ICaseEventProps) => {
           </ContentRow>
           <TextArea
             id="description"
-            value={description}
+            value={caseValue?.event?.description || "" }
             onChange={handleChange}
             label="Descripción del evento"
             width="530px"

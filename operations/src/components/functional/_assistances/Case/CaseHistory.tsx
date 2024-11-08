@@ -26,35 +26,43 @@ const CaseHistory = ({ showModal, setShowModal }: any) => {
   const router = useRouter();
   const [pdfModal, setPdfModal] = useState(false);
   const [hasFetched, setHasFetched] = useState(false);
-  const { caseValue, pdfBase64, getContract, getById, usersList, getChatByCase } = useCase();
-  const {id} = router.query
-  const stringId = id?.toString()
-
-  console.log(id)
-  console.log(caseValue.case_id)
+  const {
+    caseValue,
+    pdfBase64,
+    getContract,
+    getById,
+    usersList,
+    getChatByCase,
+    resetPdf,
+    isLoading,
+  } = useCase();
+  const { id } = router.query;
+  const stringId = id?.toString();
 
   const handleCloseModalPdf = () => {
+    resetPdf();
     setPdfModal(false);
   };
 
   const openModal = () => {
-    setShowModal(true)
-    if(caseValue?.case_id){
-      getChatByCase(caseValue?.case_id)
+    setShowModal(true);
+    if (caseValue?.case_id) {
+      getChatByCase(caseValue?.case_id);
     }
-  }
+  };
+
+  const openContract = () => {
+    if (stringId) {
+      getContract(stringId);
+      setPdfModal(true);
+    }
+  };
 
   useEffect(() => {
-    if(stringId){
-      getById(stringId)
+    if (stringId) {
+      getById(stringId);
     }
   }, []);
-
-  useEffect(() => {
-  if (stringId) {
-    getContract(stringId);
-  }
-}, []);
 
   return (
     <Fragment>
@@ -109,26 +117,26 @@ const CaseHistory = ({ showModal, setShowModal }: any) => {
               ? "1 acción"
               : `${caseValue?.history?.length} acciones`}
           </ContentCellSummary>
-          {pdfBase64 ? (
-            <>
-              <Button
-                text="Contrato"
-                iconName="history_edu"
-                onClick={() => setPdfModal(true)}
-              />
-              <Modal showModal={pdfModal}>
+          <>
+            <Button
+              text="Contrato"
+              iconName="history_edu"
+              onClick={openContract}
+            />
+            <Modal showModal={pdfModal}>
+              {pdfBase64 && !isLoading ? (
                 <Window title="Documento" setClosed={handleCloseModalPdf}>
                   <PDFViewer base64={pdfBase64} />
                 </Window>
-              </Modal>
-            </>
-          ): null}
+              ) : !pdfBase64 && !isLoading ? (
+                <Window title="Documento" setClosed={handleCloseModalPdf}>
+                  <p>No existe un contrato para este plan...</p>
+                </Window>
+              ) : null}
+            </Modal>
+          </>
           {caseValue?.case_id !== null && caseValue?.case_id !== "" && (
-            <Button
-              text="Chat"
-              iconName="chat"
-              onClick={() => openModal()}
-            />
+            <Button text="Chat" iconName="chat" onClick={() => openModal()} />
           )}
         </ContentRow>
       </ContentCell>

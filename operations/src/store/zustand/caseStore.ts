@@ -103,6 +103,7 @@ interface caseState {
   resetUserListsChat: () => void;
   createChatMessage: (messageData: any) => void;
   getChatByCase: (case_id: string) => void;
+  resetPdfBase64: () => void
 }
 
 const initialCase: ICase = {
@@ -275,6 +276,7 @@ export const caseStore = create<caseState>((set) => ({
     }
   },
 
+  
   getAll: async (
     retail_id: string,
     applicant_rut: string,
@@ -478,11 +480,9 @@ export const caseStore = create<caseState>((set) => ({
       const { data } = await apiInstance.get(`/product/getContractOperations/${product_id}`);
       console.log('Se dispara getContract en el store')
       set((state) => {
-        // Solo actualiza pdfBase64 si es diferente al valor actual
         if (state.pdfBase64 !== data.data) {
           return { ...state, pdfBase64: data.data, isLoading: false };
         }
-        // Si no ha cambiado, solo actualiza isLoading
         return { ...state, isLoading: false };
       });
     } catch (e) {
@@ -727,5 +727,11 @@ export const caseStore = create<caseState>((set) => ({
         error: (e as Error).message,
       }));
     }
+  },
+  resetPdfBase64: () => {
+    set((state) => ({
+      ...state,
+      pdfBase64: '',
+    }));
   },
 }));

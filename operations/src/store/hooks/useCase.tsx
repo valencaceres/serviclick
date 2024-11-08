@@ -65,6 +65,7 @@ const useCase = () => {
     resetPdf,
     createChatMessage,
     getChatByCase,
+    resetPdfBase64
   } = caseStore();
 
   return {
@@ -109,6 +110,7 @@ const useCase = () => {
     resetCaseId,
     createChatMessage,
     getChatByCase,
+    resetPdfBase64
   };
 };
 
