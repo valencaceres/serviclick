@@ -10,6 +10,7 @@ import {
   IProduct,
   IAssistance,
   IRetail,
+  IChatMessage,
 } from "../../interfaces/case";
 import { IApplicant } from "~/interfaces/applicant";
 import axios from "axios";
@@ -54,6 +55,8 @@ interface caseState {
   ufValue: UFPrice;
   retailList: IRetailItem[];
   statusList: IStatusItem[];
+  chatMessage: IChatMessage;
+  chatMessages: IChatMessage[];
   isLoading: boolean;
   isError: boolean;
   error: string;
@@ -98,6 +101,9 @@ interface caseState {
   resetPdf: () => void;
   resetUserLists: () => void;
   resetUserListsChat: () => void;
+  createChatMessage: (messageData: any) => void;
+  getChatByCase: (case_id: string) => void;
+  resetPdfBase64: () => void
 }
 
 const initialCase: ICase = {
@@ -168,7 +174,10 @@ const initialCase: ICase = {
     description: "",
   },
   productplan_id: null,
+  chatMessages: [],
+  chatMessage: {} as IChatMessage,
 };
+
 
 const initialApplicant: IApplicant = {
   type: "",
@@ -184,6 +193,18 @@ const initialApplicant: IApplicant = {
   birthDate: "",
 };
 
+const initialChatMessage: IChatMessage = {
+  applicant_lastname: "",
+  applicant_name: "",
+  case_id: "",
+  created_at: "",
+  id: "",
+  message: "",
+  stage_id: "",
+  type: "",
+  user_id: "",
+}
+
 export const caseStore = create<caseState>((set) => ({
   products: [],
   assistances: [],
@@ -198,6 +219,8 @@ export const caseStore = create<caseState>((set) => ({
   usersListChat: {
     data: [],
   },
+  chatMessage: initialChatMessage,
+  chatMessages: [],
   pdfBase64: "",
   caseId: initialCase,
   case: initialCase,
@@ -253,6 +276,7 @@ export const caseStore = create<caseState>((set) => ({
     }
   },
 
+  
   getAll: async (
     retail_id: string,
     applicant_rut: string,
@@ -451,18 +475,24 @@ export const caseStore = create<caseState>((set) => ({
     }
   },
   getContract: async (product_id: string) => {
-try {
-  set((state) => ({ ...state, isLoading: true }));
-  const {data} = await apiInstance.get(`/product/getContractOperations/${product_id}`)
-  set((state) => ({ ...state, pdfBase64: data.data, isLoading: false }));
-} catch (e) {
-  set((state) => ({
-    ...state,
-    isLoading: false,
-    isError: true,
-    error: (e as Error).message,
-  }));
-}
+    try {
+      set((state) => ({ ...state, isLoading: true }));
+      const { data } = await apiInstance.get(`/product/getContractOperations/${product_id}`);
+      console.log('Se dispara getContract en el store')
+      set((state) => {
+        if (state.pdfBase64 !== data.data) {
+          return { ...state, pdfBase64: data.data, isLoading: false };
+        }
+        return { ...state, isLoading: false };
+      });
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
   },
    getServicesAndValues: async (data: ICaseServices) => {
     try {
@@ -652,6 +682,56 @@ try {
       usersListChat: {
         data: [],
       },
+    }));
+  },
+  getChatByCase: async (case_id: string) => {
+    try {
+      set((state) => ({ ...state, isLoading: true }));
+      console.log('Se dispara getChat en el store')
+        console.log(case_id)
+        const { data } = await apiInstance.get(`/case/getChatByCase/${case_id}`);
+        const sortedData = data.sort((a: any, b: any) => 
+          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+        );
+        console.log(sortedData)
+        set((state) => ({ ...state, chatMessages: data, isLoading: false }));
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
+  },
+  createChatMessage: async (messageData: any) => {
+    try {
+      set((state) => ({ ...state, isLoading: true })); 
+      const { case_id, stage_id, user_id, message, type } = messageData
+      const response = await apiInstance.post(
+        `/case/createChatMessage`,
+        { case_id, stage_id, user_id, message, type }
+      );
+      console.log('Response:', response);
+      set((state) => ({
+        ...state,
+        chatMessages: [...state.chatMessages, response.data].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()),
+        isLoading: false
+      }));
+    } catch (e) {
+      console.error('Error in createChatMessage:', e);
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+    }
+  },
+  resetPdfBase64: () => {
+    set((state) => ({
+      ...state,
+      pdfBase64: '',
     }));
   },
 }));

@@ -8,6 +8,7 @@ interface assistanceStore {
   isError: boolean;
   error: string;
   getById: (id: string) => void;
+  uploadDocument: (formData: any) => void;
 }
 
 export const assistanceStore = create<assistanceStore>((set) => ({
@@ -39,6 +40,26 @@ export const assistanceStore = create<assistanceStore>((set) => ({
         isError: true,
         error: (e as Error).message,
       }));
+    }
+  },
+  uploadDocument: async (formData: any) => {
+    try {
+      set((state) => ({ ...state, isLoading: true }));
+      const { data } = await apiInstance.post(`/case/uploadDocument`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      set((state) => ({ ...state, assistance: { ...state.assistance, documents: data }, isLoading: false }));
+      return data; // Devuelve los datos en caso de éxito
+    } catch (e) {
+      set((state) => ({
+        ...state,
+        isLoading: false,
+        isError: true,
+        error: (e as Error).message,
+      }));
+      throw e; // Lanza el error para que pueda ser capturado
     }
   },
 }));

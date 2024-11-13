@@ -60,9 +60,10 @@ export const stagePages = {
       <CaseEvent
         setIsEnabledSave={(isEnabled: boolean): void => {
           throw new Error("Function not implemented.");
-        }}
-        itWasFound={false}
-      />
+        } }
+        itWasFound={false} handleChange={function (value: string): void {
+          throw new Error("Function not implemented.");
+        } }      />
     ),
   },
   attachment: {

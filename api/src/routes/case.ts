@@ -94,7 +94,7 @@ CaseRouter.put(
   isAuthenticated,
   updateReimbursementStatus
 );
-CaseRouter.post("/createChatMessage", auth, isAuthenticated, createChatMessage);
+CaseRouter.post("/createChatMessage", auth, createChatMessage);
 CaseRouter.get("/getChatByCase/:case_id", auth, getChatByCase);
 CaseRouter.get("/getStatistics", auth, getStatistics);
 CaseRouter.post("/createCaseSummary", auth, createCaseSummary);

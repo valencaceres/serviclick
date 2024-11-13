@@ -10,17 +10,22 @@ import { useUser } from "@clerk/nextjs";
 interface ICaseEventProps {
   setIsEnabledSave: (isEnabled: boolean) => void;
   itWasFound: boolean;
+  handleChange: (e: any) => void;
 }
 
-const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
+const CaseEvent = ({ setIsEnabledSave, itWasFound}: ICaseEventProps) => {
   const minDate = new Date();
+ 
 
+  
   const { caseValue, setCase, getById: getCaseByid, caseId } = useCase();
   const { list: districtList } = useDistrict();
   const [applicant, setApplicant] = useState<IApplicant>();
   const { procedureList, getAll } = useProcedure();
   const { user } = useUser();
   const router = useRouter();
+  const [description, setDescription] = useState<string>(caseValue?.event?.description || "");
+
   const handleChange = (e: any) => {
     const value = e.target.value;
     const id = e.target.id;
@@ -49,7 +54,7 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
     }
     return false;
   };
-
+  
   useEffect(() => {
     setIsEnabledSave(checkCompleteFields());
   }, [caseValue, setIsEnabledSave]);
@@ -82,6 +87,12 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
       getCaseByid(router.query.id as string);
     }
   }, [router.query.id]);
+
+  useEffect(() => {
+    if (caseValue?.event?.description) {
+      setDescription(caseValue.event.description);
+    }
+  }, [caseValue?.event?.description]);
 
   return (
     <ContentCell gap="20px">
@@ -209,7 +220,7 @@ const CaseEvent = ({ setIsEnabledSave, itWasFound }: ICaseEventProps) => {
           </ContentRow>
           <TextArea
             id="description"
-            value={caseValue?.event?.description || ""}
+            value={caseValue?.event?.description || "" }
             onChange={handleChange}
             label="Descripción del evento"
             width="530px"

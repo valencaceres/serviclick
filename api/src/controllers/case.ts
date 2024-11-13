@@ -1,6 +1,6 @@
 import createLogger from "../util/logger";
 import { getFileViewLink, uploadFile } from "../util/s3";
-import  xlsx from "xlsx";
+import xlsx from "xlsx";
 import * as Case from "../models/case";
 import * as CaseStage from "../models/caseStage";
 import * as CaseStageAttach from "../models/caseStageAttach";
@@ -918,7 +918,7 @@ const getRetails = async (req: any, res: any) => {
 
 const getOrigins = async (req: any, res: any) => {
   const response = await Case.getOrigins();
-  if(!response.success) {
+  if (!response.success) {
     createLogger.error({
       model: `case/getOrigins`,
       error: response.error,
@@ -1006,8 +1006,7 @@ const updateReimbursment = async (req: any, res: any) => {
 };
 
 const getAllExports = async (req: any, res: any) => {
-  const { retail_id, case_date, event_date, records, page } =
-    req.query;
+  const { retail_id, case_date, event_date, records, page } = req.query;
 
   const caseResponse = await Case.getAllExports(
     retail_id,
@@ -1015,7 +1014,7 @@ const getAllExports = async (req: any, res: any) => {
     event_date,
     records,
     page,
-   false
+    false
   );
 
   if (!caseResponse.success) {
@@ -1034,9 +1033,8 @@ const getAllExports = async (req: any, res: any) => {
   return res.status(200).json(caseResponse.data);
 };
 const getCaseDates = async (req: any, res: any) => {
-
   const caseResponse = await Case.getCaseDates();
-   
+
   if (!caseResponse.success) {
     createLogger.error({
       model: `case/getCaseDates`,
@@ -1053,87 +1051,106 @@ const getCaseDates = async (req: any, res: any) => {
   return res.status(200).json(caseResponse.data);
 };
 
-const exportCases = async (req:any, res:any) => {
+const exportCases = async (req: any, res: any) => {
   try {
-
     const { retail_id, case_date, event_date, records, page } = req.query;
     const caseResponse = await Case.getAllExports(
       retail_id,
-      case_date, event_date,
+      case_date,
+      event_date,
       records,
       page,
       true
     );
-    if (caseResponse && caseResponse.data.data && caseResponse.data.data.length > 0) {
+    if (
+      caseResponse &&
+      caseResponse.data.data &&
+      caseResponse.data.data.length > 0
+    ) {
       const groupedData = groupCasesByRetailName(caseResponse.data.data);
-  
-      const workbook = xlsx.utils.book_new();
-  
-      for (const retailName in groupedData) {
-          if (groupedData.hasOwnProperty(retailName)) {
-            const safeSheetName = retailName.replace(/[\\\/\?\*\[\]]/g, '_').substring(0, 30);
-              const dataForExcel = (groupedData[retailName] as any[]).map((caseItem) => {
-                const formattedDiscount = caseItem.register_imedamount ? formatCurrency(caseItem.register_imedamount) : '-';
-                const formattedReimbursement = caseItem.register_amount ? formatCurrency(caseItem.register_amount) : '-';
-                const formattedDate = formatDate(caseItem.createddate);
-                const formattedBirthdate = formatDate(caseItem.applicant_birthdate);
 
-                return {
-                      'CODIGO ASISTENCIA': caseItem.product_name,
-                      'N° CASO': caseItem.number,
-                      'N° POLIZA': caseItem.policy_id,
-                      'RUT ASEGURADO': caseItem.applicant_rut,
-                      'FECHA DE ATENCIÓN': formattedDate,
-                      'BENEFICIARIO': caseItem.applicant_relationship,
-                      'NACIMIENTO': formattedBirthdate,
-                      'TIPO DE ATENCIÓN': caseItem.assistance_name,
-                      'MONTO DE REEMBOLSO': formattedReimbursement,
-                      'DESCUENTO POR I-MED': formattedDiscount,
-                      'REGIÓN': caseItem.applicant_district,
-                      'CONTACTO': caseItem.applicant_phone,
-                  };
-              });
-  
-              const worksheet = xlsx.utils.json_to_sheet(dataForExcel);
-              centerTextInWorksheet(worksheet);
-              xlsx.utils.book_append_sheet(workbook, worksheet, safeSheetName);
-  
-              const colWidths = [
-                  { wpx: 200 }, 
-                  { wpx: 50 },
-                  { wpx: 75 },
-                  { wpx: 100 },
-                  { wpx: 110 },
-                  { wpx: 100 },
-                  { wpx: 100 },
-                  { wpx: 200 },
-                  { wpx: 150 },
-                  { wpx: 150 },
-                  { wpx: 100 },
-                  { wpx: 100 },
-                  { wpx: 100 },
-                  { wpx: 100 },
-                  { wpx: 100 }
-              
-              ];
-  
-              worksheet['!cols'] = colWidths;
-          }
+      const workbook = xlsx.utils.book_new();
+
+      for (const retailName in groupedData) {
+        if (groupedData.hasOwnProperty(retailName)) {
+          const safeSheetName = retailName
+            .replace(/[\\\/\?\*\[\]]/g, "_")
+            .substring(0, 30);
+          const dataForExcel = (groupedData[retailName] as any[]).map(
+            (caseItem) => {
+              const formattedDiscount = caseItem.register_imedamount
+                ? formatCurrency(caseItem.register_imedamount)
+                : "-";
+              const formattedReimbursement = caseItem.register_amount
+                ? formatCurrency(caseItem.register_amount)
+                : "-";
+              const formattedDate = formatDate(caseItem.createddate);
+              const formattedBirthdate = formatDate(
+                caseItem.applicant_birthdate
+              );
+
+              return {
+                "CODIGO ASISTENCIA": caseItem.product_name,
+                "N° CASO": caseItem.number,
+                "N° POLIZA": caseItem.policy_id,
+                "RUT ASEGURADO": caseItem.applicant_rut,
+                "FECHA DE ATENCIÓN": formattedDate,
+                BENEFICIARIO: caseItem.applicant_relationship,
+                NACIMIENTO: formattedBirthdate,
+                "TIPO DE ATENCIÓN": caseItem.assistance_name,
+                "MONTO DE REEMBOLSO": formattedReimbursement,
+                "DESCUENTO POR I-MED": formattedDiscount,
+                REGIÓN: caseItem.applicant_district,
+                CONTACTO: caseItem.applicant_phone,
+              };
+            }
+          );
+
+          const worksheet = xlsx.utils.json_to_sheet(dataForExcel);
+          centerTextInWorksheet(worksheet);
+          xlsx.utils.book_append_sheet(workbook, worksheet, safeSheetName);
+
+          const colWidths = [
+            { wpx: 200 },
+            { wpx: 50 },
+            { wpx: 75 },
+            { wpx: 100 },
+            { wpx: 110 },
+            { wpx: 100 },
+            { wpx: 100 },
+            { wpx: 200 },
+            { wpx: 150 },
+            { wpx: 150 },
+            { wpx: 100 },
+            { wpx: 100 },
+            { wpx: 100 },
+            { wpx: 100 },
+            { wpx: 100 },
+          ];
+
+          worksheet["!cols"] = colWidths;
+        }
       }
-  
-      const excelBuffer = xlsx.write(workbook, { bookType: 'xlsx', type: 'buffer' });
-  
-      res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
-      res.setHeader('Content-Disposition', 'attachment; filename=casos.xlsx');
-      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8');
+
+      const excelBuffer = xlsx.write(workbook, {
+        bookType: "xlsx",
+        type: "buffer",
+      });
+
+      res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+      res.setHeader("Content-Disposition", "attachment; filename=casos.xlsx");
+      res.setHeader(
+        "Content-Type",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8"
+      );
       res.send(excelBuffer);
-  } else {
+    } else {
       return res.status(404).json({ error: "there is no cases to export." });
     }
   } catch (error) {
-    console.error(error)
+    console.error(error);
     createLogger.error({
-      model: 'case/exportCases',
+      model: "case/exportCases",
       error: error,
     });
     return res.status(500).json({ error: "Error retrieving case." });
@@ -1142,44 +1159,61 @@ const exportCases = async (req:any, res:any) => {
 function groupCasesByRetailName(cases: any) {
   const groupedData: { [key: string]: any[] } = {};
 
-  cases.forEach((caseItem:any) => {
-      const retailName = caseItem.retail_name || 'No Retail'; 
-      if (!groupedData[retailName]) {
-          groupedData[retailName] = [];
-      }
-      groupedData[retailName].push(caseItem);
+  cases.forEach((caseItem: any) => {
+    const retailName = caseItem.retail_name || "No Retail";
+    if (!groupedData[retailName]) {
+      groupedData[retailName] = [];
+    }
+    groupedData[retailName].push(caseItem);
   });
 
   return groupedData;
 }
 const formatDate = (dateString: string) => {
   try {
-      const date = new Date(dateString);
-      return format(date, 'dd-MM-yyyy');
+    const date = new Date(dateString);
+    return format(date, "dd-MM-yyyy");
   } catch (error) {
-      return  `Error formateando fecha ${dateString} `;
+    return `Error formateando fecha ${dateString} `;
   }
 };
 function centerTextInWorksheet(worksheet: any) {
-  const range = xlsx.utils.decode_range(worksheet['!ref']);
-  
+  const range = xlsx.utils.decode_range(worksheet["!ref"]);
+
   for (let R = range.s.r; R <= range.e.r; ++R) {
-      for (let C = range.s.c; C <= range.e.c; ++C) {
-          const cell_address = { c: C, r: R };
-          const cell_ref = xlsx.utils.encode_cell(cell_address);
-          const cell = worksheet[cell_ref];
-          if (cell && cell.t === 's') {
-              if (!cell.s) cell.s = {};
-              cell.s.alignment = { horizontal: 'center', vertical: 'center', wrapText: true };
-          } else {
-              worksheet[cell_ref] = { ...cell, s: { alignment: { horizontal: 'center', vertical: 'center', wrapText: true } } };
-          }
+    for (let C = range.s.c; C <= range.e.c; ++C) {
+      const cell_address = { c: C, r: R };
+      const cell_ref = xlsx.utils.encode_cell(cell_address);
+      const cell = worksheet[cell_ref];
+      if (cell && cell.t === "s") {
+        if (!cell.s) cell.s = {};
+        cell.s.alignment = {
+          horizontal: "center",
+          vertical: "center",
+          wrapText: true,
+        };
+      } else {
+        worksheet[cell_ref] = {
+          ...cell,
+          s: {
+            alignment: {
+              horizontal: "center",
+              vertical: "center",
+              wrapText: true,
+            },
+          },
+        };
       }
+    }
   }
 }
 function formatCurrency(amount: number | string) {
-  const numericAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
-  return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(numericAmount);
+  const numericAmount =
+    typeof amount === "string" ? parseFloat(amount) : amount;
+  return new Intl.NumberFormat("es-CL", {
+    style: "currency",
+    currency: "CLP",
+  }).format(numericAmount);
 }
 
 export {
@@ -1214,5 +1248,5 @@ export {
   getAllReimbursments,
   getOrigins,
   getCaseDates,
-  exportCases
+  exportCases,
 };

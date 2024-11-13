@@ -26,26 +26,43 @@ const CaseHistory = ({ showModal, setShowModal }: any) => {
   const router = useRouter();
   const [pdfModal, setPdfModal] = useState(false);
   const [hasFetched, setHasFetched] = useState(false);
-  const { caseValue, pdfBase64, getContract, getById, usersList } = useCase();
-  const userIds = caseValue?.history?.map((m: any) => m.user);
-  const {id} = router.query
-  const stringId = id?.toString()
+  const {
+    caseValue,
+    pdfBase64,
+    getContract,
+    getById,
+    usersList,
+    getChatByCase,
+    resetPdf,
+    isLoading,
+  } = useCase();
+  const { id } = router.query;
+  const stringId = id?.toString();
 
   const handleCloseModalPdf = () => {
+    resetPdf();
     setPdfModal(false);
   };
 
-  if (!hasFetched && caseValue && caseValue.case_id) {
-    getContract(caseValue.case_id);
-    setHasFetched(true);
-  }
+  const openModal = () => {
+    setShowModal(true);
+    if (caseValue?.case_id) {
+      getChatByCase(caseValue?.case_id);
+    }
+  };
+
+  const openContract = () => {
+    if (stringId) {
+      getContract(stringId);
+      setPdfModal(true);
+    }
+  };
 
   useEffect(() => {
-    if(stringId){
-      getById(stringId)
+    if (stringId) {
+      getById(stringId);
     }
   }, []);
-  console.log(caseValue);
 
   return (
     <Fragment>
@@ -55,28 +72,19 @@ const CaseHistory = ({ showModal, setShowModal }: any) => {
             <TableCell width="95px" align="center">
               Fecha
             </TableCell>
-            <TableCell width="57px">Hora</TableCell>
-            <TableCell width="177px">Operador</TableCell>
+            <TableCell width="100px">Hora</TableCell>
             <TableCell width="208px">Etapa/Acción</TableCell>
             <TableCell width="41px">&nbsp;</TableCell>
             <TableCellEnd />
           </TableHeader>
           <TableDetail>
             {caseValue?.history?.map((stage, idx: number) => {
-              const user = usersList?.data.find(
-                (user: any) => user.id === stage.user
-              );
               return (
                 <TableRow key={idx}>
                   <TableCell width="95px" align="center">
                     {stage.date}
                   </TableCell>
-                  <TableCell width="57px">{stage.time}</TableCell>
-                  <TableCell width="177px" align="center">
-                    {user
-                      ? `${user.first_name} ${user.last_name}`
-                      : "Usuario no encontrado"}
-                  </TableCell>
+                  <TableCell width="100px">{stage.time}</TableCell>
                   <TableCell width="208px" align="left">
                     {stage.name}
                   </TableCell>
@@ -109,26 +117,26 @@ const CaseHistory = ({ showModal, setShowModal }: any) => {
               ? "1 acción"
               : `${caseValue?.history?.length} acciones`}
           </ContentCellSummary>
-          {pdfBase64 ? (
-            <>
-              <Button
-                text="Contrato"
-                iconName="history_edu"
-                onClick={() => setPdfModal(true)}
-              />
-              <Modal showModal={pdfModal}>
+          <>
+            <Button
+              text="Contrato"
+              iconName="history_edu"
+              onClick={openContract}
+            />
+            <Modal showModal={pdfModal}>
+              {pdfBase64 && !isLoading ? (
                 <Window title="Documento" setClosed={handleCloseModalPdf}>
                   <PDFViewer base64={pdfBase64} />
                 </Window>
-              </Modal>
-            </>
-          ): null}
+              ) : !pdfBase64 && !isLoading ? (
+                <Window title="Documento" setClosed={handleCloseModalPdf}>
+                  <p>No existe un contrato para este plan...</p>
+                </Window>
+              ) : null}
+            </Modal>
+          </>
           {caseValue?.case_id !== null && caseValue?.case_id !== "" && (
-            <Button
-              text="Chat"
-              iconName="chat"
-              onClick={() => setShowModal(true)}
-            />
+            <Button text="Chat" iconName="chat" onClick={() => openModal()} />
           )}
         </ContentRow>
       </ContentCell>
