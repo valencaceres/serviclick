@@ -8,6 +8,7 @@ import { useUI } from "../zustand/hooks";
 
 const ProductPage = () => {
   const router = useRouter();
+  const {id} = router.query
   const queryClient = new QueryClient();
   const { getAllRelationships } = useRelationship();
   const { getDistricts } = useDistrict();
@@ -15,8 +16,13 @@ const ProductPage = () => {
 
   useEffect(() => {
     setTitle("Mis productos");
-    setShowButtonBack(true, "/");
-  }, []);
+
+    if (id) {
+      setShowButtonBack(true, "/product");
+    } else {
+      setShowButtonBack(true, "/");
+    }
+  }, [router.query]);
 
   useEffect(() => {
     getAllRelationships();
