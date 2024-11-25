@@ -17,6 +17,7 @@ import styles from "../../layout/Generic/Generic.module.scss";
 const Switch = ({ children }: any) => {
   const router = useRouter();
   const currentRoute = router.pathname;
+  console.log(currentRoute);
 
   const { userInsured } = useUserInsured();
   const { ui } = useUI();
@@ -24,12 +25,6 @@ const Switch = ({ children }: any) => {
   const handleClickBack = () => {
     router.push(ui.pathButtonBack);
   };
-
-  useEffect(() => {
-    if (!userInsured?.email && currentRoute !== '/') {
-      router.push('/');
-    }
-  }, [userInsured, currentRoute, router]);
 
   return (
     <Fragment>
@@ -46,14 +41,12 @@ const Switch = ({ children }: any) => {
           </div>
           <div className={styles.right}>{ui.title}</div>
         </Header>
-        {userInsured.email !== "" ? (
+        {userInsured.email ? (
           <Main>{children}</Main>
+        ) : currentRoute === "/restorePassword" ? (
+          <RestorePassword /> 
         ) : (
-          currentRoute === '/restorePassword' ? (
-            <RestorePassword />
-          ) : (
-            <Login />
-          )
+          <Login />
         )}
       </Screen>
     </Fragment>
