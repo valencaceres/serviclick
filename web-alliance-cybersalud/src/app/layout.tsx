@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "MHM Corredora de Seguros",
-  description: "MHM Corredora de Seguros",
+  title: "Cyber Salud",
+  description: "Cyber Salud",
 };
 
 export default function RootLayout({
@@ -29,6 +30,7 @@ export default function RootLayout({
           ]}
         />
         {children}
+        <Footer/>
       </body>
     </html>
   );
