@@ -90,6 +90,7 @@ const routerMappings = [
   { path: "/user", router: routers.userRouter },
   { path: "/product", router: routers.productRouter },
   { path: "/insured", router: routers.insuredRouter },
+  { path: "/ticket", router: routers.ticketRouter },
 ];
 
 function initializeRoutes(server: Express) {
@@ -97,6 +98,7 @@ function initializeRoutes(server: Express) {
     server.use(router.path, verifyToken, router.router, handlerError);
   });
 
+  // @ts-ignore
   server.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
   server.use((err: any, req: Request, res: Response, next: NextFunction) => {

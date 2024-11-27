@@ -28,7 +28,7 @@ const getByRut = async (
     const response = await MInsured.getByRut(rut);
 
     if (!response) {
-      return next(boom.notFound("Customer not found"));
+      return next(boom.notFound("Insured not found"));
     }
 
     return sendResponse(req, res, response);
