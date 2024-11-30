@@ -1,15 +1,12 @@
 import axios from 'axios'
 
-import config from './config';
+import config from "./config";
 
 const flowApiInstance = axios.create({
-  baseURL: `${config.apiFlow}`,
-  headers: {id: config.apiKey}
+  baseURL: `${config.flowUrl}`,
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded'
+  },
 });
 
-const ApiInstance = axios.create({
-  baseURL: `${config.apiUrl}`,
-  headers: {id: config.apiKey}
-});
-
-export {flowApiInstance, ApiInstance}
+export {flowApiInstance}

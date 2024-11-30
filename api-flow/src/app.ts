@@ -5,13 +5,13 @@ import helmet from "helmet";
 
 import { setSecurityHeaders } from "./middlewares/setSecurityHeaders";
 import { allowedOrigins } from "./middlewares/allowedOrigins";
-import handlerResponse from "./middlewares/handleResponse";
-import handlerRequest from "./middlewares/handleRequest";
-import handlerError from "./middlewares/handleError";
+import handlerResponse from "./middlewares/handlerResponse";
+import handlerRequest from "./middlewares/handlerRequest";
+import handlerError from "./middlewares/handlerError";
 
-import createLogger from "./utils/logger";
+import createLogger from "./utils/loggers";
 
-import * as routers from './router/index'
+import * as routers from "./routes/index";
 
 const corsOptions = {
    preflightContinue: false,
@@ -38,8 +38,8 @@ const corsOptions = {
 };
 
 const routeMappings = [
-   { path: "/api/webhook", router: routers.WebhookRouter },
-
+   { path: "/api/plan", router: routers.PlanRouter },
+   { path: "/api/subscription", router: routers.SubscriptionRouter },
 ];
 
 function initializeRoutes(server: Express) {

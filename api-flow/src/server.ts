@@ -1,9 +1,8 @@
 import config from "./utils/config";
-import createLogger from "./utils/logger";
+import createLogger from "./utils/loggers";
 import app from "./app";
 
-const { apiWebhookFlow } = config;
+const { apiUrl } = config;
 
-app.listen(apiWebhookFlow);
-createLogger.info(`API listening port ${apiWebhookFlow}`);
-
+app.listen(apiUrl);
+createLogger.info(`API listening port ${apiUrl}`);

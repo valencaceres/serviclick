@@ -1,4 +1,4 @@
-import createLogger from "../utils/logger";
+import createLogger from "../utils/loggers";
 
 const reqLogger = (req: any, res: any, next: any) => {
   createLogger.info({

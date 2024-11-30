@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import boom, { Boom } from "@hapi/boom";
 
-import createLogger from "../utils/logger";
+import createLogger from "../utils/loggers";
 
 const handlerError = (
   err: Boom,

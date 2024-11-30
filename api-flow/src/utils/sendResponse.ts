@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 
-import createLogger from './logger';
+import createLogger from "./loggers";
 
 const sendResponse = (
   req: Request,
