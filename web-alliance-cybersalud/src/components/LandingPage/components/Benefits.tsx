@@ -6,18 +6,10 @@ import 'swiper/css';
 import WrapperSm from "@/components/WrapperSm";
 import CardBenefit from "./CardBenefit";
 import { StaticImageData } from "next/image";
+import { ICardBenefit } from '@/utils/interfaces/CardBenefit';
 
 interface Props{
-    cards: Array<{
-        image: StaticImageData,
-        name: string,
-        price: string,
-        detail: string,
-        benefits: Array<{
-            name: string,
-            details: Array<string>
-        }>
-    }>
+    cards: Array<ICardBenefit>
 }
 
 
@@ -58,11 +50,14 @@ export default function Benefits({cards}: Props){
                     {cards.map((card, i) => (
                         <SwiperSlide key={`benefit-card-${i}`}>
                             <CardBenefit
+                                id={card.id}
+                                productplan_id={card.productplan_id}
                                 image={card.image}
                                 name={card.name}
                                 price={card.price}
                                 detail={card.detail}
-                                benefits={card.benefits}
+                                assistances={card.assistances}
+                                hiring_conditions={card.hiring_conditions}
                             />
                         </SwiperSlide>
                     ))}

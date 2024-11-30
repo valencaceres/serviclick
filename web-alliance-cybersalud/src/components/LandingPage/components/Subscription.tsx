@@ -6,7 +6,6 @@ import Image, { StaticImageData } from "next/image";
 import CardSubscription from "./CardSubscription";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
-import styles from './Subscription.module.css';
 
 interface Props{
     cards: Array<{

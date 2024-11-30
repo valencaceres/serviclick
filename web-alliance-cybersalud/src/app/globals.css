@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.swiper {
-  overflow: hidden; /* Evita desbordamientos feos */
-}
-
 .swiper-pagination-bullets{
     @apply flex items-center justify-center mx-auto pt-8;
 }
