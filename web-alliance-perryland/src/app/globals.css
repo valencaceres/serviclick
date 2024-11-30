@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.swiper-pagination-bullets{
+    @apply flex items-center justify-center mx-auto pt-8;
+}
+
+.swiper-pagination-bullet {
+  @apply bg-gray w-4 h-4 rounded-full transition-transform block mx-2;
+}
+
+.swiper-pagination-bullet-active {
+  @apply bg-secondary; /* Punto activo más grande y colorido */
+}
