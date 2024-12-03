@@ -27,23 +27,27 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
 
     const data = new URLSearchParams(params).toString();
 
-    const suscriptionResponse = await flowApiInstance.post(
+    const subscriptionResponse = await flowApiInstance.post(
       "/subscription/create",
       data
     );
-    console.log(suscriptionResponse.data.invoices);
-    sendResponse(req, res, suscriptionResponse.data);
+
+    if (!subscriptionResponse) {
+      return next(boom.badImplementation("Error creating subscription"));
+    }
+
+    const invoiceResponse = await getInvoicesById(
+      subscriptionResponse.data.invoices[0].id
+    );
+
+    const response = {
+      subscriptionId: subscriptionResponse.data.subscriptionId,
+      planId: subscriptionResponse.data.planId,
+      paymentLink: invoiceResponse.data.paymentLink,
+    };
+    sendResponse(req, res, response);
   } catch (e: any) {
     return next(boom.badImplementation(e.response?.data || e.message));
-  }
-};
-
-const getAll = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const response = await flowApiInstance.get("/subscription/get");
-    sendResponse(req, res, response.data);
-  } catch (e: any) {
-    return next(boom.badImplementation(e));
   }
 };
 
@@ -63,7 +67,7 @@ const getById = async (req: Request, res: Response, next: NextFunction) => {
     const data = new URLSearchParams(params).toString();
 
     const suscriptionResponse = await flowApiInstance.get(
-      `/subscription/get?data=${data}`
+      `/subscription/get?${data}`
     );
     sendResponse(req, res, suscriptionResponse.data);
   } catch (e: any) {
@@ -71,24 +75,88 @@ const getById = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const getCustomer = async () => {
+const getAllByPlanId = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
+    const { plan_id } = req.params;
     const params: any = {
       apiKey: config.flowApiKey,
+      planId: plan_id,
     };
 
     params.s = jsonToSignature(params);
+
     const data = new URLSearchParams(params).toString();
+    const response = await flowApiInstance.get(`/subscription/list?${data}`);
+    sendResponse(req, res, response.data);
+  } catch (e: any) {
+    return next(boom.badImplementation(e));
+  }
+};
 
-    const response = await flowApiInstance.get(`/customer/list?${data}`);
+const getCustomer = async (externalId: string) => {
+  try {
+    let allCustomers: any[] = [];
+    let hasMore = true;
+    let currentPage = 0;
 
-    return { success: true, data: response.data, error: null };
+    while (hasMore) {
+      const params: any = {
+        apiKey: config.flowApiKey,
+        limit: 100,
+        start: currentPage,
+      };
+      params.page = currentPage;
+      params.s = jsonToSignature(params);
+
+      const data = new URLSearchParams(params).toString();
+      const response = await flowApiInstance.get(`/customer/list?${data}`);
+      const { data: customers, hasMore: more, total } = response.data;
+
+      allCustomers = [...allCustomers, ...customers];
+
+      hasMore = more;
+      currentPage += 1;
+    }
+
+    const filteredCustomer = allCustomers.find(
+      (customer) => customer.externalId === externalId
+    );
+    if (filteredCustomer) {
+      return { success: true, data: filteredCustomer, error: null };
+    } else {
+      return { success: false, data: null, error: "Customer not found" };
+    }
   } catch (e: any) {
     return { success: false, data: null, error: e.response?.data || e.message };
   }
 };
 
-export { getAll, getById, create, getCustomer };
+const getCustomerById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+    const params: any = {
+      apiKey: config.flowApiKey,
+      customerId: id,
+    };
+
+    params.s = jsonToSignature(params);
+    const data = new URLSearchParams(params).toString();
+
+    const response = await flowApiInstance.get(`/customer/get?${data}`);
+
+    sendResponse(req, res, response.data);
+  } catch (e: any) {
+    return { success: false, data: null, error: e.response?.data || e.message };
+  }
+};
 
 const upsertCustomer = async (
   name: string,
@@ -105,11 +173,9 @@ const upsertCustomer = async (
     params.s = jsonToSignature(params);
     const data = new URLSearchParams(params).toString();
 
-    const customerResponse = await getCustomer();
+    const customerResponse = await getCustomer(externalId);
 
-    const existingCustomer = customerResponse.data.data.find(
-      (customer: any) => customer.externalId === externalId
-    );
+    const existingCustomer = customerResponse.data;
 
     if (existingCustomer) {
       const updatingParams: any = {
@@ -144,7 +210,56 @@ const upsertCustomer = async (
       };
     }
   } catch (e: any) {
-    console.error("Error in upsertCustomer:", e);
     return { success: false, data: null, error: e.response?.data || e.message };
   }
+};
+
+const getInvoicesById = async (invoiceId: string) => {
+  try {
+    const params: any = {
+      apiKey: config.flowApiKey,
+      invoiceId: invoiceId,
+    };
+
+    params.s = jsonToSignature(params);
+    const data = new URLSearchParams(params).toString();
+
+    const response = await flowApiInstance.get(`/invoice/get?${data}`);
+
+    return { success: true, data: response.data, error: null };
+  } catch (e: any) {
+    return { success: false, data: null, error: (e as Error).message };
+  }
+};
+
+const getPaymentStatus = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { token } = req.query;
+    const params: any = {
+      apiKey: config.flowApiKey,
+      token: token,
+    };
+
+    params.s = jsonToSignature(params);
+    const data = new URLSearchParams(params).toString();
+
+    const response = await flowApiInstance.get(`/payment/getStatus?${data}`);
+    sendResponse(req, res, response.data);
+  } catch (e: any) {
+    return { success: false, data: null, error: e.response?.data || e.message };
+  }
+};
+
+export {
+  getAllByPlanId,
+  getById,
+  create,
+  getCustomer,
+  getCustomerById,
+  getInvoicesById,
+  getPaymentStatus,
 };
