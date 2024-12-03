@@ -101,7 +101,10 @@ const routeMappings = [
   { path: "/api/procedure", router: routes.ProcedureRouter },
   { path: "/api/qualification", router: routes.QualificationRouter },
   { path: "/api/web", router: routes.WebRouter },
-  { path: "/api/bin", router: routes.BinRouter}
+  { path: "/api/bin", router: routes.BinRouter},
+  { path: "/api/brokerV2", router: routes.BrokerRouterV2 },
+  { path: "/api/leadV2", router: routes.LeadRouterV2 },
+  { path: "/api/productV2", router: routes.ProductRouterV2 }
 ];
 
 function initializeRoutes(server: Express) {

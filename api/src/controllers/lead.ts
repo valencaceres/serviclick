@@ -169,7 +169,7 @@ const errorHandler = (response: any, path: string) => {
   return { success: true, data: response.data, error: null };
 };
 
-const createCustomer = async (customer: CustomerT) => {
+export const createCustomer = async (customer: CustomerT) => {
   const customerResponse = await Customer.createModel(
     customer.rut,
     customer.name,
@@ -183,7 +183,7 @@ const createCustomer = async (customer: CustomerT) => {
   return errorHandler(customerResponse, "lead/createCustomerModel");
 };
 
-const createCompany = async (company: CompanyT) => {
+export const createCompany = async (company: CompanyT) => {
   const companyResponse = await Company.create(
     company.rut,
     company.companyName,
@@ -197,7 +197,7 @@ const createCompany = async (company: CompanyT) => {
   return errorHandler(companyResponse, "lead/createCompanyModel");
 };
 
-const createProduct = async (id: string, product: any) => {
+export const createProduct = async (id: string, product: any) => {
   const leadProductResponse = await LeadProduct.createModel(
     id,
     product.id,
@@ -209,7 +209,7 @@ const createProduct = async (id: string, product: any) => {
   return errorHandler(leadProductResponse, "lead/createLeadProductModel");
 };
 
-const createLead = async (
+export const createLead = async (
   id: string,
   agent_id: string,
   customer_id: string,
@@ -243,12 +243,12 @@ const createLead = async (
   return errorHandler(leadResponse, "lead/createLeadModel");
 };
 
-const deleteLeadInsured = async (id: string) => {
+export const deleteLeadInsured = async (id: string) => {
   const deleteInsuredResponse = await LeadInsured.deleteByLeadId(id);
   return errorHandler(deleteInsuredResponse, "lead/deleteInsuredByLeadId");
 };
 
-const createInsured = async (insured: InsuredT) => {
+export const createInsured = async (insured: InsuredT) => {
   const insuredResponse = await Insured.create(
     insured.rut,
     insured.name,
@@ -263,12 +263,12 @@ const createInsured = async (insured: InsuredT) => {
   return errorHandler(insuredResponse, "lead/createInsuredModel");
 };
 
-const createLeadInsured = async (id: string, insured_id: string) => {
+export const createLeadInsured = async (id: string, insured_id: string) => {
   const leadInsuredResponse = await LeadInsured.createModel(id, insured_id);
   return errorHandler(leadInsuredResponse, "lead/createLeadInsuredtModel");
 };
 
-const deleteLeadBeneficiaries = async (id: string, insured_id: string) => {
+export const deleteLeadBeneficiaries = async (id: string, insured_id: string) => {
   const deleteBeneficiariesResponse = await LeadBeneficiary.deleteByLeadId(
     id,
     insured_id
@@ -279,7 +279,7 @@ const deleteLeadBeneficiaries = async (id: string, insured_id: string) => {
   );
 };
 
-const createBeneficiary = async (beneficiary: BeneficiaryT) => {
+export const createBeneficiary = async (beneficiary: BeneficiaryT) => {
   const beneficiaryResponse = await Beneficiary.createModel(
     beneficiary.rut,
     beneficiary.name,
@@ -295,7 +295,7 @@ const createBeneficiary = async (beneficiary: BeneficiaryT) => {
   return errorHandler(beneficiaryResponse, "lead/createBeneficiaryModel");
 };
 
-const createLeadBeneficiary = async (
+export const createLeadBeneficiary = async (
   id: string,
   insured_id: string,
   beneficiary_id: string
@@ -308,7 +308,7 @@ const createLeadBeneficiary = async (
   return errorHandler(leadbeneficiaryResponse, "lead/createBeneficiaryModel");
 };
 
-const sendPaymentLink = async (lead: LeadT, link: string = "") => {
+export const sendPaymentLink = async (lead: LeadT, link: string = "") => {
   const {
     success,
     data: product,
@@ -345,7 +345,7 @@ const sendPaymentLink = async (lead: LeadT, link: string = "") => {
   return emailResponse.data;
 };
 
-const updateLeadPaymentType = async (
+export const updateLeadPaymentType = async (
   lead_id: string,
   paymentTypeCode: string
 ) => {

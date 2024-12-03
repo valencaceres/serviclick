@@ -1,13 +1,15 @@
-/* Codigo para produccion */
+/* Imports que SI deben ir a produccion */
 
 import * as BrokerProduct from '../../models/v2/brokerProduct'
 import * as Product from '../../models/v2/product'
 
-/* Controllers y models no modificados, los añadi para que no de error el codigo unicamente. Añadi una letra adicional al final para que tampoco genere error con el codigo
-que SI debe ser añadido en produccion */
-import * as Productt from '../product'
-import * as Brokerr from '../../models/broker'
-import * as UserBrokerr from '../../models/userBroker'
+/* Controllers y models no modificados, los añadi para que no de error el codigo unicamente. Añadi un Prod adicional al final para que tampoco genere error con el codigo 
+(Y ademas se entienda que lo que esta en por ejemplo, models/v2/product, luego debe estar en el mismo archivo de models/product) que SI debe ser añadido en produccion */
+
+import * as ProductProd from '../product'
+import * as BrokerProd from '../../models/broker'
+import * as UserBrokerProd from '../../models/userBroker'
+import * as BrokerProductProd from '../../models/brokerProduct'
 
 import createLogger from '../../util/logger'
 
@@ -100,17 +102,17 @@ const getByIdGateway = async (req: any, res: any) => {
         responsePlans.data?.customer?.product_plan_id &&
         responsePlans.data?.yearly?.product_plan_id
       ) {
-        response = await Productt.insertPdf(
+        response = await ProductProd.insertPdf(
           responsePlans.data.customer.product_plan_id,
           pdfbase64
         );
       } else if (responsePlans.data?.customer?.product_plan_id) {
-        response = await Productt.insertPdf(
+        response = await ProductProd.insertPdf(
           responsePlans.data.customer.product_plan_id,
           pdfbase64
         );
       } else if (responsePlans.data?.yearly?.product_plan_id) {
-        response = await Productt.insertPdf(
+        response = await ProductProd.insertPdf(
           responsePlans.data.yearly.product_plan_id,
           pdfbase64
         );
@@ -141,7 +143,7 @@ const getByIdGateway = async (req: any, res: any) => {
 
   const getBrokerDataByIdGateway = async (id: string) => {
     try {
-      const brokerResponse = await Brokerr.getById(id);
+      const brokerResponse = await BrokerProd.getById(id);
   
       if (!brokerResponse.success) {
         return {
@@ -172,7 +174,7 @@ const getByIdGateway = async (req: any, res: any) => {
           status: 500,
         };
       }
-      const userBrokerResponse = await UserBrokerr.getByBrokerId(id);
+      const userBrokerResponse = await UserBrokerProd.getByBrokerId(id);
   
       if (!userBrokerResponse.success) {
         return {
@@ -230,3 +232,37 @@ const getByIdGateway = async (req: any, res: any) => {
       };
     }
   };
+
+  const removeProductGateway = async (req: any, res: any) => {
+    const { broker_id, product_id } = req.body;
+  
+    const responseBrokerProduct = await BrokerProductProd.removeByProductId(
+      broker_id,
+      product_id
+    );
+  
+    if (!responseBrokerProduct.success) {
+      createLogger.error({
+        controller: "broker/removeProduct",
+        error: responseBrokerProduct.error,
+      });
+      res.status(500).json({ error: "Error removing product" });
+      return;
+    }
+  
+    const brokerProducts = await BrokerProduct.getByBrokerIdGateway(broker_id);
+  
+    if (!brokerProducts.success) {
+      createLogger.error({
+        model: "brokerProduct/getByBrokerId",
+        error: brokerProducts.error,
+      });
+      res.status(500).json({ error: "Error retrieving broker product" });
+      return;
+    }
+  
+    res.status(200).json(brokerProducts.data);
+  };
+  
+
+  export {getByIdGateway, addProductGateway, removeProductGateway}
