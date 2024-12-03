@@ -7,7 +7,7 @@ import config from "../utils/config";
 type FrequencyType = "U" | "S" | "M" | "A";
 
 interface RequestBody {
-  id: number
+  id: number;
   frequency: FrequencyType;
   discount: { type: string; percent: number };
   cicles: number;
@@ -18,8 +18,8 @@ interface RequestBody {
   price: number;
   is_uf: boolean;
   auto_renew: boolean;
-  prefferred_due_day: number
-  discount_enabled: boolean
+  prefferred_due_day: number;
+  discount_enabled: boolean;
 }
 
 const getAll = async (req: Request, res: Response, next: NextFunction) => {
@@ -73,29 +73,43 @@ const upsert = async (req: Request, res: Response, next: NextFunction) => {
       prefferred_due_day,
       discount,
       discount_enabled,
-      success_message: "Muchas gracias por preferirnos, ya eres parte de ServiClick!",
+      success_message:
+        "Muchas gracias por preferirnos, ya eres parte de ServiClick!",
       redirect_to: config.success,
       redirect_to_failure: config.error,
     };
+
     if (id) {
       try {
         const ifPlanExist = await reveniuApiInstance.get(`/plans/${id}`);
-        const planUpdateResponse = await reveniuApiInstance.patch(`/plans/${id}/`, requestData);
+        const planUpdateResponse = await reveniuApiInstance.patch(
+          `/plans/${id}/`,
+          requestData
+        );
         sendResponse(req, res, planUpdateResponse.data);
       } catch (error: any) {
         if (error.response?.status === 404) {
-          const planCreateResponse = await reveniuApiInstance.post('/plans/', requestData);
+          const planCreateResponse = await reveniuApiInstance.post(
+            "/plans/",
+            requestData
+          );
           sendResponse(req, res, planCreateResponse.data);
         } else {
           throw error;
         }
       }
     } else {
-      const planCreateResponse = await reveniuApiInstance.post('/plans/', requestData);
+      const planCreateResponse = await reveniuApiInstance.post(
+        "/plans/",
+        requestData
+      );
       sendResponse(req, res, planCreateResponse.data);
     }
   } catch (error: any) {
-    console.error("Error calling Reveniu API:", error.response?.data || error.message);
+    console.error(
+      "Error calling Reveniu API:",
+      error.response?.data || error.message
+    );
     return next(boom.badImplementation(error.message));
   }
 };
