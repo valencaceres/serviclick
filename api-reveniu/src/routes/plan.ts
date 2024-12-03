@@ -2,10 +2,10 @@ import { Router } from "express";
 import * as Plan from "../controllers/plan";
 import auth from "../middlewares/auth";
 
-const RPlan = Router();
+const PlanRouter = Router();
 
-RPlan.get("/getAll", auth, Plan.getAll);
-RPlan.get("/getById/:id", auth, Plan.getById);
-RPlan.post("/upsert", auth, Plan.upsert);
+PlanRouter.get("/getAll", auth, Plan.getAll);
+PlanRouter.get("/getById/:id", auth, Plan.getById);
+PlanRouter.post("/upsert", auth, Plan.upsert);
 
-export default RPlan;
+export default PlanRouter;
