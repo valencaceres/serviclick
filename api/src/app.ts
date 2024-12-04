@@ -1,6 +1,7 @@
 import express, { Express, Request, Response, NextFunction } from "express";
 import cors from "cors";
 import * as routes from "./routes";
+import * as routesV2 from "./routes/v2";
 import { reqLogger } from "./middlewares/logger";
 import { allowedOrigins } from "./util/allowedOrigins";
 import createLogger from "./util/logger";
@@ -101,10 +102,10 @@ const routeMappings = [
   { path: "/api/procedure", router: routes.ProcedureRouter },
   { path: "/api/qualification", router: routes.QualificationRouter },
   { path: "/api/web", router: routes.WebRouter },
-  { path: "/api/bin", router: routes.BinRouter},
-  { path: "/api/brokerV2", router: routes.BrokerRouterV2 },
-  { path: "/api/leadV2", router: routes.LeadRouterV2 },
-  { path: "/api/productV2", router: routes.ProductRouterV2 }
+  { path: "/api/bin", router: routes.BinRouter },
+  { path: "/api/v2/broker", router: routesV2.BrokerRouter },
+  { path: "/api/v2/lead", router: routesV2.LeadRouter },
+  { path: "/api/v2/product", router: routesV2.ProductRouter },
 ];
 
 function initializeRoutes(server: Express) {

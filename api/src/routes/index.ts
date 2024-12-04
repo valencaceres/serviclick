@@ -42,12 +42,6 @@ import QualificationRouter from "./qualification";
 import WebRouter from "./web";
 import BinRouter from "./bin";
 
-/* Imports para produccion */
-
-import BrokerRouterV2 from "./v2/broker";
-import LeadRouterV2 from "./v2/lead";
-import ProductRouterV2 from "./v2/product";
-
 export {
   SlugRouter,
   StatusRouter,
@@ -92,7 +86,4 @@ export {
   QualificationRouter,
   WebRouter,
   BinRouter,
-  BrokerRouterV2,
-  LeadRouterV2,
-  ProductRouterV2
 };
