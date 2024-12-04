@@ -5,7 +5,7 @@ const config = {
   retailURL: process.env.RETAIL_URL,
   apiPort: process.env.API_PORT || 3001,
   apiKey: process.env.API_KEY || "1234",
-  apiPayment: process.env.API_PAYMENT,
+  apiPaymentURL: process.env.API_PAYMENT_URL,
   apiPaymentKey: process.env.API_PAYMENT_KEY,
   dbHost: process.env.DB_HOST || "localhost",
   dbUser: process.env.DB_USER || "root",
