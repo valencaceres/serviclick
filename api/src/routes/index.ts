@@ -85,5 +85,5 @@ export {
   ProcedureRouter,
   QualificationRouter,
   WebRouter,
-  BinRouter
+  BinRouter,
 };
